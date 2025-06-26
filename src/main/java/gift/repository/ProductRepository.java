@@ -8,13 +8,12 @@ import java.util.Optional;
 import org.springframework.stereotype.Repository;
 
 import gift.domain.Product;
-import gift.exception.NotFoundException;
+import gift.exception.ProductNotFoundException;
 
 @Repository
 public class ProductRepository {
 
     private final Map<Long, Product> products = new HashMap<>();
-    private static Long id = 1L;
 
     public List<Product> findAll() {
         return products.values()
@@ -27,22 +26,25 @@ public class ProductRepository {
     }
 
     public Product save(String name, Integer price, String imageUrl) {
-        products.put(id, new Product(id, name, price, imageUrl));
-        return products.get(id++);
+        Product product = Product.of(name, price, imageUrl);
+        products.put(product.getId(), product);
+        return product;
     }
 
     public Product update(Long id, String name, Integer price, String imageUrl) {
         if (!products.containsKey(id)) {
-            throw new NotFoundException("해당 상품이 존재하지 않습니다.");
+            throw new ProductNotFoundException("해당 상품이 존재하지 않습니다.");
         }
 
-        products.put(id, new Product(id, name, price, imageUrl));
-        return products.get(id);
+        Product currentProduct = products.get(id);
+        Product newProduct = currentProduct.createUpdatedProduct(name, price, imageUrl);
+        products.put(id, newProduct);
+        return newProduct;
     }
 
     public void delete(Long id) {
         if (!products.containsKey(id)) {
-            throw new NotFoundException("해당 상품이 존재하지 않습니다.");
+            throw new ProductNotFoundException("해당 상품이 존재하지 않습니다.");
         }
 
         products.remove(id);
