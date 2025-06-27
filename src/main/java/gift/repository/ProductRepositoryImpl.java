@@ -3,7 +3,9 @@ package gift.repository;
 import gift.entity.Product;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -26,14 +28,17 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public Product updateProduct(Long id, String name, Long price, String url) {
-        Product product = new Product (id, name, price, url);
-        products.put(id, product);
-        return product;
+    public List<Product> findAllProduct() {
+        return new ArrayList<>(products.values());
     }
 
     @Override
-    public void deleteProduct(Long id) {
+    public void updateProductById(Product newProduct) {
+        products.put(newProduct.id(), newProduct);
+    }
+
+    @Override
+    public void deleteProductById(Long id) {
         products.remove(id);
     }
 }
