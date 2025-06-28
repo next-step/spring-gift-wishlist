@@ -1,13 +1,14 @@
 package gift.repository;
 
+import gift.dto.ProductAddRequestDto;
 import gift.entity.Product;
 
 import java.util.List;
 
 public interface ProductRepository {
-    public Product addProduct(String name, Long price, String url);
-    public Product findProductById(Long id);
+    public int addProduct(Product product);
+    public Product findProductByIdOrElseThrow(Long id);
     public List<Product> findAllProduct();
-    public void updateProductById(Product newProduct);
-    public void deleteProductById(Long id);
+    public int updateProductById(Product product);
+    public int deleteProductById(Long id);
 }

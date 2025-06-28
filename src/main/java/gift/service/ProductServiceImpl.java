@@ -4,61 +4,61 @@ import gift.dto.ProductAddRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.dto.ProductUpdateRequestDto;
 import gift.entity.Product;
+import gift.exception.OperationFailedException;
 import gift.exception.ProductNotFoundException;
+import gift.repository.ProductRepository;
 import gift.repository.ProductRepositoryImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
-public class ProductServiceImpl implements ProductService{
+public class ProductServiceImpl implements ProductService {
 
-    private final ProductRepositoryImpl productRepositoryImpl;
+    private final ProductRepository productRepository;
 
-    public ProductServiceImpl(ProductRepositoryImpl productRepositoryImpl) {
-        this.productRepositoryImpl = productRepositoryImpl;
+    public ProductServiceImpl(ProductRepository productRepository) {
+        this.productRepository = productRepository;
     }
 
     @Override
-    public ProductResponseDto addProduct(ProductAddRequestDto requestDto) {
-        Product product = productRepositoryImpl.addProduct(requestDto.getName(), requestDto.getPrice(), requestDto.getUrl());
-        return new ProductResponseDto(product);
+    public void addProduct(ProductAddRequestDto requestDto) {
+        Product product = new Product(null, requestDto.name(), requestDto.price(), requestDto.url());
+        int result = productRepository.addProduct(product);
+        if (result == 0) {
+            throw new OperationFailedException();
+        }
     }
 
     @Override
     public ProductResponseDto findProductById(Long id) {
-        Product product = productRepositoryImpl.findProductById(id);
-        if (product == null) {
-            throw new ProductNotFoundException(id);
-        }
+        Product product = productRepository.findProductByIdOrElseThrow(id);
         return new ProductResponseDto(product);
     }
 
     @Override
     public List<ProductResponseDto> findAllProduct() {
-        List<Product> products = productRepositoryImpl.findAllProduct();
-        List<ProductResponseDto> responseDto = products.stream().map(Product::toProductResponseDto).toList();
-        return responseDto;
+        List<Product> products = productRepository.findAllProduct();
+        List<ProductResponseDto> responseDtos = products.stream().map(Product::toProductResponseDto).toList();
+        return responseDtos;
     }
 
     @Override
-    public ProductResponseDto updateProductById(Long id, ProductUpdateRequestDto requestDto) {
-        Product product = productRepositoryImpl.findProductById(id);
-        if (product == null) {
-            throw new ProductNotFoundException(id);
+    public void updateProductById(Long id, ProductUpdateRequestDto requestDto) {
+        Product product = productRepository.findProductByIdOrElseThrow(id);
+        Product newProduct = new Product(id, requestDto);
+        int result = productRepository.updateProductById(newProduct);
+        if (result == 0) {
+            throw new OperationFailedException();
         }
-        Product newProduct = new Product(product.id(), requestDto.getName(), requestDto.getPrice(), requestDto.getUrl());
-        productRepositoryImpl.updateProductById(newProduct);
-        return new ProductResponseDto(newProduct);
     }
 
     @Override
     public void deleteProductById(Long id) {
-        Product product = productRepositoryImpl.findProductById(id);
-        if (product == null) {
-            throw new ProductNotFoundException(id);
+        Product product = productRepository.findProductByIdOrElseThrow(id);
+        int result = productRepository.deleteProductById(product.id());
+        if (result == 0) {
+            throw new OperationFailedException();
         }
-        productRepositoryImpl.deleteProductById(product.id());
     }
 }
