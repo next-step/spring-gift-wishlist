@@ -1,4 +1,36 @@
 # spring-gift-product
+# 3단계
+jdbcClient를 사용하여 상품정보를 저장할 수 있는 데이터베이스를 만들고 sql문을 작성하여 관리할 수 있게 한다.
+## 1. 2단계 피드백 반영
+- RequestMapping에서 api 빼기
+- service, repository 를 interface 타입으로 주입해보기
+- toProductResponseDto 생성자 수정
+- record 클래스를 뷰에 전달해보기
+## 2. h2데이터베이스 설정
+- h2데이터베이스를 사용하기 위한 설정하기
+## 3. schema.sql, data.sql 만들기
+- schema.sql파일에 상품 데이터베이스 product 테이블 정의하기
+- data.sql에 테스트 데이터 추가하는 코드 추가하기
+## 4. 데이터베이스 내 상품 목록 조회 기능 만들기
+- `select id, name, price, url from product`
+## 5. 데이터베이스 내 상품 추가 기능 만들기
+- `insert into product (id, name, price, url) values (:id, :name, :price, :url)`
+## 6. 데이터베이스 내 상품 업데이트 기능 만들기
+- `update product set name=:name, price=:price, url=:url where id = :id`
+## 7. 데이터베이스 내 상품 삭제 기능 만들기
+- `delete from product where id = :id`
+## 8. 추가작업
+- addProduct와 deleteProductById가 같은 dto를 반환하는데, 코드 구조가 달라  통일 성을 해친다.
+- -> addProduct와 deleteProductById가 dto를 반환할 필요가 없다고 판단했다.
+- -> dto를 반환하지 않는 것으로 통일하기
+- 예외 발생 조건에 Optional 적용해보기
+## 9. 피드백 반영
+- 생성자도 인터페이스에 의존하게 하기 (실수로 안바꿨네요 ㅠㅠ)
+- 상품 수정 결과를 알 수 잇게 int값 반환
+- 레포지터리의 addProduct가 DTO를 받지 않고 Product를 받도록 하기 
+- (상품을 생성하기 전에는 id값이 없어서 Product 엔티티가 아닌 DTO를 넘겨주었었는데 생성자에 null값을 넣어서 구현해보겠습니다.)
+
+---
 # 2단계
 상품을 추가, 조회, 수정, 삭제 할 수 있는 관리자 화면을 만든다.
 ## 1. 1단계 피드백 반영
