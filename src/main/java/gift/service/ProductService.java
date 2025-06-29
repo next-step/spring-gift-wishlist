@@ -1,13 +1,14 @@
-package service;
+package gift.service;
 
-import domain.Product;
-import exception.ProductNotFoundException;
-import repository.ProductRepository;
+import gift.domain.Product;
+import gift.exception.ProductNotFoundException;
+import gift.repository.ProductRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
+@Service
 public class ProductService {
 
     private final ProductRepository repository;
