@@ -3,8 +3,10 @@ package gift.service;
 import gift.dto.CreateProductRequestDto;
 import gift.dto.UpdateProductRequestDto;
 import gift.entity.Product;
+import gift.exception.ProductNotFoundException;
 import org.springframework.stereotype.Service;
 import gift.repository.ProductRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,7 +15,7 @@ import java.util.Optional;
 public class ProductService {
     private final ProductRepository repository;
 
-    public ProductService(ProductRepository repository) {
+    public ProductService(ProductRepository repository, ProductRepository productRepository) {
         this.repository = repository;
     }
 
@@ -21,31 +23,26 @@ public class ProductService {
         return repository.findAll();
     }
 
-    public Optional<Product> getById(Long id) {
-        return repository.findById(id);
+    public Product getById(Long id)
+    {
+        return repository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("ID " + id + "에 해당하는 상품을 찾을 수 없습니다."));
     }
 
     public Product create(CreateProductRequestDto dto) {
         return repository.save(new Product(null, dto.getName(), dto.getPrice(), dto.getImageUrl()));
     }
 
-    public Optional<Product> update(Long id, UpdateProductRequestDto dto) {
-        if (repository.findById(id).isEmpty())
-        {
-            return Optional.empty();
-        }
-        Product updated = new Product(id, dto.getName(), dto.getPrice(), dto.getImageUrl());
-        repository.update(id, updated);
-        return Optional.of(updated);
+    @Transactional
+    public void update(Long id, UpdateProductRequestDto dto)
+    {
+        Product product=new Product(id, dto.getName(), dto.getPrice(), dto.getImageUrl());
+        repository.update(id, product);
     }
 
-    public boolean delete(Long id) {
-        if (repository.findById(id).isEmpty())
-        {
-            return false;
-        }
+    @Transactional
+    public void delete(Long id)
+    {
         repository.delete(id);
-        return true;
     }
-
 }

@@ -1,6 +1,7 @@
 package gift.repository;
 
 import gift.entity.Product;
+import gift.exception.ProductNotFoundException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -48,13 +49,19 @@ public class ProductRepository {
     public void update(Long id,Product product)
     {
         String sql = "update products set name = ?, price = ?, image_url = ? where id = ?";
-        jdbcTemplate.update(sql,product.getName(),product.getPrice(),product.getImageUrl(),id);
+        int affectedRows=jdbcTemplate.update(sql,product.getName(),product.getPrice(),product.getImageUrl(),id);
+        if(affectedRows==0)
+        {
+            throw new ProductNotFoundException("ID"+id+"에 해당하는 상품을 찾을 수 없습니다.");
+        }
     }
 
-    public void delete(Long id)
-    {
+    public void delete(Long id) {
         String sql = "delete from products where id = ?";
-        jdbcTemplate.update(sql,id);
+        int affectedRows = jdbcTemplate.update(sql, id);
+        if (affectedRows == 0) {
+            throw new ProductNotFoundException("ID " + id + "에 해당하는 상품을 찾을 수 없어 삭제에 실패했습니다.");
+        }
     }
 
     private static final RowMapper<Product> PRODUCT_ROW_MAPPER=(rs, rowNum) -> new Product(
