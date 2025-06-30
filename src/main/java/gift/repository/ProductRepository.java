@@ -3,10 +3,11 @@ package gift.repository;
 import gift.entity.Product;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductRepository {
     List<Product> findAll();
-    Product findById(Long productId);
+    Optional<Product> findById(Long productId);
     Product save(Product product);
     Product updateNameById(Long productId, String name);
     Product updatePriceById(Long productId, Long price);

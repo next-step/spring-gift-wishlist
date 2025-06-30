@@ -2,7 +2,7 @@ package gift.dao;
 
 import gift.entity.Product;
 import gift.exception.DBServerException;
-import org.springframework.jdbc.core.JdbcTemplate;
+import java.util.Optional;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -39,14 +39,13 @@ public class ProductDao {
                 .toList();
     }
 
-    public Product findById(Long productId) {
+    public Optional<Product> findById(Long productId) {
         String sql = "SELECT * FROM products WHERE id = ?";
         return jdbcClient.sql(sql)
                 .param(productId)
                 .query(new ProductRowMapper())
                 .stream()
-                .findFirst()
-                .orElse(null);
+                .findFirst();
     }
 
     public Long insertWithKey(Product product) {

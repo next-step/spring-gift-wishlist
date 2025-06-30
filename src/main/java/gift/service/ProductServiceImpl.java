@@ -38,7 +38,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product getById(Long productId) {
-        Optional<Product> product = Optional.ofNullable(productRepository.findById(productId));
+        Optional<Product> product = productRepository.findById(productId);
 
         return product.orElseThrow(() ->
                 new NoSuchElementException(
@@ -54,8 +54,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional // 트랜잭션을 사용하여 데이터베이스 일관성 유지
     public Product update(Product product) {
-        Product updated = productRepository.findById(product.getId());
-
+        Product updated = productRepository.findById(product.getId())
+                .orElseThrow(
+                    ()-> new NoSuchElementException(String.format("Id %d에 해당하는 상품이 존재하지 않습니다.", product.getId())));
         // 상품이 존재하지 않는 경우 예외 처리
         if (updated == null) {
             throw new NoSuchElementException(
@@ -76,7 +77,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteById(Long productId) {
-        if (productRepository.findById(productId) == null) {
+        if (productRepository.findById(productId).isEmpty()) {
             throw new NoSuchElementException(
                     String.format("Id %d에 해당하는 상품이 존재하지 않습니다.", productId));
         }
