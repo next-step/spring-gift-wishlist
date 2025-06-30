@@ -19,7 +19,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private static final RowMapper<Product> productRowMapper = (rs, rowNum) -> new Product(
+    private static final RowMapper<Product> PRODUCT_ROW_MAPPER = (rs, rowNum) -> new Product(
         rs.getLong("id"), rs.getString("name"), rs.getInt("price"), rs.getString("imageUrl"));
 
     public ProductRepositoryImpl(JdbcTemplate jdbcTemplate) {
@@ -30,7 +30,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     public List<Product> findAll() {
         String sql = "select * from product";
 
-        List<Product> productList = jdbcTemplate.query(sql, productRowMapper);
+        List<Product> productList = jdbcTemplate.query(sql, PRODUCT_ROW_MAPPER);
         return productList;
     }
 
@@ -53,7 +53,7 @@ public class ProductRepositoryImpl implements ProductRepository {
         String sql = "select * from product where id = ?";
 
         try {
-            Product product = jdbcTemplate.queryForObject(sql, productRowMapper, id);
+            Product product = jdbcTemplate.queryForObject(sql, PRODUCT_ROW_MAPPER, id);
             return Optional.of(product);
         } catch (DataAccessException e) {
             return Optional.empty();
