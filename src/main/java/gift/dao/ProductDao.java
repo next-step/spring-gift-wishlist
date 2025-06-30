@@ -29,7 +29,7 @@ public class ProductDao {
         }
     }
 
-    public ProductDao(JdbcClient client) {;
+    public ProductDao(JdbcClient client) {
         this.jdbcClient = client;
     }
 
