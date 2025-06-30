@@ -14,7 +14,6 @@ public class GlobalExceptionHandler {
             .body(ex.getMessage());
     }
 
-    // 의존성을 따로 추가해야 사용 가능한 에러 처리 (Valid)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<String> handleValidationError(MethodArgumentNotValidException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -22,7 +21,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(FailedGenerateKeyException.class)
-    public ResponseEntity<String> handleFaildGenerateKey(FailedGenerateKeyException ex) {
+    public ResponseEntity<String> handleFailedGenerateKey(FailedGenerateKeyException ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body(ex.getMessage());
     }
