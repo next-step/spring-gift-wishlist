@@ -21,7 +21,6 @@ public class ProductRepository {
                 .withTableName("products");
     }
 
-    //상품 추가하기
     public Product save(Product product)
     {
         Map<String, Object> map = new HashMap<>();
@@ -33,43 +32,37 @@ public class ProductRepository {
         return product;
     }
 
-    //조회하기 (전체, id)
     public List<Product> findAll()
     {
         String sql = "select * from products";
-        return jdbcTemplate.query(sql,rowMapper());
+        return jdbcTemplate.query(sql,PRODUCT_ROW_MAPPER);
     }
 
     public Optional<Product> findById(Long id)
     {
         String sql = "select * from products where id=?";
-        List<Product>res=jdbcTemplate.query(sql,rowMapper(),id);
+        List<Product>res=jdbcTemplate.query(sql,PRODUCT_ROW_MAPPER,id);
         return res.stream().findFirst();
     }
 
-    //기존 상품 수정하기
     public void update(Long id,Product product)
     {
         String sql = "update products set name = ?, price = ?, image_url = ? where id = ?";
         jdbcTemplate.update(sql,product.getName(),product.getPrice(),product.getImageUrl(),id);
     }
 
-    //기존 상품 삭제하기
     public void delete(Long id)
     {
         String sql = "delete from products where id = ?";
         jdbcTemplate.update(sql,id);
     }
 
-    private RowMapper<Product> rowMapper()
-    {
-        return (rs, rowNum) -> new Product(
+    private static final RowMapper<Product> PRODUCT_ROW_MAPPER=(rs, rowNum) -> new Product(
           rs.getLong("id"),
           rs.getString("name"),
           rs.getInt("price"),
           rs.getString("image_url")
         );
-    }
 }
 
 

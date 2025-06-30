@@ -22,7 +22,6 @@ public class AdminProductController {
         this.productService = productService;
     }
 
-    //list 목록 보기
     @GetMapping
     public String list(Model model)
     {
@@ -39,7 +38,6 @@ public class AdminProductController {
         return "admin/products/detail";
     }
 
-    //register
     @GetMapping("/new")
     public String showCreateForm(Model model)
     {
@@ -47,7 +45,6 @@ public class AdminProductController {
         return "admin/products/new";
     }
 
-    // post register
     @PostMapping
     public String create(@Valid @ModelAttribute("product") CreateProductRequestDto dto, BindingResult bindingResult)
     {
@@ -59,7 +56,6 @@ public class AdminProductController {
         return "redirect:/admin/products";
     }
 
-    // Update
     @GetMapping("/{id}/edit")
     public String showEditForm(@PathVariable Long id, Model model)
     {
@@ -88,7 +84,6 @@ public class AdminProductController {
         return "redirect:/admin/products";
     }
 
-    // Delete
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable Long id)
     {
