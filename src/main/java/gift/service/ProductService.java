@@ -21,21 +21,36 @@ public class ProductService {
         return repository.save(name, price, imageUrl);
     }
 
-    public Product getById(Long id) {
+    public Product findById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException(id));
     }
 
-    public List<Product> getAllByPage(int page, int size, String sort, Long categoryId) {
+    public List<Product> findAllByPage(int page, int size, String sort, Long categoryId) {
         return repository.findAll().stream()
                 .filter(product -> categoryId == null || product.getCategoryId().equals(categoryId))
-                .sorted(getComparator(sort))
+                .sorted(createComparator(sort))
                 .skip((long) page * size)
                 .limit(size)
                 .toList();
     }
 
-    private Comparator<Product> getComparator(String sort) {
+
+    public List<Product> findAllProducts(String sort, String keyword) {
+        return repository.findAll().stream()
+                .filter(p -> matchesKeyword(p, keyword))
+                .sorted(createComparator(sort))
+                .toList();
+    }
+
+    private boolean matchesKeyword(Product p, String keyword) {
+        if (keyword == null || keyword.isBlank()) return true;
+
+        return p.getName().toLowerCase().contains(keyword.toLowerCase()) ||
+                String.valueOf(p.getId()).equals(keyword);
+    }
+
+    private Comparator<Product> createComparator(String sort) {
         String[] parts = sort.split(",");
         String key = parts[0];
         boolean ascending = parts.length < 2 || parts[1].equalsIgnoreCase("asc");

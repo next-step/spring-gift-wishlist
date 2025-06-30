@@ -20,37 +20,27 @@ public class ProductAdminController {
     }
 
     /**
-     * 상품 목록 (페이징 + 검색)
+     * 상품 목록 (검색)
      */
     @GetMapping
     public String list(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id,asc") String sort,
             @RequestParam(required = false) String keyword,
             Model model) {
 
-        List<Product> filtered = productService.getAllByPage(page, size, sort, null).stream()
-                .filter(p -> keyword == null || keyword.isBlank() || matchesKeyword(p, keyword))
-                .toList();
-
+        List<Product> filtered = productService.findAllProducts(sort, keyword);
         List<ProductResponse> products = filtered.stream()
                 .map(ProductResponse::from)
                 .toList();
 
         model.addAttribute("products", products);
-        model.addAttribute("page", page);
-        model.addAttribute("size", size);
         model.addAttribute("sort", sort);
         model.addAttribute("keyword", keyword);
 
         return "admin/product/list";
     }
 
-    private boolean matchesKeyword(Product p, String keyword) {
-        return p.getName().toLowerCase().contains(keyword.toLowerCase()) ||
-                String.valueOf(p.getId()).equals(keyword);
-    }
+
 
     /**
      * 상품 등록 폼
@@ -58,8 +48,7 @@ public class ProductAdminController {
     @GetMapping("/new")
     public String newForm(Model model) {
         model.addAttribute("productRequest", new ProductRequest(null, "", 0, ""));
-        model.addAttribute("isNew", true);
-        return "admin/product/form";
+        return "admin/product/create-product-form";
     }
 
     /**
@@ -76,7 +65,7 @@ public class ProductAdminController {
      */
     @GetMapping("/{id}/edit")
     public String editForm(@PathVariable Long id, Model model) {
-        Product product = productService.getById(id);
+        Product product = productService.findById(id);
         ProductRequest request = new ProductRequest(
                 product.getCategoryId(),
                 product.getName(),
@@ -85,8 +74,7 @@ public class ProductAdminController {
         );
         model.addAttribute("productId", product.getId());
         model.addAttribute("productRequest", request);
-        model.addAttribute("isNew", false);
-        return "admin/product/form";
+        return "admin/product/edit-product-form";
     }
 
     /**
