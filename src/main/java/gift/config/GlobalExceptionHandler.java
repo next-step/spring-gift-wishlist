@@ -1,6 +1,7 @@
 package gift.config;
 
 import gift.dto.response.ErrorResponseDto;
+import gift.exception.CreationFailException;
 import gift.exception.EntityNotFoundException;
 import gift.exception.RequestValidateFailException;
 import org.slf4j.Logger;
@@ -25,5 +26,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponseDto> handleEntityNotFound(EntityNotFoundException e) {
         log.warn("EntityNotFoundException: {}", e.getMessage());
         return ResponseEntity.notFound().build(); //404
+    }
+
+    @ExceptionHandler(CreationFailException.class)
+    public ResponseEntity<ErrorResponseDto> handleCreationFail(CreationFailException e) {
+        log.warn("CreationFailException: {}", e.getMessage());
+        var response = new ErrorResponseDto(e.getMessage(), 500);
+        return ResponseEntity.internalServerError().body(response);
     }
 }

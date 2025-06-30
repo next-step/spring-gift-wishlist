@@ -1,6 +1,7 @@
 package gift.repository;
 
 import gift.entity.Product;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -18,17 +19,14 @@ public class ProductRepository {
         this.client = client;
     }
 
-    public Optional<Product> save(Product product) {
-        var sql = "insert into product (name, price, imageUrl) values (:name, :price, :imageUrl);";
-        var keyHolder = new GeneratedKeyHolder();
-        client.sql(sql)
-                .param("name", product.getName())
-                .param("price", product.getPrice())
-                .param("imageUrl", product.getImageUrl())
-                .update(keyHolder);
-        Long id = keyHolder.getKey().longValue();
-        return Optional.of(new Product(id, product.getName(), product.getPrice(), product.getImageUrl()));
-        //return findById(id);
+    private static RowMapper<Product> getRowMapper() {
+        return (rs, rowNum) -> {
+            Long id = rs.getLong("id");
+            String name = rs.getString("name");
+            Long price = (long) rs.getInt("price");
+            String imageUrl = rs.getString("image_url");
+            return new Product(id, name, price, imageUrl);
+        };
     }
 
     public Optional<Product> findById(Long id) {
@@ -46,18 +44,18 @@ public class ProductRepository {
                 .list();
     }
 
-    public Optional<Product> update(Long id, Product product) {
-        var sql = "update product set name = :name, price = :price, imageUrl = :imageUrl where id = :id;";
-        var affected = client.sql(sql)
-                .param("id", product.getId())
-                .param("name", product.getName())
-                .param("price", product.getPrice())
-                .param("imageUrl", product.getImageUrl())
-                .update();
-
-        if(affected == 0) {
+    public Optional<Product> save(Product product) {
+        var sql = "insert into product (name, price, image_url) values (:name, :price, :image_url);";
+        var keyHolder = new GeneratedKeyHolder();
+        try {
+            client.sql(sql)
+                    .param("name", product.getName())
+                    .param("price", product.getPrice())
+                    .param("image_url", product.getImageUrl());
+        } catch (DataAccessException e) {
             return Optional.empty();
         }
+        Long id = keyHolder.getKey().longValue();
         return Optional.of(new Product(id, product.getName(), product.getPrice(), product.getImageUrl()));
     }
 
@@ -68,13 +66,18 @@ public class ProductRepository {
                 .update();
     }
 
-    private static RowMapper<Product> getRowMapper() {
-        return (rs, rowNum) -> {
-            Long id = rs.getLong("id");
-            String name = rs.getString("name");
-            Long price = (long) rs.getInt("price");
-            String imageUrl = rs.getString("imageUrl");
-            return new Product(id, name, price, imageUrl);
-        };
+    public Optional<Product> update(Long id, Product product) {
+        var sql = "update product set name = :name, price = :price, image_url = :image_url where id = :id;";
+        var affected = client.sql(sql)
+                .param("id", product.getId())
+                .param("name", product.getName())
+                .param("price", product.getPrice())
+                .param("image_url", product.getImageUrl())
+                .update();
+
+        if (affected == 0) {
+            return Optional.empty();
+        }
+        return Optional.of(new Product(id, product.getName(), product.getPrice(), product.getImageUrl()));
     }
 }

@@ -4,6 +4,7 @@ import gift.dto.request.CreateProductDto;
 import gift.dto.request.UpdateProductDto;
 import gift.dto.response.ProductDto;
 import gift.entity.Product;
+import gift.exception.CreationFailException;
 import gift.exception.EntityNotFoundException;
 import gift.repository.ProductRepository;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,8 @@ public class ProductService {
 
     public ProductDto createProduct(CreateProductDto body) {
         Product instance = body.toEntity();
-        Product created = productRepository.save(instance).get();
+        Product created = productRepository.save(instance)
+                .orElseThrow(() -> new CreationFailException("Fail to create Product"));
         return ProductDto.from(created);
     }
 
@@ -53,7 +55,7 @@ public class ProductService {
     private Product findProduct(Long id) {
         var result = productRepository.findById(id);
         if (result.isEmpty()) {
-            throw new EntityNotFoundException("Product id {"+id+"} not found");
+            throw new EntityNotFoundException("Product id {" + id + "} not found");
         }
         return result.get();
     }
