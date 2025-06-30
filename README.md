@@ -1,1 +1,2 @@
-# spring-gift-wishlist
+# step 0
+## 상품 관리 기능 가져오기
