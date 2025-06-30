@@ -15,33 +15,28 @@ public record ErrorMessageResponse (
     String path,
     String stackTrace
 ) {
-
-    public static class Builder {
-        HttpServletRequest request;
-        String message;
-        HttpStatus status;
+    public static ErrorMessageResponse generateFrom(
+        HttpServletRequest request,
+        Exception exception,
+        HttpStatus status
+    ) {
         String stackTrace = "";
 
-        public Builder(HttpServletRequest request, String message, HttpStatus status) {
-            this.request = request;
-            this.message = message;
-            this.status = status;
+        if (exception.getStackTrace() != null && exception.getStackTrace().length > 0) {
+            StringBuilder sb = new StringBuilder();
+            for (StackTraceElement element : exception.getStackTrace()) {
+                sb.append(element.toString()).append("\n");
+            }
+            stackTrace = sb.toString();
         }
 
-        public Builder stackTrace(String stackTrace) {
-            this.stackTrace = stackTrace;
-            return this;
-        }
-
-        public ErrorMessageResponse build() {
-            return new ErrorMessageResponse(
-                LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()),
-                message,
-                status.value(),
-                status.getReasonPhrase(),
-                request.getRequestURI(),
-                stackTrace
-            );
-        }
+        return new ErrorMessageResponse(
+            LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()),
+            exception.getMessage(),
+            status.value(),
+            status.getReasonPhrase(),
+            request.getRequestURI(),
+            stackTrace
+        );
     }
 }

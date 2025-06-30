@@ -46,11 +46,9 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public Product updateNameById(Long productId, String name) {
-        // 제품 ID가 존재하는지 확인
         if (productDao.findById(productId).isEmpty()) {
             throw new DBServerException("업데이트할 제품이 존재하지 않습니다.");
         }
-        // 제품 이름 업데이트
         if (productDao.updateNameById(productId, name) <= 0) {
             throw new DBServerException("제품 이름 업데이트에 실패했습니다.");
         }

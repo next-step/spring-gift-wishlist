@@ -16,9 +16,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorMessageResponse> handleNoSuchElementException(
             NoSuchElementException e, HttpServletRequest request
     ) {
-        var errorMessage = new ErrorMessageResponse.Builder(request, e.getMessage(), HttpStatus.NOT_FOUND)
-                .stackTrace(e.getStackTrace() != null ? e.getStackTrace()[0].toString() : "")
-                .build();
+        var errorMessage = ErrorMessageResponse.generateFrom(
+                request, e, HttpStatus.NOT_FOUND
+        );
         return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
     }
 
@@ -26,9 +26,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorMessageResponse> handleIllegalArgumentException(
             IllegalArgumentException e, HttpServletRequest request
     ) {
-        var errorMessage = new ErrorMessageResponse.Builder(request, e.getMessage(), HttpStatus.BAD_REQUEST)
-                .stackTrace(e.getStackTrace() != null ? e.getStackTrace()[0].toString() : "")
-                .build();
+        var errorMessage = ErrorMessageResponse.generateFrom(
+                request, e, HttpStatus.BAD_REQUEST
+        );
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
@@ -36,9 +36,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorMessageResponse> handleDBServerException(
             DBServerException e, HttpServletRequest request
     ) {
-        var errorMessage = new ErrorMessageResponse.Builder(request, e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR)
-                .stackTrace(e.getStackTrace() != null ? e.getStackTrace()[0].toString() : "")
-                .build();
+        var errorMessage = ErrorMessageResponse.generateFrom(
+                request, e, HttpStatus.INTERNAL_SERVER_ERROR
+        );
         return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
