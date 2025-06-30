@@ -1,7 +1,13 @@
 package gift.dto.api;
 
+import jakarta.validation.constraints.Pattern;
+
 public class AddProductRequestDto {
     
+    @Pattern(
+        regexp = "^[가-힣a-zA-Z0-9 ()\\[\\]+\\-&/_]{1,15}$",
+        message = "이름은 한글, 영문, 숫자, 공백, (), [], +, -, &, /, _ 만 포함할 수 있으며 최대 15자까지 입력 가능합니다."
+    )
     private String name;
     private Long price;
     private String imageUrl;

@@ -4,6 +4,7 @@ import gift.dto.api.AddProductRequestDto;
 import gift.dto.api.ModifyProductRequestDto;
 import gift.dto.api.ProductResponseDto;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,7 @@ public class ProductController {
     //상품 추가 api
     @PostMapping
     public ResponseEntity<ProductResponseDto> addProduct(
-        @RequestBody AddProductRequestDto requestDto
+        @RequestBody @Valid AddProductRequestDto requestDto
     ) {
         ProductResponseDto responseDto = productService.addProduct(requestDto);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);

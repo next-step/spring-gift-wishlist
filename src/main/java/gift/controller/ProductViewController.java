@@ -6,6 +6,7 @@ import gift.dto.api.ProductResponseDto;
 import gift.dto.htmlform.AddProductForm;
 import gift.dto.htmlform.ModifyProductForm;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -63,7 +64,7 @@ public class ProductViewController {
     
     //상품 추가 화면에서 제출 버튼 누르면 동작
     @PostMapping("/add")
-    public String addProduct(@ModelAttribute AddProductForm productForm) {
+    public String addProduct(@ModelAttribute @Valid AddProductForm productForm) {
         AddProductRequestDto requestDto = new AddProductRequestDto(
             productForm.getName(),
             productForm.getPrice(),
