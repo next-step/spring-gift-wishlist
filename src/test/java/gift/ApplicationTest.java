@@ -57,8 +57,8 @@ public class ApplicationTest {
         prepareTestData();
 
         mockMvc.perform(put(location[0])
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json(name[0], price[1], imageUrl[2])))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json(name[0], price[1], imageUrl[2])))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value(name[0]))
                 .andExpect(jsonPath("$.price").value(price[1]))
@@ -98,7 +98,7 @@ public class ApplicationTest {
     }
 
     private void prepareTestData() throws Exception {
-        for (int i=0; i<3; i++) {
+        for (int i = 0; i < 3; i++) {
             location[i] = sendPost(name[i], price[i], imageUrl[i]);
         }
     }
