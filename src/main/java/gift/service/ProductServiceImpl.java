@@ -3,7 +3,6 @@ package gift.service;
 import gift.model.CustomPage;
 import gift.entity.Product;
 import gift.repository.ProductRepository;
-import java.util.IllegalFormatCodePointException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
