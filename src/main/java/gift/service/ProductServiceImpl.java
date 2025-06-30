@@ -51,12 +51,17 @@ public class ProductServiceImpl implements ProductService {
     public Product update(Product product) {
         Product updated = getById(product.getId());
 
-        if (product.getName() != null)
+        if (product.getName() != null) {
             updated.setName(product.getName());
-        if (product.getPrice() != null)
-            updated.setName(product.getName());
-        if (product.getImageUrl() != null)
+        }
+
+        if (product.getPrice() != null) {
+            updated.setPrice(product.getPrice());
+        }
+
+        if (product.getImageUrl() != null) {
             updated.setImageUrl(product.getImageUrl());
+        }
 
         return productRepository.save(updated);
     }
