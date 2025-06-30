@@ -1,4 +1,4 @@
-package gift.controller;
+package gift.controller.admin;
 
 
 import gift.dto.CreateProductRequestDto;
@@ -6,12 +6,10 @@ import gift.dto.UpdateProductRequestDto;
 import gift.entity.Product;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 @Controller
 @RequestMapping("/admin/products")
