@@ -30,11 +30,9 @@ public class AdminProductController {
     }
 
     @GetMapping("/{id}")
-    public String showDetail(@PathVariable Long id, Model model)
-    {
-        Product product=productService.getById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "상품을 찾을 수 없습니다."));
-        model.addAttribute("product",product);
+    public String showDetail(@PathVariable Long id, Model model) {
+        Product product = productService.getById(id);
+        model.addAttribute("product", product);
         return "admin/products/detail";
     }
 
@@ -59,8 +57,7 @@ public class AdminProductController {
     @GetMapping("/{id}/edit")
     public String showEditForm(@PathVariable Long id, Model model)
     {
-        Product product=productService.getById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "상품을 찾을 수 없습니다."));
+        Product product = productService.getById(id);
         UpdateProductRequestDto dto=new UpdateProductRequestDto();
         dto.setName(product.getName());
         dto.setPrice(product.getPrice());
