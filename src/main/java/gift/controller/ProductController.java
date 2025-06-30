@@ -54,6 +54,15 @@ public class ProductController {
         return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<Product> patchProduct(@PathVariable Long id, @RequestBody ProductUpdateRequest dto) {
+        if (id == null) {
+            throw new IllegalArgumentException("상품 ID는 필수입니다.");
+        }
+        Product patchedProduct = productService.patch(dto.toEntity(id));
+        return new ResponseEntity<>(patchedProduct, HttpStatus.OK);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         if (id == null) {

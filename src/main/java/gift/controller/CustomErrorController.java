@@ -32,15 +32,23 @@ public class CustomErrorController implements ErrorController {
     @RequestMapping(value = "/error", produces = "application/json")
     public ResponseEntity<ErrorMessageResponse> handleApiError(HttpServletRequest request) {
         Exception exception = (Exception) request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
-        HttpStatus status = (HttpStatus) request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
+        Object statusCode = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
 
+        if (exception == null) {
+            exception = new Exception("알 수 없는 오류가 발생했습니다.");
+        }
+        if (statusCode == null) {
+            statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+        }
+
+        HttpStatus status = HttpStatus.resolve((Integer) statusCode);
         if (status == null) {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
-        var errorMessage = ErrorMessageResponse.generateFrom(
-                request, exception != null ? exception : new Exception("알 수 없는 오류가 발생했습니다."), status
-        );
 
+        var errorMessage = ErrorMessageResponse.generateFrom(
+                request, exception, status
+        );
         return new ResponseEntity<>(errorMessage, status);
     }
 }

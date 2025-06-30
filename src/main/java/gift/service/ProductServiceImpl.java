@@ -67,6 +67,21 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public Product patch(Product product) {
+        Product updated = getById(product.getId());
+        if (product.getName() != null) {
+            updated = productRepository.updateFieldById(product.getId(), "name", product.getName());
+        }
+        if (product.getPrice() != null) {
+            updated = productRepository.updateFieldById(product.getId(), "price", product.getPrice());
+        }
+        if (product.getImageUrl() != null) {
+            updated = productRepository.updateFieldById(product.getId(), "imageUrl", product.getImageUrl());
+        }
+        return updated;
+    }
+
+    @Override
     public void deleteById(Long productId) {
         if (getById(productId) == null) {
             throw new NoSuchElementException(

@@ -4,9 +4,7 @@ import gift.dao.ProductDao;
 import gift.model.CustomPage;
 import gift.entity.Product;
 import gift.exception.DBServerException;
-import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.function.Consumer;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -58,21 +56,23 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public Product updateFieldById(Long productId, Consumer<Product> updater) {
-        Product product = productDao.findById(productId)
-            .orElseThrow(() -> new DBServerException("업데이트할 제품이 존재하지 않습니다."));
-        updater.accept(product);
-        for (Entry<String, Boolean> flag : product.getModifiedInfo().entrySet()) {
-            if (flag.getValue() && productDao.updateFieldById(productId, flag.getKey(), product.getFieldValue(flag.getKey())) <= 0) {
-                throw new DBServerException("제품 필드 업데이트에 실패했습니다: " + flag.getKey());
-            }
+    public Product updateFieldById(Long productId, String fieldName, Object value) {
+        if (fieldName == null || value == null) {
+            throw new IllegalArgumentException("필드 이름과 값은 필수입니다.");
         }
+
+        if (productDao.findById(productId).isEmpty()) {
+            throw new DBServerException("업데이트할 제품이 존재하지 않습니다.");
+        }
+
+        if (productDao.updateFieldById(productId, fieldName, value) <= 0) {
+            throw new DBServerException("제품 필드를 업데이트하는데 실패했습니다.");
+        }
+
         return productDao.findById(productId).orElseThrow(() ->
-            new DBServerException("업데이트된 제품을 찾을 수 없습니다.")
-        );
+            new DBServerException("업데이트된 제품을 찾을 수 없습니다."
+        ));
     }
-
-
 
     @Override
     public Boolean deleteById(Long productId) {

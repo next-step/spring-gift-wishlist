@@ -5,13 +5,12 @@ import gift.entity.Product;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 public interface ProductRepository {
     List<Product> findAll();
     CustomPage<Product> findAll(int page, int size);
     Optional<Product> findById(Long productId);
     Product save(Product product);
-    Product updateFieldById(Long productId, Consumer<Product> updater);
+    Product updateFieldById(Long productId, String fieldName, Object value);
     Boolean deleteById(Long productId); // 삭제 메소드 추가
 }
