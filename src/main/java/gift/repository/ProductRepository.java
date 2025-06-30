@@ -51,7 +51,8 @@ public class ProductRepository {
             client.sql(sql)
                     .param("name", product.getName())
                     .param("price", product.getPrice())
-                    .param("image_url", product.getImageUrl());
+                    .param("image_url", product.getImageUrl())
+                    .update(keyHolder, "id");
         } catch (DataAccessException e) {
             return Optional.empty();
         }
