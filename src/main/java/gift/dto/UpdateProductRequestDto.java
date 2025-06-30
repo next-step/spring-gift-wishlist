@@ -1,5 +1,6 @@
 package gift.dto;
 
+import gift.validation.ValidProductName;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -7,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 public class UpdateProductRequestDto {
 
     @NotBlank(message = "상품명을 입력하세요.")
+    @ValidProductName
     private String name;
 
     @NotNull(message = "가격을 입력하세요.")
