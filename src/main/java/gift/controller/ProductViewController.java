@@ -38,9 +38,9 @@ public class ProductViewController {
     }
     
     //특정 상품 상세 조회
-    @GetMapping("{id}")
+    @GetMapping("/{productId}")
     public String showProductView(
-        @PathVariable Long id,
+        @PathVariable(name="productId") Long id,
         Model model
     ) {
         ProductResponseDto product = productService.findProductWithId(id);
@@ -76,8 +76,8 @@ public class ProductViewController {
     }
     
     //상품 목록에서 수정 버튼 누를 시 수정화면 불러옴, 구성은 추가와 유사
-    @GetMapping("/edit/{id}")
-    public String showModifyForm(@PathVariable Long id, Model model) {
+    @GetMapping("/edit/{productId}")
+    public String showModifyForm(@PathVariable(name="productId") Long id, Model model) {
         model.addAttribute("productId", id);
         model.addAttribute("productForm", new ModifyProductForm());
         
@@ -85,8 +85,8 @@ public class ProductViewController {
     }
     
     //수정 화면에서 수정 누를 시 동작
-    @PutMapping("/edit/{id}")
-    public String modifyProduct(@PathVariable Long id,
+    @PutMapping("/edit/{productId}")
+    public String modifyProduct(@PathVariable(name="productId") Long id,
         @ModelAttribute ModifyProductForm productForm) {
         ModifyProductRequestDto requestDto = new ModifyProductRequestDto(
             productForm.getName(),
@@ -100,8 +100,8 @@ public class ProductViewController {
     }
     
     //조회 화면에서 수정 누를 시 동작
-    @PatchMapping("/edit/{id}")
-    public String modifyInfoProduct(@PathVariable Long id,
+    @PatchMapping("/edit/{productId}")
+    public String modifyInfoProduct(@PathVariable(name="productId") Long id,
         @ModelAttribute ModifyProductForm modifyForm) {
         ModifyProductRequestDto requestDto = new ModifyProductRequestDto(
             modifyForm.getName(),
@@ -115,8 +115,8 @@ public class ProductViewController {
     }
     
     //삭제 버튼 누를 시 동작
-    @DeleteMapping("/{id}")
-    public String deleteProduct(@PathVariable Long id) {
+    @DeleteMapping("/{productId}")
+    public String deleteProduct(@PathVariable(name="productId") Long id) {
         productService.deleteProductWithId(id);
         
         return "redirect:" + PRODUCTS_LIST_PATH;

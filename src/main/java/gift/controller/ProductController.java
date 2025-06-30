@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/products")
+@RequestMapping("/api/products")
 public class ProductController {
     
     private final ProductService productService;
@@ -44,18 +44,18 @@ public class ProductController {
     }
     
     //상품 단건 조회 api
-    @GetMapping("{id}")
+    @GetMapping("/{productId}")
     public ResponseEntity<ProductResponseDto> findProductWithId(
-        @PathVariable Long id
+        @PathVariable(name="productId") Long id
     ) {
         ProductResponseDto responseDto = productService.findProductWithId(id);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
     
     //상품 전체 수정 api
-    @PutMapping("{id}")
+    @PutMapping("/{productId}")
     public ResponseEntity<ProductResponseDto> modifyProductWithId(
-        @PathVariable Long id,
+        @PathVariable(name="productId") Long id,
         @RequestBody ModifyProductRequestDto requestDto
     ) {
         ProductResponseDto responseDto = productService.modifyProductWithId(id, requestDto);
@@ -63,9 +63,9 @@ public class ProductController {
     }
     
     //상품 일부 수정 api
-    @PatchMapping("{id}")
+    @PatchMapping("/{productId}")
     public ResponseEntity<ProductResponseDto> modifyProductInfoWithId(
-        @PathVariable Long id,
+        @PathVariable(name="productId") Long id,
         @RequestBody ModifyProductRequestDto requestDto
     ) {
         ProductResponseDto responseDto = productService.modifyProductInfoWithId(id,
@@ -74,9 +74,9 @@ public class ProductController {
     }
     
     //상품 단건 삭제 api
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{productId}")
     public ResponseEntity<Void> deleteProductWithId(
-        @PathVariable Long id
+        @PathVariable(name="productId") Long id
     ) {
         productService.deleteProductWithId(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
