@@ -3,8 +3,11 @@ package gift.repository;
 import gift.dao.ProductDao;
 import gift.model.CustomPage;
 import gift.entity.Product;
-import gift.exception.DBServerException;
 import java.util.Optional;
+
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DataRetrievalFailureException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -43,16 +46,17 @@ public class ProductRepositoryImpl implements ProductRepository {
         // 제품 ID가 null인 경우 새 제품을 추가
         if (product.getId() == null) {
             Long newId = productDao.insertWithKey(product);
-            return productDao.findById(newId).orElseThrow(() ->
-                new DBServerException("새 제품을 추가하는데 실패했습니다."));
+            return productDao.findById(newId)
+                    .orElseThrow(() ->
+                        new DataRetrievalFailureException("새 제품을 추가하는데 실패했습니다."));
         }
+
         // 제품 ID가 있는 경우 기존 제품을 업데이트
         if (productDao.update(product) <= 0) {
-            throw new DBServerException("제품을 업데이트하는데 실패했습니다.");
+            throw new DataIntegrityViolationException("제품을 업데이트하는데 실패했습니다.");
         }
         return productDao.findById(product.getId()).orElseThrow(() ->
-            new DBServerException("업데이트된 제품을 찾을 수 없습니다."
-        ));
+            new DataRetrievalFailureException("업데이트된 제품을 찾을 수 없습니다."));
     }
 
     @Override
@@ -62,25 +66,24 @@ public class ProductRepositoryImpl implements ProductRepository {
         }
 
         if (productDao.findById(productId).isEmpty()) {
-            throw new DBServerException("업데이트할 제품이 존재하지 않습니다.");
+            throw new EmptyResultDataAccessException("업데이트할 제품이 존재하지 않습니다.", 1);
         }
 
         if (productDao.updateFieldById(productId, fieldName, value) <= 0) {
-            throw new DBServerException("제품 필드를 업데이트하는데 실패했습니다.");
+            throw new DataIntegrityViolationException("제품 필드를 업데이트하는데 실패했습니다.");
         }
 
         return productDao.findById(productId).orElseThrow(() ->
-            new DBServerException("업데이트된 제품을 찾을 수 없습니다."
-        ));
+            new DataRetrievalFailureException("업데이트된 제품을 찾을 수 없습니다."));
     }
 
     @Override
     public Boolean deleteById(Long productId) {
         if (productDao.findById(productId).isEmpty()) {
-            throw new DBServerException("삭제할 제품이 존재하지 않습니다.");
+            throw new EmptyResultDataAccessException("삭제할 제품이 존재하지 않습니다.", 1);
         }
         if (productDao.deleteById(productId) <= 0) {
-            throw new DBServerException("제품 삭제에 실패했습니다.");
+            throw new DataIntegrityViolationException("제품 삭제에 실패했습니다.");
         }
         return true;
     }

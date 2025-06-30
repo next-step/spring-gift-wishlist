@@ -2,6 +2,9 @@ package gift.exception;
 
 import gift.dto.ErrorMessageResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DataRetrievalFailureException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -32,9 +35,30 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(DBServerException.class)
-    public ResponseEntity<ErrorMessageResponse> handleDBServerException(
-            DBServerException e, HttpServletRequest request
+
+    @ExceptionHandler(EmptyResultDataAccessException.class)
+    public ResponseEntity<ErrorMessageResponse> handleEmptyResultDataAccessException(
+            EmptyResultDataAccessException e, HttpServletRequest request
+    ) {
+        var errorMessage = ErrorMessageResponse.generateFrom(
+                request, e, HttpStatus.NOT_FOUND
+        );
+        return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorMessageResponse> handleDataIntegrityViolationException(
+            DataIntegrityViolationException e, HttpServletRequest request
+    ) {
+        var errorMessage = ErrorMessageResponse.generateFrom(
+                request, e, HttpStatus.INTERNAL_SERVER_ERROR
+        );
+        return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(DataRetrievalFailureException.class)
+    public ResponseEntity<ErrorMessageResponse> handleDataRetrievalFailureException(
+            DataRetrievalFailureException e, HttpServletRequest request
     ) {
         var errorMessage = ErrorMessageResponse.generateFrom(
                 request, e, HttpStatus.INTERNAL_SERVER_ERROR
