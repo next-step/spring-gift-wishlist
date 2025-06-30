@@ -3,6 +3,7 @@ package gift.controller;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -46,13 +47,13 @@ public class ProductWebController {
     }
 
     @PostMapping
-    public String create(@ModelAttribute ProductRequestDto requestDto) {
+    public String create(@Valid @ModelAttribute ProductRequestDto requestDto) {
         productService.createProduct(requestDto);
         return "redirect:/admin/products";
     }
 
     @PutMapping("/{id}")
-    public String update(@PathVariable Long id, @ModelAttribute ProductRequestDto requestDto) {
+    public String update(@PathVariable Long id, @Valid @ModelAttribute ProductRequestDto requestDto) {
         productService.updateProduct(id, requestDto);
         return "redirect:/admin/products";
     }

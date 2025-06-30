@@ -2,6 +2,7 @@ package gift.service;
 
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
+import gift.entity.Product;
 import gift.repository.ProductRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -16,8 +17,9 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public ProductResponseDto createProduct(ProductRequestDto requestDto) {
-        long id = productRepository.createProduct(requestDto);
-        return ProductResponseDto.from(id, requestDto);
+        Product product = new Product(null, requestDto);
+        long id = productRepository.createProduct(product);
+        return ProductResponseDto.from(id, product);
     }
 
     @Override
@@ -36,8 +38,9 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public ProductResponseDto updateProduct(Long id, ProductRequestDto requestDto) {
-        productRepository.updateProduct(id, requestDto);
-        return ProductResponseDto.from(id, requestDto);
+        Product product = new Product(id, requestDto);
+        productRepository.updateProduct(id, product);
+        return ProductResponseDto.from(id, product);
     }
 
     @Override

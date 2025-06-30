@@ -17,12 +17,12 @@ public record ProductResponseDto(
         );
     }
 
-    public static ProductResponseDto from(Long id, ProductRequestDto requestDto) {
+    public static ProductResponseDto from(Long id, Product product) {
         return new ProductResponseDto(
             id,
-            requestDto.name(),
-            requestDto.price(),
-            requestDto.imageUrl()
+            product.getName(),
+            product.getPrice(),
+            product.getImageUrl()
         );
     }
 }

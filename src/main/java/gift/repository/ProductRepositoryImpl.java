@@ -22,15 +22,15 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public long createProduct(ProductRequestDto requestDto) {
+    public long createProduct(Product product) {
         final String sql = "INSERT INTO products (name, price, image_url) VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, requestDto.name());
-            ps.setInt(2, requestDto.price());
-            ps.setString(3, requestDto.imageUrl());
+            ps.setString(1, product.getName());
+            ps.setInt(2, product.getPrice());
+            ps.setString(3, product.getImageUrl());
             return ps;
         }, keyHolder);
         Number key = keyHolder.getKey();
@@ -59,10 +59,10 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public void updateProduct(Long id, ProductRequestDto requestDto) {
+    public void updateProduct(Long id, Product product) {
         final String sql = "UPDATE products SET name = ?, price = ?, image_url = ? WHERE id = ?";
 
-        int updated = jdbcTemplate.update(sql, requestDto.name(), requestDto.price(), requestDto.imageUrl(), id);
+        int updated = jdbcTemplate.update(sql, product.getName(), product.getPrice(), product.getImageUrl(), id);
         if (updated == 0) {
             throw new ProductNotFoundException(id);
         }
