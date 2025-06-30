@@ -4,7 +4,9 @@ import gift.dao.ProductDao;
 import gift.model.CustomPage;
 import gift.entity.Product;
 import gift.exception.DBServerException;
+import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.function.Consumer;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -56,40 +58,21 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public Product updateNameById(Long productId, String name) {
-        if (productDao.findById(productId).isEmpty()) {
-            throw new DBServerException("업데이트할 제품이 존재하지 않습니다.");
+    public Product updateFieldById(Long productId, Consumer<Product> updater) {
+        Product product = productDao.findById(productId)
+            .orElseThrow(() -> new DBServerException("업데이트할 제품이 존재하지 않습니다."));
+        updater.accept(product);
+        for (Entry<String, Boolean> flag : product.getModifiedInfo().entrySet()) {
+            if (flag.getValue() && productDao.updateFieldById(productId, flag.getKey(), product.getFieldValue(flag.getKey())) <= 0) {
+                throw new DBServerException("제품 필드 업데이트에 실패했습니다: " + flag.getKey());
+            }
         }
-        if (productDao.updateNameById(productId, name) <= 0) {
-            throw new DBServerException("제품 이름 업데이트에 실패했습니다.");
-        }
-        return productDao.findById(productId)
-            .orElseThrow(() -> new DBServerException("업데이트된 제품을 찾을 수 없습니다."));
+        return productDao.findById(productId).orElseThrow(() ->
+            new DBServerException("업데이트된 제품을 찾을 수 없습니다.")
+        );
     }
 
-    @Override
-    public Product updatePriceById(Long productId, Long price) {
-        if (productDao.findById(productId).isEmpty()) {
-            throw new DBServerException("업데이트할 제품이 존재하지 않습니다.");
-        }
-        if (productDao.updatePriceById(productId, price) <= 0) {
-            throw new DBServerException("제품 가격 업데이트에 실패했습니다.");
-        }
-        return productDao.findById(productId)
-            .orElseThrow(() -> new DBServerException("업데이트된 제품을 찾을 수 없습니다."));
-    }
 
-    @Override
-    public Product updateImageUrlById(Long productId, String imageUrl) {
-        if (productDao.findById(productId).isEmpty()) {
-            throw new DBServerException("업데이트할 제품이 존재하지 않습니다.");
-        }
-        if (productDao.updateImageUrlById(productId, imageUrl) <= 0) {
-            throw new DBServerException("제품 이미지 URL 업데이트에 실패했습니다.");
-        }
-        return productDao.findById(productId)
-            .orElseThrow(() -> new DBServerException("업데이트된 제품을 찾을 수 없습니다."));
-    }
 
     @Override
     public Boolean deleteById(Long productId) {

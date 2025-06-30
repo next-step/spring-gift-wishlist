@@ -1,6 +1,17 @@
 package gift.entity;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Product {
+
+    private final Map<String, Boolean> modifiedFlags = new HashMap<>(
+            Map.of(
+                "name", false,
+                "price", false,
+                "imageUrl", false
+            ));
+
     private Long id;
     private String name;
     private Long price;
@@ -26,6 +37,7 @@ public class Product {
         return name;
     }
     public void setName(String name) {
+        modifiedFlags.put("name", true);
         this.name = name;
     }
 
@@ -33,6 +45,7 @@ public class Product {
         return price;
     }
     public void setPrice(Long price) {
+        modifiedFlags.put("price", true);
         this.price = price;
     }
 
@@ -40,7 +53,22 @@ public class Product {
         return imageUrl;
     }
     public void setImageUrl(String imageUrl) {
+        this.modifiedFlags.put("imageUrl", true);
         this.imageUrl = imageUrl;
+    }
+
+    public Object getFieldValue(String fieldName) {
+        return switch (fieldName) {
+            case "id" -> id;
+            case "name" -> name;
+            case "price" -> price;
+            case "imageUrl" -> imageUrl;
+            default -> throw new IllegalArgumentException("찾을 수 없는 필드 값 입니다. :  " + fieldName);
+        };
+    }
+
+    public Map<String, Boolean> getModifiedInfo() {
+        return modifiedFlags;
     }
 
     @Override

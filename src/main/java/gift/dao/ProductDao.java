@@ -83,26 +83,10 @@ public class ProductDao {
                 .update();
     }
 
-    public int updateNameById(Long productId, String name) {
-        String sql = "UPDATE products SET name = ? WHERE id = ?";
+    public int updateFieldById(Long productId, String fieldName, Object value) {
+        String sql = "UPDATE products SET " + fieldName + " = ? WHERE id = ?";
         return jdbcClient.sql(sql)
-                .param(name)
-                .param(productId)
-                .update();
-    }
-
-    public int updatePriceById(Long productId, Long price) {
-        String sql = "UPDATE products SET price = ? WHERE id = ?";
-        return jdbcClient.sql(sql)
-                .param(price)
-                .param(productId)
-                .update();
-    }
-
-    public int updateImageUrlById(Long productId, String imageUrl) {
-        String sql = "UPDATE products SET image_url = ? WHERE id = ?";
-        return jdbcClient.sql(sql)
-                .param(imageUrl)
+                .param(value)
                 .param(productId)
                 .update();
     }
