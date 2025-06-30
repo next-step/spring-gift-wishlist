@@ -3,6 +3,7 @@ package gift.service;
 import gift.model.CustomPage;
 import gift.entity.Product;
 import gift.repository.ProductRepository;
+import java.util.IllegalFormatCodePointException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +31,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product getById(Long productId) {
+        if (productId == null) {
+            throw new IllegalArgumentException("상품 ID는 필수입니다.");
+        }
         Optional<Product> product = productRepository.findById(productId);
 
         return product.orElseThrow(() ->
@@ -44,17 +48,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional // 트랜잭션을 사용하여 데이터베이스 일관성 유지
+    @Transactional
     public Product update(Product product) {
-        Product updated = productRepository.findById(product.getId())
-                .orElseThrow(
-                    ()-> new NoSuchElementException(String.format("Id %d에 해당하는 상품이 존재하지 않습니다.", product.getId())));
-        // 상품이 존재하지 않는 경우 예외 처리
-        if (updated == null) {
-            throw new NoSuchElementException(
-                    String.format("Id %d에 해당하는 상품이 존재하지 않습니다.", product.getId()));
-        }
-        // 업데이트할 필드가 null이 아닌 경우에만 업데이트
+        Product updated = getById(product.getId());
 
         if (product.getName() != null)
             updated.setName(product.getName());
@@ -63,16 +59,16 @@ public class ProductServiceImpl implements ProductService {
         if (product.getImageUrl() != null)
             updated.setImageUrl(product.getImageUrl());
 
-        // 업데이트된 상품을 반환
         return productRepository.save(updated);
     }
 
     @Override
     public void deleteById(Long productId) {
-        if (productRepository.findById(productId).isEmpty()) {
+        if (getById(productId) == null) {
             throw new NoSuchElementException(
                     String.format("Id %d에 해당하는 상품이 존재하지 않습니다.", productId));
         }
+
         if (!productRepository.deleteById(productId)) {
             throw new NoSuchElementException(
                     String.format("Id %d에 해당하는 상품을 삭제할 수 없습니다.", productId));
