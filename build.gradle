@@ -18,10 +18,22 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    // * SpringBoot Web
     implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // * Thymeleaf
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+    // * JDBC
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+
+    // * H2 Database
     runtimeOnly 'com.h2database:h2'
+
+    // * Validate
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // * SpringBoot Test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
