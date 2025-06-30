@@ -1,6 +1,7 @@
 package gift.repository;
 
 import gift.dao.ProductDao;
+import gift.model.CustomPage;
 import gift.entity.Product;
 import gift.exception.DBServerException;
 import java.util.Optional;
@@ -20,6 +21,16 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public List<Product> findAll() {
         return productDao.findAll();
+    }
+
+    public CustomPage<Product> findAll(int page, int size) {
+        var builder = new CustomPage.Builder<>(
+            productDao.findAll(page, size),
+            productDao.count())
+            .page(page)
+            .size(size);
+
+        return builder.build();
     }
 
     @Override

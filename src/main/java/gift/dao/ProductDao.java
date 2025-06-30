@@ -39,6 +39,17 @@ public class ProductDao {
                 .toList();
     }
 
+    public List<Product> findAll(int page, int size) {
+        int offset = page * size;
+        String sql = "SELECT * FROM products LIMIT ? OFFSET ?";
+        return jdbcClient.sql(sql)
+                .param(size)
+                .param(offset)
+                .query(new ProductRowMapper())
+                .stream()
+                .toList();
+    }
+
     public Optional<Product> findById(Long productId) {
         String sql = "SELECT * FROM products WHERE id = ?";
         return jdbcClient.sql(sql)
@@ -101,5 +112,15 @@ public class ProductDao {
         return jdbcClient.sql(sql)
                 .param(productId)
                 .update();
+    }
+
+    public int count() {
+        String sql = "SELECT COUNT(*) FROM products";
+        return jdbcClient.sql(sql)
+            .query(Integer.class)
+            .stream()
+            .findFirst().orElseThrow(
+                () -> new DBServerException("상품의 개수를 조회하는 중 오류가 발생했습니다.")
+            );
     }
 }

@@ -1,6 +1,6 @@
 package gift.controller;
 
-import gift.dto.CustomPage;
+import gift.model.CustomPage;
 import gift.dto.ProductCreateRequest;
 import gift.dto.ProductUpdateRequest;
 import gift.entity.Product;

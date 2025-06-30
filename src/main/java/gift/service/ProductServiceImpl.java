@@ -1,16 +1,14 @@
 package gift.service;
 
-import gift.dto.CustomPage;
+import gift.model.CustomPage;
 import gift.entity.Product;
 import gift.repository.ProductRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Repository
 public class ProductServiceImpl implements ProductService {
@@ -27,13 +25,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public CustomPage<Product> getBy(int page, int size) {
-        List<Product> products = productRepository.findAll().stream()
-                .sorted(Comparator.comparing(Product::getId))
-                .collect(Collectors.toList());
-
-        return new CustomPage.Builder<>(products)
-                .page(page).size(size)
-                .build();
+        return productRepository.findAll(page, size);
     }
 
     @Override

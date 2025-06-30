@@ -1,5 +1,6 @@
 package gift.repository;
 
+import gift.model.CustomPage;
 import gift.entity.Product;
 
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.Optional;
 
 public interface ProductRepository {
     List<Product> findAll();
+    CustomPage<Product> findAll(int page, int size);
     Optional<Product> findById(Long productId);
     Product save(Product product);
     Product updateNameById(Long productId, String name);

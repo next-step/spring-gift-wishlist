@@ -1,6 +1,6 @@
 package gift.service;
 
-import gift.dto.CustomPage;
+import gift.model.CustomPage;
 import gift.entity.Product;
 
 import java.util.List;
