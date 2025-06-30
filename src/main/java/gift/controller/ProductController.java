@@ -23,7 +23,6 @@ public class ProductController {
     
     private final ProductService productService;
     
-    //생성자 주입
     public ProductController(ProductService productService) {
         this.productService = productService;
     }

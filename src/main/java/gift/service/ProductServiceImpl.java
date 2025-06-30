@@ -15,7 +15,6 @@ public class ProductServiceImpl implements ProductService {
     
     private final ProductRepository productRepository;
     
-    //생성자 주입
     public ProductServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
@@ -79,6 +78,7 @@ public class ProductServiceImpl implements ProductService {
         productRepository.deleteProductWithId(id);
     }
     
+    //상품 수정 (일부 내용이 바뀜)
     @Override
     public ProductResponseDto modifyProductInfoWithId(Long id,
         ModifyProductRequestDto requestDto) {

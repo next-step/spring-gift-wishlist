@@ -15,7 +15,6 @@ public class ProductRepositoryImpl implements ProductRepository {
     //DB
     private final JdbcClient products;
     
-    //생성자 주입
     public ProductRepositoryImpl(JdbcClient products) {
         this.products = products;
     }

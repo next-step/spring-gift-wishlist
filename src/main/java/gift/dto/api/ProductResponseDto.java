@@ -4,10 +4,10 @@ import gift.entity.Product;
 
 public class ProductResponseDto {
     
-    private Long id; //상품의 id
-    private String name; //상품의 이름
-    private Long price; //상품의 가격
-    private String imageUrl; //상품의 이미지 URL
+    private Long id;
+    private String name;
+    private Long price;
+    private String imageUrl;
     
     public ProductResponseDto() {
     }
