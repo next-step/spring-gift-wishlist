@@ -3,11 +3,13 @@ package gift.controller;
 import gift.dto.ProductRequestDto;
 import gift.entity.Product;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
+import org.thymeleaf.model.IModel;
 
 @RequestMapping("/admin") //prefix설정
 @Controller//Controller는 mvc에서 화면을 구성하기 위해서 뷰 이름을 반환하고 ViewResolver를 거치게 됩니다.
@@ -35,15 +38,17 @@ public class AdminController {
     }
 
     //create
-    //생성한 product는 HashMap에 저장
+    //BindingResult: 검증 오류를 보관하는 객체
     @PostMapping("/products/add")
-    public String createProduct(@ModelAttribute ProductRequestDto requestDto) {
-        if (checkProduct(requestDto)) {
-            productService.add(requestDto);
-            return "redirect:/admin/products/list"; //GetMapping 되어 있는 것을 호출,,,?
+    public String createProduct(
+            @ModelAttribute @Valid ProductRequestDto requestDto,
+            BindingResult bindingResult
+    ) {
+        if(bindingResult.hasErrors()){
+            return "form";
         }
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                "가격은 음수가 될 수 없으며, 상품명, 가격, 이미지 주소는 필수 값입니다.");
+        productService.add(requestDto);
+        return "redirect:/admin/products/list"; //GetMapping 되어 있는 것을 호출,,,?
     }
 
     //form.html을 불러오기 위한 메서드
@@ -104,19 +109,6 @@ public class AdminController {
     public String removeProduct(@PathVariable Long id) {
         productService.remove(id);
         return "redirect:/admin/products/list";
-    }
-
-    public boolean checkProduct(ProductRequestDto requestDto) {
-        //상품명, 가격, 이미지의 경우 모두 필수 값
-        if (requestDto.getName() == null || requestDto.getPrice() == null
-                || requestDto.getImageUrl() == null) {
-            return false;
-        }
-        //가격은 0이하가 될 수 없음
-        else if (requestDto.getPrice() < 0) {
-            return false;
-        }
-        return true;
     }
 
 }
