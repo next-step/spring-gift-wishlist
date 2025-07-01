@@ -84,4 +84,17 @@ public class ProductViewControllerTest {
             .andExpect(model().attributeHasFieldErrors("productRequest", "name"));
     }
 
+    @Test
+    @DisplayName("상품 등록 실패 - 가격 음수")
+    void createProduct_fail_negativePrice() throws Exception {
+        mockMvc.perform(post("/admin/products/new")
+                .param("name", "허용된 상품")
+                .param("price", "-500")
+                .param("imageUrl", "https://image.com/item.jpg")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+            .andExpect(status().isOk())
+            .andExpect(view().name("products/form"))
+            .andExpect(model().attributeHasFieldErrors("productRequest", "price"));
+    }
+
 }
