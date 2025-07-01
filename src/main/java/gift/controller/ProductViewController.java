@@ -2,7 +2,9 @@ package gift.controller;
 
 import gift.dto.ProductRequestDto;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -34,7 +36,16 @@ public class ProductViewController {
     }
 
     @PostMapping
-    public ModelAndView create(@ModelAttribute ProductRequestDto requestDto) {
+    public ModelAndView create(
+            @Valid @ModelAttribute("product") ProductRequestDto requestDto,
+            BindingResult bindingResult
+    ) {
+        if (bindingResult.hasErrors()) {
+            ModelAndView mav = new ModelAndView("product/create");
+            mav.addObject("productRequestDto", requestDto);
+            return mav;
+        }
+
         productService.create(requestDto);
         return new ModelAndView("redirect:/products");
     }
@@ -54,7 +65,7 @@ public class ProductViewController {
     }
 
     @PostMapping("/{id}")
-    public ModelAndView update(@PathVariable Long id, @ModelAttribute ProductRequestDto requestDto) {
+    public ModelAndView update(@PathVariable Long id, @Valid @ModelAttribute ProductRequestDto requestDto) {
         productService.update(id, requestDto);
         return new ModelAndView("redirect:/products");
     }
