@@ -62,4 +62,26 @@ class ProductControllerTest {
         
         assertThat(response.getStatusCode().value()).isEqualTo(400); // HTTP 400 확인
     }
+    
+    @Test
+    void 상품_검색을_시도한다() {
+        
+        var response = restClient.get()
+            .uri("/api/products/1")
+            .retrieve()
+            .body(ProductResponseDto.class);
+        
+        assertThat(response.getName()).isEqualTo("아메리카노");
+    }
+    
+    @Test
+    void 전체_상품_검색을_시도한다() {
+        
+        var response = restClient.get()
+            .uri("/api/products")
+            .retrieve()
+            .body(ProductResponseDto[].class);
+        
+        assertThat(response[0].getName()).isEqualTo("아메리카노");
+    }
 }
