@@ -2,11 +2,13 @@ package gift.service;
 
 import gift.dto.request.CreateProductDto;
 import gift.dto.request.UpdateProductDto;
+import gift.dto.response.MessageResponseDto;
 import gift.dto.response.ProductDto;
 import gift.entity.Product;
 import gift.exception.CreationFailException;
 import gift.exception.EntityNotFoundException;
 import gift.repository.ProductRepository;
+import gift.validator.ProductValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -16,16 +18,23 @@ import java.util.List;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final ProductValidator validator;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, ProductValidator validator) {
         this.productRepository = productRepository;
+        this.validator = validator;
     }
 
-    public ProductDto createProduct(CreateProductDto body) {
+    public MessageResponseDto<ProductDto> createProduct(CreateProductDto body) {
         Product instance = body.toEntity();
+        if (!validator.validate(instance)) {
+            // 승인 대기 큐에 추가
+            return new MessageResponseDto<>(false, "카카오 관련 상품 승인 대기중", 202, null);
+        }
         Product created = productRepository.save(instance)
                 .orElseThrow(() -> new CreationFailException("Fail to create Product"));
-        return ProductDto.from(created);
+        var data = ProductDto.from(created);
+        return new MessageResponseDto<>(true, "상품 생성 완료", 201, data);
     }
 
     public ProductDto getProduct(Long id) {
@@ -40,11 +49,17 @@ public class ProductService {
                 .toList();
     }
 
-    public ProductDto updateProduct(Long id, UpdateProductDto body) {
+    public MessageResponseDto<ProductDto> updateProduct(Long id, UpdateProductDto body) {
         findProduct(id);
         Product instance = body.toEntity(id);
+        if (!validator.validate(instance)) {
+            // 승인 대기 큐에 추가
+            // 기존 상품은 제거? or 내버려둠?
+            return new MessageResponseDto<>(false, "카카오 관련 상품 승인 대기중", 202, null);
+        }
         Product product = productRepository.update(id, instance).get();
-        return ProductDto.from(product);
+        var data = ProductDto.from(product);
+        return new MessageResponseDto<>(true, "상품 수정 완료", 200, data);
     }
 
     public void deleteProduct(Long id) {
