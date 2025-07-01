@@ -129,17 +129,27 @@
 
 <script src="/js/home.js"></script>
 <script th:inline="javascript">
-    const openModalFlag = /*[[${openCreateModal}]]*/ false;
+    const openCreateModalFlag = /*[[${openCreateModal}]]*/ false;
+    const openUpdateModalFlag = /*[[${openUpdateModal}]]*/ false;
 
-    if (openModalFlag) {
+    if (openCreateModalFlag) {
         const prevFormData = {
             name:     /*[[${requestDto.name}]]*/ null,
             price:    /*[[${requestDto.price}]]*/ null,
             imageUrl: /*[[${requestDto.imageUrl}]]*/ null
         };
+        openModal('product-modal', '물품 등록', prevFormData);
+    }
 
-        console.log('prevFormData', prevFormData);
-        openModal('product-modal', '물품 등록 창', prevFormData);
+    else if (openUpdateModalFlag) {
+        const prevUpdateData = {
+            id:       /*[[${productId}]]*/ null,
+            name:     /*[[${updateDto.name}]]*/ null,
+            price:    /*[[${updateDto.price}]]*/ null,
+            imageUrl: /*[[${updateDto.imageUrl}]]*/ null
+        };
+
+        openModal('product-modal-2', '물품 수정', prevUpdateData);
     }
 </script>
 </body>

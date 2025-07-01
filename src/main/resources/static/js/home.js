@@ -19,6 +19,7 @@ function openModal(modalId, titleText, formValue = {}) {
     }
 
     else if (modalId === 'product-modal-2') {
+        if ('id' in formValue)        document.getElementById('update-form').action = `/view/products/update/${formValue.id}`;
         if ('name' in formValue)      document.getElementById('name-2').value = formValue.name;
         if ('price' in formValue)     document.getElementById('price-2').value = formValue.price;
         if ('imageUrl' in formValue)  document.getElementById('imageUrl-2').value = formValue.imageUrl;
