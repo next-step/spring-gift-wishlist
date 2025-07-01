@@ -1,72 +1,44 @@
 package gift.service;
 
 import gift.entity.Product;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
+import gift.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
-import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class ProductService {
 
-    private JdbcTemplate jdbcTemplate;
+    private final ProductRepository productRepository;
 
-    public ProductService(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public ProductService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
     }
 
     public List<Product> getAllProducts() {
-        String sql = "select * from products";
-        List<Product> products = jdbcTemplate.query(sql, productRowMapper());
-        return products;
+        return productRepository.findAll();
     }
 
     public Optional<Product> getProductById(Long id) {
-        String sql = "select * from products where id = ?";
-        return jdbcTemplate.query(sql, productRowMapper(), id).stream().findAny();
+        return productRepository.findById(id);
     }
 
     public Product createProduct(Product productWithoutId) {
-        String sql = "insert into products(name, price, imageUrl) values (?, ?, ?)";
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-            ps.setString(1, productWithoutId.getName());
-            ps.setInt(2, productWithoutId.getPrice());
-            ps.setString(3, productWithoutId.getImageUrl());
-            return ps;
-        }, keyHolder);
-
-        productWithoutId.setId(keyHolder.getKey().longValue());
-        return productWithoutId;
+        return productRepository.save(productWithoutId);
     }
 
     public Optional<Product> updateProduct(Long id, Product updateRequest) {
-        String sql = "update products set name = ?, price = ?, imageUrl = ? where id = ?";
-        jdbcTemplate.update(sql, updateRequest.getName(), updateRequest.getPrice(), updateRequest.getImageUrl(), id);
+        updateRequest.setId(id);
 
-        return getProductById(id);
+        if (productRepository.update(updateRequest)) {
+            return Optional.empty();
+        }
+
+        return productRepository.findById(id);
     }
 
     public boolean deleteProduct(Long id) {
-        String sql = "delete from products where id = ?";
-        return jdbcTemplate.update(sql, id) != 0;
-    }
-
-    private RowMapper<Product> productRowMapper() {
-        return (rs, rowNum) -> {
-            Product product = new Product(
-                    rs.getLong("id"),
-                    rs.getString("name"),
-                    rs.getInt("price"),
-                    rs.getString("imageUrl")
-            );
-            return product;
-        };
+        return productRepository.deleteById(id);
     }
 }
