@@ -5,6 +5,7 @@ public class ProductRequestDto {
     private Integer price;
     private String imageUrl;
 
+
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 

@@ -1,9 +1,12 @@
 package gift;
 
+import gift.dto.ProductRequestDto;
+import gift.dto.ProductResponseDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
@@ -61,5 +64,27 @@ public class ProductControllerTest {
                                 .retrieve()
                                 .toEntity(Void.class)
                 );
+    }
+
+
+
+    @Test
+    void 상품_추가_정상_테스트(){
+        System.out.println("addProduct test");
+        ProductRequestDto requestDto = new ProductRequestDto();
+        requestDto.setName("아이스 카페 아메리카노 T");
+        requestDto.setPrice(4500);
+        requestDto.setImageUrl("https://st.kakaocdn.net/product/gift/product/20231010111814_9a667f9eccc943648797925498bdd8a3.jpg");
+        var url = "http://localhost:" + port + "/api/products";
+        var response = client.post()
+                .uri(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(requestDto)
+                .retrieve()
+                .toEntity(ProductResponseDto.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getName()).isEqualTo(requestDto.getName());
     }
 }
