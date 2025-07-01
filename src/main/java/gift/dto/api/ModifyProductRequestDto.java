@@ -1,5 +1,6 @@
 package gift.dto.api;
 
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 public class ModifyProductRequestDto {
@@ -12,6 +13,7 @@ public class ModifyProductRequestDto {
     private Long price;
     private String imageUrl;
     
+    @NotNull
     private Boolean isMDOK;
     
     public ModifyProductRequestDto() {

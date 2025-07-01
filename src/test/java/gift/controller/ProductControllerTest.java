@@ -125,10 +125,35 @@ class ProductControllerTest {
     }
     
     @Test
+    void 정상적으로_상품_정보_일부를_수정한다() {
+        var request = new ModifyProductRequestDto("테스트 상품", null, null, true);
+        
+        var response = restClient.patch()
+            .uri("/api/products/1")
+            .body(request)
+            .retrieve()
+            .body(ProductResponseDto.class);
+        
+        assertThat(response.getName()).isEqualTo("테스트 상품");
+    }
+    
+    @Test
     void 잘못된_이름으로_상품을_수정한다() throws IOException {
         var request = new ModifyProductRequestDto("15자를넘겨야하는데뭐라고할까고민좀했음", 1000L, "https://test.com/image.jpg", true);
         
         var response = restClient.put()
+            .uri("/api/products/1")
+            .body(request)
+            .exchange((req, res) -> res);
+        
+        assertThat(response.getStatusCode().value()).isEqualTo(400); // HTTP 400 확인
+    }
+    
+    @Test
+    void 잘못된_이름으로_상품_정보_일부를_수정한다() throws IOException {
+        var request = new ModifyProductRequestDto("15자를넘겨야하는데뭐라고할까고민좀했음", null, null, true);
+        
+        var response = restClient.patch()
             .uri("/api/products/1")
             .body(request)
             .exchange((req, res) -> res);
@@ -159,5 +184,15 @@ class ProductControllerTest {
             .exchange((req, res) -> res);
         
         assertThat(response.getStatusCode().value()).isEqualTo(400); // HTTP 400 확인
+    }
+    
+    @Test
+    void 정상적으로_상품을_삭제한다() throws IOException {
+        
+        var response = restClient.delete()
+            .uri("/api/products/1")
+            .exchange((req, res) -> res);
+        
+        assertThat(response.getStatusCode().value()).isEqualTo(204);
     }
 }
