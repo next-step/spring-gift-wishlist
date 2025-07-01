@@ -54,7 +54,7 @@ public class ProductService {
         Product instance = body.toEntity(id);
         if (!validator.validate(instance)) {
             // 승인 대기 큐에 추가
-            // 기존 상품은 제거? or 내버려둠?
+            deleteProduct(id);
             return new MessageResponseDto<>(false, "카카오 관련 상품 승인 대기중", 202, null);
         }
         Product product = productRepository.update(id, instance).get();

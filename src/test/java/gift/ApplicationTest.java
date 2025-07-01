@@ -2,10 +2,12 @@ package gift;
 
 import gift.dto.request.CreateProductDto;
 import gift.dto.request.UpdateProductDto;
+import gift.dto.response.MessageResponseDto;
 import gift.dto.response.ProductDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestClient;
@@ -38,14 +40,16 @@ public class ApplicationTest {
         var response = client.post()
                 .uri(url)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new CreateProductDto("아이스 아메리카노", 3500L, "test-url"))
+                .body(new CreateProductDto("coffee", 3500L, "test-url"))
                 .retrieve()
-                .toEntity(ProductDto.class);
+                .toEntity(new ParameterizedTypeReference<MessageResponseDto<ProductDto>>() {
+                });
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
         var locationId = response.getHeaders().getLocation().toString().split("/")[3];
         var expectedId = Long.parseLong(locationId);
-        assertBody(response.getBody(), new ProductDto(expectedId, "아이스 아메리카노", 3500L, "test-url"));
+        var data = response.getBody().data();
+        assertBody(data, new ProductDto(expectedId, "coffee", 3500L, "test-url"));
 
         // reset
         client.delete().uri(url + "/" + expectedId);
@@ -68,11 +72,21 @@ public class ApplicationTest {
         var response = client.put()
                 .uri(url)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new UpdateProductDto("아이스 아메리카노", 3500L, "test-url"))
+                .body(new UpdateProductDto("coffee", 3500L, "test-url"))
                 .retrieve()
-                .toEntity(ProductDto.class);
+                .toEntity(new ParameterizedTypeReference<MessageResponseDto<ProductDto>>() {
+                });
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertBody(response.getBody(), new ProductDto(2L, "아이스 아메리카노", 3500L, "test-url"));
+
+        var data = response.getBody().data();
+        assertBody(data, new ProductDto(2L, "coffee", 3500L, "test-url"));
+
+        // reset
+        var reset = predefined.get(1);
+        client.put()
+                .uri(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new UpdateProductDto(reset.name(), reset.price(), reset.imageUrl()));
     }
 
     @Test
@@ -109,6 +123,34 @@ public class ApplicationTest {
         assertThat(response_delete.getStatusCode())
                 .as("DELETE 요청시 404 반환 여부 확인")
                 .isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    void 잘못된_이름의_상품_생성시_400반환() throws IOException {
+        var url = "http://localhost:" + port + "/api/products";
+        String[] badNames = {"길이 15 초과 상품 1234", "상품!", "상품@", "상품#", "상품$", "상품%", "상품^", "상품*", "상품=",
+                "상품~", "상품`", "상품{", "상품}", "상품\\", "상품|", "상품;", "상품:", "상품?"};
+
+        for (String name : badNames) {
+            var response = client.post()
+                    .uri(url)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(new CreateProductDto(name, 0L, "test-url"))
+                    .exchange((req, res) -> res);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Test
+    void 카카오가_포함된_이름의_상품_생성시_202반환() {
+        var url = "http://localhost:" + port + "/api/products";
+        var response = client.post()
+                .uri(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new CreateProductDto("카카오_관련상품", 1000000L, "test-url"))
+                .retrieve()
+                .toEntity(MessageResponseDto.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.ACCEPTED);
     }
 
     private void assertBody(ProductDto actual, ProductDto expected) {
