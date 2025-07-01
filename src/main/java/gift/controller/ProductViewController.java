@@ -42,19 +42,29 @@ public class ProductViewController {
     // 상품 등록 요청 처리
     @PostMapping("/new")
     public String createProduct(@Valid @ModelAttribute("productRequest") ProductViewRequestDto request,
-        BindingResult bindingResult) {
+                                BindingResult bindingResult,
+                                Model model) {
         if (bindingResult.hasErrors()) {
             return "products/form";     // 유효성 오류 있으면 다시 폼으로
         }
 
-        Product product = new Product(
-            request.getName(),
-            request.getPrice(),
-            request.getImageUrl()
-        );
+        try {
 
-        productService.registerProduct(product);
-        return "redirect:/admin/products";
+            Product product = new Product(
+                request.getName(),
+                request.getPrice(),
+                request.getImageUrl()
+            );
+
+            productService.registerProduct(product);
+            return "redirect:/admin/products";
+
+        } catch (IllegalArgumentException e) {
+            // 예외 메세지를 모델에 추가
+            model.addAttribute("errorMessage", e.getMessage());
+            return "products/form";
+        }
+
     }
 
     // 상품 개별 조회 요청 처리
