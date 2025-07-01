@@ -1,16 +1,21 @@
 package gift.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.method.ParameterValidationResult;
 import java.util.List;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public record ValidationError(
     String field,
     String message
 ) {
+
+    public ValidationError {
+        if (field == null || field.isBlank()) {
+            field = "unknown";
+        }
+    }
+
     public static ValidationError from(FieldError fieldError) {
         return new ValidationError(
             fieldError.getField(),

@@ -2,6 +2,7 @@ package gift.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -104,6 +105,16 @@ public record ErrorMessageResponse (
             bindingResult.getGlobalErrors().forEach(globalError ->
                     validationErrors.add(ValidationError.from(globalError))
             );
+            return this;
+        }
+
+        public Builder extractValidationErrorsFrom(ConstraintViolationException e) {
+            this.validationErrors = new ArrayList<>();
+            e.getConstraintViolations().forEach(violation -> {
+                String field = violation.getPropertyPath().toString();
+                String message = violation.getMessage();
+                validationErrors.add(new ValidationError(field, message));
+            });
             return this;
         }
 

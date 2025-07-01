@@ -2,6 +2,7 @@ package gift.exception;
 
 import gift.dto.ErrorMessageResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -68,6 +69,18 @@ public class GlobalExceptionHandler {
                 .extractValidationErrorsFrom(e)
                 .build();
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+    }
+
+    @Order(6)
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorMessageResponse> handleConstraintViolationException(
+          ConstraintViolationException e, HttpServletRequest request
+    ) {
+      var errorMessage = new ErrorMessageResponse.Builder("유효성 검사에서 오류가 발생했습니다.", HttpStatus.BAD_REQUEST)
+              .path(request.getRequestURI())
+              .extractValidationErrorsFrom(e)
+              .build();
+      return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
