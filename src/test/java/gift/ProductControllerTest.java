@@ -32,4 +32,17 @@ public class ProductControllerTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
+
+
+
+    @Test
+    void 상품_단건_조회_정상_테스트(){
+        System.out.println("getProductById test");
+        var url = "http://localhost:" + port + "/api/products/1";
+        var response = client.get()
+                .uri(url)
+                .retrieve()
+                .toEntity(Void.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
 }
