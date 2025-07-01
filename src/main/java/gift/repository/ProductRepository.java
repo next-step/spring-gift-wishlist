@@ -2,6 +2,7 @@ package gift.repository;
 
 import gift.entity.Product;
 import gift.exception.ProductNotFoundException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -42,8 +43,12 @@ public class ProductRepository {
 
     public Optional<Product> findById(Long id) {
         String sql = "select * from products where id=?";
-        List<Product> res = jdbcTemplate.query(sql, PRODUCT_ROW_MAPPER, id);
-        return res.stream().findFirst();
+        try {
+            Product product= jdbcTemplate.queryForObject(sql,PRODUCT_ROW_MAPPER,id);
+            return Optional.of(product);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     public void update(Long id, Product product) {
