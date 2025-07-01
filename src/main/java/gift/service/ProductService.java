@@ -3,6 +3,7 @@ package gift.service;
 import gift.dto.api.ProductUpdateRequestDto;
 import gift.entity.Product;
 
+import gift.repository.ApprovedProductRepository;
 import gift.repository.ProductRepository;
 import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
@@ -13,9 +14,11 @@ import java.util.List;
 public class ProductService {
 
     private final ProductRepository repository;
+    private final ApprovedProductRepository approvedRepository;
 
-    public ProductService(ProductRepository repository) {
+    public ProductService(ProductRepository repository, ApprovedProductRepository approvedRepository) {
         this.repository = repository;
+        this.approvedRepository = approvedRepository;
     }
 
     public Product registerProduct(Product product) {
