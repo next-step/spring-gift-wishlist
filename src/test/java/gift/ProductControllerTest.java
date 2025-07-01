@@ -87,4 +87,24 @@ public class ProductControllerTest {
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getName()).isEqualTo(requestDto.getName());
     }
+
+    @Test
+    void 상품_수정_정상_테스트(){
+        System.out.println("updateProduct test");
+        ProductRequestDto requestDto = new ProductRequestDto();
+        requestDto.setName("아이스 카페 아메리카노 T");
+        requestDto.setPrice(5000);
+        requestDto.setImageUrl("https://st.kakaocdn.net/product/gift/product/20231010111814_9a667f9eccc943648797925498bdd8a3.jpg");
+        var url = "http://localhost:" + port + "/api/products/1";
+        var response = client.put()
+                .uri(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(requestDto)
+                .retrieve()
+                .toEntity(ProductResponseDto.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getName()).isEqualTo(requestDto.getName());
+    }
 }
