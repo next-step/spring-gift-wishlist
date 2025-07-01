@@ -5,12 +5,17 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import gift.dto.request.ProductCreateRequestDto;
 import gift.dto.response.ProductCreateResponseDto;
+import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
@@ -22,6 +27,19 @@ class ProductControllerTest {
 
     private RestClient restClient = RestClient.builder().build();
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @BeforeEach
+    void setUp() {
+        jdbcTemplate.execute("DELETE FROM products");
+
+        String sql = "INSERT INTO products(name, price, imageUrl) VALUES (?, ?, ?)";
+        jdbcTemplate.update(sql, "one", "4500", "https://img.com/BeforeEach.jpg");
+        jdbcTemplate.update(sql, "two", "4500", "https://img.com/BeforeEach.jpg");
+        jdbcTemplate.update(sql, "hree", "4500", "https://img.com/BeforeEach.jpg");
+    }
+
     // POST
     @Test
     void 단건상품등록_CREATED_테스트() {
@@ -29,9 +47,9 @@ class ProductControllerTest {
         var url = "http://localhost:" + port + "/api/products";
 
         var request = new ProductCreateRequestDto(
-            "아이스 카페 아메리카노 T",
+            "PostCreated",
             4500.0,
-            "https://st.kakaocdn.net/product/gift/product/20231010111814_9a667f9eccc943648797925498bdd8a3.jpg"
+            "https://PostCreated.jpg"
         );
 
         // when
@@ -66,7 +84,7 @@ class ProductControllerTest {
         var request = new ProductCreateRequestDto(
             invalidName,
             4500.0,
-            "https://st.kakaocdn.net/product/gift/product/20231010111814_9a667f9eccc943648797925498bdd8a3.jpg"
+            "https://invalidName.jpg"
         );
 
         // when & then
@@ -79,4 +97,46 @@ class ProductControllerTest {
                     .toEntity(ProductCreateResponseDto.class)
             );
     }
+
+    // GET
+    @Test
+    void 전체상품조회_OK_테스트() {
+        // given
+        var url = "http://localhost:" + port + "/api/products";
+
+        // when
+        var response = restClient.get()
+            .uri(url)
+            .retrieve()
+            .toEntity(new ParameterizedTypeReference<List<ProductCreateResponseDto>>() {
+            });
+
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        var actual = response.getBody();
+        System.out.println(actual);
+    }
+
+    @Test
+    void 단건상품조회_OK_테스트() {
+        // given
+        var url = "http://localhost:" + port + "/api/products/1";
+
+        // when
+        var response = restClient.get()
+            .uri(url)
+            .retrieve()
+            .toEntity(ProductCreateResponseDto.class);
+
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        var actual = response.getBody();
+        System.out.println(actual);
+    }
+
+    // PUT
+
+    // DELETE
 }
