@@ -12,7 +12,7 @@ public class ItemDTO {
     private Long id;
 
     @NotNull
-    @Size(max = 15)
+    @Size(max=15,message = "최대 15자입니다.")
     @Pattern(regexp = "^[a-zA-Z0-9()\\[\\]+\\-\\&/_]*$", message = "( ), [ ], +, -, &, /, _ 외에는 특수문자는 허용되지 않습니다.")
     private String name;
 

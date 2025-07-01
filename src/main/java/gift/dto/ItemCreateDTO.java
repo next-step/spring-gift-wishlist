@@ -6,12 +6,13 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-public record ItemCreateDTO(@NotNull @Size(max=15) @Pattern(regexp = "^[a-zA-Z0-9()\\[\\]+\\-\\&/_]*$", message = "( ), [ ], +, -, &, /, _ 외에는 특수문자는 허용되지 않습니다.") String name,
+public record ItemCreateDTO(@NotNull @Size(max=15,message = "최대 15자입니다.") @Pattern(regexp = "^[a-zA-Z0-9()\\[\\]+\\-\\&/_]*$", message = "( ), [ ], +, -, &, /, _ 외에는 특수문자는 허용되지 않습니다.") String name,
                             @Min(0) Integer price,
-                            @NotNull @Size(max=255) String imageUrl) {
+                            @NotNull @Size(max=255) String imageUrl,
+                            boolean isValid) {
 
 
     public ItemCreateDTO(Item saveditem) {
-        this(saveditem.getName(), saveditem.getPrice(), saveditem.getImageUrl());
+        this(saveditem.getName(), saveditem.getPrice(), saveditem.getImageUrl(),true);
     }
 }
