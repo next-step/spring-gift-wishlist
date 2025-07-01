@@ -2,7 +2,9 @@ package gift.repository;
 
 import gift.entity.ApprovedProduct;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class ApprovedProductRepository {
 
     private final JdbcTemplate jdbcTemplate;
