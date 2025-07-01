@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public record ProductRequestDto(
+
     long productId,
 
     @NotBlank

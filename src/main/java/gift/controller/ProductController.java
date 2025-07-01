@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
 @RestController
 @RequestMapping(value = "/api")
 class ProductController {
@@ -31,7 +32,8 @@ class ProductController {
     //상품 조회
     @GetMapping("/products/{productId}")
     public ResponseEntity<ProductResponseDto> getProduct(@PathVariable long productId) {
-        return new ResponseEntity<>(productService.getProduct(productId).toResponseDto(),
+        return new ResponseEntity<>(
+            productService.productToResponseDto(productService.getProduct(productId)),
             HttpStatus.OK);
     }
 

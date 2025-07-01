@@ -11,9 +11,4 @@ public record Product(
     int price,
     String imageURL) {
 
-
-
-  public ProductResponseDto toResponseDto() {
-    return new ProductResponseDto(productId, name, price, imageURL);
-  }
 }
