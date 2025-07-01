@@ -5,6 +5,8 @@ import gift.dto.api.ModifyProductRequestDto;
 import gift.dto.api.ProductResponseDto;
 import gift.entity.Product;
 import gift.exception.custom.CheckMdOkException;
+import gift.exception.custom.FillAllInfoException;
+import gift.exception.custom.FillSomeInfoException;
 import gift.repository.ProductRepository;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -58,7 +60,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findProductWithId(id);
         
         if (requestDto.isNotValidForModify()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new FillAllInfoException();
         }
         
         if(!requestDto.isGoodName()) {
@@ -90,7 +92,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findProductWithId(id);
         
         if (requestDto.isNotValidForModifyInfo()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new FillSomeInfoException();
         }
         
         if(!requestDto.isGoodName()) {
