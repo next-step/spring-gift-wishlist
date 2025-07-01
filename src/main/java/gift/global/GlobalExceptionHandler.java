@@ -1,13 +1,17 @@
 package gift.global;
 
-import gift.global.exception.BadProductRequestException;
+import gift.global.error.ErrorResponse;
+import gift.global.error.FieldErrorResponse;
+import gift.global.error.ObjectErrorResponse;
 import gift.global.exception.CustomDatabaseException;
 import gift.global.exception.NotFoundProductException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.List;
 import java.util.Map;
 
 @RestControllerAdvice
@@ -18,13 +22,21 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", ex.getMessage()));
     }
 
-    @ExceptionHandler(BadProductRequestException.class)
-    public ResponseEntity<Map<String, String>> handleBadProductRequestException(BadProductRequestException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", ex.getMessage()));
-    }
-
     @ExceptionHandler(CustomDatabaseException.class)
     public ResponseEntity<Map<String, String>> handleCustomDatabaseException(CustomDatabaseException ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", ex.getMessage()));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse>  handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        List<FieldErrorResponse> fieldErrorResponses = ex.getBindingResult().getFieldErrors()
+                .stream()
+                .map(fieldError -> new FieldErrorResponse(fieldError.getDefaultMessage())).toList();
+
+        List<ObjectErrorResponse> globalErrorResponses = ex.getBindingResult().getGlobalErrors()
+                .stream()
+                .map(globalError -> new ObjectErrorResponse(globalError.getDefaultMessage())).toList();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(fieldErrorResponses, globalErrorResponses));
     }
 }
