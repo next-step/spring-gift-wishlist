@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import gift.dto.request.ProductCreateRequestDto;
 import gift.dto.response.ProductCreateResponseDto;
+import gift.entity.Product;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -157,6 +158,20 @@ class ProductControllerTest {
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+
+        Product result = jdbcTemplate.queryForObject(
+            "SELECT * FROM products WHERE productId = 1",
+            (rs, rowNum) -> new Product(
+                rs.getString("name"),
+                rs.getDouble("price"),
+                rs.getString("imageUrl")
+            )
+        );
+
+        assertThat(result.getName()).isEqualTo(request.name());
+        assertThat(result.getPrice()).isEqualTo(request.price());
+        assertThat(result.getImageUrl()).isEqualTo(request.imageUrl());
+
     }
 
     // DELETE
