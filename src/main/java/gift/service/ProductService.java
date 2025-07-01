@@ -22,6 +22,8 @@ public class ProductService {
     }
 
     public Product registerProduct(Product product) {
+        // '카카오' 문구 검증
+        validateKakao(product.getName());
         return repository.save(product);
     }
 
@@ -43,6 +45,8 @@ public class ProductService {
         // 기존 객체와 무관하게 새로운 Product 객체 생성
         Product updated = new Product(id, updateRequestDto.getName(), updateRequestDto.getPrice(), updateRequestDto.getImageUrl());
 
+        // '카카오' 문구 검증
+        validateKakao(updated.getName());
         repository.update(updated);
         return updated;  // 또는 existing → 필요에 따라 선택 가능
     }
