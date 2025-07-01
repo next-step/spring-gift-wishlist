@@ -1,21 +1,33 @@
-function openCreateModal(titleText, file) {
-    fetch(file)
-        .then(response => response.text())
-        .then(html => {
-            const modalEl = document.getElementById('product-modal');
+function openModal(modalId, titleText, formValue = {}) {
+    const modalEl = document.getElementById(modalId);
 
-            document.querySelector('.product-modal-title').textContent = titleText;
-            document.getElementById('product-modal').style.display = 'flex';
-            document.querySelector('.product-modal-body').innerHTML = html;
+    if (!modalEl) {
+        return;
+    }
 
-            modalEl.dispatchEvent(new Event('modalready'));
-        });
+    modalEl.querySelector('.product-modal-title').textContent = titleText;
+    modalEl.style.display = 'flex';
+
+    if (Object.keys(formValue).length === 0) {
+        return 0;
+    }
+
+    if (modalId === 'product-modal') {
+        if ('name' in formValue)      document.getElementById('name').value = formValue.name;
+        if ('price' in formValue)     document.getElementById('price').value = formValue.price;
+        if ('imageUrl' in formValue)  document.getElementById('imageUrl').value = formValue.imageUrl;
+    }
+
+    else if (modalId === 'product-modal-2') {
+        if ('name' in formValue)      document.getElementById('name-2').value = formValue.name;
+        if ('price' in formValue)     document.getElementById('price-2').value = formValue.price;
+        if ('imageUrl' in formValue)  document.getElementById('imageUrl-2').value = formValue.imageUrl;
+    }
 }
 
 function closeModal() {
-    document.querySelector('.product-modal-title').textContent = '';
     document.getElementById('product-modal').style.display = 'none';
-    document.querySelector('.product-modal-body').innerHTML = '';
+    document.getElementById('product-modal-2').style.display = 'none';
 }
 
 // 체크박스 클릭 후, 모두 삭제 버튼
@@ -53,16 +65,8 @@ document.querySelectorAll('.update-button').forEach(button => {
         const price     = cells[3].textContent.trim();
         const imageUrl  = cells[4].textContent.trim();
 
-        openCreateModal('물품 수정 창', 'update-product.html');
-
-        const modalEl = document.getElementById('product-modal');
-        modalEl.addEventListener('modalready', () => {
-          document.getElementById('name').value       = name;
-          document.getElementById('price').value      = price;
-          document.getElementById('imageUrl').value   = imageUrl;
-
-          document.getElementById('update-form').action = `/view/products/update/${id}`;
-        }, { once: true });
+        document.getElementById('update-form').action = `/view/products/update/${id}`;
+        openModal('product-modal-2', '물품 수정 창', { name, price, imageUrl });
     });
 });
 
