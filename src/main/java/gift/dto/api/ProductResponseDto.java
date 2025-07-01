@@ -10,6 +10,7 @@ public class ProductResponseDto {
     private String imageUrl;
     
     public ProductResponseDto() {
+        this(null, null, null, null);
     }
     
     public ProductResponseDto(Product product) {
