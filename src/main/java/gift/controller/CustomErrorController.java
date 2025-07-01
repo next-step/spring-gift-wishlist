@@ -46,9 +46,8 @@ public class CustomErrorController implements ErrorController {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
-        var errorMessage = ErrorMessageResponse.generateFrom(
-                request, exception, status
-        );
+        var errorMessage = new ErrorMessageResponse.Builder(request, exception, status)
+                .build();
         return new ResponseEntity<>(errorMessage, status);
     }
 }
