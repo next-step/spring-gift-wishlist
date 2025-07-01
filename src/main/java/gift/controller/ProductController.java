@@ -11,6 +11,8 @@ import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import jakarta.validation.Validator;
 import jakarta.validation.constraints.Min;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -20,6 +22,7 @@ import java.util.Set;
 @Controller
 @RequestMapping("/api/products")
 public class ProductController {
+    private static final Logger log = LoggerFactory.getLogger(ProductController.class);
     private final ProductService productService;
     private final Validator validator;
 
@@ -35,6 +38,7 @@ public class ProductController {
         }
         Set<ConstraintViolation<T>> violations = validator.validate(dto, group);
         if (!violations.isEmpty()) {
+            log.error("유효성 검사 실패: {}", violations);
             throw new ConstraintViolationException(violations);
         }
     }
@@ -64,6 +68,7 @@ public class ProductController {
     ) {
         handleGroupValidation(userRole, dto);
         Product product = productService.create(dto.toProduct());
+        log.info("상품 생성 성공: {}", product);
         return new ResponseEntity<>(product, HttpStatus.CREATED);
     }
 
@@ -75,6 +80,7 @@ public class ProductController {
     ) {
         handleGroupValidation(userRole, dto);
         Product updatedProduct = productService.update(dto.toEntity(id));
+        log.info("상품 업데이트 성공: {}", updatedProduct);
         return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
     }
 
@@ -86,6 +92,7 @@ public class ProductController {
         ) {
         handleGroupValidation(userRole, dto);
         Product patchedProduct = productService.patch(dto.toEntity(id));
+        log.info("상품 패치 성공: {}", patchedProduct);
         return new ResponseEntity<>(patchedProduct, HttpStatus.OK);
     }
 
@@ -94,6 +101,7 @@ public class ProductController {
             @PathVariable @Min(value = 0, message = "상품 ID는 0보다 커야합니다.") Long id
     ) {
         productService.deleteById(id);
+        log.info("상품 삭제 성공: ID={}", id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
