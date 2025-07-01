@@ -14,17 +14,17 @@ public class AddProductForm {
     private String imageUrl;
     
     @NotNull
-    private Boolean isMDOK;
+    private Boolean mdOk;
     
     public AddProductForm() {
         this(null, null, null, false);
     }
     
-    public AddProductForm(String name, Long price, String imageUrl, Boolean isMDOK) {
+    public AddProductForm(String name, Long price, String imageUrl, Boolean mdOk) {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
-        this.isMDOK = isMDOK;
+        this.mdOk = mdOk;
     }
     
     public String getName() {
@@ -39,8 +39,8 @@ public class AddProductForm {
         return imageUrl;
     }
     
-    public Boolean getMDOK() {
-        return isMDOK;
+    public Boolean getMdOk() {
+        return mdOk;
     }
     
     public void setName(String name) {
@@ -55,7 +55,7 @@ public class AddProductForm {
         this.imageUrl = imageUrl;
     }
     
-    public void setIsMDOK(Boolean isMDOK) {
-        this.isMDOK = isMDOK;
+    public void setMdOk(Boolean mdOk) {
+        this.mdOk = mdOk;
     }
 }

@@ -7,12 +7,16 @@ import gift.dto.api.ModifyProductRequestDto;
 import gift.dto.api.ProductResponseDto;
 import java.io.IOException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.web.client.RestClient;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ProductControllerTest {
     
     @LocalServerPort
@@ -28,6 +32,7 @@ class ProductControllerTest {
     }
     
     @Test
+    @Order(1)
     void 정상적으로_상품을_등록한다() {
         var request = new AddProductRequestDto("테스트 상품", 1000L, "https://test.com/image.jpg", true);
         
@@ -41,6 +46,7 @@ class ProductControllerTest {
     }
     
     @Test
+    @Order(2)
     void 옳지_않은_상품명_추가를_시도한다() throws IOException {
         var request = new AddProductRequestDto("테스트:상품", 1000L, "https://test.com/image.jpg", true);
         
@@ -53,6 +59,7 @@ class ProductControllerTest {
     }
     
     @Test
+    @Order(3)
     void 정보_일부가_비어있는_상품_추가를_시도한다() throws IOException {
         var request = new AddProductRequestDto("테스트 상품", null, "https://test.com/image.jpg", true);
         
@@ -65,6 +72,7 @@ class ProductControllerTest {
     }
     
     @Test
+    @Order(4)
     void 너무_긴_상품명_추가를_시도한다() throws IOException {
         var request = new AddProductRequestDto("15자를넘겨야하는데뭐라고할까고민좀했음", 1000L, "https://test.com/image.jpg", true);
         
@@ -77,6 +85,7 @@ class ProductControllerTest {
     }
     
     @Test
+    @Order(5)
     void 올바른_카카오_상품명_추가를_시도한다() {
         var request = new AddProductRequestDto("카카오 테스트상품", 1000L, "https://test.com/image.jpg", true);
         
@@ -90,6 +99,7 @@ class ProductControllerTest {
     }
     
     @Test
+    @Order(6)
     void 올바르지_않은_카카오_상품명_추가를_시도한다() throws IOException {
         var request = new AddProductRequestDto("카카오 테스트상품", 1000L, "https://test.com/image.jpg", false);
         
@@ -102,6 +112,7 @@ class ProductControllerTest {
     }
     
     @Test
+    @Order(7)
     void 상품_검색을_시도한다() {
         
         var response = restClient.get()
@@ -113,6 +124,7 @@ class ProductControllerTest {
     }
     
     @Test
+    @Order(8)
     void 전체_상품_검색을_시도한다() {
         
         var response = restClient.get()
@@ -124,6 +136,7 @@ class ProductControllerTest {
     }
     
     @Test
+    @Order(9)
     void 정상적으로_상품을_수정한다() {
         var request = new ModifyProductRequestDto("테스트 상품", 1000L, "https://test.com/image.jpg", true);
         
@@ -137,6 +150,7 @@ class ProductControllerTest {
     }
     
     @Test
+    @Order(10)
     void 정상적으로_상품_정보_일부를_수정한다() {
         var request = new ModifyProductRequestDto("테스트 상품", null, null, true);
         
@@ -150,6 +164,7 @@ class ProductControllerTest {
     }
     
     @Test
+    @Order(11)
     void 잘못된_이름으로_상품을_수정한다() throws IOException {
         var request = new ModifyProductRequestDto("15자를넘겨야하는데뭐라고할까고민좀했음", 1000L, "https://test.com/image.jpg", true);
         
@@ -162,6 +177,7 @@ class ProductControllerTest {
     }
     
     @Test
+    @Order(12)
     void 잘못된_이름으로_상품_정보_일부를_수정한다() throws IOException {
         var request = new ModifyProductRequestDto("15자를넘겨야하는데뭐라고할까고민좀했음", null, null, true);
         
@@ -174,6 +190,7 @@ class ProductControllerTest {
     }
     
     @Test
+    @Order(13)
     void 올바른_카카오_이름으로_상품을_수정한다() {
         var request = new ModifyProductRequestDto("카카오 테스트상품", 1000L, "https://test.com/image.jpg", true);
         
@@ -187,6 +204,7 @@ class ProductControllerTest {
     }
     
     @Test
+    @Order(14)
     void 올바르지_않은_카카오_이름으로_상품을_수정한다() throws IOException {
         var request = new ModifyProductRequestDto("카카오 테스트상품", 1000L, "https://test.com/image.jpg", false);
         
@@ -199,6 +217,7 @@ class ProductControllerTest {
     }
     
     @Test
+    @Order(15)
     void 정상적으로_상품을_삭제한다() throws IOException {
         
         var response = restClient.delete()

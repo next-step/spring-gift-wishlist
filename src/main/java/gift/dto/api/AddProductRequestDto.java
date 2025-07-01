@@ -19,17 +19,17 @@ public class AddProductRequestDto {
     private String imageUrl;
     
     @NotNull
-    private Boolean isMDOK;
+    private Boolean mdOk;
     
     public AddProductRequestDto() {
         this("", 0L, "", false);
     }
     
-    public AddProductRequestDto(String name, Long price, String imageUrl, Boolean isMDOK) {
+    public AddProductRequestDto(String name, Long price, String imageUrl, Boolean mdOk) {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
-        this.isMDOK = isMDOK;
+        this.mdOk = mdOk;
     }
     
     public String getName() {
@@ -44,8 +44,8 @@ public class AddProductRequestDto {
         return imageUrl;
     }
     
-    public Boolean getMDOK() {
-        return isMDOK;
+    public Boolean getMdOk() {
+        return mdOk;
     }
     
     public void setName(String name) {
@@ -60,13 +60,13 @@ public class AddProductRequestDto {
         this.imageUrl = imageUrl;
     }
     
-    public void setMDOK(Boolean MDOK) {
-        isMDOK = MDOK;
+    public void setMdOk(Boolean mdOk) {
+        this.mdOk = mdOk;
     }
     
     public Boolean isGoodName() {
         if(name.contains("카카오")) {
-            return isMDOK;
+            return mdOk;
         }
         return true;
     }

@@ -70,6 +70,9 @@
   <label for="imageUrl">이미지 URL</label>
   <input type="text" id="imageUrl" th:field="*{imageUrl}" required/>
 
+  <label for="isMDOK">MD 협의 여부</label>
+  <input type="checkbox" id="isMDOK" th:field="*{mdOk}" />
+
   <div class="btn-group">
     <button type="submit" class="button">등록</button>
     <a th:href="@{/products}" class="button cancel">취소</a>

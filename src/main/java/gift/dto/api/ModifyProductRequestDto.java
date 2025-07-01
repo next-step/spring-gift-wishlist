@@ -14,17 +14,17 @@ public class ModifyProductRequestDto {
     private String imageUrl;
     
     @NotNull
-    private Boolean isMDOK;
+    private Boolean mdOk;
     
     public ModifyProductRequestDto() {
         this(null, null, null, false);
     }
     
-    public ModifyProductRequestDto(String name, Long price, String imageUrl, Boolean isMDOK) {
+    public ModifyProductRequestDto(String name, Long price, String imageUrl, Boolean mdOk) {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
-        this.isMDOK = isMDOK;
+        this.mdOk = mdOk;
     }
     
     public String getName() {
@@ -39,8 +39,8 @@ public class ModifyProductRequestDto {
         return imageUrl;
     }
     
-    public Boolean getMDOK() {
-        return isMDOK;
+    public Boolean getMdOk() {
+        return mdOk;
     }
     
     public void setName(String name) {
@@ -55,8 +55,8 @@ public class ModifyProductRequestDto {
         this.imageUrl = imageUrl;
     }
     
-    public void setMDOK(Boolean MDOK) {
-        isMDOK = MDOK;
+    public void setMdOk(Boolean mdOk) {
+        this.mdOk = mdOk;
     }
     
     public Boolean isNotValidForModify() {
@@ -69,7 +69,7 @@ public class ModifyProductRequestDto {
     
     public Boolean isGoodName() {
         if(name.contains("카카오")) {
-            return isMDOK;
+            return mdOk;
         }
         return true;
     }
