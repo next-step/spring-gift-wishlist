@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="">
 <head>
   <meta charset="UTF-8">
   <title>상품 수정</title>
@@ -9,17 +9,22 @@
 <div class="container">
   <h1>상품 수정</h1>
 
-  <form th:action="@{'/products/' + ${product.id}}" method="post">
-    <input type="hidden" name="id" th:value="${product.id}" />
+  <form th:action="@{'/products/' + ${product.id}}" th:object="${product}" method="post">
+    <input type="hidden" th:field="*{id}" />
 
     <label>이름:
-      <input type="text" name="name" th:value="${product.name}" required />
+      <input type="text" th:field="*{name}" required />
+      <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error-msg"></div>
     </label>
+
     <label>가격:
-      <input type="number" name="price" th:value="${product.price}" required />
+      <input type="number" th:field="*{price}" required />
+      <div th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="error-msg"></div>
     </label>
+
     <label>이미지 URL:
-      <input type="text" name="imageUrl" th:value="${product.imageUrl}" required />
+      <input type="text" th:field="*{imageUrl}" required />
+      <div th:if="${#fields.hasErrors('imageUrl')}" th:errors="*{imageUrl}" class="error-msg"></div>
     </label>
 
     <button type="submit">수정</button>

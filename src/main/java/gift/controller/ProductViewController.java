@@ -42,7 +42,7 @@ public class ProductViewController {
     ) {
         if (bindingResult.hasErrors()) {
             ModelAndView mav = new ModelAndView("product/create");
-            mav.addObject("productRequestDto", requestDto);
+            mav.addObject("product", requestDto);
             return mav;
         }
 
@@ -65,7 +65,14 @@ public class ProductViewController {
     }
 
     @PostMapping("/{id}")
-    public ModelAndView update(@PathVariable Long id, @Valid @ModelAttribute ProductRequestDto requestDto) {
+    public ModelAndView update(@PathVariable Long id,
+                               @Valid @ModelAttribute("product") ProductRequestDto requestDto,
+                               BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            ModelAndView mav = new ModelAndView("product/edit");
+            mav.addObject("product", requestDto);
+            return mav;
+        }
         productService.update(id, requestDto);
         return new ModelAndView("redirect:/products");
     }

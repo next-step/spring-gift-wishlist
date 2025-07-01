@@ -4,6 +4,8 @@ import jakarta.validation.constraints.*;
 
 public class ProductRequestDto {
 
+    private Long id;
+
     @NotBlank(message = "상품명은 필수 입력값입니다.")
     @Size(max = 15, message = "상품명은 15자 이하로 입력해주세요.")
     @Pattern(
@@ -18,11 +20,15 @@ public class ProductRequestDto {
 
     private String imageUrl;
 
+    public void setId(Long id) { this.id = id; }
+
     public void setName(String name) { this.name = name; }
 
     public void setPrice(Integer price) { this.price = price; }
 
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl;}
+
+    public Long getId() { return id; }
 
     public String getName() {
         return name;
