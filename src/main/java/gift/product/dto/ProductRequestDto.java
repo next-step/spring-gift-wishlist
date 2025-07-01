@@ -24,8 +24,4 @@ public record ProductRequestDto(
     public static ProductRequestDto getEmpty() {
         return new ProductRequestDto(DEFAULT_NAME, DEFAULT_PRICE, DEFAULT_IMAGE_URL);
     }
-
-    public Product toProduct() {
-        return new Product(name, price, imageUrl);
-    }
 }

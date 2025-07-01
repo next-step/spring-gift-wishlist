@@ -1,7 +1,5 @@
 # spring-gift-wishlist
 
-# spring-gift-product (이전 구현)
-
 ## API 명세
 
 ### 상품관리 RESTful API
@@ -23,11 +21,15 @@
 | 상품 수정 | `POST` | `/admin/product/edit/{productId}` | 상품 정보 수정 |
 | 상품 삭제 | `DELETE` | `/admin/product/{productId}` | 상품 삭제 |
 
+## 위시 리스트 - 요청과 응답 심화
+
+### 0단계 - 기본 코드 준비
+
+# spring-gift-product (이전 구현)
+
 ## 상품관리 - 스프링 입문
 
 ### 1단계 - 상품 API
-
-#### 기능 목록
 
 - Product 도메인 구현
 - Product DTO 구현
@@ -48,3 +50,23 @@
 - 상품 추가 페이지 구현
 - 상품 상세 페이지 구현
 - 상품 수정 & 삭제 페이지 구현
+
+### 2단계 - 코드 리뷰 반영
+
+- 주석 제거
+- 불필요한 생성자 제거
+- Optional 예외 처리 refactoring
+- 매직 넘버 제거
+
+### 3단계 - 데이터베이스 적용
+
+- schema.sql 작성
+- interface를 사용해서 기존 repo 추상화
+- JdbcProductRepository 구현
+- 테스트 코드 보완(ProductApiControllerTest)
+
+### 3단계 - 코드 리뷰 반영
+
+- JdbcClient에서 사용할 RowMapper 직접 구현하고 setter와 기본 생성자 제거
+- 사용하지 않는 메소드 제거
+- validation 사용자 경험 개선(500 error -> forwarding)

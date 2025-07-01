@@ -1,6 +1,7 @@
 package gift.product.repository;
 
 import gift.product.domain.Product;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -35,7 +36,7 @@ public class JDBCProductRepository implements ProductRepository{
     @Override
     public List<Product> findAll() {
         return client.sql("select id, name, price, image_url from product")
-                .query(Product.class)
+                .query(productRowMapper)
                 .list();
     }
 
@@ -43,7 +44,7 @@ public class JDBCProductRepository implements ProductRepository{
     public Optional<Product> findById(Long id) {
         return client.sql("select id, name, price, image_url from product where id = :id")
                 .param("id", id)
-                .query(Product.class)
+                .query(productRowMapper)
                 .optional();
     }
 
@@ -63,4 +64,11 @@ public class JDBCProductRepository implements ProductRepository{
                 .param("id", id)
                 .update();
     }
+
+    private final RowMapper<Product> productRowMapper = (rs, rowNum) -> new Product(
+            rs.getLong("id"),
+            rs.getString("name"),
+            rs.getInt("price"),
+            rs.getString("image_url")
+    );
 }

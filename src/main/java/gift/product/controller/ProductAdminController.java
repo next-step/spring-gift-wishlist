@@ -51,7 +51,7 @@ public class ProductAdminController {
     }
 
     @PostMapping("/add")
-    public String addProduct(@ModelAttribute @Valid ProductRequestDto requestDto, BindingResult bindingResult){
+    public String addProduct(@ModelAttribute("product") @Valid ProductRequestDto requestDto, BindingResult bindingResult){
 
         if(bindingResult.hasErrors()){
             return "admin/product-add-form";
@@ -74,7 +74,7 @@ public class ProductAdminController {
     @PostMapping("/edit/{id}")
     public String editProduct(
             @PathVariable("id") Long id,
-            @ModelAttribute @Valid ProductEditDto editDto,
+            @ModelAttribute("product") @Valid ProductEditDto editDto,
             BindingResult bindingResult,
             Model model
     ){
