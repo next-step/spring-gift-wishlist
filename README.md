@@ -134,7 +134,7 @@ HTTP/1.1 204 No Content
 
 ## ✏️ 상품 수정
 ### 상품 수정 화면
-[GET] http://localhost:8080/admin/products/{productId}/edit  
+[GET] http://localhost:8080/admin/products/edit/{productId}  
 → 선택한 상품의 정보를 수정할 수 있는 화면입니다.
 
 ### 상품 수정 요청

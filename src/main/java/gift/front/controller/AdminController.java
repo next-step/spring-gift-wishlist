@@ -48,7 +48,7 @@ public class AdminController {
         return "admin/product-detail";
     }
 
-    @GetMapping("/{id}/edit")
+    @GetMapping("/edit/{id}")
     public String editProduct(
             @PathVariable Long id, Model model) {
         model.addAttribute("product", productService.findProductById(id));

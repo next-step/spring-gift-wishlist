@@ -33,7 +33,7 @@
     <td th:text="${product.price}">가격</td>
     <td><img th:src="${product.imageUrl}" alt="이미지 없음"/></td>
     <td>
-      <a th:href="@{/admin/products/{id}/edit(id=${product.id})}" class="button">수정</a>
+      <a th:href="@{/admin/products/edit/{id}(id=${product.id})}" class="button">수정</a>
 
       <form th:action="@{/admin/products/{id}(id=${product.id})}"
             method="post"
