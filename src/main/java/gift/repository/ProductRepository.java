@@ -24,11 +24,12 @@ public class ProductRepository {
 
 
     public Product save(String name, int price, String imageUrl) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", name);
-        params.put("price", price);
-        params.put("image_url", imageUrl);
-        params.put("category_id", null);
+        Map<String, Object> params = Map.of(
+                "name", name,
+                "price", price,
+                "image_url", imageUrl,
+                "category_id", null
+        );
 
         Number id = productInserter.executeAndReturnKey(new MapSqlParameterSource(params));
         return new Product(id.longValue(), name, price, imageUrl);
