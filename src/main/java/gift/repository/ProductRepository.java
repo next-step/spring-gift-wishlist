@@ -20,8 +20,6 @@ public class ProductRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    private final AtomicLong sequence = new AtomicLong(0);
-
     private SimpleJdbcInsert insert;
 
     @PostConstruct
