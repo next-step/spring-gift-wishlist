@@ -36,7 +36,6 @@
     <button type="submit">등록</button>
 </form>
 
-
 <form th:if="${product.id} != null"
       th:action="@{'/admin/products/' + ${product.id}}"
       th:object="${product}" method="post">

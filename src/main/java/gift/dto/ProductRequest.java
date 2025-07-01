@@ -21,8 +21,6 @@ public class ProductRequest {
     @NotBlank(message = "이미지 URL은 필수입니다.")
     private String imageUrl;
 
-
-
     public ProductRequest(Long id, String name, int price, String imageUrl) {
         this.id = id;
         this.name = name;
