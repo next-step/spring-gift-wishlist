@@ -49,7 +49,7 @@ public class AdminItemController {
 
     @GetMapping("/new")
     public String showCreateForm(Model model) {
-        model.addAttribute("itemDTO", new ItemDTO());
+        model.addAttribute("itemDTO", new ItemCreateDTO("", 0, "", false));
         return "admin/createForm";
     }
 
