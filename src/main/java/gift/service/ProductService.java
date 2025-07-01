@@ -4,18 +4,17 @@ import gift.dto.CreateProductRequestDto;
 import gift.dto.UpdateProductRequestDto;
 import gift.entity.Product;
 import gift.exception.ProductNotFoundException;
-import org.springframework.stereotype.Service;
 import gift.repository.ProductRepository;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProductService {
     private final ProductRepository repository;
 
-    public ProductService(ProductRepository repository, ProductRepository productRepository) {
+    public ProductService(ProductRepository repository) {
         this.repository = repository;
     }
 
@@ -23,8 +22,7 @@ public class ProductService {
         return repository.findAll();
     }
 
-    public Product getById(Long id)
-    {
+    public Product getById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("ID " + id + "에 해당하는 상품을 찾을 수 없습니다."));
     }
@@ -34,15 +32,13 @@ public class ProductService {
     }
 
     @Transactional
-    public void update(Long id, UpdateProductRequestDto dto)
-    {
-        Product product=new Product(id, dto.getName(), dto.getPrice(), dto.getImageUrl());
+    public void update(Long id, UpdateProductRequestDto dto) {
+        Product product = new Product(id, dto.getName(), dto.getPrice(), dto.getImageUrl());
         repository.update(id, product);
     }
 
     @Transactional
-    public void delete(Long id)
-    {
+    public void delete(Long id) {
         repository.delete(id);
     }
 }

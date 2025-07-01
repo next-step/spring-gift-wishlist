@@ -15,15 +15,14 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/admin/products")
 public class AdminProductController {
     private final ProductService productService;
-    public AdminProductController(ProductService productService)
-    {
+
+    public AdminProductController(ProductService productService) {
         this.productService = productService;
     }
 
     @GetMapping
-    public String list(Model model)
-    {
-        model.addAttribute("products",productService.getAll());
+    public String list(Model model) {
+        model.addAttribute("products", productService.getAll());
         return "admin/products/list";
     }
 
@@ -35,17 +34,14 @@ public class AdminProductController {
     }
 
     @GetMapping("/new")
-    public String showCreateForm(Model model)
-    {
+    public String showCreateForm(Model model) {
         model.addAttribute("product", new CreateProductRequestDto());
         return "admin/products/new";
     }
 
     @PostMapping
-    public String create(@Valid @ModelAttribute("product") CreateProductRequestDto dto, BindingResult bindingResult)
-    {
-        if (bindingResult.hasErrors())
-        {
+    public String create(@Valid @ModelAttribute("product") CreateProductRequestDto dto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
             return "admin/products/new";
         }
         productService.create(dto);
@@ -53,25 +49,22 @@ public class AdminProductController {
     }
 
     @GetMapping("/{id}/edit")
-    public String showEditForm(@PathVariable Long id, Model model)
-    {
+    public String showEditForm(@PathVariable Long id, Model model) {
         Product product = productService.getById(id);
-        UpdateProductRequestDto dto=new UpdateProductRequestDto();
+        UpdateProductRequestDto dto = new UpdateProductRequestDto();
         dto.setName(product.getName());
         dto.setPrice(product.getPrice());
         dto.setImageUrl(product.getImageUrl());
 
-        model.addAttribute("product",dto);
-        model.addAttribute("productId",id);
+        model.addAttribute("product", dto);
+        model.addAttribute("productId", id);
         return "admin/products/edit";
     }
 
     @PostMapping("/{id}/edit")
-    public String update(@PathVariable Long id, @Valid @ModelAttribute("product") UpdateProductRequestDto dto, BindingResult bindingResult, Model model)
-    {
-        if (bindingResult.hasErrors())
-        {
-            model.addAttribute("productId",id);
+    public String update(@PathVariable Long id, @Valid @ModelAttribute("product") UpdateProductRequestDto dto, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("productId", id);
             return "admin/products/edit";
         }
         productService.update(id, dto);
@@ -79,8 +72,7 @@ public class AdminProductController {
     }
 
     @PostMapping("/{id}/delete")
-    public String delete(@PathVariable Long id)
-    {
+    public String delete(@PathVariable Long id) {
         productService.delete(id);
         return "redirect:/admin/products";
     }

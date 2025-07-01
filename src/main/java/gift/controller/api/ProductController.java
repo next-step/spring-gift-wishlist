@@ -5,10 +5,11 @@ import gift.dto.CreateProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.dto.UpdateProductRequestDto;
 import gift.entity.Product;
+import gift.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import gift.service.ProductService;
+
 import java.util.List;
 import java.util.stream.Collectors;
 

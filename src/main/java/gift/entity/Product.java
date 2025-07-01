@@ -6,28 +6,26 @@ public class Product {
     private int price;
     private String imageUrl;
 
-    public Product(Long id, String name, int price, String imageUrl)
-    {
+    public Product(Long id, String name, int price, String imageUrl) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
     }
-    public Long getId()
-    {
+
+    public Long getId() {
         return id;
     }
-    public int getPrice()
-    {
+
+    public int getPrice() {
         return price;
     }
-    public String getImageUrl()
-    {
+
+    public String getImageUrl() {
         return imageUrl;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
