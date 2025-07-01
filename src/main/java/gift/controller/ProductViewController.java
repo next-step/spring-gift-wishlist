@@ -102,13 +102,22 @@ public class ProductViewController {
             return "products/form";
         }
 
-        // dto를 변환해서 넘김
-        ProductUpdateRequestDto updateDto = new ProductUpdateRequestDto(
-            dto.getName(), dto.getPrice(), dto.getImageUrl()
-        );
+        try {
 
-        productService.updateProduct(id, updateDto);
-        return "redirect:/admin/products";
+            // dto를 변환해서 넘김
+            ProductUpdateRequestDto updateDto = new ProductUpdateRequestDto(
+                dto.getName(), dto.getPrice(), dto.getImageUrl()
+            );
+
+            productService.updateProduct(id, updateDto);
+            return "redirect:/admin/products";
+
+        } catch (IllegalArgumentException e) {
+            // 예외 메세지를 모델에 추가
+            model.addAttribute("errorMessage", e.getMessage());
+            return "products/form";
+        }
+
     }
 
     // 상품 삭제 요청 처리
