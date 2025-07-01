@@ -4,6 +4,7 @@ import gift.dto.ProductRequestDto;
 import gift.entity.Product;
 import gift.repository.ProductRepository;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,8 +22,8 @@ public class ProductService {
     }
 
     //상품 검색
-    public Product findOne(Long id){
-        return null;
+    public Optional<Product> findOne(Long id){
+        return productRepository.findById(id);
     }
 
     //전체 상품 검색

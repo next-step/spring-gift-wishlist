@@ -63,7 +63,7 @@ public class AdminController {
             @RequestParam Long id,
             Model model
     ) {
-        Optional<Product> product = findProductById(id);
+        Optional<Product> product = productService.findOne(id);
         if (product.isPresent()) {
             model.addAttribute("product", product.get());
             return "productinfo";

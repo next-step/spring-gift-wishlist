@@ -3,9 +3,14 @@ package gift.repository;
 import gift.dto.ProductRequestDto;
 import gift.entity.Product;
 import java.lang.reflect.Member;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -32,8 +37,10 @@ public class ProductRepository {
         simpleJdbcInsert.execute(params);
     }
 
-    public void findById(){
-
+    public Optional<Product> findById(Long id){
+        String sql = "select * from products where id = ?";
+        List<Product> productList = jdbcTemplate.query(sql, productRowMapper(), id);
+        return productList.stream().findAny();
     }
 
     public void findProducts(){
@@ -46,6 +53,19 @@ public class ProductRepository {
 
     public void removeProduct(){
 
+    }
+
+    public RowMapper<Product> productRowMapper(){
+        return new RowMapper<Product>() {
+            @Override
+            public Product mapRow(ResultSet rs, int rowNum) throws SQLException {
+                Long id = rs.getLong("id");
+                String name = rs.getString("name");
+                Integer price = rs.getInt("price");
+                String imageUrl = rs.getString("image_url");
+                return new Product(id, name, price, imageUrl);
+            }
+        };
     }
 
 }
