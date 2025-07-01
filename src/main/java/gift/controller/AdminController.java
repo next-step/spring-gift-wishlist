@@ -2,6 +2,7 @@ package gift.controller;
 
 import gift.dto.ProductRequestDto;
 import gift.entity.Product;
+import gift.service.ProductService;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -24,11 +25,12 @@ import org.springframework.web.server.ResponseStatusException;
 @Controller//Controller는 mvc에서 화면을 구성하기 위해서 뷰 이름을 반환하고 ViewResolver를 거치게 됩니다.
 public class AdminController {
 
-    private JdbcTemplate jdbcTemplate;
+
+    private final ProductService productService;
 
     //의존성 주입(생성자가 1개인 경우 @Autowired 생략 가능)
-    public AdminController(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public AdminController(ProductService productService) {
+        this.productService = productService;
     }
 
     @GetMapping
@@ -41,9 +43,7 @@ public class AdminController {
     @PostMapping("/products/add")
     public String createProduct(@ModelAttribute ProductRequestDto requestDto) {
         if (checkProduct(requestDto)) {
-            String sql = "INSERT INTO PRODUCTS (NAME, PRICE, IMAGE_URL) VALUES (?, ?, ?)";
-            jdbcTemplate.update(sql, requestDto.getName(), requestDto.getPrice(),
-                    requestDto.getImageUrl());
+            productService.add(requestDto);
             return "redirect:/admin/products/list"; //GetMapping 되어 있는 것을 호출,,,?
         }
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -76,8 +76,8 @@ public class AdminController {
     @GetMapping("/products/list")
     public String getProducts(Model model) {
         String sql = "select id, name, price, image_url from products";
-        List<Product> productList = jdbcTemplate.query(sql, productRowMapper());
-        model.addAttribute("productList", productList);
+        //List<Product> productList = jdbcTemplate.query(sql, productRowMapper());
+        //model.addAttribute("productList", productList);
         return "home";
     }
 
@@ -100,7 +100,7 @@ public class AdminController {
             @PathVariable Long id
     ) {
         String sql = "update products set name = ?, price = ?, image_url = ? where id = ?";
-        jdbcTemplate.update(sql, requestDto.getName(), requestDto.getPrice(),requestDto.getImageUrl(), id);
+        //jdbcTemplate.update(sql, requestDto.getName(), requestDto.getPrice(),requestDto.getImageUrl(), id);
         return "redirect:/admin/products/list";
     }
 
@@ -109,7 +109,7 @@ public class AdminController {
     @PostMapping("/products/remove/{id}")
     public String removeProduct(@PathVariable Long id) {
         String sql = "delete from products where id = ?";
-        jdbcTemplate.update(sql, id);
+        //jdbcTemplate.update(sql, id);
         return "redirect:/admin/products/list";
     }
 
@@ -128,8 +128,9 @@ public class AdminController {
 
     public Optional<Product> findProductById(Long id) {
         String sql = "select * from products where id = ?";
-        List<Product> productList = jdbcTemplate.query(sql, productRowMapper(), id);
-        return productList.stream().findAny();
+        //List<Product> productList = jdbcTemplate.query(sql, productRowMapper(), id);
+        //return productList.stream().findAny();
+        return null;
     }
 
     private RowMapper<Product> productRowMapper() {
