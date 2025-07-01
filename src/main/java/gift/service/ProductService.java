@@ -38,7 +38,7 @@ public class ProductService {
 
     //상품 삭제
     public void remove(Long id){
-
+        productRepository.removeProduct(id);
     }
 
 }

@@ -53,8 +53,9 @@ public class ProductRepository {
 
     }
 
-    public void removeProduct(){
-
+    public void removeProduct(Long id){
+        String sql = "delete from products where id = ?";
+        jdbcTemplate.update(sql, id);
     }
 
     public RowMapper<Product> productRowMapper(){

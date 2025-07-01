@@ -107,8 +107,7 @@ public class AdminController {
     //등록된 상품을 삭제
     @PostMapping("/products/remove/{id}")
     public String removeProduct(@PathVariable Long id) {
-        String sql = "delete from products where id = ?";
-        //jdbcTemplate.update(sql, id);
+        productService.remove(id);
         return "redirect:/admin/products/list";
     }
 
