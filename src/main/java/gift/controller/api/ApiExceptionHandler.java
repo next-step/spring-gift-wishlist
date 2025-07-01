@@ -1,8 +1,8 @@
-package gift.exception;
+package gift.controller.api;
 
 import gift.dto.ErrorResponse;
+import gift.exception.ProductNotFoundException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-@RestControllerAdvice(basePackages = "gift.controller.api")
+@RestControllerAdvice(assignableTypes = ApiExceptionHandler.class)
 public class ApiExceptionHandler {
 
     @ExceptionHandler(ProductNotFoundException.class)

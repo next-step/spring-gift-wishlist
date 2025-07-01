@@ -1,5 +1,6 @@
-package gift.exception;
+package gift.controller.admin;
 
+import gift.exception.ProductNotFoundException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 
-@ControllerAdvice(basePackages = "gift.controller.admin")
+@ControllerAdvice(assignableTypes = AdminProductController.class)
 public class MvcExceptionHandler {
 
     @ExceptionHandler(ProductNotFoundException.class)

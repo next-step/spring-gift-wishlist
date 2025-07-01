@@ -32,11 +32,15 @@
 │   ├── java
 │   │   └── gift
 │   │       ├── controller
-│   │       │   ├── admin  // 관리자용 MVC 컨트롤러
-│   │       │   └── api    // 외부용 REST API 컨트롤러
+│   │       │   ├── admin
+│   │       │   │   ├── AdminProductController.java  // 관리자용 MVC 컨트롤러
+│   │       │   │   └── MvcExceptionHandler.java     // MVC 전용 예외 처리기
+│   │       │   └── api
+│   │       │       ├── ProductController.java       // 외부용 REST API 컨트롤러
+│   │       │       └── ApiExceptionHandler.java     // API 전용 예외 처리기
 │   │       ├── dto
 │   │       ├── entity
-│   │       ├── exception  // 예외 및 전역 예외 처리기
+│   │       ├── exception  // 전역 커스텀 비즈니스 예외
 │   │       ├── repository
 │   │       ├── service
 │   │       └── validation // 커스텀 유효성 검사기
