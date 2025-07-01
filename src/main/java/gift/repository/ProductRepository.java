@@ -4,6 +4,8 @@ import gift.dto.ProductResponseDto;
 import gift.entity.Product;
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Optional;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -46,15 +48,20 @@ public class ProductRepository {
                 ));
     }
 
-    public Product findProductById(Long id) {
+    public Optional<Product> findProductById(Long id) {
         String sql = "SELECT * FROM products WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, (rs, rowNum) ->
-                new Product(
-                        rs.getLong("id"),
-                        rs.getString("name"),
-                        rs.getInt("price"),
-                        rs.getString("image_url")
-                ), id);
+        try {
+            Product product = jdbcTemplate.queryForObject(sql, (rs, rowNum) ->
+                    new Product(
+                            rs.getLong("id"),
+                            rs.getString("name"),
+                            rs.getInt("price"),
+                            rs.getString("image_url")
+                    ), id);
+            return Optional.of(product);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     public void updateProduct(Product product) {

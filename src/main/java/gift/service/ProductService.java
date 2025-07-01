@@ -31,12 +31,14 @@ public class ProductService {
     }
 
     public ProductResponseDto findProductById(Long id) {
-        Product product = productRepository.findProductById(id);
+        Product product = productRepository.findProductById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         return new ProductResponseDto(product);
     }
 
     public ProductResponseDto updateProduct(Long id, String name, Integer price, String url) {
-        Product product = productRepository.findProductById(id);
+        Product product = productRepository.findProductById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         if (product == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id);
@@ -48,7 +50,8 @@ public class ProductService {
     }
 
     public void deleteProduct(Long id) {
-        Product product = productRepository.findProductById(id);
+        Product product = productRepository.findProductById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         if (product == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id);

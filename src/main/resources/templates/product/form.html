@@ -6,15 +6,16 @@
 </head>
 <body>
 <div th:with="actionUrl=${isEdit} ? '/admin/products/edit/' + ${product.id} : '/admin/products'">
-  <form th:action="@{__${actionUrl}__}" method="post">
-    <label>상품 이름</label>
-    <input type="text" name="name" th:value="${product.name}"/>
+  <form th:action="@{__${actionUrl}__}" th:object="${product}" method="post">
+
+    <label>상품명</label>
+    <input type="text" th:field="*{name}"/>
 
     <label>가격</label>
-    <input type="number" name="price" th:value="${product.price}"/>
+    <input type="number" th:field="*{price}"/>
 
     <label>이미지 URL</label>
-    <input type="text" name="imageUrl" th:value="${product.imageUrl}"/>
+    <input type="text" th:field="*{imageUrl}"/>
 
     <button type="submit" th:text="${isEdit} ? '수정' : '등록'">버튼</button>
   </form>
