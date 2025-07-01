@@ -54,3 +54,11 @@
 - 코드 클리닝 및 schema.sql 생성문 개선
 - DB insert 예외처리 추가
 - 테스트 코드 개선
+
+---
+
+### step1 유효성 검사 및 예외처리
+
+- 정규표현식으로 상품 이름을 검증하는 ProductValidator 추가
+- ProductService 상품 검증 로직 추가
+- 잘못된 이름 검증 테스트 코드 추가
