@@ -137,6 +137,27 @@ class ProductControllerTest {
     }
 
     // PUT
+    @Test
+    void 단건상품수정_NO_CONTENT_테스트() {
+        // given
+        var url = "http://localhost:" + port + "/api/products/1";
+
+        var request = new ProductCreateRequestDto(
+            "수정된 상품",
+            10000.0,
+            "https://PutNoContent.jpg"
+        );
+
+        // when
+        var response = restClient.put()
+            .uri(url)
+            .body(request)
+            .retrieve()
+            .toEntity(ProductCreateResponseDto.class);
+
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    }
 
     // DELETE
 }
