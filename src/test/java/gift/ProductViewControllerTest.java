@@ -58,4 +58,17 @@ public class ProductViewControllerTest {
             .andExpect(model().attributeExists("errorMessage"));
     }
 
+    @Test
+    @DisplayName("상품 등록 실패 - 상품명 없음")
+    void createProduct_fail_blankName() throws Exception {
+        mockMvc.perform(post("/admin/products/new")
+                .param("name", "")
+                .param("price", "1000")
+                .param("imageUrl", "https://image.com/item.jpg")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+            .andExpect(status().isOk())
+            .andExpect(view().name("products/form"))
+            .andExpect(model().attributeHasFieldErrors("productRequest", "name"));
+    }
+
 }
