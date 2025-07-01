@@ -1,20 +1,40 @@
 package gift.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import gift.dto.api.AddProductRequestDto;
+import gift.dto.api.ProductResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.web.client.RestClient;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ProductControllerTest {
+    
+    @LocalServerPort
+    private int port;
+    
+    private RestClient restClient;
     
     @BeforeEach
     void setUp() {
+        this.restClient = RestClient.builder()
+            .baseUrl("http://localhost:" + port)
+            .build();
     }
     
     @Test
-    void test1() {
-    
+    void 정상적으로_상품을_등록한다() {
+        var request = new AddProductRequestDto("테스트 상품", 1000L, "https://test.com/image.jpg");
+        
+        var response = restClient.post()
+            .uri("/api/products")
+            .body(request)
+            .retrieve()
+            .body(ProductResponseDto.class);
+        
+        assertThat(response.getName()).isEqualTo("테스트 상품");
     }
 }
