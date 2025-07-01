@@ -4,6 +4,7 @@ import gift.dto.api.AddProductRequestDto;
 import gift.dto.api.ModifyProductRequestDto;
 import gift.dto.api.ProductResponseDto;
 import gift.entity.Product;
+import gift.exception.custom.CheckMdOkException;
 import gift.repository.ProductRepository;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -24,7 +25,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponseDto addProduct(AddProductRequestDto requestDto) {
         
         if(!requestDto.isGoodName()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new CheckMdOkException();
         }
         
         Product product = new Product(
@@ -61,7 +62,7 @@ public class ProductServiceImpl implements ProductService {
         }
         
         if(!requestDto.isGoodName()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new CheckMdOkException();
         }
         
         Product newProduct = new Product(
@@ -93,7 +94,7 @@ public class ProductServiceImpl implements ProductService {
         }
         
         if(!requestDto.isGoodName()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new CheckMdOkException();
         }
         
         Product newProduct = new Product(

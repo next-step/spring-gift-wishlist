@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClient;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -106,9 +107,14 @@ class ProductControllerTest {
         var response = restClient.post()
             .uri("/api/products")
             .body(request)
-            .exchange((req, res) -> res);
+            .exchange((req, res) -> {
+                var status = res.getStatusCode();
+                var body = res.bodyTo(String.class);
+                return new ResponseEntity<>(body, status);
+            });
         
         assertThat(response.getStatusCode().value()).isEqualTo(400); // HTTP 400 확인
+        assertThat(response.getBody()).isEqualTo("MD와의 협의 후 사용 가능한 이름입니다.");
     }
     
     @Test
@@ -211,13 +217,36 @@ class ProductControllerTest {
         var response = restClient.put()
             .uri("/api/products/1")
             .body(request)
-            .exchange((req, res) -> res);
+            .exchange((req, res) -> {
+                var status = res.getStatusCode();
+                var body = res.bodyTo(String.class);
+                return new ResponseEntity<>(body, status);
+            });
         
         assertThat(response.getStatusCode().value()).isEqualTo(400); // HTTP 400 확인
+        assertThat(response.getBody()).isEqualTo("MD와의 협의 후 사용 가능한 이름입니다.");
     }
     
     @Test
     @Order(15)
+    void 올바르지_않은_카카오_이름으로_상품_정보를_일부_수정한다() throws IOException {
+        var request = new ModifyProductRequestDto("카카오 테스트상품", null, null, false);
+        
+        var response = restClient.patch()
+            .uri("/api/products/1")
+            .body(request)
+            .exchange((req, res) -> {
+                var status = res.getStatusCode();
+                var body = res.bodyTo(String.class);
+                return new ResponseEntity<>(body, status);
+            });
+        
+        assertThat(response.getStatusCode().value()).isEqualTo(400); // HTTP 400 확인
+        assertThat(response.getBody()).isEqualTo("MD와의 협의 후 사용 가능한 이름입니다.");
+    }
+    
+    @Test
+    @Order(16)
     void 정상적으로_상품을_삭제한다() throws IOException {
         
         var response = restClient.delete()
