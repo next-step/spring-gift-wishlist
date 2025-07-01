@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
-import org.thymeleaf.model.IModel;
 
 @RequestMapping("/admin") //prefix설정
 @Controller//Controller는 mvc에서 화면을 구성하기 위해서 뷰 이름을 반환하고 ViewResolver를 거치게 됩니다.
@@ -69,7 +68,8 @@ public class AdminController {
             model.addAttribute("product", product.get());
             return "productinfo";
         }
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "존재하지 않는 상품입니다.");
+        String errorMsg = "상품 ID가 " + id + "인 상품은 존재하지 않습니다.";
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errorMsg);
     }
 
     //read
