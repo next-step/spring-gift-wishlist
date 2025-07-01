@@ -2,11 +2,13 @@ package gift.controller;
 
 import gift.dto.request.RequestGift;
 import gift.dto.request.RequestModifyGift;
+import gift.dto.response.ResponseGift;
+import gift.exception.NoGiftException;
 import gift.repository.GiftJdbcRepository;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/products")
@@ -18,16 +20,20 @@ public class GiftController {
     }
 
     @PostMapping("")
-    public ResponseEntity<?> addGift(@RequestBody RequestGift requestGift) {
-        return new ResponseEntity<>(giftRepository.save(
-                RequestGift.toEntity(requestGift)), HttpStatus.CREATED
+    public ResponseEntity<?> addGift(@Valid @RequestBody RequestGift requestGift) {
+        return new ResponseEntity<>(
+                ResponseGift.from(
+                        giftRepository.save(
+                            RequestGift.toEntity(requestGift)
+                        )
+                ), HttpStatus.CREATED
         );
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getGiftById(@PathVariable Long id) {
         return ResponseEntity.ok().body(giftRepository.findById(id).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
+                () -> new NoGiftException("해당 상품을 찾을 수 없습니다.")
         ));
     }
 
@@ -37,11 +43,15 @@ public class GiftController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<?> updateGift(@PathVariable Long id, @RequestBody RequestModifyGift requestModifyGift) {
-        giftRepository.findById(id).orElseThrow(() ->new ResponseStatusException(HttpStatus.NOT_FOUND));
+    public ResponseEntity<?> updateGift(@PathVariable Long id, @Valid @RequestBody RequestModifyGift requestModifyGift) {
+        giftRepository.findById(id).orElseThrow(() -> new NoGiftException("해당 상품을 찾을 수 없습니다."));
         return ResponseEntity
                 .ok()
-                .body(giftRepository.modify(id, RequestModifyGift.toEntity(requestModifyGift)));
+                .body(
+                        ResponseGift.from(
+                                giftRepository.modify(id, RequestModifyGift.toEntity(requestModifyGift))
+                        )
+                );
     }
 
     @DeleteMapping("/{id}")
