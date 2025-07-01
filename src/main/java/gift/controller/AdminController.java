@@ -60,7 +60,7 @@ public class AdminController {
     //특정 상품을 조회(id)
     @GetMapping("/products/info")
     public String getProduct(
-            @RequestParam Long id,
+            @RequestParam(required = false) Long id,
             Model model
     ) {
         Optional<Product> product = productService.findOne(id);
@@ -68,6 +68,11 @@ public class AdminController {
             model.addAttribute("product", product.get());
             return "productinfo";
         }
+
+        if(id == null){
+            return "redirect:/admin";
+        }
+
         String errorMsg = "상품 ID가 " + id + "인 상품은 존재하지 않습니다.";
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errorMsg);
     }
