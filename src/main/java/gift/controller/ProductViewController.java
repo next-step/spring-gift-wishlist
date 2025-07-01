@@ -90,8 +90,23 @@ public class ProductViewController {
     }
 
     @DeleteMapping("/products/{id}")
-    public String deleteProduct(@PathVariable Long id) {
+    public String deleteProduct(
+        @PathVariable Long id,
+        Model model
+    ) {
         productService.delete(id);
+
+        if (!model.containsAttribute("requestDto")) {
+            model.addAttribute("requestDto", new ProductRequestDto(null, 0, ""));
+        }
+
+        if (!model.containsAttribute("updateDto")) {
+            model.addAttribute("updateDto", new ProductRequestDto(null, 0, ""));
+        }
+
+        if (!model.containsAttribute("productId")) {
+            model.addAttribute("productId", null);
+        }
 
         return "home";
     }
