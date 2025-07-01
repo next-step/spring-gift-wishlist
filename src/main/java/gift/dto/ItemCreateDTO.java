@@ -4,7 +4,6 @@ import gift.entity.Item;
 import gift.validation.UseKakaoValid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 @UseKakaoValid
@@ -15,6 +14,6 @@ public record ItemCreateDTO(String name,
 
 
     public ItemCreateDTO(Item saveditem) {
-        this(saveditem.getName(), saveditem.getPrice(), saveditem.getImageUrl(),true);
+        this(saveditem.getName(), saveditem.getPrice(), saveditem.getImageUrl(),false);
     }
 }
