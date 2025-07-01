@@ -7,6 +7,10 @@ public class ApprovedProduct {
 
     public ApprovedProduct() {}
 
+    public ApprovedProduct(String name) {
+        this.name = name;
+    }
+
     public Long getId() {
         return id;
     }
