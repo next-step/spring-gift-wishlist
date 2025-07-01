@@ -12,6 +12,8 @@ import java.util.*;
 @Repository
 public class ProductRepository {
 
+    private static final int NO_ROW_UPDATED = 0;
+
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert productInserter;
 
@@ -56,13 +58,13 @@ public class ProductRepository {
 
     public boolean deleteById(Long id) {
         int updated = jdbcTemplate.update("DELETE FROM product WHERE id = ?", id);
-        return updated > 0;
+        return updated > NO_ROW_UPDATED;
     }
 
     public Optional<Product> update(Long id, String name, int price, String imageUrl) {
         String sql = "UPDATE product SET name = ?, price = ?, image_url = ? WHERE id = ?";
         int updated = jdbcTemplate.update(sql, name, price, imageUrl, id);
-        if (updated == 0) return Optional.empty();
+        if (updated == NO_ROW_UPDATED) return Optional.empty();
         return findById(id);
     }
 }
