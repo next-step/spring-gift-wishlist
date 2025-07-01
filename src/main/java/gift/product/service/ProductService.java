@@ -23,7 +23,7 @@ public class ProductService {
   }
 
   public PagedResult<GetProductResDto> getAllByPage(PageRequest pageRequest) throws IllegalArgumentException {
-    List<Product> pagedProductList = productRepository.findAll(pageRequest.offset(),
+    List<Product> pagedProductList = productRepository.findAllByPage(pageRequest.offset(),
         pageRequest.pageSize(),pageRequest.sortInfo());
     return PagedResult.of(pagedProductList, pageRequest.offset(), pageRequest.pageSize()).map(GetProductResDto::from);
   }
