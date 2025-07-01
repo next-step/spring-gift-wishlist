@@ -71,4 +71,17 @@ public class ProductViewControllerTest {
             .andExpect(model().attributeHasFieldErrors("productRequest", "name"));
     }
 
+    @Test
+    @DisplayName("상품 등록 실패 - 상품명 15자 초과")
+    void createProduct_fail_nameTooLong() throws Exception {
+        mockMvc.perform(post("/admin/products/new")
+                .param("name", "1234567890123456") // 16자
+                .param("price", "1000")
+                .param("imageUrl", "https://image.com/item.jpg")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+            .andExpect(status().isOk())
+            .andExpect(view().name("products/form"))
+            .andExpect(model().attributeHasFieldErrors("productRequest", "name"));
+    }
+
 }
