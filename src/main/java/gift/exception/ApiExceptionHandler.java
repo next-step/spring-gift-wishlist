@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
@@ -13,35 +14,35 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 public class ApiExceptionHandler {
 
     @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleProductNotFound(ProductNotFoundException ex) {
-        ErrorResponse response = new ErrorResponse(ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleProductNotFound(ProductNotFoundException ex) {
+        return new ErrorResponse(ex.getMessage());
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
-        ErrorResponse response = new ErrorResponse("요청 형식이 올바르지 않거나, 허용되지 않는 값입니다. (예: 너무 큰 숫자)");
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+        return new ErrorResponse("요청 형식이 올바르지 않거나, 허용되지 않는 값입니다. (예: 너무 큰 숫자)");
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleValidationExceptions(MethodArgumentNotValidException ex) {
         String errorMessage = ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();
-        ErrorResponse response = new ErrorResponse(errorMessage);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        return new ErrorResponse(errorMessage);
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ErrorResponse> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
-        String message = String.format("'%s'은(는) 유효한 ID 형식이 아닙니다. 숫자만 입력해주세요.", ex.getValue());
-        ErrorResponse response = new ErrorResponse(message);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        String errorMessage = String.format("'%s'은(는) 유효한 ID 형식이 아닙니다. 숫자만 입력해주세요.", ex.getValue());
+        return new ErrorResponse(errorMessage);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGeneralException(Exception ex) {
-        ErrorResponse response = new ErrorResponse("서버 내부 오류가 발생했습니다.");
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleGeneralException(Exception ex) {
+        return new ErrorResponse("서버 내부 오류가 발생했습니다.");
     }
 
 }
