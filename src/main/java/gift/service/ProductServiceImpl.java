@@ -83,7 +83,7 @@ public class ProductServiceImpl implements ProductService {
             updated = productRepository.updateFieldById(product.getId(), "price", product.getPrice());
         }
         if (product.getImageUrl() != null) {
-            updated = productRepository.updateFieldById(product.getId(), "imageUrl", product.getImageUrl());
+            updated = productRepository.updateFieldById(product.getId(), "image_url", product.getImageUrl());
         }
         return updated;
     }

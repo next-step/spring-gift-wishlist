@@ -6,12 +6,12 @@
 
 + [X] 관련 설정 및 의존성 추가
 + [X] Testing을 위한 기본 추상 클래스 작성
-+ [ ] spring-validation을 이용한 상품 유효성 검사 로직 변경
++ [X] spring-validation을 이용한 상품 유효성 검사 로직 변경
   + [X] Custom Validator 구현
   + [X] ProductController 에서 @Valid 어노테이션을 이용한 유효성 검사 적용
 + [X] 예외 처리 로직 구현
-+ [ ] 적절한 Logging 추가
-+ [ ] 검증을 위한 Test 코드 작성
++ [X] 적절한 Logging 추가
++ [X] 검증을 위한 Test 코드 작성
 
 ### 이전 단계 요약
 
