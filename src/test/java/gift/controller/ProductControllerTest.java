@@ -50,4 +50,16 @@ class ProductControllerTest {
         
         assertThat(response.getStatusCode().value()).isEqualTo(400); // HTTP 400 확인
     }
+    
+    @Test
+    void 너무_긴_상품명_추가를_시도한다() throws IOException {
+        var request = new AddProductRequestDto("15자를넘겨야하는데뭐라고할까고민좀했음", 1000L, "https://test.com/image.jpg");
+        
+        var response = restClient.post()
+            .uri("/api/products")
+            .body(request)
+            .exchange((req, res) -> res);
+        
+        assertThat(response.getStatusCode().value()).isEqualTo(400); // HTTP 400 확인
+    }
 }
