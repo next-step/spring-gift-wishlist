@@ -75,9 +75,8 @@ public class AdminController {
     //전체 상품을 조회
     @GetMapping("/products/list")
     public String getProducts(Model model) {
-        String sql = "select id, name, price, image_url from products";
-        //List<Product> productList = jdbcTemplate.query(sql, productRowMapper());
-        //model.addAttribute("productList", productList);
+        List<Product> productList = productService.findAll();
+        model.addAttribute("productList", productList);
         return "home";
     }
 

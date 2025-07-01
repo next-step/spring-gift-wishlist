@@ -28,7 +28,7 @@ public class ProductService {
 
     //전체 상품 검색
     public List<Product> findAll(){
-        return null;
+        return productRepository.findProducts();
     }
 
     //상품 수정

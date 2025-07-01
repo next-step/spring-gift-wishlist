@@ -43,8 +43,10 @@ public class ProductRepository {
         return productList.stream().findAny();
     }
 
-    public void findProducts(){
-
+    public List<Product> findProducts(){
+        String sql = "select * from products";
+        List<Product> productList = jdbcTemplate.query(sql, productRowMapper());
+        return productList;
     }
 
     public void modifyProduct(){
