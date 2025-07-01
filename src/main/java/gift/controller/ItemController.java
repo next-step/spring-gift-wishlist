@@ -2,12 +2,10 @@ package gift.controller;
 
 
 import gift.dto.ItemCreateDTO;
-import gift.dto.ItemDTO;
 import gift.dto.ItemResponseDTO;
 import gift.dto.ItemUpdateDTO;
 import gift.service.ItemService;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
