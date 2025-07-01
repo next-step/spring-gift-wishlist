@@ -107,4 +107,42 @@ public class ProductControllerTest {
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getName()).isEqualTo(requestDto.getName());
     }
+
+    @Test
+    void 상품_삭제_정상_테스트() {
+        System.out.println("deleteProduct test");
+        ProductRequestDto requestDto = new ProductRequestDto();
+        requestDto.setName("삭제용 테스트 샘플");
+        requestDto.setPrice(5000);
+        requestDto.setImageUrl("https://st.kakaocdn.net/product/gift/product/20231010111814_9a667f9eccc943648797925498bdd8a3.jpg");
+
+        String url = "http://localhost:" + port + "/api/products";
+        var createResponse = client.post()
+                .uri(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(requestDto)
+                .retrieve()
+                .toEntity(ProductResponseDto.class);
+
+        assertThat(createResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        // 기본 2개 상품이 있어 삭제 샘플의 id는 3
+        String deleteUrl = "http://localhost:" + port + "/api/products/" + 3;
+        var deleteResponse = client.delete()
+                .uri(deleteUrl)
+                .retrieve()
+                .toEntity(Void.class);
+
+        // 삭제 정상 동작 테스트
+        assertThat(deleteResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+
+        // 삭제 후 동일 id로 다시 한번 삭제 시 Not Found 테스트
+        assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
+                .isThrownBy(
+                        () -> client.delete()
+                                .uri(deleteUrl)
+                                .retrieve()
+                                .toEntity(Void.class)
+                );
+    }
 }
