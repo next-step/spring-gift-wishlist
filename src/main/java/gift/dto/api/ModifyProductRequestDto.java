@@ -13,7 +13,9 @@ public class ModifyProductRequestDto {
     private Long price;
     private String imageUrl;
     
-    @NotNull
+    @NotNull(
+        message = "MD 협의 여부는 필수입니다."
+    )
     private Boolean mdOk;
     
     public ModifyProductRequestDto() {
