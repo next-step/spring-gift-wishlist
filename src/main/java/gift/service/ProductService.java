@@ -27,14 +27,19 @@ public class ProductService {
                 .orElseThrow(() -> new ProductNotFoundException("ID " + id + "에 해당하는 상품을 찾을 수 없습니다."));
     }
 
+    @Transactional
     public Product create(CreateProductRequestDto dto) {
         return repository.save(new Product(null, dto.getName(), dto.getPrice(), dto.getImageUrl()));
     }
 
     @Transactional
-    public void update(Long id, UpdateProductRequestDto dto) {
-        Product product = new Product(id, dto.getName(), dto.getPrice(), dto.getImageUrl());
-        repository.update(id, product);
+    public Product update(Long id,UpdateProductRequestDto dto) {
+        Product productUpdate=getById(id);
+        productUpdate.setName(dto.getName());
+        productUpdate.setPrice(dto.getPrice());
+        productUpdate.setImageUrl(dto.getImageUrl());
+        repository.update(id,productUpdate);
+        return productUpdate;
     }
 
     @Transactional
