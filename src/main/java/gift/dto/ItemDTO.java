@@ -2,12 +2,24 @@ package gift.dto;
 
 import gift.entity.Item;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public class ItemDTO {
+
+    @NotNull
     private Long id;
+
+    @NotNull
+    @Size(max = 255)
     private String name;
+
+    @NotNull
     @Min(0)
     private Integer price;
+
+    @NotNull
+    @Size(max=255)
     private String imageUrl;
 
     public ItemDTO() {
