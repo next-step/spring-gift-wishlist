@@ -67,7 +67,7 @@ public class ProductServiceImpl implements ProductService {
         productRepository.deleteProductById(id);
     }
 
-    public Product findProductByIdOrElseThrow(Long id) {
+    private Product findProductByIdOrElseThrow(Long id) {
         return productRepository.findProductById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
