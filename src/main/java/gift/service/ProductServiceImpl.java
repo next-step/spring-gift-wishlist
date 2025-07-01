@@ -2,6 +2,7 @@ package gift.service;
 
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
+import gift.exception.ProductNotFoundException;
 import gift.repository.ProductRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ public class ProductServiceImpl implements ProductService {
 
   @Override
   public ProductResponseDto findProductById(Long id) {
-    return repository.findProductById(id);
+    return repository.findProductById(id).orElseThrow(()->new ProductNotFoundException("product가 없습니다."));
   }
 
   @Override
@@ -34,10 +35,7 @@ public class ProductServiceImpl implements ProductService {
   @Override
   public ProductResponseDto updateProduct(Long id, ProductRequestDto requestDto) {
 
-    if (repository.findProductById(id) == null) {
-      throw new IllegalStateException("업데이트하려는 상품이 없습니다");
-    }
-    return repository.updateProduct(id, requestDto);
+    return repository.updateProduct(id, requestDto).orElseThrow(()->new ProductNotFoundException("product가 없습니다."));
   }
 
   @Override

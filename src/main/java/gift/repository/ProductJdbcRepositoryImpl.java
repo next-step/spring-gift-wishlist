@@ -4,6 +4,8 @@ import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Optional;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -32,16 +34,19 @@ public class ProductJdbcRepositoryImpl implements ProductRepository {
   }
 
   @Override
-  public ProductResponseDto findProductById(Long id) {
+  public Optional<ProductResponseDto> findProductById(Long id) {
     String sql = "select * from products where id=?";
-    return jdbcTemplate.queryForObject(sql, (rs, rowNum) ->
-            new ProductResponseDto(
-                rs.getLong("id"),
-                rs.getString("name"),
-                rs.getLong("price"),
-                rs.getString("imageUrl")
-            )
-        , id);
+    try {
+      ProductResponseDto result = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> new ProductResponseDto(
+                  rs.getLong("id"),
+                  rs.getString("name"),
+                  rs.getLong("price"),
+                  rs.getString("imageUrl"))
+          , id);
+      return Optional.of(result);
+    } catch (EmptyResultDataAccessException e) {
+      return Optional.empty();
+    }
   }
 
   @Override
@@ -60,17 +65,24 @@ public class ProductJdbcRepositoryImpl implements ProductRepository {
 
     Long generatedId = keyHolder.getKey().longValue();
 
-    return new ProductResponseDto(generatedId, requestDto.getName(), requestDto.getPrice(),
+    ProductResponseDto responseDto = new ProductResponseDto(generatedId, requestDto.getName(),
+        requestDto.getPrice(),
         requestDto.getImageUrl());
+    return responseDto;
   }
 
   @Override
-  public ProductResponseDto updateProduct(Long id, ProductRequestDto requestDto) {
+  public Optional<ProductResponseDto> updateProduct(Long id, ProductRequestDto requestDto) {
     String sql = "update products set name=?, price=?, imageUrl=? where id=?";
-    jdbcTemplate.update(sql, requestDto.getName(), requestDto.getPrice(), requestDto.getImageUrl(),
+    int update = jdbcTemplate.update(sql, requestDto.getName(), requestDto.getPrice(),
+        requestDto.getImageUrl(),
         id);
-    return new ProductResponseDto(id, requestDto.getName(), requestDto.getPrice(),
+    if(update==0)
+      return Optional.empty();
+    ProductResponseDto responseDto = new ProductResponseDto(id, requestDto.getName(),
+        requestDto.getPrice(),
         requestDto.getImageUrl());
+    return Optional.of(responseDto);
   }
 
   @Override
