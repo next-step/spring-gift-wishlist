@@ -4,6 +4,7 @@ import gift.dto.request.ProductRequestDto;
 import gift.dto.request.ProductUpdateRequestDto;
 import gift.dto.response.ProductResponseDto;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -43,11 +44,10 @@ class ProductController {
 
     //상품 수정
     @PatchMapping("/products/{productId}")
-    public ResponseEntity<ProductResponseDto> updateProduct(@PathVariable long productId,
+    public ResponseEntity<ProductResponseDto> updateProduct(
+        @PathVariable long productId,
         @RequestBody ProductUpdateRequestDto productUpdateRequestDto) {
-        if (!productService.containsProduct(productId)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+
         return new ResponseEntity<>(
             productService.updateProduct(productId, productUpdateRequestDto), HttpStatus.OK);
     }
@@ -55,9 +55,7 @@ class ProductController {
     //상품 삭제
     @DeleteMapping("/products/{productId}")
     public ResponseEntity<Void> deleteProduct(@PathVariable long productId) {
-        if (!productService.containsProduct(productId)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+
         productService.deleteProduct(productId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
