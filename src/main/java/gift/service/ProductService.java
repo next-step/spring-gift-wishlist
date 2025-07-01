@@ -33,7 +33,7 @@ public class ProductService {
 
     //상품 수정
     public void modify(Long id, ProductRequestDto requestDto){
-
+        productRepository.modifyProduct(id, requestDto);
     }
 
     //상품 삭제

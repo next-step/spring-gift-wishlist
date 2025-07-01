@@ -86,7 +86,7 @@ public class AdminController {
             @PathVariable Long id,
             Model model
     ) {
-        Product product = findProductById(id).get();
+        Product product = productService.findOne(id).get();
         model.addAttribute("product", product);
         return "modify";
     }
@@ -98,8 +98,7 @@ public class AdminController {
             @ModelAttribute ProductRequestDto requestDto,
             @PathVariable Long id
     ) {
-        String sql = "update products set name = ?, price = ?, image_url = ? where id = ?";
-        //jdbcTemplate.update(sql, requestDto.getName(), requestDto.getPrice(),requestDto.getImageUrl(), id);
+        productService.modify(id, requestDto);
         return "redirect:/admin/products/list";
     }
 

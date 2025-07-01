@@ -49,8 +49,9 @@ public class ProductRepository {
         return productList;
     }
 
-    public void modifyProduct(){
-
+    public void modifyProduct(Long id, ProductRequestDto requestDto){
+        String sql = "update products set name = ?, price =?, image_url = ? where id =?";
+        jdbcTemplate.update(sql, requestDto.getName(), requestDto.getPrice(), requestDto.getImageUrl(), id);
     }
 
     public void removeProduct(Long id){
