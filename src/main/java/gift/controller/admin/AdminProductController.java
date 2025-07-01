@@ -67,12 +67,11 @@ public class AdminProductController {
     }
 
     @PostMapping("/{id}/edit")
-    public String update(@PathVariable Long id, @Valid @ModelAttribute UpdateProductRequestDto dto, BindingResult bindingResult, Model model)
+    public String update(@PathVariable Long id, @Valid @ModelAttribute("product") UpdateProductRequestDto dto, BindingResult bindingResult, Model model)
     {
         if (bindingResult.hasErrors())
         {
             model.addAttribute("productId",id);
-            model.addAttribute("product",dto);
             return "admin/products/edit";
         }
         productService.update(id, dto);
