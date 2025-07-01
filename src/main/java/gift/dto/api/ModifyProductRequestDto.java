@@ -19,7 +19,7 @@ public class ModifyProductRequestDto {
     private Boolean mdOk;
     
     public ModifyProductRequestDto() {
-        this(null, null, null, false);
+        this(null, null, null, null);
     }
     
     public ModifyProductRequestDto(String name, Long price, String imageUrl, Boolean mdOk) {

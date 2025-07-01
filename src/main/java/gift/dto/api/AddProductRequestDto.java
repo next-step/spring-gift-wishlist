@@ -30,7 +30,7 @@ public class AddProductRequestDto {
     private Boolean mdOk;
     
     public AddProductRequestDto() {
-        this("", 0L, "", false);
+        this(null, null, null, null);
     }
     
     public AddProductRequestDto(String name, Long price, String imageUrl, Boolean mdOk) {
