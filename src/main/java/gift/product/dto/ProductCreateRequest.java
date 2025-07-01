@@ -1,6 +1,6 @@
 package gift.product.dto;
 
-import gift.global.annotation.ProductNameValidator;
+import gift.product.annotation.ProductNameValidator;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
