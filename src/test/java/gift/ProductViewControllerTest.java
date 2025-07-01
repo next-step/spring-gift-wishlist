@@ -123,4 +123,17 @@ public class ProductViewControllerTest {
             .andExpect(model().attributeHasFieldErrors("productRequest", "imageUrl"));
     }
 
+    @Test
+    @DisplayName("상품 등록 실패 - 이미지 URL 없음")
+    void createProduct_fail_imageUrlMissing() throws Exception {
+        mockMvc.perform(post("/admin/products/new")
+                .param("name", "정상 상품명")
+                .param("price", "1000")
+                .param("imageUrl", "")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+            .andExpect(status().isOk())
+            .andExpect(view().name("products/form"))
+            .andExpect(model().attributeHasFieldErrors("productRequest", "imageUrl"));
+    }
+
 }
