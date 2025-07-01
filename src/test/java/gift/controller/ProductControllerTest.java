@@ -53,6 +53,18 @@ class ProductControllerTest {
     }
     
     @Test
+    void 정보_일부가_비어있는_상품_추가를_시도한다() throws IOException {
+        var request = new AddProductRequestDto("테스트 상품", null, "https://test.com/image.jpg", true);
+        
+        var response = restClient.post()
+            .uri("/api/products")
+            .body(request)
+            .exchange((req, res) -> res);
+        
+        assertThat(response.getStatusCode().value()).isEqualTo(400); // HTTP 400 확인
+    }
+    
+    @Test
     void 너무_긴_상품명_추가를_시도한다() throws IOException {
         var request = new AddProductRequestDto("15자를넘겨야하는데뭐라고할까고민좀했음", 1000L, "https://test.com/image.jpg", true);
         

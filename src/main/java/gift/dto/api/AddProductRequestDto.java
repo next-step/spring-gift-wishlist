@@ -9,15 +9,20 @@ public class AddProductRequestDto {
         regexp = "^[가-힣a-zA-Z0-9 ()\\[\\]+\\-&/_]{1,15}$",
         message = "이름은 한글, 영문, 숫자, 공백, (), [], +, -, &, /, _ 만 포함할 수 있으며 최대 15자까지 입력 가능합니다."
     )
+    @NotNull
     private String name;
+    
+    @NotNull
     private Long price;
+    
+    @NotNull
     private String imageUrl;
     
     @NotNull
     private Boolean isMDOK;
     
     public AddProductRequestDto() {
-        this(null, null, null, false);
+        this("", 0L, "", false);
     }
     
     public AddProductRequestDto(String name, Long price, String imageUrl, Boolean isMDOK) {
@@ -57,11 +62,6 @@ public class AddProductRequestDto {
     
     public void setMDOK(Boolean MDOK) {
         isMDOK = MDOK;
-    }
-    
-    //유효성 검사 묶기
-    public Boolean isNotValid() {
-        return (name == null || price == null || imageUrl == null);
     }
     
     public Boolean isGoodName() {

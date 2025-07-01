@@ -23,10 +23,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponseDto addProduct(AddProductRequestDto requestDto) {
         
-        if (requestDto.isNotValid()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
-        
         if(!requestDto.isGoodName()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
