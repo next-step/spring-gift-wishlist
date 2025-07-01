@@ -160,4 +160,26 @@ class ProductControllerTest {
     }
 
     // DELETE
+    @Test
+    void 단건상품삭제_NO_CONTENT_테스트() {
+        // given
+        var url = "http://localhost:" + port + "/api/products/1";
+
+        // when
+        var response = restClient.delete()
+            .uri(url)
+            .retrieve()
+            .toEntity(ProductCreateResponseDto.class);
+
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+
+        var results = jdbcTemplate.query(
+            "SELECT * FROM products WHERE productId = 1",
+            (rs, rowNum) -> rs.getInt("productId")
+        );
+
+        assertThat(results).isEmpty();
+    }
+
 }
