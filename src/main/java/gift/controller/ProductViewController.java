@@ -68,7 +68,8 @@ public class ProductViewController {
         AddProductRequestDto requestDto = new AddProductRequestDto(
             productForm.getName(),
             productForm.getPrice(),
-            productForm.getImageUrl()
+            productForm.getImageUrl(),
+            productForm.getMDOK()
         );
         
         productService.addProduct(requestDto);

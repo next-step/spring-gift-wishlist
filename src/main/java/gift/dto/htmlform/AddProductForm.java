@@ -1,5 +1,6 @@
 package gift.dto.htmlform;
 
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 public class AddProductForm {
@@ -12,13 +13,18 @@ public class AddProductForm {
     private Long price;
     private String imageUrl;
     
+    @NotNull
+    private Boolean isMDOK;
+    
     public AddProductForm() {
+        this(null, null, null, false);
     }
     
-    public AddProductForm(String name, Long price, String imageUrl) {
+    public AddProductForm(String name, Long price, String imageUrl, Boolean isMDOK) {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
+        this.isMDOK = isMDOK;
     }
     
     public String getName() {
@@ -33,6 +39,10 @@ public class AddProductForm {
         return imageUrl;
     }
     
+    public Boolean getMDOK() {
+        return isMDOK;
+    }
+    
     public void setName(String name) {
         this.name = name;
     }
@@ -44,6 +54,8 @@ public class AddProductForm {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
-    //html form의 내용을 binding 하기 위해서는 setter의 존재 필수
-    //즉 불변객체가 아닌 가변 객체여야 함
+    
+    public void setIsMDOK(Boolean isMDOK) {
+        this.isMDOK = isMDOK;
+    }
 }

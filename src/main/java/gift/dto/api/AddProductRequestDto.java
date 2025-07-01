@@ -1,5 +1,6 @@
 package gift.dto.api;
 
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 public class AddProductRequestDto {
@@ -12,13 +13,18 @@ public class AddProductRequestDto {
     private Long price;
     private String imageUrl;
     
+    @NotNull
+    private Boolean isMDOK;
+    
     public AddProductRequestDto() {
+        this(null, null, null, false);
     }
     
-    public AddProductRequestDto(String name, Long price, String imageUrl) {
+    public AddProductRequestDto(String name, Long price, String imageUrl, Boolean isMDOK) {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
+        this.isMDOK = isMDOK;
     }
     
     public String getName() {
@@ -33,6 +39,10 @@ public class AddProductRequestDto {
         return imageUrl;
     }
     
+    public Boolean getMDOK() {
+        return isMDOK;
+    }
+    
     public void setName(String name) {
         this.name = name;
     }
@@ -45,8 +55,19 @@ public class AddProductRequestDto {
         this.imageUrl = imageUrl;
     }
     
+    public void setMDOK(Boolean MDOK) {
+        isMDOK = MDOK;
+    }
+    
     //유효성 검사 묶기
     public Boolean isNotValid() {
         return (name == null || price == null || imageUrl == null);
+    }
+    
+    public Boolean isGoodName() {
+        if(name.contains("카카오")) {
+            return isMDOK;
+        }
+        return true;
     }
 }

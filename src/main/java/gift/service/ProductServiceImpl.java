@@ -27,6 +27,10 @@ public class ProductServiceImpl implements ProductService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         
+        if(!requestDto.isGoodName()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        
         Product product = new Product(
             0L,
             requestDto.getName(),
