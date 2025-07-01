@@ -9,7 +9,7 @@ import jakarta.validation.constraints.Size;
 public class ProductCreateRequestDto {
 
     @NotBlank(message = "상품명은 필수입니다.")
-    @Size(min = 15, message = "최대 15자까지 가능합니다.")
+    @Size(max = 15, message = "최대 15자까지 가능합니다.")
     private String name;
 
     @NotNull(message = "가격은 필수입니다.")
