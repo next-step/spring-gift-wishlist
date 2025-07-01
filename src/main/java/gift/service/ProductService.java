@@ -7,7 +7,6 @@ import java.util.List;
 
 public interface ProductService {
     
-    //상품 추가 Service
     ProductResponseDto addProduct(AddProductRequestDto requestDto);
     
     List<ProductResponseDto> findAllProducts();

@@ -15,7 +15,6 @@ public class ProductRepositoryImpl implements ProductRepository {
     //DB
     private final JdbcClient products;
     
-    //생성자 주입
     public ProductRepositoryImpl(JdbcClient products) {
         this.products = products;
     }
@@ -29,15 +28,15 @@ public class ProductRepositoryImpl implements ProductRepository {
         GeneratedKeyHolder generatedKey = new GeneratedKeyHolder(); //auto increment로 생성된 key 불러오기
         
         products.sql(sql)
-            .param("name", product.getName())
-            .param("price", product.getPrice())
-            .param("imageUrl", product.getImageUrl())
+            .param("name", product.name())
+            .param("price", product.price())
+            .param("imageUrl", product.imageUrl())
             .update(generatedKey);
         
         Long recentKey = generatedKey.getKey().longValue();
         
-        return new ProductResponseDto(recentKey, product.getName(), product.getPrice(),
-            product.getImageUrl());
+        return new ProductResponseDto(recentKey, product.name(), product.price(),
+            product.imageUrl());
     }
     
     @Override
@@ -80,10 +79,10 @@ public class ProductRepositoryImpl implements ProductRepository {
             """;
         
         products.sql(sql)
-            .param("id", newProduct.getId())
-            .param("name", newProduct.getName())
-            .param("price", newProduct.getPrice())
-            .param("imageUrl", newProduct.getImageUrl())
+            .param("id", newProduct.id())
+            .param("name", newProduct.name())
+            .param("price", newProduct.price())
+            .param("imageUrl", newProduct.imageUrl())
             .update();
         
         return new ProductResponseDto(newProduct);

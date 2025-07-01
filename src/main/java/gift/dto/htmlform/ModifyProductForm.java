@@ -2,17 +2,20 @@ package gift.dto.htmlform;
 
 public class ModifyProductForm {
     
-    private String name; //상품의 이름
-    private Long price; //상품의 가격
-    private String imageUrl; //상품의 이미지 URL
+    private String name;
+    private Long price;
+    private String imageUrl;
+    private Boolean mdOk;
     
     public ModifyProductForm() {
+        this(null, null, null, false);
     }
     
-    public ModifyProductForm(String name, Long price, String imageUrl) {
+    public ModifyProductForm(String name, Long price, String imageUrl, Boolean mdOk) {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
+        this.mdOk = mdOk;
     }
     
     public String getName() {
@@ -27,6 +30,10 @@ public class ModifyProductForm {
         return imageUrl;
     }
     
+    public Boolean getMdOk() {
+        return mdOk;
+    }
+    
     public void setName(String name) {
         this.name = name;
     }
@@ -37,5 +44,9 @@ public class ModifyProductForm {
     
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+    
+    public void setMdOk(Boolean mdOk) {
+        this.mdOk = mdOk;
     }
 }

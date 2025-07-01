@@ -6,7 +6,6 @@ import java.util.List;
 
 public interface ProductRepository {
     
-    //상품 추가 api
     ProductResponseDto addProduct(Product product);
     
     List<ProductResponseDto> findAllProducts();

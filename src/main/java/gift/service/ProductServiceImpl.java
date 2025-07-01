@@ -4,6 +4,9 @@ import gift.dto.api.AddProductRequestDto;
 import gift.dto.api.ModifyProductRequestDto;
 import gift.dto.api.ProductResponseDto;
 import gift.entity.Product;
+import gift.exception.custom.CheckMdOkException;
+import gift.exception.custom.FillAllInfoException;
+import gift.exception.custom.FillSomeInfoException;
 import gift.repository.ProductRepository;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -15,7 +18,6 @@ public class ProductServiceImpl implements ProductService {
     
     private final ProductRepository productRepository;
     
-    //생성자 주입
     public ProductServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
@@ -24,8 +26,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponseDto addProduct(AddProductRequestDto requestDto) {
         
-        if (requestDto.isNotValid()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        if(!requestDto.isGoodName()) {
+            throw new CheckMdOkException();
         }
         
         Product product = new Product(
@@ -58,7 +60,11 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findProductWithId(id);
         
         if (requestDto.isNotValidForModify()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new FillAllInfoException();
+        }
+        
+        if(!requestDto.isGoodName()) {
+            throw new CheckMdOkException();
         }
         
         Product newProduct = new Product(
@@ -79,20 +85,25 @@ public class ProductServiceImpl implements ProductService {
         productRepository.deleteProductWithId(id);
     }
     
+    //상품 수정 (일부 내용이 바뀜)
     @Override
     public ProductResponseDto modifyProductInfoWithId(Long id,
         ModifyProductRequestDto requestDto) {
         Product product = productRepository.findProductWithId(id);
         
         if (requestDto.isNotValidForModifyInfo()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new FillSomeInfoException();
+        }
+        
+        if(!requestDto.isGoodName()) {
+            throw new CheckMdOkException();
         }
         
         Product newProduct = new Product(
             id,
-            requestDto.getName() != null ? requestDto.getName() : product.getName(),
-            requestDto.getPrice() != null ? requestDto.getPrice() : product.getPrice(),
-            requestDto.getImageUrl() != null ? requestDto.getImageUrl() : product.getImageUrl()
+            requestDto.getName() != null ? requestDto.getName() : product.name(),
+            requestDto.getPrice() != null ? requestDto.getPrice() : product.price(),
+            requestDto.getImageUrl() != null ? requestDto.getImageUrl() : product.imageUrl()
         );
         
         return productRepository.modifyProductWithId(id,

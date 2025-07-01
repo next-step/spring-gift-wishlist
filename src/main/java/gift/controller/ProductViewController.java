@@ -6,6 +6,7 @@ import gift.dto.api.ProductResponseDto;
 import gift.dto.htmlform.AddProductForm;
 import gift.dto.htmlform.ModifyProductForm;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,14 +39,14 @@ public class ProductViewController {
     }
     
     //특정 상품 상세 조회
-    @GetMapping("{id}")
+    @GetMapping("/{productId}")
     public String showProductView(
-        @PathVariable Long id,
+        @PathVariable(name="productId") Long id,
         Model model
     ) {
         ProductResponseDto product = productService.findProductWithId(id);
         ModifyProductForm modifyForm = new ModifyProductForm(product.getName(),
-            product.getPrice(), product.getImageUrl());
+            product.getPrice(), product.getImageUrl(), product.getName().contains("카카오"));
         
         model.addAttribute("product", product);
         model.addAttribute("modifyForm", modifyForm);
@@ -63,11 +64,12 @@ public class ProductViewController {
     
     //상품 추가 화면에서 제출 버튼 누르면 동작
     @PostMapping("/add")
-    public String addProduct(@ModelAttribute AddProductForm productForm) {
+    public String addProduct(@ModelAttribute @Valid AddProductForm productForm) {
         AddProductRequestDto requestDto = new AddProductRequestDto(
             productForm.getName(),
             productForm.getPrice(),
-            productForm.getImageUrl()
+            productForm.getImageUrl(),
+            productForm.getMdOk()
         );
         
         productService.addProduct(requestDto);
@@ -76,8 +78,8 @@ public class ProductViewController {
     }
     
     //상품 목록에서 수정 버튼 누를 시 수정화면 불러옴, 구성은 추가와 유사
-    @GetMapping("/edit/{id}")
-    public String showModifyForm(@PathVariable Long id, Model model) {
+    @GetMapping("/edit/{productId}")
+    public String showModifyForm(@PathVariable(name="productId") Long id, Model model) {
         model.addAttribute("productId", id);
         model.addAttribute("productForm", new ModifyProductForm());
         
@@ -85,13 +87,14 @@ public class ProductViewController {
     }
     
     //수정 화면에서 수정 누를 시 동작
-    @PutMapping("/edit/{id}")
-    public String modifyProduct(@PathVariable Long id,
+    @PutMapping("/edit/{productId}")
+    public String modifyProduct(@PathVariable(name="productId") Long id,
         @ModelAttribute ModifyProductForm productForm) {
         ModifyProductRequestDto requestDto = new ModifyProductRequestDto(
             productForm.getName(),
             productForm.getPrice(),
-            productForm.getImageUrl()
+            productForm.getImageUrl(),
+            productForm.getMdOk()
         );
         
         productService.modifyProductWithId(id, requestDto);
@@ -100,13 +103,14 @@ public class ProductViewController {
     }
     
     //조회 화면에서 수정 누를 시 동작
-    @PatchMapping("/edit/{id}")
-    public String modifyInfoProduct(@PathVariable Long id,
+    @PatchMapping("/edit/{productId}")
+    public String modifyInfoProduct(@PathVariable(name="productId") Long id,
         @ModelAttribute ModifyProductForm modifyForm) {
         ModifyProductRequestDto requestDto = new ModifyProductRequestDto(
             modifyForm.getName(),
             modifyForm.getPrice(),
-            modifyForm.getImageUrl()
+            modifyForm.getImageUrl(),
+            modifyForm.getMdOk()
         );
         
         productService.modifyProductInfoWithId(id, requestDto);
@@ -115,8 +119,8 @@ public class ProductViewController {
     }
     
     //삭제 버튼 누를 시 동작
-    @DeleteMapping("/{id}")
-    public String deleteProduct(@PathVariable Long id) {
+    @DeleteMapping("/{productId}")
+    public String deleteProduct(@PathVariable(name="productId") Long id) {
         productService.deleteProductWithId(id);
         
         return "redirect:" + PRODUCTS_LIST_PATH;
