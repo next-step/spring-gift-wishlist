@@ -57,7 +57,7 @@ public class ProductController {
     @PutMapping("/{productId}")
     public ResponseEntity<ProductResponseDto> modifyProductWithId(
         @PathVariable(name="productId") Long id,
-        @RequestBody ModifyProductRequestDto requestDto
+        @RequestBody @Valid ModifyProductRequestDto requestDto
     ) {
         ProductResponseDto responseDto = productService.modifyProductWithId(id, requestDto);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
@@ -67,7 +67,7 @@ public class ProductController {
     @PatchMapping("/{productId}")
     public ResponseEntity<ProductResponseDto> modifyProductInfoWithId(
         @PathVariable(name="productId") Long id,
-        @RequestBody ModifyProductRequestDto requestDto
+        @RequestBody @Valid ModifyProductRequestDto requestDto
     ) {
         ProductResponseDto responseDto = productService.modifyProductInfoWithId(id,
             requestDto);

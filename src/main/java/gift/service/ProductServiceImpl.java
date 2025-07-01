@@ -64,6 +64,10 @@ public class ProductServiceImpl implements ProductService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         
+        if(!requestDto.isGoodName()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        
         Product newProduct = new Product(
             id,
             requestDto.getName(),
@@ -89,6 +93,10 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findProductWithId(id);
         
         if (requestDto.isNotValidForModifyInfo()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        
+        if(!requestDto.isGoodName()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         

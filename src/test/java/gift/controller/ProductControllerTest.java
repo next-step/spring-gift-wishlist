@@ -3,6 +3,7 @@ package gift.controller;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import gift.dto.api.AddProductRequestDto;
+import gift.dto.api.ModifyProductRequestDto;
 import gift.dto.api.ProductResponseDto;
 import java.io.IOException;
 import org.junit.jupiter.api.BeforeEach;
@@ -64,7 +65,7 @@ class ProductControllerTest {
     }
     
     @Test
-    void 올바른_카카오_상품명_추가를_시도한다() throws IOException {
+    void 올바른_카카오_상품명_추가를_시도한다() {
         var request = new AddProductRequestDto("카카오 테스트상품", 1000L, "https://test.com/image.jpg", true);
         
         var response = restClient.post()
@@ -108,5 +109,55 @@ class ProductControllerTest {
             .body(ProductResponseDto[].class);
         
         assertThat(response[0].getName()).isEqualTo("아메리카노");
+    }
+    
+    @Test
+    void 정상적으로_상품을_수정한다() {
+        var request = new ModifyProductRequestDto("테스트 상품", 1000L, "https://test.com/image.jpg", true);
+        
+        var response = restClient.put()
+            .uri("/api/products/1")
+            .body(request)
+            .retrieve()
+            .body(ProductResponseDto.class);
+        
+        assertThat(response.getName()).isEqualTo("테스트 상품");
+    }
+    
+    @Test
+    void 잘못된_이름으로_상품을_수정한다() throws IOException {
+        var request = new ModifyProductRequestDto("15자를넘겨야하는데뭐라고할까고민좀했음", 1000L, "https://test.com/image.jpg", true);
+        
+        var response = restClient.put()
+            .uri("/api/products/1")
+            .body(request)
+            .exchange((req, res) -> res);
+        
+        assertThat(response.getStatusCode().value()).isEqualTo(400); // HTTP 400 확인
+    }
+    
+    @Test
+    void 올바른_카카오_이름으로_상품을_수정한다() {
+        var request = new ModifyProductRequestDto("카카오 테스트상품", 1000L, "https://test.com/image.jpg", true);
+        
+        var response = restClient.put()
+            .uri("/api/products/1")
+            .body(request)
+            .retrieve()
+            .body(ProductResponseDto.class);
+        
+        assertThat(response.getName()).isEqualTo("카카오 테스트상품");
+    }
+    
+    @Test
+    void 올바르지_않은_카카오_이름으로_상품을_수정한다() throws IOException {
+        var request = new ModifyProductRequestDto("카카오 테스트상품", 1000L, "https://test.com/image.jpg", false);
+        
+        var response = restClient.put()
+            .uri("/api/products/1")
+            .body(request)
+            .exchange((req, res) -> res);
+        
+        assertThat(response.getStatusCode().value()).isEqualTo(400); // HTTP 400 확인
     }
 }

@@ -46,7 +46,7 @@ public class ProductViewController {
     ) {
         ProductResponseDto product = productService.findProductWithId(id);
         ModifyProductForm modifyForm = new ModifyProductForm(product.getName(),
-            product.getPrice(), product.getImageUrl());
+            product.getPrice(), product.getImageUrl(), false);
         
         model.addAttribute("product", product);
         model.addAttribute("modifyForm", modifyForm);
@@ -93,7 +93,8 @@ public class ProductViewController {
         ModifyProductRequestDto requestDto = new ModifyProductRequestDto(
             productForm.getName(),
             productForm.getPrice(),
-            productForm.getImageUrl()
+            productForm.getImageUrl(),
+            productForm.getMDOK()
         );
         
         productService.modifyProductWithId(id, requestDto);
@@ -108,7 +109,8 @@ public class ProductViewController {
         ModifyProductRequestDto requestDto = new ModifyProductRequestDto(
             modifyForm.getName(),
             modifyForm.getPrice(),
-            modifyForm.getImageUrl()
+            modifyForm.getImageUrl(),
+            modifyForm.getMDOK()
         );
         
         productService.modifyProductInfoWithId(id, requestDto);
