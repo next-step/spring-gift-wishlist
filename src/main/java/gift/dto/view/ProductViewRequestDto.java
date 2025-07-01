@@ -1,13 +1,11 @@
 package gift.dto.view;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.*;
 
 public class ProductViewRequestDto {
 
     @NotBlank(message = "상품명을 입력해주세요.")
+    @Size(max = 15, message = "최대 15자까지 가능합니다.")
     private String name;
 
     @NotNull(message = "가격을 입력해주세요.")
