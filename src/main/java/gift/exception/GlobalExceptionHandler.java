@@ -43,6 +43,12 @@ public class GlobalExceptionHandler {
         }
     }
 
+    @ExceptionHandler(ItemNotFoundException.class)
+    public String handleSearchItemError(ItemNotFoundException e, Model model) {
+        model.addAttribute("error", e.getMessage());
+        return "admin/list";
+    }
+
     @ExceptionHandler(Exception.class)
     public String handleOtherErrors(Exception e, Model model) {
         model.addAttribute("errorMessage", "오류 발생");
