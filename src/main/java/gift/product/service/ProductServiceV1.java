@@ -40,10 +40,17 @@ public class ProductServiceV1 implements ProductService{
     }
 
     public void deleteProduct(UUID id) {
+
+        productRepository.findById(id)
+                .orElseThrow(() -> new NotFoundProductException("상품이 존재하지 않습니다."));
+
         productRepository.deleteById(id);
     }
 
     public void updateProduct(UUID id, ProductUpdateRequest dto) {
+        productRepository.findById(id)
+                .orElseThrow(() -> new NotFoundProductException("상품이 존재하지 않습니다."));
+
         productRepository.update(new Product(id, dto.getName(), dto.getPrice(), dto.getImageURL()));
     }
 }

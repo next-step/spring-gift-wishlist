@@ -59,8 +59,6 @@ public class ProductRepositoryV2 implements ProductRepository{
     public void deleteById(UUID id) {
         String sql = "delete from product where id = :id";
 
-        findById(id).orElseThrow(()->new NotFoundProductException("상품이 존재하지 않습니다"));
-
         int update = client.sql(sql)
                 .param("id", uuidToBytes(id))
                 .update();
@@ -71,8 +69,6 @@ public class ProductRepositoryV2 implements ProductRepository{
     @Override
     public void update(Product product) {
         String sql = "update product set name = :name, price = :price, image_url = :image_url where id = :id";
-
-        findById(product.getId()).orElseThrow(()->new NotFoundProductException("상품이 존재하지 않습니다"));
 
         int update = client.sql(sql)
                 .param("name", product.getName())
