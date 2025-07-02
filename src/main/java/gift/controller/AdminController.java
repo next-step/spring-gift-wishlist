@@ -3,6 +3,7 @@ package gift.controller;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
@@ -66,7 +67,7 @@ public class AdminController {
      * @return list로 redirect
      */
     @PostMapping("/create")
-    public String createProductView(@ModelAttribute ProductRequestDto requestDto) {
+    public String createProductView(@Valid @ModelAttribute ProductRequestDto requestDto) {
         productService.saveProduct(requestDto);
         return "redirect:/admin/products";
     }
@@ -79,7 +80,7 @@ public class AdminController {
      * @return list로 redirect
      */
     @PostMapping("/patch/{id}")
-    public String patchProductView(@PathVariable Long id, @ModelAttribute ProductRequestDto requestDto) {
+    public String patchProductView(@PathVariable Long id, @Valid @ModelAttribute ProductRequestDto requestDto) {
         productService.updateProduct(id, requestDto);
         return "redirect:/admin/products";
     }
