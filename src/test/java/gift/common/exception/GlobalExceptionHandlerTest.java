@@ -29,7 +29,6 @@ class GlobalExceptionHandlerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    // --- 테스트용 DTO ---
     private record TestRequest(
         @NotBlank(message = "이름은 필수입니다.")
         String name,
