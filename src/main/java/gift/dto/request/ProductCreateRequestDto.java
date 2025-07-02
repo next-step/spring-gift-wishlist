@@ -9,7 +9,7 @@ public record ProductCreateRequestDto(
     @NotNull(message = "Product Name must not be null.")
     @Size(max = 15, message = "Product Name must be less than or equal to 15 characters.")
     @Pattern(
-        regexp = "^[\\p{L}\\p{N} \\(\\)\\[\\]\\+\\-&/_]*$",
+        regexp = "^[\\p{L}\\p{N} ()\\[\\]+\\-&/_]*$",
         message = "Product name contains letters, numbers, and the following special characters are allowed: ( ) [ ] + - & / _"
     )
     String name,
