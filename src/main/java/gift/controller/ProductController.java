@@ -64,9 +64,9 @@ public class ProductController {
     ) {
         Product product = productService.updateSelectivelyProductById(
                 id,
-                patch.getName(),
-                patch.getPrice(),
-                patch.getImageUrl()
+                patch.name(),
+                patch.price(),
+                patch.imageUrl()
         );
 
         return ResponseEntity
