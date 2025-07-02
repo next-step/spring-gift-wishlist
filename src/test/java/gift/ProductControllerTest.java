@@ -34,9 +34,9 @@ public class ProductControllerTest {
         String url = "http://localhost:" + port + "/api/products";
 
         ProductRequest request = new ProductRequest(
-                " 0123456789abcdef",
-                1000,
-                "http://"
+                " 0123456789abcdefg",
+                20000,
+                ""
         );
 
         ResponseEntity<String> response = client.post()
@@ -88,7 +88,4 @@ public class ProductControllerTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
-
-
-
 }

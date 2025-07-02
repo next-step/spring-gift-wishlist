@@ -7,7 +7,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @ControllerAdvice
@@ -19,11 +21,12 @@ public class WebControllerAdvice {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String,String>> handleValidationExceptions(MethodArgumentNotValidException e){
-        Map<String, String> errors = new HashMap<>();
+    public ResponseEntity<Map<String, List<String>>> handleValidationExceptions(MethodArgumentNotValidException e){
+        Map<String, List<String>> errors = new HashMap<>();
 
         for (FieldError error : e.getBindingResult().getFieldErrors()){
-            errors.put(error.getField(),error.getDefaultMessage());
+            errors.computeIfAbsent(error.getField(), key -> new ArrayList<>())
+                    .add(error.getDefaultMessage());
         }
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
