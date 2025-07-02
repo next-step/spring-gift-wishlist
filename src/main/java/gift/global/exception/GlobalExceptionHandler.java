@@ -1,6 +1,7 @@
 package gift.global.exception;
 
 import gift.global.exception.dto.ErrorResponse;
+import gift.global.utils.PropertyPathUtils;
 import gift.product.exception.ProductNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import java.util.List;
@@ -35,7 +36,7 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException exception) {
     List<Map<String, String>> invalidParams = exception.getConstraintViolations().stream()
         .map(violation -> Map.of(
-            "name", extractFieldName(violation.getPropertyPath().toString()),
+            "name", PropertyPathUtils.extractFieldName(violation.getPropertyPath().toString()),
             "value", violation.getInvalidValue().toString(),
             "reason", violation.getMessage()
         ))
@@ -44,10 +45,6 @@ public class GlobalExceptionHandler {
     Map<String, Object> additionalInfo = Map.of("invalid-params", invalidParams);
 
     return createErrorResponse(ErrorCode.INVALID_ARGUMENT_ERROR, exception, additionalInfo);
-  }
-
-  private String extractFieldName(String propertyPath) {
-    return propertyPath.substring(propertyPath.lastIndexOf('.') + 1);
   }
 
   @ExceptionHandler(IllegalArgumentException.class)
