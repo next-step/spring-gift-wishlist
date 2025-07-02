@@ -1,15 +1,16 @@
 package gift.dto.request;
 
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.URL;
 
 public record ProductRequestDto(
         @NotBlank(message = "상품 이름을 입력해 주세요.")
         @Size(max = 15, message = "상품 이름은 최대 15자까지 입력 가능합니다." )
+        @Pattern(
+                regexp = "^[a-zA-Z0-9가-힣\\s()\\[\\]+\\-&/_]*$",
+                message = "특수문자는 (), [], +, -, &, /, _ 만 가능합니다."
+        )
         String name,
 
         @NotNull(message = "가격을 입력해 주세요.")
