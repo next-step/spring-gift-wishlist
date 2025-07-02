@@ -23,7 +23,6 @@ document.getElementById('infoForm').addEventListener('submit', function(event) {
     } else if (modalMode === 'update') {
         updateProduct(selectedProductId);
     }
-
 });
 
 // Functions communicate with the backend

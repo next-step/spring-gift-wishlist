@@ -58,7 +58,6 @@ public class ProductController {
         if (bindingResult.hasErrors()) {
             throw new RequestNotValidException(bindingResult);
         }
-
         productService.updateProduct(productId, productRequestDto);
         return ResponseEntity.ok().build();
     }
