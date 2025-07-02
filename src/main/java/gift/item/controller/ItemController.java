@@ -48,7 +48,7 @@ public class ItemController {
     //상품 삭제
     @DeleteMapping("/api/products/{id}")
     public ResponseEntity<Void> deleteItem(
-            @PathVariable  Long id
+            @PathVariable Long id
     ) {
         itemService.deleteItem(id);
         return ResponseEntity.ok().build();

@@ -1,11 +1,13 @@
 package gift.item.service;
 
+import gift.global.exception.CustomException;
+import gift.global.exception.ErrorCode;
 import gift.item.dto.CreateItemDto;
 import gift.item.dto.ItemDto;
 import gift.item.dto.UpdateItemDto;
 import gift.item.entity.Item;
-import gift.item.exception.ItemNotFoundException;
 import gift.item.repository.ItemRepository;
+import jakarta.validation.ValidationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +24,7 @@ public class ItemService {
 
     @Transactional
     public ItemDto saveItem(CreateItemDto dto) {
+        validateKeyword(dto.getName());
         Item item = new Item(null, dto.getName(), dto.getPrice(), dto.getImageUrl());
         Item savedItem = itemRepository.saveItem(item);
         return new ItemDto(savedItem);
@@ -31,7 +34,7 @@ public class ItemService {
     public ItemDto findItem(Long id) {
         Item item = itemRepository.findItem(id);
         if (item == null) {
-            throw new ItemNotFoundException("상품이 존재하지 않습니다: " + id);
+            throw new CustomException(ErrorCode.ITEM_NOT_FOUND);
         }
         return new ItemDto(item);
     }
@@ -51,11 +54,18 @@ public class ItemService {
 
     @Transactional
     public void updateItem(Long id, UpdateItemDto dto) {
+        validateKeyword(dto.getName());
         Item existingitem = itemRepository.findItem(id);
         if (existingitem == null) {
-            throw new ItemNotFoundException("상품을 찾을 수 없습니다"+id);
+            throw new CustomException(ErrorCode.ITEM_NOT_FOUND);
         }
         itemRepository.updateItem(id, dto);
+    }
+
+    private void validateKeyword(String name) {
+        if (name.contains("카카오")) {
+            throw new CustomException(ErrorCode.ITEM_KEYWORD_INVALID);
+        }
     }
 
 }

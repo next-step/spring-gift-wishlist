@@ -36,5 +36,4 @@ public class ItemDto {
         return imageUrl;
     }
 
-
 }

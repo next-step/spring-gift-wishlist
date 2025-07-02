@@ -4,7 +4,6 @@ import gift.item.dto.CreateItemDto;
 import gift.item.dto.ItemDto;
 import gift.item.dto.UpdateItemDto;
 import gift.item.entity.Item;
-import gift.item.exception.ItemNotFoundException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -58,13 +57,14 @@ public class itemRepositoryImpl implements ItemRepository {
     @Override
     public Item findItem(Long id) {
         String sql = "SELECT * FROM item WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{id}, (rs, rowNum) ->
+        List<Item> result = jdbcTemplate.query(sql, new Object[]{id}, (rs, rowNum) ->
                 new Item(
                         rs.getLong("id"),
                         rs.getString("name"),
                         rs.getInt("price"),
                         rs.getString("image_url")
                 ));
+        return result.isEmpty() ? null : result.get(0);
     }
 
     @Override
