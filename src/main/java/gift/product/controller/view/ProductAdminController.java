@@ -3,8 +3,10 @@ package gift.product.controller.view;
 import gift.product.domain.Product;
 import gift.product.dto.ProductDto;
 import gift.product.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -32,7 +34,7 @@ public class ProductAdminController {
     }
 
     @PostMapping("/product/add")
-    public String saveProduct(@ModelAttribute ProductDto productdto) {
+    public String saveProduct(@Valid @ModelAttribute ProductDto productdto) {
         productService.saveProduct(productdto);
         return "redirect:/api/admin/product/list";
     }
@@ -51,7 +53,7 @@ public class ProductAdminController {
     }
 
     @PatchMapping("/product/{id}/update")
-    public String updateProduct(@PathVariable String id, @ModelAttribute ProductDto updateProductdto) {
+    public String updateProduct(@PathVariable String id, @Valid @ModelAttribute ProductDto updateProductdto) {
         productService.updateProduct(id, updateProductdto);
         return "redirect:/api/admin/product/list";
     }
