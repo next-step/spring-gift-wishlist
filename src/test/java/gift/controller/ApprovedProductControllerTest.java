@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import gift.dto.request.ApprovedProductCreateRequestDto;
+import gift.dto.response.ProductCreateResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -29,9 +30,11 @@ class ApprovedProductControllerTest {
 
     @BeforeEach
     void setUp() {
-        jdbcTemplate.execute("DELETE FROM approved_product_names");
+        jdbcTemplate.execute("DELETE FROM approved_products");
+        jdbcTemplate.execute(
+            "ALTER TABLE approved_products ALTER COLUMN id RESTART WITH 1");
 
-        String sql = "INSERT INTO approved_product_names(name) VALUES (?)";
+        String sql = "INSERT INTO approved_products(name) VALUES (?)";
         jdbcTemplate.update(sql, "카카오");
     }
 
@@ -59,12 +62,37 @@ class ApprovedProductControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
         var actualName = jdbcTemplate.queryForObject(
-            "SELECT * FROM approved_product_names WHERE name = ?",
+            "SELECT * FROM approved_products WHERE name = ?",
             (rs, rowNum) -> rs.getString("name"),
             validName
         );
 
         assertThat(actualName).isEqualTo(validName);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "카카오 카카오 카카오 카카오 카카오",      // 한글 17자
+        "카카오 콜라@맛!",                      // 허용되지 않은 특수문자
+        "프렌즈"                               // '카카오' 불포함
+    })
+    void 협의된상품등록_BAD_REQUEST_테스트(String validName) {
+        // given
+        var url = "http://localhost:" + port + "/admin/approved-products";
+
+        var request = new ApprovedProductCreateRequestDto(
+            validName
+        );
+
+        // when & then
+        assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
+            .isThrownBy(
+                () -> restClient.post()
+                    .uri(url)
+                    .body(request)
+                    .retrieve()
+                    .toEntity(ProductCreateResponseDto.class)
+            );
     }
 
     @ParameterizedTest

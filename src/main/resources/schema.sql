@@ -6,7 +6,7 @@ CREATE TABLE products
     imageUrl  VARCHAR(1000) NOT NULL
 );
 
-CREATE TABLE approved_product_names
+CREATE TABLE approved_products
 (
     id   BIGINT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL UNIQUE

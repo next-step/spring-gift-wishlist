@@ -35,6 +35,7 @@ class ProductControllerTest {
 
     @BeforeEach
     void setUp() {
+        // products TABLE
         jdbcTemplate.execute("DELETE FROM products");
         jdbcTemplate.execute("ALTER TABLE products ALTER COLUMN productId RESTART WITH 1");
 
@@ -43,11 +44,12 @@ class ProductControllerTest {
         jdbcTemplate.update(sql, "two", "4500", "https://img.com/BeforeEach.jpg");
         jdbcTemplate.update(sql, "three", "4500", "https://img.com/BeforeEach.jpg");
 
-        jdbcTemplate.execute("DELETE FROM approved_product_names");
+        // approved_product_names TABLE
+        jdbcTemplate.execute("DELETE FROM approved_products");
         jdbcTemplate.execute(
-            "ALTER TABLE approved_product_names ALTER COLUMN id RESTART WITH 1");
+            "ALTER TABLE approved_products ALTER COLUMN id RESTART WITH 1");
 
-        String approvedProductSql = "INSERT INTO approved_product_names(name) VALUES (?)";
+        String approvedProductSql = "INSERT INTO approved_products(name) VALUES (?)";
         jdbcTemplate.update(approvedProductSql, "카카오");
     }
 
@@ -319,7 +321,7 @@ class ProductControllerTest {
         var response = restClient.delete()
             .uri(url)
             .retrieve()
-            .toEntity(ProductCreateResponseDto.class);
+            .toEntity(Void.class);
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
