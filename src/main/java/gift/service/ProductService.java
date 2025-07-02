@@ -12,4 +12,5 @@ public interface ProductService {
     public List<ProductResponseDto> findAllProduct();
     public void updateProductById(Long id, ProductUpdateRequestDto requestDto);
     public void deleteProductById(Long id);
+    public void validateProductName(String name);
 }

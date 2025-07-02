@@ -5,8 +5,10 @@ import gift.dto.ProductResponseDto;
 import gift.dto.ProductUpdateRequestDto;
 import gift.entity.Product;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,7 +37,10 @@ public class AdminProductController {
     }
 
     @PostMapping("/add")
-    public String addProduct(@ModelAttribute ProductAddRequestDto requestDto) {
+    public String addProduct(@Valid @ModelAttribute("product") ProductAddRequestDto requestDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "admin/add";
+        }
         productService.addProduct(requestDto);
         return "redirect:/admin/products";
     }
@@ -53,8 +58,15 @@ public class AdminProductController {
     @PutMapping("/edit/{id}")
     public String editProduct(
             @PathVariable Long id,
-            @ModelAttribute ProductUpdateRequestDto requestDto
+            @Valid @ModelAttribute ProductUpdateRequestDto requestDto,
+            BindingResult bindingResult,
+            Model model
     ) {
+        if (bindingResult.hasErrors()) {
+            ProductResponseDto product = new ProductResponseDto(id, requestDto.name(), requestDto.price(), requestDto.url());
+            model.addAttribute("product",product);
+            return "admin/edit";
+        }
         productService.updateProductById(id, requestDto);
         return "redirect:/admin/products";
     }
