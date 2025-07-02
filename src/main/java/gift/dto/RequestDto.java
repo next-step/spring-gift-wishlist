@@ -1,5 +1,6 @@
 package gift.dto;
 
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.NotNull;
 
@@ -8,7 +9,11 @@ public class RequestDto {
     private Long id;
 
     @NotNull
-    @Size(max = 15, message = "공백 포함 최대 15자까지 입력 가능")
+    @Size(max = 15, message = "공백 포함 최대 15자까지만 입력 가능합니다.")
+    @Pattern(
+            regexp = "^[a-zA-Z0-9가-힣 ()\\[\\]+\\-&/_]*$",
+            message = "특수문자는 (), [], +, -, &, /, _ 만 가능합니다."
+    )
     private String name;
 
     private String imageUrl;
