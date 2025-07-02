@@ -62,7 +62,7 @@ public class ProductService {
 
     private void validateProductName(String name) {
         if (name.contains("카카오")) {
-            throw new ProductNameContainsKakaoException("상품 이름에 '카카오'를 포함할 수 없습니다. 담당 MD와 협의 필요");
+            throw new InvalidProductNameException("상품 이름에 '카카오'를 포함할 수 없습니다. 담당 MD와 협의 필요");
         }
     }
 }
