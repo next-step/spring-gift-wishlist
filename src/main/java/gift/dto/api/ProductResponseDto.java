@@ -55,4 +55,8 @@ public class ProductResponseDto {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
+    
+    public Boolean containKakao() {
+        return name.contains("카카오");
+    }
 }

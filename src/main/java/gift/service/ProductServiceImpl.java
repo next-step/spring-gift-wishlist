@@ -26,7 +26,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponseDto addProduct(AddProductRequestDto requestDto) {
         
-        if(!requestDto.isGoodName()) {
+        if(!requestDto.goodName()) {
             throw new CheckMdOkException();
         }
         
@@ -63,7 +63,7 @@ public class ProductServiceImpl implements ProductService {
             throw new FillAllInfoException();
         }
         
-        if(!requestDto.isGoodName()) {
+        if(!requestDto.goodName()) {
             throw new CheckMdOkException();
         }
         
@@ -95,7 +95,7 @@ public class ProductServiceImpl implements ProductService {
             throw new FillSomeInfoException();
         }
         
-        if(!requestDto.isGoodName()) {
+        if(!requestDto.goodName()) {
             throw new CheckMdOkException();
         }
         

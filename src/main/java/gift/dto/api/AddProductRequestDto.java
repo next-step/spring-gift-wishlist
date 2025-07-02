@@ -1,5 +1,6 @@
 package gift.dto.api;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
@@ -52,6 +53,7 @@ public class AddProductRequestDto {
         return imageUrl;
     }
     
+    @JsonProperty("mdOk")
     public Boolean getMdOk() {
         return mdOk;
     }
@@ -68,11 +70,12 @@ public class AddProductRequestDto {
         this.imageUrl = imageUrl;
     }
     
+    @JsonProperty("mdOk")
     public void setMdOk(Boolean mdOk) {
         this.mdOk = mdOk;
     }
     
-    public Boolean isGoodName() {
+    public Boolean goodName() {
         if(name.contains("카카오")) {
             return mdOk;
         }

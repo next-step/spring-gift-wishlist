@@ -46,7 +46,7 @@ public class ProductViewController {
     ) {
         ProductResponseDto product = productService.findProductWithId(id);
         ModifyProductForm modifyForm = new ModifyProductForm(product.getName(),
-            product.getPrice(), product.getImageUrl(), product.getName().contains("카카오"));
+            product.getPrice(), product.getImageUrl(), product.containKakao());
         
         model.addAttribute("product", product);
         model.addAttribute("modifyForm", modifyForm);
