@@ -42,7 +42,8 @@ public class AdminController {
     @PostMapping("/products/add")
     public String createProduct(
             @ModelAttribute @Valid ProductRequestDto requestDto,
-            BindingResult bindingResult
+            BindingResult bindingResult,
+            Model model
     ) {
         //"카카오"가 포함된 문구는 담당 MD와 협의한 경우에만 사용할 수 있다
         if (requestDto.getName().contains("카카오")){
@@ -51,7 +52,7 @@ public class AdminController {
         }
 
         if(bindingResult.hasErrors()){
-            //System.out.println(bindingResult);
+            model.addAttribute("requestDto", requestDto);
             return "form";
         }
 
@@ -63,6 +64,7 @@ public class AdminController {
     @GetMapping("/products/add")
     public String productForm(Model model) {
         model.addAttribute("productRequestDto", new ProductRequestDto());
+        model.addAttribute("requestDto", new ProductRequestDto());
         return "form";
     }
 

@@ -7,17 +7,17 @@
       </p>
       <p>
         <strong>상품명</strong>
-        <input type="text" name="name" placeholder="상품명 입력">
+        <input type="text" name="name" placeholder="상품명 입력" th:value="${requestDto.name}">
         <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</span>
       </p>
       <p>
         <strong>가격</strong>
-        <input type="number" name="price" placeholder="상품 가격 입력">
+        <input type="number" name="price" placeholder="상품 가격 입력" th:value="${requestDto.price}">
         <span th:if="${#fields.hasErrors('price')}" th:errors="*{price}">Name Error</span>
       </p>
       <p>
         <strong>이미지 주소</strong>
-        <input type="text" name="imageUrl" placeholder="상품 이미지 주소 입력">
+        <input type="text" name="imageUrl" placeholder="상품 이미지 주소 입력" th:value="${requestDto.imageUrl}">
         <span th:if="${#fields.hasErrors('imageUrl')}" th:errors="*{imageUrl}">Name Error</span>
       </p>
       <p>
