@@ -7,11 +7,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ProductE2ETest {
@@ -84,13 +85,38 @@ class ProductE2ETest {
                 .retrieve()
                 .toBodilessEntity();
 
-        assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
-                .isThrownBy(
-                        () -> restClient.get()
-                                .uri("/api/products/1")
-                                .retrieve()
-                                .toEntity(Void.class)
-                );
+        // try-catch로 예외 처리
+        HttpClientErrorException exception = assertThrows(HttpClientErrorException.class, () -> {
+            restClient.get()
+                    .uri("/api/products/1")
+                    .retrieve()
+                    .toBodilessEntity();
+        });
+        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
 
+    }
+
+    @Test
+    void 상품_등록_유효성_검사_실패() {
+        ProductRequestDto invalidRequest = new ProductRequestDto();
+        invalidRequest.setName("@카카오@");
+        invalidRequest.setPrice(10);
+        invalidRequest.setImageUrl("kakao.jpg");
+
+        HttpClientErrorException exception = assertThrows(HttpClientErrorException.class, () -> {
+            restClient.post()
+                    .uri("/api/products")
+                    .body(invalidRequest)
+                    .retrieve()
+                    .toBodilessEntity();
+        });
+
+        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+
+        String responseBody = exception.getResponseBodyAsString();
+
+        assertThat(responseBody).contains("특수문자는 ()[]+-&/_ 만 사용할 수 있어요.");
+        assertThat(responseBody).contains("상품명에 <카카오>가 포함된 상품은 담당 MD에게 문의해주세요.");
+        assertThat(responseBody).contains("가격은 100원 이상으로 등록해주세요.");
     }
 }
