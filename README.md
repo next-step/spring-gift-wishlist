@@ -60,3 +60,8 @@
   "name": "상품명은 필수입니다.",
   "price": "가격은 0 이상이어야 합니다."
 }
+```
+
+### 수정 사항
+
+- [x] JdbcTemplate 기반 Repository 코드를 JdbcClient로 수정
