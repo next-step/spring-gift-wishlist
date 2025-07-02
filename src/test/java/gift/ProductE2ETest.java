@@ -32,25 +32,18 @@ public class ProductE2ETest {
     }
 
     @Test
-    void 상품_등록_테스트() {
-        ProductRequestDto request = new ProductRequestDto("Product 1", 100L,
-                "https://image.com/1.jpg");
-
-        ProductResponseDto response = restclient.post()
+    void 상품_전체_조회_테스트() {
+        List<?> productList = restclient.get()
                 .uri("/api/products")
-                .body(request)
                 .retrieve()
-                .body(ProductResponseDto.class);
+                .body(List.class);
 
-        assertNotNull(response);
-        assertNotNull(response.id());
-        assertEquals("Product 1", response.name());
-        assertEquals(100L, response.price());
-        assertEquals("https://image.com/1.jpg", response.imageUrl());
+        assertNotNull(productList);
+        assertTrue(productList.size() >= 0);
     }
 
     @Test
-    void 상품_단건_조회_테스트() {
+    void 특정_상품_조회_테스트() {
         ProductRequestDto request = new ProductRequestDto("Product 2", 500L,
                 "https://image.com/2.jpg");
         ProductResponseDto created = restclient.post()
@@ -69,14 +62,21 @@ public class ProductE2ETest {
     }
 
     @Test
-    void 상품_전체_조회_테스트() {
-        List<?> productList = restclient.get()
-                .uri("/api/products")
-                .retrieve()
-                .body(List.class);
+    void 상품_추가_테스트() {
+        ProductRequestDto request = new ProductRequestDto("Product 1", 100L,
+                "https://image.com/1.jpg");
 
-        assertNotNull(productList);
-        assertTrue(productList.size() >= 0);
+        ProductResponseDto response = restclient.post()
+                .uri("/api/products")
+                .body(request)
+                .retrieve()
+                .body(ProductResponseDto.class);
+
+        assertNotNull(response);
+        assertNotNull(response.id());
+        assertEquals("Product 1", response.name());
+        assertEquals(100L, response.price());
+        assertEquals("https://image.com/1.jpg", response.imageUrl());
     }
 
     @Test
@@ -128,7 +128,61 @@ public class ProductE2ETest {
     }
 
     @Test
-    void 금지_단어_검증_실패_테스트() {
+    void 상품_이름_최대_15자_실패() {
+        ProductRequestDto request = new ProductRequestDto("이름이너무길어서검증에걸리는상품", 100L,
+                "https://image.com/longname.jpg");
+
+        try {
+            restclient.post()
+                    .uri("/api/products")
+                    .body(request)
+                    .retrieve()
+                    .body(ProductResponseDto.class);
+            fail("검증 오류가 발생해야 합니다");
+        } catch (HttpClientErrorException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+            assertTrue(e.getResponseBodyAsString().contains("상품 이름은 최대 15자여야 합니다."));
+        }
+    }
+
+    @Test
+    void 상품_이름_특수_문자_성공() {
+        ProductRequestDto request = new ProductRequestDto("()[]+-&/_ 이건 됨", 100L,
+                "https://image.com/success.jpg");
+
+        ProductResponseDto response = restclient.post()
+                .uri("/api/products")
+                .body(request)
+                .retrieve()
+                .body(ProductResponseDto.class);
+
+        assertNotNull(response);
+        assertEquals("()[]+-&/_ 이건 됨", response.name());
+        assertEquals(100L, response.price());
+        assertEquals("https://image.com/success.jpg", response.imageUrl());
+    }
+
+    @Test
+    void 상품_이름_특수_문자_실패() {
+        ProductRequestDto request = new ProductRequestDto("!이건 안됨!", 100L,
+                "https://image.com/bad.jpg");
+
+        try {
+            restclient.post()
+                    .uri("/api/products")
+                    .body(request)
+                    .retrieve()
+                    .body(ProductResponseDto.class);
+            fail("검증 오류가 발생해야 합니다");
+        } catch (HttpClientErrorException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+            assertTrue(e.getResponseBodyAsString()
+                    .contains("상품 이름에는 (), [], +, -, &, /, _ 외의 특수 문자를 사용할 수 없습니다."));
+        }
+    }
+
+    @Test
+    void 상품_이름_MD_승인_글자() {
         ProductRequestDto request = new ProductRequestDto("카카오커피", 100L,
                 "https://image.com/bad.jpg");
         try {
@@ -141,6 +195,24 @@ public class ProductE2ETest {
         } catch (HttpClientErrorException e) {
             assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
             assertTrue(e.getResponseBodyAsString().contains("담당 MD의 승인이 필요한 단어"));
+        }
+    }
+
+    @Test
+    void 상품_가격_0원_이상_실패() {
+        ProductRequestDto request = new ProductRequestDto("Invalid Price", -100L,
+                "https://image.com/invalid.jpg");
+
+        try {
+            restclient.post()
+                    .uri("/api/products")
+                    .body(request)
+                    .retrieve()
+                    .body(ProductResponseDto.class);
+            fail("검증 오류가 발생해야 합니다");
+        } catch (HttpClientErrorException e) {
+            assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+            assertTrue(e.getResponseBodyAsString().contains("가격은 0 이상이어야 합니다."));
         }
     }
 }
