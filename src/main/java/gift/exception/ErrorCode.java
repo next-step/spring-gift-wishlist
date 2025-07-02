@@ -1,17 +1,23 @@
 package gift.exception;
 
+import java.util.List;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
+
 public enum ErrorCode {
 
-  INVALID_PRODUCT_NAME("INVALID_PRODUCT_NAME", "상품명이 올바르지 않습니다."),
-  INVALID_PRODUCT_PRICE("INVALID_PRODUCT_PRICE", "상품 가격이 올바르지 않습니다."),
-  INVALID_IMAGE_URL("INVALID_IMAGE_URL", "이미지 URL이 올바르지 않습니다.");
+  INVALID_PRODUCT_NAME("INVALID_PRODUCT_NAME", "상품명이 올바르지 않습니다.",HttpStatus.BAD_REQUEST),
+  INVALID_PRODUCT_PRICE("INVALID_PRODUCT_PRICE", "상품 가격이 올바르지 않습니다.",HttpStatus.BAD_REQUEST),
+  INVALID_IMAGE_URL("INVALID_IMAGE_URL", "이미지 URL이 올바르지 않습니다.",HttpStatus.BAD_REQUEST);
 
   private final String code;
   private final String message;
+  private final HttpStatus status;
 
-  ErrorCode(String code, String message) {
+  ErrorCode(String code, String message, HttpStatus status) {
     this.code = code;
     this.message = message;
+    this.status = status;
   }
 
   public String getCode() {
@@ -20,5 +26,9 @@ public enum ErrorCode {
 
   public String getMessage() {
     return message;
+  }
+
+  public HttpStatus getStatus() {
+    return status;
   }
 }
