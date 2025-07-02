@@ -52,7 +52,6 @@ public class AdminController {
         }
 
         if(bindingResult.hasErrors()){
-            System.out.println(bindingResult);
             model.addAttribute("requestDto", requestDto);
             return "form";
         }
