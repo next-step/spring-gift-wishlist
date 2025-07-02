@@ -22,7 +22,6 @@ public record ProductRequestDto(
         String imageUrl
 ) {
 
-
     // 추가 검증 로직 (특수문자, 카카오 키워드)
     public void validateProductName() {
         if (name == null) return;
