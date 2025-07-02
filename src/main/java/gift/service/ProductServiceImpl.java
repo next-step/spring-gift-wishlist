@@ -5,7 +5,6 @@ import gift.dto.request.ProductUpdateRequestDto;
 import gift.dto.response.ProductCreateResponseDto;
 import gift.dto.response.ProductGetResponseDto;
 import gift.entity.Product;
-import gift.exception.ProductNotFoundException;
 import gift.repository.ProductRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -37,15 +36,15 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductGetResponseDto findProductById(Long productId) {
-        return productRepository.findProductById(productId)
-            .map(ProductGetResponseDto::new)
-            .orElseThrow(
-                () -> new ProductNotFoundException("상품이 존재하지 않습니다. productId = " + productId)
-            );
+        Product product = productRepository.findProductById(productId);
+
+        return new ProductGetResponseDto(product.getProductId(), product.getName(),
+            product.getPrice(), product.getImageUrl());
     }
 
     @Override
     public void updateProductById(Long productId, ProductUpdateRequestDto productUpdateRequestDto) {
+        findProductById(productId);
 
         Product product = new Product(productId, productUpdateRequestDto.name(),
             productUpdateRequestDto.price(), productUpdateRequestDto.imageUrl());
@@ -55,6 +54,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteProductById(Long productId) {
+        findProductById(productId);
+
         productRepository.deleteProductById(productId);
     }
 }
