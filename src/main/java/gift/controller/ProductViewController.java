@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.server.ResponseStatusException;
 
 @Controller
 @RequestMapping("/admin/products")
@@ -41,8 +40,8 @@ public class ProductViewController {
                 price, imageUrl);
             productService.saveProduct(productCreaterequestDto);
             return "redirect:/admin/products";
-        } catch (ResponseStatusException e) {
-            return "redirect:/admin/products/create-product";
+        } catch (Exception e) {
+            return "redirect:/admin/products";
         }
     }
 
@@ -59,7 +58,7 @@ public class ProductViewController {
             try {
                 ProductGetResponseDto product = productService.findProductById(productId);
                 model.addAttribute("products", List.of(product));
-            } catch (ResponseStatusException e) {
+            } catch (Exception e) {
                 model.addAttribute("products", List.of());
                 model.addAttribute("error", "해당 상품이 없습니다.");
             }
@@ -74,7 +73,7 @@ public class ProductViewController {
             ProductGetResponseDto product = productService.findProductById(productId);
             model.addAttribute("product", product);
             return "update-product";
-        } catch (ResponseStatusException e) {
+        } catch (Exception e) {
             return "redirect:/admin/products";
         }
     }
@@ -91,7 +90,7 @@ public class ProductViewController {
         try {
             productService.updateProductById(productId, productUpdateRequestDto);
             return "redirect:/admin/products";
-        } catch (ResponseStatusException e) {
+        } catch (Exception e) {
             return "redirect:/admin/products/update/" + productId;
         }
     }
@@ -101,7 +100,7 @@ public class ProductViewController {
         try {
             productService.deleteProductById(productId);
             return "redirect:/admin/products";
-        } catch (ResponseStatusException e) {
+        } catch (Exception e) {
             return "redirect:/admin/products";
         }
     }
