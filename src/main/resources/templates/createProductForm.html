@@ -8,6 +8,7 @@
 <div class="container">
   <div>
     <form role="form" action="/admin/products/new" th:object="${CreateFormDto}" method="post">
+      <div th:if="${validationError}" th:text="${validationError}" style="color:red"></div>
       <label>이름</label>
       <input type="text" th:field="*{name}" class="form-control" placeholder="이름를 입력하세요">
       <label>가격</label>

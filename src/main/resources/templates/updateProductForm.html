@@ -10,6 +10,8 @@
     <form th:action="@{'/admin/products/' + ${updateFormDto.id} + '/update'}"
           th:object="${updateFormDto}"
           method="post">
+      <div th:if="${validationError}" th:text="${validationError}" style="color:red"></div>
+
       <input type="hidden" name="_method" value="put"/>
       <label>이름</label>
       <input type="text" th:field="*{name}" placeholder="이름를 입력하세요">

@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -42,7 +43,12 @@ public class AdminController {
   }
 
   @PostMapping("/new")
-  public String create(@Valid @ModelAttribute ProductCreateFormDto createFormDto) {
+  public String create(@Valid @ModelAttribute ProductCreateFormDto createFormDto, BindingResult bindingResult,Model model) {
+    if(bindingResult.hasErrors()) {
+      model.addAttribute("CreateFormDto", new ProductCreateFormDto());
+      model.addAttribute("validationError", "validation에 맞지 않으니 다시 입력하세요");
+      return "createProductForm";
+    }
     ProductRequestDto requestDto = new ProductRequestDto(createFormDto.getName(),
         createFormDto.getPrice(),
         createFormDto.getImageUrl());
@@ -59,7 +65,14 @@ public class AdminController {
   }
 
   @PutMapping("/{id}/update")
-  public String update(@PathVariable("id") Long id, @Valid @ModelAttribute ProductUpdateFormDto updateFormDto) {
+  public String update(@PathVariable("id") Long id, @Valid @ModelAttribute ProductUpdateFormDto updateFormDto, BindingResult bindingResult, Model model) {
+    if(bindingResult.hasErrors()) {
+      ProductResponseDto responseDto = service.findProductById(id);
+      ProductUpdateFormDto newUpdateFormDto = new ProductUpdateFormDto(responseDto.getId(), responseDto.getName(), responseDto.getPrice(), responseDto.getImageUrl());
+      model.addAttribute("updateFormDto", updateFormDto);
+      model.addAttribute("validationError", "validation에 맞지 않으니 다시 입력하세요");
+      return "updateProductForm";
+    }
     service.updateProduct(id, new ProductRequestDto(updateFormDto.getName(),updateFormDto.getPrice(),updateFormDto.getImageUrl()));
     return "redirect:" + PRODUCTS_LIST_PAGE_PATH;
   }
