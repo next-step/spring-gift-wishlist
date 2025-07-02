@@ -3,6 +3,7 @@ package gift.controller;
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,6 +34,7 @@ public class AdminController {
 
     @PostMapping("/new")
     public String createProduct(
+        @Valid
         @ModelAttribute("productRequest")
         ProductRequest productRequest,
         BindingResult result,
@@ -43,6 +45,13 @@ public class AdminController {
             model.addAttribute("action", "/admin/products/new");
             return "admin/product-form";
         }
+
+        if (productRequest.containsKakao()) {
+            model.addAttribute("action", "/admin/products/new");
+            model.addAttribute("error", "상품명에 '카카오'가 포함되었습니다. 담장자와 협의가 필요합니다.");
+            return "admin/product-form";
+        }
+
         try {
             productService.createProduct(productRequest);
             redirectAttributes.addFlashAttribute("message", "상품이 성공적으로 등록되었습니다.");
@@ -91,11 +100,25 @@ public class AdminController {
     @PostMapping("/{id}/edit")
     public String updateProduct(
         @PathVariable Long id,
+        @Valid
         @ModelAttribute("productRequest")
         ProductRequest productRequest,
+        BindingResult result,
         RedirectAttributes redirectAttributes,
         Model model
     ) {
+
+        if (result.hasErrors()) {
+            model.addAttribute("action", "/admin/products/" + id + "/edit");
+            return "admin/product-form";
+        }
+
+        if (productRequest.containsKakao()) {
+            model.addAttribute("action", "/admin/products/" + id + "/edit");
+            model.addAttribute("error", "상품명에 '카카오'가 포함되었습니다. 담장자와 협의가 필요합니다.");
+            return "admin/product-form";
+        }
+
         try {
             productService.updateProduct(id, productRequest);
             redirectAttributes.addFlashAttribute("message", "상품이 성공적으로 수정되었습니다.");
