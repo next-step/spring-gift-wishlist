@@ -19,6 +19,7 @@ import gift.dto.ProductResponse;
 import gift.dto.UpdateProductRequest;
 import gift.dto.UpdateProductResponse;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/products")
@@ -44,7 +45,7 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<CreateProductResponse> createProduct(
-        @RequestBody CreateProductRequest request
+        @Valid @RequestBody CreateProductRequest request
     ) {
         CreateProductResponse product = productService.createProduct(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(product);
@@ -53,7 +54,7 @@ public class ProductController {
     @PutMapping("/{id}")
     public ResponseEntity<UpdateProductResponse> updateProduct(
         @PathVariable Long id,
-        @RequestBody UpdateProductRequest request
+        @Valid @RequestBody UpdateProductRequest request
     ) {
         UpdateProductResponse product = productService.updateProduct(id, request);
         return ResponseEntity.status(HttpStatus.OK).body(product);

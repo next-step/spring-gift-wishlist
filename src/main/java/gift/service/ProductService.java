@@ -43,6 +43,10 @@ public class ProductService {
 
     @Transactional
     public CreateProductResponse createProduct(CreateProductRequest request) {
+        if (request.name().contains("카카오")) {
+            throw new ProductCreateException("'카카오'가 포함된 문구를 사용하시려면 담당 MD에게 문의해주세요.");
+        }
+
         Product product = Product.of(request.name(), request.price(), request.imageUrl());
 
         Long generatedId = productRepository.save(product);
@@ -56,6 +60,10 @@ public class ProductService {
     public UpdateProductResponse updateProduct(Long id, UpdateProductRequest request) {
         if (!productRepository.existsById(id)) {
             throw new ProductNotFoundException("해당 상품이 존재하지 않습니다.");
+        }
+
+        if (request.name().contains("카카오")) {
+            throw new ProductUpdateException("'카카오'가 포함된 문구를 사용하시려면 담당 MD에게 문의해주세요.");
         }
 
         Product newProduct = Product.of(id, request.name(), request.price(), request.imageUrl());

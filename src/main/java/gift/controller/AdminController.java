@@ -16,6 +16,7 @@ import gift.dto.CreateProductRequest;
 import gift.dto.ProductResponse;
 import gift.dto.UpdateProductRequest;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/admin/products")
@@ -41,7 +42,7 @@ public class AdminController {
 
     @PostMapping
     public String addProduct(
-        @ModelAttribute CreateProductRequest request
+        @Valid @ModelAttribute CreateProductRequest request
     ) {
         productService.createProduct(request);
         return "redirect:/admin/products";
@@ -60,7 +61,7 @@ public class AdminController {
     @PutMapping("/{id}")
     public String updateProduct(
         @PathVariable Long id,
-        @ModelAttribute UpdateProductRequest request
+        @Valid @ModelAttribute UpdateProductRequest request
     ) {
         productService.updateProduct(id, request);
         return "redirect:/admin/products";
