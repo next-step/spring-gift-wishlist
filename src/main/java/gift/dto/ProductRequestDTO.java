@@ -11,6 +11,10 @@ public record ProductRequestDTO (
                 regexp = "^[\\p{L}\\p{N}\\s()\\[\\]+\\-&/_]*$",
                 message = "(),[],+,-,&,/,_ 외의 특수 문자는 사용이 불가합니다."
         )
+        @Pattern(
+                regexp = "^(?!.*카카오)",
+                message = "'카카오'가 포함된 상품명은 담당 MD와 협의 후 사용 가능합니다."
+        )
         String name,
         BigInteger price,
         @Size(max = 1000, message = "이미지 URL은 1000자를 초과할 수 없습니다.")
