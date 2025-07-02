@@ -11,3 +11,6 @@
 - 상품명에 '카카오'가 포함되어있는지 확인 후, 포함되어있다면 `validated=false`로 설정하여 일반 사용자는 조회 불가하도록 하는 기능
   - 상품명에 '카카오'가 포함되더라도, **상품 등록은 성공**하나 `thymeleaf`에서는 별도 안내메시지 출력되며 `api`에서는 validated 값을 보고 알도록 함
 - `/admin/products/{id}`를 통해 접속하여 `validated=true`로 설정하는 기능
+### 테스트코드 작성
+- `ProductController`에 대한 테스트코드 작성
+- `AdminPageController`에 대한 테스트코드 작성
