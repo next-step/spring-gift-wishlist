@@ -31,26 +31,16 @@ public class JdbcProductRepository implements ProductRepositoryInterface{
         return product;
     }
 
-    private Product RowMapperProduct(ResultSet rs, int rowNum) throws SQLException {
-        Product product = new Product(
-                rs.getLong("id"),
-                rs.getString("name"),
-                rs.getInt("price"),
-                rs.getString("imageUrl")
-        );
-        return product;
-    }
-
     @Override
     public List<Product> findAllProducts() {
         String sql = "SELECT * FROM product";
-        return jdbcTemplate.query(sql, this::RowMapperProduct);
+        return jdbcTemplate.query(sql, this::mapRowToProduct);
     }
 
     @Override
     public List<Product> findProductsByPage(int offset, int limit) {
         String sql = "SELECT * FROM product ORDER BY id LIMIT ? OFFSET ?";
-        return jdbcTemplate.query(sql, this::RowMapperProduct, limit, offset);
+        return jdbcTemplate.query(sql, this::mapRowToProduct, limit, offset);
     }
 
     @Override
@@ -58,7 +48,7 @@ public class JdbcProductRepository implements ProductRepositoryInterface{
         String sql = "SELECT * FROM product WHERE id = ?";
 
         try {
-            Product product = jdbcTemplate.queryForObject(sql, this::RowMapperProduct, id);
+            Product product = jdbcTemplate.queryForObject(sql, this::mapRowToProduct, id);
             return Optional.of(product);
         } catch (Exception e) {
             return Optional.empty();
@@ -71,7 +61,7 @@ public class JdbcProductRepository implements ProductRepositoryInterface{
         String sql = "SELECT * FROM product WHERE id = ?";
 
         try {
-            jdbcTemplate.queryForObject(sql, this::RowMapperProduct, id);
+            jdbcTemplate.queryForObject(sql, this::mapRowToProduct, id);
             sql = "UPDATE product SET name = ?, price = ?, imageUrl = ? WHERE id = ?";
             jdbcTemplate.update(sql, product.getName(), product.getPrice(), product.getImageUrl(), id);
             return Optional.of(new Product(id, product.getName(), product.getPrice(), product.getImageUrl()));
@@ -92,6 +82,16 @@ public class JdbcProductRepository implements ProductRepositoryInterface{
         String sql = "SELECT COUNT(*) FROM product";
         Integer result = jdbcTemplate.queryForObject(sql, Integer.class);
         return result != null ? result : 0;
+    }
+
+    private Product mapRowToProduct(ResultSet rs, int rowNum) throws SQLException {
+        Product product = new Product(
+                rs.getLong("id"),
+                rs.getString("name"),
+                rs.getInt("price"),
+                rs.getString("imageUrl")
+        );
+        return product;
     }
 
 
