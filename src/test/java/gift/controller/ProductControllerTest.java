@@ -72,11 +72,48 @@ class ProductControllerTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
-        "12345 12345 12345",   // 숫자 16자
-        "Abcde fghij klmno",   // 영어 16자
-        "일이삼사오 일이삼사오 일이삼사오",   // 한글 16자
-        "콜라@맛!",            // 허용되지 않은 특수문자
-        "카카오커피"           // '카카오' 포함
+        "",
+        " ",
+        "123451234512345",            // 숫자 15자
+        "Abcdefghijklmno",            // 영어 15자
+        "일이삼사오일이삼사오일이삼사오",  // 한글 15자
+        "()[]+-&/_",                  // 허용되는 특수문자
+        "카카오 스티커"                 // 협의된 '카카오' 포함
+    })
+    void 단건상품등록_CREATED_상품이름_유효성_검사(String validName) {
+        // given
+        var url = "http://localhost:" + port + "/api/products";
+
+        var request = new ProductCreateRequestDto(
+            validName,
+            4500.0,
+            "https://ValidName.jpg"
+        );
+
+        // when
+        var response = restClient.post()
+            .uri(url)
+            .body(request)
+            .retrieve()
+            .toEntity(ProductCreateResponseDto.class);
+
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        var actual = response.getBody();
+
+        assertThat(actual.name()).isEqualTo(request.name());
+        assertThat(actual.price()).isEqualTo(request.price());
+        assertThat(actual.imageUrl()).isEqualTo(request.imageUrl());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "12345 12345 12345",             // 숫자 17자
+        "Abcde fghij klmno",             // 영어 17자
+        "일이삼사오 일이삼사오 일이삼사오",   // 한글 17자
+        "콜라@맛!",                       // 허용되지 않은 특수문자
+        "카카오커피"                       // 협의되지 않은 '카카오' 포함
     })
     void 단건상품등록_BAD_REQUEST_상품이름_유효성_검사(String invalidName) {
         //given
