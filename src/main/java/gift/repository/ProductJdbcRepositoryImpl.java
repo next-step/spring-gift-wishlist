@@ -92,7 +92,6 @@ public class ProductJdbcRepositoryImpl implements ProductRepository {
   public void deleteProduct(Long id) {
     String checkSql = "select count(*) from products where id=?";
     int count = jdbcTemplate.queryForObject(checkSql, Integer.class, id);
-    System.out.println(count);
     if (count != 1) {
       throw new ProductNotFoundException("삭제할 것이 없습니다");
     }
