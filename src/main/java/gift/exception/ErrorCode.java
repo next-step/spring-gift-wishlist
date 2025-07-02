@@ -3,7 +3,7 @@ package gift.exception;
 import org.springframework.http.HttpStatus;
 
 public enum ErrorCode {
-    INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "N001", "상품 입력값이 유효하지 않습니다.");
+    INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "P001", "상품 입력값이 유효하지 않습니다.");
 
     private HttpStatus status;
     private String errorCode;

@@ -13,11 +13,20 @@ public class ErrorResponse {
         this.errors = errors;
     }
 
-    public ErrorResponse(ErrorCode errorCode, List<ValidationError> validationErrorList) {
-    }
-
     public static ErrorResponse of(ErrorCode errorcode, List<ValidationError> errors) {
         return new ErrorResponse(errorcode.getErrorCode(), errorcode.getMessage(), errors);
+    }
+
+    public String getCode() {
+        return this.code;
+    }
+
+    public String getMessage() {
+        return this.message;
+    }
+
+    public List<ValidationError> getErrors() {
+        return this.errors;
     }
 
     public static class ValidationError {
