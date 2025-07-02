@@ -1,5 +1,6 @@
 package gift.dto;
 
+import gift.validator.NoKakao;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -13,6 +14,7 @@ public record ProductRequest(
                 regexp = "^[a-zA-Z0-9가-힣\\s()\\[\\]+\\-&/_]*$",
                 message = "상품 이름에 허용되지 않는 특수문자가 포함되어 있습니다."
         )
+        @NoKakao
         String name,
         int price,
         String imageUrl) {
