@@ -24,7 +24,7 @@ public class ProductRepository {
     }
 
     //repository -> crud동작 수행
-    public void add(ProductRequestDto requestDto){
+    public Long add(ProductRequestDto requestDto){
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         simpleJdbcInsert.withTableName("products").usingGeneratedKeyColumns("id");
 
@@ -34,7 +34,8 @@ public class ProductRepository {
         params.put("price", requestDto.getPrice());
         params.put("image_url", requestDto.getImageUrl());
 
-        simpleJdbcInsert.execute(params);
+        Long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
+        return id;
     }
 
     public Optional<Product> findById(Long id){

@@ -24,6 +24,23 @@ public class ProductControllerTest {
     private RestClient restClient = RestClient.builder().build();
 
     @Test
+    void 상품_추가(){
+        var url = "http://localhost:" + port + "/api/products";
+
+        ProductRequestDto requestDto = new ProductRequestDto();
+        requestDto.setName("애플비전");
+        requestDto.setPrice(5550000);
+        requestDto.setImageUrl("https://www.apple.com/newsroom/images/media/introducing-apple-vision-pro/Apple-WWDC23-Vision-Pro-glass-230605_big.jpg.large.jpg");
+
+        var response = restClient.post()
+                .uri(url)
+                .body(requestDto)
+                .retrieve()
+                .toEntity(Void.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    }
+
+    @Test
     void 상품_정상_조회(){
         var url = "http://localhost:" + port + "/api/products/1";
         var response = restClient.get()
@@ -75,7 +92,14 @@ public class ProductControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
-    //new ProductRequestDto("아이폰15", 550000, "
-
+    @Test
+    void 상품을_삭제하는_기능(){
+        var url = "http://localhost:" + port + "/api/products/1";
+        var response = restClient.delete()
+                .uri(url)
+                .retrieve()
+                .toEntity(Product.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    }
 
 }

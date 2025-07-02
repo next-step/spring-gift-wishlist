@@ -56,8 +56,9 @@ public class AdminController {
             return "form";
         }
 
-        productService.add(requestDto);
-        return "redirect:/admin/products/list";
+        //등록된 상품페이지로 이동하도록 수정
+        Long id = productService.add(requestDto);
+        return "redirect:/admin/products/info?id=" + id;
     }
 
     //form.html을 불러오기 위한 메서드

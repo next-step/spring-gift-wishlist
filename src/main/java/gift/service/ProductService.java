@@ -17,8 +17,8 @@ public class ProductService {
     }
 
     //상품 추가
-    public void add(ProductRequestDto requestDto){
-        productRepository.add(requestDto);
+    public Long add(ProductRequestDto requestDto){
+        return productRepository.add(requestDto);
     }
 
     //상품 검색

@@ -3,6 +3,7 @@ package gift.controller;
 import gift.dto.ProductRequestDto;
 import gift.entity.Product;
 import gift.service.ProductService;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,15 +35,14 @@ public class ProductController {
         this.productService = productService;
     }
 
-    Map<Long, Product> products = new HashMap<>();
-
     //create
     //생성한 product는 HashMap에 저장
     @PostMapping("/products")
-    public ResponseEntity<Product> createProduct(
-            @ModelAttribute ProductRequestDto requestDto
+    public ResponseEntity<Void> createProduct(
+            @RequestBody ProductRequestDto requestDto
     ) {
-        return null;
+        Long id = productService.add(requestDto);
+        return ResponseEntity.created(URI.create("api/products/" + id)).build();
     }
 
     //read
@@ -81,29 +81,8 @@ public class ProductController {
     //등록된 상품을 삭제
     @DeleteMapping("/products/{id}")
     public ResponseEntity<Void> removeProduct(@PathVariable Long id) {
-        Long productId = findProductById(id).getId();
-        products.remove(productId);
+        productService.remove(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    public boolean checkProduct(ProductRequestDto requestDto) {
-        //상품명, 가격, 이미지의 경우 모두 필수 값
-        if (requestDto.getName() == null || requestDto.getPrice() == null
-                || requestDto.getImageUrl() == null) {
-            return false;
-        }
-        //가격은 0이하가 될 수 없음
-        else if (requestDto.getPrice() < 0) {
-            return false;
-        }
-        return true;
-    }
-
-    public Product findProductById(Long id){
-        Optional<Product> optionalProduct = Optional.ofNullable(products.get(id));
-        if (optionalProduct.isPresent()) {
-            return optionalProduct.get();
-        }
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "존재하지 않는 상품입니다.");
-    }
 }
