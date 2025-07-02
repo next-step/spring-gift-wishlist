@@ -12,7 +12,7 @@ public record ProductRequestDTO (
                 message = "(),[],+,-,&,/,_ 외의 특수 문자는 사용이 불가합니다."
         )
         @Pattern(
-                regexp = "^(?!.*카카오)",
+                regexp = "^(?!.*카카오).*$",
                 message = "'카카오'가 포함된 상품명은 담당 MD와 협의 후 사용 가능합니다."
         )
         String name,
