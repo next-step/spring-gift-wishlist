@@ -94,11 +94,12 @@
         window.location.href = '/management/products';
       } else {
         const errorData = await response.json();
-        alert(`상품 추가에 실패했습니다: ${errorData.message || '서버 오류'}`);
+        const messages = Object.values(errorData).join('\n');
+        alert('상품 추가 실패:\n' + messages);
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('상품 추가 중 오류가 발생했습니다.');
+      alert('상품 추가: 서버와 통신 중 오류가 발생했습니다.');
     }
   });
 </script>

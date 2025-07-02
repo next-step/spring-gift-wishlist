@@ -3,6 +3,7 @@ package gift.service;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.entity.Product;
+import gift.exception.InvalidProductNameException;
 import gift.repository.ProductRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponseDto saveProduct(ProductRequestDto requestDto) {
+        if (requestDto.getName().contains("카카오")) {
+            throw new InvalidProductNameException("'카카오'가 포함된 문구는 담당 MD와 협의한 경우에만 사용할 수 있습니다.");
+        }
         Product product = new Product(requestDto.getName(), requestDto.getPrice(), requestDto.getImageUrl());
         Product savedProduct = productRepository.saveProduct(product);
         return new ProductResponseDto(savedProduct);
@@ -42,6 +46,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void updateProduct(Long id, ProductRequestDto requestDto) {
+        if (requestDto.getName().contains("카카오")) {
+            throw new InvalidProductNameException("'카카오'가 포함된 문구는 담당 MD와 협의한 경우에만 사용할 수 있습니다.");
+        }
         Product product = productRepository.findProductById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,  "해당 ID의 상품이 없습니다."));
         product.update(requestDto);
         productRepository.updateProduct(product);
