@@ -29,15 +29,17 @@ public class AdminItemController {
             @RequestParam(required = false) String name,
             @RequestParam(required = false) Integer price) {
 
-        List<ItemResponseDTO> items;
-
-        if(name == null && price == null){
-            items = itemService.getAllItems();
-        }else {
-            items = itemService.getItems(name, price);
-        }
+        List<ItemResponseDTO> items = findItems(name, price);
         model.addAttribute("items", items);
         return "admin/list";
+    }
+
+    private List<ItemResponseDTO> findItems(String name, Integer price) {
+        if(name==null && price ==null){
+            return itemService.getAllItems();
+        }
+        return itemService.getItems(name, price);
+        // Todo. 테스트 중 오류 발생 검색 실패 시 createForm으로 이동 -> 수정 필요
     }
 
     @PostMapping
