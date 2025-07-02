@@ -1,6 +1,8 @@
 package gift.exception;
 
+import java.util.List;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
 
 public enum ErrorCode {
   //Bean Validation!
