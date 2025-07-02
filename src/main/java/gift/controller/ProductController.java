@@ -50,7 +50,6 @@ class ProductController {
     public ResponseEntity<ProductResponseDto> updateProduct(
         @PathVariable long productId,
         @RequestBody @Valid ProductUpdateRequestDto productUpdateRequestDto  ) {
-
         return new ResponseEntity<>(
             productService.updateProduct(productId, productUpdateRequestDto), HttpStatus.OK);
     }
@@ -58,7 +57,6 @@ class ProductController {
     //상품 삭제
     @DeleteMapping("/products/{productId}")
     public ResponseEntity<Void> deleteProduct(@PathVariable long productId) {
-
         productService.deleteProduct(productId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
