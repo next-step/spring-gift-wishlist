@@ -31,7 +31,8 @@ public class ProductServiceImpl implements ProductService{
                         x.getId(),
                         x.getName(),
                         x.getPrice(),
-                        x.getImageUrl()
+                        x.getImageUrl(),
+                        x.getApproved()
                         ))
                 .toList();
 
@@ -46,7 +47,8 @@ public class ProductServiceImpl implements ProductService{
                         product.getId(),
                         product.getName(),
                         product.getPrice(),
-                        product.getImageUrl()))
+                        product.getImageUrl(),
+                        product.getApproved()))
                 .orElse(null);
     }
 
@@ -56,10 +58,16 @@ public class ProductServiceImpl implements ProductService{
         String name = dto.getName();
         Long price = dto.getPrice();
         String imageUrl = dto.getImageUrl();
+        boolean approved = !name.contains("카카오");
 
-        Product product = productRepository.saveProduct(name, price, imageUrl);
+        Product product = productRepository.saveProduct(name, price, imageUrl, approved);
 
-        return new ProductResponseDto(product.getId(), product.getName(), product.getPrice(), product.getImageUrl());
+        return new ProductResponseDto(
+                product.getId(),
+                product.getName(),
+                product.getPrice(),
+                product.getImageUrl(),
+                product.getApproved());
     }
 
     @Transactional
@@ -70,7 +78,8 @@ public class ProductServiceImpl implements ProductService{
                 id,
                 dto.getName(),
                 dto.getPrice(),
-                dto.getImageUrl()
+                dto.getImageUrl(),
+                dto.getApproved()
         );
 
         if (updatedNum == 0) {
