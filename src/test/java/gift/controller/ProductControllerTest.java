@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import gift.dto.request.ProductCreateRequestDto;
+import gift.dto.request.ProductUpdateRequestDto;
 import gift.dto.response.ProductCreateResponseDto;
 import gift.entity.Product;
 import java.util.List;
@@ -34,13 +35,16 @@ class ProductControllerTest {
     @BeforeEach
     void setUp() {
         jdbcTemplate.execute("DELETE FROM products");
+        jdbcTemplate.execute("ALTER TABLE products ALTER COLUMN productId RESTART WITH 1");
 
         String sql = "INSERT INTO products(name, price, imageUrl) VALUES (?, ?, ?)";
         jdbcTemplate.update(sql, "one", "4500", "https://img.com/BeforeEach.jpg");
         jdbcTemplate.update(sql, "two", "4500", "https://img.com/BeforeEach.jpg");
-        jdbcTemplate.update(sql, "hree", "4500", "https://img.com/BeforeEach.jpg");
+        jdbcTemplate.update(sql, "three", "4500", "https://img.com/BeforeEach.jpg");
 
         jdbcTemplate.execute("DELETE FROM approved_product_names");
+        jdbcTemplate.execute(
+            "ALTER TABLE approved_product_names ALTER COLUMN id RESTART WITH 1");
 
         String approvedProductSql = "INSERT INTO approved_product_names(name) VALUES (?)";
         jdbcTemplate.update(approvedProductSql, "카카오");
@@ -185,7 +189,7 @@ class ProductControllerTest {
         // given
         var url = "http://localhost:" + port + "/api/products/1";
 
-        var request = new ProductCreateRequestDto(
+        var request = new ProductUpdateRequestDto(
             "수정된 상품",
             10000.0,
             "https://PutNoContent.jpg"
@@ -196,13 +200,13 @@ class ProductControllerTest {
             .uri(url)
             .body(request)
             .retrieve()
-            .toEntity(ProductCreateResponseDto.class);
+            .toEntity(Void.class);
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
         Product result = jdbcTemplate.queryForObject(
-            "SELECT * FROM products WHERE productId = 1",
+            "SELECT name, price, imageUrl FROM products WHERE productId = 1",
             (rs, rowNum) -> new Product(
                 rs.getString("name"),
                 rs.getDouble("price"),
@@ -214,6 +218,79 @@ class ProductControllerTest {
         assertThat(result.getPrice()).isEqualTo(request.price());
         assertThat(result.getImageUrl()).isEqualTo(request.imageUrl());
 
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "",
+        " ",
+        "123451234512345",            // 숫자 15자
+        "Abcdefghijklmno",            // 영어 15자
+        "일이삼사오일이삼사오일이삼사오",  // 한글 15자
+        "()[]+-&/_",                  // 허용되는 특수문자
+        "카카오"                       // 협의된 '카카오' 포함
+    })
+    void 단건상품수정_NO_CONTENT_상품이름_유효성_검사(String validName) {
+        // given
+        var url = "http://localhost:" + port + "/api/products/1";
+
+        var request = new ProductUpdateRequestDto(
+            validName,
+            10000.0,
+            "https://validName.jpg"
+        );
+
+        // when
+        var response = restClient.put()
+            .uri(url)
+            .body(request)
+            .retrieve()
+            .toEntity(Void.class);
+
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+
+        Product result = jdbcTemplate.queryForObject(
+            "SELECT name, price, imageUrl FROM products WHERE productId = 1",
+            (rs, rowNum) -> new Product(
+                rs.getString("name"),
+                rs.getDouble("price"),
+                rs.getString("imageUrl")
+            )
+        );
+
+        assertThat(result.getName()).isEqualTo(request.name());
+        assertThat(result.getPrice()).isEqualTo(request.price());
+        assertThat(result.getImageUrl()).isEqualTo(request.imageUrl());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "12345 12345 12345",             // 숫자 17자
+        "Abcde fghij klmno",             // 영어 17자
+        "일이삼사오 일이삼사오 일이삼사오",   // 한글 17자
+        "콜라@맛!",                       // 허용되지 않은 특수문자
+        "카카오커피"                       // 협의되지 않은 '카카오' 포함
+    })
+    void 단건상품수정_BAD_REQUEST_상품이름_유효성_검사(String invalidName) {
+        //given
+        var url = "http://localhost:" + port + "/api/products/1";
+
+        var request = new ProductUpdateRequestDto(
+            invalidName,
+            10000.0,
+            "https://invalidName.jpg"
+        );
+
+        // when & then
+        assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
+            .isThrownBy(
+                () -> restClient.put()
+                    .uri(url)
+                    .body(request)
+                    .retrieve()
+                    .toEntity(Void.class)
+            );
     }
 
     // DELETE

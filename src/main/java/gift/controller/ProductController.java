@@ -50,7 +50,6 @@ public class ProductController {
                 );
             }
         }
-        // TODO: ResponseStatusException이 올바른 예외인지 확인 필요
 
         return new ResponseEntity<>(productService.saveProduct(productCreateRequestDto),
             HttpStatus.CREATED);
@@ -71,6 +70,18 @@ public class ProductController {
     @PutMapping("/{productId}")
     public ResponseEntity<Void> updateProductById(@PathVariable Long productId,
         @Valid @RequestBody ProductUpdateRequestDto productUpdateRequestDto) {
+
+        if (productUpdateRequestDto.name().contains("카카오")) {
+            boolean isApprovedProduct = approvedProductService.isApprovedProductName(
+                productUpdateRequestDto.name());
+
+            if (!isApprovedProduct) {
+                throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "협의되지 않은 '카카오'가 포함된 상품명은 사용할 수 없습니다."
+                );
+            }
+        }
 
         productService.updateProductById(productId, productUpdateRequestDto.name(),
             productUpdateRequestDto.price(), productUpdateRequestDto.imageUrl());
