@@ -1,5 +1,6 @@
 package gift.exception;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,6 +17,12 @@ public class WebExceptionHandler {
     @ExceptionHandler(DuplicateItemException.class)
     public String handleDuplicateItemException(DuplicateItemException ex, Model model) {
         model.addAttribute("errorMessage", ex.getMessage());
+        return "error/409";
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public String handleDataIntegrityViolation(DataIntegrityViolationException ex, Model model) {
+        model.addAttribute("errorMessage", "이미 존재하는 상품 이름입니다. 다른 이름을 사용해주세요.");
         return "error/409";
     }
 

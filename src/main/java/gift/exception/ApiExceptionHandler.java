@@ -2,6 +2,7 @@ package gift.exception;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -20,6 +21,11 @@ public class ApiExceptionHandler {
     @ExceptionHandler(DuplicateItemException.class)
     public ResponseEntity<String> handleDuplicateItemException(DuplicateItemException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<String> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 존재하는 상품 이름입니다.");
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

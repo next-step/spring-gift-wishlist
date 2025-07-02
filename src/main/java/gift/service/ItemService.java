@@ -43,8 +43,8 @@ public class ItemService {
     public ItemResponse updateItem(Long id, ItemRequest request) {
         Item existingItem = itemRepository.findById(id)
             .orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    "수정하려는 상품을 찾을 수 없습니다: " + id));
+                () -> new ItemNotFoundException("수정하려는 상품을 찾을 수 없습니다: " + id)
+            );
         existingItem.updateItemInfo(request.name(), request.price(), request.imageUrl());
         itemRepository.update(existingItem);
         return ItemResponse.from(existingItem);
@@ -53,8 +53,9 @@ public class ItemService {
 
     public void deleteItem(Long id) {
         itemRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "삭제하려는 상품을 찾을 수 없습니다: " + id));
+            .orElseThrow(
+                () -> new ItemNotFoundException("삭제하려는 상품을 찾을 수 없습니다: " + id)
+            );
         itemRepository.deleteById(id);
     }
 }
