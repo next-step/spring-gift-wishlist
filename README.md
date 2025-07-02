@@ -81,3 +81,17 @@
 
 ### 0단계. 기본 코드 준비 (완료)
 - [X] 이전 단계의 상품 관리 코드를 옮겨 온다.
+
+### 1단계. 유효성 검사 및 예외처리
+- [ ] **커스텀 유효성 검사 구현**:
+    - 상품 이름에 대한 커스텀 유효성 검사 어노테이션(`@ValidProductName`) 및 검사기(`ProductNameValidator`)를 구현한다.
+    - 검사 규칙:
+        - 이름은 공백 포함 최대 15자.
+        - 허용된 특수 문자 `( ) [ ] + - & / _` 외에는 사용 불가.
+        - "카카오"가 포함된 문구는 사용 불가.
+- [ ] **DTO에 커스텀 유효성 검사 적용**:
+    - `ItemRequest` DTO의 `name` 필드에 `@ValidProductName` 어노테이션을 적용한다.
+- [ ] **Repository 테스트 코드 작성**:
+    - `ItemRepository`의 데이터베이스 CRUD 동작을 검증하는 단위 테스트를 작성한다. (`@DataJdbcTest` 활용)
+- [ ] **Controller 테스트 코드 작성**:
+    - `AdminItemController`의 상품 등록 기능(성공 및 유효성 검사 실패 케이스)을 검증하는 통합 테스트를 작성한다. (`@SpringBootTest`, `MockMvc` 활용)
