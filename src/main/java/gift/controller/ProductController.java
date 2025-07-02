@@ -48,7 +48,7 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<List<ProductResponseDto>> getAllProducts() {
-        List<Product> products = productService.getProductList();
+        List<Product> products = productService.getProductList(true);
         List<ProductResponseDto> response = products.stream()
                 .map(product -> ProductResponseDto.from(product))
                 .toList();

@@ -19,7 +19,10 @@ public class ProductService {
     }
 
     public Product createProduct(String name, Integer price, String imageUrl) {
-        Product product = new Product(name, price, imageUrl);
+        Product product = new Product(name, price, imageUrl, true);
+        if (product.getName().contains("카카오")) {
+            product.setValidated(false);
+        }
         Optional<Long> optionalId = productRepository.saveNewProduct(product);
         if (optionalId.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Product creation failed");
@@ -34,8 +37,8 @@ public class ProductService {
         return optionalProduct.get();
     }
 
-    public List<Product> getProductList() {
-        return productRepository.getProductList();
+    public List<Product> getProductList(Boolean visibility) {
+        return productRepository.getProductList(visibility);
     }
 
     public Product updateSelectivelyProductById(Long id, String name, Integer price, String imageUrl) {
@@ -54,18 +57,24 @@ public class ProductService {
         if (imageUrl != null) {
             product.setImageUrl(imageUrl);
         }
-        throwNotFoundIfTrue(productRepository.updateProduct(product) == 1);
+        if (product.getName().contains("카카오")) {
+            product.setValidated(false);
+        }
+        throwNotFoundIfTrue(!productRepository.updateProduct(product));
         return product;
     }
 
     public Product updateProductById(Long id, String name, Integer price, String imageUrl) {
-        Product product = new Product(id, name, price, imageUrl);
-        throwNotFoundIfTrue(productRepository.updateProduct(product) == 1);
+        Product product = new Product(id, name, price, imageUrl, true);
+        if (product.getName().contains("카카오")) {
+            product.setValidated(false);
+        }
+        throwNotFoundIfTrue(!productRepository.updateProduct(product));
         return product;
     }
 
     public void deleteProductById(Long id) {
-        throwNotFoundIfTrue(productRepository.deleteProductById(id) == 1);
+        throwNotFoundIfTrue(!productRepository.deleteProductById(id));
     }
 
     private void throwNotFoundIfTrue(boolean condition) {

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin/products")
@@ -24,12 +25,16 @@ public class AdminPageController {
     }
 
     @GetMapping
-    public String getProducts(Model model) {
-        List<Product> products = productService.getProductList();
+    public String getProducts(
+            @RequestParam(defaultValue = "true", required = false) Boolean validated,
+            Model model
+    ) {
+        List<Product> products = productService.getProductList(validated);
         List<ProductResponseDto> response = products.stream()
                 .map(product -> ProductResponseDto.from(product))
                 .toList();
         model.addAttribute("products", response);
+        model.addAttribute("validated", validated);
         return "admin/product-list";
     }
 
@@ -63,8 +68,8 @@ public class AdminPageController {
                 request.price(),
                 request.imageUrl()
         );
-        redirectAttributes.addFlashAttribute("message", "Product created");
         return "redirect:/admin/products/" + created.getId();
+        redirectAttributes.addFlashAttribute("message", writeMessageWithValidated("Product Created.", product.getValidated()));
     }
 
     @GetMapping("/{id}")
@@ -72,10 +77,12 @@ public class AdminPageController {
             @PathVariable Long id,
             Model model
     ) {
-        ProductRequestDto dto =
-                ProductRequestDto.from(productService.getProductById(id));
+        Product product = productService.getProductById(id);
+        ProductRequestDto dto = ProductRequestDto.from(product);
+        Boolean validated = product.getValidated();
         model.addAttribute("productId", id);
         model.addAttribute("product", dto);
+        model.addAttribute("validated", validated);
         return "admin/product-form";
     }
 
@@ -103,8 +110,8 @@ public class AdminPageController {
                 request.price(),
                 request.imageUrl()
         );
-        redirectAttributes.addFlashAttribute("message", "Product updated");
         return "redirect:/admin/products/" + updated.getId();
+        redirectAttributes.addFlashAttribute("message", writeMessageWithValidated("Product Updated.", product.getValidated()));
     }
 
     @DeleteMapping("/{id}")
@@ -115,6 +122,14 @@ public class AdminPageController {
         productService.deleteProductById(id);
         redirectAttributes.addFlashAttribute("message", "Product deleted");
         return "redirect:/admin/products";
+    }
+
+    private String writeMessageWithValidated(String base, Boolean validated) {
+        String message = base;
+        if (!validated) {
+            message += "\n이 상품은 담당MD의 승인을 거쳐 게시됩니다. 그 이전까지는 상품은 조회되지 않으나, 수정은 가능합니다.";
+        }
+        return message;
     }
 
 }

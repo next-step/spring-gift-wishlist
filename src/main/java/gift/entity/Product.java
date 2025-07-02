@@ -6,18 +6,21 @@ public class Product {
     private String name;
     private Integer price;
     private String imageUrl;
+    private Boolean validated;
 
-    public Product(Long id, String name, Integer price, String imageUrl) {
+    public Product(Long id, String name, Integer price, String imageUrl, Boolean validated) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
+        this.validated = validated;
     }
 
-    public Product(String name, Integer price, String imageUrl) {
+    public Product(String name, Integer price, String imageUrl, Boolean validated) {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
+        this.validated = validated;
     }
 
     public void setId(Long id) {
@@ -50,5 +53,13 @@ public class Product {
 
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    public void setValidated(Boolean validated) {
+        this.validated = validated;
+    }
+
+    public Boolean getValidated() {
+        return validated;
     }
 }
