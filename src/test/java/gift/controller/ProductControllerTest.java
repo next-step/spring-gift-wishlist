@@ -39,6 +39,11 @@ class ProductControllerTest {
         jdbcTemplate.update(sql, "one", "4500", "https://img.com/BeforeEach.jpg");
         jdbcTemplate.update(sql, "two", "4500", "https://img.com/BeforeEach.jpg");
         jdbcTemplate.update(sql, "hree", "4500", "https://img.com/BeforeEach.jpg");
+
+        jdbcTemplate.execute("DELETE FROM approved_product_names");
+
+        String approvedProductSql = "INSERT INTO approved_product_names(name) VALUES (?)";
+        jdbcTemplate.update(approvedProductSql, "카카오");
     }
 
     // POST
@@ -78,7 +83,7 @@ class ProductControllerTest {
         "Abcdefghijklmno",            // 영어 15자
         "일이삼사오일이삼사오일이삼사오",  // 한글 15자
         "()[]+-&/_",                  // 허용되는 특수문자
-        "카카오 스티커"                 // 협의된 '카카오' 포함
+        "카카오"                 // 협의된 '카카오' 포함
     })
     void 단건상품등록_CREATED_상품이름_유효성_검사(String validName) {
         // given

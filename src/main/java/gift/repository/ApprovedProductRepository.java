@@ -4,7 +4,7 @@ public interface ApprovedProductRepository {
 
     void saveApprovedProductName(String name);
 
-    void existApprovedProductName(String name);
+    boolean existApprovedProductName(String name);
 
 
 }

@@ -4,5 +4,5 @@ public interface ApprovedProductService {
 
     void saveApprovedProductName(String name);
 
-    void isApprovedProductName(String name);
+    boolean isApprovedProductName(String name);
 }
