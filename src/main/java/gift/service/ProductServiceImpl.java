@@ -9,9 +9,7 @@ import gift.exception.custom.FillAllInfoException;
 import gift.exception.custom.FillSomeInfoException;
 import gift.repository.ProductRepository;
 import java.util.List;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -32,9 +30,9 @@ public class ProductServiceImpl implements ProductService {
         
         Product product = new Product(
             0L,
-            requestDto.getName(),
-            requestDto.getPrice(),
-            requestDto.getImageUrl()
+            requestDto.name(),
+            requestDto.price(),
+            requestDto.imageUrl()
         );
         
         return productRepository.addProduct(product);
