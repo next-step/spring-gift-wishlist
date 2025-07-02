@@ -67,9 +67,11 @@ public class ProductService {
         }
         productRepository.deleteById(id);
     }
+
     private void validateNameContent(String name) {
         if (name.contains("카카오")) {
             throw new IllegalArgumentException("상품 이름은 '카카오'를 포함할 수 없습니다.");
         }
     }
+
 }
