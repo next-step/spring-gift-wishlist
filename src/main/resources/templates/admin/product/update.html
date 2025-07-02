@@ -10,7 +10,7 @@
 <div class="container mt-4">
     <h2>상품 수정</h2>
 
-    <form th:action="@{/admin/products/edit/{id}(id=${product.id()})}" method="post" th:object="${product}">
+    <form th:action="@{/admin/products/edit/{id}(id=${product.getId()})}" method="post" th:object="${product}">
         <input type="hidden" name="_method" value="put"/>
 
         <div class="mb-3">
