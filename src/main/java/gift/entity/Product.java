@@ -31,10 +31,4 @@ public class Product {
     public String getImageUrl() {
         return imageUrl;
     }
-
-    public void update(CreateProductRequestDto requestDto) {
-        this.name = requestDto.name();
-        this.price = requestDto.price();
-        this.imageUrl = requestDto.imageUrl();
-    }
 }
