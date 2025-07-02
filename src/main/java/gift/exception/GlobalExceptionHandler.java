@@ -1,0 +1,52 @@
+package gift.exception;
+
+import gift.dto.ItemCreateDTO;
+import gift.dto.ItemUpdateDTO;
+import org.springframework.ui.Model;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import java.util.List;
+
+@ControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public String handleValidationError(MethodArgumentNotValidException e, Model model) {
+        List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors(); // 필드 에러를 왜 리스트로 받을까? 여러 동시발생하는 에러도 얘가 받을수 있나?
+
+        for (FieldError fieldError : fieldErrors) {
+            System.out.println("fieldError = " + fieldError);
+        }
+
+        String errorMessage = "오류 발생";
+        if (!fieldErrors.isEmpty()) {
+            errorMessage = fieldErrors.get(0).getDefaultMessage();
+        }
+        model.addAttribute("errorMessage", errorMessage);
+
+        Object rejectedDTO = e.getBindingResult().getTarget();
+
+        if (rejectedDTO instanceof ItemCreateDTO itemDTO) {
+            model.addAttribute("itemDTO", itemDTO);
+            return "admin/createForm";
+
+        } else if (rejectedDTO instanceof ItemUpdateDTO itemDTO) {
+            model.addAttribute("itemDTO", itemDTO);
+            return "admin/editForm";
+
+        } else {
+            model.addAttribute("itemDTO", new ItemCreateDTO("", 0, "", false));
+            return "admin/createForm";
+        }
+    }
+
+    @ExceptionHandler(Exception.class)
+    public String handleOtherErrors(Exception e, Model model) {
+        model.addAttribute("errorMessage", "오류 발생");
+        model.addAttribute("itemDTO", new ItemCreateDTO("", 0, "", false));
+        return "admin/createForm";
+    }
+}

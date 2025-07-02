@@ -16,4 +16,8 @@ public record ItemUpdateDTO(@NotNull Long id,
     public ItemUpdateDTO(Item item) {
         this(item.getId(), item.getName(), item.getPrice(), item.getImageUrl(),false);
     }
+
+    public ItemUpdateDTO(ItemDTO item) {
+        this(item.getId(), item.getName(), item.getPrice(), item.getImageUrl(),false);
+    }
 }
