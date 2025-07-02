@@ -4,11 +4,13 @@ import gift.dto.ErrorMessageResponse;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+@ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class AbstractControllerTest {
     @LocalServerPort
@@ -27,5 +29,4 @@ public abstract class AbstractControllerTest {
         Assertions.assertNotNull(errorResponse);
         Assertions.assertEquals(expectedStatus, errorResponse.status(), "상태 코드는 " + expectedStatus + "이어야 합니다.");
     }
-
 }

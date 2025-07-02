@@ -4,6 +4,7 @@ import gift.AbstractControllerTest;
 import gift.dto.ProductCreateRequest;
 import gift.entity.Product;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 public class ProductUpdateTest extends AbstractControllerTest {
 
     @Test
+    @DisplayName("제품 수정 시 200 반환")
     public void 제품_수정_시_200_반환() {
         String url = getBaseUrl() + "/api/products/1"; // 존재하는 제품 ID로 변경
         ProductCreateRequest request = new ProductCreateRequest("수정된 제품", 1500L, "수정된 이미지 URL", null);
@@ -28,6 +30,7 @@ public class ProductUpdateTest extends AbstractControllerTest {
     }
 
     @Test
+    @DisplayName("제품 수정 특정 필드 누락 시 200 반환")
     public void 제품_수정_특정_필드_누락_시_200_반환() {
         String url = getBaseUrl() + "/api/products/1"; // 존재하는 제품 ID로 변경
         ProductCreateRequest request = new ProductCreateRequest("수정된 제품", null, "수정된 이미지 URL", null); // 가격 필드 누락
@@ -41,6 +44,7 @@ public class ProductUpdateTest extends AbstractControllerTest {
     }
 
     @Test
+    @DisplayName("제품 수정 카카오 MD 권한 시 200 반환")
     public void 제품_수정_카카오_md_권한_시_200_반환() {
         String url = getBaseUrl() + "/api/products/1"; // 존재하는 제품 ID로 변경
         ProductCreateRequest request = new ProductCreateRequest("MD 권한 카카오 수정 제품", 2000L, "수정된 이미지 URL", null);
@@ -56,6 +60,7 @@ public class ProductUpdateTest extends AbstractControllerTest {
     }
 
     @Test
+    @DisplayName("제품 수정 유효성 검사 실패 시 400 반환")
     public void 제품_수정_유효성_검사_실패_시_400_반환() {
         String url = getBaseUrl() + "/api/products/1"; // 존재하는 제품 ID로 변경
         ProductCreateRequest request = new ProductCreateRequest("<><><><><><><><><><><><><>",
@@ -74,6 +79,7 @@ public class ProductUpdateTest extends AbstractControllerTest {
     }
 
     @Test
+    @DisplayName("제품 수정 카카오 유효성 검사 실패 시 400 반환")
     public void 제품_수정_카카오_유효성_검사_실패_시_400_반환() {
         String url = getBaseUrl() + "/api/products/1"; // 존재하는 제품 ID로 변경
         ProductCreateRequest request = new ProductCreateRequest("카카오 수정 제품", 1000L, "이미지 URL", false); // 유효하지 않은 카카오 데이터
@@ -90,6 +96,7 @@ public class ProductUpdateTest extends AbstractControllerTest {
     }
 
     @Test
+    @DisplayName("제품 패치 시 200 반환")
     public void 제품_패치_특정_필드_누락_시_200_반환() {
         String url = getBaseUrl() + "/api/products/1"; // 존재하는 제품 ID로 변경
         ProductCreateRequest request = new ProductCreateRequest("수정된 제품", null, "www.modified.com", null); // 가격 필드 누락
@@ -103,6 +110,7 @@ public class ProductUpdateTest extends AbstractControllerTest {
     }
 
     @Test
+    @DisplayName("제품 패치 카카오 MD 권한 시 200 반환")
     public void 제품_패치_카카오_md_권한_시_200_반환() {
         String url = getBaseUrl() + "/api/products/1"; // 존재하는 제품 ID로 변경
         ProductCreateRequest request = new ProductCreateRequest("MD 권한 카카오 수정 제품", 2000L, "www.modified.com", true);
@@ -118,6 +126,7 @@ public class ProductUpdateTest extends AbstractControllerTest {
     }
 
     @Test
+    @DisplayName("제품 패치 유효성 검사 실패 시 400 반환")
     public void 제품_패치_유효성_검사_실패_시_400_반환() {
         String url = getBaseUrl() + "/api/products/1"; // 존재하는 제품 ID로 변경
         ProductCreateRequest request = new ProductCreateRequest("<><><><><><><><><><><><><>",
@@ -136,6 +145,7 @@ public class ProductUpdateTest extends AbstractControllerTest {
     }
 
     @Test
+    @DisplayName("제품 패치 카카오 유효성 검사 실패 시 400 반환")
     public void 제품_패치_카카오_유효성_검사_실패_시_400_반환() {
         String url = getBaseUrl() + "/api/products/1"; // 존재하는 제품 ID로 변경
         ProductCreateRequest request = new ProductCreateRequest("카카오 수정 제품", 1000L, "이미지 URL", false); // 유효하지 않은 카카오 데이터
