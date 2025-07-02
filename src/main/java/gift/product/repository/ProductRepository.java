@@ -1,7 +1,6 @@
 package gift.product.repository;
 
 import gift.product.dto.ProductCreateRequestDto;
-import gift.product.dto.ProductUpdateRequestDto;
 import gift.product.entity.Product;
 import java.util.List;
 import java.util.Objects;
