@@ -56,6 +56,14 @@ public class ProductControllerTest {
         Product tooLongName = new Product(null, "tooLongToMakeItToProductName", 1, "http://example.com/img.png");
         ResponseEntity<String> fail2 = restTemplate.postForEntity(baseUrl, tooLongName, String.class);
         assertThat(fail2.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+
+        Product validPatternName = new Product(null, "()[]_유+효-문&자", 2, "http://example.com/img.png");
+        ResponseEntity<String> suc3 = restTemplate.postForEntity(baseUrl, validPatternName, String.class);
+        assertThat(suc3.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        Product invalidPatternName = new Product(null, "invalid!!!", 2,  "http://example.com/img.png");
+        ResponseEntity<String> fail3 = restTemplate.postForEntity(baseUrl, invalidPatternName, String.class);
+        assertThat(fail3.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
