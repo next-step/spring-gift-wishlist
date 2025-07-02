@@ -4,6 +4,7 @@ import gift.item.dto.ItemCreateDto;
 import gift.item.dto.ItemResponseDto;
 import gift.item.dto.ItemUpdateDto;
 import gift.item.service.ItemService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +40,7 @@ public class ItemController {
     }
 
     @PostMapping
-    public ResponseEntity<ItemResponseDto> createItem(@RequestBody ItemCreateDto itemCreateDto) {
+    public ResponseEntity<ItemResponseDto> createItem(@RequestBody @Valid ItemCreateDto itemCreateDto) {
         ItemResponseDto dto = itemService.createItem(itemCreateDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
@@ -47,7 +48,7 @@ public class ItemController {
     @PutMapping("/{itemId}")
     public ResponseEntity<ItemResponseDto> updateItem(
         @PathVariable Long itemId,
-        @RequestBody ItemUpdateDto itemUpdateDto
+        @RequestBody @Valid ItemUpdateDto itemUpdateDto
     ) {
         ItemResponseDto dto = itemService.updateItem(itemId, itemUpdateDto);
         return ResponseEntity.ok(dto);
