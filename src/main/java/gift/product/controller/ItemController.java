@@ -1,6 +1,7 @@
-package gift.product;
+package gift.product.controller;
 
 
+import gift.product.service.ItemService;
 import gift.product.dto.GetItemResponse;
 import gift.product.dto.ItemRequest;
 import jakarta.validation.Valid;

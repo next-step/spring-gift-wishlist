@@ -1,6 +1,7 @@
-package gift.product;
+package gift.product.repository;
 
 
+import gift.product.entity.Item;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;

@@ -1,10 +1,8 @@
 package gift;
 
 
-import gift.product.Item;
-import gift.product.ItemRepositoryImpl;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
+import gift.product.entity.Item;
+import gift.product.repository.ItemRepositoryImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;

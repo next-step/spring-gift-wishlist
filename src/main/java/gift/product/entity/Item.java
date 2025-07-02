@@ -1,4 +1,4 @@
-package gift.product;
+package gift.product.entity;
 
 
 public class Item {

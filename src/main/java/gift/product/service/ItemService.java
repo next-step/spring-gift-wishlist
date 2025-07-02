@@ -1,21 +1,15 @@
-package gift.product;
+package gift.product.service;
 
 
+import gift.product.entity.Item;
+import gift.product.repository.ItemRepository;
+import gift.product.repository.ItemRepositoryImpl;
 import gift.product.dto.GetItemResponse;
 import gift.product.dto.ItemRequest;
-import jakarta.annotation.PostConstruct;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.PreparedStatement;
-import java.sql.Statement;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 
 @Service
