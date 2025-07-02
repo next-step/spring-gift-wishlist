@@ -90,7 +90,8 @@ public class JdbcProductRepository implements ProductRepositoryInterface{
     @Override
     public int countAllProducts() {
         String sql = "SELECT COUNT(*) FROM product";
-        return jdbcTemplate.queryForObject(sql, Integer.class);
+        Integer result = jdbcTemplate.queryForObject(sql, Integer.class);
+        return result != null ? result : 0;
     }
 
 
