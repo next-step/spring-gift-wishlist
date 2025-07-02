@@ -5,6 +5,7 @@ import gift.dto.request.ProductRequestDto;
 import gift.dto.response.ProductResponseDto;
 import gift.entity.Product;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class ProductController {
 
 
     @PostMapping
-    public ResponseEntity<ProductResponseDto> addProduct(@RequestBody ProductRequestDto requestDto) {
+    public ResponseEntity<ProductResponseDto> addProduct( @RequestBody@Valid ProductRequestDto requestDto) {
         Product saved = productService.createProduct(requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ProductResponseDto(saved)); //피드백 반영
     }

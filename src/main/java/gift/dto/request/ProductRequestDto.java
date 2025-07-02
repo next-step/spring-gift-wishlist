@@ -1,6 +1,16 @@
 package gift.dto.request;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+
 public class ProductRequestDto {
+
+    @NotBlank()
+    @Size(max = 15)
+    @Pattern(
+            regexp = "^[\\p{L}\\p{N}\\s\\(\\)\\[\\]\\+\\-\\&\\/\\_]*$"
+    )
     private String name;
     private int price;
     private String imageUrl;
