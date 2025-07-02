@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/view")
@@ -54,6 +55,7 @@ public class ProductViewController {
         if (bindingResult.hasErrors()) {
             model.addAttribute("openCreateModal", true);
             model.addAttribute("requestDto", requestDto);
+            model.addAttribute("updateDto", new ProductRequestDto(null, 0, ""));
             model.addAttribute("productList", productService.findAll());
             return "home";
         }
@@ -68,19 +70,23 @@ public class ProductViewController {
         @PathVariable Long id,
         @ModelAttribute("updateDto") @Valid ProductRequestDto requestDto,
         BindingResult bindingResult,
-        Model model
+        RedirectAttributes redirectAttributes
     ) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("openUpdateModal", true);
-            model.addAttribute("productId", id);
-            model.addAttribute("updateDto", requestDto);
-            model.addAttribute("productList", productService.findAll());
+            redirectAttributes.addFlashAttribute("openUpdateModal", true);
+            redirectAttributes.addFlashAttribute("productId", id);
+            redirectAttributes.addFlashAttribute("updateDto", requestDto);
+            redirectAttributes.addFlashAttribute("productList", productService.findAll());
+            redirectAttributes.addFlashAttribute(
+                "org.springframework.validation.BindingResult.updateDto",
+                bindingResult
+            );
 
-            if (!model.containsAttribute("requestDto")) {
-                model.addAttribute("requestDto", new ProductRequestDto(null, 0, ""));
+            if (!redirectAttributes.containsAttribute("requestDto")) {
+                redirectAttributes.addFlashAttribute("requestDto", new ProductRequestDto(null, 0, ""));
             }
 
-            return "home";
+            return "redirect:/view/products";
         }
 
         productService.update(id,
