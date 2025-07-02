@@ -4,6 +4,7 @@ import gift.item.dto.ItemCreateDto;
 import gift.item.dto.ItemResponseDto;
 import gift.item.dto.ItemUpdateDto;
 import gift.item.service.ItemService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -54,7 +55,7 @@ public class AdminItemController {
     // 상품 요청 처리
 
     @PostMapping()
-    public String newItem(@ModelAttribute ItemCreateDto item) {
+    public String newItem(@ModelAttribute @Valid ItemCreateDto item) {
         itemService.createItem(item);
         return "redirect:/admin/items";
     }
@@ -62,7 +63,7 @@ public class AdminItemController {
     @PutMapping("/{id}")
     public String updateItem(
         @PathVariable("id") Long id,
-        @ModelAttribute ItemUpdateDto item
+        @ModelAttribute @Valid ItemUpdateDto item
     ) {
         itemService.updateItem(id, item);
         return "redirect:/admin/items";
