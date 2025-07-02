@@ -83,8 +83,7 @@ public class ProductController {
             }
         }
 
-        productService.updateProductById(productId, productUpdateRequestDto.name(),
-            productUpdateRequestDto.price(), productUpdateRequestDto.imageUrl());
+        productService.updateProductById(productId, productUpdateRequestDto);
 
         return ResponseEntity.noContent().build();
     }

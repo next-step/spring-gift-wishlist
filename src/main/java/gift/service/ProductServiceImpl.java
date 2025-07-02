@@ -1,6 +1,7 @@
 package gift.service;
 
 import gift.dto.request.ProductCreateRequestDto;
+import gift.dto.request.ProductUpdateRequestDto;
 import gift.dto.response.ProductCreateResponseDto;
 import gift.dto.response.ProductGetResponseDto;
 import gift.entity.Product;
@@ -46,9 +47,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void updateProductById(Long productId, String name, Double price, String imageUrl) {
+    public void updateProductById(Long productId, ProductUpdateRequestDto productUpdateRequestDto) {
 
-        Product product = new Product(productId, name, price, imageUrl);
+        Product product = new Product(productId, productUpdateRequestDto.name(),
+            productUpdateRequestDto.price(), productUpdateRequestDto.imageUrl());
 
         productRepository.updateProductById(product);
     }

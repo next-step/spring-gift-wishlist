@@ -1,6 +1,7 @@
 package gift.controller;
 
 import gift.dto.request.ProductCreateRequestDto;
+import gift.dto.request.ProductUpdateRequestDto;
 import gift.dto.response.ProductGetResponseDto;
 import gift.service.ProductService;
 import java.util.List;
@@ -85,8 +86,10 @@ public class ProductViewController {
         @RequestParam Double price,
         @RequestParam String imageUrl
     ) {
+        ProductUpdateRequestDto productUpdateRequestDto = new ProductUpdateRequestDto(name, price,
+            imageUrl);
         try {
-            productService.updateProductById(productId, name, price, imageUrl);
+            productService.updateProductById(productId, productUpdateRequestDto);
             return "redirect:/admin/products";
         } catch (ResponseStatusException e) {
             return "redirect:/admin/products/update/" + productId;
