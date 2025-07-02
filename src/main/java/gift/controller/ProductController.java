@@ -3,7 +3,9 @@ package gift.controller;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.entity.Product;
+import gift.exception.NameHasKakaoException;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,13 +40,16 @@ public class ProductController {
 
   @PostMapping("")
   public ResponseEntity<ProductResponseDto> createProduct(
-      @RequestBody ProductRequestDto requestDto) {
+      @Valid @RequestBody ProductRequestDto requestDto) {
+    if(requestDto.getName().contains("카카오")) {
+      throw new NameHasKakaoException("이름에 카카오가 포함되어 있습니다.");
+    }
     return new ResponseEntity<>(service.createProduct(requestDto), HttpStatus.CREATED);
   }
 
   @PatchMapping("/{id}")
   public ResponseEntity<ProductResponseDto> updateProduct(@PathVariable Long id,
-      @RequestBody ProductRequestDto requestDto) {
+      @Valid @RequestBody ProductRequestDto requestDto) {
     return new ResponseEntity<>(service.updateProduct(id, requestDto), HttpStatus.OK);
   }
 

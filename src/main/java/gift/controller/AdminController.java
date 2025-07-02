@@ -5,6 +5,7 @@ import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.dto.ProductUpdateFormDto;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -41,7 +42,7 @@ public class AdminController {
   }
 
   @PostMapping("/new")
-  public String create(@ModelAttribute ProductCreateFormDto createFormDto) {
+  public String create(@Valid @ModelAttribute ProductCreateFormDto createFormDto) {
     ProductRequestDto requestDto = new ProductRequestDto(createFormDto.getName(),
         createFormDto.getPrice(),
         createFormDto.getImageUrl());
@@ -52,16 +53,14 @@ public class AdminController {
   @GetMapping("/{id}/update")
   public String updateForm(@PathVariable("id") Long id, Model model) {
     ProductResponseDto responseDto = service.findProductById(id);
-    ProductUpdateFormDto updateFormDto = new ProductUpdateFormDto(responseDto.getId(),
-        responseDto.getName(),
-        responseDto.getPrice(), responseDto.getImageUrl());
+    ProductUpdateFormDto updateFormDto = new ProductUpdateFormDto(responseDto.getId(), responseDto.getName(), responseDto.getPrice(), responseDto.getImageUrl());
     model.addAttribute("updateFormDto", updateFormDto);
     return "updateProductForm";
   }
 
   @PutMapping("/{id}/update")
-  public String update(@PathVariable("id") Long id, ProductRequestDto requestDto) {
-    service.updateProduct(id, requestDto);
+  public String update(@PathVariable("id") Long id, @Valid @ModelAttribute ProductUpdateFormDto updateFormDto) {
+    service.updateProduct(id, new ProductRequestDto(updateFormDto.getName(),updateFormDto.getPrice(),updateFormDto.getImageUrl()));
     return "redirect:" + PRODUCTS_LIST_PAGE_PATH;
   }
 
