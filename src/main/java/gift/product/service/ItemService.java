@@ -23,6 +23,9 @@ public class ItemService {
 
 	public Long createItem(ItemRequest req) {
 
+		if (req.name().contains("카카오"))
+			throw new IllegalArgumentException("'카카오'는 담당자와 협의 후 사용가능한 키워드입니다.");
+
 		Item item = new Item(req.name(), req.price(), req.imageUrl());
 
 		return itemRepository.save(item);
