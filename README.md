@@ -4,7 +4,9 @@
 상품 등록, 조회, 수정, 삭제 기능을 제공합니다.
 
 ---
-
++) ## 추가 구현 기능(step1)
+- **예외처리**: GlobalExceptionHandler, ErrorResponseDto, validation(Package)추가
+  
 ## 구현 기능
 
 ###  상품 목록 조회
