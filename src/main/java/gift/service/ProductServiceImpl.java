@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ProductServiceImpl implements ProductService {
 
+    private static final String FORBIDDEN_KEYWORD = "카카오";
+
     private final ProductRepository productRepository;
 
     public ProductServiceImpl(@Qualifier("JDBC-Repo") ProductRepository productRepository) {
@@ -24,6 +26,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional(readOnly = true)
     public ProductResponse create(ProductRequest request) {
+        validateForbiddenKeyword(request.name());
+
         Product savedProduct = productRepository.save(
             new Product(null, request.name(), request.price(), request.imageUrl()));
 
@@ -50,6 +54,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public ProductResponse update(Long id, ProductRequest request) {
+        validateForbiddenKeyword(request.name());
+
         Product product = productRepository.findById(id)
             .orElseThrow(() -> new CustomException(CustomResponseCode.NOT_FOUND));
 
@@ -67,5 +73,11 @@ public class ProductServiceImpl implements ProductService {
         }
 
         productRepository.deleteById(id);
+    }
+
+    private void validateForbiddenKeyword(String name) {
+        if (name.contains(FORBIDDEN_KEYWORD)) {
+            throw new CustomException(CustomResponseCode.FORBIDDEN_KEYWORD_KAKAO);
+        }
     }
 }
