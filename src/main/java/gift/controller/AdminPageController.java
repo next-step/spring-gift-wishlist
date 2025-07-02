@@ -52,7 +52,10 @@ public class AdminPageController {
         if (bindingResult.hasErrors()) {
             model.addAttribute("productId", null);
             model.addAttribute("product", request);
-            model.addAttribute("message", "Invalid input. Check again.");
+            String errorMessages = bindingResult.getFieldErrors().stream()
+                .map(error -> "- " + error.getDefaultMessage())
+                .collect(Collectors.joining("\n"));
+            model.addAttribute("message", "Invalid input. Check again.\n" + errorMessages);
             return "admin/product-form";
         }
         Product created = productService.createProduct(
@@ -87,7 +90,11 @@ public class AdminPageController {
         if (bindingResult.hasErrors()) {
             model.addAttribute("productId", id);
             model.addAttribute("product", request);
-            model.addAttribute("message", "Invalid input. Check again.");
+            String errorMessages = bindingResult.getFieldErrors().stream()
+                    .map(error -> "- " + error.getDefaultMessage())
+                    .collect(Collectors.joining("\n"));
+            model.addAttribute("message", "Invalid input. Check again.\n" + errorMessages);
+            model.addAttribute("validated", productService.getProductById(id).getValidated());
             return "admin/product-form";
         }
         Product updated = productService.updateProductById(
