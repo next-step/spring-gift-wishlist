@@ -90,12 +90,15 @@
                   alert('상품 정보가 성공적으로 수정되었습니다.');
                   window.location.href = '/management/products';
                 } else {
-                  alert('상품 수정에 실패했습니다. 입력값을 확인해주세요.');
+                  response.json().then(errorData => {
+                    const messages = Object.values(errorData).join('\n');
+                    alert('상품 수정 실패:\n' + messages);
+                  });
                 }
               })
               .catch(error => {
                 console.error('Error:', error);
-                alert('수정 중 오류가 발생했습니다.');
+                alert('상품 수정: 서버와 통신 중 오류가 발생했습니다.');
               });
     });
   });

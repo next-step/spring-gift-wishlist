@@ -105,12 +105,15 @@
                       alert('모든 상품이 삭제되었습니다.');
                       productList.innerHTML = '';
                     } else {
-                      alert('전체 상품 삭제에 실패했습니다.');
+                      response.json().then(errorData => {
+                        const messages = Object.values(errorData).join('\n');
+                        alert('전체 상품 삭제 실패:\n' + messages);
+                      });
                     }
                   })
                   .catch(error => {
                     console.error('Error:', error);
-                    alert('전체 삭제 중 오류가 발생했습니다.');
+                    alert('전체 상품 삭제: 서버와 통신 중 오류가 발생했습니다.');
                   });
         }
       });
@@ -136,12 +139,15 @@
                       setTimeout(() => cardToRemove.remove(), 400);
                     }
                   } else {
-                    alert('상품 삭제에 실패했습니다.');
+                    response.json().then(errorData => {
+                      const messages = Object.values(errorData).join('\n');
+                      alert('상품 삭제 실패:\n' + messages);
+                    })
                   }
                 })
                 .catch(error => {
                   console.error('Error:', error);
-                  alert('삭제 중 오류가 발생했습니다.');
+                  alert('상품 삭제: 서버와 통신 중 오류가 발생했습니다.');
                 });
       }
     });
