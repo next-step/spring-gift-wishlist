@@ -6,10 +6,20 @@
 </head>
 <body>
     <h2>상품목록</h2>
-    <form action="/admin/products/new"
-          method="get" style="display:inline">
-        <button type="submit">Create New Product</button>
-    </form>
+    <a th:if="${validated}"
+       th:href="@{/admin/products(validated=false)}"
+       style="display:inline-block; padding:3px 6px; background-color:black; color:white; border-radius:4px; text-decoration: none; border:1px solid black;">
+        Go to Non-Validated Product List
+    </a>
+    <a th:if="${!validated}"
+       th:href="@{/admin/products(validated=true)}"
+       style="display:inline-block; padding:3px 6px; background-color:black; color:white; border-radius:4px; text-decoration: none; border:1px solid black;">
+        Go to Validated Product List
+    </a>
+    <a href="/admin/products/new"
+       style="display:inline-block; padding:3px 6px; background-color:green; color:white; border-radius:4px; text-decoration: none; border:1px solid green;">
+        Create New Product
+    </a>
     <table>
         <thead>
             <tr>

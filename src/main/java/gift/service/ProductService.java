@@ -73,6 +73,10 @@ public class ProductService {
         return product;
     }
 
+    public void setProductValidated(Long id, Boolean validated) {
+        throwNotFoundIfTrue(!productRepository.setProductValidatedById(id, validated));
+    }
+
     public void deleteProductById(Long id) {
         throwNotFoundIfTrue(!productRepository.deleteProductById(id));
     }

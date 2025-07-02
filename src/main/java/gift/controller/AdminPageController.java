@@ -68,8 +68,19 @@ public class AdminPageController {
                 request.price(),
                 request.imageUrl()
         );
+        redirectAttributes.addFlashAttribute("message", writeMessageWithValidated("Product created", created.getValidated()));
         return "redirect:/admin/products/" + created.getId();
-        redirectAttributes.addFlashAttribute("message", writeMessageWithValidated("Product Created.", product.getValidated()));
+    }
+
+    @PatchMapping("/{id}")
+    public String setProductValidated(
+            @PathVariable Long id,
+            @RequestParam Boolean validated,
+            RedirectAttributes redirectAttributes
+    ) {
+        productService.setProductValidated(id, validated);
+        redirectAttributes.addFlashAttribute("message", "Product Validated Status Changed");
+        return "redirect:/admin/products/" + id;
     }
 
     @GetMapping("/{id}")
@@ -110,8 +121,8 @@ public class AdminPageController {
                 request.price(),
                 request.imageUrl()
         );
-        return "redirect:/admin/products/" + updated.getId();
-        redirectAttributes.addFlashAttribute("message", writeMessageWithValidated("Product Updated.", product.getValidated()));
+        redirectAttributes.addFlashAttribute("message", writeMessageWithValidated("Product updated", updated.getValidated()));
+        return "redirect:/admin/products/" + id;
     }
 
     @DeleteMapping("/{id}")

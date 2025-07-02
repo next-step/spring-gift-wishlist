@@ -53,6 +53,13 @@ public class ProductRepository {
             .update() == 1;
     }
 
+    public boolean setProductValidatedById(Long id, Boolean validated) {
+        return jdbcClient.sql("update product set validated = :validated where id = :id")
+            .param("id", id)
+            .param("validated", validated)
+            .update() == 1;
+    }
+
     public boolean deleteProductById(Long id) {
         return jdbcClient.sql("delete from product where id = :id")
             .param("id", id)
