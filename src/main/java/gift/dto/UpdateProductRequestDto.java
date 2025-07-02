@@ -20,6 +20,6 @@ public record UpdateProductRequestDto (
     @Max(value = 1000000000000L, message = "가격이 비정상적으로 큰 값입니다.")
     long price,
     String imageUrl,
-    boolean mdApproved
+    boolean merchandiserApproved
 ) implements ProductPolicyProvider {
 }
