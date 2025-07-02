@@ -70,8 +70,8 @@ public class ProductService {
         if (!deleted) throw new ProductNotFoundException(id);
     }
 
-    public Product update(Long id, String name, int price, String imageUrl) {
-        return repository.update(id, name, price, imageUrl)
-                .orElseThrow(() -> new ProductNotFoundException(id));
+    public void update(Long id, String name, int price, String imageUrl) {
+        boolean updated = repository.update(id, name, price, imageUrl);
+        if (!updated) throw new ProductNotFoundException(id);
     }
 }
