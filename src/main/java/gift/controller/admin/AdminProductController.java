@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,7 +38,10 @@ public class AdminProductController {
     }
 
     @PostMapping
-    public String createProduct(@Valid @ModelAttribute ProductRequest request) {
+    public String createProduct(@Valid @ModelAttribute("product") ProductRequest request, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "admin/product/new-form";
+        }
         productService.addProduct(request);
         return "redirect:/admin/products";
     }
@@ -50,7 +54,10 @@ public class AdminProductController {
     }
 
     @PostMapping("/{id}")
-    public String updateProduct(@PathVariable Long id, @Valid @ModelAttribute ProductRequest request) {
+    public String updateProduct(@PathVariable Long id, @Valid @ModelAttribute("product") ProductRequest request, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "admin/product/edit-form";
+        }
         productService.updateProduct(id, request);
         return "redirect:/admin/products";
     }
