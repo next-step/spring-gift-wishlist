@@ -1,13 +1,14 @@
 package gift.dto;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 public record CreateProductRequestDto(
         @NotBlank(message = "상품 이름은 비어 있을 수 없습니다.")
         @Size(max = 15, message = "상품 이름은 공백 포함 최대 15자까지 입력할 수 있습니다.")
+        @Pattern(
+                regexp = "^[\\p{L}\\p{N}\\s\\(\\)\\[\\]\\+\\-\\&/_]*$",
+                message = "상품 이름에는 ( ), [ ], +, -, &, /, _ 의 특수 문자만 사용할 수 있습니다."
+        )
         String name,
 
         @NotNull(message = "가격은 필수 입력입니다.")

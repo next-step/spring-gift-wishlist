@@ -5,9 +5,11 @@ import gift.dto.UpdateProductRequestDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -54,4 +56,73 @@ public class ProductControllerTest {
 
     }
 
+    @Test
+    void 허용되지_않은_특수_문자로_상품이름을_등록할_경우_400을_반환한다() {
+        var url = "http://localhost:" + port + "/api/products";
+        // 상품 이름에 허용되지 않은 특수문자 사용
+        CreateProductRequestDto requestDto = new CreateProductRequestDto(
+                "쌍쌍바!", 1200L, "test.jpg"
+        );
+
+        assertThatExceptionOfType(HttpClientErrorException.class)
+                .isThrownBy(
+                        () ->
+                                client.post()
+                                        .uri(url)
+                                        .body(requestDto)
+                                        .retrieve()
+                                        .toEntity(Void.class));
+    }
+
+    @Test
+    void 허용되지_않은_특수_문자로_상품이름을_수정할_경우_400을_반환한다() {
+        var url = "http://localhost:" + port + "/api/products/1";
+        // 상품 이름에 허용되지 않은 특수문자 사용\
+        UpdateProductRequestDto requestDto = new UpdateProductRequestDto(
+                1L, "쌍쌍바!", 1200L, "test.jpg"
+        );
+
+        assertThatExceptionOfType(HttpClientErrorException.class)
+                .isThrownBy(
+                        () ->
+                                client.put()
+                                        .uri(url)
+                                        .body(requestDto)
+                                        .retrieve()
+                                        .toEntity(Void.class));
+    }
+
+    @Test
+    void 허용된_문자로_상품이름을_등록할_경우_201을_반환한다() {
+        var url = "http://localhost:" + port + "/api/products";
+        // 상품 이름에 허용되지 않은 특수문자 사용\
+        CreateProductRequestDto requestDto = new CreateProductRequestDto(
+                "[쌍쌍바]", 1200L, "test.jpg"
+        );
+
+        var response = client.post()
+                .uri(url)
+                .body(requestDto)
+                .retrieve()
+                .toEntity(Void.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    }
+
+    @Test
+    void 허용된_문자로_상품이름을_수정할_경우_204을_반환한다() {
+        var url = "http://localhost:" + port + "/api/products/1";
+        // 상품 이름에 허용되지 않은 특수문자 사용\
+        UpdateProductRequestDto requestDto = new UpdateProductRequestDto(
+                1L, "[쌍쌍바]", 1200L, "test.jpg"
+        );
+
+        var response = client.put()
+                .uri(url)
+                .body(requestDto)
+                .retrieve()
+                .toEntity(Void.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    }
 }
