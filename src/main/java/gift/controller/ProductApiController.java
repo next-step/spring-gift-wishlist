@@ -4,8 +4,10 @@ import gift.dto.ProductCreateResponse;
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -48,7 +50,7 @@ public class ProductApiController {
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public ProductCreateResponse createProduct(
-        @RequestBody ProductRequest request
+        @Valid @RequestBody ProductRequest request
     ) {
         Long id = productService.insert(request);
 
@@ -62,7 +64,7 @@ public class ProductApiController {
     @PatchMapping("/{productId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateProduct(
-        @RequestBody ProductRequest request,
+        @Valid @RequestBody ProductRequest request,
         @PathVariable Long productId
     ) {
         productService.update(request);
