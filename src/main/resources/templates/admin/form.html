@@ -8,11 +8,7 @@
 
 <h1>상품 등록/수정</h1>
 
-<form th:if="${product.id == null}" th:action="@{/admin/products/new}" th:object="${product}" method="post">
-  <form th:if="${product.id != null}" th:action="@{'/admin/products/' + ${product.id} + '/edit'}"
-        th:object="${product}" method="post">
-
-      th:object="${product}" method="post">
+<form th:action="@{${actionUrl}}" th:object="${product}" method="post">
 
   <input type="hidden" th:field="*{id}" />
 

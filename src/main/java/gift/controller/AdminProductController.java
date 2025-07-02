@@ -26,6 +26,7 @@ public class AdminProductController {
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("product", new RequestDto());
+        model.addAttribute("actionUrl", "/admin/products/new");
         return "admin/form";
     }
 
@@ -49,6 +50,7 @@ public class AdminProductController {
     public String showEditForm(@PathVariable Long id, Model model) {
         ResponseDto product = productService.findById(id);
         model.addAttribute("product", product);
+        model.addAttribute("actionUrl", "/admin/products/" + id + "/edit");
         return "admin/form";
     }
 
