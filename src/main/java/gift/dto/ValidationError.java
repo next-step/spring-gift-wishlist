@@ -38,5 +38,7 @@ public record ValidationError(
             .toList();
     }
 
-
+    public String toFormatString() {
+        return String.format("%s: %s", field, message);
+    }
 }

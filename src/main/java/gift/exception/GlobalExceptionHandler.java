@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import java.util.NoSuchElementException;
 
-@RestControllerAdvice
+@RestControllerAdvice(basePackages = "gift.controller.api")
 public class GlobalExceptionHandler {
 
     @Order(1)
