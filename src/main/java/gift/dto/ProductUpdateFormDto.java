@@ -14,6 +14,7 @@ public class ProductUpdateFormDto {
   @NotBlank(message = "이름은 필수입니다.")
   @Size(max=15, message = "이름은 최대 15글자입니다")
   @Pattern(regexp = "^[가-힣a-zA-Z0-9\\(\\)\\[\\]\\+\\-\\&\\/\\_ ]+$", message = "한글, 영문자, 숫자, ( ), [ ], +, -, &, /, _ 만 입력 가능(공백포함)")
+  @Pattern(regexp = "^(?!.*카카오).*$", message = "상품 이름에 '카카오'가 포함되어 있습니다. 담당 MD와 협의가 필요합니다.")
   private String name;
 
   @NotNull(message = "가격은 필수입니다.")
