@@ -3,7 +3,7 @@ package gift.service;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.entity.Product;
-import gift.exception.InvalidPriceException;
+//import gift.exception.InvalidPriceException;
 import gift.exception.ProductNotFoundException;
 import gift.repository.ProductRepository;
 import java.util.List;
@@ -44,9 +44,9 @@ public class ProductService {
 
   //가격만 수정하는 것은 꽤 합리적이라고 생각
   public ProductResponseDto updateProductPrice(Long productId, int price) {
-    if (price < 0) {
-      throw new InvalidPriceException();
-    }
+//    if (price < 0) {
+//      throw new InvalidPriceException();
+//    }
     Product updatedProduct = productRepository.updatePrice(productId, price);
     return updatedProduct.toDto();
   }

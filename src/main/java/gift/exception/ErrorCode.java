@@ -1,14 +1,15 @@
 package gift.exception;
 
-import java.util.List;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.FieldError;
 
 public enum ErrorCode {
+  //Bean Validation!
+  VALIDATION_FAILED("VALIDATION_FAILED", "입력값이 올바르지 않습니다.", HttpStatus.BAD_REQUEST),
 
-  INVALID_PRODUCT_NAME("INVALID_PRODUCT_NAME", "상품명이 올바르지 않습니다.",HttpStatus.BAD_REQUEST),
-  INVALID_PRODUCT_PRICE("INVALID_PRODUCT_PRICE", "상품 가격이 올바르지 않습니다.",HttpStatus.BAD_REQUEST),
-  INVALID_IMAGE_URL("INVALID_IMAGE_URL", "이미지 URL이 올바르지 않습니다.",HttpStatus.BAD_REQUEST);
+  //요구사항 field validation!
+  INVALID_PRODUCT_NAME("INVALID_PRODUCT_NAME", "상품명이 올바르지 않습니다.", HttpStatus.BAD_REQUEST),
+  INVALID_PRODUCT_PRICE("INVALID_PRODUCT_PRICE", "상품 가격이 올바르지 않습니다.", HttpStatus.BAD_REQUEST),
+  INVALID_IMAGE_URL("INVALID_IMAGE_URL", "이미지 URL이 올바르지 않습니다.", HttpStatus.BAD_REQUEST);
 
   private final String code;
   private final String message;

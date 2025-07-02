@@ -2,9 +2,9 @@ package gift.exception;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.validation.FieldError;
 
 public class ErrorResponse {
+
   private String message;
   private int status;
   private String code;

@@ -1,5 +1,30 @@
 package gift.exception;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+@RestControllerAdvice
 public class ExceptionHandlerAdvice {
 
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<ErrorResponse> handleValidationException(
+      MethodArgumentNotValidException ex) {
+
+    List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors()
+        .stream()
+        .map(error -> new FieldError(
+            error.getField(),
+            error.getRejectedValue() == null ? "" : error.getRejectedValue().toString(),
+            error.getDefaultMessage()
+        ))
+        .collect(Collectors.toList());
+
+    ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.VALIDATION_FAILED, fieldErrors);
+
+    return ResponseEntity.status(ErrorCode.VALIDATION_FAILED.getStatus()).body(errorResponse);
+  }
 }
