@@ -3,7 +3,6 @@ package gift.controller;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.entity.Product;
-import gift.exception.NameHasKakaoException;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -41,9 +40,6 @@ public class ProductController {
   @PostMapping("")
   public ResponseEntity<ProductResponseDto> createProduct(
       @Valid @RequestBody ProductRequestDto requestDto) {
-    if(requestDto.getName().contains("카카오")) {
-      throw new NameHasKakaoException("이름에 카카오가 포함되어 있습니다.");
-    }
     return new ResponseEntity<>(service.createProduct(requestDto), HttpStatus.CREATED);
   }
 

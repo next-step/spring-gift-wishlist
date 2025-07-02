@@ -22,14 +22,6 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(errorResponse,HttpStatus.BAD_REQUEST);
   }
 
-  @ExceptionHandler(value=NameHasKakaoException.class)
-  public ResponseEntity<CustomErrorResponse> hasKakaoExceptionResponseEntity(NameHasKakaoException exception){
-    CustomErrorResponse errorResponse = new CustomErrorResponse(HttpStatus.BAD_REQUEST, exception.getMessage());
-    return new ResponseEntity<>(errorResponse,HttpStatus.BAD_REQUEST);
-  }
-
-
-
   @ExceptionHandler(value=ProductNotFoundException.class)
   public ResponseEntity<CustomErrorResponse> handleProductNotFoundException(ProductNotFoundException exception){
     CustomErrorResponse errorResponse=new CustomErrorResponse(HttpStatus.NOT_FOUND, exception.getMessage());
