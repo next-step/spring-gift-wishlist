@@ -1,4 +1,4 @@
-package gift.controller;
+package gift.controller.api;
 
 import gift.model.CustomPage;
 import gift.dto.ProductCreateRequest;
