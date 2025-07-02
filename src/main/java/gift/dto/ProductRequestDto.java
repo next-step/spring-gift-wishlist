@@ -1,8 +1,12 @@
 package gift.dto;
 
+import gift.validation.ProductNameValid;
+
 public class ProductRequestDto {
 
+    @ProductNameValid
     private String name;
+
     private int price;
     private String imageUrl;
 
