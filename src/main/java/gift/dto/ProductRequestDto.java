@@ -9,7 +9,7 @@ public record ProductRequestDto(
     @NotBlank(message = "상품 이름은 필수입니다.")
     @Size(max=15, message = "상품 이름은 공백 포함 최대 15자까지 입력할 수 있습니다.")
     @Pattern(
-        regexp = "^[a-zA-Z0-9가-힣\\s()\\[\\]+\\-&/_]+$",
+        regexp = "^$|^[a-zA-Z0-9가-힣\\s()\\[\\]+\\-&/_]+$",
         message = "허용되지 않는 특수문자가 포함되어 있습니다."
     )
     @Pattern(
