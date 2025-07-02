@@ -4,14 +4,16 @@ import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import gift.dto.CreateProductRequest;
-import gift.dto.ReadProductResponse;
+import gift.dto.ProductResponse;
 import gift.dto.UpdateProductRequest;
 import gift.service.ProductService;
 
@@ -27,7 +29,7 @@ public class AdminController {
 
     @GetMapping
     public String adminPage(Model model) {
-        List<ReadProductResponse> products = productService.getAllProducts();
+        List<ProductResponse> products = productService.getAllProducts();
         model.addAttribute("products", products);
         return "admin";
     }
@@ -50,12 +52,12 @@ public class AdminController {
         @PathVariable Long id,
         Model model
     ) {
-        ReadProductResponse product = productService.getProductById(id);
+        ProductResponse product = productService.getProductById(id);
         model.addAttribute("product", product);
         return "editProduct";
     }
 
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     public String updateProduct(
         @PathVariable Long id,
         @ModelAttribute UpdateProductRequest request
@@ -64,7 +66,7 @@ public class AdminController {
         return "redirect:/admin/products";
     }
 
-    @GetMapping("/{id}/delete")
+    @DeleteMapping("/{id}")
     public String deleteProduct(
         @PathVariable Long id
     ) {
