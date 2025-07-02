@@ -23,7 +23,6 @@ document.getElementById('infoForm').addEventListener('submit', function(event) {
     } else if (modalMode === 'update') {
         updateProduct(selectedProductId);
     }
-    closeModal();
 });
 
 // Functions communicate with the backend
@@ -55,7 +54,22 @@ function sendProductData(url, method) {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(data)
-    }).then(() => {
-        location.reload();
+    }).then((value) => {
+        if (value.ok) {
+            onSuccess();
+        } else {
+            value.text().then(value=>{
+                onFailure(value);
+            })
+        }
     });
+}
+
+function onSuccess() {
+    location.reload();
+    closeModal();
+}
+
+function onFailure(reason) {
+    alert(reason);
 }

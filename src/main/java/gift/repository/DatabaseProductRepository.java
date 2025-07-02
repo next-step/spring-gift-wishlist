@@ -2,7 +2,6 @@ package gift.repository;
 
 import gift.entity.Product;
 import gift.exception.NotFoundByIdException;
-import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
@@ -10,33 +9,38 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-@Primary
 @Repository
 public class DatabaseProductRepository implements ProductRepository {
 
     private final JdbcClient jdbcClient;
 
-    private final String SAVE_PRODUCT = """
-                INSERT INTO products(name, price, imageUrl)
-                VALUES (:name, :price, :imageUrl);
+    private static final String SAVE_PRODUCT = """
+                INSERT INTO products(name, price, imageUrl, status)
+                VALUES (:name, :price, :imageUrl, :status);
         """;
-    private final String SELECT_PRODUCT_BY_ID = """
-                SELECT id, name, price, imageUrl
+    private static final String SELECT_PRODUCT_BY_ID = """
+                SELECT id, name, price, imageUrl, status
                 FROM products
                 WHERE id = :id;
             """;
-    private final String DELETE_PRODUCT_BY_ID = """
+    private static final String DELETE_PRODUCT_BY_ID = """
                 DELETE FROM products
                 WHERE id = :id;
             """;
-    private final String UPDATE_PRODUCT = """
+    private static final String UPDATE_PRODUCT = """
                 UPDATE products
-                SET name = :name, price = :price, imageUrl = :imageUrl
+                SET name = :name, price = :price, imageUrl = :imageUrl, status = :status
                 WHERE id = :id;
             """;
-    private final String SELECT_ALL_PRODUCTS = """
-                SELECT id, name, price, imageUrl
+    private static final String SELECT_ALL_PRODUCTS = """
+                SELECT id, name, price, imageUrl, status
                 FROM products;
+            """;
+
+    private static final String UPDATE_STATUS = """
+                UPDATE products
+                SET status = :status
+                WHERE id = :id;
             """;
 
     DatabaseProductRepository(JdbcClient jdbcClient) {
@@ -44,13 +48,25 @@ public class DatabaseProductRepository implements ProductRepository {
     }
 
     @Override
-    public Long saveProduct(String name, Integer price, String imageUrl) {
+    public void updateStatus(long id, Product.Status status) {
+        int numOfUpdatedRows = jdbcClient.sql(UPDATE_STATUS)
+                .param("status", status.name())
+                .param("id", id)
+                .update();
+
+        if (numOfUpdatedRows == 0)
+            throw new NotFoundByIdException("Not Found id: " + id);
+    }
+
+    @Override
+    public Long saveProduct(String name, Integer price, String imageUrl, Product.Status status) {
         GeneratedKeyHolder generatedKeyHolder = new GeneratedKeyHolder();
         jdbcClient.sql(SAVE_PRODUCT)
                 .param("name", name)
                 .param("price", price)
-                .param("imageUrl", imageUrl).
-                update(generatedKeyHolder);
+                .param("imageUrl", imageUrl)
+                .param("status", status.name())
+                .update(generatedKeyHolder);
         return generatedKeyHolder.getKey().longValue();
     }
 
@@ -62,7 +78,8 @@ public class DatabaseProductRepository implements ProductRepository {
                         rs.getLong("id"),
                         rs.getString("name"),
                         rs.getInt("price"),
-                        rs.getString("imageUrl"))).optional();
+                        rs.getString("imageUrl"),
+                        Product.Status.valueOf(rs.getString("status")))).optional();
     }
 
     @Override
@@ -79,6 +96,7 @@ public class DatabaseProductRepository implements ProductRepository {
                 .param("name", product.name())
                 .param("price", product.price())
                 .param("imageUrl", product.imageUrl())
+                .param("status", product.status().name())
                 .update();
         if (numOfUpdatedRows == 0)
             throw new NotFoundByIdException("Not Found id: " + product.id());
@@ -91,7 +109,8 @@ public class DatabaseProductRepository implements ProductRepository {
                         rs.getLong("id"),
                         rs.getString("name"),
                         rs.getInt("price"),
-                        rs.getString("imageUrl")
+                        rs.getString("imageUrl"),
+                        Product.Status.valueOf(rs.getString("status"))
                 )).stream().toList();
     }
 }
