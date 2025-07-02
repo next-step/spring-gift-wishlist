@@ -1,8 +1,5 @@
 package gift.dto;
 
-import gift.exception.InvalidImageUrlException;
-import gift.exception.InvalidNameException;
-import gift.exception.InvalidPriceException;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

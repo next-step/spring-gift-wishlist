@@ -3,6 +3,7 @@ package gift.controller;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,7 +31,7 @@ public class ProductApiController {
     }
     @PostMapping
     public ResponseEntity<ProductResponseDto> addProduct(
-            @RequestBody ProductRequestDto dto
+            @Valid @RequestBody ProductRequestDto dto
     ) {
         return new ResponseEntity<ProductResponseDto>(productService.saveProduct(dto), HttpStatus.CREATED);
     }
@@ -38,7 +39,7 @@ public class ProductApiController {
     @PutMapping("/{productId}")
     public ResponseEntity<ProductResponseDto> updateProduct(
             @PathVariable Long productId,
-            @RequestBody ProductRequestDto dto) {
+            @Valid @RequestBody ProductRequestDto dto) {
         return new ResponseEntity<>(productService.updateProduct(productId,dto),HttpStatus.OK);
     }
 

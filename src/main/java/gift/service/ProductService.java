@@ -44,9 +44,7 @@ public class ProductService {
 
   //가격만 수정하는 것은 꽤 합리적이라고 생각
   public ProductResponseDto updateProductPrice(Long productId, int price) {
-//    if (price < 0) {
-//      throw new InvalidPriceException();
-//    }
+
     Product updatedProduct = productRepository.updatePrice(productId, price);
     return updatedProduct.toDto();
   }
