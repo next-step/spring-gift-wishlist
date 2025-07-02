@@ -16,3 +16,5 @@
   - [x] 공백 포함 최대 15자 길이 제한
   - [x] 허용된 특수문자 외 사용 불가
   - [x] "카카오"가 포함된 상품 이름은 MD 허용이 없을 경우 불가
+- [ ] GlobalExceptionHandler 구현
+  - [x] `MethodArgumentNotValidException` 처리
