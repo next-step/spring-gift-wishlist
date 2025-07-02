@@ -1,5 +1,6 @@
 package gift.service;
 
+import gift.dto.ProductRequestDto;
 import gift.entity.Product;
 import gift.repository.ProductRepository;
 import org.springframework.stereotype.Service;
@@ -24,14 +25,16 @@ public class ProductService {
         return productRepository.findById(id);
     }
 
-    public Product createProduct(Product productWithoutId) {
-        return productRepository.save(productWithoutId);
+    public Product createProduct(ProductRequestDto productRequestDto) {
+        Product product = new Product(productRequestDto);
+        return productRepository.save(product);
     }
 
-    public Optional<Product> updateProduct(Long id, Product updateRequest) {
-        updateRequest.setId(id);
+    public Optional<Product> updateProduct(Long id, ProductRequestDto productRequestDto) {
+        Product product = new Product(productRequestDto);
+        product.setId(id);
 
-        if (productRepository.update(updateRequest)) {
+        if (productRepository.update(product)) {
             return Optional.empty();
         }
 
