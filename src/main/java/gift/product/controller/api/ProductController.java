@@ -3,6 +3,7 @@ package gift.product.controller.api;
 import gift.product.domain.Product;
 import gift.product.dto.ProductDto;
 import gift.product.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class ProductController {
     }
 
     @PostMapping("/product/add")
-    public ProductDto saveProduct(@RequestBody ProductDto productdto) {
+    public ProductDto saveProduct(@RequestBody @Valid ProductDto productdto) {
         productService.saveProduct(productdto);
         return productdto;
     }
@@ -33,7 +34,7 @@ public class ProductController {
     }
 
     @PatchMapping("/product/{id}/update")
-    public ProductDto updateProduct(@PathVariable String id, @RequestBody ProductDto updateProductdto) {
+    public ProductDto updateProduct(@PathVariable String id, @RequestBody @Valid ProductDto updateProductdto) {
         productService.updateProduct(id, updateProductdto);
         return updateProductdto;
     }
