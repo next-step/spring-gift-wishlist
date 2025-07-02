@@ -85,6 +85,14 @@ public class ProductRepositoryV2 implements ProductRepository{
 
     }
 
+    public void deleteAll() {
+        String sql = "delete from product";
+
+        client.sql(sql)
+                .update();
+
+    }
+
     private RowMapper<Product> getProductRowMapper() {
         return (rs, rowNum) -> {
             UUID id = bytesToUUID(rs.getBytes("id"));

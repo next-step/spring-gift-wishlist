@@ -18,4 +18,6 @@ public interface ProductRepository {
     void deleteById(UUID id);
 
     void update(Product product);
+
+    void deleteAll();
 }

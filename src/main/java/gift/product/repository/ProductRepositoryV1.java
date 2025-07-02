@@ -40,4 +40,8 @@ public class ProductRepositoryV1 implements ProductRepository{
 
         products.put(id, product);
     }
+
+    public void deleteAll() {
+        products.clear();;
+    }
 }
