@@ -4,6 +4,7 @@ import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.entity.Product;
 import gift.repository.ProductRepository;
+import gift.exception.InvalidProductNameException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
