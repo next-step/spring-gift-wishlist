@@ -2,6 +2,7 @@ package gift.controller;
 
 import gift.dto.ProductRequestDto;
 import gift.entity.Product;
+import gift.service.ProductService;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,47 +10,50 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 //@ResponseBody + @Controller
 @RestController
+@RequestMapping("/api")
 public class ProductController {
 
-    private final Map<Long, Product> products = new HashMap<>();
-    private static Long pid = 0L;
+
+    private final ProductService productService;
+
+    public ProductController(ProductService productService){
+        this.productService = productService;
+    }
+
+    Map<Long, Product> products = new HashMap<>();
 
     //create
     //생성한 product는 HashMap에 저장
     @PostMapping("/products")
-    public ResponseEntity<Product> createProduct(@RequestBody ProductRequestDto requestDto) {
-        if (checkProduct(requestDto)) {
-            Product product = new Product(
-                    ++pid,
-                    requestDto.getName(),
-                    requestDto.getPrice(),
-                    requestDto.getImageUrl()
-            );
-            products.put(product.getId(), product);
-            //ResponseEntity의 경우, 객체와 상태를 함께 반환(상태 지정 가능)
-            return new ResponseEntity<>(product, HttpStatus.CREATED);
-        }
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                "가격은 음수가 될 수 없으며, 상품명, 가격, 이미지 주소는 필수 값입니다.");
+    public ResponseEntity<Product> createProduct(
+            @ModelAttribute ProductRequestDto requestDto
+    ) {
+        return null;
     }
 
     //read
     //특정 상품을 조회(id)
     @GetMapping("/products/{id}")
     public ResponseEntity<Product> getProduct(@PathVariable Long id) {
-        Product product = findProductById(id);
-        return new ResponseEntity<>(product, HttpStatus.OK);
+        if(productService.findOne(id).isPresent()){
+            Product product = productService.findOne(id).get();
+            return new ResponseEntity<>(product, HttpStatus.OK);
+        }
+        return ResponseEntity.notFound().build();
     }
 
     //read

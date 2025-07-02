@@ -1,0 +1,2 @@
+insert into products (name, price, image_url)
+values('맥북 에어', 1250000, 'https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcTVEsMB9-Mm17xUSCrL2oIxZF6H7mn1CZweoW_lyPRCuTKZ066oiJuHaLGVgf1mDqbLf9SAeKmAdA');
