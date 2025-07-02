@@ -21,3 +21,7 @@ step 2
 step 3
 - 데이터 베이스 연동
 
+2단계
+  - step 1
+    - input에 validation 기능 추가
+
