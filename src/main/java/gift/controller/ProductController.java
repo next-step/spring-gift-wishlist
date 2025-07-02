@@ -65,14 +65,20 @@ public class ProductController {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationException(
-            MethodArgumentNotValidException exception
-    ) {
+            MethodArgumentNotValidException e) {
         Map<String, String> errors = new HashMap<>();
-        exception.getBindingResult().getAllErrors().forEach((error) -> {
+        e.getBindingResult().getAllErrors().forEach(error -> {
             String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
+            String message = error.getDefaultMessage();
+            errors.put(fieldName, message);
         });
-        return ResponseEntity.badRequest().body(errors);  // 잘못된 요청이므로 상태 코드는 400 Bad Request
+        return ResponseEntity.badRequest().body(errors);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, String>> handleIllegalArgument(IllegalArgumentException e) {
+        Map<String, String> error = new HashMap<>();
+        error.put("message", e.getMessage());
+        return ResponseEntity.badRequest().body(error);
     }
 }
