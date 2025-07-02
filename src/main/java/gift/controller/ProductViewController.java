@@ -59,8 +59,7 @@ public class ProductViewController {
             model.addAttribute("productList", productService.findAll());
             return "home";
         }
-        productService.create(
-            new ProductRequestDto(requestDto.name(), requestDto.price(), requestDto.imageUrl()));
+        productService.create(requestDto);
 
         return "redirect:/view/products";
     }
@@ -83,7 +82,8 @@ public class ProductViewController {
             );
 
             if (!redirectAttributes.containsAttribute("requestDto")) {
-                redirectAttributes.addFlashAttribute("requestDto", new ProductRequestDto(null, 0, ""));
+                redirectAttributes.addFlashAttribute("requestDto",
+                    new ProductRequestDto(null, 0, ""));
             }
 
             return "redirect:/view/products";
