@@ -3,12 +3,14 @@ package gift;
 import static org.assertj.core.api.Assertions.*;
 
 import gift.entity.Product;
+import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
@@ -43,6 +45,17 @@ public class ProductControllerTest {
                                         .toEntity(Void.class)
 
                 );
+    }
+
+    @Test
+    void 전체_상품을_조회하는_기능(){
+        var url = "http://localhost:" + port + "/api/products";
+        var response = restClient.get()
+                .uri(url)
+                .retrieve()
+                .toEntity(List.class);
+        assertThat(response.getBody().size()).isEqualTo(3);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
 

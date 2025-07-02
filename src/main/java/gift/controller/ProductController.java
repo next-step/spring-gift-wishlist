@@ -60,9 +60,7 @@ public class ProductController {
     //전체 상품을 조회
     @GetMapping("/products")
     public ResponseEntity<List<Product>> getProducts() {
-        List<Product> productList = products.values()
-                .stream()
-                .collect(Collectors.toList());
+        List<Product> productList = productService.findAll();
         return new ResponseEntity<>(productList, HttpStatus.OK);
     }
 
