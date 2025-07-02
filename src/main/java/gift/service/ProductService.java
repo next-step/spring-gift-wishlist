@@ -1,7 +1,8 @@
 package gift.service;
 
 import gift.domain.Product;
-import gift.dto.request.ProductReqDTO;
+import gift.dto.request.ProductSaveReqDTO;
+import gift.dto.request.ProductUpdateReqDTO;
 import gift.dto.response.ProductResDTO;
 import gift.repository.ProductRepository;
 import java.util.List;
@@ -18,13 +19,13 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public ProductResDTO save(ProductReqDTO productReqDTO) {
+    public ProductResDTO save(ProductSaveReqDTO productSaveReqDTO) {
         return convertToDTO(
             productRepository.save(
                 new Product(
-                    productReqDTO.name(),
-                    productReqDTO.price(),
-                    productReqDTO.imageURL()
+                    productSaveReqDTO.name(),
+                    productSaveReqDTO.price(),
+                    productSaveReqDTO.imageURL()
                 )
             )
         );
@@ -43,21 +44,18 @@ public class ProductService {
             .toList();
     }
 
-    public ProductResDTO update(Long id, ProductReqDTO productReqDTO) {
+    public ProductResDTO update(Long id, ProductUpdateReqDTO productUpdateReqDTO) {
         Product product = new Product(
-            productReqDTO.name(),
-            productReqDTO.price(),
-            productReqDTO.imageURL()
+            productUpdateReqDTO.name(),
+            productUpdateReqDTO.price(),
+            productUpdateReqDTO.imageURL()
         );
-        int result = productRepository.update(id, product);
 
-        if (result == 1) {
-            return convertToDTO(
-                productRepository.findById(id)
-            );
-        }
+        productRepository.update(id, product);
 
-        throw new RuntimeException("상품 수정에 실패하였습니다.");
+        return convertToDTO(
+            productRepository.findById(id)
+        );
     }
 
     public void delete(Long id) {
