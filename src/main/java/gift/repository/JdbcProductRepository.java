@@ -79,6 +79,12 @@ public class JdbcProductRepository implements ProductRepositoryInterface{
         return result != null ? result : 0;
     }
 
+    public boolean isApprovedKakao(String name) {
+        String sql = "SELECT COUNT(*) FROM kakao_product WHERE name = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, name);
+        return count != null && count > 0;
+    }
+
     private Product mapRowToProduct(ResultSet rs, int rowNum) throws SQLException {
         Product product = new Product(
                 rs.getLong("id"),

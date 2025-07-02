@@ -59,7 +59,13 @@ public class ProductViewController {
             model.addAttribute("product", requestDto);
             return "add";
         }
-        productService.addProduct(requestDto);
+        try {
+            productService.addProduct(requestDto);
+        } catch (IllegalArgumentException ex) {
+            bindingResult.rejectValue("name", "kakaoNotApproved", ex.getMessage());
+            model.addAttribute("product", requestDto);
+            return "add";
+        }
         return "redirect:/products/add";
     }
 
