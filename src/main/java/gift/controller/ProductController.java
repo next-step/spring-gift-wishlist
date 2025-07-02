@@ -2,14 +2,19 @@ package gift.controller;
 
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
-
 import gift.service.ProductService;
-
+import jakarta.validation.Valid;
 import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/products")
@@ -40,7 +45,7 @@ class ProductController {
     @PutMapping("/{productId}")
     public ResponseEntity<ProductResponseDto> updateProduct(
         @PathVariable Long productId,
-        @RequestBody ProductRequestDto requestDto
+        @RequestBody @Valid ProductRequestDto requestDto
     ) {
         return new ResponseEntity<>(productService.update(productId, requestDto),
             HttpStatus.OK);
@@ -51,7 +56,6 @@ class ProductController {
 
         productService.delete(productId);
 
-        // 삭제에 성공한다면, 204 no content
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
