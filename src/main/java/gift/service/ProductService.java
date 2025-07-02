@@ -3,11 +3,12 @@ package gift.service;
 import gift.dto.CreateProductRequestDto;
 import gift.dto.UpdateProductRequestDto;
 import gift.entity.Product;
-import org.springframework.stereotype.Service;
+import gift.exception.ProductNotFoundException;
 import gift.repository.ProductRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProductService {
@@ -21,31 +22,28 @@ public class ProductService {
         return repository.findAll();
     }
 
-    public Optional<Product> getById(Long id) {
-        return repository.findById(id);
+    public Product getById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("ID " + id + "에 해당하는 상품을 찾을 수 없습니다."));
     }
 
+    @Transactional
     public Product create(CreateProductRequestDto dto) {
         return repository.save(new Product(null, dto.getName(), dto.getPrice(), dto.getImageUrl()));
     }
 
-    public Optional<Product> update(Long id, UpdateProductRequestDto dto) {
-        if (repository.findById(id).isEmpty())
-        {
-            return Optional.empty();
-        }
-        Product updated = new Product(id, dto.getName(), dto.getPrice(), dto.getImageUrl());
-        repository.update(id, updated);
-        return Optional.of(updated);
+    @Transactional
+    public Product update(Long id,UpdateProductRequestDto dto) {
+        Product productUpdate=getById(id);
+        productUpdate.setName(dto.getName());
+        productUpdate.setPrice(dto.getPrice());
+        productUpdate.setImageUrl(dto.getImageUrl());
+        repository.update(id,productUpdate);
+        return productUpdate;
     }
 
-    public boolean delete(Long id) {
-        if (repository.findById(id).isEmpty())
-        {
-            return false;
-        }
+    @Transactional
+    public void delete(Long id) {
         repository.delete(id);
-        return true;
     }
-
 }

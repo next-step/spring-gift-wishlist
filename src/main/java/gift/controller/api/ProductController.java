@@ -1,14 +1,15 @@
-package gift.controller;
+package gift.controller.api;
 
 
 import gift.dto.CreateProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.dto.UpdateProductRequestDto;
 import gift.entity.Product;
+import gift.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import gift.service.ProductService;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,17 +23,16 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<ProductResponseDto> list() { // 응답 DTO 사용
+    public List<ProductResponseDto> list() {
         return service.getAll().stream()
-                .map(ProductResponseDto::new) // Product -> ProductResponseDto
+                .map(ProductResponseDto::new)
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponseDto> get(@PathVariable Long id) {
-        return service.getById(id)
-                .map(product -> ResponseEntity.ok(new ProductResponseDto(product)))
-                .orElse(ResponseEntity.notFound().build());
+        Product product = service.getById(id);
+        return ResponseEntity.ok(new ProductResponseDto(product));
     }
 
     @PostMapping
@@ -44,20 +44,14 @@ public class ProductController {
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponseDto> update(@PathVariable Long id,
                                                      @Valid @RequestBody UpdateProductRequestDto requestDto) {
-        return service.update(id, requestDto)
-                .map(updated -> ResponseEntity.ok(new ProductResponseDto(updated)))
-                .orElse(ResponseEntity.notFound().build());
+        Product updatedProduct = service.update(id, requestDto);
+        return ResponseEntity.ok(new ProductResponseDto(updatedProduct));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        if (service.delete(id)) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        service.delete(id);
+        return ResponseEntity.noContent().build();
     }
-
-
 }
 

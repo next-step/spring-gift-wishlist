@@ -1,11 +1,13 @@
 package gift.dto;
 
+import gift.validation.ValidProductName;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public class CreateProductRequestDto {
     @NotBlank(message = "상품명을 입력하세요.")
+    @ValidProductName
     private String name;
 
     @NotNull(message = "가격을 입력하세요.")
@@ -15,23 +17,26 @@ public class CreateProductRequestDto {
     @NotBlank(message = "이미지 URL을 입력하세요.")
     private String imageUrl;
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
+
     public Integer getPrice() {
         return price;
     }
-    public String getImageUrl()
-    {
+
+    public String getImageUrl() {
         return imageUrl;
     }
+
     public void setName(String name) {
         this.name = name;
     }
+
     public void setPrice(Integer price) {
         this.price = price;
     }
+
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
