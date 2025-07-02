@@ -2,6 +2,7 @@ package gift.controller;
 
 import gift.model.Product;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ public class ProductController {
 
     // 상품 저장
     @PostMapping
-    public ResponseEntity<Product> addProduct(@RequestBody Product product) {
+    public ResponseEntity<Product> addProduct(@Valid @RequestBody Product product) {
         Product savedProduct = productService.addProduct(product);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedProduct);
     }
@@ -52,7 +53,7 @@ public class ProductController {
 
     // 상품 수정
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateProduct(@PathVariable Long id, @RequestBody Product product) {
+    public ResponseEntity<Void> updateProduct(@PathVariable Long id, @Valid @RequestBody Product product) {
         try {
             product.setId(id);
             productService.updateProduct(id, product);
