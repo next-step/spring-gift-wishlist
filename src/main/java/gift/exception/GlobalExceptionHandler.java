@@ -1,8 +1,11 @@
 package gift.exception;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponse;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -25,6 +28,20 @@ public class GlobalExceptionHandler {
                 e.getMessage()
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, Object>> handleValidationErrors(MethodArgumentNotValidException e) {
+        Map<String, Object> errors = new HashMap<>();
+        errors.put("message", "입력값이 올바르지 않습니다.");
+
+        Map<String, String> fieldErrors = new HashMap<>();
+        e.getBindingResult().getFieldErrors().forEach(error -> {
+            fieldErrors.put(error.getField(), error.getDefaultMessage());
+        });
+
+        errors.put("errors", fieldErrors);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 
     @ExceptionHandler(Exception.class)
