@@ -30,8 +30,6 @@ class ProductControllerTest {
     @LocalServerPort
     private int port;
 
-    private final RestClient restClient = RestClient.builder().build();
-
     private final RestClient client = RestClient.builder().build();
 
     @Autowired
@@ -194,10 +192,7 @@ class ProductControllerTest {
 
     @Test
     void 단건상품조회_NOT_FOUND_데이터베이스_상품존재() {
-        // given
-        var url = "http://localhost:" + port + "/api/products/321";
-
-        // when
+        // given & when
         assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
             .isThrownBy(
                 () -> exchange(HttpMethod.GET, baseUrl() + "/321", null,
