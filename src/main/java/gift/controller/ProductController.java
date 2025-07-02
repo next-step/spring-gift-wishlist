@@ -55,7 +55,7 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(
-            @PathVariable @Min(value = 0, message = "상품 ID는 0보다 커야합니다.") Long id
+            @PathVariable @Min(value = 0, message = "상품 ID는 0 이상이어야 합니다.") Long id
     ) {
         Product product = productService.getById(id);
         return new ResponseEntity<>(product, HttpStatus.OK);
@@ -74,7 +74,7 @@ public class ProductController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Product> updateProduct(
-            @PathVariable @Min(value = 0, message = "상품 ID는 0보다 커야합니다.") Long id,
+            @PathVariable @Min(value = 0, message = "상품 ID는 0 이상이어야 합니다.") Long id,
             @Valid @RequestBody ProductUpdateRequest dto,
             @RequestHeader(value = "X-User-Role", required = false) String userRole
     ) {
@@ -86,7 +86,7 @@ public class ProductController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<Product> patchProduct(
-            @PathVariable @Min(value = 0, message = "상품 ID는 0보다 커야합니다.") Long id,
+            @PathVariable @Min(value = 0, message = "상품 ID는 0 이상이어야 합니다.") Long id,
             @Valid @RequestBody ProductUpdateRequest dto,
             @RequestHeader(value = "X-User-Role", required = false) String userRole
         ) {
@@ -98,7 +98,7 @@ public class ProductController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(
-            @PathVariable @Min(value = 0, message = "상품 ID는 0보다 커야합니다.") Long id
+            @PathVariable @Min(value = 0, message = "상품 ID는 0 이상이어야 합니다.") Long id
     ) {
         productService.deleteById(id);
         log.info("상품 삭제 성공: ID={}", id);

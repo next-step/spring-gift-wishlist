@@ -22,11 +22,11 @@ public class KakaoApprovalValidator implements ConstraintValidator<KakaoApproval
 
         BeanWrapperImpl wrapper = new BeanWrapperImpl(value);
         String name = (String) wrapper.getPropertyValue(nameField);
-        Boolean isMdApproved = (Boolean) wrapper.getPropertyValue(approvalField);
-
         if (name == null || !name.contains("카카오")) {
             return true;
         }
+
+        Boolean isMdApproved = (Boolean) wrapper.getPropertyValue(approvalField);
         return Boolean.TRUE.equals(isMdApproved);
     }
 }
