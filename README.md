@@ -1,23 +1,28 @@
 # spring-gift-wishlist
 
-
-## 0단계: 상품 관리 프로젝트 이전
-
-이전 단계에서 구현한 상품 관리 프로젝트를 spring-gift-wishlist로 이전합니다.
+## 1단계: 상품 유효성 검사 및 예외 처리
 
 ### 구현 기능 목록
-+ [ ] 
 
-
-
-
++ [X] 관련 설정 및 의존성 추가
++ [X] Testing을 위한 기본 추상 클래스 작성
++ [X] spring-validation을 이용한 상품 유효성 검사 로직 변경
+  + [X] Custom Validator 구현
+  + [X] ProductController 에서 @Valid 어노테이션을 이용한 유효성 검사 적용
++ [X] 예외 처리 로직 구현
++ [X] 적절한 Logging 추가
++ [X] 검증을 위한 Test 코드 작성
 
 ### 이전 단계 요약
 
 + [X] 상품 API 구현
 + [X] 관리자 화면 구현
 + [X] 데이터베이스 적용
++ [X] 프로젝트 `spring-gift-wishlist`으로 이관
 
+## 상품 관리 API 명세서
+
+- [상품 조회 API 명세서.md](document/%EC%83%81%ED%92%88%20%EC%A1%B0%ED%9A%8C%20API%20%EB%AA%85%EC%84%B8%EC%84%9C.md)
 
 
 
@@ -42,6 +47,5 @@
 // (footer 입력시)blank line 필수!
 <footer>
 ```
-
-+ 명령형, 소문자 시작, 마침표 없이 작성
-+ 필요시 body, footer(이슈번호, breaking change 등) 추가
+> + 명령형, 소문자 시작, 마침표 없이 작성
+> + 필요시 body, footer(이슈번호, breaking change 등) 추가

@@ -3,6 +3,8 @@ package gift.service;
 import gift.model.CustomPage;
 import gift.entity.Product;
 import gift.repository.ProductRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +14,7 @@ import java.util.Optional;
 
 @Repository
 public class ProductServiceImpl implements ProductService {
+    private final static Logger log = LoggerFactory.getLogger(ProductServiceImpl.class);
     private final ProductRepository productRepository;
 
     public ProductServiceImpl(ProductRepository productRepository) {
@@ -31,14 +34,18 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product getById(Long productId) {
         if (productId == null) {
+            log.error("상품 ID가 null 입니다.");
             throw new IllegalArgumentException("상품 ID는 필수입니다.");
         }
         Optional<Product> product = productRepository.findById(productId);
 
         return product.orElseThrow(() ->
-                new NoSuchElementException(
-                        String.format("Id %d에 해당하는 상품이 존재하지 않습니다.", productId)
-                ));
+        {
+            log.error("Id {}에 해당하는 상품이 존재하지 않습니다.", productId);
+            return new NoSuchElementException(
+                    String.format("Id %d에 해당하는 상품이 존재하지 않습니다.", productId)
+            );
+        });
     }
 
     @Override
@@ -76,17 +83,14 @@ public class ProductServiceImpl implements ProductService {
             updated = productRepository.updateFieldById(product.getId(), "price", product.getPrice());
         }
         if (product.getImageUrl() != null) {
-            updated = productRepository.updateFieldById(product.getId(), "imageUrl", product.getImageUrl());
+            updated = productRepository.updateFieldById(product.getId(), "image_url", product.getImageUrl());
         }
         return updated;
     }
 
     @Override
     public void deleteById(Long productId) {
-        if (getById(productId) == null) {
-            throw new NoSuchElementException(
-                    String.format("Id %d에 해당하는 상품이 존재하지 않습니다.", productId));
-        }
+        getById(productId); // 존재 여부 확인
 
         if (!productRepository.deleteById(productId)) {
             throw new NoSuchElementException(

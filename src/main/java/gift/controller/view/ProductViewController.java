@@ -1,8 +1,9 @@
-package gift.controller;
+package gift.controller.view;
 
 import gift.model.CustomPage;
 import gift.entity.Product;
 import gift.service.ProductService;
+import jakarta.validation.constraints.Min;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,12 +23,11 @@ public class ProductViewController {
     @GetMapping
     public String showProductList(
         Model model,
-        @RequestParam(value = "page", defaultValue = "0") Integer page,
-        @RequestParam(value = "size", defaultValue = "5") Integer size
+        @RequestParam(value = "page", defaultValue = "0")
+        @Min(value = 0, message = "페이지 번호는 0 이상이여야 합니다.") Integer page,
+        @RequestParam(value = "size", defaultValue = "5")
+        @Min(value = 1, message = "페이지 크기는 양수여야 합니다.") Integer size
     ) {
-        if (page < 0 || size <= 0) {
-            throw new IllegalArgumentException("페이지 번호와 크기는 양수여야 합니다.");
-        }
         CustomPage<Product> currentPage = productService.getBy(page, size);
         model.addAttribute("title", "관리자 상품 목록");
         model.addAttribute("pageInfo", currentPage);
@@ -36,7 +36,10 @@ public class ProductViewController {
     }
 
     @GetMapping("/{id}")
-    public String showProductDetails(@PathVariable Long id, Model model) {
+    public String showProductDetails(
+            @PathVariable @Min(value = 0, message = "상품 ID는 0 이상이어야 합니다.") Long id,
+            Model model
+    ) {
         Product product = productService.getById(id);
 
         model.addAttribute("title", "상품 상세 정보");

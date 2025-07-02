@@ -1,25 +1,29 @@
 package gift.dto;
 
 import gift.entity.Product;
+import gift.validation.annotation.KakaoApprovalRequired;
+import gift.validation.annotation.ValidProductName;
+import gift.validation.group.ValidationGroups;
+import jakarta.validation.constraints.Min;
 
+@KakaoApprovalRequired(
+    nameField = "name",
+    approvalField = "isMdApproved",
+    groups = { ValidationGroups.UserGroup.class }
+)
 public record ProductUpdateRequest (
+    @ValidProductName
     String name,
+    @Min(value = 0, message = "가격은 0 이상이어야 합니다.")
     Long price,
-    String imageUrl
+    String imageUrl,
+    Boolean isMdApproved
 ) {
-    public ProductUpdateRequest(String name, Long price, String imageUrl) {
-        if (name != null && name.isEmpty()) {
-            throw new IllegalArgumentException("상품 이름은 빈 문자열 일 수 없습니다.");
-        }
+    public ProductUpdateRequest(String name, Long price, String imageUrl, Boolean isMdApproved) {
         this.name = name;
-        if (price != null && price <= 0) {
-            throw new IllegalArgumentException("상품 가격은 0보다 커야 합니다.");
-        }
         this.price = price;
-        if (imageUrl != null && imageUrl.isEmpty()) {
-            throw new IllegalArgumentException("상품 이미지 URL은 빈 문자열 일 수 없습니다.");
-        }
         this.imageUrl = imageUrl;
+        this.isMdApproved = isMdApproved;
     }
 
     public Product toEntity(Long productId) {

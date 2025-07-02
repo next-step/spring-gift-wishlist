@@ -3,6 +3,8 @@ package gift.controller;
 import gift.dto.ErrorMessageResponse;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,7 @@ import org.springframework.ui.Model;
 
 @Controller
 public class CustomErrorController implements ErrorController {
+    private static final Logger log = LoggerFactory.getLogger(CustomErrorController.class);
 
     @RequestMapping(value =  "/error", produces = "text/html")
     public String handleViewError(HttpServletRequest request, Model model) {
@@ -26,6 +29,9 @@ public class CustomErrorController implements ErrorController {
             model.addAttribute("statusCode", 500);
             model.addAttribute("errorMessage", "알 수 없는 오류가 발생했습니다.");
         }
+
+        log.error("html 요청 에서 오류 발생: status={}, message={}",status, message);
+
         return "error";
     }
 
@@ -45,10 +51,10 @@ public class CustomErrorController implements ErrorController {
         if (status == null) {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
+        log.error("API 요청 처리 중 오류 발생: status={}, exception={}", status, exception.getMessage(), exception);
 
-        var errorMessage = ErrorMessageResponse.generateFrom(
-                request, exception, status
-        );
+        var errorMessage = new ErrorMessageResponse.Builder(request, exception, status)
+                .build();
         return new ResponseEntity<>(errorMessage, status);
     }
 }
