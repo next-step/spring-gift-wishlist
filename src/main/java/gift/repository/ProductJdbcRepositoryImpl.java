@@ -2,6 +2,7 @@ package gift.repository;
 
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
+import gift.exception.ProductNotFoundException;
 import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
@@ -91,7 +92,7 @@ public class ProductJdbcRepositoryImpl implements ProductRepository {
     int count = jdbcTemplate.queryForObject(checkSql, Integer.class, id);
     System.out.println(count);
     if (count != 1) {
-      throw new IllegalStateException("삭제할 것이 없습니다");
+      throw new ProductNotFoundException("삭제할 것이 없습니다");
     }
     String sql = "delete from products where id=?";
     jdbcTemplate.update(sql, id);
