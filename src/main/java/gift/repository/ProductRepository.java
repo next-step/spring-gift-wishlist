@@ -15,6 +15,6 @@ public interface ProductRepository {
 
   Optional<ProductResponseDto> updateProduct(Long id, ProductRequestDto requestDto);
 
-  void deleteProduct(Long id);
+  int deleteProduct(Long id);
 
 }

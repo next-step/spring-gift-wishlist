@@ -42,6 +42,9 @@ public class ProductServiceImpl implements ProductService {
 
   @Override
   public void deleteProduct(Long id) {
-    repository.deleteProduct(id);
+    int delete = repository.deleteProduct(id);
+    if (delete != 1) {
+      throw new ProductNotFoundException("삭제할 것이 없습니다");
+    }
   }
 }

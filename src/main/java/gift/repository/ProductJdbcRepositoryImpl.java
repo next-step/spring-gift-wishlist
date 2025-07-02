@@ -89,13 +89,9 @@ public class ProductJdbcRepositoryImpl implements ProductRepository {
   }
 
   @Override
-  public void deleteProduct(Long id) {
-    String checkSql = "select count(*) from products where id=?";
-    int count = jdbcTemplate.queryForObject(checkSql, Integer.class, id);
-    if (count != 1) {
-      throw new ProductNotFoundException("삭제할 것이 없습니다");
-    }
+  public int deleteProduct(Long id) {
     String sql = "delete from products where id=?";
-    jdbcTemplate.update(sql, id);
+    int delete = jdbcTemplate.update(sql, id);
+    return delete;
   }
 }
