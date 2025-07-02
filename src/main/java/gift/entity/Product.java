@@ -16,6 +16,7 @@ public class Product {
         this.price = price;
         this.imageUrl = imageUrl;
         this.acceptedByMD = acceptedByMD;
+
     }
 
     public Long getId() {

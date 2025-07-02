@@ -46,7 +46,9 @@ public class ProductController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponseDto> updateProductById(@PathVariable Long id,
+
             @Valid @RequestBody CreateProductRequestDto requestDto) {
+
         return new ResponseEntity<>(productService.updateProductById(id, requestDto),
                 HttpStatus.OK);
     }
@@ -57,9 +59,11 @@ public class ProductController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+
     @PatchMapping("/{id}")
     public ResponseEntity<Void> acceptedProductById(@PathVariable Long id) {
         productService.acceptedProductById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
 }
