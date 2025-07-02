@@ -78,6 +78,31 @@ public class AdminProductControllerTest {
         HttpEntity<MultiValueMap<String, String>> badEntity = new HttpEntity<>(badForm, headers);
         ResponseEntity<String> fail = restTemplate.postForEntity(baseUrl, badEntity, String.class);
         assertThat(fail.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+
+        MultiValueMap<String, String> badForm2 = new LinkedMultiValueMap<>();
+        badForm2.add("name", "invalid!!");
+        badForm2.add("price", "1");
+        badForm2.add("imageUrl", "http://img");
+        HttpEntity<MultiValueMap<String, String>> badEntity2 = new HttpEntity<>(badForm2, headers);
+        ResponseEntity<String> fail2 = restTemplate.postForEntity(baseUrl, badEntity2, String.class);
+        assertThat(fail2.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+
+        MultiValueMap<String, String> badForm3 = new LinkedMultiValueMap<>();
+        badForm3.add("name", "toolongtomakeittoproductname");
+        badForm3.add("price", "1");
+        badForm3.add("imageUrl", "http://img");
+        HttpEntity<MultiValueMap<String, String>> badEntity3 = new HttpEntity<>(badForm3, headers);
+        ResponseEntity<String> fail3 = restTemplate.postForEntity(baseUrl, badEntity3, String.class);
+        assertThat(fail3.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+
+        MultiValueMap<String, String> badForm4 = new LinkedMultiValueMap<>();
+        badForm4.add("name", "카카오테크캠퍼스");
+        badForm4.add("price", "1");
+        badForm4.add("imageUrl", "http://img");
+        HttpEntity<MultiValueMap<String, String>> badEntity4 = new HttpEntity<>(badForm4, headers);
+        ResponseEntity<String> fail4 = restTemplate.postForEntity(baseUrl, badEntity4, String.class);
+        assertThat(fail4.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+
     }
 
     @Test
