@@ -43,8 +43,9 @@ public class AdminController {
   }
 
   @PostMapping("/new")
-  public String create(@Valid @ModelAttribute ProductCreateFormDto createFormDto, BindingResult bindingResult,Model model) {
-    if(bindingResult.hasErrors()) {
+  public String create(@Valid @ModelAttribute ProductCreateFormDto createFormDto,
+      BindingResult bindingResult, Model model) {
+    if (bindingResult.hasErrors()) {
       model.addAttribute("CreateFormDto", new ProductCreateFormDto());
       model.addAttribute("validationError", "validation에 맞지 않으니 다시 입력하세요");
       return "createProductForm";
@@ -59,21 +60,27 @@ public class AdminController {
   @GetMapping("/{id}/update")
   public String updateForm(@PathVariable("id") Long id, Model model) {
     ProductResponseDto responseDto = service.findProductById(id);
-    ProductUpdateFormDto updateFormDto = new ProductUpdateFormDto(responseDto.getId(), responseDto.getName(), responseDto.getPrice(), responseDto.getImageUrl());
+    ProductUpdateFormDto updateFormDto = new ProductUpdateFormDto(responseDto.getId(),
+        responseDto.getName(), responseDto.getPrice(), responseDto.getImageUrl());
     model.addAttribute("updateFormDto", updateFormDto);
     return "updateProductForm";
   }
 
   @PutMapping("/{id}/update")
-  public String update(@PathVariable("id") Long id, @Valid @ModelAttribute ProductUpdateFormDto updateFormDto, BindingResult bindingResult, Model model) {
-    if(bindingResult.hasErrors()) {
+  public String update(@PathVariable("id") Long id,
+      @Valid @ModelAttribute ProductUpdateFormDto updateFormDto, BindingResult bindingResult,
+      Model model) {
+    if (bindingResult.hasErrors()) {
       ProductResponseDto responseDto = service.findProductById(id);
-      ProductUpdateFormDto newUpdateFormDto = new ProductUpdateFormDto(responseDto.getId(), responseDto.getName(), responseDto.getPrice(), responseDto.getImageUrl());
+      ProductUpdateFormDto newUpdateFormDto = new ProductUpdateFormDto(responseDto.getId(),
+          responseDto.getName(), responseDto.getPrice(), responseDto.getImageUrl());
       model.addAttribute("updateFormDto", updateFormDto);
       model.addAttribute("validationError", "validation에 맞지 않으니 다시 입력하세요");
       return "updateProductForm";
     }
-    service.updateProduct(id, new ProductRequestDto(updateFormDto.getName(),updateFormDto.getPrice(),updateFormDto.getImageUrl()));
+    service.updateProduct(id,
+        new ProductRequestDto(updateFormDto.getName(), updateFormDto.getPrice(),
+            updateFormDto.getImageUrl()));
     return "redirect:" + PRODUCTS_LIST_PAGE_PATH;
   }
 

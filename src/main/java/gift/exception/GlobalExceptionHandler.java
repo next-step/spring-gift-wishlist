@@ -11,20 +11,24 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
   @ExceptionHandler(value = MethodArgumentNotValidException.class)
-  public ResponseEntity<CustomErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception){
+  public ResponseEntity<CustomErrorResponse> handleMethodArgumentNotValidException(
+      MethodArgumentNotValidException exception) {
     String errorMessage = exception.getBindingResult()
         .getFieldErrors()
         .stream()
         .findFirst()
         .map(fieldError -> fieldError.getDefaultMessage())
         .orElse("잘못된 요청입니다.");
-    CustomErrorResponse errorResponse=new CustomErrorResponse(exception.getStatusCode(), errorMessage);
-    return new ResponseEntity<>(errorResponse,HttpStatus.BAD_REQUEST);
+    CustomErrorResponse errorResponse = new CustomErrorResponse(exception.getStatusCode(),
+        errorMessage);
+    return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
   }
 
-  @ExceptionHandler(value=ProductNotFoundException.class)
-  public ResponseEntity<CustomErrorResponse> handleProductNotFoundException(ProductNotFoundException exception){
-    CustomErrorResponse errorResponse=new CustomErrorResponse(HttpStatus.NOT_FOUND, exception.getMessage());
-    return new ResponseEntity<>(errorResponse,HttpStatus.NOT_FOUND);
+  @ExceptionHandler(value = ProductNotFoundException.class)
+  public ResponseEntity<CustomErrorResponse> handleProductNotFoundException(
+      ProductNotFoundException exception) {
+    CustomErrorResponse errorResponse = new CustomErrorResponse(HttpStatus.NOT_FOUND,
+        exception.getMessage());
+    return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
   }
 }

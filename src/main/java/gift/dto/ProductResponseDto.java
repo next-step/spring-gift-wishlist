@@ -21,7 +21,6 @@ public class ProductResponseDto {
   }
 
 
-
   public ProductResponseDto(Long id, String name, Long price, String imageUrl) {
     this.id = id;
     this.name = name;

@@ -3,6 +3,7 @@ package gift.exception;
 import org.springframework.http.HttpStatusCode;
 
 public class CustomErrorResponse {
+
   private HttpStatusCode statusCode;
   private String message;
 

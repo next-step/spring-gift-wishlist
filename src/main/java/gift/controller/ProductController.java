@@ -27,7 +27,7 @@ public class ProductController {
     this.service = service;
   }
 
-  @GetMapping("")
+  @GetMapping
   public ResponseEntity<List<ProductResponseDto>> findAllProduct() {
     return new ResponseEntity<>(service.findAllProduct(), HttpStatus.OK);
   }
@@ -37,7 +37,7 @@ public class ProductController {
     return new ResponseEntity<>(service.findProductById(id), HttpStatus.OK);
   }
 
-  @PostMapping("")
+  @PostMapping
   public ResponseEntity<ProductResponseDto> createProduct(
       @Valid @RequestBody ProductRequestDto requestDto) {
     return new ResponseEntity<>(service.createProduct(requestDto), HttpStatus.CREATED);

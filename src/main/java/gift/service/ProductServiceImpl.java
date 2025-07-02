@@ -24,7 +24,8 @@ public class ProductServiceImpl implements ProductService {
 
   @Override
   public ProductResponseDto findProductById(Long id) {
-    return repository.findProductById(id).orElseThrow(()->new ProductNotFoundException("product가 없습니다."));
+    return repository.findProductById(id)
+        .orElseThrow(() -> new ProductNotFoundException("product가 없습니다."));
   }
 
   @Override
@@ -35,7 +36,8 @@ public class ProductServiceImpl implements ProductService {
   @Override
   public ProductResponseDto updateProduct(Long id, ProductRequestDto requestDto) {
 
-    return repository.updateProduct(id, requestDto).orElseThrow(()->new ProductNotFoundException("product가 없습니다."));
+    return repository.updateProduct(id, requestDto)
+        .orElseThrow(() -> new ProductNotFoundException("product가 없습니다."));
   }
 
   @Override

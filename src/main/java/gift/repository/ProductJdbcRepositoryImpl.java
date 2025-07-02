@@ -38,11 +38,12 @@ public class ProductJdbcRepositoryImpl implements ProductRepository {
   public Optional<ProductResponseDto> findProductById(Long id) {
     String sql = "select * from products where id=?";
     try {
-      ProductResponseDto result = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> new ProductResponseDto(
-                  rs.getLong("id"),
-                  rs.getString("name"),
-                  rs.getLong("price"),
-                  rs.getString("imageUrl"))
+      ProductResponseDto result = jdbcTemplate.queryForObject(sql,
+          (rs, rowNum) -> new ProductResponseDto(
+              rs.getLong("id"),
+              rs.getString("name"),
+              rs.getLong("price"),
+              rs.getString("imageUrl"))
           , id);
       return Optional.of(result);
     } catch (EmptyResultDataAccessException e) {
@@ -78,8 +79,9 @@ public class ProductJdbcRepositoryImpl implements ProductRepository {
     int update = jdbcTemplate.update(sql, requestDto.getName(), requestDto.getPrice(),
         requestDto.getImageUrl(),
         id);
-    if(update==0)
+    if (update == 0) {
       return Optional.empty();
+    }
     ProductResponseDto responseDto = new ProductResponseDto(id, requestDto.getName(),
         requestDto.getPrice(),
         requestDto.getImageUrl());
