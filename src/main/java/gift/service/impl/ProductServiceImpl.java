@@ -21,9 +21,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product createProduct(ProductRequestDto productDto) {
-        if (!productDto.isValid()) {
-            throw new ProductValidationException("유효하지 않은 상품 정보입니다.");
-        }
+        validateProductName(productDto);
 
         Product product = productDto.toEntity();
         return productRepository.save(product);
@@ -42,9 +40,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product updateProduct(Long id, ProductRequestDto productDto) {
-        if (!productDto.isValid()) {
-            throw new ProductValidationException("유효하지 않은 상품 정보입니다.");
-        }
+        validateProductName(productDto);
 
         if (productRepository.findById(id).isEmpty()) {
             throw new ProductNotFoundException(id);
@@ -60,5 +56,13 @@ public class ProductServiceImpl implements ProductService {
         }
 
         productRepository.deleteById(id);
+    }
+
+    private void validateProductName(ProductRequestDto productDto) {
+        try {
+            productDto.validateProductName();
+        } catch (IllegalArgumentException e) {
+            throw new ProductValidationException(e.getMessage());
+        }
     }
 }
