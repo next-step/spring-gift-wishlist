@@ -3,9 +3,11 @@ package gift.dto;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import gift.validation.ValidProductName;
 
 public record ItemRequest(
 
+    @ValidProductName
     @NotBlank(message = "상품 이름은 비어 있을 수 없습니다.")
     String name,
 
