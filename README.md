@@ -19,3 +19,4 @@
 - [x] GlobalExceptionHandler 구현
   - [x] `MethodArgumentNotValidException` 처리
   - [x] 존재하지 않는 id에 대한 예외(`ProductNotFoundException`) 추가 및 예외 처리 기능 추가
+- [x] 관리자 화면 HTML 파일에 카카오를 포함하는 상품명이 MD 협의가 됐는지에 관한 체크박스 추가
