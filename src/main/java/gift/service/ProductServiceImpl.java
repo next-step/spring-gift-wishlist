@@ -101,9 +101,9 @@ public class ProductServiceImpl implements ProductService {
         
         Product newProduct = new Product(
             id,
-            requestDto.getName() != null ? requestDto.getName() : product.name(),
-            requestDto.getPrice() != null ? requestDto.getPrice() : product.price(),
-            requestDto.getImageUrl() != null ? requestDto.getImageUrl() : product.imageUrl()
+            requestDto.getName() != null ? requestDto.getName() : product.getName(),
+            requestDto.getPrice() != null ? requestDto.getPrice() : product.getPrice(),
+            requestDto.getImageUrl() != null ? requestDto.getImageUrl() : product.getImageUrl()
         );
         
         return productRepository.modifyProductWithId(id,

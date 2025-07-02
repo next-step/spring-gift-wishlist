@@ -14,7 +14,7 @@ public class ProductResponseDto {
     }
     
     public ProductResponseDto(Product product) {
-        this(product.id(), product.name(), product.price(), product.imageUrl());
+        this(product.getId(), product.getName(), product.getPrice(), product.getImageUrl());
     }
     
     public ProductResponseDto(Long id, String name, Long price, String imageUrl) {
