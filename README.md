@@ -12,9 +12,26 @@
     - 비허용: 그 외 모든 특수 문자
   - [x] 상품 이름에 "카카오"가 포함된 경우, MD 승인 여부를 확인하는 로직 추가
 
-## 2️⃣ 기술 스택
+## 2️⃣ 2단계 - 회원 로그인
+### 개발 예정 기능 목록
+- [x] 회원 기능
+  - [x] 회원 테이블 생성
+  - [x] 이메일과 비밀번호를 입력받아 회원 가입 API 구현 (`POST /api/members/register`)
+    - [x] 비밀번호는 BCrypt 알고르즘을 이용해 암호화하여 저장
+    - [x] 회원가입 성공 (`201 Created`)
+  - [x] 로그인 API 구현 (`POST /api/members/login`)
+    - [x] 이메일과 비밀번호가 일치하면 토큰 발급 (`200 OK`)
+
+- [x] 인증 및 예외 응답 처리
+  - [x] 이메일 중복 시 예외 처리 (`409 Conflict`)
+  - [x] 이메일 또는 비밀번호가 불일치 시 예외 처리 (`401 Unauthorized`)
+  - [x] 인증은 되었지만 권한이 없는 경우 (`403 Forbidden`)
+  - [x] Authorization 헤더 또는 토큰이 유효하지 않은 경우 (`401 Unauthorized`)
+
+## 3️⃣ 기술 스택
 - Java 17
 - Spring Boot 3.5.3
 - JSON
 - Java Collection
 - Thymeleaf
+- Jwt
