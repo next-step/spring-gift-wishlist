@@ -2,6 +2,7 @@ package gift.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
@@ -13,6 +14,7 @@ public class ProductRequestDto {
     @Size(max = 15, message = "상품명은 15글자 이하여야 합니다.")
     private String name;
 
+    @NotNull(message = "상품 가격은 필수로 입력해야합니다.")
     @Min(value = 0, message = "상품 가격은 1원 이상이어야 합니다.")
     private Integer price;
 

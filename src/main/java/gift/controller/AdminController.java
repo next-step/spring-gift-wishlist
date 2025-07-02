@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,16 +44,25 @@ public class AdminController {
             @ModelAttribute @Valid ProductRequestDto requestDto,
             BindingResult bindingResult
     ) {
+        //"카카오"가 포함된 문구는 담당 MD와 협의한 경우에만 사용할 수 있다
+        if (requestDto.getName().contains("카카오")){
+            String prohibitedWordMsg = "\"카카오\"가 포함된 문구는 담당 MD와 협의가 필요합니다.";
+            bindingResult.addError(new FieldError("productRequestDto", "name", prohibitedWordMsg));
+        }
+
         if(bindingResult.hasErrors()){
+            //System.out.println(bindingResult);
             return "form";
         }
+
         productService.add(requestDto);
-        return "redirect:/admin/products/list"; //GetMapping 되어 있는 것을 호출,,,?
+        return "redirect:/admin/products/list";
     }
 
     //form.html을 불러오기 위한 메서드
     @GetMapping("/products/add")
-    public String productForm() {
+    public String productForm(Model model) {
+        model.addAttribute("productRequestDto", new ProductRequestDto());
         return "form";
     }
 
@@ -101,9 +111,24 @@ public class AdminController {
     //상품 수정
     @PutMapping("/products/modify/{id}")
     public String modifyProduct(
-            @ModelAttribute ProductRequestDto requestDto,
-            @PathVariable Long id
+            @ModelAttribute @Valid ProductRequestDto requestDto,
+            BindingResult bindingResult,
+            @PathVariable Long id,
+            Model model
     ) {
+        //"카카오"가 포함된 문구는 담당 MD와 협의한 경우에만 사용할 수 있다
+        if (requestDto.getName().contains("카카오")){
+            String prohibitedWordMsg = "\"카카오\"가 포함된 문구는 담당 MD와 협의가 필요합니다.";
+            bindingResult.addError(new FieldError("productRequestDto", "name", prohibitedWordMsg));
+        }
+
+        if(bindingResult.hasErrors()){
+            //System.out.println(bindingResult);
+            Product product = productService.findOne(id).get();
+            model.addAttribute("product", product);
+            return "modify";
+        }
+
         productService.modify(id, requestDto);
         return "redirect:/admin/products/list";
     }
