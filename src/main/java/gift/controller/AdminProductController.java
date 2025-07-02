@@ -3,6 +3,7 @@ package gift.controller;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -50,7 +51,7 @@ public class AdminProductController {
     }
 
     @PostMapping("/new")
-    public String createProduct(@ModelAttribute("form") ProductRequestDto requestDto,
+    public String createProduct(@ModelAttribute("form") @Valid ProductRequestDto requestDto,
                                 BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "admin/product-form";
@@ -78,7 +79,12 @@ public class AdminProductController {
 
     @PostMapping("/{id}/edit")
     public String updateProduct(@PathVariable Long id,
-                                @ModelAttribute("form") ProductRequestDto requestDto) {
+                                @ModelAttribute("form") @Valid ProductRequestDto requestDto,
+                                BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "admin/product-form";
+        }
+
         productService.updateProduct(id, requestDto);
         return "redirect:/admin/products";
     }

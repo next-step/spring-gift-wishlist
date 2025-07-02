@@ -1,11 +1,10 @@
 package gift.dto;
 
-import jakarta.validation.constraints.Min;
+import gift.validation.ValidProduct;
 
+@ValidProduct
 public class ProductRequestDto {
     private String name;
-
-    @Min(value = 0, message = "가격은 음수일 수 없습니다.")// 유효성 검사 추가
     private int price;
     private String imageUrl;
 

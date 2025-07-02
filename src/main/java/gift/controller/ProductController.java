@@ -6,6 +6,7 @@ import gift.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,8 +28,8 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<ProductResponseDto> createProduct(@Valid @RequestBody ProductRequestDto requestDto) {
-        ProductResponseDto saved = productService.createProduct(requestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved); // HttpStatus.CREATED 사용해서 201 응답 코드 반환
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(productService.createProduct(requestDto));
     }
 
     @PutMapping("/{id}")
