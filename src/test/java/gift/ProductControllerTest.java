@@ -34,8 +34,8 @@ public class ProductControllerTest {
         String url = "http://localhost:" + port + "/api/products";
 
         ProductRequest request = new ProductRequest(
-                " 0123456789abcdefg",
-                20000,
+                " 0123456789카카오!!~",
+                -2000,
                 ""
         );
 
