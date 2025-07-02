@@ -17,7 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
@@ -30,8 +32,33 @@ class ProductControllerTest {
 
     private final RestClient restClient = RestClient.builder().build();
 
+    private final RestClient client = RestClient.builder().build();
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    private String baseUrl() {
+        return "http://localhost:" + port + "/api/products";
+    }
+
+    private <T> ResponseEntity<T> exchange(HttpMethod method,
+        String url,
+        Object body,
+        ParameterizedTypeReference<T> type) {
+
+        if (body == null) {
+            return client.method(method)
+                .uri(url)
+                .retrieve()
+                .toEntity(type);
+        }
+
+        return client.method(method)
+            .uri(url)
+            .body(body)
+            .retrieve()
+            .toEntity(type);
+    }
 
     @BeforeEach
     void setUp() {
@@ -57,8 +84,6 @@ class ProductControllerTest {
     @Test
     void 단건상품등록_CREATED_테스트() {
         // given
-        var url = "http://localhost:" + port + "/api/products";
-
         var request = new ProductCreateRequestDto(
             "PostCreated",
             4500.0,
@@ -66,11 +91,9 @@ class ProductControllerTest {
         );
 
         // when
-        var response = restClient.post()
-            .uri(url)
-            .body(request)
-            .retrieve()
-            .toEntity(ProductCreateResponseDto.class);
+        var response = exchange(HttpMethod.POST, baseUrl(), request,
+            new ParameterizedTypeReference<ProductCreateResponseDto>() {
+            });
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -94,8 +117,6 @@ class ProductControllerTest {
     })
     void 단건상품등록_CREATED_상품이름_유효성_검사(String validName) {
         // given
-        var url = "http://localhost:" + port + "/api/products";
-
         var request = new ProductCreateRequestDto(
             validName,
             4500.0,
@@ -103,11 +124,9 @@ class ProductControllerTest {
         );
 
         // when
-        var response = restClient.post()
-            .uri(url)
-            .body(request)
-            .retrieve()
-            .toEntity(ProductCreateResponseDto.class);
+        var response = exchange(HttpMethod.POST, baseUrl(), request,
+            new ParameterizedTypeReference<ProductCreateResponseDto>() {
+            });
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -129,8 +148,6 @@ class ProductControllerTest {
     })
     void 단건상품등록_BAD_REQUEST_상품이름_유효성_검사(String invalidName) {
         //given
-        var url = "http://localhost:" + port + "/api/products";
-
         var request = new ProductCreateRequestDto(
             invalidName,
             4500.0,
@@ -140,25 +157,18 @@ class ProductControllerTest {
         // when & then
         assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
             .isThrownBy(
-                () -> restClient.post()
-                    .uri(url)
-                    .body(request)
-                    .retrieve()
-                    .toEntity(ProductCreateResponseDto.class)
+                () -> exchange(HttpMethod.POST, baseUrl(), request,
+                    new ParameterizedTypeReference<ProductCreateResponseDto>() {
+                    })
             );
     }
 
     // GET
     @Test
     void 전체상품조회_OK_테스트() {
-        // given
-        var url = "http://localhost:" + port + "/api/products";
-
-        // when
-        var response = restClient.get()
-            .uri(url)
-            .retrieve()
-            .toEntity(new ParameterizedTypeReference<List<ProductGetResponseDto>>() {
+        // given & when
+        var response = exchange(HttpMethod.GET, baseUrl(), null,
+            new ParameterizedTypeReference<List<ProductGetResponseDto>>() {
             });
 
         // then
@@ -170,14 +180,10 @@ class ProductControllerTest {
 
     @Test
     void 단건상품조회_OK_테스트() {
-        // given
-        var url = "http://localhost:" + port + "/api/products/1";
-
-        // when
-        var response = restClient.get()
-            .uri(url)
-            .retrieve()
-            .toEntity(ProductGetResponseDto.class);
+        // given & when
+        var response = exchange(HttpMethod.GET, baseUrl() + "/1", null,
+            new ParameterizedTypeReference<ProductGetResponseDto>() {
+            });
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -194,10 +200,9 @@ class ProductControllerTest {
         // when
         assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
             .isThrownBy(
-                () -> restClient.get()
-                    .uri(url)
-                    .retrieve()
-                    .toEntity(ProductGetResponseDto.class)
+                () -> exchange(HttpMethod.GET, baseUrl() + "/321", null,
+                    new ParameterizedTypeReference<ProductGetResponseDto>() {
+                    })
             );
     }
 
@@ -205,8 +210,6 @@ class ProductControllerTest {
     @Test
     void 단건상품수정_NO_CONTENT_테스트() {
         // given
-        var url = "http://localhost:" + port + "/api/products/1";
-
         var request = new ProductUpdateRequestDto(
             "수정된 상품",
             10000.0,
@@ -214,11 +217,9 @@ class ProductControllerTest {
         );
 
         // when
-        var response = restClient.put()
-            .uri(url)
-            .body(request)
-            .retrieve()
-            .toEntity(Void.class);
+        var response = exchange(HttpMethod.PUT, baseUrl() + "/1", request,
+            new ParameterizedTypeReference<Void>() {
+            });
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
@@ -250,8 +251,6 @@ class ProductControllerTest {
     })
     void 단건상품수정_NO_CONTENT_상품이름_유효성_검사(String validName) {
         // given
-        var url = "http://localhost:" + port + "/api/products/1";
-
         var request = new ProductUpdateRequestDto(
             validName,
             10000.0,
@@ -259,11 +258,9 @@ class ProductControllerTest {
         );
 
         // when
-        var response = restClient.put()
-            .uri(url)
-            .body(request)
-            .retrieve()
-            .toEntity(Void.class);
+        var response = exchange(HttpMethod.PUT, baseUrl() + "/1", request,
+            new ParameterizedTypeReference<Void>() {
+            });
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
@@ -292,8 +289,6 @@ class ProductControllerTest {
     })
     void 단건상품수정_BAD_REQUEST_상품이름_유효성_검사(String invalidName) {
         //given
-        var url = "http://localhost:" + port + "/api/products/1";
-
         var request = new ProductUpdateRequestDto(
             invalidName,
             10000.0,
@@ -303,25 +298,19 @@ class ProductControllerTest {
         // when & then
         assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
             .isThrownBy(
-                () -> restClient.put()
-                    .uri(url)
-                    .body(request)
-                    .retrieve()
-                    .toEntity(Void.class)
+                () -> exchange(HttpMethod.PUT, baseUrl() + "/1", request,
+                    new ParameterizedTypeReference<Void>() {
+                    })
             );
     }
 
     // DELETE
     @Test
     void 단건상품삭제_NO_CONTENT_테스트() {
-        // given
-        var url = "http://localhost:" + port + "/api/products/1";
-
-        // when
-        var response = restClient.delete()
-            .uri(url)
-            .retrieve()
-            .toEntity(Void.class);
+        // given & when
+        var response = exchange(HttpMethod.DELETE, baseUrl() + "/1", null,
+            new ParameterizedTypeReference<Void>() {
+            });
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
@@ -336,16 +325,12 @@ class ProductControllerTest {
 
     @Test
     void 단건상품삭제_NOT_FOUND_데이터베이스_상품존재() {
-        // given
-        var url = "http://localhost:" + port + "/api/products/321";
-
-        // when
+        // given & when & then
         assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
             .isThrownBy(
-                () -> restClient.get()
-                    .uri(url)
-                    .retrieve()
-                    .toEntity(Void.class)
+                () -> exchange(HttpMethod.DELETE, baseUrl() + "/321", null,
+                    new ParameterizedTypeReference<Void>() {
+                    })
             );
     }
 
