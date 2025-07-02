@@ -29,12 +29,11 @@ public class ProductRepository {
         Map<String, Object> params = Map.of(
                 "name", name,
                 "price", price,
-                "image_url", imageUrl,
-                "category_id", null
+                "image_url", imageUrl
         );
 
         Number id = productInserter.executeAndReturnKey(new MapSqlParameterSource(params));
-        return new Product(id.longValue(), name, price, imageUrl);
+        return Product.of(id.longValue(), name, price, imageUrl);
     }
 
     public Optional<Product> findById(Long id) {
@@ -48,7 +47,7 @@ public class ProductRepository {
     }
 
     private RowMapper<Product> rowMapper() {
-        return (rs, rowNum) -> new Product(
+        return (rs, rowNum) -> Product.of(
                 rs.getLong("id"),
                 rs.getString("name"),
                 rs.getInt("price"),
