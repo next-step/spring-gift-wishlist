@@ -22,14 +22,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/admin/products")
 public class AdminController {
 
-  ProductService service;
+  private final ProductService service;
   private static final String PRODUCTS_LIST_PAGE_PATH = "/admin/products";
 
   public AdminController(ProductService service) {
     this.service = service;
   }
 
-  @GetMapping("")
+  @GetMapping
   public String ShowAllProduct(Model model) {
     List<ProductResponseDto> responseDtoList = service.findAllProduct();
     model.addAttribute("responseDtoList", responseDtoList);
@@ -51,8 +51,7 @@ public class AdminController {
       return "createProductForm";
     }
     ProductRequestDto requestDto = new ProductRequestDto(createFormDto.getName(),
-        createFormDto.getPrice(),
-        createFormDto.getImageUrl());
+        createFormDto.getPrice(), createFormDto.getImageUrl());
     service.createProduct(requestDto);
     return "redirect:" + PRODUCTS_LIST_PAGE_PATH;
   }
