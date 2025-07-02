@@ -78,13 +78,21 @@ public class ProductViewController {
         return productService.findProductById(id)
                 .map(product -> {
                     model.addAttribute("product", product);
+                    model.addAttribute("id", id);
                     return "edit";
                 })
                 .orElse("not-found");
     }
 
     @PostMapping("/edit/{id}")
-    public String editProduct(@PathVariable Long id, @ModelAttribute("product") ProductRequestDto requestDto) {
+    public String editProduct(@PathVariable Long id, @Valid @ModelAttribute("product") ProductRequestDto requestDto,
+                              BindingResult bindingResult,
+                              Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("product", requestDto);
+            model.addAttribute("id", id);
+            return "edit";
+        }
         productService.updateProduct(id, requestDto);
         return "redirect:/products/" + id;
     }
