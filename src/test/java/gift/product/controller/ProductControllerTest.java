@@ -6,7 +6,8 @@ import gift.global.error.ErrorResponse;
 import gift.product.dto.ProductCreateRequest;
 import gift.product.dto.ProductResponse;
 import gift.product.dto.ProductUpdateRequest;
-import gift.product.service.ProductService;
+import gift.product.repository.ProductRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +30,15 @@ class ProductControllerTest {
     private int port;
 
     @Autowired
-    private ProductService productService;
+    private ProductRepository productRepository;
 
     RestClient restClient = RestClient.builder()
             .build();
 
+    @AfterEach
+    void clear() {
+        productRepository.deleteAll();
+    }
 
 
     @Test
@@ -207,8 +212,9 @@ class ProductControllerTest {
     }
 
     private Product addProductCase() {
-        UUID uuid = productService.addProduct(new ProductCreateRequest("스윙칩", 3000, "data://image"));
-        return new Product(uuid, "스윙칩", 3000, "data://image");
+        Product product = new Product("스윙칩", 3000, "data://image");
+        UUID uuid = productRepository.save(product);
+        return product;
     }
 
 }

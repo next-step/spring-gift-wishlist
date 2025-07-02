@@ -1,4 +1,4 @@
-create table product (
+create table if not exists product (
                         id binary(16),
                         name varchar(255),
                         price int,
