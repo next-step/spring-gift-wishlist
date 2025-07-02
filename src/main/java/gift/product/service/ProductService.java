@@ -1,6 +1,7 @@
 package gift.product.service;
 
 import gift.exception.EntityNotFoundException;
+import gift.exception.MdApprovalRequiredException;
 import gift.product.dto.ProductCreateRequestDto;
 import gift.product.dto.ProductResponseDto;
 import gift.product.dto.ProductUpdateRequestDto;
@@ -22,17 +23,27 @@ public class ProductService {
     }
 
     public ProductResponseDto createProduct(ProductCreateRequestDto requestDto) {
+        checkRestrictedWords(requestDto.name());
+
         Long newProductId = productRepository.save(requestDto);
         return new ProductResponseDto(new Product(newProductId, requestDto));
     }
 
     @Transactional
     public ProductResponseDto updateProduct(Long id, ProductUpdateRequestDto requestDto) {
+        checkRestrictedWords(requestDto.name());
+
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(PRODUCT_NOT_FOUND_MESSAGE));
         product.update(requestDto);
         productRepository.update(product);
         return getProduct(id);
+    }
+
+    public void checkRestrictedWords(String name) {
+        if (name.contains("카카오")) {
+            throw new MdApprovalRequiredException("'카카오'가 포함된 문구는 담당 MD와 협의한 경우에만 사용할 수 있습니다.");
+        }
     }
 
     @Transactional
