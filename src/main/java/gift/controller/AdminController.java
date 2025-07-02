@@ -104,6 +104,7 @@ public class AdminController {
     ) {
         Product product = productService.findOne(id).get();
         model.addAttribute("product", product);
+        model.addAttribute("productRequestDto", new ProductRequestDto());
         return "modify";
     }
 
