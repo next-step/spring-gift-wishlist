@@ -38,7 +38,7 @@ public class ProductAdminController {
     @GetMapping("/add")
     public String showAddForm(Model model){
         model.addAttribute("product",
-                new ProductRequestDto("", 0L, ""));
+                new ProductRequestDto("", 0L, "", null));
 
         return "admin/add-form";
     }

@@ -1,9 +1,11 @@
 package gift.dto.request;
 
 
+import gift.validator.KakaoInName;
 import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.URL;
 
+@KakaoInName
 public record ProductRequestDto(
         @NotBlank(message = "상품 이름을 입력해 주세요.")
         @Size(max = 15, message = "상품 이름은 최대 15자까지 입력 가능합니다." )
@@ -19,4 +21,7 @@ public record ProductRequestDto(
 
         @NotBlank(message = "이미지 URL을 입력해 주세요.")
         @URL(message = "올바른 URL 형식이 아닙니다. 예시: http://....")
-        String imageUrl) { }
+        String imageUrl,
+
+        Boolean isKakaoApprovedByMd
+                                ) { }
