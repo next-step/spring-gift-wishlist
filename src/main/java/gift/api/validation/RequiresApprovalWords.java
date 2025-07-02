@@ -13,8 +13,12 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RequiresApprovalWords {
+
     String[] words() default {"카카오"};
+
     String message() default "담당 MD의 승인이 필요한 단어가 포함되어 있습니다.";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }

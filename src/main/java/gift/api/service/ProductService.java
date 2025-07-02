@@ -39,13 +39,13 @@ public class ProductService {
     public ProductResponseDto createProduct(ProductRequestDto productRequestDto) {
         return ProductResponseDto.from(
                 productRepository.createProduct(
-                    new Product(
-                            null,
-                            productRequestDto.name(),
-                            productRequestDto.price(),
-                            productRequestDto.imageUrl()
-                    )
-            )
+                        new Product(
+                                null,
+                                productRequestDto.name(),
+                                productRequestDto.price(),
+                                productRequestDto.imageUrl()
+                        )
+                )
         );
     }
 
@@ -54,13 +54,13 @@ public class ProductService {
 
         return ProductResponseDto.from(
                 productRepository.updateProduct(
-                    new Product(
-                            id,
-                            productRequestDto.name(),
-                            productRequestDto.price(),
-                            productRequestDto.imageUrl()
-                    )
-            )
+                        new Product(
+                                id,
+                                productRequestDto.name(),
+                                productRequestDto.price(),
+                                productRequestDto.imageUrl()
+                        )
+                )
         );
     }
 

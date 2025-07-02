@@ -13,7 +13,7 @@ public class RequiresApprovalWordsValidator implements
 
     @Override
     public void initialize(RequiresApprovalWords annotation) {
-        this. restrictedWords = Arrays.asList(annotation.words());
+        this.restrictedWords = Arrays.asList(annotation.words());
     }
 
     @Override
