@@ -1,12 +1,12 @@
 package gift.dto;
 
 import gift.entity.Item;
-import gift.validation.UseKakaoValid;
+import gift.validation.ItemFieldValid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-@UseKakaoValid
+@ItemFieldValid
 public record ItemUpdateDto(@NotNull Long id,
                             String name,
                             @Min(0) Integer price,

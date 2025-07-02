@@ -1,41 +1,42 @@
 package gift.validation;
 
 import gift.dto.ItemCreateDto;
+import gift.validation.itemPolicy.ItemPolicy;
+import gift.validation.itemPolicy.ItemViolationHandler.ViolationHandler;
+import gift.validation.itemPolicy.LengthPolicy;
+import gift.validation.itemPolicy.SpecialSymbolPolicy;
+import gift.validation.itemPolicy.UseNameKaKaoPolicy;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import java.util.List;
 
-import java.util.regex.Pattern;
+public class ItemCreateValidator implements ConstraintValidator<ItemFieldValid, ItemCreateDto> {
 
-public class ItemCreateValidator implements ConstraintValidator<UseKakaoValid, ItemCreateDto> {
-    private static final Pattern pattern = Pattern.compile("^[a-zA-Z0-9()\\[\\]+\\-\\&/_가-힣ㄱ-ㅎㅏ-ㅣ\\s]*$");
+    private final ViolationHandler violationHandler;
+
+    private List<ItemPolicy> policies;
+
+    public ItemCreateValidator(ViolationHandler violationHandler) {
+        this.violationHandler = violationHandler;
+    }
+
+    @Override
+    public void initialize(ItemFieldValid constraintAnnotation) {
+        this.policies = List.of(
+                new LengthPolicy(violationHandler),
+                new SpecialSymbolPolicy(violationHandler),
+                new UseNameKaKaoPolicy(violationHandler)
+        );
+    }
 
     @Override
     public boolean isValid(ItemCreateDto dto, ConstraintValidatorContext context) {
-        boolean isValid = true;
-        if (dto == null) {
-            return false;
+        if (dto == null) return false;
+        for (ItemPolicy policy : policies) {
+            if (!policy.isValid(dto, context)) {
+                return false;
+            }
         }
-        if (dto.name().length() > 15) {
-            addViolation(context,"상품 이름은 최대 15자까지 입니다.");
-            return false;
-        }
-        if (!pattern.matcher(dto.name()).matches()) {
-            addViolation(context,"( ), [ ], +, -, &, /, _\" 외에는 특수 문자가 허용되지 않습니다.");
-            return false;
-        }
-        if (!dto.useKakaoName() && dto.name().contains("카카오")) {
-
-            addViolation(context, "\"카카오\"는 MD와 협의한 경우에만 사용할 수 있습니다.");
-            return false;
-        }
-
-        return isValid;
-    }
-
-    private void addViolation(ConstraintValidatorContext context, String message) {
-        context.disableDefaultConstraintViolation();
-        context.buildConstraintViolationWithTemplate(message)
-                .addPropertyNode("name")
-                .addConstraintViolation();
+        return true;
     }
 }

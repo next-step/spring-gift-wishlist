@@ -6,7 +6,7 @@ import jakarta.validation.ConstraintValidatorContext;
 
 import java.util.regex.Pattern;
 
-public class ItemUpdateValidator implements ConstraintValidator<UseKakaoValid, ItemUpdateDto> {
+public class ItemUpdateValidator implements ConstraintValidator<ItemFieldValid, ItemUpdateDto> {
 
 
     private static final Pattern pattern = Pattern.compile("^[a-zA-Z0-9()\\[\\]+\\-\\&/_가-힣ㄱ-ㅎㅏ-ㅣ\\s]*$");

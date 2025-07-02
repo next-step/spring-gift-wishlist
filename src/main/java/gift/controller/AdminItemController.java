@@ -39,7 +39,6 @@ public class AdminItemController {
             return itemService.getAllItems();
         }
         return itemService.getItems(name, price);
-        // Todo. 테스트 중 오류 발생 검색 실패 시 createForm으로 이동 -> 수정 완료
     }
 
     @PostMapping
