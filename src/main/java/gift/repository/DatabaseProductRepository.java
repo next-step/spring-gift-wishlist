@@ -10,31 +10,30 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-@Primary
 @Repository
 public class DatabaseProductRepository implements ProductRepository {
 
     private final JdbcClient jdbcClient;
 
-    private final String SAVE_PRODUCT = """
+    private static final String SAVE_PRODUCT = """
                 INSERT INTO products(name, price, imageUrl)
                 VALUES (:name, :price, :imageUrl);
         """;
-    private final String SELECT_PRODUCT_BY_ID = """
+    private static final String SELECT_PRODUCT_BY_ID = """
                 SELECT id, name, price, imageUrl
                 FROM products
                 WHERE id = :id;
             """;
-    private final String DELETE_PRODUCT_BY_ID = """
+    private static final String DELETE_PRODUCT_BY_ID = """
                 DELETE FROM products
                 WHERE id = :id;
             """;
-    private final String UPDATE_PRODUCT = """
+    private static final String UPDATE_PRODUCT = """
                 UPDATE products
                 SET name = :name, price = :price, imageUrl = :imageUrl
                 WHERE id = :id;
             """;
-    private final String SELECT_ALL_PRODUCTS = """
+    private static final String SELECT_ALL_PRODUCTS = """
                 SELECT id, name, price, imageUrl
                 FROM products;
             """;
