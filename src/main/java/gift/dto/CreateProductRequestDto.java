@@ -10,11 +10,19 @@ public record CreateProductRequestDto(
                 message = "상품 이름에는 ( ), [ ], +, -, &, /, _ 의 특수 문자만 사용할 수 있습니다."
         )
         String name,
-
         @NotNull(message = "가격은 필수 입력입니다.")
         @Min(value = 0, message = "가격은 0 이상이어야 합니다.")
         Long price,
-
-        String imageUrl
+        String imageUrl,
+        Boolean isMdApproved
 ) {
+    public CreateProductRequestDto {
+        if (isMdApproved == null) {
+            isMdApproved = false;
+        }
+    }
+
+    public CreateProductRequestDto(String name, Long price, String imageUrl) {
+        this(name, price, imageUrl, false);
+    }
 }

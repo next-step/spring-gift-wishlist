@@ -1,6 +1,8 @@
 package gift.service;
 
+import gift.dto.CreateProductRequestDto;
 import gift.dto.ProductResponseDto;
+import gift.dto.UpdateProductRequestDto;
 import gift.entity.Product;
 import gift.repository.ProductRepository;
 import org.springframework.stereotype.Service;
@@ -31,8 +33,16 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductResponseDto createProduct(String name, Long price, String imageUrl) {
-        Product createdProduct = productRepository.createProduct(name, price, imageUrl);
+    public ProductResponseDto createProduct(CreateProductRequestDto requestDto) {
+        if (requestDto.name().contains("카카오") && !requestDto.isMdApproved()) {
+            throw new IllegalArgumentException("상품 이름에 '카카오'를 포함하려면 MD 승인이 필요합니다.");
+        }
+
+        Product createdProduct = productRepository.createProduct(
+                requestDto.name(),
+                requestDto.price(),
+                requestDto.imageUrl()
+        );
 
         return ProductResponseDto.from(createdProduct);
     }
@@ -44,11 +54,15 @@ public class ProductService {
     }
 
     @Transactional
-    public void updateProduct(Long id, String name, Long price, String imageUrl) {
-        Product findProduct = productRepository.findProductByIdOrElseThrow(id);
-        findProduct.setName(name);
-        findProduct.setPrice(price);
-        findProduct.setImageUrl(imageUrl);
+    public void updateProduct(UpdateProductRequestDto requestDto) {
+        if (requestDto.name().contains("카카오") && !requestDto.isMdApproved()) {
+            throw new IllegalArgumentException("상품 이름에 '카카오'를 포함하려면 MD 승인이 필요합니다.");
+        }
+
+        Product findProduct = productRepository.findProductByIdOrElseThrow(requestDto.id());
+        findProduct.setName(requestDto.name());
+        findProduct.setPrice(requestDto.price());
+        findProduct.setImageUrl(requestDto.imageUrl());
         productRepository.updateProduct(findProduct);
     }
 }

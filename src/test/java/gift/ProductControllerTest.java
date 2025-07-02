@@ -125,4 +125,70 @@ public class ProductControllerTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
+
+    @Test
+    void MD의_승인이_없을_때_카카오를_포함한_상품이름으로_등록할_경우_400을_반환한다() {
+        var url = "http://localhost:" + port + "/api/products";
+        CreateProductRequestDto requestDto = new CreateProductRequestDto(
+                "[카카오] 쌍쌍바", 1200L, "test.jpg", false
+        );
+
+        assertThatExceptionOfType(HttpClientErrorException.class)
+                .isThrownBy(
+                        () ->
+                                client.post()
+                                        .uri(url)
+                                        .body(requestDto)
+                                        .retrieve()
+                                        .toEntity(Void.class));
+    }
+
+    @Test
+    void MD의_승인이_있을_때_카카오를_포함한_상품이름으로_등록할_경우_201을_반환한다() {
+        var url = "http://localhost:" + port + "/api/products";
+        CreateProductRequestDto requestDto = new CreateProductRequestDto(
+                "[카카오] 쌍쌍바", 1200L, "test.jpg", true
+        );
+
+        var response = client.post()
+                .uri(url)
+                .body(requestDto)
+                .retrieve()
+                .toEntity(Void.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    }
+
+    @Test
+    void MD의_승인이_없을_때_카카오를_포함한_상품이름으로_수정할_경우_400을_반환한다() {
+        var url = "http://localhost:" + port + "/api/products/1";
+        UpdateProductRequestDto requestDto = new UpdateProductRequestDto(
+                1L, "[카카오] 쌍쌍바", 1200L, "test.jpg", false
+        );
+
+        assertThatExceptionOfType(HttpClientErrorException.class)
+                .isThrownBy(
+                        () ->
+                                client.put()
+                                        .uri(url)
+                                        .body(requestDto)
+                                        .retrieve()
+                                        .toEntity(Void.class));
+    }
+
+    @Test
+    void MD의_승인이_있을_때_카카오를_포함한_상품이름으로_수정할_경우_204을_반환한다() {
+        var url = "http://localhost:" + port + "/api/products/1";
+        UpdateProductRequestDto requestDto = new UpdateProductRequestDto(
+                1L, "[카카오] 쌍쌍바", 1200L, "test.jpg", true
+        );
+
+        var response = client.put()
+                .uri(url)
+                .body(requestDto)
+                .retrieve()
+                .toEntity(Void.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    }
 }
