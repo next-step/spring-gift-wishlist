@@ -1,11 +1,15 @@
 package gift.exception;
 
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.ui.Model;
+import gift.controller.AdminItemController;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-@ControllerAdvice(basePackages = "gift.controller.admin")
+@Order(Ordered.HIGHEST_PRECEDENCE)
+@ControllerAdvice(assignableTypes = AdminItemController.class)
 public class WebExceptionHandler {
 
     @ExceptionHandler(ItemNotFoundException.class)
@@ -14,21 +18,9 @@ public class WebExceptionHandler {
         return "error/404";
     }
 
-    @ExceptionHandler(DuplicateItemException.class)
-    public String handleDuplicateItemException(DuplicateItemException ex, Model model) {
-        model.addAttribute("errorMessage", ex.getMessage());
-        return "error/409";
-    }
-
     @ExceptionHandler(DataIntegrityViolationException.class)
     public String handleDataIntegrityViolation(DataIntegrityViolationException ex, Model model) {
         model.addAttribute("errorMessage", "이미 존재하는 상품 이름입니다. 다른 이름을 사용해주세요.");
         return "error/409";
-    }
-
-    @ExceptionHandler(Exception.class)
-    public String handleGlobalException(Exception ex, Model model) {
-        model.addAttribute("errorMessage", "서버에 문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
-        return "error/500";
     }
 }
