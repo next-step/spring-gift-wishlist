@@ -2,6 +2,7 @@ package gift.controller;
 
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
+import gift.dto.UpdateProductRequestDto;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -33,7 +34,7 @@ public class AdminController {
 
   @GetMapping("/add")
   public String addForm(Model model) {
-    model.addAttribute("product", new ProductRequestDto("", 0, ""));
+    model.addAttribute("product", new ProductRequestDto("", 0, "", false));
     model.addAttribute("mode", "add");
     return "admin/form";
   }
@@ -53,10 +54,12 @@ public class AdminController {
   @GetMapping("/edit/{id}")
   public String editForm(@PathVariable Long id, Model model) {
     ProductResponseDto product = productService.findProductById(id);
-    ProductRequestDto productRequestDto = new ProductRequestDto(
+    UpdateProductRequestDto productRequestDto = new UpdateProductRequestDto(
+        id,
         product.name(),
         product.price(),
-        product.imageUrl()
+        product.imageUrl(),
+        false
     );
     model.addAttribute("product", productRequestDto);
     model.addAttribute("productId", id);
@@ -66,7 +69,7 @@ public class AdminController {
 
   @PostMapping("/edit/{id}")
   public String editProduct(@PathVariable Long id,
-      @Valid @ModelAttribute("product") ProductRequestDto productRequestDto,
+      @Valid @ModelAttribute("product") UpdateProductRequestDto productRequestDto,
       BindingResult bindingResult,
       Model model) {
     if (bindingResult.hasErrors()) {
@@ -74,7 +77,7 @@ public class AdminController {
       model.addAttribute("productId", id);
       return "admin/form";
     }
-    productService.updateProduct(id, productRequestDto);
+    productService.updateProduct(productRequestDto);
     return "redirect:/admin";
   }
 
