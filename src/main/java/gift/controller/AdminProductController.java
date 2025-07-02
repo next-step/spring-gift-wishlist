@@ -65,6 +65,7 @@ public class AdminProductController {
         if (bindingResult.hasErrors()) {
             ProductResponseDto product = new ProductResponseDto(id, requestDto.name(), requestDto.price(), requestDto.url());
             model.addAttribute("product",product);
+            model.addAttribute("errorMessage", bindingResult.getFieldError("name").getDefaultMessage());
             return "admin/edit";
         }
         productService.updateProductById(id, requestDto);
