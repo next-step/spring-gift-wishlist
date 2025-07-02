@@ -27,4 +27,13 @@ public class ExceptionHandlerAdvice {
 
     return ResponseEntity.status(ErrorCode.VALIDATION_FAILED.getStatus()).body(errorResponse);
   }
+
+  @ExceptionHandler(BusinessException.class)
+  public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException ex) {
+
+    ErrorResponse errorResponse = ErrorResponse.of(ex.getErrorCode());
+
+    return ResponseEntity.status(ex.getErrorCode().getStatus()).body(errorResponse);
+  }
+
 }
