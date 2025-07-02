@@ -27,7 +27,7 @@ class ProductControllerTest {
     @LocalServerPort
     private int port;
 
-    private RestClient restClient = RestClient.builder().build();
+    private final RestClient restClient = RestClient.builder().build();
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
