@@ -12,5 +12,5 @@
     - [x] 허용된 특수문자 외 사용 금지
     - [x] "카카오" 포함 금지 (Custom Validator)
 - [x] Controller에 `@Valid` 애노테이션 적용
-- [ ] REST API를 위한 글로벌 예외 처리기 (`@RestControllerAdvice`) 구현
-- [ ] 관리자 페이지 폼 유효성 검사 실패 처리
+- [x] REST API를 위한 글로벌 예외 처리기 (`@RestControllerAdvice`) 구현
+- [x] 관리자 페이지 폼 유효성 검사 실패 처리
