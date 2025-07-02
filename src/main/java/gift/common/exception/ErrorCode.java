@@ -8,6 +8,7 @@ public enum ErrorCode {
     // 일반 오류
     UNEXPECTED_ERROR("예상치 못한 오류가 발생했습니다. 지원팀에 문의하세요."),
     INTERNAL_SERVER_ERROR("서버 내부 오류가 발생했습니다."),
+    RESOURCE_NOT_FOUND("요청한 리소스를 찾을 수 없습니다."),
 
     // 입력값 검증 오류
     NULL_ERROR("널 포인터 예외가 발생했습니다."),

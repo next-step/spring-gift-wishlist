@@ -15,6 +15,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestControllerAdvice
 @Order
@@ -99,6 +100,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ErrorResponse.builder(ex, HttpStatus.BAD_REQUEST, "바인딩에 실패했습니다")
                 .property("code", ErrorCode.BINDING_FAILED.name())
                 .property("errors", fieldErrors)
+                .property("path", req.getRequestURI())
+                .build();
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ErrorResponse handleNoSuchElement(NoSuchElementException ex, HttpServletRequest req) {
+        return ErrorResponse.builder(ex, HttpStatus.NOT_FOUND, ex.getMessage())
+                .property("code", ErrorCode.RESOURCE_NOT_FOUND.name())
+                .property("field", ErrorField.MISSING.name())
                 .property("path", req.getRequestURI())
                 .build();
     }
