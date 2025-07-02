@@ -31,15 +31,15 @@ public class JdbcProductRepository implements ProductRepository {
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[] {"id"});
-            ps.setString(1, requestDto.name());
-            ps.setInt(2, requestDto.price());
-            ps.setString(3, requestDto.imageUrl());
+            ps.setString(1, requestDto.getName());
+            ps.setInt(2, requestDto.getPrice());
+            ps.setString(3, requestDto.getImageUrl());
             return ps;
         }, keyHolder);
 
         Long generatedId = keyHolder.getKey().longValue();
 
-        return new ProductResponseDto(generatedId, requestDto.name(), requestDto.price(), requestDto.imageUrl());
+        return new ProductResponseDto(generatedId, requestDto.getName(), requestDto.getPrice(), requestDto.getImageUrl());
     }
 
     @Override
@@ -67,7 +67,7 @@ public class JdbcProductRepository implements ProductRepository {
     public void updateProduct(Long id, ProductRequestDto requestDto) {
         String sql = "UPDATE product SET name = ?, price = ?, image_url = ? WHERE id = ?";
         int updated = jdbcTemplate.update(sql,
-                requestDto.name(), requestDto.price(), requestDto.imageUrl(), id);
+                requestDto.getName(), requestDto.getPrice(), requestDto.getImageUrl(), id);
 
         if (updated == 0) {
             throw new ProductNotFoundException(id);

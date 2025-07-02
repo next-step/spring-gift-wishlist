@@ -5,6 +5,7 @@ import gift.dto.ProductResponseDto;
 import gift.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductResponseDto> addProduct(@RequestBody ProductRequestDto requestDto) {
+    public ResponseEntity<ProductResponseDto> addProduct(@RequestBody @Validated ProductRequestDto requestDto) {
 
         ProductResponseDto responseDto = productService.addProduct(requestDto);
 
