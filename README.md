@@ -1,5 +1,11 @@
 # spring-gift-wishlist
 
+# 2단계
+
+## 1. 1단계 피드백 반영
+- ProductUpdateRequestDto에 id를 추가하기
+- AdminProductController 전용 Exception Handler 만들기
+- 에러 응답 형식 바꿔보기
 # 1단계
 
 ## 1. 상품 이름에 검증 기능 넣기
