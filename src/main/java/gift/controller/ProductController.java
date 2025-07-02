@@ -3,6 +3,7 @@ package gift.controller;
 import gift.dto.ProductAddRequestDto;
 import gift.dto.ProductUpdateRequestDto;
 import gift.dto.ProductResponseDto;
+import gift.exception.InvalidProductException;
 import gift.service.ProductService;
 import gift.service.ProductServiceImpl;
 import jakarta.validation.Valid;
@@ -25,6 +26,9 @@ public class ProductController {
     public ResponseEntity<Void> addProduct(
             @Valid @RequestBody ProductAddRequestDto requestDto, BindingResult bindingResult
     ) {
+        if (bindingResult.hasErrors()) {
+            throw new InvalidProductException(bindingResult.getFieldError().getDefaultMessage());
+        }
         productService.addProduct(requestDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -42,6 +46,9 @@ public class ProductController {
             @PathVariable Long id,
             @Valid @RequestBody ProductUpdateRequestDto requestDto, BindingResult bindingResult
     ) {
+        if (bindingResult.hasErrors()) {
+            throw new InvalidProductException(bindingResult.getFieldError().getDefaultMessage());
+        }
         productService.updateProductById(id, requestDto);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
