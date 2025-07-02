@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AdminController {
 
   ProductService service;
-  private final String PRODUCTS_LIST_PAGE_PATH = "/admin/products";
+  private static final String PRODUCTS_LIST_PAGE_PATH = "/admin/products";
 
   public AdminController(ProductService service) {
     this.service = service;
