@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class ItemService {
 
-	private final ItemRepositoryImpl itemRepository;
+	private final ItemRepository itemRepository;
 
 	public ItemService(ItemRepositoryImpl itemRepository) {this.itemRepository = itemRepository;}
 
