@@ -12,12 +12,18 @@
     <form th:action="@{'/admin/products/' + ${product.id}}" th:object="${product}" method="post">
         <div class="form-group">
             <label>상품명</label>
-            <input type="text" th:field="*{name}" required>
+            <input type="text" th:field="*{name}">
+            <p th:if="${#fields.hasErrors('name')}"
+               th:errors="*{name}"
+               class="error-msg"></p>
         </div>
         <br>
         <div class="form-group">
             <label>가격</label>
-            <input type="number" th:field="*{price}" required>
+            <input type="number" th:field="*{price}">
+            <p th:if="${#fields.hasErrors('price')}"
+               th:errors="*{price}"
+               class="error-msg"></p>
         </div>
         <br>
         <div class="form-group">
