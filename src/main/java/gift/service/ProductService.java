@@ -55,6 +55,7 @@ public class ProductService implements ProductServiceInterface {
             productUpdateRequestDto.imageURL());
         productRepository.updateProduct(product);
 
+
         return productToResponseDto(product);
     }
 
