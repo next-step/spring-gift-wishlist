@@ -6,6 +6,7 @@ CREATE TABLE Gift(
   giftName VARCHAR(255),
   giftPrice INT,
   giftPhotoUrl VARCHAR(255),
+  isKakaoMDAccepted BOOLEAN,
   primary key(id)
 );
 
