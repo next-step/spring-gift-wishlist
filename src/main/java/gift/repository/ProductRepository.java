@@ -12,11 +12,6 @@ public class ProductRepository implements ProductRepositoryInterface {
     private final Map<Long, Product> products = new HashMap<>();
     private long productId = 1L;
 
-    @Override
-    public long getNewProductId() {
-        return productId;
-    }
-
     @Transactional
     @Override
     public Product addProduct(Product product) {

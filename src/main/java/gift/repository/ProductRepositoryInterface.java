@@ -9,9 +9,6 @@ import java.util.Optional;
 
 public interface ProductRepositoryInterface {
 
-    // 상품 생성을 위한 ID 얻기
-    long getNewProductId();
-
     // 상품 생성
     Product addProduct(Product product);
 

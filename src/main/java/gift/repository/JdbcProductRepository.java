@@ -19,11 +19,6 @@ public class JdbcProductRepository implements ProductRepositoryInterface{
     }
 
     @Override
-    public long getNewProductId() {
-        return 0;
-    }
-
-    @Override
     public Product addProduct(Product product) {
         String sql = "INSERT INTO product (name, price, imageUrl) VALUES (?, ?, ?)";
         jdbcTemplate.update(sql, product.getName(), product.getPrice(), product.getImageUrl());
