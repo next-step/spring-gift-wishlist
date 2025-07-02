@@ -1,4 +1,4 @@
-<form th:action="@{'/admin/' + ${product.id}}" th:object="${product}" method="post">
+<form th:action="@{'/admin/' + ${id}}" th:object="${product}" method="post">
     <input type="hidden" name="_method" value="put" />
 
     <div>
