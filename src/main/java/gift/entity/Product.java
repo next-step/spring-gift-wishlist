@@ -8,6 +8,8 @@ public class Product {
     private String imageUrl;
     private Boolean validated;
 
+    public Product() {}
+
     public Product(Long id, String name, Integer price, String imageUrl, Boolean validated) {
         this.id = id;
         this.name = name;
