@@ -23,7 +23,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemCreateDTO saveItem(ItemCreateDTO dto) {
-        Item item = new Item(dto);
+        Item item = new Item(dto.name(), dto.price(), dto.imageUrl());
         Item saveditem = itemRepository.saveItem(item);
 
         return new ItemCreateDTO(saveditem);

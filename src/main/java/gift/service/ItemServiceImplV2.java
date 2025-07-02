@@ -14,7 +14,7 @@ public class ItemServiceImplV2 {
     }
 
     public ItemCreateDTO saveItem(ItemCreateDTO dto) throws Exception {
-        Item item = new Item(dto);
+        Item item = new Item(dto.name(), dto.price(), dto.imageUrl());
         Item saveditem = itemRepository.saveItem(item);
         return new ItemCreateDTO(saveditem);
     }
