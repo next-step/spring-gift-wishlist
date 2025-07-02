@@ -75,7 +75,6 @@
 
 <h1>상품 등록</h1>
 
-<!-- 전역 오류 메시지 표시 -->
 <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
 
 <form th:action="@{/admin/products}" method="post" th:object="${itemDTO}">

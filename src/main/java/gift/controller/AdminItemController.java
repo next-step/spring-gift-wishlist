@@ -24,7 +24,7 @@ public class AdminItemController {
         this.itemService = itemService;
     }
     @GetMapping
-    public String searchItem(
+    public String viewItemList(
             Model model,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) Integer price) {
