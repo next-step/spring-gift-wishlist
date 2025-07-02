@@ -13,12 +13,12 @@
       <p>
         <strong>가격</strong>
         <input type="number" name="price" placeholder="상품 가격 입력" th:value="${requestDto.price}">
-        <span th:if="${#fields.hasErrors('price')}" th:errors="*{price}">Name Error</span>
+        <span th:if="${#fields.hasErrors('price')}" th:errors="*{price}">Price Error</span>
       </p>
       <p>
         <strong>이미지 주소</strong>
         <input type="text" name="imageUrl" placeholder="상품 이미지 주소 입력" th:value="${requestDto.imageUrl}">
-        <span th:if="${#fields.hasErrors('imageUrl')}" th:errors="*{imageUrl}">Name Error</span>
+        <span th:if="${#fields.hasErrors('imageUrl')}" th:errors="*{imageUrl}">imageUrl Error</span>
       </p>
       <p>
         <input type="submit" value="상품 등록하기">

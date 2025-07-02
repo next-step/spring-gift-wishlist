@@ -18,7 +18,7 @@ public class ProductRequestDto {
     @Min(value = 0, message = "상품 가격은 1원 이상이어야 합니다.")
     private Integer price;
 
-    @NotBlank(message = "상품 이미지 등록은 필수 입니다.")
+    @NotBlank(message = "상품 이미지 등록은 필수입니다.")
     private String imageUrl;
 
     //setter를 추가 : modelAttribute(html form)...
