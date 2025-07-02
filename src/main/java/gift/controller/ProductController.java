@@ -3,6 +3,7 @@ package gift.controller;
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,12 +26,12 @@ public class ProductController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ProductResponse addProduct(@RequestBody ProductRequest request) {
+    public ProductResponse addProduct(@Valid @RequestBody ProductRequest request) {
         return productService.save(request);
     }
 
     @PutMapping("/{id}")
-    public ProductResponse updateProduct(@PathVariable Long id, @RequestBody ProductRequest request) {
+    public ProductResponse updateProduct(@Valid @PathVariable Long id, @RequestBody ProductRequest request) {
         return productService.update(id, request);
     }
 
