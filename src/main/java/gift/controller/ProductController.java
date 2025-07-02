@@ -71,13 +71,10 @@ public class ProductController {
             @RequestBody ProductRequestDto requestDto,
             @PathVariable Long id
     ) {
-        Long found = findProductById(id).getId();
-        Product product = new Product(found,
-                requestDto.getName(),
-                requestDto.getPrice(),
-                requestDto.getImageUrl());
-        products.put(found, product);
-        return new ResponseEntity<>(product, HttpStatus.OK);
+        productService.modify(id, requestDto);
+        //특정 상품을 찾는 기능과 종속성을 가짐으로 좋지 않은 코드인지, 상관 없는지 궁금합니다.
+        Product modifiedProduct = productService.findOne(id).get();
+        return new ResponseEntity<>(modifiedProduct, HttpStatus.OK);
     }
 
     //delete

@@ -2,6 +2,7 @@ package gift;
 
 import static org.assertj.core.api.Assertions.*;
 
+import gift.dto.ProductRequestDto;
 import gift.entity.Product;
 import java.util.List;
 import org.assertj.core.api.Assertions;
@@ -58,7 +59,23 @@ public class ProductControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
+    @Test
+    void 상품을_수정하는_기능(){
+        var url = "http://localhost:" + port + "/api/products/1";
+        ProductRequestDto requestDto = new ProductRequestDto();
+        requestDto.setName("아이폰15");
+        requestDto.setPrice(550000);
+        requestDto.setImageUrl("https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcRoaNDLkmOrSKI4HJ80_6OrpwF7UAyAme0pw_IO2W4G0JqiQOaHohKg4x48ulWc1py_2VfEVKUw");
+        var response = restClient.put()
+                .uri(url)
+                .body(requestDto)
+                .retrieve()
+                .toEntity(Product.class);
+        assertThat(response.getBody().getName()).isEqualTo("아이폰15");
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
 
+    //new ProductRequestDto("아이폰15", 550000, "
 
 
 }
