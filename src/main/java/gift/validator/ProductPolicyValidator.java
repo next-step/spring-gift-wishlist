@@ -11,12 +11,14 @@ public class ProductPolicyValidator implements ConstraintValidator<ProductPolicy
             return true;
         }
 
-        String name = dto.name();
-        boolean merchandiserApproved = dto.merchandiserApproved();
-
-        if (name == null || !name.contains("카카오")) {
+        if (!isPolicyApplicable(dto)) {
             return true;
         }
-        return merchandiserApproved;
+
+        return dto.merchandiserApproved();
+    }
+
+    private boolean isPolicyApplicable(ProductPolicyProvider dto) {
+        return dto.name() != null && dto.name().contains("카카오");
     }
 }
