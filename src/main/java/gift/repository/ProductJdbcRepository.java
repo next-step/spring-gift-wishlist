@@ -71,7 +71,7 @@ public class ProductJdbcRepository implements ProductRepository {
 
     @Override
     public boolean containsKey(long id) {
-        return !jdbcTemplate.query("select 1 from product where productId = ? limit 1",
+        return jdbcTemplate.query("select 1 from product where productId = ? limit 1",
                 (rs, rowNum) -> 1, id)
             .stream().findFirst().isPresent();
     }
