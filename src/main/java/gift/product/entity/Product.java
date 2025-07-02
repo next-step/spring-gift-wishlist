@@ -6,6 +6,7 @@ public class Product {
     private String name;
     private Integer price;
     private String imageUrl;
+    private Boolean namePermission;
     
     //자동으로 생성되지만 가독성을 위해 생성
     public Product() {}
@@ -42,4 +43,11 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
+    public Boolean getNamePermission() {
+        return namePermission;
+    }
+
+    public void setNamePermission(Boolean namePermission) {
+        this.namePermission = namePermission;
+    }
 }
