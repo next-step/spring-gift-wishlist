@@ -3,11 +3,15 @@ package gift.controller;
 import gift.dto.request.ProductCreateRequestDto;
 import gift.dto.request.ProductUpdateRequestDto;
 import gift.dto.response.ProductGetResponseDto;
+import gift.service.ApprovedProductService;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,29 +23,47 @@ public class ProductViewController {
 
     private final ProductService productService;
 
-    public ProductViewController(ProductService productService) {
+    private final ApprovedProductService approvedProductService;
+
+    public ProductViewController(ProductService productService,
+        ApprovedProductService approvedProductService) {
         this.productService = productService;
+        this.approvedProductService = approvedProductService;
     }
 
-    @GetMapping("/create-product")
+    @GetMapping("/create")
     public String createProductPage() {
         return "create-product";
     }
 
-    @PostMapping("/create-product")
+    @PostMapping("/create")
     public String createProduct(
-        @RequestParam String name,
-        @RequestParam Double price,
-        @RequestParam String imageUrl
+        @Valid @ModelAttribute ProductCreateRequestDto productCreateRequestDto,
+        BindingResult bindingResult, Model model
     ) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("errors", bindingResult.getAllErrors());
+            model.addAttribute("productCreateRequestDto", productCreateRequestDto);
+            return "create-product";
+        }
+
+        if (productCreateRequestDto.name().contains("카카오")) {
+            boolean isApprovedProduct = approvedProductService.isApprovedProductName(
+                productCreateRequestDto.name());
+
+            if (!isApprovedProduct) {
+                model.addAttribute("errorMessage", "협의되지 않은 '카카오'가 포함된 상품명은 사용할 수 없습니다.");
+                model.addAttribute("productCreateRequestDto", productCreateRequestDto);
+                return "create-product";
+            }
+        }
 
         try {
-            ProductCreateRequestDto productCreaterequestDto = new ProductCreateRequestDto(name,
-                price, imageUrl);
-            productService.saveProduct(productCreaterequestDto);
+            productService.saveProduct(productCreateRequestDto);
             return "redirect:/admin/products";
         } catch (Exception e) {
-            return "redirect:/admin/products";
+            model.addAttribute("errorMessage", "상품 저장 중 오류가 발생했습니다.");
+            return "create-product";
         }
     }
 
@@ -60,7 +82,7 @@ public class ProductViewController {
                 model.addAttribute("products", List.of(product));
             } catch (Exception e) {
                 model.addAttribute("products", List.of());
-                model.addAttribute("error", "해당 상품이 없습니다.");
+                model.addAttribute("errorMessage", "해당 상품이 없습니다.");
             }
         }
 
@@ -74,6 +96,7 @@ public class ProductViewController {
             model.addAttribute("product", product);
             return "update-product";
         } catch (Exception e) {
+            model.addAttribute("errorMessage", "상품 정보를 불러오는 데 실패했습니다.");
             return "redirect:/admin/products";
         }
     }
@@ -81,12 +104,24 @@ public class ProductViewController {
     @PostMapping("/update/{productId}")
     public String updateProductById(
         @PathVariable Long productId,
-        @RequestParam String name,
-        @RequestParam Double price,
-        @RequestParam String imageUrl
+        @Valid @ModelAttribute ProductUpdateRequestDto productUpdateRequestDto,
+        BindingResult bindingResult, Model model
     ) {
-        ProductUpdateRequestDto productUpdateRequestDto = new ProductUpdateRequestDto(name, price,
-            imageUrl);
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("errors", bindingResult.getAllErrors());
+            return "redirect:/admin/products/update/" + productId;
+        }
+
+        if (productUpdateRequestDto.name().contains("카카오")) {
+            boolean isApprovedProduct = approvedProductService.isApprovedProductName(
+                productUpdateRequestDto.name());
+
+            if (!isApprovedProduct) {
+                model.addAttribute("errorMessage", "협의되지 않은 '카카오'가 포함된 상품명은 사용할 수 없습니다.");
+                return "redirect:/admin/products/update/" + productId;
+            }
+        }
+
         try {
             productService.updateProductById(productId, productUpdateRequestDto);
             return "redirect:/admin/products";
@@ -96,12 +131,12 @@ public class ProductViewController {
     }
 
     @PostMapping("/delete/{productId}")
-    public String deleteProductById(@PathVariable Long productId) {
+    public String deleteProductById(@PathVariable Long productId, Model model) {
         try {
             productService.deleteProductById(productId);
-            return "redirect:/admin/products";
         } catch (Exception e) {
-            return "redirect:/admin/products";
+            model.addAttribute("errorMessage", "상품을 삭제하는 데 실패했습니다.");
         }
+        return "redirect:/admin/products";
     }
 }
