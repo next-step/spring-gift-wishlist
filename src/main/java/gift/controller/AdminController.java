@@ -2,6 +2,7 @@ package gift.controller;
 
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
+import gift.exception.MdApprovalException;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -43,7 +44,12 @@ public class AdminController {
             model.addAttribute("product", dto);
             return "admin/product-add";
         }
-        productService.saveProduct(dto);
+        try {
+            productService.saveProduct(dto);
+        } catch (MdApprovalException e) {
+            bindingResult.rejectValue("name", "md.not.approved", e.getMessage());
+            return "admin/product-add";
+        }
         return "redirect:/admin";
     }
 
@@ -58,9 +64,15 @@ public class AdminController {
     public String updateProduct(@PathVariable Long id, @Valid @ModelAttribute("product") ProductRequestDto dto, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("product", dto);
+            model.addAttribute("id", id);
             return "admin/product-edit";
         }
-        productService.updateProduct(id, dto);
+        try {
+            productService.updateProduct(id, dto);
+        } catch (MdApprovalException e) {
+            bindingResult.rejectValue("name", "md.not.approved", e.getMessage());
+            return "admin/product-edit";
+        }
         return "redirect:/admin";
     }
 
@@ -69,5 +81,4 @@ public class AdminController {
         productService.deleteProduct(id);
         return "redirect:/admin";
     }
-
 }

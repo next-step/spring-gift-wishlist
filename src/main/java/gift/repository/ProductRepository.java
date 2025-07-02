@@ -9,4 +9,5 @@ public interface ProductRepository {
     Product findProductById(Long id);
     void updateProduct(Long id, String name, Long price, String ImageUrl);
     void deleteProduct(Long id);
+    boolean findMdApprovedById(Long id);
 }

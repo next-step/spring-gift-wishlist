@@ -71,4 +71,10 @@ public class ProductRepositoryImpl implements ProductRepository {
         String sql = "DELETE FROM product WHERE id = ?";
         jdbcTemplate.update(sql, id);
     }
+
+    @Override
+    public boolean findMdApprovedById(Long id) {
+        String sql = "SELECT md_approved FROM product WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{id}, Boolean.class);
+    }
 }
