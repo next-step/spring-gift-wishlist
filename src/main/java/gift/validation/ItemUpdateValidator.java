@@ -1,19 +1,19 @@
 package gift.validation;
 
-import gift.dto.ItemUpdateDTO;
+import gift.dto.ItemUpdateDto;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 import java.util.regex.Pattern;
 
-public class ItemUpdateValidator implements ConstraintValidator<UseKakaoValid, ItemUpdateDTO> {
+public class ItemUpdateValidator implements ConstraintValidator<UseKakaoValid, ItemUpdateDto> {
 
 
     private static final Pattern pattern = Pattern.compile("^[a-zA-Z0-9()\\[\\]+\\-\\&/_가-힣ㄱ-ㅎㅏ-ㅣ\\s]*$");
 
 
     @Override
-    public boolean isValid(ItemUpdateDTO dto, ConstraintValidatorContext context) {
+    public boolean isValid(ItemUpdateDto dto, ConstraintValidatorContext context) {
         boolean isValid = true;
         if (dto == null) {
             return false;

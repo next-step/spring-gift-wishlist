@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-public class ItemDTO {
+public class ItemDto {
 
     @NotNull
     private Long id;
@@ -24,11 +24,11 @@ public class ItemDTO {
     @Size(max=255)
     private String imageUrl;
 
-    public ItemDTO() {
+    public ItemDto() {
     }
 
 
-    public ItemDTO(Item item) {
+    public ItemDto(Item item) {
         this.id = item.getId();
         this.name = item.getName();
         this.price = item.getPrice();

@@ -1,7 +1,7 @@
 package gift.exception;
 
-import gift.dto.ItemCreateDTO;
-import gift.dto.ItemUpdateDTO;
+import gift.dto.ItemCreateDto;
+import gift.dto.ItemUpdateDto;
 import org.springframework.ui.Model;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -29,16 +29,16 @@ public class GlobalExceptionHandler {
 
         Object rejectedDTO = e.getBindingResult().getTarget();
 
-        if (rejectedDTO instanceof ItemCreateDTO itemDTO) {
+        if (rejectedDTO instanceof ItemCreateDto itemDTO) {
             model.addAttribute("itemDTO", itemDTO);
             return "admin/createForm";
 
-        } else if (rejectedDTO instanceof ItemUpdateDTO itemDTO) {
+        } else if (rejectedDTO instanceof ItemUpdateDto itemDTO) {
             model.addAttribute("itemDTO", itemDTO);
             return "admin/editForm";
 
         } else {
-            model.addAttribute("itemDTO", new ItemCreateDTO("", 0, "", false));
+            model.addAttribute("itemDTO", new ItemCreateDto("", 0, "", false));
             return "admin/createForm";
         }
     }
@@ -52,7 +52,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public String handleOtherErrors(Exception e, Model model) {
         model.addAttribute("errorMessage", "오류 발생");
-        model.addAttribute("itemDTO", new ItemCreateDTO("", 0, "", false));
+        model.addAttribute("itemDTO", new ItemCreateDto("", 0, "", false));
         return "admin/createForm";
     }
 }

@@ -1,25 +1,25 @@
 package gift.service;
 
-import gift.dto.ItemCreateDTO;
-import gift.dto.ItemDTO;
-import gift.dto.ItemResponseDTO;
-import gift.dto.ItemUpdateDTO;
+import gift.dto.ItemCreateDto;
+import gift.dto.ItemDto;
+import gift.dto.ItemResponseDto;
+import gift.dto.ItemUpdateDto;
 
 import java.util.List;
 
 public interface ItemService {
-    ItemCreateDTO saveItem(ItemCreateDTO dto);
+    ItemCreateDto saveItem(ItemCreateDto dto);
 
-    List<ItemResponseDTO> getItems(String name, Integer price);
+    List<ItemResponseDto> getItems(String name, Integer price);
 
     void delete(String name);
 
-    ItemUpdateDTO updateItem(Long id, ItemUpdateDTO dto);
+    ItemUpdateDto updateItem(Long id, ItemUpdateDto dto);
 
 
-    ItemDTO findById(Long id);
+    ItemDto findById(Long id);
 
     void deleteById(Long id);
 
-    List<ItemResponseDTO> getAllItems();
+    List<ItemResponseDto> getAllItems();
 }
