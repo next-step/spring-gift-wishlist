@@ -2,8 +2,10 @@ package gift.controller;
 
 import gift.dto.ProductRequestDto;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -49,7 +51,14 @@ public class AdminController {
     }
 
     @PostMapping
-    public String addProduct(@ModelAttribute ProductRequestDto productRequestDto) {
+    public String addProduct(
+            @Valid @ModelAttribute("product") ProductRequestDto productRequestDto,
+            BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            return "admin/products/new";
+        }
+
         productService.saveProduct(productRequestDto);
         return "redirect:/admin/products";
     }
@@ -67,9 +76,18 @@ public class AdminController {
     }
 
     @PutMapping("/{id}")
-    public String updateProduct(@PathVariable Long id,
-            @ModelAttribute ProductRequestDto productRequestDto,
-            RedirectAttributes redirectAttributes) {
+    public String updateProduct(
+            @PathVariable Long id,
+            @Valid @ModelAttribute("product") ProductRequestDto productRequestDto,
+            BindingResult bindingResult,
+            RedirectAttributes redirectAttributes,
+            Model model) {
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("productId", id);
+            return "admin/products/edit";
+        }
+
         try {
             productService.updateProduct(id, productRequestDto);
         } catch (IllegalArgumentException e) {
