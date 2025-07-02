@@ -4,9 +4,12 @@ import gift.dto.ProductAddRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.dto.ProductUpdateRequestDto;
 import gift.entity.Product;
+import gift.exception.InvalidProductException;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,8 +38,16 @@ public class AdminProductController {
     }
 
     @PostMapping("/add")
-    public String addProduct(@ModelAttribute ProductAddRequestDto requestDto) {
-        productService.addProduct(requestDto);
+    public String addProduct(@Valid @ModelAttribute("product") ProductAddRequestDto requestDto, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            return "admin/add";
+        }
+        try {
+            productService.addProduct(requestDto);
+        } catch (InvalidProductException e) {
+            model.addAttribute("globalErrorMessage", e.getMessage());
+            return "admin/add";
+        }
         return "redirect:/admin/products";
     }
 
@@ -53,9 +64,24 @@ public class AdminProductController {
     @PutMapping("/edit/{id}")
     public String editProduct(
             @PathVariable Long id,
-            @ModelAttribute ProductUpdateRequestDto requestDto
+            @Valid @ModelAttribute ProductUpdateRequestDto requestDto,
+            BindingResult bindingResult,
+            Model model
     ) {
-        productService.updateProductById(id, requestDto);
+        if (bindingResult.hasErrors()) {
+            ProductResponseDto product = new ProductResponseDto(id, requestDto.name(), requestDto.price(), requestDto.url());
+            model.addAttribute("product", product);
+            model.addAttribute("errorMessage", bindingResult.getFieldError("name").getDefaultMessage());
+            return "admin/edit";
+        }
+        try {
+            productService.updateProductById(id, requestDto);
+        } catch (InvalidProductException e) {
+            ProductResponseDto product = new ProductResponseDto(id, requestDto.name(), requestDto.price(), requestDto.url());
+            model.addAttribute("product", product);
+            model.addAttribute("globalErrorMessage", e.getMessage());
+            return "admin/edit";
+        }
         return "redirect:/admin/products";
     }
 
