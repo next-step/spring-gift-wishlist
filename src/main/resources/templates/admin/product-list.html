@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -12,6 +13,7 @@
         <th>이름</th>
         <th>가격</th>
         <th>이미지</th>
+        <th>협의 여부</th>
         <th>관리</th>
     </tr>
     <tr th:each="product : ${products}">
@@ -19,6 +21,7 @@
         <td th:text="${product.name}"></td>
         <td th:text="${product.price}"></td>
         <td><img th:src="${product.imageUrl}" width="50"/></td>
+        <td th:text="${product.mdApproved} ? '협의 완료' : '미협의'"></td>
         <td>
             <a th:href="@{'/admin/' + ${product.id} + '/edit'}">수정</a>
             <form th:action="@{'/admin/' + ${product.id} + '/delete'}" method="post" style="display:inline;">
@@ -27,5 +30,3 @@
         </td>
     </tr>
 </table>
-</body>
-</html>
