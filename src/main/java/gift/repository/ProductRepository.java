@@ -1,7 +1,7 @@
 package gift.repository;
 
 import gift.entity.Product;
-import org.springframework.jdbc.core.JdbcTemplate;
+import gift.exception.ProductNotFoundException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -47,9 +47,13 @@ public class ProductRepository {
     }
 
     public void deleteById(Long id){
-        jdbcClient.sql("DELETE FROM product WHERE id = :id")
+        int affectedRows = jdbcClient.sql("DELETE FROM product WHERE id = :id")
                 .param("id", id)
                 .update();
+
+        if (affectedRows == 0) {
+            throw new ProductNotFoundException(id);
+        }
     }
 
 
@@ -62,7 +66,7 @@ public class ProductRepository {
                 .update();
 
         if (affectedRows == 0) {
-            throw new IllegalArgumentException("해당 id가 존재하지 않습니다.: " + product.getId());
+            throw new ProductNotFoundException(product.getId());
         }
 
         return product;
