@@ -46,7 +46,7 @@ public class ProductControllerTest {
 
     @Test
     void 존재하지_않는_아이디로_개별조회하면_404가_반환된다() {
-        String url = "http://localhost:" + port + "/api/products/2";
+        String url = "http://localhost:" + port + "/api/products/999";
         assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
                 .isThrownBy(() ->
                         client.get()

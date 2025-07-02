@@ -17,4 +17,6 @@ public interface ProductRepository {
     void deleteProductById(Long id);
 
     Product updateProductById(Long id, Product newProduct);
+
+    void acceptedProductById(Long id);
 }
