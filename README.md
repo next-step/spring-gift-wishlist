@@ -8,8 +8,8 @@
 
 - [x] `build.gradle`에 `validation` 의존성 추가
 - [ ] `ProductRequest` DTO에 상품명 유효성 검사 추가
-    - [ ] 이름 길이 15자 이하 제한
-    - [ ] 허용된 특수문자 외 사용 금지
+    - [x] 이름 길이 15자 이하 제한
+    - [x] 허용된 특수문자 외 사용 금지
     - [ ] "카카오" 포함 금지 (Custom Validator)
 - [ ] Controller에 `@Valid` 애노테이션 적용
 - [ ] REST API를 위한 글로벌 예외 처리기 (`@RestControllerAdvice`) 구현
