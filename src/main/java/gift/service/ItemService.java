@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import gift.exception.ItemNotFoundException;
 
 @Service
 public class ItemService {
@@ -27,8 +28,7 @@ public class ItemService {
 
     public ItemResponse getItemById(Long id) {
         Item item = itemRepository.findById(id)
-            .orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "상품을 찾을 수 없습니다: " + id));
+            .orElseThrow(() -> new ItemNotFoundException("해당 ID의 상품을 찾을 수 없습니다: " + id));
         return ItemResponse.from(item);
     }
 
