@@ -30,3 +30,10 @@
 ### 검증
 <img src="https://private-user-images.githubusercontent.com/138632648/459280881-88092cdd-04f4-4b1b-b49b-13909a596935.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NTA5MjM1NjMsIm5iZiI6MTc1MDkyMzI2MywicGF0aCI6Ii8xMzg2MzI2NDgvNDU5MjgwODgxLTg4MDkyY2RkLTA0ZjQtNGIxYi1iNDliLTEzOTA5YTU5NjkzNS5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUwNjI2JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MDYyNlQwNzM0MjNaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1hMjQzMzU5YWRkMzQ1N2MwZTYwYWJiMWRjOGI4MzU3NjZlNTVhNmI4ZTU2NjVjZjcxMzQ2ZTdkMTQ0MzYwZjk3JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.3RAFTAzWm8vHyNh_Vow3B6fGlPJHDBRDD3AjGPgogGQ" alt="상품 관리 화면" width="600"/>
 
+
+
+# spring-gift-wishlist
+## 1단계 
+- 상품 이름은 공백을 포함해 최대 15자까지 입력할 수 있다. 
+- (), [], +, -, &, /, - 이외의 특수문자는 사용 불가능하다
+- '카카오'가 포함된 문구는 협의한 경우에만 사용할 수 있다. 
