@@ -28,8 +28,10 @@ public class ProductService {
 
     @Transactional
     public ProductResponseDto updateProduct(Long id, ProductUpdateRequestDto requestDto) {
-        getProduct(id);
-        productRepository.update(id, requestDto);
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(PRODUCT_NOT_FOUND_MESSAGE));
+        product.update(requestDto);
+        productRepository.update(product);
         return getProduct(id);
     }
 
