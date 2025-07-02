@@ -64,6 +64,10 @@ public class ProductControllerTest {
         Product invalidPatternName = new Product(null, "invalid!!!", 2,  "http://example.com/img.png");
         ResponseEntity<String> fail3 = restTemplate.postForEntity(baseUrl, invalidPatternName, String.class);
         assertThat(fail3.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+
+        Product managementName = new Product(null, "카카오가 들어간 이름", 3,  "http://example.com/img.png");
+        ResponseEntity<String> fail4 = restTemplate.postForEntity(baseUrl, managementName, String.class);
+        assertThat(fail4.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
