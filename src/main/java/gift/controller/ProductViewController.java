@@ -52,14 +52,14 @@ public class ProductViewController {
     }
 
     @GetMapping("/{id}")
-    public String getProduct(@PathVariable Long id, Model model) {
+    public String get(@PathVariable Long id, Model model) {
         ProductResponseDto product = productService.findProductById(id);
         model.addAttribute("product", product);
         return "product/detail";
     }
 
     @GetMapping("/{id}/update")
-    public String editForm(@PathVariable Long id, Model model) {
+    public String updateForm(@PathVariable Long id, Model model) {
         ProductResponseDto product = productService.findProductById(id);
         model.addAttribute("product", product);
         return "product/update";
