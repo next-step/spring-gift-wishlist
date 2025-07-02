@@ -2,7 +2,6 @@ package gift.product.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
