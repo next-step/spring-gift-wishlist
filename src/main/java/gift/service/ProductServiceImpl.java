@@ -5,11 +5,10 @@ import gift.dto.request.ProductUpdateRequestDto;
 import gift.dto.response.ProductCreateResponseDto;
 import gift.dto.response.ProductGetResponseDto;
 import gift.entity.Product;
+import gift.exception.ProductNotFoundException;
 import gift.repository.ProductRepository;
 import java.util.List;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -40,9 +39,8 @@ public class ProductServiceImpl implements ProductService {
     public ProductGetResponseDto findProductById(Long productId) {
         return productRepository.findProductById(productId)
             .map(ProductGetResponseDto::new)
-            .orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                "Does not exist productId = " + productId)
+            .orElseThrow(
+                () -> new ProductNotFoundException("상품이 존재하지 않습니다. productId = " + productId)
             );
     }
 

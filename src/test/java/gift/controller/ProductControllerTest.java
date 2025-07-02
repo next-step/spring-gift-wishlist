@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import gift.dto.request.ProductCreateRequestDto;
 import gift.dto.request.ProductUpdateRequestDto;
 import gift.dto.response.ProductCreateResponseDto;
+import gift.dto.response.ProductGetResponseDto;
 import gift.entity.Product;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -155,7 +156,7 @@ class ProductControllerTest {
         var response = restClient.get()
             .uri(url)
             .retrieve()
-            .toEntity(new ParameterizedTypeReference<List<ProductCreateResponseDto>>() {
+            .toEntity(new ParameterizedTypeReference<List<ProductGetResponseDto>>() {
             });
 
         // then
@@ -174,13 +175,28 @@ class ProductControllerTest {
         var response = restClient.get()
             .uri(url)
             .retrieve()
-            .toEntity(ProductCreateResponseDto.class);
+            .toEntity(ProductGetResponseDto.class);
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         var actual = response.getBody();
         System.out.println(actual);
+    }
+
+    @Test
+    void 단건상품조회_NOT_FOUND_테스트() {
+        // given
+        var url = "http://localhost:" + port + "/api/products/321";
+
+        // when
+        assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
+            .isThrownBy(
+                () -> restClient.get()
+                    .uri(url)
+                    .retrieve()
+                    .toEntity(ProductGetResponseDto.class)
+            );
     }
 
     // PUT

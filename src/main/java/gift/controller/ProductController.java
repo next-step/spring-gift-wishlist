@@ -4,6 +4,7 @@ import gift.dto.request.ProductCreateRequestDto;
 import gift.dto.request.ProductUpdateRequestDto;
 import gift.dto.response.ProductCreateResponseDto;
 import gift.dto.response.ProductGetResponseDto;
+import gift.exception.ProductNotFoundException;
 import gift.exception.UnapprovedProductException;
 import gift.service.ApprovedProductService;
 import gift.service.ProductService;
@@ -80,20 +81,28 @@ public class ProductController {
 
         productService.updateProductById(productId, productUpdateRequestDto);
 
-        return ResponseEntity.noContent().build();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/{productId}")
     public ResponseEntity<Void> deleteProductById(@PathVariable Long productId) {
 
         productService.deleteProductById(productId);
-        return ResponseEntity.noContent().build();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @ExceptionHandler(UnapprovedProductException.class)
     public ResponseEntity<String> handleUnapprovedProductException(UnapprovedProductException ex) {
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
-            .body("상품명 오류: " + ex.getMessage());
+            .body("오류: " + ex.getMessage());
+    }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<String> handleProductNotFoundExceptionException(
+        ProductNotFoundException ex) {
+        return ResponseEntity
+            .status(HttpStatus.NOT_FOUND)
+            .body("오류: " + ex.getMessage());
     }
 }
