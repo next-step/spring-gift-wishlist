@@ -119,7 +119,7 @@
         const price = document.getElementById('productPrice').value;
         const imageUrl = document.getElementById('productImageUrl').value;
 
-        const payload = { name, price, imageUrl };
+        const payload = { id ,name, price, imageUrl };
 
         fetch(`/api/products/${id}`, {
             method: 'PUT',
@@ -128,10 +128,17 @@
         })
             .then(res => {
                 if(!res.ok){
-                    return res.json().then(error=>{
-                        alert("입력 형식이 잘못됐습니다: " +error.map(e=>e.defaultMessage.join('\n') ));
-                        throw new Error("Validation error");
-                    });
+                    if(res.status === 403){
+                        return res.text().then(msg => {
+                            alert(msg);
+                            throw new Error("Forbidden error");
+                        });
+                    }else{
+                        return res.json().then(error=>{
+                            alert("입력 형식이 잘못됐습니다: " +error.map(e=>e.defaultMessage.join('\n') ));
+                            throw new Error("Validation error");
+                        });
+                    }
                 }
                 return res.json();
             })

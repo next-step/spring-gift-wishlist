@@ -1,6 +1,7 @@
 package gift.product.controller;
 
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -41,6 +42,11 @@ public class ProductController {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
         }
+
+        if(productRequestDto.getId() != null && !productService.validateProduct(productRequestDto)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("카카오란 이름은 MD승인을 받아야합니다");
+        }
+
         ProductResponseDto productResponseDto = productService.addProduct(productRequestDto);
         return  ResponseEntity.ok(productResponseDto);
     }
@@ -53,6 +59,11 @@ public class ProductController {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
         }
+
+        if(!productService.validateProduct(productRequestDto)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("카카오란 이름은 MD승인을 받아야합니다");
+        }
+
         ProductResponseDto productResponseDto = productService.updateProduct(id,productRequestDto);
         return  ResponseEntity.ok(productResponseDto);
     }

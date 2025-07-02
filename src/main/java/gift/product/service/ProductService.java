@@ -8,6 +8,7 @@ import gift.product.repository.ProductRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static gift.product.dto.ProductResponseDto.fromEntity;
 
@@ -67,6 +68,19 @@ public class ProductService {
     //삭제
     public void deleteProduct(Long id) {
         productRepository.delete(id);
+    }
+
+    //상품 이름 검사
+    public Boolean validateProduct(ProductRequestDto productRequestDto) {
+        if(productRequestDto.getName().contains("카카오")){
+            Optional<Product> product = productRepository.findById(productRequestDto.getId());
+            if(product.isPresent()) {
+                return product.get().getNamePermission(); //허가 받았는지 확인
+            }else{
+                return false; // 아이디가 없으므로 허가 x
+            }
+        }
+        return true; // 카카오가 이름에 포함 x
     }
 
 }
