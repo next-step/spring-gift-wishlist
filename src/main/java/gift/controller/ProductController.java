@@ -3,6 +3,7 @@ package gift.controller;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -22,7 +23,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductResponseDto> addProduct(@RequestBody @Validated ProductRequestDto requestDto) {
+    public ResponseEntity<ProductResponseDto> addProduct(@RequestBody @Valid ProductRequestDto requestDto) {
 
         ProductResponseDto responseDto = productService.addProduct(requestDto);
 
@@ -40,7 +41,7 @@ public class ProductController {
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponseDto> updateProduct(
             @PathVariable Long id,
-            @RequestBody ProductRequestDto requestDto
+            @Valid @RequestBody ProductRequestDto requestDto
     ) {
 
         ProductResponseDto updatedProduct = productService.updateProduct(id, requestDto);
