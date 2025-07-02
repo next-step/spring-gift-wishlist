@@ -4,6 +4,7 @@ import gift.dto.ProductAddRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.dto.ProductUpdateRequestDto;
 import gift.entity.Product;
+import gift.exception.InvalidProductException;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -37,11 +38,16 @@ public class AdminProductController {
     }
 
     @PostMapping("/add")
-    public String addProduct(@Valid @ModelAttribute("product") ProductAddRequestDto requestDto, BindingResult bindingResult) {
+    public String addProduct(@Valid @ModelAttribute("product") ProductAddRequestDto requestDto, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             return "admin/add";
         }
-        productService.addProduct(requestDto);
+        try {
+            productService.addProduct(requestDto);
+        } catch (InvalidProductException e) {
+            model.addAttribute("globalErrorMessage", e.getMessage());
+            return "admin/add";
+        }
         return "redirect:/admin/products";
     }
 
@@ -64,11 +70,18 @@ public class AdminProductController {
     ) {
         if (bindingResult.hasErrors()) {
             ProductResponseDto product = new ProductResponseDto(id, requestDto.name(), requestDto.price(), requestDto.url());
-            model.addAttribute("product",product);
+            model.addAttribute("product", product);
             model.addAttribute("errorMessage", bindingResult.getFieldError("name").getDefaultMessage());
             return "admin/edit";
         }
-        productService.updateProductById(id, requestDto);
+        try {
+            productService.updateProductById(id, requestDto);
+        } catch (InvalidProductException e) {
+            ProductResponseDto product = new ProductResponseDto(id, requestDto.name(), requestDto.price(), requestDto.url());
+            model.addAttribute("product", product);
+            model.addAttribute("globalErrorMessage", e.getMessage());
+            return "admin/edit";
+        }
         return "redirect:/admin/products";
     }
 

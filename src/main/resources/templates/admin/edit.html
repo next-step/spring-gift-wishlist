@@ -15,6 +15,7 @@
         <input type="text" th:field="*{name}"/>
     </div>
     <div class = "form-row" th:if="${errorMessage}" th:text="${errorMessage}" style="color: red;"></div>
+    <div class = "form-row" th:if="${globalErrorMessage}" th:text="${globalErrorMessage}" style="color: red;"></div>
     <div class="form-row">
         <label>가격: </label>
         <input type="number" th:field="*{price}"/>
