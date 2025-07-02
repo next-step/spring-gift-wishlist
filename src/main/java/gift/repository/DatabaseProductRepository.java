@@ -49,10 +49,13 @@ public class DatabaseProductRepository implements ProductRepository {
 
     @Override
     public void updateStatus(long id, Product.Status status) {
-        jdbcClient.sql(UPDATE_STATUS)
-                .param("status", status)
+        int numOfUpdatedRows = jdbcClient.sql(UPDATE_STATUS)
+                .param("status", status.name())
                 .param("id", id)
                 .update();
+
+        if (numOfUpdatedRows == 0)
+            throw new NotFoundByIdException("Not Found id: " + id);
     }
 
     @Override

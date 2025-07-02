@@ -2,6 +2,7 @@ package gift.service;
 
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
+import gift.dto.ProductStatusPatchRequestDto;
 import gift.entity.Product;
 import gift.exception.NotFoundByIdException;
 import gift.repository.ProductRepository;
@@ -71,5 +72,9 @@ public class ProductService {
         } else {
             return Product.Status.APPROVED;
         }
+    }
+
+    public void updateProductStatus(Long productId, ProductStatusPatchRequestDto statusPatchRequestDto) {
+        productRepository.updateStatus(productId, statusPatchRequestDto.status());
     }
 }

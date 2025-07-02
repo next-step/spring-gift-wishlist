@@ -2,6 +2,7 @@ package gift.controller;
 
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
+import gift.dto.ProductStatusPatchRequestDto;
 import gift.exception.NotFoundByIdException;
 import gift.exception.RequestNotValidException;
 import gift.service.ProductService;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/products")
 public class ProductController {
 
     private final ProductService productService;
@@ -26,13 +28,15 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @DeleteMapping("/api/products/{productId}")
+    // For Admin
+    @DeleteMapping("/{productId}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long productId) {
         productService.deleteProductById(productId);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/api/products")
+    // For Admin
+    @PostMapping("")
     public ResponseEntity<String> createProduct(
             @Validated @RequestBody ProductRequestDto productRequestDto,
             BindingResult bindingResult) {
@@ -44,7 +48,8 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body("Successfully created id: " + productId);
     }
 
-    @PutMapping("/api/products/{productId}")
+    // For Admin
+    @PutMapping("/{productId}")
     public ResponseEntity<String> updateProduct(
             @PathVariable Long productId,
             @Validated @RequestBody ProductRequestDto productRequestDto,
@@ -58,14 +63,26 @@ public class ProductController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/api/products")
-    public ResponseEntity<List<ProductResponseDto>> getAllProducts() {
-        return ResponseEntity.ok(productService.findAllProducts());
+    // For User
+    @GetMapping("")
+    public ResponseEntity<List<ProductResponseDto>> getApprovedProducts() {
+        return ResponseEntity.ok(productService.findApprovedProducts());
     }
 
-    @GetMapping("/api/products/{productId}")
+    // For User
+    @GetMapping("/{productId}")
     public ResponseEntity<ProductResponseDto> getProduct(@PathVariable Long productId) {
         return ResponseEntity.ok(productService.findProductById(productId));
+    }
+
+    // TODO - md 만 접근할 수 있도록 제한 할 것
+    @PatchMapping("/{productId}/status")
+    public ResponseEntity<String> patchProductStatus(
+            @PathVariable Long productId,
+            @RequestBody ProductStatusPatchRequestDto statusPatchRequestDto
+            ) {
+        productService.updateProductStatus(productId, statusPatchRequestDto);
+        return ResponseEntity.ok("Successfully Update Product's Status");
     }
 
     @ExceptionHandler(RequestNotValidException.class)

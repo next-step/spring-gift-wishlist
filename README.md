@@ -10,5 +10,5 @@
   * Status enum 구현
   * Product에 Status 추가 - [APPROVED, REJECTED, PENDING]
   * Service, Respository에 Status 수정 로직 구현
-  * admin products 페이지에서 PENDING인 Product에 APPROVED or REJECTED를 볼 수 있도록 구현
+  * Product에 Status를 수정할 수 있는 Endpoint 구현
   * GET api/products 에선 APPROVED인 Product만 리턴하도록 수정
