@@ -3,7 +3,6 @@ package gift.model;
 import gift.validation.ValidProductName;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
@@ -16,8 +15,9 @@ public class Product {
     @ValidProductName
     private String name;
 
+    @NotNull(message = "가격은 필수 입력 값입니다.")
     @PositiveOrZero(message = "가격은 음수가 될 수 없습니다.")
-    private int price;
+    private Integer price;
 
     @NotBlank(message = "이미지 Url은 필수 입력 값입니다.")
     private String imageUrl;
@@ -26,13 +26,13 @@ public class Product {
     public Product() {
     }
 
-    public Product(String name, int price, String imageUrl) {
+    public Product(String name, Integer price, String imageUrl) {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
     }
 
-    public Product(Long id, String name, int price, String imageUrl) {
+    public Product(Long id, String name, Integer price, String imageUrl) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -56,11 +56,11 @@ public class Product {
         this.name = name;
     }
 
-    public int getPrice() {
+    public Integer getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(Integer price) {
         this.price = price;
     }
 
