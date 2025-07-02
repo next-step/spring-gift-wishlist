@@ -20,8 +20,8 @@
 
 <form id="productForm">
     <input type="hidden" id="productId">
-    <input type="text" id="productName" placeholder="상품명" required>
-    <input type="number" id="productPrice" placeholder="가격" required>
+    <input type="text" id="productName" placeholder="상품명">
+    <input type="number" id="productPrice" placeholder="가격">
     <input type="text" id="productImageUrl" placeholder="이미지 URL">
     <button type="submit">상품 등록</button>
 </form>
@@ -67,7 +67,15 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         })
-            .then(res => res.json())
+            .then(res => {
+                if(!res.ok){
+                    return res.json().then(error=>{
+                       alert("입력 형식이 잘못됐습니다: " +error.map(e=>e.defaultMessage).join('\n'));
+                       throw new Error("Validation error");
+                    });
+                }
+                return res.json();
+            })
             .then(() => {
                 fetchProducts();
                 document.getElementById('productForm').reset();
@@ -118,13 +126,18 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         })
-            .then(res => res.json())
+            .then(res => {
+                if(!res.ok){
+                    return res.json().then(error=>{
+                        alert("입력 형식이 잘못됐습니다: " +error.map(e=>e.defaultMessage.join('\n') ));
+                        throw new Error("Validation error");
+                    });
+                }
+                return res.json();
+            })
             .then(() => {
                 fetchProducts();
                 document.getElementById('productForm').reset();
-                document.getElementById('productId').value = '';
-                document.querySelector('button[type="submit"]').textContent = '상품 등록';
-
             })
     }
 
