@@ -38,7 +38,7 @@ public class ProductControllerTest {
     @Test
     void 상품이름이_15자초과면_400_응답을_반환한다() throws Exception {
         ProductRequest request = new ProductRequest(
-                1L, "너무너무너무너무긴상품이름", 1000, "http://example.com/image.jpg"
+                1L, "너무너무너무너무긴상품이름123123123", 1000, "http://example.com/image.jpg"
         );
 
         mockMvc.perform(post("/api/products")
