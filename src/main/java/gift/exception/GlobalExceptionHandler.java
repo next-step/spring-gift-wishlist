@@ -14,6 +14,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(MdApprovalRequiredException.class)
+    public ResponseEntity<ErrorResponseDto> handleMdApprovalRequired(
+            MdApprovalRequiredException exception) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(new ErrorResponseDto(ErrorStatus.MD_APPROVAL_REQUIRED.getCode(),
+                        exception.getMessage()));
+    }
+
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ErrorResponseDto> handleProductNotFound(
             EntityNotFoundException exception) {

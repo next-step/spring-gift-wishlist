@@ -1,7 +1,6 @@
 package gift.product.repository;
 
 import gift.product.dto.ProductCreateRequestDto;
-import gift.product.dto.ProductUpdateRequestDto;
 import gift.product.entity.Product;
 import java.util.List;
 import java.util.Objects;
@@ -41,13 +40,13 @@ public class ProductRepository {
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
-    public void update(Long id, ProductUpdateRequestDto requestDto) {
+    public void update(Product product) {
         jdbcClient.sql(
                         "UPDATE product SET name=?, price=?, image_url=? WHERE id=?")
-                .param(requestDto.name())
-                .param(requestDto.price())
-                .param(requestDto.imageUrl())
-                .param(id)
+                .param(product.getName())
+                .param(product.getPrice())
+                .param(product.getImageUrl())
+                .param(product.getId())
                 .update();
     }
 
