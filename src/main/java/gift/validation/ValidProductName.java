@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 public @interface ValidProductName {
 
     String message() default "특수 문자는 ((, ), [, ], +, -, &, /, _)만 가능합니다. "
-        + "또한 '카카오'가 포함된 문구는 담당 MD와 협의가 필요합니다.";
+        + "또는 '카카오'가 포함된 문구는 담당 MD와 협의가 필요합니다.";
 
     Class[] groups() default {};
 
