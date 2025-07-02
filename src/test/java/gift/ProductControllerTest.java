@@ -43,8 +43,10 @@ public class ProductControllerTest {
         var response = client.get()
                 .uri(url)
                 .retrieve()
-                .toEntity(Void.class);
+                .toEntity(ProductResponseDto.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getName()).isEqualTo("초코송이");
     }
 
     @Test
