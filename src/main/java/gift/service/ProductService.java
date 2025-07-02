@@ -18,6 +18,9 @@ public class ProductService {
     }
 
     public Product create(String name, int price, String imageUrl) {
+        if (name.contains("카카오")) {
+            throw new IllegalArgumentException("'카카오'가 포함된 상품명은 MD와 협의 후 등록 가능합니다.");
+        }
         return repository.save(name, price, imageUrl);
     }
 
