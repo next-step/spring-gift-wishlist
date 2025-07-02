@@ -18,6 +18,7 @@ public record ProductRequest(
         int price,
 
         @NotBlank(message = "이미지 URL은 필수입니다.")
+        @Size(max = 500, message = "이미지 URL은 500자 이하여야 합니다.")
         String imageUrl
 
 ) {}
