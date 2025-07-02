@@ -26,7 +26,11 @@ public class ProductController {
 
 
     @PostMapping
-    public ResponseEntity<ProductResponseDto> addProduct( @RequestBody@Valid ProductRequestDto requestDto) {
+    public ResponseEntity<ProductResponseDto> addProduct( @RequestBody @Valid ProductRequestDto requestDto) {
+        if (requestDto.getName() != null && requestDto.getName().contains("카카오")) {
+            throw new IllegalArgumentException("상품 이름에 '카카오'를 포함할 수 없습니다. 담당 MD와 협의해 주세요");
+        }
+
         Product saved = productService.createProduct(requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ProductResponseDto(saved)); //피드백 반영
     }
@@ -42,7 +46,10 @@ public class ProductController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductResponseDto> updateProduct(@PathVariable Long id,@RequestBody ProductRequestDto requestDto) {
+    public ResponseEntity<ProductResponseDto> updateProduct(@PathVariable Long id,@RequestBody @Valid ProductRequestDto requestDto) {
+        if (requestDto.getName() != null && requestDto.getName().contains("카카오")) {
+            throw new IllegalArgumentException("상품 이름에 '카카오'를 포함할 수 없습니다. 담당 MD와 협의해 주세요");
+        }
         Product updated =productService.updateProduct(id,requestDto);
 
         return ResponseEntity.ok(new ProductResponseDto(updated));

@@ -6,13 +6,16 @@ import jakarta.validation.constraints.Size;
 
 public class ProductRequestDto {
 
-    @NotBlank()
-    @Size(max = 15)
+    @NotBlank(message = "상품 이름을 입력하세요")
+    @Size(max = 15, message = "상품 이름은 최대 15자까지 입력 가능합니다")
     @Pattern(
-            regexp = "^[\\p{L}\\p{N}\\s\\(\\)\\[\\]\\+\\-\\&\\/\\_]*$"
+            regexp = "^[\\p{L}\\p{N}\\s\\(\\)\\[\\]\\+\\-\\&\\/\\_]*$",
+            message = "특수문자는 ( ), [ ], +, -, &, /, _ 만 가능합니다."
     )
     private String name;
+
     private int price;
+
     private String imageUrl;
 
 
