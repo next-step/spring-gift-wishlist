@@ -3,6 +3,7 @@ package gift.controller.admin;
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,7 +37,7 @@ public class AdminProductController {
     }
 
     @PostMapping
-    public String createProduct(@ModelAttribute ProductRequest request) {
+    public String createProduct(@Valid @ModelAttribute ProductRequest request) {
         productService.addProduct(request);
         return "redirect:/admin/products";
     }
@@ -49,7 +50,7 @@ public class AdminProductController {
     }
 
     @PostMapping("/{id}")
-    public String updateProduct(@PathVariable Long id, @ModelAttribute ProductRequest request) {
+    public String updateProduct(@PathVariable Long id, @Valid @ModelAttribute ProductRequest request) {
         productService.updateProduct(id, request);
         return "redirect:/admin/products";
     }
