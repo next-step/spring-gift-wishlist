@@ -2,11 +2,11 @@ package gift.product.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import gift.product.dto.ProductRequestDto;
 import gift.product.dto.ProductResponseDto;
 import gift.product.service.ProductService;
-import gift.exception.GlobalExceptionHandler.ApiResponse;
 
 import java.util.List;
 
@@ -36,21 +36,25 @@ public class ProductController {
 
     //특정 상품 추가
     @PostMapping
-    public ResponseEntity<ApiResponse<ProductResponseDto>> addProduct(@Valid @RequestBody ProductRequestDto productRequestDto) {
-
-        productService.validateProduct(productRequestDto);
+    public ResponseEntity<?> addProduct(@Valid @RequestBody ProductRequestDto productRequestDto,
+                                                         BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
+        }
         ProductResponseDto productResponseDto = productService.addProduct(productRequestDto);
-        return  ResponseEntity.ok(new ApiResponse<>(200,"추가 완료" , productResponseDto));
+        return  ResponseEntity.ok(productResponseDto);
     }
 
     //특정 상품 수정
     @PutMapping("{id}")
-    public ResponseEntity<ApiResponse<ProductResponseDto>> updateProduct(@Valid @RequestBody ProductRequestDto productRequestDto,
-                                                            @PathVariable Long id) {
-
-        productService.validateProduct(productRequestDto);
+    public ResponseEntity<?> updateProduct(@Valid @RequestBody ProductRequestDto productRequestDto,
+                                                            @PathVariable Long id,
+                                                            BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
+        }
         ProductResponseDto productResponseDto = productService.updateProduct(id,productRequestDto);
-        return  ResponseEntity.ok(new ApiResponse<>(200,"수정 완료" , productResponseDto));
+        return  ResponseEntity.ok(productResponseDto);
     }
 
     //삭제
