@@ -51,7 +51,7 @@ public class ProductJdbcRepository implements ProductRepository {
     }
 
     @Override
-    public Long createProduct(Product product) {
+    public Product createProduct(Product product) {
         jdbcClient.sql(
                         "insert into product (name, price, image_url) values (:name, :price, :image_url)")
                 .param("name", product.getName())
@@ -63,12 +63,12 @@ public class ProductJdbcRepository implements ProductRepository {
                 .query(Long.class)
                 .single();
 
-        return newId;
+        return findProductById(newId).get();
     }
 
     @Override
-    public boolean updateProduct(Product product) {
-        int updated = jdbcClient.sql(
+    public Product updateProduct(Product product) {
+        jdbcClient.sql(
                         "update product set name = :name, price = :price, image_url = :image_url where id = :id")
                 .param("name", product.getName())
                 .param("price", product.getPrice())
@@ -76,7 +76,7 @@ public class ProductJdbcRepository implements ProductRepository {
                 .param("id", product.getId())
                 .update();
 
-        return updated > 0;
+        return findProductById(product.getId()).get();
     }
 
     @Override
