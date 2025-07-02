@@ -12,12 +12,9 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidProductName {
-
     String message() default "상품 이름이 유효하지 않습니다.";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
-
-
 }

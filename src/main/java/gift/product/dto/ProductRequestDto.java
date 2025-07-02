@@ -1,11 +1,10 @@
 package gift.product.dto;
 
-import gift.product.domain.Product;
+import gift.product.validation.ValidProductName;
 import jakarta.validation.constraints.*;
 
 public record ProductRequestDto(
-        @NotBlank(message = "상품명은 필수입니다.")
-        @Size(max = 100, message = "상품명은 100자 이내여야 합니다.")
+        @ValidProductName
         String name,
 
         @NotNull(message = "가격은 필수입니다.")
