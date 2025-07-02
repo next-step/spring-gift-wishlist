@@ -4,10 +4,12 @@ import gift.dto.PageResponseDto;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -50,7 +52,13 @@ public class ProductViewController {
     }
 
     @PostMapping("/add")
-    public String addProduct(@ModelAttribute ProductRequestDto requestDto) {
+    public String addProduct(@Valid @ModelAttribute("product") ProductRequestDto requestDto,
+                             BindingResult bindingResult,
+                             Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("product", requestDto);
+            return "add";
+        }
         productService.addProduct(requestDto);
         return "redirect:/products/add";
     }
@@ -76,7 +84,7 @@ public class ProductViewController {
     }
 
     @PostMapping("/edit/{id}")
-    public String editProduct(@PathVariable Long id, @ModelAttribute ProductRequestDto requestDto) {
+    public String editProduct(@PathVariable Long id, @ModelAttribute("product") ProductRequestDto requestDto) {
         productService.updateProduct(id, requestDto);
         return "redirect:/products/" + id;
     }
