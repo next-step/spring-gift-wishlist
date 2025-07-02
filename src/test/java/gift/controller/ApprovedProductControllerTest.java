@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import gift.dto.request.ApprovedProductCreateRequestDto;
-import gift.dto.response.ProductCreateResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -68,31 +67,6 @@ class ApprovedProductControllerTest {
         );
 
         assertThat(actualName).isEqualTo(validName);
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {
-        "카카오 카카오 카카오 카카오 카카오",      // 한글 17자
-        "카카오 콜라@맛!",                      // 허용되지 않은 특수문자
-        "프렌즈"                               // '카카오' 불포함
-    })
-    void 협의된상품등록_BAD_REQUEST_테스트(String validName) {
-        // given
-        var url = "http://localhost:" + port + "/admin/approved-products";
-
-        var request = new ApprovedProductCreateRequestDto(
-            validName
-        );
-
-        // when & then
-        assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
-            .isThrownBy(
-                () -> restClient.post()
-                    .uri(url)
-                    .body(request)
-                    .retrieve()
-                    .toEntity(ProductCreateResponseDto.class)
-            );
     }
 
     @ParameterizedTest

@@ -187,7 +187,7 @@ class ProductControllerTest {
     }
 
     @Test
-    void 단건상품조회_NOT_FOUND_테스트() {
+    void 단건상품조회_NOT_FOUND_데이터베이스_상품존재() {
         // given
         var url = "http://localhost:" + port + "/api/products/321";
 
@@ -332,6 +332,21 @@ class ProductControllerTest {
         );
 
         assertThat(results).isEmpty();
+    }
+
+    @Test
+    void 단건상품삭제_NOT_FOUND_데이터베이스_상품존재() {
+        // given
+        var url = "http://localhost:" + port + "/api/products/321";
+
+        // when
+        assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
+            .isThrownBy(
+                () -> restClient.get()
+                    .uri(url)
+                    .retrieve()
+                    .toEntity(Void.class)
+            );
     }
 
 }
