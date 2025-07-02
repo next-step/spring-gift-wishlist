@@ -18,6 +18,7 @@ public record PagedResult<T>(
     List<T> actualContent = hasNext ? content.subList(0, size) : content;
 
     return new PagedResult<>(actualContent, page, size, hasNext, hasPrevious);
+
   }
 
   public <U> PagedResult<U> map(Function<T, U> mapper) {

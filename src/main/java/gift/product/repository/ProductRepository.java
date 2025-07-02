@@ -9,6 +9,7 @@ public interface ProductRepository {
   Long save(Product product);
   Optional<Product> findById(Long id);
   List<Product> findAllByPage(int offset, int pageSize, SortInfo sortInfo);
+
   void update(Long id, Product updateProduct);
   void deleteById(Long id);
 

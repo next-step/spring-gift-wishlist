@@ -84,7 +84,11 @@ class InMemoryProductRepositoryTest {
 
     SortInfo sortInfo = new SortInfo("name", true);
 
+<<<<<<< HEAD
     List<Product> products = repository.findAllByPage(0, 2, sortInfo);
+=======
+    List<Product> products = repository.findAll(0, 2, sortInfo);
+>>>>>>> upstream/lwj0831
 
     assertThat(products).hasSize(2);
   }
@@ -153,7 +157,11 @@ class InMemoryProductRepositoryTest {
   void 빈_저장소에서_전체_조회하면_빈_리스트를_반환한다() {
     SortInfo sortInfo = new SortInfo("name", true);
 
+<<<<<<< HEAD
     List<Product> products = repository.findAllByPage(0, 10, sortInfo);
+=======
+    List<Product> products = repository.findAll(0, 10, sortInfo);
+>>>>>>> upstream/lwj0831
 
     assertThat(products).isEmpty();
   }
@@ -163,7 +171,11 @@ class InMemoryProductRepositoryTest {
     repository.save(testProduct);
     SortInfo sortInfo = new SortInfo("name", true);
 
+<<<<<<< HEAD
     List<Product> products = repository.findAllByPage(0, 10, sortInfo);
+=======
+    List<Product> products = repository.findAll(0, 10, sortInfo);
+>>>>>>> upstream/lwj0831
 
     assertThat(products).hasSize(1);
   }
@@ -388,7 +400,11 @@ class InMemoryProductRepositoryTest {
       final int offset = i % 5; // 0~4 페이지
       executorService.submit(() -> {
         try {
+<<<<<<< HEAD
           List<Product> products = repository.findAllByPage(offset, 10, sortInfo);
+=======
+          List<Product> products = repository.findAll(offset, 10, sortInfo);
+>>>>>>> upstream/lwj0831
           results.add(products);
         } finally {
           latch.countDown();

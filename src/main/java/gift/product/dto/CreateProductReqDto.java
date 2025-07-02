@@ -1,7 +1,6 @@
 package gift.product.dto;
 
 import gift.product.validation.NoKakao;
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
