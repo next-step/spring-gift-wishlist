@@ -101,7 +101,44 @@ public class ProductTest {
                         .body(ProductResponse.class)).isInstanceOf(HttpClientErrorException.NotFound.class);
     }
     @Test
-    void 시나리오2_여러개의_상품_추가하고_하나_조회하고_수정하고_조회하기() {
+    void 시나리오2_여러개의_상품_추가하고_하나_조회하고_삭제하고_추가하고_조회하기() {
+        for (ProductRequest productRequest : productRequests) {
+            ResponseEntity<Void> createResponse = restClient.post()
+                    .uri("/api/products")
+                    .body(productRequest)
+                    .retrieve()
+                    .toBodilessEntity();
+            assertThat(createResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+            assertThat(createResponse.getHeaders().getLocation().toString()).contains("/api/products/");
+        }
+
+        ProductResponse response = restClient.get()
+                .uri("/api/products/{id}", 1)
+                .retrieve()
+                .body(ProductResponse.class);
+        assertThat(response.getName()).isEqualTo(NAME);
+        assertThat(response.getPrice()).isEqualTo(1000);
+        assertThat(response.getImageUrl()).isEqualTo(IMAGE_URL);
+
+        ResponseEntity<Void> deletedResponse = restClient.delete()
+                .uri("/api/products/{id}", 3)
+                .retrieve()
+                .toBodilessEntity();
+        assertThat(deletedResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+
+        ResponseEntity<Void> createResponse = restClient.post()
+                .uri("/api/products")
+                .body(new ProductRequest("추가된 상품", 20000, "https://test.com/img3.jpg"))
+                .retrieve()
+                .toBodilessEntity();
+
+        assertThat(createResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        assertThatThrownBy(()->
+                restClient.get()
+                        .uri("/api/products/{id}", 3)
+                        .retrieve()
+                        .body(ProductResponse.class)).isInstanceOf(HttpClientErrorException.NotFound.class);
 
     }
 
