@@ -2,6 +2,7 @@ package gift.service;
 
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
+import gift.entity.Product;
 import gift.exception.NotFoundByIdException;
 import gift.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,8 @@ public class ProductService {
         return productRepository.saveProduct(
             productRequestDto.name(),
             productRequestDto.price(),
-            productRequestDto.imageUrl()
+            productRequestDto.imageUrl(),
+            getStatus(productRequestDto)
         );
     }
 
@@ -35,8 +37,18 @@ public class ProductService {
 
     public void updateProduct(Long id, ProductRequestDto productUpdateDto) {
         productRepository.updateProduct(
-                productUpdateDto.toEntity(id)
+                productUpdateDto.toEntity(
+                        id,
+                        getStatus(productUpdateDto))
         );
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProductResponseDto> findApprovedProducts() {
+        return productRepository.findAllProducts().stream()
+                .filter(product -> product.status() == Product.Status.APPROVED)
+                .map(ProductResponseDto::new)
+                .toList();
     }
 
     @Transactional(readOnly = true)
@@ -51,5 +63,13 @@ public class ProductService {
         return productRepository.findProductById(id)
                 .map(ProductResponseDto::new)
                 .orElseThrow(() -> new NotFoundByIdException("Not Found by id: " + id));
+    }
+
+    private Product.Status getStatus(ProductRequestDto productRequestDto) {
+        if (productRequestDto.name().contains("카카오")) {
+            return Product.Status.PENDING;
+        } else {
+            return Product.Status.APPROVED;
+        }
     }
 }

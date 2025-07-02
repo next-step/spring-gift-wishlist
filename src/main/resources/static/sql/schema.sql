@@ -1,6 +1,9 @@
+CREATE TYPE product_status AS ENUM ('APPROVED', 'PENDING', 'REJECTED');
+
 CREATE TABLE products (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(15) NOT NULL ,
-    price INT NOT NULL ,
-    imageUrl VARCHAR(255) NOT NULL
+    name VARCHAR(15) NOT NULL,
+    price INT NOT NULL,
+    imageUrl VARCHAR(255) NOT NULL,
+    status product_status NOT NULL
 );

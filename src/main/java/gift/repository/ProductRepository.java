@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProductRepository {
-    Long saveProduct(String name, Integer price, String imageUrl);
+    void updateStatus(long id, Product.Status status);
+    Long saveProduct(String name, Integer price, String imageUrl, Product.Status status);
     Optional<Product> findProductById(Long id);
     void deleteProductById(Long id);
     void updateProduct(Product product);
