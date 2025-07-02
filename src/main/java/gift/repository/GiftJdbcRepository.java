@@ -32,9 +32,6 @@ public class GiftJdbcRepository implements GiftRepository {
             throw new InValidSpecialCharException("특수문자는 ( ), [ ], +, -, &, /, _ 만 허용됩니다.");
         }
         gift.isKakaoMessageInclude();
-        if(!gift.getIsKakaoMDAccepted()){
-            throw new NeedAcceptException("MD 의 승인이 필요합니다.");
-        }
 
         gift.setId(id.getAndIncrement());
         String sql = "INSERT INTO Gift(id, giftId, giftName, giftPrice, giftPhotoUrl, isKakaoMDAccepted) VALUES (?, ?, ?, ?, ?, ?)";
@@ -48,6 +45,10 @@ public class GiftJdbcRepository implements GiftRepository {
         };
         int[] argTypes = {Types.BIGINT, Types.BIGINT, Types.VARCHAR, Types.INTEGER, Types.VARCHAR, Types.BOOLEAN};
         jdbcTemplate.update(sql, args, argTypes);
+
+        if(!gift.getIsKakaoMDAccepted()){
+            throw new NeedAcceptException("MD 의 승인이 필요합니다.");
+        }
 
         return gift;
     }
@@ -75,8 +76,10 @@ public class GiftJdbcRepository implements GiftRepository {
 
     @Override
     public List<Gift> findAll() {
-        String sql = "SELECT * FROM Gift";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+        String sql = "SELECT * FROM Gift WHERE isKakaoMDAccepted = ?";
+        Object[] args = {true};
+        int[] argTypes = {Types.BOOLEAN};
+        return jdbcTemplate.query(sql, args, argTypes, (rs, rowNum) -> {
             Gift gift = new Gift();
             gift.setId(rs.getLong("id"));
             gift.setGiftId(rs.getLong("giftId"));
