@@ -1,6 +1,7 @@
 package gift;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import gift.dto.ProductRequestDto;
 import gift.entity.Product;
@@ -14,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
@@ -61,6 +63,41 @@ public class ProductControllerTest {
                                 .body(requestDto)
                                 .retrieve()
                                 .toEntity(Void.class));
+    }
+
+    @Test
+    void 상품명_허용되는_특수문자(){
+        var url = "http://localhost:" + port + "/api/products";
+
+        ProductRequestDto requestDto = new ProductRequestDto();
+        requestDto.setName("[애플워치울트라]");
+        requestDto.setPrice(340000);
+        requestDto.setImageUrl("https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcRzZTIOEqeEMHNP4zFNRWCB_BuBv22q881TH1fY3GShPKuJqNBxh8HIELZcTjj7FhvSqpwSleJj");
+
+        ResponseEntity<Product> response = restClient.post()
+                .uri(url)
+                .body(requestDto)
+                .retrieve()
+                .toEntity(Product.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    }
+
+    @Test
+    void 허용_되지않는_특수문자(){
+        var url = "http://localhost:" + port + "/api/products";
+
+        ProductRequestDto requestDto = new ProductRequestDto();
+        requestDto.setName("$애플워치울트라$");
+        requestDto.setPrice(340000);
+        requestDto.setImageUrl("https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcRzZTIOEqeEMHNP4zFNRWCB_BuBv22q881TH1fY3GShPKuJqNBxh8HIELZcTjj7FhvSqpwSleJj");
+
+        assertThrows(HttpClientErrorException.BadRequest.class,
+                () -> restClient.post()
+                        .uri(url)
+                        .body(requestDto)
+                        .retrieve()
+                        .toEntity(Product.class));
     }
 
     @Test

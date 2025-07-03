@@ -82,7 +82,7 @@ public class AdminController {
             String errorMsg = "상품 ID가 " + id + "인 상품은 존재하지 않습니다.";
             throw new ProductNotFoundException(errorMsg);
         }
-        model.addAttribute("product", product.get());
+        model.addAttribute("sproduct", product.get());
         return "productinfo";
     }
 
