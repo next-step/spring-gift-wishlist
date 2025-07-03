@@ -2,6 +2,7 @@ package gift.repository;
 
 import gift.dto.api.ProductResponseDto;
 import gift.entity.Product;
+import gift.exception.notfound.NoProductInfoException;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -69,7 +70,7 @@ public class ProductRepositoryImpl implements ProductRepository {
                 rs.getString("imageUrl")
             ))
             .optional()
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            .orElseThrow(NoProductInfoException::new);
     }
     
     @Override
