@@ -14,7 +14,7 @@ public record ProductRequest(
         )
         String name,
 
-        @Min(value = 0, message = "상품 가격은 0원 이상이어야 합니다.")
+        @Min(value = 1, message = "상품 가격은 1원 이상이어야 합니다.")
         int price,
 
         @NotBlank(message = "이미지 URL은 필수입니다.")
