@@ -6,5 +6,6 @@ create table products
     name        varchar(255) not null,
     price       bigint not null,
     imageUrl    varchar(1024) not null,
-    approved    boolean default true not null
+    approved    boolean default true not null,
+    description varchar(1024)
 );

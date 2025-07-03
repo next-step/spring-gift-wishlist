@@ -32,7 +32,8 @@ public class ProductServiceImpl implements ProductService{
                         x.getName(),
                         x.getPrice(),
                         x.getImageUrl(),
-                        x.getApproved()
+                        x.getApproved(),
+                        x.getDescription()
                         ))
                 .toList();
 
@@ -48,7 +49,8 @@ public class ProductServiceImpl implements ProductService{
                         product.getName(),
                         product.getPrice(),
                         product.getImageUrl(),
-                        product.getApproved()))
+                        product.getApproved(),
+                        product.getDescription()))
                 .orElse(null);
     }
 
@@ -59,27 +61,39 @@ public class ProductServiceImpl implements ProductService{
         Long price = dto.getPrice();
         String imageUrl = dto.getImageUrl();
         boolean approved = !name.contains("카카오");
+        String description = "";
 
-        Product product = productRepository.saveProduct(name, price, imageUrl, approved);
+        if (!approved)
+            description = "카카오 문구가 담긴 상품은 담당 MD와 협의 후 사용가능합니다.";
+
+        Product product = productRepository.saveProduct(name, price, imageUrl, approved, description);
 
         return new ProductResponseDto(
                 product.getId(),
                 product.getName(),
                 product.getPrice(),
                 product.getImageUrl(),
-                product.getApproved());
+                product.getApproved(),
+                product.getDescription());
     }
 
     @Transactional
     @Override
     public ProductResponseDto updateProduct(Long id, ProductRequestDto dto) {
 
+        boolean approved = !dto.getName().contains("카카오");
+        String description = "";
+
+        if (!approved)
+            description = "카카오 문구가 담긴 상품은 담당 MD와 협의 후 사용가능합니다.";
+
         int updatedNum = productRepository.updateProduct(
                 id,
                 dto.getName(),
                 dto.getPrice(),
                 dto.getImageUrl(),
-                dto.getApproved()
+                approved,
+                description
         );
 
         if (updatedNum == 0) {

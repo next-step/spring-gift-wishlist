@@ -11,7 +11,7 @@ public interface ProductRepository {
     List<Product> findAllProducts();
     Optional<Product> findProductById(Long id);
     Product findProductByIdElseThrow(Long id);
-    Product saveProduct(String name, Long price, String imageUrl, Boolean approved);
-    int updateProduct(Long id, String name, Long price, String imageUrl, Boolean approved);
+    Product saveProduct(String name, Long price, String imageUrl, Boolean approved, String description);
+    int updateProduct(Long id, String name, Long price, String imageUrl, Boolean approved, String description);
     int deleteProduct(Long id);
 }
