@@ -18,9 +18,7 @@ public record ProductRequestDto(
     int price,
 
     @NotBlank(message = "이미지에 대한 url은 입력되어야 합니다.")
-    String imageUrl,
-
-    Boolean kakaoApproval
+    String imageUrl
 ) {
 
 }

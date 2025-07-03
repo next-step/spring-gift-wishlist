@@ -3,7 +3,6 @@ package gift.service;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.entity.Product;
-//import gift.exception.InvalidPriceException;
 import gift.exception.BusinessException;
 import gift.exception.ErrorCode;
 import gift.exception.ProductNotFoundException;
@@ -34,8 +33,8 @@ public class ProductService {
   }
 
   public ProductResponseDto saveProduct(ProductRequestDto dto) {
-    validateKaKaoApproval(dto.name(), dto.kakaoApproval());
     Product product = productRepository.saveProduct(dto.name(), dto.price(), dto.imageUrl());
+    validateKaKaoApproval(product.getId());
     return product.toDto();
   }
 
@@ -65,8 +64,9 @@ public class ProductService {
             .collect(Collectors.toList());
   }
 
-  private void validateKaKaoApproval(String name, boolean kakaoApproval) {
-    if (name.contains("카카오") && !kakaoApproval) {
+  private void validateKaKaoApproval(Long productId) {
+    Product product = findProductByIdOrFail(productId);
+    if (product.getName().contains("카카오") && !product.isKakaoApproval()) {
       throw new BusinessException(ErrorCode.KAKAO_APPROVAL_REQUIRED);
     }
   }

@@ -17,7 +17,7 @@ public class ProductRepository {
 
 
   public Product findById(Long id) {
-    String sql = "select id, name, price, imageUrl from products where id = ?";
+    String sql = "select id, name, price, imageUrl, kakaoApproval from products where id = ?";
     return jdbcClient.sql(sql)
         .param(id)
         .query((result, rowNum) -> {
@@ -25,7 +25,8 @@ public class ProductRepository {
               result.getLong("id"),
               result.getString("name"),
               result.getInt("price"),
-              result.getString("imageUrl")
+              result.getString("imageUrl"),
+              result.getBoolean("kakaoApproval")
           );
           return product;
         })
@@ -98,13 +99,14 @@ public class ProductRepository {
   }
 
   public List<Product> findAllProducts() {
-    return jdbcClient.sql("select id, name, price, imageUrl from products")
+    return jdbcClient.sql("select id, name, price, imageUrl,kakaoApproval from products")
         .query((resultSet, rowNum) -> {
           Product product = new Product(
               resultSet.getLong("id"),
               resultSet.getString("name"),
               resultSet.getInt("price"),
-              resultSet.getString("imageUrl")
+              resultSet.getString("imageUrl"),
+              resultSet.getBoolean("kakaoApproval")
           );
           return product;
         })
