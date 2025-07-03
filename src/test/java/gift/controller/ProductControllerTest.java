@@ -3,8 +3,7 @@ package gift.controller;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import gift.dto.request.ProductCreateRequestDto;
-import gift.dto.request.ProductUpdateRequestDto;
+import gift.builder.ProductBuilder;
 import gift.dto.response.ProductCreateResponseDto;
 import gift.dto.response.ProductGetResponseDto;
 import gift.entity.Product;
@@ -65,9 +64,9 @@ class ProductControllerTest {
         jdbcTemplate.execute("ALTER TABLE products ALTER COLUMN productId RESTART WITH 1");
 
         String sql = "INSERT INTO products(name, price, imageUrl) VALUES (?, ?, ?)";
-        jdbcTemplate.update(sql, "one", "4500", "https://img.com/BeforeEach.jpg");
-        jdbcTemplate.update(sql, "two", "4500", "https://img.com/BeforeEach.jpg");
-        jdbcTemplate.update(sql, "three", "4500", "https://img.com/BeforeEach.jpg");
+        jdbcTemplate.update(sql, "one", "1", "https://1.img");
+        jdbcTemplate.update(sql, "two", "2", "https://2.img");
+        jdbcTemplate.update(sql, "three", "3", "https://3.img");
 
         // approved_product_names TABLE
         jdbcTemplate.execute("DELETE FROM approved_products");
@@ -82,11 +81,7 @@ class ProductControllerTest {
     @Test
     void 단건상품등록_CREATED_테스트() {
         // given
-        var request = new ProductCreateRequestDto(
-            "PostCreated",
-            4500.0,
-            "https://PostCreated.jpg"
-        );
+        var request = ProductBuilder.aProduct().build();
 
         // when
         var response = exchange(HttpMethod.POST, baseUrl(), request,
@@ -96,11 +91,20 @@ class ProductControllerTest {
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
+        Product result = jdbcTemplate.queryForObject(
+            "SELECT name, price, imageUrl FROM products WHERE productId = 4",
+            (rs, rowNum) -> new Product(
+                rs.getString("name"),
+                rs.getDouble("price"),
+                rs.getString("imageUrl")
+            )
+        );
+
         var actual = response.getBody();
 
-        assertThat(actual.name()).isEqualTo(request.name());
-        assertThat(actual.price()).isEqualTo(request.price());
-        assertThat(actual.imageUrl()).isEqualTo(request.imageUrl());
+        assertThat(actual.name()).isEqualTo(request.getName());
+        assertThat(actual.price()).isEqualTo(request.getPrice());
+        assertThat(actual.imageUrl()).isEqualTo(request.getImageUrl());
     }
 
     @ParameterizedTest
@@ -115,11 +119,9 @@ class ProductControllerTest {
     })
     void 단건상품등록_CREATED_상품이름_유효성_검사(String validName) {
         // given
-        var request = new ProductCreateRequestDto(
-            validName,
-            4500.0,
-            "https://ValidName.jpg"
-        );
+        var request = ProductBuilder.aProduct()
+            .withName(validName)
+            .build();
 
         // when
         var response = exchange(HttpMethod.POST, baseUrl(), request,
@@ -129,11 +131,20 @@ class ProductControllerTest {
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
+        Product result = jdbcTemplate.queryForObject(
+            "SELECT name, price, imageUrl FROM products WHERE productId = 4",
+            (rs, rowNum) -> new Product(
+                rs.getString("name"),
+                rs.getDouble("price"),
+                rs.getString("imageUrl")
+            )
+        );
+
         var actual = response.getBody();
 
-        assertThat(actual.name()).isEqualTo(request.name());
-        assertThat(actual.price()).isEqualTo(request.price());
-        assertThat(actual.imageUrl()).isEqualTo(request.imageUrl());
+        assertThat(actual.name()).isEqualTo(request.getName());
+        assertThat(actual.price()).isEqualTo(request.getPrice());
+        assertThat(actual.imageUrl()).isEqualTo(request.getImageUrl());
     }
 
     @ParameterizedTest
@@ -146,11 +157,9 @@ class ProductControllerTest {
     })
     void 단건상품등록_BAD_REQUEST_상품이름_유효성_검사(String invalidName) {
         //given
-        var request = new ProductCreateRequestDto(
-            invalidName,
-            4500.0,
-            "https://invalidName.jpg"
-        );
+        var request = ProductBuilder.aProduct()
+            .withName(invalidName)
+            .build();
 
         // when & then
         assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
@@ -205,11 +214,7 @@ class ProductControllerTest {
     @Test
     void 단건상품수정_NO_CONTENT_테스트() {
         // given
-        var request = new ProductUpdateRequestDto(
-            "수정된 상품",
-            10000.0,
-            "https://PutNoContent.jpg"
-        );
+        var request = ProductBuilder.aProduct().build();
 
         // when
         var response = exchange(HttpMethod.PUT, baseUrl() + "/1", request,
@@ -228,9 +233,9 @@ class ProductControllerTest {
             )
         );
 
-        assertThat(result.getName()).isEqualTo(request.name());
-        assertThat(result.getPrice()).isEqualTo(request.price());
-        assertThat(result.getImageUrl()).isEqualTo(request.imageUrl());
+        assertThat(result.getName()).isEqualTo(request.getName());
+        assertThat(result.getPrice()).isEqualTo(request.getPrice());
+        assertThat(result.getImageUrl()).isEqualTo(request.getImageUrl());
 
     }
 
@@ -246,11 +251,9 @@ class ProductControllerTest {
     })
     void 단건상품수정_NO_CONTENT_상품이름_유효성_검사(String validName) {
         // given
-        var request = new ProductUpdateRequestDto(
-            validName,
-            10000.0,
-            "https://validName.jpg"
-        );
+        var request = ProductBuilder.aProduct()
+            .withName(validName)
+            .build();
 
         // when
         var response = exchange(HttpMethod.PUT, baseUrl() + "/1", request,
@@ -269,9 +272,9 @@ class ProductControllerTest {
             )
         );
 
-        assertThat(result.getName()).isEqualTo(request.name());
-        assertThat(result.getPrice()).isEqualTo(request.price());
-        assertThat(result.getImageUrl()).isEqualTo(request.imageUrl());
+        assertThat(result.getName()).isEqualTo(request.getName());
+        assertThat(result.getPrice()).isEqualTo(request.getPrice());
+        assertThat(result.getImageUrl()).isEqualTo(request.getImageUrl());
     }
 
     @ParameterizedTest
@@ -284,11 +287,9 @@ class ProductControllerTest {
     })
     void 단건상품수정_BAD_REQUEST_상품이름_유효성_검사(String invalidName) {
         //given
-        var request = new ProductUpdateRequestDto(
-            invalidName,
-            10000.0,
-            "https://invalidName.jpg"
-        );
+        var request = ProductBuilder.aProduct()
+            .withName(invalidName)
+            .build();
 
         // when & then
         assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
