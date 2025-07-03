@@ -100,4 +100,24 @@ public class ProductControllerTest {
                 );
     }
 
+    @Test
+    void 상품생성시_가격에_음수가들어가면_400이_반환된다(){
+        String url = "http://localhost:" + port + "/api/products";
+        ProductRequestDto productRequestDto = new ProductRequestDto();
+        productRequestDto.setName("상품명은 상품명?");
+        productRequestDto.setPrice(-1000L);
+        productRequestDto.setImageUrl("image.jpg");
+
+        assertThatExceptionOfType(HttpClientErrorException.class)
+                .isThrownBy(
+                        () -> client.post()
+                                .uri(url)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .body(productRequestDto)
+                                .retrieve()
+                                .toEntity(ProductResponseDto.class)
+
+                );
+    }
+
 }
