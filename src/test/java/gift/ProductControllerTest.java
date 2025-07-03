@@ -1,6 +1,7 @@
 package gift;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -10,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.dto.api.ProductCreateRequestDto;
 import gift.entity.ApprovedProduct;
+import gift.entity.Product;
 import gift.repository.ApprovedProductRepository;
 import gift.repository.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -148,6 +150,23 @@ public class ProductControllerTest {
                 .content(objectMapper.writeValueAsString(dto)))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.imageUrl").value("유효한 이미지 URL이 아닙니다."));
+    }
+
+    @Test
+    @DisplayName("[API] 상품 조회 성공 - 200 OK")
+    void getProduct_success() throws Exception {
+        // 준비: 상품 저장
+        var saved = productRepository.save(new Product("초콜릿", 1000, "https://image.com/item.jpg"));
+        Long id = saved.getId();
+
+        // 수행 & 검증
+        mockMvc.perform(get("/api/products/{id}", id)
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").value(id))
+            .andExpect(jsonPath("$.name").value("초콜릿"))
+            .andExpect(jsonPath("$.price").value(1000))
+            .andExpect(jsonPath("$.imageUrl").value("https://image.com/item.jpg"));
     }
 
 }
