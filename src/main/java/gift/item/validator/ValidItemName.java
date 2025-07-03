@@ -2,9 +2,6 @@ package gift.item.validator;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-
 import java.lang.annotation.*;
 
 @Documented //javadoc에 문서화됨 (API 문서에 표시됨)

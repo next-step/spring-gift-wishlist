@@ -7,10 +7,8 @@ import gift.item.dto.ItemDto;
 import gift.item.dto.UpdateItemDto;
 import gift.item.entity.Item;
 import gift.item.repository.ItemRepository;
-import jakarta.validation.ValidationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 
 @Service
