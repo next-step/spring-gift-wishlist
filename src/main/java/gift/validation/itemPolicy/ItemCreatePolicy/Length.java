@@ -1,13 +1,17 @@
-package gift.validation.itemPolicy;
+package gift.validation.itemPolicy.ItemCreatePolicy;
 
 import gift.dto.ItemCreateDto;
+import gift.validation.itemPolicy.ItemPolicy;
 import gift.validation.itemPolicy.ItemViolationHandler.ViolationHandler;
 import jakarta.validation.ConstraintValidatorContext;
+import org.springframework.stereotype.Component;
 
-public class LengthPolicy implements ItemPolicy {
+
+@Component
+public class Length implements ItemPolicy<ItemCreateDto> {
     private final ViolationHandler violationHandler;
 
-    public LengthPolicy(ViolationHandler violationHandler) {
+    public Length(ViolationHandler violationHandler) {
         this.violationHandler = violationHandler;
     }
 

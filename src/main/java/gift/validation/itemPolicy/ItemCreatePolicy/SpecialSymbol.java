@@ -1,16 +1,20 @@
-package gift.validation.itemPolicy;
+package gift.validation.itemPolicy.ItemCreatePolicy;
 
 import gift.dto.ItemCreateDto;
+import gift.validation.itemPolicy.ItemPolicy;
 import gift.validation.itemPolicy.ItemViolationHandler.ViolationHandler;
 import jakarta.validation.ConstraintValidatorContext;
+import org.springframework.stereotype.Component;
 
 import java.util.regex.Pattern;
 
-public class SpecialSymbolPolicy implements ItemPolicy{
+
+@Component
+public class SpecialSymbol implements ItemPolicy<ItemCreateDto> {
 
     private final ViolationHandler violationHandler;
 
-    public SpecialSymbolPolicy(ViolationHandler violationHandler) {
+    public SpecialSymbol(ViolationHandler violationHandler) {
         this.violationHandler = violationHandler;
     }
 
