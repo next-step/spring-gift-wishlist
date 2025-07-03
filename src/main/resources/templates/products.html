@@ -304,6 +304,26 @@
             clearErrors($(this).find('form').attr('id'));
         });
 
+        function handleAjaxError(formId, jqXHR) {
+            if (jqXHR.status === 400 && jqXHR.responseJSON) {
+                // Case 1: DTO 유효성 검사 에러 (errors 배열이 존재)
+                if (jqXHR.responseJSON.errors) {
+                    displayErrors(formId, jqXHR.responseJSON.errors);
+                }
+                // Case 2: 비즈니스 규칙 위반 에러 (message 만 존재)
+                else if (jqXHR.responseJSON.message) {
+                    alert(jqXHR.responseJSON.message);
+                }
+                // Case 3: 그 외의 400 에러
+                else {
+                    alert('입력 값에 알 수 없는 오류가 있습니다.');
+                }
+            } else {
+                // Case 4: 500 에러 등 서버 문제
+                alert('요청 처리에 실패했습니다. 서버에 문제가 발생했을 수 있습니다.');
+            }
+        }
+
         // 상품 목록 로드 함수
         function loadProducts() {
             $.ajax({
@@ -390,13 +410,7 @@
                     loadProducts();
                 },
                 error: function(jqXHR) {
-                    // [핵심] 400 Bad Request 응답 처리
-                    if (jqXHR.status === 400 && jqXHR.responseJSON) {
-                        // Spring Boot 기본 에러 응답의 errors 필드를 사용
-                        displayErrors(formId, jqXHR.responseJSON.errors);
-                    } else {
-                        alert('상품 추가에 실패했습니다. 서버에 문제가 발생했습니다.');
-                    }
+                    handleAjaxError(formId, jqXHR);
                 }
             });
         });
@@ -447,11 +461,7 @@
                     loadProducts();
                 },
                 error: function(jqXHR) {
-                    if (jqXHR.status === 400 && jqXHR.responseJSON) {
-                        displayErrors(formId, jqXHR.responseJSON.errors);
-                    } else {
-                        alert('상품 정보 수정에 실패했습니다. 서버에 문제가 발생했습니다.');
-                    }
+                    handleAjaxError(formId, jqXHR);
                 }
             });
         });
