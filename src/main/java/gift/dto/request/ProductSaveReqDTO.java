@@ -18,7 +18,7 @@ public record ProductSaveReqDTO(
     @PositiveOrZero(
         message = "올바른 상품 가격을 입력해주세요."
     )
-    Integer price,
+    Long price,
 
     String imageURL
 ) {
