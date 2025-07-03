@@ -43,12 +43,9 @@ public class AdminController {
     ) {
         if (result.hasErrors()) {
             model.addAttribute("action", "/admin/products/new");
-            return "admin/product-form";
-        }
-
-        if (productRequest.containsKakao()) {
-            model.addAttribute("action", "/admin/products/new");
-            model.addAttribute("error", "상품명에 '카카오'가 포함되었습니다. 담장자와 협의가 필요합니다.");
+            if (!result.getAllErrors().isEmpty()) {
+                model.addAttribute("error", result.getAllErrors().getFirst().getDefaultMessage());
+            }
             return "admin/product-form";
         }
 
@@ -110,12 +107,9 @@ public class AdminController {
 
         if (result.hasErrors()) {
             model.addAttribute("action", "/admin/products/" + id + "/edit");
-            return "admin/product-form";
-        }
-
-        if (productRequest.containsKakao()) {
-            model.addAttribute("action", "/admin/products/" + id + "/edit");
-            model.addAttribute("error", "상품명에 '카카오'가 포함되었습니다. 담장자와 협의가 필요합니다.");
+            if (!result.getAllErrors().isEmpty()) {
+                model.addAttribute("error", result.getAllErrors().getFirst().getDefaultMessage());
+            }
             return "admin/product-form";
         }
 
