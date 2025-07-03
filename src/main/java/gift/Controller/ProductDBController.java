@@ -28,8 +28,14 @@ public class ProductDBController {
     }
 
     @GetMapping("/products/{id}")
-    public Product selectProduct(@PathVariable Long id) {
-        return productDao.selectProduct(id);
+    public ResponseEntity<Object> selectProduct(@PathVariable Long id) {
+        try{
+            return ResponseEntity.ok(productDao.selectProduct(id));
+        } catch (Exception e){
+            System.err.println("test");
+            return ResponseEntity.notFound().build();
+        }
+
     }
 
     @PutMapping("/products/{id}")

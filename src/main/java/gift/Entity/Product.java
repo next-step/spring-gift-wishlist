@@ -1,8 +1,5 @@
 package gift.Entity;
 
-// 검색으로 찾아내어 간편화된 코드
-//public record Product(Long id, String name, int price, String imageUrl){}
-
 import jakarta.validation.constraints.*;
 
 public class Product {

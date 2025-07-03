@@ -29,7 +29,7 @@ public class ProductDao {
     }
 
     public Product selectProduct(Long id) {
-        var sql = "select id, name, price, imageUrl from product where id = :id";
+        var sql = "select id, name, price, imageUrl from products where id = :id";
         return client.sql(sql)
                 .param("id",id)
                 .query(getProductRowMapper())
