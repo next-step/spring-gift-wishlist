@@ -56,6 +56,7 @@ public class ProductControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getName()).isEqualTo("초코송이");
+        assertThat(response.getBody().getPrice()).isEqualTo(1000);
     }
 
     @Test
