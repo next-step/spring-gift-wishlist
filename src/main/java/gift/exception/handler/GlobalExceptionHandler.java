@@ -14,27 +14,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-//    @ExceptionHandler(value = CheckMdOkException.class)
-//    public ResponseEntity<String> handleCheckMdOkException(CheckMdOkException ex) {
-//        return new ResponseEntity<>("MD와의 협의 후 사용 가능한 이름입니다.", HttpStatus.BAD_REQUEST);
-//    }
-//
-//    @ExceptionHandler(value = FillAllInfoException.class)
-//    public ResponseEntity<String> handleFillAllInfoException(FillAllInfoException ex) {
-//        return new ResponseEntity<>("모든 정보가 있어야 수정이 가능합니다.", HttpStatus.BAD_REQUEST);
-//    }
-//
-//    @ExceptionHandler(value = FillSomeInfoException.class)
-//    public ResponseEntity<String> handleFillSomeInfoException(FillSomeInfoException ex) {
-//        return new ResponseEntity<>("한 가지 이상의 정보는 있어야 수정이 가능합니다.", HttpStatus.BAD_REQUEST);
-//    }
-    
+    //Custom 예외 처리
     @ExceptionHandler(HttpException.class)
     public ResponseEntity<String> handleCustomException(HttpException ex) {
         return new ResponseEntity<>(ex.getMessage(), ex.getStatus());
     }
     
-    //Validation 예외처리
+    //Validation 예외 처리
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<String> handleValidationException(MethodArgumentNotValidException ex) {
         String errorMessage = ex.getBindingResult().getFieldErrors().stream()
