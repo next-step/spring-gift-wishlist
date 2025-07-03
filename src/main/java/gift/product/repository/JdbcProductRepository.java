@@ -48,6 +48,12 @@ public class JdbcProductRepository implements ProductRepository{
   }
 
   @Override
+  public List<Product> findAll() {
+    String sql = "SELECT * FROM product";
+    return jdbcTemplate.query(sql, productRowMapper());
+  }
+
+  @Override
   public List<Product> findAllByPage(int offset, int pageSize, SortInfo sortInfo) {
     String sortDirection = sortInfo.isAscending() ? "ASC" : "DESC";
     String sql = String.format(

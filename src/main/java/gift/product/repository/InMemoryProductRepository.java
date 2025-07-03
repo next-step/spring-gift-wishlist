@@ -34,6 +34,11 @@ public class InMemoryProductRepository implements ProductRepository {
   }
 
   @Override
+  public List<Product> findAll() {
+    return productMap.values().stream().toList();
+  }
+
+  @Override
   public List<Product> findAllByPage(int offset, int pageSize, SortInfo sortInfo) {
     Comparator<Product> comparator = ProductSortStrategyFactory.getComparator(sortInfo);
 
