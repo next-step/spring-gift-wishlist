@@ -70,7 +70,14 @@ public class ProductAdminController {
             return "admin/product/create-product-form";
         }
 
-        productService.create(request.name(), request.price(), request.imageUrl());
+        try {
+            productService.create(request.name(), request.price(), request.imageUrl());
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("productRequest", request);
+            model.addAttribute("errorMessage", e.getMessage());
+            return "admin/product/create-product-form";
+        }
+
         return "redirect:/admin/products";
     }
 
@@ -107,7 +114,14 @@ public class ProductAdminController {
             return "admin/product/edit-product-form";
         }
 
-        productService.update(id, request.name(), request.price(), request.imageUrl());
+        try {
+            productService.update(id, request.name(), request.price(), request.imageUrl());
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("productRequest", request);
+            model.addAttribute("errorMessage", e.getMessage());
+            return "admin/product/edit-product-form";
+        }
+
         return "redirect:/admin/products";
     }
 

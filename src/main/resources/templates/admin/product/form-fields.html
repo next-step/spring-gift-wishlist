@@ -19,5 +19,10 @@
     <input type="text" th:field="*{imageUrl}" placeholder="예: https://example.com/img.jpg" required/>
     <div th:if="${errors?.fieldErrorCount > 0}" th:errors="*{imageUrl}" style="color: red"></div>
 </div>
+
+<div th:if="${errorMessage}" style="color:red;">
+    <p th:text="${errorMessage}"></p>
+</div>
+
 </body>
 </html>
