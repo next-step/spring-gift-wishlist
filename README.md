@@ -14,3 +14,6 @@
 -[x] @RestControllerAdvice, @ExceptionHandler 조합한 GlobalExceptionHandler 개발
 -[x] 테스트 개발(검증 로직 정상 동작 유무 확인)
 -[x] 상품 추가, 수정 화면에서 카카오 관련 md 여부 확인 체크 박스 추가 
+
+### 1단계 피드백 반영 사항
+-[x] 사용자 API에서 MD 승인 여부 조작 방지, 관지라 API에 대해서만 접근 가능토록 변경
