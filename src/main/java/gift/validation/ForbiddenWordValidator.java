@@ -14,7 +14,7 @@ public class ForbiddenWordValidator implements ConstraintValidator<ForbiddenWord
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (value == null) return true; // @NotBlank와 같이 사용해야 함
+        if (value == null) { return true; }
         return !value.contains(forbidden);
     }
 }

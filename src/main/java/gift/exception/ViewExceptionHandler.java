@@ -1,13 +1,17 @@
 package gift.exception;
 
-import org.springframework.web.bind.annotation.ControllerAdvice;
+import gift.controller.ProductViewController;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@ControllerAdvice
+@ControllerAdvice(assignableTypes = ProductViewController.class)
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class ViewExceptionHandler {
 
     @ExceptionHandler(ProductNotExistException.class)
