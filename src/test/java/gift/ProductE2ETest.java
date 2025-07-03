@@ -46,7 +46,15 @@ class ProductE2ETest {
                 .retrieve()
                 .body(ProductResponseDto[].class);
 
-        assertThat(response).isNotEmpty();
+        // 상품 개수 확인
+        assertThat(response).hasSize(3);
+
+        // 상품 존재 확인
+        Assertions.assertNotNull(response);
+        ProductResponseDto product = response[response.length - 1];
+        assertThat(product.name()).isEqualTo("녹차");
+        assertThat(product.price()).isEqualTo(3500);
+        assertThat(product.imageUrl()).isEqualTo("green_tea.jpg");
     }
 
     @Test
