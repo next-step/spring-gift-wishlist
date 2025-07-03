@@ -98,7 +98,7 @@ class ProductServiceTest {
     }
 
     private Product addProductCase() {
-        UUID uuid = productService.addProduct(new ProductCreateRequest("스윙칩", 3000, "data:image/~base64,"));
+        UUID uuid = productService.save(new ProductCreateRequest("스윙칩", 3000, "data:image/~base64,"));
         return new Product(uuid, "스윙칩", 3000, "data:image/~base64,");
     }
 }

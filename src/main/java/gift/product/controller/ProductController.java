@@ -26,7 +26,7 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<Void> addProduct(@Valid @RequestBody ProductCreateRequest dto) {
 
-        UUID savedId = productService.addProduct(dto);
+        UUID savedId = productService.save(dto);
 
         return ResponseEntity.status(HttpStatus.CREATED).location(
                 LocationGenerator.generate(savedId)
