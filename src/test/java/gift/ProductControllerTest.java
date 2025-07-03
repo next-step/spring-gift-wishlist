@@ -169,4 +169,13 @@ public class ProductControllerTest {
             .andExpect(jsonPath("$.imageUrl").value("https://image.com/item.jpg"));
     }
 
+    @Test
+    @DisplayName("[API] 상품 조회 실패 - 없는 ID(404)")
+    void getProduct_notFound() throws Exception {
+        mockMvc.perform(get("/api/products/{id}", 9999L)
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.error").value("상품을 찾을 수 없습니다."));
+    }
+
 }
