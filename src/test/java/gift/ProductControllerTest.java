@@ -153,6 +153,24 @@ public class ProductControllerTest {
     }
 
     @Test
+    @DisplayName("[API] 상품 등록 실패 - JSON 파싱 오류(400) - 가격에 문자를 넣는 경우")
+    void createProduct_fail_invalidJsonFormat() throws Exception {
+        // 1) 잘못된 JSON 바디 직접 작성
+        String badJson = "{"
+            + "\"name\": \"초콜릿\","
+            + "\"price\": \"과자\","               // 숫자여야 할 필드에 문자열
+            + "\"imageUrl\": \"https://image.com/item.jpg\""
+            + "}";
+
+        // 2) perform 요청을 통해 GlobalExceptionHandler.handleHttpMessageNotReadable(...) 동작 검증
+        mockMvc.perform(post("/api/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(badJson))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.error").value("'price' 필드는 Integer 형식이어야 합니다."));
+    }
+
+    @Test
     @DisplayName("[API] 상품 조회 성공 - 200 OK")
     void getProduct_success() throws Exception {
         // 준비: 상품 저장
