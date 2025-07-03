@@ -294,4 +294,26 @@ public class ProductControllerTest {
             .andExpect(jsonPath("$.error").value("'price' 필드는 Integer 형식이어야 합니다."));
     }
 
+    @Test
+    @DisplayName("[API] 상품 수정 실패 - 빈 이름")
+    void updateProduct_fail_validationNameEmpty() throws Exception {
+
+        var saved = productRepository.save(
+            new Product("초콜릿", 1000, "https://image.com/item.jpg")
+        );
+        Long id = saved.getId();
+
+        var dto = new ProductUpdateRequestDto(
+            "",      // 빈 이름
+            1000,
+            "https://image.com/item.jpg"
+        );
+
+        mockMvc.perform(put("/api/products/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.name").value("상품명은 필수입니다."));
+    }
+
 }
