@@ -22,7 +22,6 @@ public class ProductServiceV1 implements ProductService{
 
 
     public UUID save(ProductCreateRequest dto) {
-
         return productRepository.save(new Product(dto.getName(), dto.getPrice(), dto.getImageURL()));
     }
 

@@ -36,6 +36,7 @@ public class ProductRepositoryV1 implements ProductRepository{
 
     public void update(Product product) {
         UUID id = product.getId();
+      
         if (!products.containsKey(id)) throw new NotFoundEntityException("수정 실패 - 존재하지 않는 상품입니다");
 
         products.put(id, product);

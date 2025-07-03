@@ -19,7 +19,7 @@ public class ProductResponse {
     }
 
     protected ProductResponse() {}
-
+  
     public UUID getId() {
         return id;
     }
