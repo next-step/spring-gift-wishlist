@@ -1,18 +1,21 @@
 package gift.controller;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import gift.dto.request.ProductCreateRequestDto;
+import gift.dto.request.ProductUpdateRequestDto;
 import gift.dto.response.ProductGetResponseDto;
 import gift.service.ProductService;
 import java.util.List;
@@ -108,20 +111,44 @@ class ProductViewControllerTest {
     void 단건상품수정_성공() throws Exception {
         when(productService.findProductById(1L)).thenReturn(sampleProduct);
 
-        mockMvc.perform(get("/admin/products/update/1"))
-            .andExpect(status().isOk())
-            .andExpect(view().name("update-product"))
-            .andExpect(model().attributeExists("product"));
+        mockMvc.perform(post("/admin/products/update/1")
+                .param("name", "수정상품")
+                .param("price", "15000")
+                .param("imageUrl", "https://updated.img")
+                .param("mdConfirmed", "true"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/admin/products"));
+
+        verify(productService).updateProductById(eq(1L), any(ProductUpdateRequestDto.class));
+    }
+
+    @Test
+    void 단건상품수정_유효성검사_실패() throws Exception {
+        mockMvc.perform(post("/admin/products/update/1")
+                .param("name", "")
+                .param("price", "-1")      // 음수 유효성 실패
+                .param("imageUrl", "img")
+                .param("mdConfirmed", "true"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/admin/products/update/1"))
+            .andExpect(flash().attributeExists("errors", "productUpdateRequestDto"));
     }
 
     @Test
     void 단건상품수정_실패() throws Exception {
-        when(productService.findProductById(1L)).thenThrow(new RuntimeException());
+        doThrow(new RuntimeException("DB 오류"))
+            .when(productService).updateProductById(eq(1L), any());
 
-        mockMvc.perform(get("/admin/products/update/1"))
+        mockMvc.perform(post("/admin/products/update/1")
+                .param("name", "수정상품")
+                .param("price", "15000")
+                .param("imageUrl", "img")
+                .param("mdConfirmed", "true"))
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/admin/products"));
+            .andExpect(redirectedUrl("/admin/products/update/1"))
+            .andExpect(flash().attributeExists("errorMessage"));
     }
+
 
     @Test
     void 단건상품삭제_성공() throws Exception {

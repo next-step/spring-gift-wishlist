@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/admin/products")
@@ -39,7 +40,6 @@ public class ProductViewController {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("errors", bindingResult.getAllErrors());
-            model.addAttribute("productCreateRequestDto", productCreateRequestDto);
             return "create-product";
         }
 
@@ -67,7 +67,6 @@ public class ProductViewController {
             ProductGetResponseDto product = productService.findProductById(productId);
             model.addAttribute("products", List.of(product));
         } catch (Exception e) {
-            model.addAttribute("products", List.of());
             model.addAttribute("errorMessage", e.getMessage());
         }
 
@@ -91,11 +90,13 @@ public class ProductViewController {
     public String updateProductById(
         @PathVariable Long productId,
         @Valid @ModelAttribute ProductUpdateRequestDto productUpdateRequestDto,
-        BindingResult bindingResult, Model model
+        BindingResult bindingResult, RedirectAttributes redirectAttributes
     ) {
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("errors", bindingResult.getAllErrors());
+            redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
+            redirectAttributes.addFlashAttribute("productUpdateRequestDto",
+                productUpdateRequestDto);
             return "redirect:/admin/products/update/" + productId;
         }
 
@@ -103,6 +104,8 @@ public class ProductViewController {
             productService.updateProductById(productId, productUpdateRequestDto);
             return "redirect:/admin/products";
         } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+
             return "redirect:/admin/products/update/" + productId;
         }
     }
