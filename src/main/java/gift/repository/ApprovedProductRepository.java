@@ -21,7 +21,7 @@ public class ApprovedProductRepository {
                 .param(name)
                 .query(Integer.class)
                 .single();
-        return count != null && count > 0;
+        return count > 0;
     }
 
     // 승인 상품 등록
