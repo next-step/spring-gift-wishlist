@@ -120,4 +120,17 @@ public class ProductControllerTest {
             .andExpect(jsonPath("$.price").value("가격은 0 이상이어야 합니다."));
     }
 
+    @Test
+    @DisplayName("[API] 상품 등록 실패 - 이미지 URL 없음")
+    void createProduct_fail_imageUrlMissing() throws Exception {
+
+        var dto = new ProductCreateRequestDto("초콜릿", 1000, "");
+
+        mockMvc.perform(post("/api/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.imageUrl").value("이미지 URL은 필수입니다."));
+    }
+
 }
