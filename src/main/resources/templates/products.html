@@ -27,6 +27,7 @@
         <th>상품명</th>
         <th>가격</th>
         <th>이미지 URL</th>
+        <th>"카카오" MD 협의 여부</th>
         <th>Action</th>
     </tr>
     </thead>
@@ -39,6 +40,7 @@
         <td th:text="${product.imageUrl}">
             https://st.kakaocdn.net/product/gift/product/20231010111814_9a667f9eccc943648797925498bdd8a3.jpg
         </td>
+        <td th:text="${product.mdConfirmed}">false</td>
         <td>
             <a th:href="@{/admin/products/update/{id}(id=${product.productId})}">수정</a>
             <form th:action="@{/admin/products/delete/{id}(id=${product.productId})}"

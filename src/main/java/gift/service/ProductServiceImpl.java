@@ -22,14 +22,18 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductCreateResponseDto saveProduct(ProductCreateRequestDto productCreateRequestDto) {
 
+        Boolean mdConfirmed =
+            productCreateRequestDto.name().contains("카카오") ? productCreateRequestDto.mdConfirmed()
+                : false;
+
         if (productCreateRequestDto.name().contains("카카오")
-            && !productCreateRequestDto.mdConfirmed()) {
+            && !mdConfirmed) {
             throw new UnapprovedProductException("협의되지 않은 '카카오'가 포함된 상품명은 사용할 수 없습니다.");
         }
 
         Product product = new Product(productCreateRequestDto.name(),
             productCreateRequestDto.price(), productCreateRequestDto.imageUrl(),
-            productCreateRequestDto.mdConfirmed());
+            mdConfirmed);
 
         productRepository.saveProduct(product);
 
@@ -54,14 +58,18 @@ public class ProductServiceImpl implements ProductService {
     public void updateProductById(Long productId, ProductUpdateRequestDto productUpdateRequestDto) {
         findProductById(productId);
 
+        Boolean mdConfirmed =
+            productUpdateRequestDto.name().contains("카카오") ? productUpdateRequestDto.mdConfirmed()
+                : false;
+
         if (productUpdateRequestDto.name().contains("카카오")
-            && !productUpdateRequestDto.mdConfirmed()) {
+            && !mdConfirmed) {
             throw new UnapprovedProductException("협의되지 않은 '카카오'가 포함된 상품명은 사용할 수 없습니다.");
         }
 
         Product product = new Product(productId, productUpdateRequestDto.name(),
             productUpdateRequestDto.price(), productUpdateRequestDto.imageUrl(),
-            productUpdateRequestDto.mdConfirmed());
+            mdConfirmed);
 
         productRepository.updateProductById(product);
     }

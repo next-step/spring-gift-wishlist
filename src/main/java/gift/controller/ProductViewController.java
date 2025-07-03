@@ -3,7 +3,6 @@ package gift.controller;
 import gift.dto.request.ProductCreateRequestDto;
 import gift.dto.request.ProductUpdateRequestDto;
 import gift.dto.response.ProductGetResponseDto;
-import gift.service.ApprovedProductService;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -23,12 +22,8 @@ public class ProductViewController {
 
     private final ProductService productService;
 
-    private final ApprovedProductService approvedProductService;
-
-    public ProductViewController(ProductService productService,
-        ApprovedProductService approvedProductService) {
+    public ProductViewController(ProductService productService) {
         this.productService = productService;
-        this.approvedProductService = approvedProductService;
     }
 
     @GetMapping("/create")
@@ -45,17 +40,6 @@ public class ProductViewController {
             model.addAttribute("errors", bindingResult.getAllErrors());
             model.addAttribute("productCreateRequestDto", productCreateRequestDto);
             return "create-product";
-        }
-
-        if (productCreateRequestDto.name().contains("카카오")) {
-            boolean isApprovedProduct = approvedProductService.isApprovedProductName(
-                productCreateRequestDto.name());
-
-            if (!isApprovedProduct) {
-                model.addAttribute("errorMessage", "협의되지 않은 '카카오'가 포함된 상품명은 사용할 수 없습니다.");
-                model.addAttribute("productCreateRequestDto", productCreateRequestDto);
-                return "create-product";
-            }
         }
 
         try {
@@ -110,16 +94,6 @@ public class ProductViewController {
         if (bindingResult.hasErrors()) {
             model.addAttribute("errors", bindingResult.getAllErrors());
             return "redirect:/admin/products/update/" + productId;
-        }
-
-        if (productUpdateRequestDto.name().contains("카카오")) {
-            boolean isApprovedProduct = approvedProductService.isApprovedProductName(
-                productUpdateRequestDto.name());
-
-            if (!isApprovedProduct) {
-                model.addAttribute("errorMessage", "협의되지 않은 '카카오'가 포함된 상품명은 사용할 수 없습니다.");
-                return "redirect:/admin/products/update/" + productId;
-            }
         }
 
         try {
