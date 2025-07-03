@@ -30,7 +30,7 @@ public class AdminController {
   }
 
   @GetMapping
-  public String ShowAllProduct(Model model) {
+  public String findAllProduct(Model model) {
     List<ProductResponseDto> responseDtoList = service.findAllProduct();
     model.addAttribute("responseDtoList", responseDtoList);
     return "list";
