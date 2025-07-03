@@ -2,8 +2,10 @@ package gift.controller;
 
 import gift.model.Product;
 import gift.repository.ProductDao;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -28,7 +30,12 @@ public class AdminProductController {
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute Product product) {
+    public String add(@Valid @ModelAttribute Product product, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            System.out.println("상품 추가 유효성 검사 실패! 폼 재렌더링.");
+            bindingResult.getAllErrors().forEach(error -> System.out.println("오류: " + error.getDefaultMessage()));
+            return "product/form";
+        }
         productDao.insertProduct(product);
         return "redirect:/admin/products";
     }
@@ -41,7 +48,14 @@ public class AdminProductController {
     }
 
     @PostMapping("/edit")
-    public String edit(@ModelAttribute Product product) {
+    public String edit(@Valid @ModelAttribute Product product, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            System.out.println("상품 추가 유효성 검사 실패! 폼 재렌더링.");
+            bindingResult.getAllErrors().forEach(error -> System.out.println("오류: " + error.getDefaultMessage()));
+            return "product/form";
+        }
+
+        System.out.println("상품 수정 성공: " + product.getName());
         productDao.updateProduct(product.getId(), product, product);
         return "redirect:/admin/products";
     }

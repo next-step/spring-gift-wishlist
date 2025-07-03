@@ -1,8 +1,17 @@
 package gift.model;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+
 public class Product {
     private Long id;
+
+    @NotBlank(message = "상품명은 필수 입력 값입니다.")
+    @Size(min = 2, max = 15, message = "상품명은 2자 이상 15자 이하로 입력해주세요.")
+    @Pattern(regexp = "^((?!카카오).)*$", message = "상품명에 '카카오'를 포함할 수 없습니다.")
     private String name;
+
     private Integer price;
     private String image;
 

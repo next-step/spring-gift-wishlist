@@ -2,6 +2,7 @@ package gift.controller;
 
 import gift.model.Product;
 import gift.repository.ProductDao;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class ProductController {
     }
 
     @PostMapping("/products")
-    public void addProduct(@RequestBody Product product) {
+    public void addProduct(@Valid @RequestBody Product product) {
         productDao.insertProduct(product);
     }
 
@@ -36,7 +37,7 @@ public class ProductController {
     }
 
     @PatchMapping("/products/{id}")
-    public void updateProduct(@PathVariable Long id, @RequestBody Product product) {
+    public void updateProduct(@Valid @PathVariable Long id, @RequestBody Product product) {
         productDao.updateProduct(id, productDao.getProductById(id), product);
     }
 }
