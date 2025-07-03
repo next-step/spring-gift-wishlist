@@ -89,4 +89,9 @@ public class ProductRepository implements ProductRepositoryInterface {
         return products.size();
     }
 
+    @Override
+    public boolean isApprovedKakao(String name) {
+        return false;
+    }
+
 }

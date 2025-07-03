@@ -44,7 +44,7 @@ public class JdbcProductRepository implements ProductRepositoryInterface{
 
         try {
             Product product = jdbcTemplate.queryForObject(sql, this::mapRowToProduct, id);
-            return Optional.ofNullable(product);
+            return Optional.of(product);
         } catch (Exception e) {
             return Optional.empty();
         }

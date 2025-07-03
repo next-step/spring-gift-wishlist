@@ -18,9 +18,9 @@ import java.util.Optional;
 @Service
 public class ProductService implements ProductServiceInterface {
 
-    private final JdbcProductRepository productRepository;
+    private final ProductRepositoryInterface productRepository;
 
-    public ProductService(@Qualifier("jdbcProductRepository") JdbcProductRepository productRepository) {
+    public ProductService(@Qualifier("jdbcProductRepository") ProductRepositoryInterface productRepository) {
         this.productRepository = productRepository;
     }
 
