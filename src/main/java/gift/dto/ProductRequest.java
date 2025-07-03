@@ -1,5 +1,6 @@
 package gift.dto;
 
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -14,8 +15,9 @@ public record ProductRequest(
     String imageUrl
 ) {
 
-    public boolean containsKakao() {
-        return ((name != null) && (name.contains("카카오")));
+    @AssertTrue(message = "상품명에 '카카오'가 포함되었습니다. 담당자와 협의가 필요합니다.")
+    public boolean isKakaoValid() {
+        return ((name == null) || !(name.contains("카카오")));
     }
 
 }
