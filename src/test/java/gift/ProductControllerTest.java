@@ -1,6 +1,5 @@
 package gift;
 
-import gift.dto.PatchProductRequest;
 import gift.dto.CreateProductRequest;
 import gift.dto.UpdateProductRequest;
 import gift.entity.Product;
@@ -19,6 +18,7 @@ import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql(scripts = {"/clear_products.sql", "/data.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
@@ -50,8 +50,10 @@ public class ProductControllerTest {
                 .body(requestDto)
                 .retrieve()
                 .toEntity(Product.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(response.getBody()).isNotNull();
+        assertAll(
+                () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED),
+                () -> assertThat(response.getBody().getName()).isEqualTo("아이스 카페 아메리카노 T")
+        );
     }
 
     @Test
@@ -76,8 +78,10 @@ public class ProductControllerTest {
                 .uri(url)
                 .retrieve()
                 .toEntity(Product.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isNotNull();
+        assertAll(
+                () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK),
+                () -> assertThat(response.getBody().getName()).isEqualTo("아이스 카페 아메리카노 T")
+        );
     }
 
     @Test
@@ -106,8 +110,11 @@ public class ProductControllerTest {
                 .body(patchDto)
                 .retrieve()
                 .toEntity(Product.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isNotNull();
+        assertAll(
+                () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK),
+                () -> assertThat(response.getBody().getName()).isEqualTo("각하오 커피"),
+                () -> assertThat(response.getBody().getImageUrl()).isNotNull()
+        );
     }
 
     @Test
@@ -132,9 +139,11 @@ public class ProductControllerTest {
                 .uri(url)
                 .retrieve()
                 .toEntity(new ParameterizedTypeReference<List<Product>>() {});
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().size()).isNotZero();
+
+        assertAll(
+                () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK),
+                () -> assertThat(response.getBody().size()).isNotZero()
+        );
     }
 
     @Test
