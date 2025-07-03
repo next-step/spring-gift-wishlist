@@ -44,6 +44,31 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Map<String, String>> handleHttpMessageNotReadable(HttpMessageNotReadableException e) {
+        Map<String, String> errors = new HashMap<>();
+
+        String defaultMsg = "요청 JSON 형식이 잘못되었습니다.";
+        Throwable cause = e.getCause();
+
+        if (cause instanceof com.fasterxml.jackson.databind.exc.MismatchedInputException mie) {
+            // Jackson이 파싱에 실패한 필드 이름 추출
+            String field = mie.getPath().stream()
+                .map(Reference::getFieldName)
+                .filter(Objects::nonNull)
+                .collect(Collectors.joining("."));
+            // 기대 타입 이름
+            String targetType = (mie.getTargetType() != null)
+                ? mie.getTargetType().getSimpleName()
+                : "유효한 타입";
+            errors.put("error", String.format("'%s' 필드는 %s 형식이어야 합니다.", field, targetType));
+        } else {
+            errors.put("error", defaultMsg);
+        }
+
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+
     // 유효성 검사 실패 시 예외를 처리할 핸들러
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationErrors(MethodArgumentNotValidException e) {
