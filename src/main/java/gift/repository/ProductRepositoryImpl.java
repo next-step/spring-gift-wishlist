@@ -42,11 +42,10 @@ public class ProductRepositoryImpl implements ProductRepository {
         String sql = "SELECT productId, name, price, imageUrl, mdConfirmed FROM products WHERE productId = ?";
 
         try {
-            Product product = jdbcTemplate.queryForObject(sql,
+            return jdbcTemplate.queryForObject(sql,
                 (rs, rowNum) -> new Product(rs.getLong("productId"), rs.getString("name"),
                     rs.getDouble("price"), rs.getString("imageUrl"), rs.getBoolean("mdConfirmed")),
                 productId);
-            return product;
         } catch (EmptyResultDataAccessException e) {
             throw new ProductNotFoundException("상품이 존재하지 않습니다. productId = " + productId);
         }
