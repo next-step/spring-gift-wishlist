@@ -19,16 +19,15 @@ public class ProductDao implements ProductRepository {
         this.client = client;
     }
 
-    private static RowMapper<Product> getProductRowMapper() {
-        return (rs, rowNum) -> {
+    private final RowMapper<Product> getProductRowMapper = (rs, rowNum) -> {
             Long id = rs.getLong("id");
             String name = rs.getString("name");
             Long price = rs.getLong("price");
             String imageUrl = rs.getString("imageUrl");
             Boolean acceptedByMD = rs.getBoolean("acceptedByMD");
+
             return new Product(id, name, price, imageUrl, acceptedByMD);
         };
-    }
 
     @Override
     public Product createProduct(Product newProduct) {
@@ -51,7 +50,7 @@ public class ProductDao implements ProductRepository {
     public List<Product> findAllProducts() {
         String sql = "select id, name, price, imageUrl, acceptedByMD from products where acceptedByMD = TRUE;";
         return client.sql(sql)
-                .query(getProductRowMapper())
+                .query(getProductRowMapper)
                 .list();
     }
 
@@ -60,7 +59,7 @@ public class ProductDao implements ProductRepository {
         String sql = "select id, name, price, imageUrl, acceptedByMD from products where id = :id;";
         return client.sql(sql)
                 .param("id", id)
-                .query(getProductRowMapper())
+                .query(getProductRowMapper)
                 .optional();
     }
 
