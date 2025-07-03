@@ -190,7 +190,7 @@ public class ProductControllerTest {
 
     @Test
     void 최대_15자_길이_제한_초과_이름_사용(){
-        System.out.println("Not Approved Special Character in Name test");
+        System.out.println("Exceed Name length limit test");
         ProductRequestDto requestDto = new ProductRequestDto();
         requestDto.setName("포스틱포스틱포스틱포스틱포스틱포스틱");
         requestDto.setPrice(5000);
