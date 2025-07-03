@@ -23,8 +23,8 @@ public class ProductExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     private ResponseEntity<CustomErrorResponse> handleMethodArgumentNotValidException(
             MethodArgumentNotValidException e) {
-        CustomErrorResponse customErrorResponse = new CustomErrorResponse(
-                HttpStatus.BAD_REQUEST, e.getBindingResult().getFieldError().getDefaultMessage());
+        CustomErrorResponse customErrorResponse = new CustomErrorResponse(HttpStatus.BAD_REQUEST,
+                e.getBindingResult().getFieldError().getDefaultMessage());
         return new ResponseEntity<>(customErrorResponse, HttpStatus.BAD_REQUEST);
     }
 }
