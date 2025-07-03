@@ -63,7 +63,11 @@ public class ProductJdbcRepositoryImpl implements ProductRepository {
       return ps;
     }, keyHolder);
 
-    Long generatedId = keyHolder.getKey().longValue();
+    Number key = keyHolder.getKey();
+    if (key == null) {
+      throw new IllegalStateException("생성된 ID가 존재하지 않습니다.");
+    }
+    Long generatedId = key.longValue();
     product.setId(generatedId);
     return product;
   }
