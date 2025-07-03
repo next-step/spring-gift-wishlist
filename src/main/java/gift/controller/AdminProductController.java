@@ -27,7 +27,7 @@ public class AdminProductController {
     // 목록
     @GetMapping
     public String showProductList(Model model) {
-        List<ProductResponseDto> products = productService.findAllProducts();
+        List<ProductResponseDto> products = productService.findAll();
         model.addAttribute("products", products);
         return "product/list";
     }
@@ -48,14 +48,14 @@ public class AdminProductController {
             model.addAttribute("isEdit", false);
             return "product/form";
         }
-        productService.saveProduct(requestDto);
+        productService.save(requestDto);
         return "redirect:/admin/products";
     }
 
     // 상품 수정
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
-        ProductResponseDto product = productService.findProductById(id);
+        ProductResponseDto product = productService.findById(id);
         model.addAttribute("product",
                 new ProductRequestDto(product.name(), product.price(), product.imageUrl()));
         model.addAttribute("productId", product.id());
@@ -73,7 +73,7 @@ public class AdminProductController {
             model.addAttribute("productId", id);
             return "product/form";
         }
-        productService.updateProduct(id, requestDto.name(), requestDto.price(),
+        productService.update(id, requestDto.name(), requestDto.price(),
                 requestDto.imageUrl());
         return "redirect:/admin/products";
     }
@@ -81,7 +81,7 @@ public class AdminProductController {
     // 삭제 처리
     @PostMapping("/delete/{id}")
     public String deleteProduct(@PathVariable Long id) {
-        productService.deleteProduct(id);
+        productService.delete(id);
         return "redirect:/admin/products";
     }
 }

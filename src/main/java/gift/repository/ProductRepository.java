@@ -20,7 +20,7 @@ public class ProductRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Product saveProduct(Product product) {
+    public Product save(Product product) {
         String sql = "INSERT INTO products (name, price, image_url) VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -37,7 +37,7 @@ public class ProductRepository {
         return product;
     }
 
-    public List<ProductResponseDto> findAllProducts() {
+    public List<ProductResponseDto> findAll() {
         String sql = "SELECT * FROM products";
         return jdbcTemplate.query(sql, (rs, rowNum) ->
                 new ProductResponseDto(
@@ -48,7 +48,7 @@ public class ProductRepository {
                 ));
     }
 
-    public Optional<Product> findProductById(Long id) {
+    public Optional<Product> findById(Long id) {
         String sql = "SELECT * FROM products WHERE id = ?";
         try {
             Product product = jdbcTemplate.queryForObject(sql, (rs, rowNum) ->
@@ -64,14 +64,14 @@ public class ProductRepository {
         }
     }
 
-    public void updateProduct(Product product) {
+    public void update(Product product) {
         String sql = "UPDATE products SET name = ?, price = ?, image_url = ? WHERE id = ?";
         jdbcTemplate.update(sql, product.getName(), product.getPrice(), product.getImageUrl(),
                 product.getId());
     }
 
 
-    public void deleteProduct(Long id) {
+    public void delete(Long id) {
         String sql = "DELETE FROM products WHERE id = ?";
         jdbcTemplate.update(sql, id);
     }

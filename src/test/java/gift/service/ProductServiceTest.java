@@ -33,7 +33,7 @@ class ProductServiceTest {
                 "http://img.com/img.jpg");
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            productService.saveProduct(requestDto);
+            productService.save(requestDto);
         });
 
         assertEquals("\"카카오\"가 포함된 상품명 사용 불가", exception.getReason());
@@ -46,9 +46,9 @@ class ProductServiceTest {
                 "http://img.com/img.jpg");
         Product savedProduct = new Product(1L, "딸기케이크", 15000, "http://img.com/img.jpg");
 
-        when(productRepository.saveProduct(any(Product.class))).thenReturn(savedProduct);
+        when(productRepository.save(any(Product.class))).thenReturn(savedProduct);
 
-        ProductResponseDto result = productService.saveProduct(requestDto);
+        ProductResponseDto result = productService.save(requestDto);
 
         assertEquals("딸기케이크", result.name());
         assertEquals(15000, result.price());

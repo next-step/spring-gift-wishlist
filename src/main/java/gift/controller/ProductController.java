@@ -30,36 +30,36 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<ProductResponseDto> createProduct(
             @Valid @RequestBody ProductRequestDto requestDto) {
-        return new ResponseEntity<>(productService.saveProduct(requestDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(productService.save(requestDto), HttpStatus.CREATED);
     }
 
     // 목록 조회
     @GetMapping
-    public List<ProductResponseDto> findAllProducts() {
-        return productService.findAllProducts();
+    public List<ProductResponseDto> findAll() {
+        return productService.findAll();
     }
 
     // 단건 조회
     @GetMapping("/{id}")
-    public ResponseEntity<ProductResponseDto> findProductById(@PathVariable Long id) {
-        return new ResponseEntity<>(productService.findProductById(id), HttpStatus.OK);
+    public ResponseEntity<ProductResponseDto> findById(@PathVariable Long id) {
+        return new ResponseEntity<>(productService.findById(id), HttpStatus.OK);
     }
 
     // 수정
     @PutMapping("/{id}")
-    public ResponseEntity<ProductResponseDto> updateProduct(
+    public ResponseEntity<ProductResponseDto> update(
             @PathVariable Long id,
             @Valid @RequestBody ProductResponseDto requestDto
     ) {
         return new ResponseEntity<>(
-                productService.updateProduct(id, requestDto.name(), requestDto.price(),
+                productService.update(id, requestDto.name(), requestDto.price(),
                         requestDto.imageUrl()), HttpStatus.OK);
     }
 
     // 삭제
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
-        productService.deleteProduct(id);
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        productService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

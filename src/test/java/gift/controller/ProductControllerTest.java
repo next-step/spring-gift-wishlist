@@ -35,7 +35,7 @@ class ProductControllerTest {
         ProductRequestDto requestDto = new ProductRequestDto("초코케이크", 10000,
                 "http://img.com/image.jpg");
 
-        Mockito.when(productService.saveProduct(Mockito.any()))
+        Mockito.when(productService.save(Mockito.any()))
                 .thenReturn(new ProductResponseDto(1L, "초코케이크", 10000, "http://img.com/image.jpg"));
 
         mockMvc.perform(post("/api/products")
@@ -76,7 +76,7 @@ class ProductControllerTest {
         ProductRequestDto requestDto = new ProductRequestDto("카카오", 10000,
                 "http://img.com/image.jpg");
 
-        Mockito.when(productService.saveProduct(Mockito.any()))
+        Mockito.when(productService.save(Mockito.any()))
                 .thenThrow(new org.springframework.web.server.ResponseStatusException(
                         org.springframework.http.HttpStatus.BAD_REQUEST,
                         "\"카카오\"가 포함된 상품명 사용 불가"
