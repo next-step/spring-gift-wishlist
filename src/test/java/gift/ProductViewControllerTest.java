@@ -29,7 +29,7 @@ public class ProductViewControllerTest {
     private ApprovedProductRepository approvedProductRepository;
 
     @Test
-    @DisplayName("상품 등록 성공 - '카카오' 포함된 승인된 상품명")
+    @DisplayName("[Form] 상품 등록 성공 - '카카오' 포함된 승인된 상품명")
     void createProduct_success_withApprovedName() throws Exception {
 
         // '카카오' 포함된 승인된 상품명 추가
@@ -46,7 +46,7 @@ public class ProductViewControllerTest {
     }
 
     @Test
-    @DisplayName("상품 등록 실패 - '카카오' 포함 & 승인되지 않은 상품명")
+    @DisplayName("[Form] 상품 등록 실패 - '카카오' 포함 & 승인되지 않은 상품명")
     void createProduct_fail_unapprovedKakaoName() throws Exception {
         mockMvc.perform(post("/admin/products/new")
                 .param("name", "카카오 커피잔")
@@ -59,7 +59,7 @@ public class ProductViewControllerTest {
     }
 
     @Test
-    @DisplayName("상품 등록 실패 - 상품명 없음")
+    @DisplayName("[Form] 상품 등록 실패 - 상품명 없음")
     void createProduct_fail_blankName() throws Exception {
         mockMvc.perform(post("/admin/products/new")
                 .param("name", "")
@@ -72,7 +72,7 @@ public class ProductViewControllerTest {
     }
 
     @Test
-    @DisplayName("상품 등록 실패 - 상품명 15자 초과")
+    @DisplayName("[Form] 상품 등록 실패 - 상품명 15자 초과")
     void createProduct_fail_nameTooLong() throws Exception {
         mockMvc.perform(post("/admin/products/new")
                 .param("name", "1234567890123456") // 16자
@@ -85,7 +85,7 @@ public class ProductViewControllerTest {
     }
 
     @Test
-    @DisplayName("상품 등록 실패 - 가격 음수")
+    @DisplayName("[Form] 상품 등록 실패 - 가격 음수")
     void createProduct_fail_negativePrice() throws Exception {
         mockMvc.perform(post("/admin/products/new")
                 .param("name", "허용된 상품")
@@ -98,7 +98,7 @@ public class ProductViewControllerTest {
     }
 
     @Test
-    @DisplayName("상품 등록 실패 - 가격 없음")
+    @DisplayName("[Form] 상품 등록 실패 - 가격 없음")
     void createProduct_fail_priceMissing() throws Exception {
         mockMvc.perform(post("/admin/products/new")
                 .param("name", "허용된 상품")
@@ -111,7 +111,7 @@ public class ProductViewControllerTest {
     }
 
     @Test
-    @DisplayName("상품 등록 실패 - 유효하지 않은 이미지 URL")
+    @DisplayName("[Form] 상품 등록 실패 - 유효하지 않은 이미지 URL")
     void createProduct_fail_invalidImageUrl() throws Exception {
         mockMvc.perform(post("/admin/products/new")
                 .param("name", "정상 상품명")
@@ -124,7 +124,7 @@ public class ProductViewControllerTest {
     }
 
     @Test
-    @DisplayName("상품 등록 실패 - 이미지 URL 없음")
+    @DisplayName("[Form] 상품 등록 실패 - 이미지 URL 없음")
     void createProduct_fail_imageUrlMissing() throws Exception {
         mockMvc.perform(post("/admin/products/new")
                 .param("name", "정상 상품명")
