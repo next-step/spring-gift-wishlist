@@ -9,6 +9,11 @@
   <input type="text" name="name" placeholder="상품명" required>
   <input type="number" name="price" placeholder="가격" required>
   <input type="text" name="imageUrl" placeholder="이미지 URL">
+  <label>
+    MD 협의 여부 (카카오 포함 가능 여부):
+    <input type="checkbox" name="kakaoConfirmed" value="true">
+  </label>
+  <input type="hidden" name="kakaoConfirmed" value="false">
   <button type="submit">수정</button>
 </form>
 <a th:href="@{/admin/products}">목록으로 돌아가기</a>
