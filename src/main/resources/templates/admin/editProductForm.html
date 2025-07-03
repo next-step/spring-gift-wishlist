@@ -19,10 +19,6 @@
   <label for="imageUrl">이미지 URL:</label>
   <input type="url" id="imageUrl" name="imageUrl" th:value="${product.imageUrl}" required><br><br>
 
-  <label th:for="*{product.approved}">MD 승인 여부</label>
-  <input type="checkbox" th:field="*{product.approved}">
-  <br><br>
-
   <button type="submit">상품 수정 완료</button>
   <a th:href="@{/admin/products}">취소 및 목록으로</a>
 </form>
