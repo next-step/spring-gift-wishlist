@@ -1,6 +1,7 @@
 package gift.admin;
 
 import gift.Entity.Product;
+import gift.service.ProductService;
 import gift.dao.ProductDao;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -9,16 +10,17 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
 @RequestMapping("/admin/products")
 public class AdminController {
 
     private final ProductDao productDao;
+    private final ProductService productservice;
 
-    public AdminController(ProductDao productDao) {
+    public AdminController(ProductDao productDao, ProductService productservice) {
         this.productDao = productDao;
+        this.productservice = productservice;
     }
 
     // 상품 목록 페이지
@@ -44,11 +46,7 @@ public class AdminController {
     public String createProduct(@ModelAttribute @Valid Product product,
                                 BindingResult bindingResult,
                                 Model model) {
-        if (product.getName().contains("카카오")&& !product.getMDapproved()) {
-            bindingResult.rejectValue("name", "forbidden.word", "상품 이름에 '카카오'는 포함할 수 없습니다.");
-        }
-
-        if (bindingResult.hasErrors()) {
+        if (!productservice.validate(product, bindingResult)) {
             model.addAttribute("formType", "add");
             return "admin/form";
         }
@@ -72,12 +70,8 @@ public class AdminController {
     public String updateProduct(@PathVariable Long id, @ModelAttribute @Valid Product product,
                                 BindingResult bindingResult,
                                 Model model) {
-        if (product.getName().contains("카카오")&& !product.getMDapproved()) {
-            bindingResult.rejectValue("name", "forbidden.word", "상품 이름에 '카카오'는 포함할 수 없습니다.");
-        }
-
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("formType", "edit");
+        if (!productservice.validate(product, bindingResult)) {
+            model.addAttribute("formType", "add");
             return "admin/form";
         }
 
