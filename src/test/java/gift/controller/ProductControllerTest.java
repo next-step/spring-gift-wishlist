@@ -1,91 +1,115 @@
 package gift.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
-import gift.service.ProductService;
+import java.util.Map;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 
-@WebMvcTest(ProductController.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ProductControllerTest {
 
     @Autowired
-    MockMvc mockMvc;
+    private TestRestTemplate restTemplate;
 
     @Autowired
-    ObjectMapper objectMapper;
+    private JdbcTemplate jdbcTemplate;
 
-    @MockBean
-    ProductService productService;
+    @BeforeEach
+    void setUp() {
+        jdbcTemplate.execute("TRUNCATE TABLE products");
+    }
+
 
     @Test
     @DisplayName("정상 생성")
-    void createProduct_success() throws Exception {
+    void createProduct_success() {
         ProductRequestDto requestDto = new ProductRequestDto("초코케이크", 10000,
                 "http://img.com/image.jpg");
 
-        Mockito.when(productService.save(Mockito.any()))
-                .thenReturn(new ProductResponseDto(1L, "초코케이크", 10000, "http://img.com/image.jpg"));
+        ResponseEntity<ProductResponseDto> response = restTemplate.postForEntity("/api/products",
+                requestDto,
+                ProductResponseDto.class);
 
-        mockMvc.perform(post("/api/products")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestDto)))
-                .andExpect(status().isCreated());
+        assertAll(
+                () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED),
+                () -> assertThat(response.getBody().name()).isEqualTo("초코케이크")
+        );
     }
 
     @Test
     @DisplayName("상품명 15자 초과")
-    void createProduct_nameTooLong() throws Exception {
+    void createProduct_nameTooLong() {
         ProductRequestDto requestDto = new ProductRequestDto("상품명 15자 초과상품명 15자 초과", 10000,
                 "http://img.com/image.jpg");
 
-        mockMvc.perform(post("/api/products")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestDto)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.name").value("상품명 최대 15자 입력 가능"));
+        ResponseEntity<Map<String, String>> response = restTemplate.exchange(
+                "/api/products",
+                HttpMethod.POST,
+                new HttpEntity<>(requestDto),
+                new ParameterizedTypeReference<>() {
+                }
+        );
+
+        assertAll(
+                () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST),
+                () -> assertThat(response.getBody().get("name")).isEqualTo(
+                        "상품명은 최대 15자까지 입력 가능합니다.")
+        );
     }
 
     @Test
     @DisplayName("특수 문자 포함")
-    void createProduct_invalidCharacters() throws Exception {
+    void createProduct_invalidCharacters() {
         ProductRequestDto requestDto = new ProductRequestDto("@", 10000,
                 "http://img.com/image.jpg");
 
-        mockMvc.perform(post("/api/products")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestDto)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.name").value("허용되지 않은 특수문자가 포함"));
+        ResponseEntity<Map<String, String>> response = restTemplate.exchange(
+                "/api/products",
+                HttpMethod.POST,
+                new HttpEntity<>(requestDto),
+                new ParameterizedTypeReference<>() {
+                }
+        );
+
+        assertAll(
+                () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST),
+                () -> assertThat(response.getBody().get("name")).isEqualTo(
+                        "(), [], +, -, $, /, _ 외의 특수문자는 사용할 수 없습니다.")
+        );
     }
 
     @Test
     @DisplayName("카카오 포함")
-    void createProduct_nameContainsKakao() throws Exception {
+    void createProduct_nameContainsKakao() {
         ProductRequestDto requestDto = new ProductRequestDto("카카오", 10000,
                 "http://img.com/image.jpg");
 
-        Mockito.when(productService.save(Mockito.any()))
-                .thenThrow(new org.springframework.web.server.ResponseStatusException(
-                        org.springframework.http.HttpStatus.BAD_REQUEST,
-                        "\"카카오\"가 포함된 상품명 사용 불가"
-                ));
+        ResponseEntity<Map<String, String>> response = restTemplate.exchange(
+                "/api/products",
+                HttpMethod.POST,
+                new HttpEntity<>(requestDto),
+                new ParameterizedTypeReference<>() {
+                }
+        );
 
-        mockMvc.perform(post("/api/products")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestDto)))
-                .andExpect(status().isBadRequest())
-                .andExpect(status().reason("\"카카오\"가 포함된 상품명 사용 불가"));
+        assertAll(
+                () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST),
+                () -> assertThat(response.getBody().get("message")).isEqualTo(
+                        "\"카카오\"가 포함된 문구는 담당 MD와 협의한 경우에만 사용 가능합니다.")
+        );
     }
 }
