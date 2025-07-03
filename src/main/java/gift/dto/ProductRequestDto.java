@@ -20,13 +20,10 @@ public class ProductRequestDto {
     @URL(message = "유효한 이미지 URL 형식이 아닙니다.")
     private final String imageUrl;
 
-    private final Boolean approved;
-
-    public ProductRequestDto(String name, Long price, String imageUrl, Boolean approved) {
+    public ProductRequestDto(String name, Long price, String imageUrl) {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
-        this.approved = approved;
     }
 
     public String getName() {
@@ -40,6 +37,4 @@ public class ProductRequestDto {
     public String getImageUrl() {
         return imageUrl;
     }
-
-    public Boolean getApproved() { return approved; }
 }
