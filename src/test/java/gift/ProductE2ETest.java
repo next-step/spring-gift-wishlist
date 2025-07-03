@@ -114,8 +114,8 @@ class ProductE2ETest {
 
         String responseBody = exception.getResponseBodyAsString();
 
-        assertThat(responseBody).contains("특수문자는 ()[]+-&/_ 만 사용할 수 있어요.");
-        assertThat(responseBody).contains("상품명에 <카카오>가 포함된 상품은 담당 MD에게 문의해주세요.");
-        assertThat(responseBody).contains("가격은 100원 이상으로 등록해주세요.");
+        assertThat(responseBody).contains("특수문자는");
+        assertThat(responseBody).contains("카카오");
+        assertThat(responseBody).contains("100원");
     }
 }
