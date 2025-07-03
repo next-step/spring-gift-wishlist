@@ -113,3 +113,16 @@ a, button {
     font-size: 0.9rem;
     cursor: pointer;
 }
+
+/* 오류 메시지용 스타일 */
+.error-msg {
+    color: red;
+    font-size: 0.9em;
+    margin-top: 4px;
+}
+
+/* label 아래 간격 조정 */
+label {
+    display: block;
+    margin-bottom: 1em;
+}

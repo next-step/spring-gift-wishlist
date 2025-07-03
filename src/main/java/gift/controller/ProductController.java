@@ -3,6 +3,7 @@ package gift.controller;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -21,7 +22,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductResponseDto> createProduct(@RequestBody ProductRequestDto requestDto) {
+    public ResponseEntity<ProductResponseDto> createProduct(@Valid @RequestBody ProductRequestDto requestDto) {
         if (requestDto == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -44,7 +45,7 @@ public class ProductController {
     @PutMapping("/{productId}")
     public ResponseEntity<ProductResponseDto> updateProduct(
             @PathVariable("productId") Long productId,
-            @RequestBody ProductRequestDto requestDto
+            @Valid @RequestBody ProductRequestDto requestDto
     ) {
         if (requestDto == null) {
             return ResponseEntity.badRequest().build();

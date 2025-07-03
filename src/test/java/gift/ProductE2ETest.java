@@ -1,0 +1,121 @@
+package gift;
+
+import gift.dto.ProductRequestDto;
+import gift.dto.ProductResponseDto;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClient;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+class ProductE2ETest {
+
+    @LocalServerPort
+    private int port;
+
+    private RestClient restClient;
+
+    @BeforeEach
+    void setUp() {
+        restClient = RestClient.builder()
+                .baseUrl("http://localhost:" + port)
+                .build();
+    }
+
+    @Test
+    void 상품을_등록하고_조회() {
+        // 상품 등록
+        ProductRequestDto request = new ProductRequestDto(null, "녹차", 3500, "green_tea.jpg");
+
+        restClient.post()
+                .uri("/api/products")
+                .body(request)
+                .retrieve()
+                .toBodilessEntity();
+
+        // 상품 목록 조회
+        ProductResponseDto[] response = restClient.get()
+                .uri("/api/products")
+                .retrieve()
+                .body(ProductResponseDto[].class);
+
+        // 상품 개수 확인
+        assertThat(response).hasSize(3);
+
+        // 상품 존재 확인
+        Assertions.assertNotNull(response);
+        ProductResponseDto product = response[response.length - 1];
+        assertThat(product.name()).isEqualTo("녹차");
+        assertThat(product.price()).isEqualTo(3500);
+        assertThat(product.imageUrl()).isEqualTo("green_tea.jpg");
+    }
+
+    @Test
+    void 상품을_수정하고_조회(){
+        // 상품 수정
+        ProductRequestDto request = new ProductRequestDto(null, "아이스 카페라떼", 7000, "ice_cafe_latte.jpg");
+
+        restClient.put()
+                .uri("/api/products/2")
+                .body(request)
+                .retrieve()
+                .toBodilessEntity();
+
+        // 상품 단건 조회
+        ProductResponseDto response = restClient.get()
+                .uri("/api/products/2")
+                .retrieve()
+                .toEntity(ProductResponseDto.class)
+                .getBody();
+
+        Assertions.assertNotNull(response);
+        assertThat(response.price()).isEqualTo(7000);
+    }
+
+    @Test
+    void 상품을_삭제하고_삭제됐는지_확인(){
+        // 상품 삭제
+        restClient.delete()
+                .uri("/api/products/1")
+                .retrieve()
+                .toBodilessEntity();
+
+        // try-catch로 예외 처리
+        HttpClientErrorException exception = assertThrows(HttpClientErrorException.class, () -> {
+            restClient.get()
+                    .uri("/api/products/1")
+                    .retrieve()
+                    .toBodilessEntity();
+        });
+        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+
+    }
+
+    @Test
+    void 상품_등록_유효성_검사_실패() {
+        ProductRequestDto invalidRequest = new ProductRequestDto(null, "@카카오@", 10, "kakao.jpg");
+
+        HttpClientErrorException exception = assertThrows(HttpClientErrorException.class, () -> {
+            restClient.post()
+                    .uri("/api/products")
+                    .body(invalidRequest)
+                    .retrieve()
+                    .toBodilessEntity();
+        });
+
+        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+
+        String responseBody = exception.getResponseBodyAsString();
+
+        assertThat(responseBody).contains("특수문자는");
+        assertThat(responseBody).contains("카카오");
+        assertThat(responseBody).contains("100원");
+    }
+}
