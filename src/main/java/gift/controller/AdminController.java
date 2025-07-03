@@ -2,6 +2,7 @@ package gift.controller;
 
 import gift.dto.ProductRequestDto;
 import gift.entity.Product;
+import gift.exception.ProductNotFoundException;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -87,7 +88,7 @@ public class AdminController {
         }
 
         String errorMsg = "상품 ID가 " + id + "인 상품은 존재하지 않습니다.";
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errorMsg);
+        throw new ProductNotFoundException(errorMsg);
     }
 
     //read
