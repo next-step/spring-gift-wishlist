@@ -1,6 +1,7 @@
 package gift.dto;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -25,6 +26,7 @@ public class ProductRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Product 생성 시, 검증된 input을 넣으면 201(Created)이 반환된다. ")
     void createProduct_withValidInput_returns201() {
         ProductRequestDto productRequestDto = new ProductRequestDto(
                 "하리보 젤리(콜라맛)",
@@ -48,6 +50,7 @@ public class ProductRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Product 생성 시, 상품명이 15자를 초과한 경우 400(Bad Request)를 반환한다. ")
     void createProduct_withNameTooLong_returns400() {
         String name = "하리보맛있네또사먹을게요많이파세요"; // 총 17자
         ProductRequestDto productRequestDto = new ProductRequestDto(name, 50, null);
@@ -67,6 +70,7 @@ public class ProductRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Product 생성 시, 허용되지 않은 특수문자를 포함한 경우 400(Bad Request)를 반환한다. ")
     void createProduct_withBadCharacters_returns400() {
         ProductRequestDto productRequestDto = new ProductRequestDto("하리보!@", 20, null);
 
@@ -85,6 +89,7 @@ public class ProductRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Product 생성 시, 음수 가격을 입력한 경우 400(Bad Request)를 반환한다. ")
     void createProduct_withNegativePrice_returns400() {
         ProductRequestDto productRequestDto = new ProductRequestDto("하리보 젤리", -2000, null);
 
@@ -103,6 +108,7 @@ public class ProductRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Product 생성 시, '카카오'가 포함된 문구를 입력한 경우 400(Bad Request)를 반환한다. ")
     void createProduct_withKakaoInName_returns400() {
         ProductRequestDto productRequestDto = new ProductRequestDto("카카오 젤리", 3000, null);
 
