@@ -4,11 +4,9 @@ import gift.dto.api.ProductResponseDto;
 import gift.entity.Product;
 import gift.exception.notfound.NoProductInfoException;
 import java.util.List;
-import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.server.ResponseStatusException;
 
 @Repository
 public class ProductRepositoryImpl implements ProductRepository {
