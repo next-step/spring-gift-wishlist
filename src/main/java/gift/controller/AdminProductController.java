@@ -1,12 +1,13 @@
-package gift.controller.admin;
+package gift.controller;
 
 import gift.dto.ProductRequest;
 import gift.entity.Product;
 import gift.exception.ResourceNotFoundException;
 import gift.service.ProductService;
-import jakarta.validation.Valid;
+import gift.validation.ValidationGroups;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -48,18 +49,22 @@ public class AdminProductController {
     }
 
     @PostMapping
-    public String create(@Valid @ModelAttribute("product") ProductRequest req) {
-        Product toSave = new Product(null, req.name(), req.price(), req.imageUrl());
-        productService.createProduct(toSave);
+    public String create(
+            @Validated(ValidationGroups.PermittedGroup.class) @ModelAttribute("product") ProductRequest req) {
+        Product toSave = Product.createPermittedProduct(null, req.name(), req.price(),
+                req.imageUrl());
+        productService.createProduct(toSave,
+                (p, name) -> Product.createPermittedProduct(null, name, p.price(), p.imageUrl()));
         return "redirect:/admin/products";
     }
 
 
     @PutMapping("/{id}")
     public String update(@PathVariable("id") Long id,
-            @Valid @ModelAttribute("product") ProductRequest req) {
-        Product toUpdate = new Product(id, req.name(), req.price(), req.imageUrl());
-        productService.updateProduct(id, toUpdate);
+            @Validated(ValidationGroups.PermittedGroup.class) @ModelAttribute("product") ProductRequest req) {
+        Product toUpdate = Product.createPermittedProduct(id, req.name(), req.price(),
+                req.imageUrl());
+        productService.updateProduct(id, toUpdate, Product::withPermittedName);
         return "redirect:/admin/products";
     }
 

@@ -1,4 +1,3 @@
-// src/main/java/gift/repository/ProductRepository.java
 package gift.repository;
 
 import gift.entity.Product;

@@ -1,4 +1,3 @@
-// src/main/java/gift/repository/ProductRowMapper.java
 package gift.repository;
 
 import gift.entity.Product;
@@ -12,7 +11,7 @@ public class ProductRowMapper implements RowMapper<Product> {
 
     @Override
     public Product mapRow(ResultSet rs, int rowNum) throws SQLException {
-        return Product.createProduct(
+        return Product.createPermittedProduct(
                 rs.getLong("id"),
                 rs.getString("name"),
                 rs.getInt("price"),

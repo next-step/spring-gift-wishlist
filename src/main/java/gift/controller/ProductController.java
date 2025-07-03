@@ -1,4 +1,3 @@
-// src/main/java/gift/controller/ProductController.java
 package gift.controller;
 
 import gift.dto.ProductRequest;
@@ -6,10 +5,11 @@ import gift.dto.ProductResponse;
 import gift.entity.Product;
 import gift.exception.ResourceNotFoundException;
 import gift.service.ProductService;
-import jakarta.validation.Valid;
+import gift.validation.ValidationGroups;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,16 +46,17 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<ProductResponse> create(
-            @Valid @RequestBody ProductRequest req) {
-        Product saved = productService.createProduct(toEntity(req));
+            @Validated(ValidationGroups.DefaultGroup.class) @RequestBody ProductRequest req) {
+        Product saved = productService.createProduct(toEntity(req),
+                (p, name) -> Product.createProduct(null, name, p.price(), p.imageUrl()));
         return ResponseEntity.status(201).body(toResponse(saved));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponse> update(
             @PathVariable Long id,
-            @Valid @RequestBody ProductRequest req) {
-        Product updated = productService.updateProduct(id, toEntity(req));
+            @Validated(ValidationGroups.DefaultGroup.class) @RequestBody ProductRequest req) {
+        Product updated = productService.updateProduct(id, toEntity(req), Product::withName);
         return ResponseEntity.ok(toResponse(updated));
     }
 
@@ -66,7 +67,7 @@ public class ProductController {
     }
 
     private Product toEntity(ProductRequest r) {
-        return new Product(null, r.name(), r.price(), r.imageUrl());
+        return Product.createProduct(null, r.name(), r.price(), r.imageUrl());
     }
 
     private ProductResponse toResponse(Product e) {

@@ -1,7 +1,8 @@
-// src/main/java/gift/repository/JdbcProductRepository.java
 package gift.repository;
 
 import gift.entity.Product;
+import gift.exception.ResourceNotFoundException;
+import jakarta.transaction.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,6 @@ public class JdbcProductRepository implements ProductRepository {
     private final SimpleJdbcInsert insert;
     private final RowMapper<Product> productRowMapper;
 
-    // 생성자를 통해 ProductRowMapper를 주입받습니다.
     public JdbcProductRepository(JdbcTemplate jdbc, DataSource dataSource,
             ProductRowMapper productRowMapper) {
         this.jdbc = jdbc;
@@ -38,7 +38,7 @@ public class JdbcProductRepository implements ProductRepository {
     public Optional<Product> findById(Long id) {
         List<Product> list = jdbc.query(
                 "SELECT id, name, price, image_url FROM product WHERE id = ?", productRowMapper,
-                id); // 사용
+                id);
         return list.stream().findFirst();
     }
 
@@ -73,13 +73,20 @@ public class JdbcProductRepository implements ProductRepository {
                 product.name(), product.price(), product.imageUrl(), product.id()
         );
         if (updated == 0) {
-            throw new IllegalArgumentException("상품을 찾을 수 없습니다: " + product.id());
+            throw new ResourceNotFoundException("상품을 찾을 수 없습니다: " + product.id());
         }
         return product;
     }
 
     @Override
+    @Transactional
     public void deleteById(Long id) {
-        jdbc.update("DELETE FROM product WHERE id = ?", id);
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("id는 null이거나 0 이하일 수 없습니다.");
+        }
+        int deleted = jdbc.update("DELETE FROM product WHERE id = ?", id);
+        if (deleted == 0) {
+            throw new ResourceNotFoundException("상품을 찾을 수 없습니다: " + id);
+        }
     }
 }

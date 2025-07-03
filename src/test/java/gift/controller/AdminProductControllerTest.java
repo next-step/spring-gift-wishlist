@@ -4,8 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import gift.entity.Product;
 import gift.repository.ProductRepository;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,7 +23,7 @@ import org.springframework.util.MultiValueMap;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("dev")
-public class AdminProductControllerTest {
+class AdminProductControllerTest {
 
     @LocalServerPort
     private int port;
@@ -36,123 +37,279 @@ public class AdminProductControllerTest {
 
     @BeforeEach
     void setUp() {
-        // 초기화
-        List<Product> all = productRepository.findAll();
-        all.forEach(p -> productRepository.deleteById(p.id()));
-
+        productRepository.findAll()
+                .forEach(p -> productRepository.deleteById(p.id()));
         baseUrl = "http://localhost:" + port + "/admin/products";
     }
 
-    @Test
-    void listPage_ShouldReturnProductsInModel() {
-        productRepository.save(new Product(null, "A", 10, "uA"));
-        ResponseEntity<String> response = restTemplate.getForEntity(baseUrl, String.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).contains("상품 목록");
-        assertThat(response.getBody()).contains("A");
+    @Nested
+    @DisplayName("View Pages")
+    class ViewTests {
+
+        @Test
+        @DisplayName("GET list page - 상품 목록 조회")
+        void listPage_ShouldReturnProductsInModel() {
+            productRepository.save(new Product(null, "A", 10, "uA"));
+
+            ResponseEntity<String> response = restTemplate.getForEntity(baseUrl, String.class);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody()).contains("상품 목록");
+            assertThat(response.getBody()).contains("A");
+        }
+
+        @Test
+        @DisplayName("GET create form page - 신규 등록 폼 조회")
+        void createFormPage_ShouldReturnFormHtml() {
+            ResponseEntity<String> response = restTemplate.getForEntity(baseUrl + "/new",
+                    String.class);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody()).contains("신규 상품 등록");
+            assertThat(response.getBody()).contains("name=\"name\"");
+        }
+
+        @Test
+        @DisplayName("GET edit form page - 수정 폼 조회")
+        void editFormPage_ShouldReturnEditForm() {
+            Product saved = productRepository.save(new Product(null, "EProd", 20, "uE"));
+            Long id = saved.id();
+
+            ResponseEntity<String> formResp = restTemplate.getForEntity(
+                    baseUrl + "/" + id + "/edit", String.class);
+
+            assertThat(formResp.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(formResp.getBody()).contains("상품 수정");
+        }
     }
 
-    @Test
-    void createFormPage_ShouldReturnFormHtml() {
-        ResponseEntity<String> response = restTemplate.getForEntity(baseUrl + "/new", String.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).contains("신규 상품 등록");
-        assertThat(response.getBody()).contains("name=\"name\"");
+    @Nested
+    @DisplayName("Create Product")
+    class CreateTests {
+
+        private HttpHeaders headers;
+        private MultiValueMap<String, String> form;
+
+        @BeforeEach
+        void init() {
+            headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+            form = new LinkedMultiValueMap<>();
+        }
+
+        @Test
+        @DisplayName("POST create - 유효한 입력 성공")
+        void createProduct_ValidInput_ReturnsOk() {
+            form.add("name", "NewProd");
+            form.add("price", "100");
+            form.add("imageUrl", "http://img");
+
+            ResponseEntity<String> resp = restTemplate.postForEntity(baseUrl,
+                    new HttpEntity<>(form, headers), String.class);
+
+            assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+        }
+
+        @Test
+        @DisplayName("POST create - 관리자 허용 패턴 이름 성공")
+        void createProduct_AdminPatternName_ReturnsOk() {
+            form.add("name", "()[]_유+효-문&자");
+            form.add("price", "50");
+            form.add("imageUrl", "http://img");
+
+            ResponseEntity<String> resp = restTemplate.postForEntity(baseUrl,
+                    new HttpEntity<>(form, headers), String.class);
+
+            assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+        }
+
+        @Test
+        @DisplayName("POST create - 필드 누락 시 BAD_REQUEST")
+        void createProduct_MissingField_ReturnsBadRequest() {
+            form.add("price", "0");
+            form.add("imageUrl", "");
+
+            ResponseEntity<String> resp = restTemplate.postForEntity(baseUrl,
+                    new HttpEntity<>(form, headers), String.class);
+
+            assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        }
+
+        @Test
+        @DisplayName("POST create - 패턴 불일치 name 시 BAD_REQUEST")
+        void createProduct_InvalidPattern_ReturnsBadRequest() {
+            form.add("name", "invalid!!");
+            form.add("price", "1");
+            form.add("imageUrl", "http://img");
+
+            ResponseEntity<String> resp = restTemplate.postForEntity(baseUrl,
+                    new HttpEntity<>(form, headers), String.class);
+
+            assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        }
+
+        @Test
+        @DisplayName("POST create - 이름 길이 초과 시 BAD_REQUEST")
+        void createProduct_NameTooLong_ReturnsBadRequest() {
+            form.add("name", "toolongtomakeittoproductname");
+            form.add("price", "1");
+            form.add("imageUrl", "http://img");
+
+            ResponseEntity<String> resp = restTemplate.postForEntity(baseUrl,
+                    new HttpEntity<>(form, headers), String.class);
+
+            assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        }
+
+        @Test
+        @DisplayName("POST create - 관리문구 포함 name 시 OK")
+        void createProduct_ManagementName_ReturnsBadRequest() {
+            form.add("name", "카카오테크캠퍼스");
+            form.add("price", "1");
+            form.add("imageUrl", "http://img");
+
+            ResponseEntity<String> resp = restTemplate.postForEntity(baseUrl,
+                    new HttpEntity<>(form, headers), String.class);
+
+            assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+        }
     }
 
-    @Test
-    void createProduct_Success_and_MissingField_Fail() {
-        MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
-        form.add("name", "NewProd");
-        form.add("price", "100");
-        form.add("imageUrl", "http://img");
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(form, headers);
-        ResponseEntity<String> resp = restTemplate.postForEntity(baseUrl, entity, String.class);
-        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+    @Nested
+    @DisplayName("Update Product")
+    class UpdateTests {
 
-        MultiValueMap<String, String> badForm = new LinkedMultiValueMap<>();
-        badForm.add("price", "0");
-        badForm.add("imageUrl", "");
-        HttpEntity<MultiValueMap<String, String>> badEntity = new HttpEntity<>(badForm, headers);
-        ResponseEntity<String> fail = restTemplate.postForEntity(baseUrl, badEntity, String.class);
-        assertThat(fail.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        private HttpHeaders headers;
+        private MultiValueMap<String, String> form;
+        private Long existingId;
 
-        MultiValueMap<String, String> badForm2 = new LinkedMultiValueMap<>();
-        badForm2.add("name", "invalid!!");
-        badForm2.add("price", "1");
-        badForm2.add("imageUrl", "http://img");
-        HttpEntity<MultiValueMap<String, String>> badEntity2 = new HttpEntity<>(badForm2, headers);
-        ResponseEntity<String> fail2 = restTemplate.postForEntity(baseUrl, badEntity2, String.class);
-        assertThat(fail2.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        @BeforeEach
+        void init() {
+            Product saved = productRepository.save(new Product(null, "EProd", 20, "uE"));
+            existingId = saved.id();
 
-        MultiValueMap<String, String> badForm3 = new LinkedMultiValueMap<>();
-        badForm3.add("name", "toolongtomakeittoproductname");
-        badForm3.add("price", "1");
-        badForm3.add("imageUrl", "http://img");
-        HttpEntity<MultiValueMap<String, String>> badEntity3 = new HttpEntity<>(badForm3, headers);
-        ResponseEntity<String> fail3 = restTemplate.postForEntity(baseUrl, badEntity3, String.class);
-        assertThat(fail3.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+            form = new LinkedMultiValueMap<>();
+            form.add("_method", "put");
+            form.add("name", "EProdX");
+            form.add("price", "30");
+            form.add("imageUrl", "uX");
+        }
 
-        MultiValueMap<String, String> badForm4 = new LinkedMultiValueMap<>();
-        badForm4.add("name", "카카오테크캠퍼스");
-        badForm4.add("price", "1");
-        badForm4.add("imageUrl", "http://img");
-        HttpEntity<MultiValueMap<String, String>> badEntity4 = new HttpEntity<>(badForm4, headers);
-        ResponseEntity<String> fail4 = restTemplate.postForEntity(baseUrl, badEntity4, String.class);
-        assertThat(fail4.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        @Test
+        @DisplayName("POST update - 유효한 관리자 패턴 이름 수정 성공")
+        void updateProduct_AdminPatternName_ReturnsOk() {
+            form.set("name", "()[]_유+효-문&자");
+
+            ResponseEntity<String> resp = restTemplate.postForEntity(
+                    baseUrl + "/" + existingId, new HttpEntity<>(form, headers), String.class);
+
+            assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(productRepository.findById(existingId).get().name()).isEqualTo(
+                    "()[]_유+효-문&자");
+        }
+
+        @Test
+        @DisplayName("POST update - 정상 수정 성공")
+        void updateProduct_ValidInput_ReturnsOk() {
+            ResponseEntity<String> resp = restTemplate.postForEntity(
+                    baseUrl + "/" + existingId, new HttpEntity<>(form, headers), String.class);
+
+            assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(productRepository.findById(existingId).get().name()).isEqualTo("EProdX");
+        }
+
+        @Test
+        @DisplayName("POST update - 존재하지 않는 ID 시 NOT_FOUND")
+        void updateProduct_NotFound_ReturnsNotFound() {
+            ResponseEntity<String> resp = restTemplate.postForEntity(
+                    baseUrl + "/999", new HttpEntity<>(form, headers), String.class);
+
+            assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        }
+
+        @Test
+        @DisplayName("POST update - 패턴 불일치 name 시 BAD_REQUEST")
+        void updateProduct_InvalidPattern_ReturnsBadRequest() {
+            form.set("name", "invalid!!");
+
+            ResponseEntity<String> resp = restTemplate.postForEntity(
+                    baseUrl + "/" + existingId,
+                    new HttpEntity<>(form, headers),
+                    String.class
+            );
+
+            assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        }
+
+        @Test
+        @DisplayName("POST update - 이름 길이 초과 시 BAD_REQUEST")
+        void updateProduct_NameTooLong_ReturnsBadRequest() {
+            form.set("name", "toolongtomakeittoproductname");
+
+            ResponseEntity<String> resp = restTemplate.postForEntity(
+                    baseUrl + "/" + existingId,
+                    new HttpEntity<>(form, headers),
+                    String.class
+            );
+
+            assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        }
+
+        @Test
+        @DisplayName("POST update - 관리문구 포함 name 시 OK")
+        void updateProduct_ManagementName_ReturnsOk() {
+            form.set("name", "카카오테크캠퍼스");
+
+            ResponseEntity<String> resp = restTemplate.postForEntity(
+                    baseUrl + "/" + existingId,
+                    new HttpEntity<>(form, headers),
+                    String.class
+            );
+
+            assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+        }
+
 
     }
 
-    @Test
-    void editFormPage_and_UpdateProduct_Success_and_NotFound() {
-        Product saved = productRepository.save(new Product(null, "EProd", 20, "uE"));
-        Long id = saved.id();
+    @Nested
+    @DisplayName("Delete Product")
+    class DeleteTests {
 
-        ResponseEntity<String> formResp = restTemplate.getForEntity(baseUrl + "/" + id + "/edit",
-                String.class);
-        assertThat(formResp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(formResp.getBody()).contains("상품 수정");
+        private HttpHeaders headers;
+        private MultiValueMap<String, String> form;
+        private Long existingId;
 
-        MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
-        form.add("_method", "put");
-        form.add("name", "EProdX");
-        form.add("price", "30");
-        form.add("imageUrl", "uX");
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(form, headers);
+        @BeforeEach
+        void init() {
+            Product saved = productRepository.save(new Product(null, "DelP", 50, "uD"));
+            existingId = saved.id();
 
-        ResponseEntity<String> updateResp = restTemplate.postForEntity(baseUrl + "/" + id, entity,
-                String.class);
-        assertThat(updateResp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(productRepository.findById(id).get().name()).isEqualTo("EProdX");
+            headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+            form = new LinkedMultiValueMap<>();
+            form.add("_method", "delete");
+        }
 
-        ResponseEntity<String> notFound = restTemplate.postForEntity(baseUrl + "/999", entity,
-                String.class);
-        assertThat(notFound.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        @Test
+        @DisplayName("POST delete - 정상 삭제 성공")
+        void deleteProduct_ExistingId_ReturnsOk() {
+            ResponseEntity<String> resp = restTemplate.postForEntity(
+                    baseUrl + "/" + existingId, new HttpEntity<>(form, headers), String.class);
+
+            assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(productRepository.existsById(existingId)).isFalse();
+        }
+
+        @Test
+        @DisplayName("POST delete - 존재하지 않는 ID 삭제 시 NOT_FOUND")
+        void deleteProduct_NotFound_ReturnsNotFound() {
+            ResponseEntity<String> resp = restTemplate.postForEntity(
+                    baseUrl + "/999", new HttpEntity<>(form, headers), String.class);
+
+            assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        }
     }
-
-    @Test
-    void deleteProduct_Success_and_NotFound() {
-        Product d = productRepository.save(new Product(null, "DelP", 50, "uD"));
-        Long id = d.id();
-
-        MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
-        form.add("_method", "delete");
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(form, headers);
-
-        ResponseEntity<String> delResp = restTemplate.postForEntity(baseUrl + "/" + id, entity,
-                String.class);
-        assertThat(delResp.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(productRepository.existsById(id)).isFalse();
-
-        ResponseEntity<String> notFound = restTemplate.postForEntity(baseUrl + "/999", entity,
-                String.class);
-        assertThat(notFound.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-    }
-
 }
