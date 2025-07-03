@@ -28,7 +28,7 @@ public class ProductUpdateRequestDto {
     private String imageUrl;
 
     // 생성자 추가
-    public ProductUpdateRequestDto(String name, int price, String imageUrl) {
+    public ProductUpdateRequestDto(String name, Integer price, String imageUrl) {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
