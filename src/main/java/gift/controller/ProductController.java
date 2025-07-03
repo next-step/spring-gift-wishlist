@@ -2,8 +2,10 @@ package gift.controller;
 
 import gift.dto.Product;
 import gift.repository.ProductRepository;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -35,7 +37,11 @@ public class ProductController {
     }
 
     @PostMapping
-    public String createProduct(@ModelAttribute Product product) {
+    public String createProduct(@Valid @ModelAttribute Product product, BindingResult bindingResult) {
+        if(bindingResult.hasErrors()) {
+            return "admin/product_form";
+        }
+
         if(product.getImageUrl() == null || product.getImageUrl().isEmpty()) {
             product.setImageUrl(BASE_URL);
         }
