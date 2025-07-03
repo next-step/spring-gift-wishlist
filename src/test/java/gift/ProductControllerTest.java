@@ -2,6 +2,7 @@ package gift;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -10,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.dto.api.ProductCreateRequestDto;
+import gift.dto.api.ProductUpdateRequestDto;
 import gift.entity.ApprovedProduct;
 import gift.entity.Product;
 import gift.repository.ApprovedProductRepository;
@@ -221,6 +223,31 @@ public class ProductControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.error").value("'id' 파라미터는 long 형식이어야 합니다."));
+    }
+
+    @Test
+    @DisplayName("[API] 상품 수정 성공")
+    void updateProduct_success() throws Exception {
+        // 준비: 기존 상품 저장
+        var saved = productRepository.save(
+            new Product("초콜릿", 1000, "https://image.com/item.jpg")
+        );
+        Long id = saved.getId();
+
+        // 수정 DTO
+        var dto = new ProductUpdateRequestDto(
+            "초콜릿 리미티드", 1200, "https://image.com/new.jpg"
+        );
+
+        // 수행 & 검증
+        mockMvc.perform(put("/api/products/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").value(id))
+            .andExpect(jsonPath("$.name").value("초콜릿 리미티드"))
+            .andExpect(jsonPath("$.price").value(1200))
+            .andExpect(jsonPath("$.imageUrl").value("https://image.com/new.jpg"));
     }
 
 }
