@@ -59,10 +59,7 @@ public class JdbcTemplateProductRepository implements ProductRepository {
   @Override
   public Product updateProduct(Long id, String name, Integer price, String imageUrl) {
     String sql = "UPDATE product SET name = ?, price = ?, image_url = ? WHERE id = ?";
-    int affected = jdbcTemplate.update(sql, name, price, imageUrl, id);
-    if (affected == 0) {
-      throw new IllegalArgumentException("해당 ID = " + id + " 의 상품이 존재하지 않습니다.");
-    }
+    jdbcTemplate.update(sql, name, price, imageUrl, id);
     return searchProductById(id).get();
   }
 
