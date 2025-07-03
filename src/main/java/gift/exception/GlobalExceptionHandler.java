@@ -33,7 +33,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(error);
     }
 
-    // 3. 위 두 예외를 제외하고 다른 예외가 터지면 여기서 잡는다.
+    // 3. IllegalStateException이 발생하면 여기서 잡는다.
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<Map<String, String>> handleIllegalStateException(IllegalStateException e) {
+        Map<String, String> error = new HashMap<>();
+        error.put("message", e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+
+    // 4. 위 세 예외를 제외하고 다른 예외가 터지면 여기서 잡는다.
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleGeneralException(Exception e) {
         Map<String, String> error = new HashMap<>();

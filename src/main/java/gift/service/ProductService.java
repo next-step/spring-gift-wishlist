@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductService {
@@ -74,7 +75,23 @@ public class ProductService {
     }
 
     public void update(Long id, String name, int price, String imageUrl) {
-        boolean updated = repository.update(id, name, price, imageUrl);
-        if (!updated) throw new ProductNotFoundException(id);
+
+        // 상품 존재 여부 확인
+        Optional<Product> product = repository.findById(id);
+        if (product.isEmpty()) {throw new ProductNotFoundException(id);}
+
+        int updatedCount = repository.update(id, name, price, imageUrl);
+
+        // 상품이 존재 하지만 수정되지 않은 경우
+        if (updatedCount == 0) {
+            return;
+        }
+
+        // 여러 상품이 수정 되어버린 경우
+        if (updatedCount > 1) {
+            throw new IllegalStateException("ID 중복으로 인해 여러 상품이 수정되었습니다.");
+        }
+
     }
+
 }

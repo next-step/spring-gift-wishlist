@@ -60,9 +60,8 @@ public class ProductRepository {
         return updated > NO_ROW_UPDATED;
     }
 
-    public boolean update(Long id, String name, int price, String imageUrl) {
+    public int update(Long id, String name, int price, String imageUrl) {
         String sql = "UPDATE product SET name = ?, price = ?, image_url = ? WHERE id = ?";
-        int updated = jdbcTemplate.update(sql, name, price, imageUrl, id);
-        return updated > NO_ROW_UPDATED;
+        return jdbcTemplate.update(sql, name, price, imageUrl, id);
     }
 }
