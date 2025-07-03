@@ -19,10 +19,7 @@ public class ProductService {
     }
 
     public Product createProduct(String name, Integer price, String imageUrl) {
-        Product product = new Product(name, price, imageUrl, true);
-        if (product.getName().contains("카카오")) {
-            product = product.updateValidated(false);
-        }
+        Product product = new Product(name, price, imageUrl);
         Optional<Long> optionalId = productRepository.saveNewProduct(product);
         if (optionalId.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Product creation failed");
@@ -46,19 +43,8 @@ public class ProductService {
         if (name == null && price == null && imageUrl == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정할 요소가 한개 이상은 작성되어야 합니다");
         }
-        Product product = optionalProduct.get();
-        if (name != null) {
-            product = product.updateName(name);
-        }
-        if (price != null) {
-            product = product.updatePrice(price);
-        }
-        if (imageUrl != null) {
-            product = product.updateImageUrl(imageUrl);
-        }
-        if (product.getName().contains("카카오")) {
-            product = product.updateValidated(false);
-        }
+        Product product = optionalProduct.get()
+                .applyPatch(name, price, imageUrl);
         throwNotFoundIfTrue(!productRepository.updateProduct(product));
         return product;
     }

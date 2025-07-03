@@ -1,6 +1,10 @@
 package gift.entity;
 
+import java.util.List;
+
 public class Product {
+
+    private static List<String> prohibitedNames = List.of("카카오");
 
     private Long id;
     private String name;
@@ -18,11 +22,11 @@ public class Product {
         this.validated = validated;
     }
 
-    public Product(String name, Integer price, String imageUrl, Boolean validated) {
+    public Product(String name, Integer price, String imageUrl) {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
-        this.validated = validated;
+        this.validated = checkValidatedByName(name);
     }
 
     public Product updateId(Long id) {
@@ -63,5 +67,22 @@ public class Product {
 
     public Boolean getValidated() {
         return validated;
+    }
+
+    public Product applyPatch(String name, Integer price, String imageUrl) {
+        String updatedName = name != null ? name : this.name;
+        Integer updatedPrice = price != null ? price : this.price;
+        String updatedimageUrl = imageUrl != null ? imageUrl : this.imageUrl;
+        Boolean updatedValidated = checkValidatedByName(updatedName);
+        return new Product(id, updatedName, updatedPrice, updatedimageUrl, updatedValidated);
+    }
+
+    private Boolean checkValidatedByName(String name) {
+        for (String prohibitedName : prohibitedNames) {
+            if (name.contains(prohibitedName)) {
+                return false;
+            }
+        }
+        return true;
     }
 }
