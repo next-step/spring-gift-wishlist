@@ -27,6 +27,7 @@ public class Product {
         return usableKakao;
     }
 
+
     public Product() {}
     public Product(Long id, String name, int price, String imageUrl) {
         this.id = id;
@@ -45,4 +46,5 @@ public class Product {
     public void setImageUrl(String imageUrl) {this.imageUrl = imageUrl;}
     public boolean getUsableKakao() {return usableKakao;}
     public void setUsableKakao(boolean usableKakao) {this.usableKakao = usableKakao;}
+
 }
