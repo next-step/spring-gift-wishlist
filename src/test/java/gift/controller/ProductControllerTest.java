@@ -56,6 +56,24 @@ class ProductControllerTest {
             .retrieve()
             .toEntity(type);
     }
+    
+    private Product queryProductById(int id) {
+        return jdbcTemplate.queryForObject(
+            "SELECT name, price, imageUrl FROM products WHERE productId = ?",
+            (rs, rowNum) -> new Product(
+                rs.getString("name"),
+                rs.getDouble("price"),
+                rs.getString("imageUrl")
+            ),
+            id
+        );
+    }
+
+    private void assertThatProductEquals(Product expected, Product actual) {
+        assertThat(actual.getName()).isEqualTo(expected.getName());
+        assertThat(actual.getPrice()).isEqualTo(expected.getPrice());
+        assertThat(actual.getImageUrl()).isEqualTo(expected.getImageUrl());
+    }
 
     @BeforeEach
     void setUp() {
@@ -91,20 +109,8 @@ class ProductControllerTest {
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
-        Product result = jdbcTemplate.queryForObject(
-            "SELECT name, price, imageUrl FROM products WHERE productId = 4",
-            (rs, rowNum) -> new Product(
-                rs.getString("name"),
-                rs.getDouble("price"),
-                rs.getString("imageUrl")
-            )
-        );
-
-        var actual = response.getBody();
-
-        assertThat(actual.name()).isEqualTo(request.getName());
-        assertThat(actual.price()).isEqualTo(request.getPrice());
-        assertThat(actual.imageUrl()).isEqualTo(request.getImageUrl());
+        Product result = queryProductById(4);
+        assertThatProductEquals(request, result);
     }
 
     @ParameterizedTest
@@ -131,20 +137,8 @@ class ProductControllerTest {
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
-        Product result = jdbcTemplate.queryForObject(
-            "SELECT name, price, imageUrl FROM products WHERE productId = 4",
-            (rs, rowNum) -> new Product(
-                rs.getString("name"),
-                rs.getDouble("price"),
-                rs.getString("imageUrl")
-            )
-        );
-
-        var actual = response.getBody();
-
-        assertThat(actual.name()).isEqualTo(request.getName());
-        assertThat(actual.price()).isEqualTo(request.getPrice());
-        assertThat(actual.imageUrl()).isEqualTo(request.getImageUrl());
+        Product result = queryProductById(4);
+        assertThatProductEquals(request, result);
     }
 
     @ParameterizedTest
@@ -224,19 +218,8 @@ class ProductControllerTest {
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
-        Product result = jdbcTemplate.queryForObject(
-            "SELECT name, price, imageUrl FROM products WHERE productId = 1",
-            (rs, rowNum) -> new Product(
-                rs.getString("name"),
-                rs.getDouble("price"),
-                rs.getString("imageUrl")
-            )
-        );
-
-        assertThat(result.getName()).isEqualTo(request.getName());
-        assertThat(result.getPrice()).isEqualTo(request.getPrice());
-        assertThat(result.getImageUrl()).isEqualTo(request.getImageUrl());
-
+        Product result = queryProductById(1);
+        assertThatProductEquals(request, result);
     }
 
     @ParameterizedTest
@@ -263,18 +246,8 @@ class ProductControllerTest {
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
-        Product result = jdbcTemplate.queryForObject(
-            "SELECT name, price, imageUrl FROM products WHERE productId = 1",
-            (rs, rowNum) -> new Product(
-                rs.getString("name"),
-                rs.getDouble("price"),
-                rs.getString("imageUrl")
-            )
-        );
-
-        assertThat(result.getName()).isEqualTo(request.getName());
-        assertThat(result.getPrice()).isEqualTo(request.getPrice());
-        assertThat(result.getImageUrl()).isEqualTo(request.getImageUrl());
+        Product result = queryProductById(1);
+        assertThatProductEquals(request, result);
     }
 
     @ParameterizedTest
