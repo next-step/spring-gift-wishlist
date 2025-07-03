@@ -168,4 +168,42 @@ public class ProductControllerTest {
                                 .toEntity(ProductResponseDto.class)
                 );
     }
+
+    @Test
+    void 승인되지_않은_특수문자_포함된_이름_사용(){
+        System.out.println("Not Approved Special Character in Name test");
+        ProductRequestDto requestDto = new ProductRequestDto();
+        requestDto.setName("포스틱.");
+        requestDto.setPrice(5000);
+        requestDto.setImageUrl("https://st.kakaocdn.net/product/gift/product/20231010111814_9a667f9eccc943648797925498bdd8a3.jpg");
+        var url = "http://localhost:" + port + "/api/products";
+        assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
+                .isThrownBy(
+                        () -> client.post()
+                                .uri(url)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .body(requestDto)
+                                .retrieve()
+                                .toEntity(ProductResponseDto.class)
+                );
+    }
+
+    @Test
+    void 최대_15자_길이_제한_초과_이름_사용(){
+        System.out.println("Not Approved Special Character in Name test");
+        ProductRequestDto requestDto = new ProductRequestDto();
+        requestDto.setName("포스틱포스틱포스틱포스틱포스틱포스틱");
+        requestDto.setPrice(5000);
+        requestDto.setImageUrl("https://st.kakaocdn.net/product/gift/product/20231010111814_9a667f9eccc943648797925498bdd8a3.jpg");
+        var url = "http://localhost:" + port + "/api/products";
+        assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
+                .isThrownBy(
+                        () -> client.post()
+                                .uri(url)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .body(requestDto)
+                                .retrieve()
+                                .toEntity(ProductResponseDto.class)
+                );
+    }
 }
