@@ -11,20 +11,5 @@ public class CustomErrorResponse {
     this.statusCode = status;
     this.message = message;
   }
-
-  public HttpStatusCode getStatus() {
-    return statusCode;
-  }
-
-  public void setStatus(HttpStatusCode status) {
-    this.statusCode = status;
-  }
-
-  public String getMessage() {
-    return message;
-  }
-
-  public void setMessage(String message) {
-    this.message = message;
-  }
+  
 }
