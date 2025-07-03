@@ -43,7 +43,7 @@ public class ProductController {
             return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
         }
 
-        if(productRequestDto.getId() != null && !productService.validateProduct(productRequestDto)) {
+        if(productRequestDto.getName().contains("카카오")) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("카카오란 이름은 MD승인을 받아야합니다");
         }
 
