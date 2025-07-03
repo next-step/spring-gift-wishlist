@@ -2,6 +2,7 @@ package gift.controller;
 
 import gift.dto.request.ProductRequestDto;
 import gift.dto.response.ProductResponseDto;
+import gift.fixture.ProductFixture;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
@@ -30,7 +31,7 @@ public class ProductControllerTest {
 
     @Test
     void 정상_등록_되지는_확인() {
-        ProductRequestDto dto = new ProductRequestDto("테스트상품", 5000, "https://image.url");
+        ProductRequestDto dto = ProductFixture.createProduct();
 
         var response = client.post()
                 .uri(baseUrl())
@@ -54,7 +55,7 @@ public class ProductControllerTest {
 
     @Test
     void 상품_정보_수정() {
-        ProductRequestDto createDto = new ProductRequestDto("수정전", 1000, "https://before.img");
+        ProductRequestDto createDto = ProductFixture.createProduct();
         var createdResponse = client.post()
                 .uri(baseUrl())
                 .body(createDto)
@@ -82,7 +83,7 @@ public class ProductControllerTest {
     @Test
     void 상품_삭제() {
 
-        ProductRequestDto dto = new ProductRequestDto("삭제할상품", 3000, "https://image.to/delete");
+        ProductRequestDto dto = ProductFixture.createProduct();
         var savedResponse = client.post()
                 .uri(baseUrl())
                 .body(dto)
