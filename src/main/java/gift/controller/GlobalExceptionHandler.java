@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import gift.exception.ApprovalRequiredException;
 import gift.exception.ProductCreateException;
 import gift.exception.ProductNotFoundException;
 import gift.exception.ProductUpdateException;
@@ -24,6 +25,11 @@ public class GlobalExceptionHandler {
             .collect(Collectors.joining(" ")); // 여러 오류가 있을 경우, 공백으로 구분
 
         return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, errorMessage);
+    }
+
+    @ExceptionHandler(ApprovalRequiredException.class)
+    public ProblemDetail handleApprovalRequiredException(ApprovalRequiredException e) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
     }
 
     @ExceptionHandler(ProductNotFoundException.class)

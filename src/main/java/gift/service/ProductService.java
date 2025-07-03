@@ -11,6 +11,7 @@ import gift.dto.CreateProductResponse;
 import gift.dto.ProductResponse;
 import gift.dto.UpdateProductRequest;
 import gift.dto.UpdateProductResponse;
+import gift.exception.ApprovalRequiredException;
 import gift.exception.ProductCreateException;
 import gift.exception.ProductDeleteException;
 import gift.exception.ProductNotFoundException;
@@ -43,9 +44,7 @@ public class ProductService {
 
     @Transactional
     public CreateProductResponse createProduct(CreateProductRequest request) {
-        if (request.name().contains("카카오")) {
-            throw new ProductCreateException("'카카오'가 포함된 문구를 사용하시려면 담당 MD에게 문의해주세요.");
-        }
+        validateProductName(request.name());
 
         Product product = Product.of(request.name(), request.price(), request.imageUrl());
 
@@ -62,9 +61,7 @@ public class ProductService {
             throw new ProductNotFoundException("해당 상품이 존재하지 않습니다.");
         }
 
-        if (request.name().contains("카카오")) {
-            throw new ProductUpdateException("'카카오'가 포함된 문구를 사용하시려면 담당 MD에게 문의해주세요.");
-        }
+        validateProductName(request.name());
 
         Product newProduct = Product.of(id, request.name(), request.price(), request.imageUrl());
 
@@ -85,6 +82,13 @@ public class ProductService {
         int count = productRepository.delete(id);
         if (count != 1) {
             throw new ProductDeleteException("상품 삭제를 실패했습니다.");
+        }
+    }
+
+    private void validateProductName(String productName) {
+        if (productName.contains("카카오")) {
+            // 추후에 MD 승인이 있을 경우 예외를 발생시키지 않고 return하도록 수정 가능
+            throw new ApprovalRequiredException("'카카오'가 포함된 문구를 사용하시려면 담당 MD에게 문의해주세요.");
         }
     }
 }
