@@ -1,54 +1,88 @@
 package gift.entity;
 
+import java.util.List;
+
 public class Product {
+
+    private static List<String> prohibitedNames = List.of("카카오");
 
     private Long id;
     private String name;
     private Integer price;
     private String imageUrl;
+    private Boolean validated;
 
-    public Product(Long id, String name, Integer price, String imageUrl) {
+    public Product() {}
+
+    public Product(Long id, String name, Integer price, String imageUrl, Boolean validated) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
+        this.validated = validated;
     }
 
     public Product(String name, Integer price, String imageUrl) {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
+        this.validated = checkValidatedByName(name);
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Product updateId(Long id) {
+        return new Product(id, name, price, imageUrl, validated);
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public Product updateName(String name) {
+        return new Product(id, name, price, imageUrl, validated);
     }
 
     public String getName() {
         return name;
     }
 
-    public void setPrice(Integer price) {
-        this.price = price;
+    public Product updatePrice(Integer price) {
+        return new Product(id, name, price, imageUrl, validated);
     }
 
     public Integer getPrice() {
         return price;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public Product updateImageUrl(String imageUrl) {
+        return new Product(id, name, price, imageUrl, validated);
     }
 
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    public Product updateValidated(Boolean validated) {
+        return new Product(id, name, price, imageUrl, validated);
+    }
+
+    public Boolean getValidated() {
+        return validated;
+    }
+
+    public Product applyPatch(String name, Integer price, String imageUrl) {
+        String updatedName = name != null ? name : this.name;
+        Integer updatedPrice = price != null ? price : this.price;
+        String updatedimageUrl = imageUrl != null ? imageUrl : this.imageUrl;
+        Boolean updatedValidated = checkValidatedByName(updatedName);
+        return new Product(id, updatedName, updatedPrice, updatedimageUrl, updatedValidated);
+    }
+
+    private Boolean checkValidatedByName(String name) {
+        for (String prohibitedName : prohibitedNames) {
+            if (name.contains(prohibitedName)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

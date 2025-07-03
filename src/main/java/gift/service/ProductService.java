@@ -24,8 +24,7 @@ public class ProductService {
         if (optionalId.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Product creation failed");
         }
-        product.setId(optionalId.get());
-        return product;
+        return product.updateId(optionalId.get());
     }
 
     public Product getProductById(Long id) {
@@ -34,8 +33,8 @@ public class ProductService {
         return optionalProduct.get();
     }
 
-    public List<Product> getProductList() {
-        return productRepository.getProductList();
+    public List<Product> getProductList(Boolean visibility) {
+        return productRepository.getProductList(visibility);
     }
 
     public Product updateSelectivelyProductById(Long id, String name, Integer price, String imageUrl) {
@@ -44,28 +43,27 @@ public class ProductService {
         if (name == null && price == null && imageUrl == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정할 요소가 한개 이상은 작성되어야 합니다");
         }
-        Product product = optionalProduct.get();
-        if (name != null) {
-            product.setName(name);
-        }
-        if (price != null) {
-            product.setPrice(price);
-        }
-        if (imageUrl != null) {
-            product.setImageUrl(imageUrl);
-        }
-        throwNotFoundIfTrue(productRepository.updateProduct(product) == 1);
+        Product product = optionalProduct.get()
+                .applyPatch(name, price, imageUrl);
+        throwNotFoundIfTrue(!productRepository.updateProduct(product));
         return product;
     }
 
     public Product updateProductById(Long id, String name, Integer price, String imageUrl) {
-        Product product = new Product(id, name, price, imageUrl);
-        throwNotFoundIfTrue(productRepository.updateProduct(product) == 1);
+        Product product = new Product(id, name, price, imageUrl, true);
+        if (product.getName().contains("카카오")) {
+            product = product.updateValidated(false);
+        }
+        throwNotFoundIfTrue(!productRepository.updateProduct(product));
         return product;
     }
 
+    public void setProductValidated(Long id, Boolean validated) {
+        throwNotFoundIfTrue(!productRepository.setProductValidatedById(id, validated));
+    }
+
     public void deleteProductById(Long id) {
-        throwNotFoundIfTrue(productRepository.deleteProductById(id) == 1);
+        throwNotFoundIfTrue(!productRepository.deleteProductById(id));
     }
 
     private void throwNotFoundIfTrue(boolean condition) {

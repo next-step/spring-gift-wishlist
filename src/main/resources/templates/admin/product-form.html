@@ -5,9 +5,17 @@
     <title>상품정보 작성</title>
 </head>
 <body>
-    <h2>상품정보 작성</h2>
-    <h3 th:if="${productId != null}" th:inline="text">- [[${productId}]]번 상품</h3>
-    <h3 th:if="${productId == null}">- 신규 상품</h3>
+    <h1>상품정보 작성</h1>
+    <h2 th:if="${productId != null}" th:inline="text">- [[${productId}]]번 상품</h2>
+    <h2 th:if="${productId == null}">- 신규 상품</h2>
+    <h3 th:if="${productId != null}" th:text="${validated} ? '✅상품이 검증 완료되어, 현재 공개 상태입니다' : '🛑상품명이 담당MD에 의해 검증되지 않은 상태입니다'">안내문</h3>
+    <form th:if="${productId != null}"
+          th:with="actionUrl='/admin/products/' + ${productId} + '?validated=' + ${!validated}"
+          th:action="@{${actionUrl}}"
+          method="post" style="display:inline">
+        <input type="hidden" name="_method" value="patch" />
+        <button type="submit">Change Validated Status</button>
+    </form>
     <form th:action="${productId == null} ? @{/admin/products} : @{/admin/products/{id}(id=${productId})}"
           method="post"
           th:object="${product}">

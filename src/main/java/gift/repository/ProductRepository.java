@@ -20,10 +20,11 @@ public class ProductRepository {
 
     public Optional<Long> saveNewProduct(Product product) {
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcClient.sql("insert into product (name, price, image_url) values (:name, :price, :imageUrl)")
+        jdbcClient.sql("insert into product (name, price, image_url, validated) values (:name, :price, :imageUrl, :validated)")
             .param("name", product.getName())
             .param("price", product.getPrice())
             .param("imageUrl", product.getImageUrl())
+            .param("validated", product.getValidated())
             .update(keyHolder);
         return Optional.ofNullable(keyHolder.getKeyAs(Long.class));
     }
@@ -35,27 +36,34 @@ public class ProductRepository {
             .optional();
     }
 
-    public List<Product> getProductList() {
-        return jdbcClient.sql("select * from product")
+    public List<Product> getProductList(Boolean validated) {
+        return jdbcClient.sql("select * from product where validated = :validated")
+            .param("validated", validated)
             .query(getProductRowMapper())
             .list();
     }
 
-    // return updated row counts
-    public int updateProduct(Product product) {
-        return jdbcClient.sql("update product set name = :name, price = :price, image_url = :imageUrl where id = :id")
+    public boolean updateProduct(Product product) {
+        return jdbcClient.sql("update product set name = :name, price = :price, image_url = :imageUrl, validated = :validated where id = :id")
             .param("id", product.getId())
             .param("name", product.getName())
             .param("price", product.getPrice())
             .param("imageUrl", product.getImageUrl())
-            .update();
+            .param("validated", product.getValidated())
+            .update() == 1;
     }
 
-    // return updated row counts
-    public int deleteProductById(Long id) {
+    public boolean setProductValidatedById(Long id, Boolean validated) {
+        return jdbcClient.sql("update product set validated = :validated where id = :id")
+            .param("id", id)
+            .param("validated", validated)
+            .update() == 1;
+    }
+
+    public boolean deleteProductById(Long id) {
         return jdbcClient.sql("delete from product where id = :id")
             .param("id", id)
-            .update();
+            .update() == 1;
     }
 
     private static RowMapper<Product> getProductRowMapper() {
@@ -64,7 +72,8 @@ public class ProductRepository {
             String name = rs.getString("name");
             Integer price = rs.getInt("price");
             String imageUrl = rs.getString("image_url");
-            return new Product(id, name, price, imageUrl);
+            Boolean validated = rs.getBoolean("validated");
+            return new Product(id, name, price, imageUrl, validated);
         };
     }
 }

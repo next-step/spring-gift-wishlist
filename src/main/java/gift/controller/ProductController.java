@@ -1,8 +1,8 @@
 package gift.controller;
 
-import gift.dto.ProductPatchDto;
-import gift.dto.ProductRequestDto;
-import gift.dto.ProductResponseDto;
+import gift.dto.PatchProductRequest;
+import gift.dto.CreateProductRequest;
+import gift.dto.ProductResponse;
 import gift.entity.Product;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
@@ -23,8 +23,8 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductResponseDto> createProduct(
-            @Valid @RequestBody ProductRequestDto request
+    public ResponseEntity<ProductResponse> createProduct(
+            @Valid @RequestBody CreateProductRequest request
     ) {
         Product created = productService.createProduct(
                 request.name(),
@@ -33,24 +33,24 @@ public class ProductController {
         );
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(ProductResponseDto.from(created));
+                .body(ProductResponse.from(created));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductResponseDto> getProductById(
+    public ResponseEntity<ProductResponse> getProductById(
             @PathVariable Long id
     ) {
         Product product = productService.getProductById(id);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(ProductResponseDto.from(product));
+                .body(ProductResponse.from(product));
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductResponseDto>> getAllProducts() {
-        List<Product> products = productService.getProductList();
-        List<ProductResponseDto> response = products.stream()
-                .map(product -> ProductResponseDto.from(product))
+    public ResponseEntity<List<ProductResponse>> getAllProducts() {
+        List<Product> products = productService.getProductList(true);
+        List<ProductResponse> response = products.stream()
+                .map(product -> ProductResponse.from(product))
                 .toList();
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -58,20 +58,20 @@ public class ProductController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ProductResponseDto> updateProductById(
+    public ResponseEntity<ProductResponse> updateProductById(
             @PathVariable Long id,
-            @Valid @RequestBody ProductPatchDto patch
+            @Valid @RequestBody PatchProductRequest patch
     ) {
         Product product = productService.updateSelectivelyProductById(
                 id,
-                patch.getName(),
-                patch.getPrice(),
-                patch.getImageUrl()
+                patch.name(),
+                patch.price(),
+                patch.imageUrl()
         );
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(ProductResponseDto.from(product));
+                .body(ProductResponse.from(product));
     }
 
     @DeleteMapping("/{id}")
