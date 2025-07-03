@@ -1,8 +1,6 @@
 package gift.repository;
 
-import gift.dto.ProductRequestDto;
-import gift.dto.ProductResponseDto;
-import gift.exception.ProductNotFoundException;
+import gift.entity.Product;
 import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
@@ -22,10 +20,10 @@ public class ProductJdbcRepositoryImpl implements ProductRepository {
   }
 
   @Override
-  public List<ProductResponseDto> findAllProduct() {
+  public List<Product> findAllProduct() {
     String sql = "select * from products";
     return jdbcTemplate.query(sql, (rs, rowNum) ->
-        new ProductResponseDto(
+        new Product(
             rs.getLong("id"),
             rs.getString("name"),
             rs.getLong("price"),
@@ -35,11 +33,11 @@ public class ProductJdbcRepositoryImpl implements ProductRepository {
   }
 
   @Override
-  public Optional<ProductResponseDto> findProductById(Long id) {
+  public Optional<Product> findProductById(Long id) {
     String sql = "select * from products where id=?";
     try {
-      ProductResponseDto result = jdbcTemplate.queryForObject(sql,
-          (rs, rowNum) -> new ProductResponseDto(
+      Product result = jdbcTemplate.queryForObject(sql,
+          (rs, rowNum) -> new Product(
               rs.getLong("id"),
               rs.getString("name"),
               rs.getLong("price"),
@@ -52,40 +50,35 @@ public class ProductJdbcRepositoryImpl implements ProductRepository {
   }
 
   @Override
-  public ProductResponseDto createProduct(ProductRequestDto requestDto) {
+  public Product createProduct(Product product) {
 
     KeyHolder keyHolder = new GeneratedKeyHolder();
 
     String sql = "insert into products (name,price,imageUrl) values (?, ?, ?)";
-    jdbcTemplate.update(connection -> {
+    jdbcTemplate.update((connection) -> {
       PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-      ps.setString(1, requestDto.getName());
-      ps.setLong(2, requestDto.getPrice());
-      ps.setString(3, requestDto.getImageUrl());
+      ps.setString(1, product.getName());
+      ps.setLong(2, product.getPrice());
+      ps.setString(3, product.getImageUrl());
       return ps;
     }, keyHolder);
 
     Long generatedId = keyHolder.getKey().longValue();
-
-    ProductResponseDto responseDto = new ProductResponseDto(generatedId, requestDto.getName(),
-        requestDto.getPrice(),
-        requestDto.getImageUrl());
-    return responseDto;
+    product.setId(generatedId);
+    return product;
   }
 
   @Override
-  public Optional<ProductResponseDto> updateProduct(Long id, ProductRequestDto requestDto) {
+  public Optional<Product> updateProduct(Long id, Product product) {
     String sql = "update products set name=?, price=?, imageUrl=? where id=?";
-    int update = jdbcTemplate.update(sql, requestDto.getName(), requestDto.getPrice(),
-        requestDto.getImageUrl(),
+    int update = jdbcTemplate.update(sql, product.getName(), product.getPrice(),
+        product.getImageUrl(),
         id);
     if (update == 0) {
       return Optional.empty();
     }
-    ProductResponseDto responseDto = new ProductResponseDto(id, requestDto.getName(),
-        requestDto.getPrice(),
-        requestDto.getImageUrl());
-    return Optional.of(responseDto);
+    product.setId(id);
+    return Optional.of(product);
   }
 
   @Override
