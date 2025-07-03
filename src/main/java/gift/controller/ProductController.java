@@ -5,9 +5,10 @@ import gift.entity.*;
 
 import gift.repository.ProductRepository;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
+//import java.math.BigDecimal;
 import java.net.URI;
 import java.util.*;
 
@@ -37,11 +38,14 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<?> add(@RequestBody ProductRequestDto request) {
+    public ResponseEntity<?> add(@RequestBody @valid ProductRequestDto request) {
+        /*
         String error = validate(request);
         if (error != null) {
             return ResponseEntity.badRequest().body(error);
         }
+        */
+
 
         Product product = new Product(
                 null,
@@ -86,6 +90,7 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
+    /*
     private String validate(ProductRequestDto request) {
         if (request.getName() == null || request.getName().isBlank()) {
             return "상품 이름은 비어 있을 수 없습니다.";
@@ -98,4 +103,5 @@ public class ProductController {
         }
         return null;
     }
+    */
 }
