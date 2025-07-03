@@ -75,7 +75,7 @@ class AdminPageControllerTest {
                 .param("imageUrl", mockProduct.getImageUrl())
             )
             .andExpect(view().name("admin/product-form"))
-            .andExpect(model().attributeHasErrors("productRequestDto"));
+            .andExpect(model().attributeHasErrors("createProductRequest"));
     }
 
     @Test
@@ -126,7 +126,7 @@ class AdminPageControllerTest {
                 .param("imageUrl", "")
             )
             .andExpect(view().name("admin/product-form"))
-            .andExpect(model().attributeHasErrors("productRequestDto"));
+            .andExpect(model().attributeHasErrors("updateProductRequest"));
     }
 
     @Test
