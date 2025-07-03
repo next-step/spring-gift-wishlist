@@ -1,9 +1,12 @@
 package gift.dto;
 
 import gift.entity.Product;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 
-public record ProductRequestDto (
+public record UpdateProductRequest(
         @NotNull(message = "상품명은 필수적으로 작성되어야 합니다.")
         @Size(min = 0, max = 15, message = "상품명은 15자 이내여야 합니다.")
         @Pattern(
@@ -20,11 +23,11 @@ public record ProductRequestDto (
         @Size(min = 0, max = 255, message = "상품 이미지 URL은 255자 이내여야 합니다.")
         String imageUrl
 ) {
-    public static ProductRequestDto empty() {
-        return new ProductRequestDto("", 1, "");
+    public static UpdateProductRequest empty() {
+        return new UpdateProductRequest("", 1, "");
     }
-    public static ProductRequestDto from(Product product) {
-        return new ProductRequestDto(
+    public static UpdateProductRequest from(Product product) {
+        return new UpdateProductRequest(
                 product.getName(),
                 product.getPrice(),
                 product.getImageUrl()

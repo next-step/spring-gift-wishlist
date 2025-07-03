@@ -1,7 +1,8 @@
 package gift;
 
-import gift.dto.ProductPatchDto;
-import gift.dto.ProductRequestDto;
+import gift.dto.PatchProductRequest;
+import gift.dto.CreateProductRequest;
+import gift.dto.UpdateProductRequest;
 import gift.entity.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,7 +37,7 @@ public class ProductControllerTest {
     @Test
     void 유효한_생성_시_201_CREATED() {
         String url = baseUrl + port + "/api/products";
-        ProductRequestDto requestDto = new ProductRequestDto(
+        CreateProductRequest requestDto = new CreateProductRequest(
                 "아이스 카페 아메리카노 T",
                 4700,
                 "https://st.kakaocdn.net/product/gift/product/20231010111814_9a667f9eccc943648797925498bdd8a3.jpg"
@@ -53,7 +54,7 @@ public class ProductControllerTest {
     @Test
     void 유효하지_않은_생성_시_400_BAD_REQUEST() {
         String url = baseUrl + port + "/api/products";
-        ProductRequestDto requestDto = new ProductRequestDto(null, null, null);
+        CreateProductRequest requestDto = new CreateProductRequest(null, null, null);
         assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
                 .isThrownBy(
                         () ->
@@ -92,7 +93,7 @@ public class ProductControllerTest {
     @Test
     void 유효한_수정_시_200_OK() {
         String url = baseUrl + port + "/api/products/1";
-        ProductPatchDto patchDto = new ProductPatchDto(
+        UpdateProductRequest patchDto = new UpdateProductRequest(
                 "각하오 커피",
                 7800,
                 null
@@ -109,7 +110,7 @@ public class ProductControllerTest {
     @Test
     void 유효하지_않은_수정_시_400_BAD_REQUEST() {
         String url = baseUrl + port + "/api/products/1";
-        ProductPatchDto patchDto = new ProductPatchDto(null, null, null);
+        UpdateProductRequest patchDto = new UpdateProductRequest(null, null, null);
         assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
                 .isThrownBy(
                         () ->

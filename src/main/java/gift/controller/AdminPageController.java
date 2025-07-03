@@ -1,7 +1,8 @@
 package gift.controller;
 
-import gift.dto.ProductRequestDto;
-import gift.dto.ProductResponseDto;
+import gift.dto.CreateProductRequest;
+import gift.dto.ProductResponse;
+import gift.dto.UpdateProductRequest;
 import gift.entity.Product;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
@@ -30,8 +31,8 @@ public class AdminPageController {
             Model model
     ) {
         List<Product> products = productService.getProductList(validated);
-        List<ProductResponseDto> response = products.stream()
-                .map(product -> ProductResponseDto.from(product))
+        List<ProductResponse> response = products.stream()
+                .map(product -> ProductResponse.from(product))
                 .toList();
         model.addAttribute("products", response);
         model.addAttribute("validated", validated);
@@ -42,14 +43,14 @@ public class AdminPageController {
     @GetMapping("/new")
     public String newProduct(Model model) {
         model.addAttribute("productId", null);
-        model.addAttribute("product", ProductRequestDto.empty());
+        model.addAttribute("product", CreateProductRequest.empty());
         return "admin/product-form";
     }
 
     // 신규상품 등록 form 받고, 검증 및 redirection 수행
     @PostMapping
     public String newProduct(
-            @Valid @ModelAttribute ProductRequestDto request,
+            @Valid @ModelAttribute CreateProductRequest request,
             BindingResult bindingResult,
             Model model,
             RedirectAttributes redirectAttributes
@@ -89,7 +90,7 @@ public class AdminPageController {
             Model model
     ) {
         Product product = productService.getProductById(id);
-        ProductRequestDto dto = ProductRequestDto.from(product);
+        UpdateProductRequest dto = UpdateProductRequest.from(product);
         Boolean validated = product.getValidated();
         model.addAttribute("productId", id);
         model.addAttribute("product", dto);
@@ -100,7 +101,7 @@ public class AdminPageController {
     @PutMapping("/{id}")
     public String updateProduct(
             @PathVariable Long id,
-            @Valid @ModelAttribute ProductRequestDto request,
+            @Valid @ModelAttribute UpdateProductRequest request,
             BindingResult bindingResult,
             Model model,
             RedirectAttributes redirectAttributes
