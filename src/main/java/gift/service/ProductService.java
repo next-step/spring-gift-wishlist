@@ -19,9 +19,7 @@ public class ProductService {
     }
 
     public Product create(String name, int price, String imageUrl) {
-        if (name.contains("카카오")) {
-            throw new IllegalArgumentException("'카카오'가 포함된 상품명은 MD와 협의 후 등록 가능합니다.");
-        }
+        validateNameContainKakao(name);
         return repository.save(name, price, imageUrl);
     }
 
@@ -86,6 +84,8 @@ public class ProductService {
 
     public void update(Long id, String name, int price, String imageUrl) {
 
+        validateNameContainKakao(name);
+
         // 상품 존재 여부 확인
         Optional<Product> product = repository.findById(id);
         if (product.isEmpty()) {throw new ProductNotFoundException(id);}
@@ -100,6 +100,12 @@ public class ProductService {
         // 여러 상품이 수정 되어버린 경우
         if (updatedCount > 1) {
             throw new IllegalStateException("ID 중복으로 인해 여러 상품이 수정되었습니다.");
+        }
+    }
+
+    private void validateNameContainKakao(String name) {
+        if (name.contains("카카오")) {
+            throw new IllegalArgumentException("'카카오'가 포함된 상품명은 MD와 협의 후 등록 가능합니다.");
         }
     }
 
