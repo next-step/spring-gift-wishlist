@@ -4,16 +4,16 @@ public class Product {
 
     Long id;
     String name;
-    Integer price;
+    Long price;
     String imageURL;
 
-    public Product(String name, Integer price, String imageURL) {
+    public Product(String name, Long price, String imageURL) {
         this.name = name;
         this.price = price;
         this.imageURL = imageURL;
     }
 
-    public Product(Long id, String name, Integer price, String imageURL) {
+    public Product(Long id, String name, Long price, String imageURL) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -28,7 +28,7 @@ public class Product {
         return name;
     }
 
-    public Integer getPrice() {
+    public Long getPrice() {
         return price;
     }
 

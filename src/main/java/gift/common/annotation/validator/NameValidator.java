@@ -13,33 +13,47 @@ public class NameValidator implements ConstraintValidator<NameValidation, String
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        int length = value.length();
+        return isLengthValid(value, context)
+            && isPatternValid(value, context)
+            && isAllowedWordValid(value, context);
+    }
 
-        if (MIN_LENGTH > length || MAX_LENGTH < length) { // 상품명 길이 검증
-            context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate(
+    private boolean isLengthValid(String value, ConstraintValidatorContext context) {
+        if (MIN_LENGTH > value.length() || MAX_LENGTH < value.length()) {
+            buildViolation(
+                context,
                 "상품 이름은 공백을 포함하여 최대 15글자까지 입력할 수 있습니다."
-            ).addConstraintViolation();
+            );
             return false;
         }
-
-        if (!value.matches(ALLOWED_PATTERN)) { // 상품명 패턴 검증
-            context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate(
-                "상품 이름은 한글, 영어, 숫자, 특수문자(( ), [ ], +, -, &, /, _) 외 다른 문자가 들어갈 수 없습니다."
-            ).addConstraintViolation();
-            return false;
-        }
-
-        if (value.contains(NOT_ALLOWED_WORD)) { // 상품명에 '카카오' 포함 여부 검증
-            context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate(
-                "'카카오'가 포함된 문구는 담당 MD와 협의한 경우에만 사용할 수 있습니다."
-            ).addConstraintViolation();
-            return false;
-        }
-
         return true;
+    }
+
+    private boolean isPatternValid(String value, ConstraintValidatorContext context) {
+        if (!value.matches(ALLOWED_PATTERN)) {
+            buildViolation(
+                context,
+                "상품 이름은 한글, 영어, 숫자, 특수문자(( ), [ ], +, -, &, /, _) 외 다른 문자가 들어갈 수 없습니다."
+            );
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isAllowedWordValid(String value, ConstraintValidatorContext context) {
+        if (value.contains(NOT_ALLOWED_WORD)) {
+            buildViolation(
+                context,
+                "'카카오'가 포함된 문구는 담당 MD와 협의한 경우에만 사용할 수 있습니다."
+            );
+            return false;
+        }
+        return true;
+    }
+
+    private void buildViolation(ConstraintValidatorContext context, String message) {
+        context.disableDefaultConstraintViolation();
+        context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
     }
 
 }
