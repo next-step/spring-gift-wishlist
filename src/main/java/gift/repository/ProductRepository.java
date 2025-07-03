@@ -4,6 +4,8 @@ import gift.entity.Product;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,13 +22,16 @@ public class ProductRepository {
 
     public Product save(Product product) {
         String sql = "INSERT INTO products (name, price, image_url) VALUES (?, ?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcClient
                 .sql(sql)
                 .param(product.getName())
                 .param(product.getPrice())
                 .param(product.getImageUrl())
-                .update();
-        return product;
+                .update(keyHolder, "id");
+
+        Long id = keyHolder.getKey().longValue();
+        return new Product(id, product.getName(), product.getPrice(), product.getImageUrl());
     }
 
     private Product mapRowToProduct(ResultSet rs, int rowNum) throws SQLException {
