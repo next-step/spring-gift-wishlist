@@ -77,18 +77,18 @@ public class AdminController {
             @RequestParam(required = false) Long id,
             Model model
     ) {
-        Optional<Product> product = productService.findOne(id);
-        if (product.isPresent()) {
-            model.addAttribute("product", product.get());
-            return "productinfo";
-        }
-
+        //상품 검색하기에 아무런 id를 입력하지 않은 경우 -> 전체 상품을 조회하는 페이지로 이동
         if(id == null){
             return "redirect:/admin";
         }
 
-        String errorMsg = "상품 ID가 " + id + "인 상품은 존재하지 않습니다.";
-        throw new ProductNotFoundException(errorMsg);
+        Optional<Product> product = productService.findOne(id);
+        if (product.isEmpty()) {
+            String errorMsg = "상품 ID가 " + id + "인 상품은 존재하지 않습니다.";
+            throw new ProductNotFoundException(errorMsg);
+        }
+        model.addAttribute("product", product.get());
+        return "productinfo";
     }
 
     //read
