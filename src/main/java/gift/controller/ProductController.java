@@ -56,12 +56,4 @@ public class ProductController {
         productService.deleteProductById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
-
-    @PatchMapping("/{id}")
-    public ResponseEntity<Void> acceptedProductById(@PathVariable Long id) {
-        productService.acceptedProductById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
 }

@@ -8,14 +8,12 @@ public class Product {
     private String name;
     private Long price;
     private String imageUrl;
-    private Boolean acceptedByMD;
 
-    public Product(Long id, String name, Long price, String imageUrl, Boolean acceptedByMD) {
+    public Product(Long id, String name, Long price, String imageUrl) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
-        this.acceptedByMD = acceptedByMD;
 
     }
 
@@ -33,9 +31,5 @@ public class Product {
 
     public String getImageUrl() {
         return imageUrl;
-    }
-
-    public Boolean getAcceptedByMD() {
-        return acceptedByMD;
     }
 }

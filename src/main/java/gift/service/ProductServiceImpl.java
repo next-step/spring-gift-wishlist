@@ -23,14 +23,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponseDto createProduct(CreateProductRequestDto requestDto) {
-        Product newProduct;
-        if (requestDto.name().contains("카카오")) {
-            newProduct = new Product(null, requestDto.name(), requestDto.price(),
-                    requestDto.imageUrl(), false);
-        } else {
-            newProduct = new Product(null, requestDto.name(), requestDto.price(),
-                    requestDto.imageUrl(), true);
-        }
+
+        Product newProduct = new Product(null, requestDto.name(), requestDto.price(),
+                requestDto.imageUrl());
+
         Product savedProduct = productRepository.createProduct(newProduct);
 
         return new ProductResponseDto(savedProduct.getId(), savedProduct.getName(),
@@ -54,10 +50,6 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponseDto findProductById(Long id) {
         Product find = findProductByIdOrElseThrow(id);
 
-        if (!find.getAcceptedByMD()) {
-            throw new CustomException(ErrorCode.Forbidden);
-        }
-
         ProductResponseDto responseDto = new ProductResponseDto(find.getId(), find.getName(),
                 find.getPrice(), find.getImageUrl());
         return responseDto;
@@ -66,16 +58,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponseDto updateProductById(Long id, CreateProductRequestDto requestDto) {
         Product find = findProductByIdOrElseThrow(id);
-        Boolean accepted;
-
-        if (requestDto.name().contains("카카오") || find.getAcceptedByMD() == false) {
-            accepted = false;
-        } else {
-            accepted = true;
-        }
-
         Product newProduct = new Product(id, requestDto.name(), requestDto.price(),
-                requestDto.imageUrl(), accepted);
+                requestDto.imageUrl());
 
         productRepository.updateProductById(id, newProduct);
         Product updated = findProductByIdOrElseThrow(id);
@@ -87,12 +71,6 @@ public class ProductServiceImpl implements ProductService {
     public void deleteProductById(Long id) {
         findProductByIdOrElseThrow(id);
         productRepository.deleteProductById(id);
-    }
-
-    @Override
-    public void acceptedProductById(Long id) {
-        findProductByIdOrElseThrow(id);
-        productRepository.acceptedProductById(id);
     }
 
     private Product findProductByIdOrElseThrow(Long id) {

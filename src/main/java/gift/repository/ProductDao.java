@@ -14,7 +14,6 @@ import org.springframework.stereotype.Repository;
 public class ProductDao implements ProductRepository {
 
     private final JdbcClient client;
-
     public ProductDao(JdbcClient client) {
         this.client = client;
     }
@@ -24,31 +23,30 @@ public class ProductDao implements ProductRepository {
             String name = rs.getString("name");
             Long price = rs.getLong("price");
             String imageUrl = rs.getString("imageUrl");
-            Boolean acceptedByMD = rs.getBoolean("acceptedByMD");
 
-            return new Product(id, name, price, imageUrl, acceptedByMD);
+            return new Product(id, name, price, imageUrl);
         };
 
     @Override
     public Product createProduct(Product newProduct) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        String sql = "insert into products(name, price, imageUrl, acceptedByMD) values (:name, :price, :imageUrl, :acceptedByMD);";
+        String sql = "insert into products(name, price, imageUrl) values (:name, :price, :imageUrl);";
         client.sql(sql)
                 .param("name", newProduct.getName())
                 .param("price", newProduct.getPrice())
                 .param("imageUrl", newProduct.getImageUrl())
-                .param("acceptedByMD", newProduct.getAcceptedByMD())
                 .update(keyHolder);
 
         Product savedProduct = new Product(keyHolder.getKey().longValue(), newProduct.getName(),
                 newProduct.getPrice(),
-                newProduct.getImageUrl(), newProduct.getAcceptedByMD());
+                newProduct.getImageUrl());
+
         return savedProduct;
     }
 
     @Override
     public List<Product> findAllProducts() {
-        String sql = "select id, name, price, imageUrl, acceptedByMD from products where acceptedByMD = TRUE;";
+        String sql = "select id, name, price, imageUrl from products;";
         return client.sql(sql)
                 .query(getProductRowMapper)
                 .list();
@@ -56,7 +54,7 @@ public class ProductDao implements ProductRepository {
 
     @Override
     public Optional<Product> findProductById(Long id) {
-        String sql = "select id, name, price, imageUrl, acceptedByMD from products where id = :id;";
+        String sql = "select id, name, price, imageUrl from products where id = :id;";
         return client.sql(sql)
                 .param("id", id)
                 .query(getProductRowMapper)
@@ -73,26 +71,18 @@ public class ProductDao implements ProductRepository {
 
     @Override
     public Product updateProductById(Long id, Product newProduct) {
-        String sql = "update products set name = :name, price = :price, imageUrl = :imageUrl, acceptedByMD = :acceptedByMD where id = :id;";
+        String sql = "update products set name = :name, price = :price, imageUrl = :imageUrl where id = :id;";
         client.sql(sql)
                 .param("name", newProduct.getName())
                 .param("price", newProduct.getPrice())
                 .param("imageUrl", newProduct.getImageUrl())
                 .param("id", newProduct.getId())
-                .param("acceptedByMD", newProduct.getAcceptedByMD())
                 .update();
 
         Product updatedProduct = new Product(id, newProduct.getName(),
                 newProduct.getPrice(),
-                newProduct.getImageUrl(), newProduct.getAcceptedByMD());
-        return updatedProduct;
-    }
+                newProduct.getImageUrl());
 
-    @Override
-    public void acceptedProductById(Long id) {
-        String sql = "update products set acceptedByMD = TRUE where id = :id;";
-        client.sql(sql)
-                .param("id", id)
-                .update();
+        return updatedProduct;
     }
 }
