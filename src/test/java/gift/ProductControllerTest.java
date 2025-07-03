@@ -68,4 +68,17 @@ public class ProductControllerTest {
             .andExpect(jsonPath("$.error").value("'카카오'가 포함된 상품은 MD 승인이 필요합니다."));
     }
 
+    @Test
+    @DisplayName("[API] 상품 등록 실패 - 상품명 없음")
+    void createProduct_fail_blankName() throws Exception {
+
+        var dto = new ProductCreateRequestDto("", 15000, "https://image.com/item.jpg");
+
+        mockMvc.perform(post("/api/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.name").value("상품명은 필수입니다."));
+    }
+
 }
