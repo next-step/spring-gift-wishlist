@@ -27,6 +27,12 @@ public class ProductCreateRequestDto {
     @NotBlank(message = "이미지 URL은 필수입니다.")
     private String imageUrl;
 
+    public ProductCreateRequestDto(String name, Integer price, String imageUrl) {
+        this.name = name;
+        this.price = price;
+        this.imageUrl = imageUrl;
+    }
+
     public String getName() {
         return name;
     }
