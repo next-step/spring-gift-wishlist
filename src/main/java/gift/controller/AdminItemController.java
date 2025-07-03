@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -56,41 +55,25 @@ public class AdminItemController {
         if (bindingResult.hasErrors()) {
             return "admin/items/form";
         }
-        try {
-            itemService.createItem(itemRequest);
-            redirectAttributes.addFlashAttribute("message", "상품이 성공적으로 등록되었습니다!");
-            return "redirect:/admin/items";
-        } catch (
-            ResponseStatusException ex) { // 현재 단계에서는 HTTP에 종속된다는 문제가 있음(아래 try-catch 문들도 동일). 추후 예외 처리를 고도화할 필요가 있는 코드
-            redirectAttributes.addFlashAttribute("errorMessage", ex.getReason());
-            return "admin/items/form";
-        }
+        itemService.createItem(itemRequest);
+        redirectAttributes.addFlashAttribute("message", "상품이 성공적으로 등록되었습니다!");
+        return "redirect:/admin/items";
     }
 
     @GetMapping("/{id}")
     public String detailItem(@PathVariable("id") Long id, Model model) {
-        try {
-            ItemResponse item = itemService.getItemById(id);
-            model.addAttribute("item", item);
-        } catch (ResponseStatusException ex) {
-            model.addAttribute("errorMessage", ex.getReason());
-            model.addAttribute("item", null);
-        }
+        ItemResponse item = itemService.getItemById(id);
+        model.addAttribute("item", item);
         return "admin/items/detail";
     }
 
     @GetMapping("/{id}/edit")
     public String editItemForm(@PathVariable("id") Long id, Model model) {
-        try {
-            ItemResponse item = itemService.getItemById(id);
-            model.addAttribute("item",
-                new ItemRequest(item.name(), item.price(), item.imageUrl()));
-            model.addAttribute("itemId", id);
-            return "admin/items/form";
-        } catch (ResponseStatusException ex) {
-            model.addAttribute("errorMessage", ex.getReason());
-            return "redirect:/admin/items";
-        }
+        ItemResponse item = itemService.getItemById(id);
+        model.addAttribute("item",
+            new ItemRequest(item.name(), item.price(), item.imageUrl()));
+        model.addAttribute("itemId", id);
+        return "admin/items/form";
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
@@ -103,14 +86,9 @@ public class AdminItemController {
         if (bindingResult.hasErrors()) {
             return "admin/items/form";
         }
-        try {
-            itemService.updateItem(id, itemRequest);
-            redirectAttributes.addFlashAttribute("message", "상품이 성공적으로 수정되었습니다!");
-            return "redirect:/admin/items/" + id;
-        } catch (ResponseStatusException ex) {
-            redirectAttributes.addFlashAttribute("errorMessage", ex.getReason());
-            return "admin/items/form";
-        }
+        itemService.updateItem(id, itemRequest);
+        redirectAttributes.addFlashAttribute("message", "상품이 성공적으로 수정되었습니다!");
+        return "redirect:/admin/items/" + id;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
@@ -118,12 +96,8 @@ public class AdminItemController {
         @PathVariable("id") Long id,
         RedirectAttributes redirectAttributes
     ) {
-        try {
-            itemService.deleteItem(id);
-            redirectAttributes.addFlashAttribute("message", "상품이 성공적으로 삭제되었습니다!");
-        } catch (ResponseStatusException ex) {
-            redirectAttributes.addFlashAttribute("errorMessage", ex.getReason());
-        }
+        itemService.deleteItem(id);
+        redirectAttributes.addFlashAttribute("message", "상품이 성공적으로 삭제되었습니다!");
         return "redirect:/admin/items";
     }
 }
