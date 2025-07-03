@@ -250,4 +250,18 @@ public class ProductControllerTest {
             .andExpect(jsonPath("$.imageUrl").value("https://image.com/new.jpg"));
     }
 
+    @Test
+    @DisplayName("[API] 상품 수정 실패 - 없는 ID(404)")
+    void updateProduct_notFound() throws Exception {
+        var dto = new ProductUpdateRequestDto(
+            "새 이름", 500, "https://image.com/ok.jpg"
+        );
+
+        mockMvc.perform(put("/api/products/{id}", 9999L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)))
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.error").value("상품을 찾을 수 없습니다."));
+    }
+
 }
