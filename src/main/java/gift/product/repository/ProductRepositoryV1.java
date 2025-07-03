@@ -1,7 +1,7 @@
 package gift.product.repository;
 
 import gift.domain.Product;
-import gift.global.exception.NotFoundProductException;
+import gift.global.exception.NotFoundEntityException;
 
 import java.util.*;
 
@@ -30,13 +30,13 @@ public class ProductRepositoryV1 implements ProductRepository{
 
     public void deleteById(UUID id) {
         if (products.containsKey(id)) products.remove(id);
-        else throw new NotFoundProductException("삭제 실패 - 존재하지 않는 상품입니다");
+        else throw new NotFoundEntityException("삭제 실패 - 존재하지 않는 상품입니다");
     }
 
 
     public void update(Product product) {
         UUID id = product.getId();
-        if (!products.containsKey(id)) throw new NotFoundProductException("수정 실패 - 존재하지 않는 상품입니다");
+        if (!products.containsKey(id)) throw new NotFoundEntityException("수정 실패 - 존재하지 않는 상품입니다");
 
         products.put(id, product);
     }

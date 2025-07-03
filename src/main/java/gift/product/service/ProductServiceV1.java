@@ -1,7 +1,7 @@
 package gift.product.service;
 
 import gift.domain.Product;
-import gift.global.exception.NotFoundProductException;
+import gift.global.exception.NotFoundEntityException;
 import gift.product.dto.ProductCreateRequest;
 import gift.product.dto.ProductResponse;
 import gift.product.dto.ProductUpdateRequest;
@@ -35,21 +35,21 @@ public class ProductServiceV1 implements ProductService{
 
     public ProductResponse findProduct(UUID id) {
         Product findProduct = productRepository.findById(id)
-                .orElseThrow(() -> new NotFoundProductException("상품이 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundEntityException("상품이 존재하지 않습니다."));
         return new ProductResponse(findProduct);
     }
 
     public void deleteProduct(UUID id) {
 
         productRepository.findById(id)
-                .orElseThrow(() -> new NotFoundProductException("상품이 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundEntityException("상품이 존재하지 않습니다."));
 
         productRepository.deleteById(id);
     }
 
     public void updateProduct(UUID id, ProductUpdateRequest dto) {
         productRepository.findById(id)
-                .orElseThrow(() -> new NotFoundProductException("상품이 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundEntityException("상품이 존재하지 않습니다."));
 
         productRepository.update(new Product(id, dto.getName(), dto.getPrice(), dto.getImageURL()));
     }

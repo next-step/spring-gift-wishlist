@@ -4,7 +4,7 @@ import gift.global.error.ErrorResponse;
 import gift.global.error.FieldErrorResponse;
 import gift.global.error.ObjectErrorResponse;
 import gift.global.exception.CustomDatabaseException;
-import gift.global.exception.NotFoundProductException;
+import gift.global.exception.NotFoundEntityException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -17,8 +17,8 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(NotFoundProductException.class)
-    public ResponseEntity<Map<String, String>> handleNotFoundProductException(NotFoundProductException ex) {
+    @ExceptionHandler(NotFoundEntityException.class)
+    public ResponseEntity<Map<String, String>> handleNotFoundProductException(NotFoundEntityException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", ex.getMessage()));
     }
 

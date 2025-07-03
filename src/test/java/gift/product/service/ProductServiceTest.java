@@ -1,7 +1,7 @@
 package gift.product.service;
 
 import gift.domain.Product;
-import gift.global.exception.NotFoundProductException;
+import gift.global.exception.NotFoundEntityException;
 import gift.product.dto.ProductCreateRequest;
 import gift.product.dto.ProductResponse;
 import gift.product.dto.ProductUpdateRequest;
@@ -52,7 +52,7 @@ class ProductServiceTest {
     @DisplayName("상품 조회 실패")
     void getProductSuccess() {
         assertThatThrownBy(()-> productService.findProduct(UUID.randomUUID()))
-                .isInstanceOf(NotFoundProductException.class);
+                .isInstanceOf(NotFoundEntityException.class);
     }
 
     @Test
@@ -62,14 +62,14 @@ class ProductServiceTest {
         productService.deleteProduct(product.getId());
 
         assertThatThrownBy(()-> productService.findProduct(product.getId()))
-                .isInstanceOf(NotFoundProductException.class);
+                .isInstanceOf(NotFoundEntityException.class);
     }
 
     @Test
     @DisplayName("상품 삭제 실패")
     void deleteProductFail() {
         assertThatThrownBy(()-> productService.findProduct(UUID.randomUUID()))
-                .isInstanceOf(NotFoundProductException.class);
+                .isInstanceOf(NotFoundEntityException.class);
     }
 
     @Test
@@ -93,7 +93,7 @@ class ProductServiceTest {
         ProductUpdateRequest updateDto = new ProductUpdateRequest("스윙칩", 3500, "data:image/~base64,");
 
         assertThatThrownBy(()->productService.updateProduct(UUID.randomUUID(), updateDto))
-                .isInstanceOf(NotFoundProductException.class);
+                .isInstanceOf(NotFoundEntityException.class);
 
     }
 

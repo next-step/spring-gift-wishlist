@@ -2,7 +2,6 @@ package gift.product.repository;
 
 import gift.domain.Product;
 import gift.global.exception.CustomDatabaseException;
-import gift.global.exception.NotFoundProductException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
