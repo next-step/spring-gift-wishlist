@@ -47,7 +47,7 @@ public class ProductViewController {
             productService.saveProduct(productCreateRequestDto);
             return "redirect:/admin/products";
         } catch (Exception e) {
-            model.addAttribute("errorMessage", "상품 저장 중 오류가 발생했습니다.");
+            model.addAttribute("errorMessage", e.getMessage());
             return "create-product";
         }
     }
@@ -68,7 +68,7 @@ public class ProductViewController {
             model.addAttribute("products", List.of(product));
         } catch (Exception e) {
             model.addAttribute("products", List.of());
-            model.addAttribute("errorMessage", "해당 상품이 없습니다.");
+            model.addAttribute("errorMessage", e.getMessage());
         }
 
         return "products";
@@ -82,7 +82,7 @@ public class ProductViewController {
             model.addAttribute("product", product);
             return "update-product";
         } catch (Exception e) {
-            model.addAttribute("errorMessage", "상품 정보를 불러오는 데 실패했습니다.");
+            model.addAttribute("errorMessage", e.getMessage());
             return "redirect:/admin/products";
         }
     }
@@ -113,7 +113,7 @@ public class ProductViewController {
         try {
             productService.deleteProductById(productId);
         } catch (Exception e) {
-            model.addAttribute("errorMessage", "상품을 삭제하는 데 실패했습니다.");
+            model.addAttribute("errorMessage", e.getMessage());
         }
         return "redirect:/admin/products";
     }

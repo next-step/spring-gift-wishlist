@@ -7,6 +7,12 @@
 
 <body>
 <h1>상품 목록</h1>
+
+<!-- 에러 메시지 출력 -->
+<div th:if="${errorMessage}" style="color: red; margin-bottom: 1em;">
+    <p th:text="${errorMessage}"></p>
+</div>
+
 <p><a th:href="@{/admin/products/create}">상품 등록</a></p>
 
 <p>
