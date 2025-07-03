@@ -8,6 +8,7 @@ import gift.product.dto.ProductResponse;
 import gift.product.dto.ProductUpdateRequest;
 import gift.product.repository.ProductRepository;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +33,14 @@ class ProductControllerTest {
     @Autowired
     private ProductRepository productRepository;
 
-    RestClient restClient = RestClient.builder()
-            .build();
+    RestClient restClient;
 
+    @BeforeEach
+    void setUp() {
+        restClient = RestClient.builder()
+                .baseUrl("http://localhost:" + port + "/api/products")
+                .build();
+    }
     @AfterEach
     void clear() {
         productRepository.deleteAll();
@@ -45,11 +51,9 @@ class ProductControllerTest {
     @DisplayName("상품 등록 성공")
     void addProductSuccess() {
 
-        String url = "http://localhost:" + port +"/api/products";
         ProductCreateRequest productDto = new ProductCreateRequest("스윙칩", 3000, "data:image/~base64,");
 
         ResponseEntity<Void> response = restClient.post()
-                .uri(url)
                 .body(productDto)
                 .retrieve()
                 .toEntity(Void.class);
@@ -60,11 +64,9 @@ class ProductControllerTest {
     @Test
     @DisplayName("상품 등록 실패 - 상품 이름에 카카오 포함")
     void addProductFailCase1() {
-        String url = "http://localhost:" + port +"/api/products";
         ProductCreateRequest productDto = new ProductCreateRequest("카카오", 3000, "data:image/~base64,");
 
         assertThatThrownBy(()->restClient.post()
-                .uri(url)
                 .body(productDto)
                 .retrieve()
                 .body(ErrorResponse.class))
@@ -74,11 +76,9 @@ class ProductControllerTest {
     @Test
     @DisplayName("상품 등록 실패 - 상품 가격이 0이하")
     void addProductFailCase2() {
-        String url = "http://localhost:" + port +"/api/products";
         ProductCreateRequest productDto = new ProductCreateRequest("스윙칩", 0, "data:image/~base64,");
 
         assertThatThrownBy(()->restClient.post()
-                .uri(url)
                 .body(productDto)
                 .retrieve()
                 .body(ErrorResponse.class))
@@ -88,11 +88,9 @@ class ProductControllerTest {
     @Test
     @DisplayName("상품 등록 실패 - url이 빈 칸")
     void addProductFailCase3() {
-        String url = "http://localhost:" + port +"/api/products";
         ProductCreateRequest productDto = new ProductCreateRequest("스윙칩", 1000, " ");
 
         assertThatThrownBy(()->restClient.post()
-                .uri(url)
                 .body(productDto)
                 .retrieve()
                 .body(ErrorResponse.class))
@@ -105,7 +103,7 @@ class ProductControllerTest {
         Product product = addProductCase();
 
         ResponseEntity<ProductResponse> response = restClient.get()
-                .uri("http://localhost:" + port + "/api/products/" + product.getId())
+                .uri("/{id}",product.getId())
                 .retrieve()
                 .toEntity(ProductResponse.class);
 
@@ -121,7 +119,7 @@ class ProductControllerTest {
     void getProductFail() {
         assertThatThrownBy(()-> {
             restClient.get()
-            .uri("http://localhost:" + port + "/api/products/" + UUID.randomUUID())
+            .uri("/{id}",UUID.randomUUID())
                     .retrieve()
                     .toEntity(ProductResponse.class);
         }).isInstanceOf(HttpClientErrorException.NotFound.class);
@@ -133,7 +131,7 @@ class ProductControllerTest {
         Product product = addProductCase();
 
         ResponseEntity<Void> response = restClient.delete()
-                .uri("http://localhost:" + port + "/api/products/" + product.getId())
+                .uri("/{id}",product.getId())
                 .retrieve()
                 .toEntity(Void.class);
 
@@ -147,7 +145,7 @@ class ProductControllerTest {
 
         ProductUpdateRequest productDto = new ProductUpdateRequest("포카칩", 3000, "data:image/~base64,");
         ResponseEntity<Void> response = restClient.put()
-                .uri("http://localhost:" + port + "/api/products/" + product.getId())
+                .uri("/{id}",product.getId())
                 .body(productDto)
                 .retrieve()
                 .toEntity(Void.class);
@@ -161,7 +159,7 @@ class ProductControllerTest {
 
         ProductUpdateRequest productDto = new ProductUpdateRequest("포카칩", 3000, "data:image/~base64,");
         assertThatThrownBy(()->restClient.put()
-                .uri("http://localhost:" + port + "/api/products/" + UUID.randomUUID())
+                .uri("/{id}",UUID.randomUUID())
                 .body(productDto)
                 .retrieve()
                 .toEntity(Void.class)
@@ -176,7 +174,7 @@ class ProductControllerTest {
 
         ProductUpdateRequest productDto = new ProductUpdateRequest("카카오", -1, "data:image/~base64,");
         assertThatThrownBy(()->restClient.put()
-                .uri("http://localhost:" + port + "/api/products/" + product.getId())
+                .uri("/{id}", product.getId())
                 .body(productDto)
                 .retrieve()
                 .toEntity(Void.class)
@@ -191,7 +189,6 @@ class ProductControllerTest {
         }
 
         ResponseEntity<List> repsonse = restClient.get()
-                .uri("http://localhost:" + port + "/api/products")
                 .retrieve()
                 .toEntity(List.class);
 
@@ -205,7 +202,7 @@ class ProductControllerTest {
     void deleteProductFail() {
         assertThatThrownBy(()-> {
             restClient.delete()
-                    .uri("http://localhost:" + port + "/api/products/" + UUID.randomUUID())
+                    .uri("/{id}", UUID.randomUUID())
                     .retrieve()
                     .toEntity(ProductResponse.class);
         }).isInstanceOf(HttpClientErrorException.NotFound.class);
