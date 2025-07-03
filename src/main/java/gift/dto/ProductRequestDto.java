@@ -14,6 +14,7 @@ public class ProductRequestDto {
     @NotBlank(message = "상품명은 필수로 입력해야 합니다.")
     @Size(max = 15, message = "상품명은 15글자 이하여야 합니다.")
     @Pattern(regexp = "^[가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z0-9()\\[\\]\\+\\-\\&/_]+$", message = "특수문자는 ( ), [ ], +, -, &, /, _ 만 입력이 가능합니다.")
+    @Pattern(regexp = "^(?!.*카카오).*$", message = "\"카카오\"가 포함된 문구는 담당 MD와 협의가 필요합니다.")
     private String name;
 
     @NotNull(message = "상품 가격은 필수로 입력해야합니다.")
