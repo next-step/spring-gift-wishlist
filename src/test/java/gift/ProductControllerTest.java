@@ -94,4 +94,17 @@ public class ProductControllerTest {
             .andExpect(jsonPath("$.name").value("최대 15자까지 가능합니다."));
     }
 
+    @Test
+    @DisplayName("[API] 상품 등록 실패 - 가격 없음")
+    void createProduct_fail_priceMissing() throws Exception {
+
+        var dto = new ProductCreateRequestDto("초콜릿", null, "https://image.com/item.jpg");
+
+        mockMvc.perform(post("/api/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.price").value("가격은 필수입니다."));
+    }
+
 }
