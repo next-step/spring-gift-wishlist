@@ -12,10 +12,7 @@ public class ErrorResponse {
 
   // 에러코드 객체만 들어왔다면 그 객체를 이용해서 에러응답객체를
   private ErrorResponse(final ErrorCode errorCode) {
-    this.message = errorCode.getMessage();
-    this.status = errorCode.getStatus().value();
-    this.code = errorCode.getCode();
-    this.errors = new ArrayList<>();
+    this(errorCode,new ArrayList<>());
   }
 
   // 에러코드 객체와, 필드에러 리스트가 들어왔을때 응답객체 생성
