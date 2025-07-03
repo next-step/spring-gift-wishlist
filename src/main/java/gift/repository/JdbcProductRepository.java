@@ -52,15 +52,13 @@ public class JdbcProductRepository implements ProductRepositoryInterface{
 
     @Override
     public Optional<Product> updateProduct(Long id, Product product) {
+        String sql = "UPDATE product SET name = ?, price = ?, imageUrl = ? WHERE id = ?";
 
-        String sql = "SELECT * FROM product WHERE id = ?";
-
-        try {
-            jdbcTemplate.queryForObject(sql, this::mapRowToProduct, id);
-            sql = "UPDATE product SET name = ?, price = ?, imageUrl = ? WHERE id = ?";
-            jdbcTemplate.update(sql, product.getName(), product.getPrice(), product.getImageUrl(), id);
-            return Optional.of(new Product(id, product.getName(), product.getPrice(), product.getImageUrl()));
-        } catch (Exception e) {
+        int affectedRows = jdbcTemplate.update(sql, product.getName(), product.getPrice(), product.getImageUrl(), id);
+        if (affectedRows > 0) {
+            Product updatedProduct = new Product(id, product.getName(), product.getPrice(), product.getImageUrl());
+            return Optional.of(updatedProduct);
+        } else {
             return Optional.empty();
         }
     }
