@@ -23,7 +23,7 @@ public class ProductService {
 
     public Product registerProduct(Product product) {
         // '카카오' 문구 검증
-        validateKakao(product.getName());
+        verifyKakaoNameIsApproved(product.getName());
         return repository.save(product);
     }
 
@@ -46,7 +46,7 @@ public class ProductService {
         Product updated = new Product(id, updateRequestDto.getName(), updateRequestDto.getPrice(), updateRequestDto.getImageUrl());
 
         // '카카오' 문구 검증
-        validateKakao(updated.getName());
+        verifyKakaoNameIsApproved(updated.getName());
         repository.update(updated);
         return updated;  // 또는 existing → 필요에 따라 선택 가능
     }
@@ -59,7 +59,7 @@ public class ProductService {
     }
 
     // "카카오" 문구 검증 로직 공통 메서드
-    private void validateKakao(String name) {
+    private void verifyKakaoNameIsApproved(String name) {
         if (name.contains("카카오")) {
             if (!approvedRepository.isApproved(name)) {
                 throw new IllegalArgumentException("'카카오'가 포함된 상품은 MD 승인이 필요합니다.");
