@@ -7,6 +7,8 @@ import gift.entity.Product;
 import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.http.client.HttpClientProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -22,6 +24,8 @@ public class ProductControllerTest {
     private int port;
 
     private RestClient restClient = RestClient.builder().build();
+    @Autowired
+    private HttpClientProperties httpClientProperties;
 
     @Test
     void 상품_추가(){
@@ -38,6 +42,25 @@ public class ProductControllerTest {
                 .retrieve()
                 .toEntity(Void.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    }
+
+    @Test
+    void 상품명_카카오_허용불가(){
+
+        var url = "http://localhost:" + port + "/api/products";
+
+        ProductRequestDto requestDto = new ProductRequestDto();
+        requestDto.setName("카카오프렌즈");
+        requestDto.setPrice(15000);
+        requestDto.setImageUrl("https://i.namu.wiki/i/GQMqb8jtiqpCo6_US7jmWDO30KfPB2MMvbdURVub61Rs6ALKqbG-nUATj-wNk7bXXWIDjiLHJxWYkTELUgybkA.webp");
+
+        Assertions.assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
+                .isThrownBy(
+                        ()-> restClient.post()
+                                .uri(url)
+                                .body(requestDto)
+                                .retrieve()
+                                .toEntity(Void.class));
     }
 
     @Test

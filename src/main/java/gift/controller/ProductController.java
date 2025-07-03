@@ -3,6 +3,7 @@ package gift.controller;
 import gift.dto.ProductRequestDto;
 import gift.entity.Product;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +40,7 @@ public class ProductController {
     //생성한 product는 HashMap에 저장
     @PostMapping("/products")
     public ResponseEntity<Void> createProduct(
-            @RequestBody ProductRequestDto requestDto
+            @RequestBody @Valid ProductRequestDto requestDto
     ) {
         Long id = productService.add(requestDto);
         return ResponseEntity.created(URI.create("api/products/" + id)).build();
