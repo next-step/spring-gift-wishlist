@@ -1,5 +1,6 @@
 package gift.controller;
 
+import gift.builder.ProductBuilder;
 import gift.dto.request.ProductRequestDto;
 import gift.dto.response.ProductResponseDto;
 import gift.fixture.ProductFixture;
@@ -106,7 +107,7 @@ public class ProductControllerTest {
     @Test
     void 카카오가_포함된_상품명을_등록하려_할_때_예외_발생_확인() {
 
-        ProductRequestDto requestDto = new ProductRequestDto("카카오 선물", 3000, "http://image.url");
+        ProductRequestDto requestDto = ProductBuilder.aProduct().withName("카카오").build();
 
 
         assertThatThrownBy(() ->
@@ -123,8 +124,7 @@ public class ProductControllerTest {
 
     @Test
     void 이름이_15자_이상일때_예외_발생() {
-
-        ProductRequestDto requestDto = new ProductRequestDto("가나다라마바사아자차카타파하하하하하", 3000, "http://image.url");
+        ProductRequestDto requestDto = ProductBuilder.aProduct().withName("가나다라마바사아자차카타파하하하하하").build();
 
 
         assertThatThrownBy(() ->
@@ -141,8 +141,7 @@ public class ProductControllerTest {
 
     @Test
     void 이름에_허용되지_않은_특수문자_예외_발생() {
-
-        ProductRequestDto requestDto = new ProductRequestDto("테스트@상품", 3000, "http://image.url");
+        ProductRequestDto requestDto = ProductBuilder.aProduct().withName("테스트@상품").build();
 
 
         assertThatThrownBy(() ->
