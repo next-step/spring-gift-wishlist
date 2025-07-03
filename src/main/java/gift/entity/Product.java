@@ -8,19 +8,6 @@ public class Product {
     private final String imageUrl;
     private final Boolean mdConfirmed;
 
-//    public Product(String name, Double price, String imageUrl) {
-//        this.name = name;
-//        this.price = price;
-//        this.imageUrl = imageUrl;
-//    }
-//
-//    public Product(Long productId, String name, Double price, String imageUrl) {
-//        this.productId = productId;
-//        this.name = name;
-//        this.price = price;
-//        this.imageUrl = imageUrl;
-//    }
-
     public Product(String name, Double price, String imageUrl, Boolean mdConfirmed) {
         this.name = name;
         this.price = price;

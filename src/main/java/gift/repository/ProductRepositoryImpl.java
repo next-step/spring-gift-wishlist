@@ -30,6 +30,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     public List<ProductGetResponseDto> findAllProducts() {
 
         String sql = "SELECT productId, name, price, imageUrl, mdConfirmed FROM products";
+
         return jdbcTemplate.query(sql,
             (rs, rowNum) -> new ProductGetResponseDto(rs.getLong("productId"), rs.getString("name"),
                 rs.getDouble("price"), rs.getString("imageUrl"), rs.getBoolean("mdConfirmed")));
@@ -37,6 +38,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public Product findProductById(Long productId) {
+
         String sql = "SELECT productId, name, price, imageUrl, mdConfirmed FROM products WHERE productId = ?";
 
         try {

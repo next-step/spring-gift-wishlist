@@ -36,6 +36,7 @@ public class ProductViewController {
         @Valid @ModelAttribute ProductCreateRequestDto productCreateRequestDto,
         BindingResult bindingResult, Model model
     ) {
+
         if (bindingResult.hasErrors()) {
             model.addAttribute("errors", bindingResult.getAllErrors());
             model.addAttribute("productCreateRequestDto", productCreateRequestDto);
@@ -53,6 +54,7 @@ public class ProductViewController {
 
     @GetMapping
     public String getProductsPage(Model model) {
+
         List<ProductGetResponseDto> products = productService.findAllProducts();
         model.addAttribute("products", products);
         return "products";
@@ -60,14 +62,13 @@ public class ProductViewController {
 
     @GetMapping("/{productId}")
     public String getProductById(@RequestParam Long productId, Model model) {
-        if (productId != null) {
-            try {
-                ProductGetResponseDto product = productService.findProductById(productId);
-                model.addAttribute("products", List.of(product));
-            } catch (Exception e) {
-                model.addAttribute("products", List.of());
-                model.addAttribute("errorMessage", "해당 상품이 없습니다.");
-            }
+
+        try {
+            ProductGetResponseDto product = productService.findProductById(productId);
+            model.addAttribute("products", List.of(product));
+        } catch (Exception e) {
+            model.addAttribute("products", List.of());
+            model.addAttribute("errorMessage", "해당 상품이 없습니다.");
         }
 
         return "products";
@@ -75,6 +76,7 @@ public class ProductViewController {
 
     @GetMapping("/update/{productId}")
     public String updateProductPage(@PathVariable Long productId, Model model) {
+
         try {
             ProductGetResponseDto product = productService.findProductById(productId);
             model.addAttribute("product", product);
@@ -91,6 +93,7 @@ public class ProductViewController {
         @Valid @ModelAttribute ProductUpdateRequestDto productUpdateRequestDto,
         BindingResult bindingResult, Model model
     ) {
+
         if (bindingResult.hasErrors()) {
             model.addAttribute("errors", bindingResult.getAllErrors());
             return "redirect:/admin/products/update/" + productId;
@@ -106,6 +109,7 @@ public class ProductViewController {
 
     @PostMapping("/delete/{productId}")
     public String deleteProductById(@PathVariable Long productId, Model model) {
+
         try {
             productService.deleteProductById(productId);
         } catch (Exception e) {

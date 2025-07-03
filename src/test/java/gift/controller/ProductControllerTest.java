@@ -87,14 +87,6 @@ class ProductControllerTest {
         jdbcTemplate.update(sql, "one", "1", "https://1.img", "false");
         jdbcTemplate.update(sql, "two", "2", "https://2.img", "false");
         jdbcTemplate.update(sql, "three", "3", "https://3.img", "false");
-
-//        // approved_product_names TABLE
-//        jdbcTemplate.execute("DELETE FROM approved_products");
-//        jdbcTemplate.execute(
-//            "ALTER TABLE approved_products ALTER COLUMN id RESTART WITH 1");
-//
-//        String approvedProductSql = "INSERT INTO approved_products(name) VALUES (?)";
-//        jdbcTemplate.update(approvedProductSql, "카카오");
     }
 
     // POST
