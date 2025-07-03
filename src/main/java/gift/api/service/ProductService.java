@@ -37,31 +37,31 @@ public class ProductService {
     }
 
     public ProductResponseDto createProduct(ProductRequestDto productRequestDto) {
-        return ProductResponseDto.from(
-                productRepository.createProduct(
-                        new Product(
-                                null,
-                                productRequestDto.name(),
-                                productRequestDto.price(),
-                                productRequestDto.imageUrl()
-                        )
+        Product createdProduct = productRepository.createProduct(
+                new Product(
+                        null,
+                        productRequestDto.name(),
+                        productRequestDto.price(),
+                        productRequestDto.imageUrl()
                 )
         );
+
+        return ProductResponseDto.from(createdProduct);
     }
 
     public ProductResponseDto updateProduct(Long id, ProductRequestDto productRequestDto) {
         findProductById(id);
 
-        return ProductResponseDto.from(
-                productRepository.updateProduct(
-                        new Product(
-                                id,
-                                productRequestDto.name(),
-                                productRequestDto.price(),
-                                productRequestDto.imageUrl()
-                        )
+        Product updatedProduct = productRepository.updateProduct(
+                new Product(
+                        id,
+                        productRequestDto.name(),
+                        productRequestDto.price(),
+                        productRequestDto.imageUrl()
                 )
         );
+
+        return ProductResponseDto.from(updatedProduct);
     }
 
     public void deleteProduct(Long id) {
