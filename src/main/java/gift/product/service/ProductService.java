@@ -11,8 +11,10 @@ import gift.product.exception.ProductNotFoundException;
 import gift.product.repository.ProductRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class ProductService {
 
   private final ProductRepository productRepository;
@@ -32,7 +34,7 @@ public class ProductService {
         .orElseThrow(() -> new ProductNotFoundException(ErrorCode.PRODUCT_NOT_FOUND));
     return GetProductResDto.from(product);
   }
-
+  @Transactional
   public Long createProduct(CreateProductReqDto dto) {
     Product newProduct = Product.of(
         dto.name(),
@@ -42,7 +44,7 @@ public class ProductService {
     );
     return productRepository.save(newProduct);
   }
-
+  @Transactional
   public void updateProduct(Long id, UpdateProductReqDto dto) throws ProductNotFoundException {
     if(productRepository.findById(id).isEmpty()){
       throw new ProductNotFoundException(ErrorCode.PRODUCT_NOT_FOUND);
@@ -56,7 +58,7 @@ public class ProductService {
     );
     productRepository.update(id, newProduct);
   }
-
+  @Transactional
   public void deleteProduct(Long id) throws ProductNotFoundException {
     if(productRepository.findById(id).isEmpty()){
       throw new ProductNotFoundException(ErrorCode.PRODUCT_NOT_FOUND);
