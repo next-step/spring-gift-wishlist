@@ -17,10 +17,18 @@
   <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error"></span><br>
 
   <label>Price: <input type="number" th:field="*{price}" /></label><br>
+  <span th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="error"></span>
 
-  <label>Image Url: <input type="text" th:field="*{imageUrl}" /></label><br>
+  <label>Image Url: <input type="text" th:field="*{imageUrl}" /></label>
+  <span th:if="${#fields.hasErrors('imageUrl')}" th:errors="*{imageUrl}" class="error"></span>
+  <br>
 
   <button type="submit">수정 완료</button>
 </form>
+
+<br>
+<a th:href="@{/admin/products}">
+  <button type="button">상품 목록으로 돌아가기</button>
+</a>
 </body>
 </html>

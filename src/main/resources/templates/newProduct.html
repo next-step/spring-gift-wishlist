@@ -16,7 +16,11 @@
     <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error"></span>
 
     <label>Price: <input type="number" th:field="*{price}" /></label>
+    <span th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="error"></span>
+
     <label>Image Url: <input type="text" th:field="*{imageUrl}" /></label>
+    <span th:if="${#fields.hasErrors('imageUrl')}" th:errors="*{imageUrl}" class="error"></span>
+
     <button type="submit">등록</button>
   </form>
 </div>
