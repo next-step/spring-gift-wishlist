@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductService {
@@ -18,6 +19,7 @@ public class ProductService {
     }
 
     public Product create(String name, int price, String imageUrl) {
+        validateNameContainKakao(name);
         return repository.save(name, price, imageUrl);
     }
 
@@ -66,12 +68,45 @@ public class ProductService {
 
 
     public void delete(Long id) {
-        boolean deleted = repository.deleteById(id);
-        if (!deleted) throw new ProductNotFoundException(id);
+
+        int deletedCount = repository.deleteById(id);
+
+        // 상품이 실제로 존재하지 않는 경우
+        if (deletedCount == 0) {
+            throw new ProductNotFoundException(id);
+        }
+
+        // 여러 상품이 삭제 되어버린 경우
+        if (deletedCount > 1) {
+            throw new IllegalStateException("ID 중복으로 인해 여러 상품이 삭제되었습니다.");
+        }
     }
 
-    public Product update(Long id, String name, int price, String imageUrl) {
-        return repository.update(id, name, price, imageUrl)
-                .orElseThrow(() -> new ProductNotFoundException(id));
+    public void update(Long id, String name, int price, String imageUrl) {
+
+        validateNameContainKakao(name);
+
+        // 상품 존재 여부 확인
+        Optional<Product> product = repository.findById(id);
+        if (product.isEmpty()) {throw new ProductNotFoundException(id);}
+
+        int updatedCount = repository.update(id, name, price, imageUrl);
+
+        // 상품이 존재 하지만 수정되지 않은 경우
+        if (updatedCount == 0) {
+            return;
+        }
+
+        // 여러 상품이 수정 되어버린 경우
+        if (updatedCount > 1) {
+            throw new IllegalStateException("ID 중복으로 인해 여러 상품이 수정되었습니다.");
+        }
     }
+
+    private void validateNameContainKakao(String name) {
+        if (name.contains("카카오")) {
+            throw new IllegalArgumentException("'카카오'가 포함된 상품명은 MD와 협의 후 등록 가능합니다.");
+        }
+    }
+
 }

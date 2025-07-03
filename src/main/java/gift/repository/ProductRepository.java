@@ -1,7 +1,6 @@
 package gift.repository;
 
 import gift.domain.Product;
-import jakarta.annotation.PostConstruct;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -9,37 +8,32 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
 public class ProductRepository {
 
+    private static final int NO_ROW_UPDATED = 0;
+
     private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert productInserter;
 
     public ProductRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-    }
-
-    private final AtomicLong sequence = new AtomicLong(0);
-
-    private SimpleJdbcInsert insert;
-
-    @PostConstruct
-    public void init() {
-        this.insert = new SimpleJdbcInsert(jdbcTemplate)
+        this.productInserter = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("product")
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Product save(String name, int price, String imageUrl) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", name);
-        params.put("price", price);
-        params.put("image_url", imageUrl);
-        params.put("category_id", null);
 
-        Number id = insert.executeAndReturnKey(new MapSqlParameterSource(params));
-        return new Product(id.longValue(), name, price, imageUrl);
+    public Product save(String name, int price, String imageUrl) {
+        Map<String, Object> params = Map.of(
+                "name", name,
+                "price", price,
+                "image_url", imageUrl
+        );
+
+        Number id = productInserter.executeAndReturnKey(new MapSqlParameterSource(params));
+        return Product.of(id.longValue(), name, price, imageUrl);
     }
 
     public Optional<Product> findById(Long id) {
@@ -53,7 +47,7 @@ public class ProductRepository {
     }
 
     private RowMapper<Product> rowMapper() {
-        return (rs, rowNum) -> new Product(
+        return (rs, rowNum) -> Product.of(
                 rs.getLong("id"),
                 rs.getString("name"),
                 rs.getInt("price"),
@@ -61,15 +55,12 @@ public class ProductRepository {
         );
     }
 
-    public boolean deleteById(Long id) {
-        int updated = jdbcTemplate.update("DELETE FROM product WHERE id = ?", id);
-        return updated > 0;
+    public int deleteById(Long id) {
+        return jdbcTemplate.update("DELETE FROM product WHERE id = ?", id);
     }
 
-    public Optional<Product> update(Long id, String name, int price, String imageUrl) {
+    public int update(Long id, String name, int price, String imageUrl) {
         String sql = "UPDATE product SET name = ?, price = ?, image_url = ? WHERE id = ?";
-        int updated = jdbcTemplate.update(sql, name, price, imageUrl, id);
-        if (updated == 0) return Optional.empty();
-        return findById(id);
+        return jdbcTemplate.update(sql, name, price, imageUrl, id);
     }
 }

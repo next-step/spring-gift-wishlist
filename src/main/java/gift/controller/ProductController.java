@@ -3,6 +3,7 @@ package gift.controller;
 import gift.domain.Product;
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
+import jakarta.validation.Valid;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import gift.service.ProductService;
@@ -20,7 +21,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody ProductRequest request) {
+    public ResponseEntity<Void> create(@RequestBody @Valid ProductRequest request) {
         productService.create(request.name(), request.price(), request.imageUrl());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
