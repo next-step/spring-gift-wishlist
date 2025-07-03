@@ -1,6 +1,7 @@
 package gift.dto;
 
 import jakarta.validation.constraints.*;
+import org.hibernate.validator.constraints.URL;
 
 public class ProductRequestDto {
 
@@ -16,6 +17,7 @@ public class ProductRequestDto {
     private final Long price;
 
     @NotBlank(message = "이미지 URL은 필수입니다.")
+    @URL(message = "유효한 이미지 URL 형식이 아닙니다.")
     private final String imageUrl;
 
     private final Boolean approved;
