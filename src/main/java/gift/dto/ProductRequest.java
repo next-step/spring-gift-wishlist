@@ -21,4 +21,10 @@ public record ProductRequest(
     String name,
     Integer price,
     String imageUrl
-) {}
+) {
+
+    public static ProductRequest createForNewProductForm(){
+        return new ProductRequest(null, "new product", 0, "default url");
+    }
+
+}
