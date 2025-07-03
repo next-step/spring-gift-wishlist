@@ -54,4 +54,18 @@ public class ProductControllerTest {
             .andExpect(status().isCreated());
     }
 
+    @Test
+    @DisplayName("[API] 상품 등록 실패 - '카카오' 포함 & 승인되지 않은 상품명")
+    void createProduct_fail_unapprovedKakaoName() throws Exception {
+
+        var dto = new ProductCreateRequestDto("카카오 지갑", 15000, "https://image.com/item.jpg");
+
+        // when & then
+        mockMvc.perform(post("/api/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.error").value("'카카오'가 포함된 상품은 MD 승인이 필요합니다."));
+    }
+
 }
