@@ -22,7 +22,7 @@ public class DefaultProductService implements ProductService {
     // 상품 생성
     @Override
     public ProductResponseDto addProduct(ProductRequestDto requestDto) {
-        if (requestDto.getName().contains("카카오")) {
+        if (requestDto.name().contains("카카오")) {
             throw new ForbiddenWordException("카카오");
         }
 
