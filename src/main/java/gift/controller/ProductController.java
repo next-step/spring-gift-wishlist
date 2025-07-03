@@ -2,7 +2,9 @@ package gift.controller;
 
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
+import gift.dto.UpdateProductRequestDto;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +27,8 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductResponseDto> addProduct(@RequestBody ProductRequestDto productRequestDto) {
-        return new ResponseEntity<>(productService.addProduct(productRequestDto), HttpStatus.OK);
+    public ResponseEntity<ProductResponseDto> addProduct(@Valid @RequestBody ProductRequestDto productRequestDto) {
+        return new ResponseEntity<>(productService.addProduct(productRequestDto), HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -40,9 +42,8 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductResponseDto> updateProduct(@PathVariable Long id,
-        @RequestBody ProductRequestDto productRequestDto) {
-        return new ResponseEntity<>(productService.updateProduct(id, productRequestDto), HttpStatus.OK);
+    public ResponseEntity<ProductResponseDto> updateProduct(@Valid @RequestBody UpdateProductRequestDto productRequestDto) {
+        return new ResponseEntity<>(productService.updateProduct(productRequestDto), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

@@ -2,6 +2,7 @@ package gift.service;
 
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
+import gift.dto.UpdateProductRequestDto;
 import gift.entity.Product;
 import gift.repository.ProductRepository;
 import java.util.List;
@@ -52,10 +53,10 @@ public class ProductService {
         );
     }
 
-    public ProductResponseDto updateProduct(Long id, ProductRequestDto productRequestDto) {
-        Product product = productRepository.findProductById(id);
+    public ProductResponseDto updateProduct(UpdateProductRequestDto productRequestDto) {
+        Product product = productRepository.findProductById(productRequestDto.id());
         if (product == null) {
-            throw new NoSuchElementException("Invalid id = " + id);
+            throw new NoSuchElementException("Invalid id = " + productRequestDto.id());
         }
         product.updateProduct(productRequestDto.name(), productRequestDto.price(), productRequestDto.imageUrl());
         Product updateProduct = productRepository.updateProduct(product);
