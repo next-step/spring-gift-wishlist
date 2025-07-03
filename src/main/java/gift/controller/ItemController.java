@@ -1,13 +1,11 @@
 package gift.controller;
 
 
-import gift.dto.ItemCreateDTO;
-import gift.dto.ItemDTO;
-import gift.dto.ItemResponseDTO;
-import gift.dto.ItemUpdateDTO;
+import gift.dto.ItemCreateDto;
+import gift.dto.ItemResponseDto;
+import gift.dto.ItemUpdateDto;
 import gift.service.ItemService;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,19 +23,19 @@ public class ItemController {
     }
 
     @PostMapping
-    public ResponseEntity<ItemCreateDTO> addItems(
-            @RequestBody @Valid ItemCreateDTO dto
+    public ResponseEntity<ItemCreateDto> addItems(
+            @RequestBody @Valid ItemCreateDto dto
     ) {
-        ItemCreateDTO item = itemService.saveItem(dto);
+        ItemCreateDto item = itemService.saveItem(dto);
         return new ResponseEntity<>(item, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<ItemResponseDTO>> getItems(
+    public ResponseEntity<List<ItemResponseDto>> getItems(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) Integer price
     ) {
-        List<ItemResponseDTO> items = itemService.getItems(name, price);
+        List<ItemResponseDto> items = itemService.getItems(name, price);
         return ResponseEntity.ok(items);
     }
 
@@ -50,11 +48,11 @@ public class ItemController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ItemUpdateDTO> updateItems(
+    public ResponseEntity<ItemUpdateDto> updateItems(
             @PathVariable Long id,
-            @RequestBody @Valid ItemUpdateDTO dto
+            @RequestBody @Valid ItemUpdateDto dto
     ) {
-        ItemUpdateDTO item = itemService.updateItem(id, dto);
+        ItemUpdateDto item = itemService.updateItem(id, dto);
         return  ResponseEntity.ok(item);
     }
 }

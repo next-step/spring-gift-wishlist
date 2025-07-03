@@ -1,6 +1,8 @@
 package gift.entity;
 
-import gift.dto.ItemCreateDTO;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public class Item {
     private Long id;
@@ -23,10 +25,10 @@ public class Item {
         this.imageUrl = item.getImageUrl();
     }
 
-    public Item(ItemCreateDTO dto) {
-        this.name = dto.name();
-        this.price = dto.price();
-        this.imageUrl = dto.imageUrl();
+    public Item(String name, @Min(0) Integer price, @NotNull @Size(max = 255) String imageUrl) {
+        this.name = name;
+        this.price= price;
+        this.imageUrl = imageUrl;
     }
 
     public Long getId() {

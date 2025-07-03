@@ -1,6 +1,5 @@
 package gift.repository;
 
-import gift.dto.ItemDTO;
 import gift.entity.Item;
 
 import java.util.List;

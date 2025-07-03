@@ -1,9 +1,8 @@
 package gift.service;
 
-import gift.dto.ItemCreateDTO;
+import gift.dto.ItemCreateDto;
 import gift.entity.Item;
 import gift.repository.ItemRepositoryJdbc;
-import org.springframework.stereotype.Service;
 
 //@Service
 public class ItemServiceImplV2 {
@@ -13,9 +12,9 @@ public class ItemServiceImplV2 {
         this.itemRepository = itemRepository;
     }
 
-    public ItemCreateDTO saveItem(ItemCreateDTO dto) throws Exception {
-        Item item = new Item(dto);
+    public ItemCreateDto saveItem(ItemCreateDto dto) throws Exception {
+        Item item = new Item(dto.name(), dto.price(), dto.imageUrl());
         Item saveditem = itemRepository.saveItem(item);
-        return new ItemCreateDTO(saveditem);
+        return new ItemCreateDto(saveditem);
     }
 }

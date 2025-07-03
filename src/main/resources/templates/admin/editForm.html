@@ -31,9 +31,19 @@
         input[type="number"] {
             width: 100%;
             padding: 10px;
-            margin-bottom: 16px;
+            margin-bottom: 8px;
             border: 1px solid #ccc;
             border-radius: 5px;
+        }
+
+        input[type="checkbox"] {
+            margin-right: 8px;
+        }
+
+        .error-message {
+            color: red;
+            margin-bottom: 12px;
+            font-size: 14px;
         }
 
         button {
@@ -64,18 +74,28 @@
 <body>
 
 <h1>상품 수정</h1>
+<div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
 
 <form th:action="@{/admin/products/{id}/edit(id=${itemDTO.id})}" method="post" th:object="${itemDTO}">
     <input type="hidden" th:field="*{id}" />
 
     <label for="name">상품명:</label>
     <input type="text" th:field="*{name}" id="name" />
+    <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error-message"></div>
 
     <label for="price">가격:</label>
     <input type="number" th:field="*{price}" id="price" />
+    <div th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="error-message"></div>
 
     <label for="imageUrl">이미지 URL:</label>
     <input type="text" th:field="*{imageUrl}" id="imageUrl" />
+    <div th:if="${#fields.hasErrors('imageUrl')}" th:errors="*{imageUrl}" class="error-message"></div>
+
+    <label for="useKakaoName">
+        <input type="checkbox" th:field="*{useKakaoName}" id="useKakaoName" />
+        "카카오"라는 이름 사용은 MD와 협의된 경우입니다."
+    </label>
+    <div th:if="${#fields.hasErrors('useKakaoName')}" th:errors="*{useKakaoName}" class="error-message"></div>
 
     <button type="submit">수정 완료</button>
 </form>

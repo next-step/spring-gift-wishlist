@@ -1,10 +1,10 @@
 package gift.service;
 
 
-import gift.dto.ItemCreateDTO;
-import gift.dto.ItemDTO;
-import gift.dto.ItemResponseDTO;
-import gift.dto.ItemUpdateDTO;
+import gift.dto.ItemCreateDto;
+import gift.dto.ItemDto;
+import gift.dto.ItemResponseDto;
+import gift.dto.ItemUpdateDto;
 import gift.entity.Item;
 import gift.exception.ItemNotFoundException;
 import gift.repository.ItemRepository;
@@ -22,17 +22,17 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemCreateDTO saveItem(ItemCreateDTO dto) {
-        Item item = new Item(dto);
+    public ItemCreateDto saveItem(ItemCreateDto dto) {
+        Item item = new Item(dto.name(), dto.price(), dto.imageUrl());
         Item saveditem = itemRepository.saveItem(item);
 
-        return new ItemCreateDTO(saveditem);
+        return new ItemCreateDto(saveditem);
     }
 
     @Override
-    public List<ItemResponseDTO> getItems(String name, Integer price) {
+    public List<ItemResponseDto> getItems(String name, Integer price) {
         List<Item> items;
-        List<ItemResponseDTO> result = new  ArrayList<>();
+        List<ItemResponseDto> result = new  ArrayList<>();
         if (name == null && price == null) {
             items = itemRepository.getAllItems();
         }else
@@ -43,7 +43,7 @@ public class ItemServiceImpl implements ItemService {
         }
 
         for (Item item : items) {
-            result.add(ItemResponseDTO.from(item));
+            result.add(ItemResponseDto.from(item));
 
         }
         return result;
@@ -58,12 +58,12 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemUpdateDTO updateItem(Long id, ItemUpdateDTO dto) {
+    public ItemUpdateDto updateItem(Long id, ItemUpdateDto dto) {
         Item item = itemRepository.findById(id);
         if (item != null) {
             if (dto.id().equals(item.getId())) {
                 Item updatedItem = itemRepository.updateItem(id, dto.name(), dto.price(), dto.imageUrl());
-                return new ItemUpdateDTO(updatedItem);
+                return new ItemUpdateDto(updatedItem);
             }else
                 throw new ItemNotFoundException();
         } else
@@ -71,12 +71,12 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDTO findById(Long id) {
+    public ItemDto findById(Long id) {
         List<Item> items = itemRepository.getAllItems();
 
         for(Item item : items){
             if(item.getId().equals(id)){
-                return new ItemDTO(item);
+                return new ItemDto(item);
             }
         }
         return null;
@@ -91,12 +91,12 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemResponseDTO> getAllItems() {
+    public List<ItemResponseDto> getAllItems() {
         List<Item> items = itemRepository.getAllItems();
-        List<ItemResponseDTO> result = new ArrayList<>();
+        List<ItemResponseDto> result = new ArrayList<>();
 
         for (Item item : items) {
-            result.add(ItemResponseDTO.from(item));
+            result.add(ItemResponseDto.from(item));
         }
 
         return result;

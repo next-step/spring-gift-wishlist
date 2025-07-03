@@ -1,11 +1,10 @@
 package gift.controller;
 
 
-import gift.dto.ItemCreateDTO;
-import gift.dto.ItemDTO;
-import gift.dto.ItemResponseDTO;
-import gift.dto.ItemUpdateDTO;
-import gift.entity.Item;
+import gift.dto.ItemCreateDto;
+import gift.dto.ItemDto;
+import gift.dto.ItemResponseDto;
+import gift.dto.ItemUpdateDto;
 import gift.service.ItemService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -23,25 +22,27 @@ public class AdminItemController {
     public AdminItemController(ItemService itemService) {
         this.itemService = itemService;
     }
+
     @GetMapping
-    public String searchItem(
+    public String viewItemList(
             Model model,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) Integer price) {
 
-        List<ItemResponseDTO> items;
-
-        if(name == null && price == null){
-            items = itemService.getAllItems();
-        }else {
-            items = itemService.getItems(name, price);
-        }
+        List<ItemResponseDto> items = findItems(name, price);
         model.addAttribute("items", items);
         return "admin/list";
     }
 
+    private List<ItemResponseDto> findItems(String name, Integer price) {
+        if(name==null && price ==null){
+            return itemService.getAllItems();
+        }
+        return itemService.getItems(name, price);
+    }
+
     @PostMapping
-    public String saveItem(@ModelAttribute @Valid ItemCreateDTO itemDTO) {
+    public String saveItem(@ModelAttribute @Valid ItemCreateDto itemDTO) {
 
         itemService.saveItem(itemDTO);
         return "redirect:/admin/products";
@@ -49,13 +50,13 @@ public class AdminItemController {
 
     @GetMapping("/new")
     public String showCreateForm(Model model) {
-        model.addAttribute("itemDTO", new ItemDTO());
+        model.addAttribute("itemDTO", new ItemCreateDto("", 0, "", false));
         return "admin/createForm";
     }
 
     @PostMapping("/delete")
     public String deleteItem(@RequestParam Long id) {
-        ItemDTO item = itemService.findById(id);
+        ItemDto item = itemService.findById(id);
         if (item != null) {
             itemService.deleteById(id);
         }
@@ -63,15 +64,16 @@ public class AdminItemController {
     }
 
     @PostMapping("/{id}/edit")
-    public String updateItem(@PathVariable Long id, @ModelAttribute @Valid ItemUpdateDTO dto) {
+    public String updateItem(@PathVariable Long id, @ModelAttribute @Valid ItemUpdateDto dto) {
         itemService.updateItem(id, dto);
         return "redirect:/admin/products";
     }
 
     @GetMapping("/{id}/edit")
     public String showEditForm(@PathVariable Long id, Model model) {
-        ItemDTO item = itemService.findById(id);
-        model.addAttribute("itemDTO", item);
+        ItemDto item = itemService.findById(id);
+        ItemUpdateDto dto = new ItemUpdateDto(item);
+        model.addAttribute("itemDTO", dto);
         return "admin/editForm";
     }
 
