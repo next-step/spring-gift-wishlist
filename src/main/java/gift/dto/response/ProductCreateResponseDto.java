@@ -1,13 +1,17 @@
 package gift.dto.response;
 
-import gift.entity.Product;
-
 public record ProductCreateResponseDto(Long productId,
                                        String name,
                                        Double price,
-                                       String imageUrl) {
+                                       String imageUrl,
+                                       Boolean mdConfirmed) {
 
-    public ProductCreateResponseDto(Product product) {
-        this(product.getProductId(), product.getName(), product.getPrice(), product.getImageUrl());
-    }
+//    public ProductCreateResponseDto(Long productId, String name, Double price, String imageUrl,
+//        Boolean mdConfirmed) {
+//        this.productId = productId;
+//        this.name = name;
+//        this.price = price;
+//        this.imageUrl = imageUrl;
+//        this.mdConfirmed = mdConfirmed;
+//    }
 }

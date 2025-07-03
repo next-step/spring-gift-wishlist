@@ -19,6 +19,9 @@ public record ProductUpdateRequestDto(
     Double price,
 
     @NotNull(message = "Product Image URL must not be null.")
-    String imageUrl) {
+    String imageUrl,
+
+    @NotNull(message = "Product Md Confirmed must not be null.")
+    Boolean mdConfirmed) {
 
 }

@@ -20,28 +20,30 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public void saveProduct(Product product) {
 
-        String sql = "INSERT INTO products(name, price, imageUrl) VALUES(?,?,?)";
+        String sql = "INSERT INTO products(name, price, imageUrl, mdConfirmed) VALUES(?,?,?,?)";
 
-        jdbcTemplate.update(sql, product.getName(), product.getPrice(), product.getImageUrl());
+        jdbcTemplate.update(sql, product.getName(), product.getPrice(), product.getImageUrl(),
+            product.getMdConfirmed());
     }
 
     @Override
     public List<ProductGetResponseDto> findAllProducts() {
 
-        String sql = "SELECT productId, name, price, imageUrl FROM products";
+        String sql = "SELECT productId, name, price, imageUrl, mdConfirmed FROM products";
         return jdbcTemplate.query(sql,
             (rs, rowNum) -> new ProductGetResponseDto(rs.getLong("productId"), rs.getString("name"),
-                rs.getDouble("price"), rs.getString("imageUrl")));
+                rs.getDouble("price"), rs.getString("imageUrl"), rs.getBoolean("mdConfirmed")));
     }
 
     @Override
     public Product findProductById(Long productId) {
-        String sql = "SELECT productId, name, price, imageUrl FROM products WHERE productId = ?";
+        String sql = "SELECT productId, name, price, imageUrl, mdConfirmed FROM products WHERE productId = ?";
 
         try {
             Product product = jdbcTemplate.queryForObject(sql,
                 (rs, rowNum) -> new Product(rs.getLong("productId"), rs.getString("name"),
-                    rs.getDouble("price"), rs.getString("imageUrl")), productId);
+                    rs.getDouble("price"), rs.getString("imageUrl"), rs.getBoolean("mdConfirmed")),
+                productId);
             return product;
         } catch (EmptyResultDataAccessException e) {
             throw new ProductNotFoundException("상품이 존재하지 않습니다. productId = " + productId);
@@ -51,9 +53,10 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public void updateProductById(Product product) {
 
-        String sql = "UPDATE products SET name = ?, price = ?, imageUrl = ? WHERE productId = ?";
+        String sql = "UPDATE products SET name = ?, price = ?, imageUrl = ?, mdConfirmed = ? WHERE productId = ?";
 
         jdbcTemplate.update(sql, product.getName(), product.getPrice(), product.getImageUrl(),
+            product.getMdConfirmed(),
             product.getProductId());
     }
 

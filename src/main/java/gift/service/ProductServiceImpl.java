@@ -5,6 +5,7 @@ import gift.dto.request.ProductUpdateRequestDto;
 import gift.dto.response.ProductCreateResponseDto;
 import gift.dto.response.ProductGetResponseDto;
 import gift.entity.Product;
+import gift.exception.UnapprovedProductException;
 import gift.repository.ProductRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -21,12 +22,19 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductCreateResponseDto saveProduct(ProductCreateRequestDto productCreateRequestDto) {
 
+        if (productCreateRequestDto.name().contains("카카오")
+            && !productCreateRequestDto.mdConfirmed()) {
+            throw new UnapprovedProductException("협의되지 않은 '카카오'가 포함된 상품명은 사용할 수 없습니다.");
+        }
+
         Product product = new Product(productCreateRequestDto.name(),
-            productCreateRequestDto.price(), productCreateRequestDto.imageUrl());
+            productCreateRequestDto.price(), productCreateRequestDto.imageUrl(),
+            productCreateRequestDto.mdConfirmed());
 
         productRepository.saveProduct(product);
 
-        return new ProductCreateResponseDto(product);
+        return new ProductCreateResponseDto(product.getProductId(), product.getName(),
+            product.getPrice(), product.getImageUrl(), product.getMdConfirmed());
     }
 
     @Override
@@ -39,15 +47,21 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findProductById(productId);
 
         return new ProductGetResponseDto(product.getProductId(), product.getName(),
-            product.getPrice(), product.getImageUrl());
+            product.getPrice(), product.getImageUrl(), product.getMdConfirmed());
     }
 
     @Override
     public void updateProductById(Long productId, ProductUpdateRequestDto productUpdateRequestDto) {
         findProductById(productId);
 
+        if (productUpdateRequestDto.name().contains("카카오")
+            && !productUpdateRequestDto.mdConfirmed()) {
+            throw new UnapprovedProductException("협의되지 않은 '카카오'가 포함된 상품명은 사용할 수 없습니다.");
+        }
+
         Product product = new Product(productId, productUpdateRequestDto.name(),
-            productUpdateRequestDto.price(), productUpdateRequestDto.imageUrl());
+            productUpdateRequestDto.price(), productUpdateRequestDto.imageUrl(),
+            productUpdateRequestDto.mdConfirmed());
 
         productRepository.updateProductById(product);
     }

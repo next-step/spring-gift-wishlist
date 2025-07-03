@@ -56,14 +56,15 @@ class ProductControllerTest {
             .retrieve()
             .toEntity(type);
     }
-    
+
     private Product queryProductById(int id) {
         return jdbcTemplate.queryForObject(
-            "SELECT name, price, imageUrl FROM products WHERE productId = ?",
+            "SELECT name, price, imageUrl, mdConfirmed FROM products WHERE productId = ?",
             (rs, rowNum) -> new Product(
                 rs.getString("name"),
                 rs.getDouble("price"),
-                rs.getString("imageUrl")
+                rs.getString("imageUrl"),
+                rs.getBoolean("mdConfirmed")
             ),
             id
         );
@@ -73,6 +74,7 @@ class ProductControllerTest {
         assertThat(actual.getName()).isEqualTo(expected.getName());
         assertThat(actual.getPrice()).isEqualTo(expected.getPrice());
         assertThat(actual.getImageUrl()).isEqualTo(expected.getImageUrl());
+        assertThat(actual.getMdConfirmed()).isEqualTo(expected.getMdConfirmed());
     }
 
     @BeforeEach
@@ -81,18 +83,18 @@ class ProductControllerTest {
         jdbcTemplate.execute("DELETE FROM products");
         jdbcTemplate.execute("ALTER TABLE products ALTER COLUMN productId RESTART WITH 1");
 
-        String sql = "INSERT INTO products(name, price, imageUrl) VALUES (?, ?, ?)";
-        jdbcTemplate.update(sql, "one", "1", "https://1.img");
-        jdbcTemplate.update(sql, "two", "2", "https://2.img");
-        jdbcTemplate.update(sql, "three", "3", "https://3.img");
+        String sql = "INSERT INTO products(name, price, imageUrl, mdConfirmed) VALUES (?, ?, ?, ?)";
+        jdbcTemplate.update(sql, "one", "1", "https://1.img", "false");
+        jdbcTemplate.update(sql, "two", "2", "https://2.img", "false");
+        jdbcTemplate.update(sql, "three", "3", "https://3.img", "false");
 
-        // approved_product_names TABLE
-        jdbcTemplate.execute("DELETE FROM approved_products");
-        jdbcTemplate.execute(
-            "ALTER TABLE approved_products ALTER COLUMN id RESTART WITH 1");
-
-        String approvedProductSql = "INSERT INTO approved_products(name) VALUES (?)";
-        jdbcTemplate.update(approvedProductSql, "카카오");
+//        // approved_product_names TABLE
+//        jdbcTemplate.execute("DELETE FROM approved_products");
+//        jdbcTemplate.execute(
+//            "ALTER TABLE approved_products ALTER COLUMN id RESTART WITH 1");
+//
+//        String approvedProductSql = "INSERT INTO approved_products(name) VALUES (?)";
+//        jdbcTemplate.update(approvedProductSql, "카카오");
     }
 
     // POST
@@ -121,12 +123,19 @@ class ProductControllerTest {
         "Abcdefghijklmno",            // 영어 15자
         "일이삼사오일이삼사오일이삼사오",  // 한글 15자
         "()[]+-&/_",                  // 허용되는 특수문자
-        "카카오"                 // 협의된 '카카오' 포함
+        "카카오"                       // 협의된 '카카오' 포함
     })
     void 단건상품등록_CREATED_상품이름_유효성_검사(String validName) {
         // given
+        Boolean mdConfirmed = false;
+
+        if (validName.equals("카카오")) {
+            mdConfirmed = true;
+        }
+
         var request = ProductBuilder.aProduct()
             .withName(validName)
+            .withMdConfirmed(mdConfirmed)
             .build();
 
         // when
@@ -234,8 +243,15 @@ class ProductControllerTest {
     })
     void 단건상품수정_NO_CONTENT_상품이름_유효성_검사(String validName) {
         // given
+        Boolean mdConfirmed = false;
+
+        if (validName.equals("카카오")) {
+            mdConfirmed = true;
+        }
+
         var request = ProductBuilder.aProduct()
             .withName(validName)
+            .withMdConfirmed(mdConfirmed)
             .build();
 
         // when

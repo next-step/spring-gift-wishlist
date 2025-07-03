@@ -6,7 +6,6 @@ import gift.dto.response.ProductCreateResponseDto;
 import gift.dto.response.ProductGetResponseDto;
 import gift.exception.ProductNotFoundException;
 import gift.exception.UnapprovedProductException;
-import gift.service.ApprovedProductService;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -28,27 +27,14 @@ public class ProductController {
 
     private final ProductService productService;
 
-    private final ApprovedProductService approvedProductService;
-
-    public ProductController(ProductService productService,
-        ApprovedProductService approvedProductService) {
+    public ProductController(ProductService productService) {
         this.productService = productService;
-        this.approvedProductService = approvedProductService;
     }
 
 
     @PostMapping
     public ResponseEntity<ProductCreateResponseDto> createProduct(
         @Valid @RequestBody ProductCreateRequestDto productCreateRequestDto) {
-
-        if (productCreateRequestDto.name().contains("카카오")) {
-            boolean isApprovedProduct = approvedProductService.isApprovedProductName(
-                productCreateRequestDto.name());
-
-            if (!isApprovedProduct) {
-                throw new UnapprovedProductException("협의되지 않은 '카카오'가 포함된 상품명은 사용할 수 없습니다.");
-            }
-        }
 
         return new ResponseEntity<>(productService.saveProduct(productCreateRequestDto),
             HttpStatus.CREATED);
@@ -70,17 +56,7 @@ public class ProductController {
     public ResponseEntity<Void> updateProductById(@PathVariable Long productId,
         @Valid @RequestBody ProductUpdateRequestDto productUpdateRequestDto) {
 
-        if (productUpdateRequestDto.name().contains("카카오")) {
-            boolean isApprovedProduct = approvedProductService.isApprovedProductName(
-                productUpdateRequestDto.name());
-
-            if (!isApprovedProduct) {
-                throw new UnapprovedProductException("협의되지 않은 '카카오'가 포함된 상품명은 사용할 수 없습니다.");
-            }
-        }
-
         productService.updateProductById(productId, productUpdateRequestDto);
-
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
