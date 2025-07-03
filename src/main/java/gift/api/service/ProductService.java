@@ -37,7 +37,7 @@ public class ProductService {
     }
 
     public ProductResponseDto createProduct(ProductRequestDto productRequestDto) {
-        Long productId = productRepository.createProduct(
+        Product createdProduct = productRepository.createProduct(
                 new Product(
                         null,
                         productRequestDto.name(),
@@ -46,11 +46,13 @@ public class ProductService {
                 )
         );
 
-        return findProductById(productId);
+        return ProductResponseDto.from(createdProduct);
     }
 
     public ProductResponseDto updateProduct(Long id, ProductRequestDto productRequestDto) {
-        boolean updated = productRepository.updateProduct(
+        findProductById(id);
+
+        Product updatedProduct = productRepository.updateProduct(
                 new Product(
                         id,
                         productRequestDto.name(),
@@ -59,11 +61,7 @@ public class ProductService {
                 )
         );
 
-        if (!updated) {
-            throw new ProductNotFoundException(id);
-        }
-
-        return findProductById(id);
+        return ProductResponseDto.from(updatedProduct);
     }
 
     public void deleteProduct(Long id) {

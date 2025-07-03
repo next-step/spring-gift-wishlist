@@ -5,6 +5,7 @@ import gift.exception.ProductNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -23,6 +24,25 @@ public class FrontExceptionHandler {
                 HttpStatus.NOT_FOUND.value(),
                 HttpStatus.NOT_FOUND.getReasonPhrase(),
                 ex.getMessage(),
+                request.getRequestURI()
+        );
+        model.addAttribute("errorInfo", error);
+
+        return "error";
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public String handleValidationException(
+            MethodArgumentNotValidException ex,
+            Model model,
+            HttpServletRequest request) {
+
+        ex.printStackTrace();
+
+        ErrorResponseDto error = new ErrorResponseDto(
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                ex.getBindingResult().getFieldError().getDefaultMessage(),
                 request.getRequestURI()
         );
         model.addAttribute("errorInfo", error);
