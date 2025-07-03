@@ -2,12 +2,17 @@ package gift;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Pattern;
 
 public class Product {
 
     private Long id;
 
     @NotBlank(message = "이름은 필수 항목입니다.")
+    @Size(max=15, message = "이름은 최대 15자 입력할 수 있습니다.")
+    @Pattern(regexp= "^[가-힣a-zA-Z0-9 ()\\[\\]+\\-&/_]*$",
+    message = "특수문자는 사용할 수 없습니다.")
     private String name;
 
     @Positive(message = "가격은 0보다 커야 합니다.")
