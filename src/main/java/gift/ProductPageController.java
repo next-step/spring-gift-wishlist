@@ -50,7 +50,7 @@ public class ProductPageController {
     }
 
     @PostMapping("/{id}")
-    public String edit(@Valid @PathVariable Long id, @ModelAttribute Product updated, BindingResult result) {
+    public String edit(@PathVariable Long id, @Valid @ModelAttribute Product updated, BindingResult result, Model model) {
         if (result.hasErrors()) {
             return "Productform";
         }
