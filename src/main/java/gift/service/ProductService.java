@@ -5,6 +5,7 @@ import gift.dto.ProductResponseDto;
 import gift.entity.Product;
 import gift.repository.ProductRepository;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -23,14 +24,16 @@ public class ProductService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "\"카카오\"가 포함된 문구는 담당 MD와 협의한 경우에만 사용 가능합니다.");
         }
-        Product product = new Product(requestDto.name(), requestDto.price(), requestDto.imageUrl());
+        Product product = requestDto.toEntity();
         Product savedProduct = productRepository.save(product);
 
-        return new ProductResponseDto(savedProduct);
+        return ProductResponseDto.from(savedProduct);
     }
 
     public List<ProductResponseDto> findAll() {
-        return productRepository.findAll();
+        return productRepository.findAll().stream()
+                .map(ProductResponseDto::from)
+                .collect(Collectors.toList());
     }
 
     public ProductResponseDto findById(Long id) {
@@ -50,7 +53,7 @@ public class ProductService {
         product.update(name, price, url);
         productRepository.update(product);
 
-        return new ProductResponseDto(product);
+        return ProductResponseDto.from(product);
     }
 
     public void delete(Long id) {

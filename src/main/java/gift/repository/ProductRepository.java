@@ -1,6 +1,5 @@
 package gift.repository;
 
-import gift.dto.ProductResponseDto;
 import gift.entity.Product;
 import java.sql.PreparedStatement;
 import java.util.List;
@@ -15,9 +14,11 @@ import org.springframework.stereotype.Repository;
 public class ProductRepository {
 
     private final JdbcTemplate jdbcTemplate;
+    private final ProductRowMapper productRowMapper;
 
     public ProductRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        this.productRowMapper = new ProductRowMapper();
     }
 
     public Product save(Product product) {
@@ -37,27 +38,15 @@ public class ProductRepository {
         return product;
     }
 
-    public List<ProductResponseDto> findAll() {
+    public List<Product> findAll() {
         String sql = "SELECT * FROM products";
-        return jdbcTemplate.query(sql, (rs, rowNum) ->
-                new ProductResponseDto(
-                        rs.getLong("id"),
-                        rs.getString("name"),
-                        rs.getInt("price"),
-                        rs.getString("image_url")
-                ));
+        return jdbcTemplate.query(sql, productRowMapper);
     }
 
     public Optional<Product> findById(Long id) {
         String sql = "SELECT * FROM products WHERE id = ?";
         try {
-            Product product = jdbcTemplate.queryForObject(sql, (rs, rowNum) ->
-                    new Product(
-                            rs.getLong("id"),
-                            rs.getString("name"),
-                            rs.getInt("price"),
-                            rs.getString("image_url")
-                    ), id);
+            Product product = jdbcTemplate.queryForObject(sql, productRowMapper, id);
             return Optional.of(product);
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();

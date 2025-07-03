@@ -1,5 +1,6 @@
 package gift.dto;
 
+import gift.entity.Product;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -22,4 +23,7 @@ public record ProductRequestDto(
         @NotBlank(message = "이미지는 필수입니다.")
         String imageUrl) {
 
+    public Product toEntity() {
+        return new Product(name, price, imageUrl);
+    }
 }
