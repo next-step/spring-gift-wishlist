@@ -1,6 +1,5 @@
 package gift.controller;
 
-import gift.common.validator.ProductRequestValidator;
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
 import gift.service.ProductService;
@@ -9,9 +8,7 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,17 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AdminProductController {
 
     private final ProductService productService;
-    private final ProductRequestValidator productRequestValidator;
 
-    public AdminProductController(ProductService productService,
-        ProductRequestValidator productRequestValidator) {
+    public AdminProductController(ProductService productService) {
         this.productService = productService;
-        this.productRequestValidator = productRequestValidator;
-    }
-
-    @InitBinder
-    public void init(WebDataBinder webDataBinder) {
-        webDataBinder.addValidators(productRequestValidator);
     }
 
     @GetMapping
