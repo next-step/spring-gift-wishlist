@@ -13,6 +13,7 @@ public class ProductRequestDto {
     )
     private String name;
 
+    @Positive(message = "가격은 양수여야 합니다.")
     @NotNull
     private Long price;
 
