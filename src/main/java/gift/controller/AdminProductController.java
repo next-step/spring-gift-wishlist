@@ -6,6 +6,7 @@ import gift.dto.ProductUpdateRequestDto;
 import gift.entity.Product;
 import gift.exception.InvalidProductException;
 import gift.service.ProductService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,16 +39,16 @@ public class AdminProductController {
     }
 
     @PostMapping("/add")
-    public String addProduct(@Valid @ModelAttribute("product") ProductAddRequestDto requestDto, BindingResult bindingResult, Model model) {
+    public String addProduct(
+            @Valid @ModelAttribute("product") ProductAddRequestDto requestDto,
+            BindingResult bindingResult,
+            Model model,
+            HttpServletRequest request) {
         if (bindingResult.hasErrors()) {
             return "admin/add";
         }
-        try {
-            productService.addProduct(requestDto);
-        } catch (InvalidProductException e) {
-            model.addAttribute("globalErrorMessage", e.getMessage());
-            return "admin/add";
-        }
+        request.setAttribute("product", requestDto);
+        productService.addProduct(requestDto);
         return "redirect:/admin/products";
     }
 
@@ -66,17 +67,14 @@ public class AdminProductController {
             @PathVariable Long id,
             @Valid @ModelAttribute("product") ProductUpdateRequestDto requestDto,
             BindingResult bindingResult,
-            Model model
+            Model model,
+            HttpServletRequest request
     ) {
         if (bindingResult.hasErrors()) {
             return "admin/edit";
         }
-        try {
-            productService.updateProductById(id, requestDto);
-        } catch (InvalidProductException e) {
-            model.addAttribute("globalErrorMessage", e.getMessage());
-            return "admin/edit";
-        }
+        request.setAttribute("product", requestDto);
+        productService.updateProductById(id, requestDto);
         return "redirect:/admin/products";
     }
 
