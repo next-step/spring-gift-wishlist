@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
             .toList(); // 오류가 발생하는 항목들을 리스트에 담아 응답
 
         ProblemDetail error =
-            ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "요청에 오류가 있습니다.");
+            ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "유효성 검사에 실패했습니다.");
         error.setProperty("errors", messages); // `detail`엔 String만 담을 수 있기 때문에, 별도의 필드 사용
 
         return error;
