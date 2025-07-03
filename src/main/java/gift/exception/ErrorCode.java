@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 
 public enum ErrorCode {
 
-    Forbidden(HttpStatus.FORBIDDEN, "개시 중단됨, 개시를 원하시면 담당 MD와 협의해 주세요");
+    Notfound(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다");
 
     private final HttpStatus status;
     private final String message;

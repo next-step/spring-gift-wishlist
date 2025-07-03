@@ -75,6 +75,6 @@ public class ProductServiceImpl implements ProductService {
 
     private Product findProductByIdOrElseThrow(Long id) {
         return productRepository.findProductById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.Notfound));
     }
 }
