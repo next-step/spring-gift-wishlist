@@ -57,10 +57,7 @@ public class ProductService {
 
     @Transactional
     public UpdateProductResponse updateProduct(Long id, UpdateProductRequest request) {
-        if (!productRepository.existsById(id)) {
-            throw new ProductNotFoundException("해당 상품이 존재하지 않습니다.");
-        }
-
+        checkProductExistance(id);
         validateProductName(request.name());
 
         Product newProduct = Product.of(id, request.name(), request.price(), request.imageUrl());
@@ -75,9 +72,7 @@ public class ProductService {
 
     @Transactional
     public void deleteProduct(Long id) {
-        if (!productRepository.existsById(id)) {
-            throw new ProductNotFoundException("해당 상품이 존재하지 않습니다.");
-        }
+        checkProductExistance(id);
 
         int count = productRepository.delete(id);
         if (count != 1) {
@@ -89,6 +84,12 @@ public class ProductService {
         if (productName.contains("카카오")) {
             // 추후에 MD 승인이 있을 경우 예외를 발생시키지 않고 return하도록 수정 가능
             throw new ApprovalRequiredException("'카카오'가 포함된 문구를 사용하시려면 담당 MD에게 문의해주세요.");
+        }
+    }
+
+    private void checkProductExistance(Long id) {
+        if (!productRepository.existsById(id)) {
+            throw new ProductNotFoundException("해당 상품이 존재하지 않습니다.");
         }
     }
 }
