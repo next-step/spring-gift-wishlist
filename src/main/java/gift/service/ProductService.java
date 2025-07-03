@@ -21,14 +21,13 @@ public class ProductService {
     public Product createProduct(String name, Integer price, String imageUrl) {
         Product product = new Product(name, price, imageUrl, true);
         if (product.getName().contains("카카오")) {
-            product.setValidated(false);
+            product = product.updateValidated(false);
         }
         Optional<Long> optionalId = productRepository.saveNewProduct(product);
         if (optionalId.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Product creation failed");
         }
-        product.setId(optionalId.get());
-        return product;
+        return product.updateId(optionalId.get());
     }
 
     public Product getProductById(Long id) {
@@ -49,16 +48,16 @@ public class ProductService {
         }
         Product product = optionalProduct.get();
         if (name != null) {
-            product.setName(name);
+            product = product.updateName(name);
         }
         if (price != null) {
-            product.setPrice(price);
+            product = product.updatePrice(price);
         }
         if (imageUrl != null) {
-            product.setImageUrl(imageUrl);
+            product = product.updateImageUrl(imageUrl);
         }
         if (product.getName().contains("카카오")) {
-            product.setValidated(false);
+            product = product.updateValidated(false);
         }
         throwNotFoundIfTrue(!productRepository.updateProduct(product));
         return product;
@@ -67,7 +66,7 @@ public class ProductService {
     public Product updateProductById(Long id, String name, Integer price, String imageUrl) {
         Product product = new Product(id, name, price, imageUrl, true);
         if (product.getName().contains("카카오")) {
-            product.setValidated(false);
+            product = product.updateValidated(false);
         }
         throwNotFoundIfTrue(!productRepository.updateProduct(product));
         return product;

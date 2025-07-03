@@ -25,40 +25,40 @@ public class Product {
         this.validated = validated;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Product updateId(Long id) {
+        return new Product(id, name, price, imageUrl, validated);
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public Product updateName(String name) {
+        return new Product(id, name, price, imageUrl, validated);
     }
 
     public String getName() {
         return name;
     }
 
-    public void setPrice(Integer price) {
-        this.price = price;
+    public Product updatePrice(Integer price) {
+        return new Product(id, name, price, imageUrl, validated);
     }
 
     public Integer getPrice() {
         return price;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public Product updateImageUrl(String imageUrl) {
+        return new Product(id, name, price, imageUrl, validated);
     }
 
     public String getImageUrl() {
         return imageUrl;
     }
 
-    public void setValidated(Boolean validated) {
-        this.validated = validated;
+    public Product updateValidated(Boolean validated) {
+        return new Product(id, name, price, imageUrl, validated);
     }
 
     public Boolean getValidated() {
