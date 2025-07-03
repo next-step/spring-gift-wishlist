@@ -46,8 +46,7 @@ public class ProductPageController {
     @PostMapping("")
     public String createProduct(
         @Valid @ModelAttribute("request") ProductRequest request,
-        BindingResult bindingResult,
-        Model model
+        BindingResult bindingResult
         ) {
 
         if(bindingResult.hasErrors()){
@@ -78,11 +77,15 @@ public class ProductPageController {
     }
 
     // 상품 수정(수정 처리)
-    @PostMapping("/update/{productId}")
+    @PostMapping("/update")
     public String updateProduct(
-        @PathVariable Long productId,
-        @ModelAttribute ProductRequest request
+        @Valid @ModelAttribute("request") ProductRequest request,
+        BindingResult bindingResult
     ){
+        if(bindingResult.hasErrors()){
+            return "update";
+        }
+
         productServiceAdmin.updateAdmin(request);
 
         return "redirect:/admin/products";
