@@ -3,11 +3,13 @@ package gift.Controller;
 import gift.dto.ProductDto;
 import gift.model.Product;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,7 +43,9 @@ public class AdminController {
   // ✅ 상품 추가 페이지
   @GetMapping("/add")
   public String showAddForm(Model model) {
-    model.addAttribute("product", new ProductDto());
+    if(!model.containsAttribute("product")) {
+      model.addAttribute("product", new ProductDto());
+    }
     model.addAttribute("action", "/admin/products");
     model.addAttribute("method", "post");
     return "admin/product-form";
@@ -61,15 +65,48 @@ public class AdminController {
 
   // ✅ 상품 추가
   @PostMapping
-  public String addProduct(@ModelAttribute ProductDto productDto) {
+  public String addProduct(@Valid @ModelAttribute("product") ProductDto productDto,
+      BindingResult bindingResult,
+      Model model) {
+    if (containsProhibitedName(productDto.getName())) {
+      bindingResult.rejectValue("name", "invalid", "'카카오'는 담당 MD 협의 시에만 사용할 수 있습니다.");
+    }
+
+    if (bindingResult.hasErrors()) {
+      model.addAttribute("product", productDto);
+      model.addAttribute("action", "/admin/products");
+      model.addAttribute("method", "post");
+      return "admin/product-form";
+    }
+
     productService.save(productDto.toEntity());
     return "redirect:/admin/products";
   }
 
+
   // ✅ 상품 수정
   @PutMapping("/{id}")
-  public String updateProduct(@PathVariable Long id, @ModelAttribute ProductDto productDto) {
+  public String updateProduct(@PathVariable Long id,
+      @Valid @ModelAttribute("product") ProductDto productDto,
+      BindingResult bindingResult,
+      Model model) {
+    if (containsProhibitedName(productDto.getName())) {
+      bindingResult.rejectValue("name", "invalid", "'카카오'는 담당 MD 협의 시에만 사용할 수 있습니다.");
+    }
+
+    if (bindingResult.hasErrors()) {
+      model.addAttribute("product", productDto);
+      model.addAttribute("action", "/admin/products/" + id);
+      model.addAttribute("method", "put");
+      return "admin/product-form";
+    }
+
     productService.update(id, productDto.toEntity());
     return "redirect:/admin/products";
+  }
+
+
+  private boolean containsProhibitedName(String name) {
+    return name != null && name.contains("카카오");
   }
 }

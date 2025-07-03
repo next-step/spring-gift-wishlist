@@ -1,11 +1,20 @@
 package gift.dto;
 
 import gift.model.Product;
+import jakarta.validation.constraints.*;
 
 public class ProductDto {
 
   private Long id;
+
+  @NotBlank(message = "상품 이름은 필수입니다.")
+  @Size(max=15, message = "상품 이름은 최대 15자까지 입력가능 합니다")
+  @Pattern(
+      regexp = "^[\\p{L}\\p{N}\\s\\(\\)\\[\\]\\+\\-&/_]*$",
+      message = "상품 이름에는 (), [], +, -, &, /, _ 외의 특수문자는 사용 불가합니다"
+  )
   private String name;
+
   private int price;
   private String imageUrl;
 
