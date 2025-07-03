@@ -5,6 +5,7 @@ import gift.dto.ProductResponseDto;
 import gift.entity.Product;
 import gift.exception.BusinessException;
 import gift.exception.ErrorCode;
+import gift.exception.KakaoApprovalException;
 import gift.exception.ProductNotFoundException;
 import gift.repository.ProductRepository;
 import java.util.List;
@@ -68,7 +69,7 @@ public class ProductService {
   private void validateKaKaoApproval(Long productId) {
     Product product = findProductByIdOrFail(productId);
     if (product.getName().contains("카카오") && !product.isKakaoApproval()) {
-      throw new BusinessException(ErrorCode.KAKAO_APPROVAL_REQUIRED);
+      throw new KakaoApprovalException();
     }
   }
 
