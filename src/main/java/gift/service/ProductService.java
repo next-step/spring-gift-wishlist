@@ -18,7 +18,7 @@ public class ProductService {
     }
 
     public ProductResponseDto create(ProductRequestDto requestDto) {
-        Product product = new Product(requestDto.getName(), requestDto.getPrice(), requestDto.getImageUrl());
+        Product product = new Product(requestDto.name(), requestDto.price(), requestDto.imageUrl());
         Product newProduct = productRepository.save(product);
 
         return new ProductResponseDto(newProduct.getId(), newProduct.getName(), newProduct.getPrice(), newProduct.getImageUrl());
@@ -32,7 +32,7 @@ public class ProductService {
     }
 
     public ProductResponseDto update(Long productId, ProductRequestDto requestDto) {
-        Product product = productRepository.update(productId, requestDto.getName(), requestDto.getPrice(), requestDto.getImageUrl())
+        Product product = productRepository.update(productId, requestDto.name(), requestDto.price(), requestDto.imageUrl())
                 .orElseThrow(() -> new ProductNotExistException(productId));
 
         return new ProductResponseDto(product.getId(), product.getName(), product.getPrice(), product.getImageUrl());

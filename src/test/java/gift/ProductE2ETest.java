@@ -32,10 +32,7 @@ class ProductE2ETest {
     @Test
     void 상품을_등록하고_조회() {
         // 상품 등록
-        ProductRequestDto request = new ProductRequestDto();
-        request.setName("녹차");
-        request.setPrice(3500);
-        request.setImageUrl("green_tea.jpg");
+        ProductRequestDto request = new ProductRequestDto(null, "녹차", 3500, "green_tea.jpg");
 
         restClient.post()
                 .uri("/api/products")
@@ -55,10 +52,7 @@ class ProductE2ETest {
     @Test
     void 상품을_수정하고_조회(){
         // 상품 수정
-        ProductRequestDto request = new ProductRequestDto();
-        request.setName("아이스 아메리카노");
-        request.setPrice(5000);
-        request.setImageUrl("ice_americano.jpg");
+        ProductRequestDto request = new ProductRequestDto(null, "아이스 아메리카노", 5000, "ice_america.jpg");
 
         restClient.put()
                 .uri("/api/products/1")
@@ -98,10 +92,7 @@ class ProductE2ETest {
 
     @Test
     void 상품_등록_유효성_검사_실패() {
-        ProductRequestDto invalidRequest = new ProductRequestDto();
-        invalidRequest.setName("@카카오@");
-        invalidRequest.setPrice(10);
-        invalidRequest.setImageUrl("kakao.jpg");
+        ProductRequestDto invalidRequest = new ProductRequestDto(null, "@카카오@", 10, "kakao.jpg");
 
         HttpClientErrorException exception = assertThrows(HttpClientErrorException.class, () -> {
             restClient.post()
