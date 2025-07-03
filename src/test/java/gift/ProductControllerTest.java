@@ -133,4 +133,17 @@ public class ProductControllerTest {
             .andExpect(jsonPath("$.imageUrl").value("이미지 URL은 필수입니다."));
     }
 
+    @Test
+    @DisplayName("[API] 상품 등록 실패 - 유효하지 않은 이미지 URL")
+    void createProduct_fail_invalidImageUrl() throws Exception {
+
+        var dto = new ProductCreateRequestDto("초콜릿", 1000, "image.com/item.jpg");
+
+        mockMvc.perform(post("/api/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.imageUrl").value("유효한 이미지 URL이 아닙니다."));
+    }
+
 }
