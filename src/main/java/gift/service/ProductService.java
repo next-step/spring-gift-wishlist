@@ -70,8 +70,18 @@ public class ProductService {
 
 
     public void delete(Long id) {
-        boolean deleted = repository.deleteById(id);
-        if (!deleted) throw new ProductNotFoundException(id);
+
+        int deletedCount = repository.deleteById(id);
+
+        // 상품이 실제로 존재하지 않는 경우
+        if (deletedCount == 0) {
+            throw new ProductNotFoundException(id);
+        }
+
+        // 여러 상품이 삭제 되어버린 경우
+        if (deletedCount > 1) {
+            throw new IllegalStateException("ID 중복으로 인해 여러 상품이 삭제되었습니다.");
+        }
     }
 
     public void update(Long id, String name, int price, String imageUrl) {
@@ -91,7 +101,6 @@ public class ProductService {
         if (updatedCount > 1) {
             throw new IllegalStateException("ID 중복으로 인해 여러 상품이 수정되었습니다.");
         }
-
     }
 
 }
