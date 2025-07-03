@@ -25,48 +25,59 @@
 
 ### 0단계 - 기본 코드 준비
 
+### 1단계 - 유효성 검사 및 예외 처리
+
+- [x] 유효성 검사 로직 구현하기(검증기).
+- [x] API 에 유효성 검사 적용
+- [x] 상품관리 관리자 페이지에 적용
+
+### 1단계 - 코드 리뷰 반영
+
+- [x] 유효성 검사 실패시 모든 실패 항목 메시지에 포함하기
+- [x] README.md 에 체크박스 사용해보기
+
 # spring-gift-product (이전 구현)
 
 ## 상품관리 - 스프링 입문
 
 ### 1단계 - 상품 API
 
-- Product 도메인 구현
-- Product DTO 구현
-- Product Service 구현
-- Product Controller 구현
-- 공통 예외 처리 구현 (NOT_FOUND)
+- [x] Product 도메인 구현
+- [x] Product DTO 구현
+- [x] Product Service 구현
+- [x] Product Controller 구현
+- [x] 공통 예외 처리 구현 (NOT_FOUND)
 
 ### 1단계 - 코드 리뷰 반영
 
-- 불필요한 주식 제거
-- 테스트용 코드 제거
-- 규칙 9: getter/setter/프로퍼티를 쓰지 않는다 - Product setter 제거
-- service 계층의 id, Map 객체를 repository 계층으로 이동
+- [x] 불필요한 주식 제거
+- [x] 테스트용 코드 제거
+- [x] 규칙 9: getter/setter/프로퍼티를 쓰지 않는다 - Product setter 제거
+- [x] service 계층의 id, Map 객체를 repository 계층으로 이동
 
 ### 2단계 - 관리자 화면
 
-- 상품 리스트 조회 페이지 구현
-- 상품 추가 페이지 구현
-- 상품 상세 페이지 구현
-- 상품 수정 & 삭제 페이지 구현
+- [x] 상품 리스트 조회 페이지 구현
+- [x] 상품 추가 페이지 구현
+- [x] 상품 상세 페이지 구현
+- [x] 상품 수정 & 삭제 페이지 구현
 
 ### 2단계 - 코드 리뷰 반영
 
-- 주석 제거
-- 불필요한 생성자 제거
-- Optional 예외 처리 refactoring
-- 매직 넘버 제거
+- [x] 주석 제거
+- [x] 불필요한 생성자 제거
+- [x] Optional 예외 처리 refactoring
+- [x] 매직 넘버 제거
 
 ### 3단계 - 데이터베이스 적용
 
-- schema.sql 작성
-- interface를 사용해서 기존 repo 추상화
-- JdbcProductRepository 구현
-- 테스트 코드 보완(ProductApiControllerTest)
+- [x] schema.sql 작성
+- [x] interface를 사용해서 기존 repo 추상화
+- [x] JdbcProductRepository 구현
+- [x] 테스트 코드 보완(ProductApiControllerTest)
 
 ### 3단계 - 코드 리뷰 반영
 
-- JdbcClient에서 사용할 RowMapper 직접 구현하고 setter와 기본 생성자 제거
-- 사용하지 않는 메소드 제거
-- validation 사용자 경험 개선(500 error -> forwarding)
+- [x] JdbcClient에서 사용할 RowMapper 직접 구현하고 setter와 기본 생성자 제거
+- [x] 사용하지 않는 메소드 제거
+- [x] validation 사용자 경험 개선(500 error -> forwarding)

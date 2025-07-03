@@ -63,8 +63,6 @@ public class ProductApiControllerTest {
                 .andDo(print());
     }
 
-
-
     @Test
     @DisplayName("전체 상품 조회 테스트 - 200")
     void getProducts() throws Exception {
