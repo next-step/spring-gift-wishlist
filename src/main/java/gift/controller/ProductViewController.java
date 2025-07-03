@@ -8,6 +8,7 @@ import gift.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -29,7 +30,11 @@ public class ProductViewController {
 
     // 상품 등록 처리
     @PostMapping
-    public String create(@ModelAttribute @Valid ProductRequestDto dto) {
+    public String create(@ModelAttribute("product") @Valid ProductRequestDto dto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "product/create";
+        }
+
         productService.createProduct(dto);
         return "redirect:/admin/products";
     }
@@ -47,21 +52,25 @@ public class ProductViewController {
     }
 
     @GetMapping("/{id}")
-    public String getProduct(@PathVariable Long id, Model model) {
+    public String get(@PathVariable Long id, Model model) {
         ProductResponseDto product = productService.findProductById(id);
         model.addAttribute("product", product);
         return "product/detail";
     }
 
     @GetMapping("/{id}/update")
-    public String editForm(@PathVariable Long id, Model model) {
+    public String updateForm(@PathVariable Long id, Model model) {
         ProductResponseDto product = productService.findProductById(id);
         model.addAttribute("product", product);
         return "product/update";
     }
 
     @PostMapping("/{id}")
-    public String update(@PathVariable Long id, @ModelAttribute @Valid ProductRequestDto dto) {
+    public String update(@PathVariable Long id, @ModelAttribute("product") @Valid ProductRequestDto dto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "product/update";
+        }
+
         productService.updateProduct(id, dto);
         return "redirect:/admin/products";
     }
