@@ -98,4 +98,14 @@ public class ProductServiceTest {
         assertEquals("http://img2.jpg", updatedProduct.getImageUrl());
     }
 
+    @Test
+    void 존재하지_않는_ID로_삭제하면_예외가_발생한다() {
+        // given
+        Long invalidId = 999L;
+
+        // when & then
+        assertThrows(ProductNotFoundException.class, () ->
+                productService.delete(invalidId));
+    }
+
 }

@@ -69,12 +69,11 @@ public class ProductService {
 
     public void delete(Long id) {
 
-        int deletedCount = repository.deleteById(id);
+        // 상품 존재 여부 확인
+        Optional<Product> product = repository.findById(id);
+        if(product.isEmpty()) {throw new ProductNotFoundException(id);}
 
-        // 상품이 실제로 존재하지 않는 경우
-        if (deletedCount == 0) {
-            throw new ProductNotFoundException(id);
-        }
+        int deletedCount = repository.deleteById(id);
 
         // 여러 상품이 삭제 되어버린 경우
         if (deletedCount > 1) {
