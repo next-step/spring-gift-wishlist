@@ -37,8 +37,8 @@ public class ProductViewController {
     }
 
     @PostMapping("/products")
-    public String createProduct(@RequestParam String name,@RequestParam int price, @RequestParam String imageUrl, @RequestParam(defaultValue = "false") boolean kakaoApproval) {
-        ProductRequestDto dto = new ProductRequestDto(name,price,imageUrl,kakaoApproval);
+    public String createProduct(@RequestParam String name,@RequestParam int price, @RequestParam String imageUrl) {
+        ProductRequestDto dto = new ProductRequestDto(name,price,imageUrl);
         productService.saveProduct(dto);
         return "redirect:/";
     }
@@ -57,7 +57,7 @@ public class ProductViewController {
     }
     @PostMapping("/products/{id}")
     public String updateProduct(@PathVariable Long id,@RequestParam String name,@RequestParam int price, @RequestParam String imageUrl) {
-        ProductRequestDto dto = new ProductRequestDto(name, price, imageUrl,);
+        ProductRequestDto dto = new ProductRequestDto(name, price, imageUrl);
         productService.updateProduct(id, dto);
         return "redirect:/products/" + id;
     }
