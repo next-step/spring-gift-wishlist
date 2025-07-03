@@ -15,10 +15,4 @@ public class WebConfig implements WebMvcConfigurer {
     resolvers.add(new PageParamArgumentResolver());
   }
 
-  @Override
-  public void addResourceHandlers(ResourceHandlerRegistry registry) {
-    registry.addResourceHandler("/favicon.ico")
-        .addResourceLocations("classpath:/static/")
-        .setCachePeriod(0);
-  }
 }
