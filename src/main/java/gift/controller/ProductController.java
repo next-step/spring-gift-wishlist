@@ -4,6 +4,7 @@ import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.entity.Product;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class ProductController {
     this.service = service;
   }
 
-  @GetMapping("")
+  @GetMapping
   public ResponseEntity<List<ProductResponseDto>> findAllProduct() {
     return new ResponseEntity<>(service.findAllProduct(), HttpStatus.OK);
   }
@@ -36,15 +37,15 @@ public class ProductController {
     return new ResponseEntity<>(service.findProductById(id), HttpStatus.OK);
   }
 
-  @PostMapping("")
+  @PostMapping
   public ResponseEntity<ProductResponseDto> createProduct(
-      @RequestBody ProductRequestDto requestDto) {
+      @Valid @RequestBody ProductRequestDto requestDto) {
     return new ResponseEntity<>(service.createProduct(requestDto), HttpStatus.CREATED);
   }
 
   @PatchMapping("/{id}")
   public ResponseEntity<ProductResponseDto> updateProduct(@PathVariable Long id,
-      @RequestBody ProductRequestDto requestDto) {
+      @Valid @RequestBody ProductRequestDto requestDto) {
     return new ResponseEntity<>(service.updateProduct(id, requestDto), HttpStatus.OK);
   }
 

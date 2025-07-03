@@ -2,7 +2,10 @@ package gift.service;
 
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
+import gift.entity.Product;
+import gift.exception.ProductNotFoundException;
 import gift.repository.ProductRepository;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
@@ -18,30 +21,43 @@ public class ProductServiceImpl implements ProductService {
 
   @Override
   public List<ProductResponseDto> findAllProduct() {
-    return repository.findAllProduct();
+    List<Product> allProduct = repository.findAllProduct();
+    List<ProductResponseDto> responseDtoList = new ArrayList<>();
+    for (Product product : allProduct) {
+      ProductResponseDto responseDto = new ProductResponseDto(product);
+      responseDtoList.add(responseDto);
+    }
+    return responseDtoList;
   }
 
   @Override
   public ProductResponseDto findProductById(Long id) {
-    return repository.findProductById(id);
+    return repository.findProductById(id)
+        .map(ProductResponseDto::new)
+        .orElseThrow(() -> new ProductNotFoundException("product가 없습니다."));
   }
 
   @Override
   public ProductResponseDto createProduct(ProductRequestDto requestDto) {
-    return repository.createProduct(requestDto);
+    Product product = repository.createProduct(
+        new Product(requestDto.getName(), requestDto.getPrice(),
+            requestDto.getImageUrl()));
+    return new ProductResponseDto(product);
   }
 
   @Override
   public ProductResponseDto updateProduct(Long id, ProductRequestDto requestDto) {
 
-    if (repository.findProductById(id) == null) {
-      throw new IllegalStateException("업데이트하려는 상품이 없습니다");
-    }
-    return repository.updateProduct(id, requestDto);
+    return repository.updateProduct(id, new Product(requestDto.getName(), requestDto.getPrice(),
+            requestDto.getImageUrl())).map(ProductResponseDto::new)
+        .orElseThrow(() -> new ProductNotFoundException("product가 없습니다."));
   }
 
   @Override
   public void deleteProduct(Long id) {
-    repository.deleteProduct(id);
+    int delete = repository.deleteProduct(id);
+    if (delete != 1) {
+      throw new ProductNotFoundException("삭제할 것이 없습니다");
+    }
   }
 }

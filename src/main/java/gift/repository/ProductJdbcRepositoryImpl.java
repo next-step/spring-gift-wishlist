@@ -1,9 +1,10 @@
 package gift.repository;
 
-import gift.dto.ProductRequestDto;
-import gift.dto.ProductResponseDto;
+import gift.entity.Product;
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Optional;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -19,10 +20,10 @@ public class ProductJdbcRepositoryImpl implements ProductRepository {
   }
 
   @Override
-  public List<ProductResponseDto> findAllProduct() {
+  public List<Product> findAllProduct() {
     String sql = "select * from products";
     return jdbcTemplate.query(sql, (rs, rowNum) ->
-        new ProductResponseDto(
+        new Product(
             rs.getLong("id"),
             rs.getString("name"),
             rs.getLong("price"),
@@ -32,56 +33,62 @@ public class ProductJdbcRepositoryImpl implements ProductRepository {
   }
 
   @Override
-  public ProductResponseDto findProductById(Long id) {
+  public Optional<Product> findProductById(Long id) {
     String sql = "select * from products where id=?";
-    return jdbcTemplate.queryForObject(sql, (rs, rowNum) ->
-            new ProductResponseDto(
-                rs.getLong("id"),
-                rs.getString("name"),
-                rs.getLong("price"),
-                rs.getString("imageUrl")
-            )
-        , id);
+    try {
+      Product result = jdbcTemplate.queryForObject(sql,
+          (rs, rowNum) -> new Product(
+              rs.getLong("id"),
+              rs.getString("name"),
+              rs.getLong("price"),
+              rs.getString("imageUrl"))
+          , id);
+      return Optional.of(result);
+    } catch (EmptyResultDataAccessException e) {
+      return Optional.empty();
+    }
   }
 
   @Override
-  public ProductResponseDto createProduct(ProductRequestDto requestDto) {
+  public Product createProduct(Product product) {
 
     KeyHolder keyHolder = new GeneratedKeyHolder();
 
     String sql = "insert into products (name,price,imageUrl) values (?, ?, ?)";
-    jdbcTemplate.update(connection -> {
+    jdbcTemplate.update((connection) -> {
       PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-      ps.setString(1, requestDto.getName());
-      ps.setLong(2, requestDto.getPrice());
-      ps.setString(3, requestDto.getImageUrl());
+      ps.setString(1, product.getName());
+      ps.setLong(2, product.getPrice());
+      ps.setString(3, product.getImageUrl());
       return ps;
     }, keyHolder);
 
-    Long generatedId = keyHolder.getKey().longValue();
-
-    return new ProductResponseDto(generatedId, requestDto.getName(), requestDto.getPrice(),
-        requestDto.getImageUrl());
-  }
-
-  @Override
-  public ProductResponseDto updateProduct(Long id, ProductRequestDto requestDto) {
-    String sql = "update products set name=?, price=?, imageUrl=? where id=?";
-    jdbcTemplate.update(sql, requestDto.getName(), requestDto.getPrice(), requestDto.getImageUrl(),
-        id);
-    return new ProductResponseDto(id, requestDto.getName(), requestDto.getPrice(),
-        requestDto.getImageUrl());
-  }
-
-  @Override
-  public void deleteProduct(Long id) {
-    String checkSql = "select count(*) from products where id=?";
-    int count = jdbcTemplate.queryForObject(checkSql, Integer.class, id);
-    System.out.println(count);
-    if (count != 1) {
-      throw new IllegalStateException("삭제할 것이 없습니다");
+    Number key = keyHolder.getKey();
+    if (key == null) {
+      throw new IllegalStateException("생성된 ID가 존재하지 않습니다.");
     }
+    Long generatedId = key.longValue();
+    product.setId(generatedId);
+    return product;
+  }
+
+  @Override
+  public Optional<Product> updateProduct(Long id, Product product) {
+    String sql = "update products set name=?, price=?, imageUrl=? where id=?";
+    int update = jdbcTemplate.update(sql, product.getName(), product.getPrice(),
+        product.getImageUrl(),
+        id);
+    if (update == 0) {
+      return Optional.empty();
+    }
+    product.setId(id);
+    return Optional.of(product);
+  }
+
+  @Override
+  public int deleteProduct(Long id) {
     String sql = "delete from products where id=?";
-    jdbcTemplate.update(sql, id);
+    int delete = jdbcTemplate.update(sql, id);
+    return delete;
   }
 }
