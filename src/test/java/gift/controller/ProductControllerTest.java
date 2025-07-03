@@ -43,7 +43,8 @@ public class ProductControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .body(request)
             .retrieve()
-            .body(new ParameterizedTypeReference<CustomResponseBody<ProductResponse>>() {});
+            .body(new ParameterizedTypeReference<CustomResponseBody<ProductResponse>>() {
+            });
 
         assertThat(response).isNotNull();
         assertThat(response.status()).isEqualTo(CustomResponseCode.CREATED.getCode());
@@ -67,7 +68,8 @@ public class ProductControllerTest {
         CustomResponseBody<ProductResponse> response = client.get()
             .uri("/{id}", id)
             .retrieve()
-            .body(new ParameterizedTypeReference<CustomResponseBody<ProductResponse>>() {});
+            .body(new ParameterizedTypeReference<CustomResponseBody<ProductResponse>>() {
+            });
 
         ProductResponse data = response.data();
 
@@ -88,7 +90,8 @@ public class ProductControllerTest {
         CustomResponseBody<List<ProductResponse>> response = client.get()
             .uri("")
             .retrieve()
-            .body(new ParameterizedTypeReference<CustomResponseBody<List<ProductResponse>>>() {});
+            .body(new ParameterizedTypeReference<CustomResponseBody<List<ProductResponse>>>() {
+            });
 
         assertThat(response).isNotNull();
         assertThat(response.status()).isEqualTo(CustomResponseCode.LIST_RETRIEVED.getCode());
@@ -109,7 +112,8 @@ public class ProductControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .body(update)
             .retrieve()
-            .body(new ParameterizedTypeReference<CustomResponseBody<ProductResponse>>() {});
+            .body(new ParameterizedTypeReference<CustomResponseBody<ProductResponse>>() {
+            });
 
         ProductResponse data = response.data();
 
@@ -145,7 +149,8 @@ public class ProductControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .body(invalidRequest)
             .retrieve()
-            .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {})
+            .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {
+            })
             .toEntity(String.class);
 
         assertThat(response.getStatusCode().value())
@@ -156,14 +161,16 @@ public class ProductControllerTest {
     @Test
     @DisplayName("상품명 최대 길이 유효성 검사")
     void testProductNameLengthValidation() {
-        ProductRequest invalidRequest = new ProductRequest("일이삼사오육칠팔구십123456", 1000, "https://test.jpg");
+        ProductRequest invalidRequest = new ProductRequest("일이삼사오육칠팔구십123456", 1000,
+            "https://test.jpg");
 
         ResponseEntity<String> response = client.post()
             .uri("")
             .contentType(MediaType.APPLICATION_JSON)
             .body(invalidRequest)
             .retrieve()
-            .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {})
+            .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {
+            })
             .toEntity(String.class);
 
         assertThat(response.getStatusCode().value())
@@ -181,7 +188,8 @@ public class ProductControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .body(invalidRequest)
             .retrieve()
-            .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {})
+            .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {
+            })
             .toEntity(String.class);
 
         assertThat(response.getStatusCode().value())
@@ -191,7 +199,7 @@ public class ProductControllerTest {
 
     @Test
     @DisplayName("상품명에 카카오 포함 시 유효성 검사")
-    void testForbiddenKeywordInProductName() {
+    void testProductNameForbiddenKeywordValidation() {
         ProductRequest invalidRequest = new ProductRequest("카카오", 3000, "https://test.jpg");
 
         ResponseEntity<String> response = client.post()
@@ -199,14 +207,18 @@ public class ProductControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .body(invalidRequest)
             .retrieve()
-            .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {})
+            .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {
+            })
             .toEntity(String.class);
 
         assertThat(response.getStatusCode().value())
-            .isEqualTo(CustomResponseCode.FORBIDDEN_KEYWORD_KAKAO.getHttpStatus().value());
+            .isEqualTo(CustomResponseCode.VALIDATION_FAILED.getHttpStatus().value());
 
-        assertThat(response.getBody())
-            .contains(CustomResponseCode.FORBIDDEN_KEYWORD_KAKAO.getMessage());
+        String expectedMessage = String.format(
+            CustomResponseCode.FORBIDDEN_KEYWORD.getMessage(), "카카오"
+        );
+
+        assertThat(response.getBody()).contains(expectedMessage);
     }
 
     @Test
@@ -219,7 +231,8 @@ public class ProductControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .body(invalidRequest)
             .retrieve()
-            .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {})
+            .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {
+            })
             .toEntity(String.class);
 
         assertThat(response.getStatusCode().value())
@@ -237,7 +250,8 @@ public class ProductControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .body(invalidRequest)
             .retrieve()
-            .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {})
+            .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {
+            })
             .toEntity(String.class);
 
         assertThat(response.getStatusCode().value())
@@ -253,7 +267,8 @@ public class ProductControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .body(request)
             .retrieve()
-            .body(new ParameterizedTypeReference<CustomResponseBody<ProductResponse>>() {});
+            .body(new ParameterizedTypeReference<CustomResponseBody<ProductResponse>>() {
+            });
 
         return response.data().id();
     }
