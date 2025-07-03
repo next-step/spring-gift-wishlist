@@ -1,6 +1,6 @@
 package gift.controller;
 
-import gift.common.code.CustomResponseCode;
+import gift.common.validator.ProductRequestValidator;
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
 import gift.service.ProductService;
@@ -9,7 +9,9 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,9 +22,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AdminProductController {
 
     private final ProductService productService;
+    private final ProductRequestValidator productRequestValidator;
 
-    public AdminProductController(ProductService productService) {
+    public AdminProductController(ProductService productService,
+        ProductRequestValidator productRequestValidator) {
         this.productService = productService;
+        this.productRequestValidator = productRequestValidator;
+    }
+
+    @InitBinder
+    public void init(WebDataBinder webDataBinder) {
+        webDataBinder.addValidators(productRequestValidator);
     }
 
     @GetMapping
@@ -41,8 +51,6 @@ public class AdminProductController {
     @PostMapping
     public String createProduct(@Valid @ModelAttribute("product") ProductRequest request,
         BindingResult result) {
-
-        validateForbiddenKeyword(request, result);
 
         if (result.hasErrors()) {
             return "admin/product-form";
@@ -66,8 +74,6 @@ public class AdminProductController {
         BindingResult result,
         Model model) {
 
-        validateForbiddenKeyword(request, result);
-
         if (result.hasErrors()) {
             model.addAttribute("productId", id);
             return "admin/product-form";
@@ -81,12 +87,5 @@ public class AdminProductController {
     public String deleteProduct(@PathVariable Long id) {
         productService.delete(id);
         return "redirect:/admin/products";
-    }
-
-    private void validateForbiddenKeyword(ProductRequest request, BindingResult result) {
-        if (request.name() != null && request.name().contains("카카오")) {
-            result.rejectValue("name", "forbidden-keyword",
-                CustomResponseCode.FORBIDDEN_KEYWORD_KAKAO.getMessage());
-        }
     }
 }
