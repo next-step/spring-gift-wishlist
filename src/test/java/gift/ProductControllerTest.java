@@ -51,7 +51,11 @@ public class ProductControllerTest {
         mockMvc.perform(post("/api/products")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(dto)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.id").isNumber())
+            .andExpect(jsonPath("$.name").value(dto.getName()))
+            .andExpect(jsonPath("$.price").value(dto.getPrice()))
+            .andExpect(jsonPath("$.imageUrl").value(dto.getImageUrl()));
     }
 
     @Test
