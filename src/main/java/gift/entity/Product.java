@@ -1,5 +1,7 @@
 package gift.entity;
 
+import gift.validation.ProductValidator;
+
 public class Product {
     private Long id;
     private String name;
@@ -27,6 +29,7 @@ public class Product {
     }
 
     public void setName(String name) {
+        ProductValidator.validateName(name);
         this.name = name;
     }
 
@@ -39,6 +42,7 @@ public class Product {
     }
 
     public Product(Long id, String name, Long price, String imageUrl) {
+        ProductValidator.validateName(name);
         this.id = id;
         this.name = name;
         this.price = price;

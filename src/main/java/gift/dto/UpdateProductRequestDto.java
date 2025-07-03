@@ -12,11 +12,6 @@ public record UpdateProductRequestDto(
         @ValidProductPrice
         Long price,
 
-        String imageUrl,
-
-        boolean isMdApproved
+        String imageUrl
 ) {
-    public UpdateProductRequestDto(Long id, String name, Long price, String imageUrl) {
-        this(id, name, price, imageUrl, false);
-    }
 }

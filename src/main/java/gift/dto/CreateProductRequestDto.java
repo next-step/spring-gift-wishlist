@@ -10,11 +10,6 @@ public record CreateProductRequestDto(
         @ValidProductPrice
         Long price,
 
-        String imageUrl,
-
-        boolean isMdApproved
+        String imageUrl
 ) {
-    public CreateProductRequestDto(String name, Long price, String imageUrl) {
-        this(name, price, imageUrl, false);
-    }
 }
