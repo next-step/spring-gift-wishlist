@@ -4,8 +4,10 @@ import gift.domain.Product;
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -55,7 +57,19 @@ public class ProductAdminController {
      * 상품 등록 처리
      */
     @PostMapping
-    public String create(@ModelAttribute ProductRequest request) {
+    public String create(@ModelAttribute @Valid ProductRequest request,
+                         BindingResult bindingResult,
+                         Model model) {
+        /**
+         * 유효성 검사 실패시 BindingResult 를 통해서 오류 정보를 확인하고 처리해줘야한다.
+         * @ModelAttribute + @Valid → BindingResult로 직접 처리해야 한다.
+         */
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("productRequest", request); // 입력값 유지
+            model.addAttribute("errors", bindingResult);   // 에러 메시지 전달
+            return "admin/product/create-product-form";
+        }
+
         productService.create(request.name(), request.price(), request.imageUrl());
         return "redirect:/admin/products";
     }
@@ -81,7 +95,18 @@ public class ProductAdminController {
      * 상품 수정 처리
      */
     @PostMapping("/{id}/edit")
-    public String update(@PathVariable Long id, @ModelAttribute ProductRequest request) {
+    public String update(@PathVariable Long id,
+                         @ModelAttribute @Valid ProductRequest request,
+                         BindingResult bindingResult,
+                         Model model) {
+
+        if(bindingResult.hasErrors()) {
+            model.addAttribute("productId", id);
+            model.addAttribute("productRequest", request); // 입력값 유지
+            model.addAttribute("errors", bindingResult);   // 에러 메시지 전달
+            return "admin/product/edit-product-form";
+        }
+
         productService.update(id, request.name(), request.price(), request.imageUrl());
         return "redirect:/admin/products";
     }
