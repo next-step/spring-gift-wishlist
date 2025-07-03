@@ -1,10 +1,10 @@
 package gift.product.validator;
 
-import gift.product.annotation.ProductNameValidator;
+import gift.product.annotation.ProductNameConstraint;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class ProductNameConstraint implements ConstraintValidator<ProductNameValidator, String> {
+public class ProductNameValidator implements ConstraintValidator<ProductNameConstraint, String> {
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
