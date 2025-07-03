@@ -1,9 +1,10 @@
 package gift.service;
 
+import gift.dto.CreateProductRequestDto;
 import gift.dto.ProductResponseDto;
+import gift.dto.UpdateProductRequestDto;
 import gift.entity.Product;
 import gift.repository.ProductRepository;
-import gift.repository.ProductRepositoryImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,7 +14,7 @@ import java.util.List;
 public class ProductService {
     private final ProductRepository productRepository;
 
-    public ProductService(ProductRepositoryImpl productRepository) {
+    public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
@@ -32,8 +33,12 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductResponseDto createProduct(String name, Long price, String imageUrl) {
-        Product createdProduct = productRepository.createProduct(name, price, imageUrl);
+    public ProductResponseDto createProduct(CreateProductRequestDto requestDto) {
+        Product createdProduct = productRepository.createProduct(
+                requestDto.name(),
+                requestDto.price(),
+                requestDto.imageUrl()
+        );
 
         return ProductResponseDto.from(createdProduct);
     }
@@ -45,11 +50,11 @@ public class ProductService {
     }
 
     @Transactional
-    public void updateProduct(Long id, String name, Long price, String imageUrl) {
-        Product findProduct = productRepository.findProductByIdOrElseThrow(id);
-        findProduct.setName(name);
-        findProduct.setPrice(price);
-        findProduct.setImageUrl(imageUrl);
+    public void updateProduct(UpdateProductRequestDto requestDto) {
+        Product findProduct = productRepository.findProductByIdOrElseThrow(requestDto.id());
+        findProduct.setName(requestDto.name());
+        findProduct.setPrice(requestDto.price());
+        findProduct.setImageUrl(requestDto.imageUrl());
         productRepository.updateProduct(findProduct);
     }
 }

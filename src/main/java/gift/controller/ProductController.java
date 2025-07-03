@@ -39,11 +39,7 @@ public class ProductController {
     // 상품 추가
     @PostMapping
     public ResponseEntity<ProductResponseDto> createProduct(@Valid @RequestBody CreateProductRequestDto requestDto) {
-        ProductResponseDto productResponseDto = productService.createProduct(
-                requestDto.name(),
-                requestDto.price(),
-                requestDto.imageUrl()
-        );
+        ProductResponseDto productResponseDto = productService.createProduct(requestDto);
 
         return new ResponseEntity<>(productResponseDto, HttpStatus.CREATED);
     }
@@ -62,13 +58,7 @@ public class ProductController {
             @PathVariable Long id,
             @Valid @RequestBody UpdateProductRequestDto requestDto
     ) {
-
-        productService.updateProduct(
-                id,
-                requestDto.name(),
-                requestDto.price(),
-                requestDto.imageUrl()
-        );
+        productService.updateProduct(requestDto);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

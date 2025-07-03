@@ -54,7 +54,7 @@ public class AdminController {
 
             return "admin/product/create";
         }
-        productService.createProduct(requestDto.name(), requestDto.price(), requestDto.imageUrl());
+        productService.createProduct(requestDto);
 
         return "redirect:/admin/products";
     }
@@ -88,12 +88,7 @@ public class AdminController {
 
             return "admin/product/update";
         }
-        productService.updateProduct(
-                updatedProduct.id(),
-                updatedProduct.name(),
-                updatedProduct.price(),
-                updatedProduct.imageUrl()
-        );
+        productService.updateProduct(updatedProduct);
 
         return "redirect:/admin/products";
     }

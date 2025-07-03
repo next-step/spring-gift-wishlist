@@ -15,10 +15,10 @@ import java.sql.SQLException;
 import java.util.*;
 
 @Repository
-public class ProductRepositoryImpl implements ProductRepository {
+public class ProductJdbcRepository implements ProductRepository {
     private final JdbcTemplate jdbcTemplate;
 
-    public ProductRepositoryImpl(DataSource dataSource) {
+    public ProductJdbcRepository(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
