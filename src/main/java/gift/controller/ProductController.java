@@ -1,7 +1,9 @@
 package gift.controller;
 
+import gift.dto.ProductRequestDto;
 import gift.entity.Product;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,14 +40,14 @@ public class ProductController {
 
     // 상품 등록
     @PostMapping
-    public ResponseEntity<Product> postProduct(@RequestBody Product productWithoutId) {
-        return new ResponseEntity<>(productService.createProduct(productWithoutId), HttpStatus.CREATED);
+    public ResponseEntity<Product> postProduct(@Valid @RequestBody ProductRequestDto productRequestDto) {
+        return new ResponseEntity<>(productService.createProduct(productRequestDto), HttpStatus.CREATED);
     }
 
     // 상품 수정
     @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product updateRequest) {
-        Optional<Product> updated = productService.updateProduct(id, updateRequest);
+    public ResponseEntity<Product> updateProduct(@Valid @PathVariable Long id, @Valid @RequestBody ProductRequestDto productRequestDto) {
+        Optional<Product> updated = productService.updateProduct(id, productRequestDto);
         return updated.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(updated.get());
     }
 

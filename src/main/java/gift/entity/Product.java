@@ -1,5 +1,7 @@
 package gift.entity;
 
+import gift.dto.ProductRequestDto;
+
 public class Product {
 
     private Long id;
@@ -21,6 +23,12 @@ public class Product {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
+    }
+
+    public Product(ProductRequestDto productRequestDto) {
+        this.name = productRequestDto.getName();
+        this.price = productRequestDto.getPrice();
+        this.imageUrl = productRequestDto.getImageUrl();
     }
 
     public static Product createWithId(Product productWithoutId, Long newId) {

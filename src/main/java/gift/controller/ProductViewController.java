@@ -1,7 +1,9 @@
 package gift.controller;
 
+import gift.dto.ProductRequestDto;
 import gift.entity.Product;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -30,8 +32,8 @@ public class ProductViewController {
     }
 
     @PostMapping
-    public String postProduct(@ModelAttribute Product productWithoutId) {
-        productService.createProduct(productWithoutId);
+    public String postProduct(@Valid @ModelAttribute ProductRequestDto productRequestDto) {
+        productService.createProduct(productRequestDto);
         return "redirect:/admin/products";
     }
 
@@ -48,8 +50,8 @@ public class ProductViewController {
     }
 
     @PostMapping("/{id}")
-    public String updateProduct(@PathVariable Long id, @ModelAttribute Product updateRequest) {
-        productService.updateProduct(id, updateRequest);
+    public String updateProduct(@Valid @PathVariable Long id, @Valid @ModelAttribute ProductRequestDto productRequestDto) {
+        productService.updateProduct(id, productRequestDto);
         return "redirect:/admin/products";
     }
 
