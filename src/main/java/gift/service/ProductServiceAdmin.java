@@ -31,10 +31,6 @@ public class ProductServiceAdmin{
     }
 
     public void updateAdmin(ProductRequest request) {
-        if (request == null || request.id() == null) {
-            throw new InvalidProductException(ErrorCode.INVALID_PRODUCT_UPDATE_REQUEST);
-        }
-
         productRepository.findById(request.id())
             .orElseThrow(() -> new InvalidProductException(ErrorCode.NOT_EXISTS_PRODUCT));
 
