@@ -25,7 +25,6 @@ public class ProductCreateTest extends AbstractControllerTest {
             fieldWithPath("name").description("제품 이름").type(JsonFieldType.STRING),
             fieldWithPath("price").description("제품 가격").type(JsonFieldType.NUMBER),
             fieldWithPath("imageUrl").description("제품 이미지 URL").type(JsonFieldType.STRING),
-            fieldWithPath("isMdApproved").description("카카오 제품 여부").type(JsonFieldType.BOOLEAN).optional()
     };
 
     private final FieldDescriptor[] PRODUCT_CREATE_RESPONSE = {
@@ -39,7 +38,7 @@ public class ProductCreateTest extends AbstractControllerTest {
     @DisplayName("제품 생성 성공 테스트")
     public void 제품_생성_시_201_반환() {
         ProductCreateRequest request =
-                new ProductCreateRequest("새로운 제품", 1000L, "이미지 URL", null);
+                new ProductCreateRequest("새로운 제품", 1000L, "이미지 URL");
 
         RestAssured.given(this.spec)
                 .filter(document("상품 생성 성공",
@@ -64,7 +63,7 @@ public class ProductCreateTest extends AbstractControllerTest {
     public void 제품_생성_카카오_md_권한_시_201_반환() {
         // 카카오 포함 시 MD 권한이 있는 사용자로 제품 생성
         ProductCreateRequest request =
-                new ProductCreateRequest("MD 카카오 제품", 1000L, "이미지 URL", null);
+                new ProductCreateRequest("MD 카카오 제품", 1000L, "이미지 URL");
 
         RestAssured.given(this.spec)
                 .filter(document("MD 권한 시 제품 생성 성공",
@@ -91,7 +90,7 @@ public class ProductCreateTest extends AbstractControllerTest {
         String url = getBaseUrl() + "/api/products";
         // 제품 이름 누락
         ProductCreateRequest request
-                = new ProductCreateRequest(null, 1000L, "이미지 URL", null);
+                = new ProductCreateRequest(null, 1000L, "이미지 URL");
 
         RestAssured.given(this.spec)
                 .filter(document("상품 생성 실패 - 필드 누락",
@@ -119,7 +118,7 @@ public class ProductCreateTest extends AbstractControllerTest {
          //유효하지않은 특수 문자 포함된 15자 이상의 제품 이름
         ProductCreateRequest request = new ProductCreateRequest(
                 "<><><><><><><><><><><><><><><><>",
-                1000L, "이미지 URL", null);
+                1000L, "이미지 URL");
 
         RestAssured.given(this.spec)
                 .filter(document("상품 생성 실패 - 제품 이름 유효성 검사 실패",
@@ -142,7 +141,7 @@ public class ProductCreateTest extends AbstractControllerTest {
         String url = getBaseUrl() + "/api/products";
         //유효하지 않은 데이터
         ProductCreateRequest request =
-                new ProductCreateRequest("", -1000L, "이미지 URL", null);
+                new ProductCreateRequest("", -1000L, "이미지 URL");
         RestAssured.given(this.spec)
                 .filter(document("상품 생성 실패 - 가격 유효성 검사 실패",
                         requestFields(PRODUCT_CREATE_REQUEST),
@@ -164,7 +163,7 @@ public class ProductCreateTest extends AbstractControllerTest {
         String url = getBaseUrl() + "/api/products";
         // 카카오 제품이지만 MD 권한이 없는 사용자로 제품 생성
         ProductCreateRequest request =
-                new ProductCreateRequest("카카오 제품", 1000L, "이미지 URL", null);
+                new ProductCreateRequest("카카오 제품", 1000L, "이미지 URL");
 
         RestAssured.given(this.spec)
                 .filter(document("카카오 제품 생성 실패 - MD 권한 없음",

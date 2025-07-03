@@ -8,7 +8,7 @@ public class ProductNameValidator implements ConstraintValidator<ValidProductNam
     // \\p{L} : 모든 언어의 문자(한글 포함)
     // \\p{N} : 모든 숫자
     // 공백, (), [], +, -, &, /, _ 허용
-    private static final String ALLOWED_PATTERN = "^[\\p{L}\\p{N} ()\\[\\]+\\-&/_]*$";
+    private static final String ALLOWED_PATTERN = "^[\\p{L}\\p{N} ()\\[\\]+\\-&/_]+$";
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {

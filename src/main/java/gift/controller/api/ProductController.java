@@ -5,7 +5,7 @@ import gift.dto.ProductCreateRequest;
 import gift.dto.ProductUpdateRequest;
 import gift.entity.Product;
 import gift.service.ProductService;
-import gift.validation.group.ValidationGroups;
+import gift.validation.group.AuthenticationGroups;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
@@ -32,14 +32,21 @@ public class ProductController {
     }
 
     private <T> void handleGroupValidation (String userRole, T dto) {
-        Class<?> group = ValidationGroups.UserGroup.class;
-        if (userRole != null && userRole.equalsIgnoreCase("role_md")) {
-            group = ValidationGroups.MDGroup.class;
+        Class<?> group = AuthenticationGroups.UserGroup.class;
+        if (userRole != null) {
+            group = switch (userRole.toUpperCase()) {
+                case "ROLE_ADMIN" -> AuthenticationGroups.AdminGroup.class;
+                case "ROLE_MD" -> AuthenticationGroups.MdGroup.class;
+                case "ROLE_USER" -> AuthenticationGroups.UserGroup.class;
+                default -> {
+                    log.error("알 수 없는 사용자 역할: {}", userRole);
+                    throw new IllegalArgumentException("알 수 없는 사용자 역할입니다. : " + userRole);
+                }
+            };
         }
         Set<ConstraintViolation<T>> violations = validator.validate(dto, group);
         if (!violations.isEmpty()) {
-            log.error("유효성 검사 실패: {}", violations);
-            throw new ConstraintViolationException(violations);
+            throw new ConstraintViolationException("유효하지 않은 요청입니다.", violations);
         }
     }
 

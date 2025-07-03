@@ -30,8 +30,7 @@ public class ProductUpdateTest extends AbstractControllerTest {
     private static final FieldDescriptor[] PRODUCT_UPDATE_REQUEST = {
             fieldWithPath("name").description("수정된 제품 이름").type(JsonFieldType.STRING).optional(),
             fieldWithPath("price").description("수정된 제품 가격").type(JsonFieldType.NUMBER).optional(),
-            fieldWithPath("imageUrl").description("수정된 제품 이미지 URL").type(JsonFieldType.STRING).optional(),
-            fieldWithPath("isMdApproved").description("카카오 MD 승인 여부").type(JsonFieldType.BOOLEAN).optional()
+            fieldWithPath("imageUrl").description("수정된 제품 이미지 URL").type(JsonFieldType.STRING).optional()
     };
 
     private static final FieldDescriptor[] PRODUCT_UPDATE_RESPONSE = {
@@ -45,7 +44,7 @@ public class ProductUpdateTest extends AbstractControllerTest {
     @DisplayName("제품 수정 성공 테스트")
     public void 제품_수정_시_200_반환() {
         String url = getBaseUrl() + "/api/products/{id}";
-        ProductUpdateRequest request = new ProductUpdateRequest("수정된 제품", 1500L, "수정된 이미지 URL", null);
+        ProductUpdateRequest request = new ProductUpdateRequest("수정된 제품", 1500L, "수정된 이미지 URL");
         RestAssured.given(this.spec)
                 .filter(document("상품 수정 성공",
                         pathParameters(PRODUCT_UPDATE_PATH_PARAMETERS),
@@ -68,7 +67,7 @@ public class ProductUpdateTest extends AbstractControllerTest {
     @DisplayName("제품 수정 성공 테스트: 특정 필드 누락 가능")
     public void 제품_수정_특정_필드_누락_시_200_반환() {
         String url = getBaseUrl() + "/api/products/{id}"; // 존재하는 제품 ID로 변경
-        ProductUpdateRequest request = new ProductUpdateRequest("수정된 제품", null, "수정된 이미지 URL", null); // 가격 필드 누락
+        ProductUpdateRequest request = new ProductUpdateRequest("수정된 제품", null, "수정된 이미지 URL"); // 가격 필드 누락
 
         RestAssured.given(this.spec)
                 .filter(document("상품 수정 성공 - 특정 필드 누락",
@@ -100,7 +99,7 @@ public class ProductUpdateTest extends AbstractControllerTest {
                         responseFields(PRODUCT_UPDATE_RESPONSE)))
                 .header("X-User-Role", "ROLE_MD") // MD 권한으로 요청
                 .contentType("application/json")
-                .body(new ProductUpdateRequest("MD 권한 카카오 수정 제품", 2000L, "수정된 이미지 URL", null))
+                .body(new ProductUpdateRequest("MD 권한 카카오 수정 제품", 2000L, "수정된 이미지 URL"))
                 .when()
                 .put(url, 1) // 존재하는 제품 ID로 변경
                 .then()
@@ -116,7 +115,7 @@ public class ProductUpdateTest extends AbstractControllerTest {
     public void 제품_수정_유효성_검사_실패_시_400_반환() {
         String url = getBaseUrl() + "/api/products/{id}";
         ProductUpdateRequest request = new ProductUpdateRequest("<><><><><><><><><><><><><>",
-                1000L, "이미지 URL", null); // 유효하지 않은 데이터
+                1000L, "이미지 URL"); // 유효하지 않은 데이터
         RestAssured.given(this.spec)
                 .filter(document("상품 수정 실패 - 유효성 검사 실패",
                         pathParameters(PRODUCT_UPDATE_PATH_PARAMETERS),
@@ -135,7 +134,7 @@ public class ProductUpdateTest extends AbstractControllerTest {
     @DisplayName("제품 수정 실패 테스트 : 카카오 유효성 검사 실패 시 400 반환")
     public void 제품_수정_카카오_유효성_검사_실패_시_400_반환() {
         String url = getBaseUrl() + "/api/products/{id}";
-        ProductUpdateRequest request = new ProductUpdateRequest("카카오 수정 제품", 1000L, "이미지 URL", false); // 유효하지 않은 카카오 데이터
+        ProductUpdateRequest request = new ProductUpdateRequest("카카오 수정 제품", 1000L, "이미지 URL"); // 유효하지 않은 카카오 데이터
 
         RestAssured.given(this.spec)
                 .filter(document("상품 수정 실패 - 카카오 유효성 검사 실패",
@@ -156,7 +155,7 @@ public class ProductUpdateTest extends AbstractControllerTest {
     public void 제품_패치_특정_필드_누락_시_200_반환() {
         String url = getBaseUrl() + "/api/products/{id}";
         ProductUpdateRequest request =
-                new ProductUpdateRequest("패치된 제품", 1500L, "패치된 이미지 URL", null);
+                new ProductUpdateRequest("패치된 제품", 1500L, "패치된 이미지 URL");
 
         RestAssured.given(this.spec)
                 .filter(document("상품 패치 성공",
@@ -181,7 +180,7 @@ public class ProductUpdateTest extends AbstractControllerTest {
     public void 제품_패치_카카오_md_권한_시_200_반환() {
         String url = getBaseUrl() + "/api/products/{id}";
         ProductUpdateRequest request =
-                new ProductUpdateRequest("패치된 카카오 제품", 1500L, "패치된 이미지 URL", null);
+                new ProductUpdateRequest("패치된 카카오 제품", 1500L, "패치된 이미지 URL");
         RestAssured.given(this.spec)
                 .filter(document("MD 권한 시 상품 패치 성공",
                         pathParameters(PRODUCT_UPDATE_PATH_PARAMETERS),
@@ -207,7 +206,7 @@ public class ProductUpdateTest extends AbstractControllerTest {
         String url = getBaseUrl() + "/api/products/{id}";
         ProductUpdateRequest request =
                 new ProductUpdateRequest("<><><><><><><><><><><><><>",
-                1000L, "이미지 URL", null); // 유효하지 않은 데이터
+                1000L, "이미지 URL"); // 유효하지 않은 데이터
 
         RestAssured.given(this.spec)
                 .filter(document("상품 패치 실패 - 유효성 검사 실패",
@@ -229,7 +228,7 @@ public class ProductUpdateTest extends AbstractControllerTest {
         String url = getBaseUrl() + "/api/products/{id}";
         // 유효하지 않은 카카오 데이터
         ProductUpdateRequest request =
-                new ProductUpdateRequest("카카오 수정 제품", 1000L, "이미지 URL", false);
+                new ProductUpdateRequest("카카오 수정 제품", 1000L, "이미지 URL");
 
         RestAssured.given(this.spec)
                 .filter(document("상품 패치 실패 - 카카오 유효성 검사 실패",
