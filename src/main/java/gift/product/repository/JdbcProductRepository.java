@@ -48,7 +48,13 @@ public class JdbcProductRepository implements ProductRepository{
   }
 
   @Override
-  public List<Product> findAll(int offset, int pageSize, SortInfo sortInfo) {
+  public List<Product> findAll() {
+    String sql = "SELECT * FROM product";
+    return jdbcTemplate.query(sql, productRowMapper());
+  }
+
+  @Override
+  public List<Product> findAllByPage(int offset, int pageSize, SortInfo sortInfo) {
     String sortDirection = sortInfo.isAscending() ? "ASC" : "DESC";
     String sql = String.format(
         "SELECT * FROM product ORDER BY %s %s LIMIT :limit OFFSET :offset",
@@ -56,7 +62,7 @@ public class JdbcProductRepository implements ProductRepository{
     );
 
     MapSqlParameterSource params = new MapSqlParameterSource()
-        .addValue("limit", pageSize)
+        .addValue("limit", pageSize+1)
         .addValue("offset", offset);
 
     return jdbcTemplate.query(sql, params, productRowMapper());

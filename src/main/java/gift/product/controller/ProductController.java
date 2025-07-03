@@ -37,7 +37,7 @@ public class ProductController {
 
   @GetMapping
   public ResponseEntity<PagedResult<GetProductResDto>> getProductByPageRequest(
-      @PageParam PageRequest pageRequest
+      @Valid @PageParam PageRequest pageRequest
   ) {
     PagedResult<GetProductResDto> pagedResult = productService.getAllByPage(pageRequest);
     return ResponseEntity.ok(pagedResult);

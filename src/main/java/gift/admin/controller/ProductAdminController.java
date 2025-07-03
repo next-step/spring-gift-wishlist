@@ -65,7 +65,7 @@ public class ProductAdminController {
   }
 
   @GetMapping("/edit/{id}")
-  public String showEditForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
+  public String showEditForm(@PathVariable(name = "id") Long id, Model model, RedirectAttributes redirectAttributes) {
     try {
       var product = productService.getProductById(id);
 
@@ -87,7 +87,7 @@ public class ProductAdminController {
   }
 
   @PostMapping("/edit/{id}")
-  public String updateProduct(@PathVariable Long id,
+  public String updateProduct(@PathVariable(name= "id") Long id,
       @Valid @ModelAttribute("product") UpdateProductReqDto dto,
       BindingResult bindingResult,
       Model model,
@@ -112,7 +112,7 @@ public class ProductAdminController {
   }
 
   @PostMapping("/delete/{id}")
-  public String deleteProduct(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+  public String deleteProduct(@PathVariable(name="id") Long id, RedirectAttributes redirectAttributes) {
     try {
       productService.deleteProduct(id);
       redirectAttributes.addFlashAttribute("successMessage", "상품이 성공적으로 삭제되었습니다.");

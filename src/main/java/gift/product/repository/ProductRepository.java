@@ -8,7 +8,9 @@ import java.util.Optional;
 public interface ProductRepository {
   Long save(Product product);
   Optional<Product> findById(Long id);
-  List<Product> findAll(int offset, int pageSize, SortInfo sortInfo);
+  List<Product> findAll();
+  List<Product> findAllByPage(int offset, int pageSize, SortInfo sortInfo);
+
   void update(Long id, Product updateProduct);
   void deleteById(Long id);
 
