@@ -13,3 +13,4 @@
 -[x] "카카오" 관련 검증 실패시 커스텀 InvalidRequestException 구현
 -[x] @RestControllerAdvice, @ExceptionHandler 조합한 GlobalExceptionHandler 개발
 -[x] 테스트 개발(검증 로직 정상 동작 유무 확인)
+-[x] 상품 추가, 수정 화면에서 카카오 관련 md 여부 확인 체크 박스 추가 
