@@ -162,4 +162,37 @@ public class ProductControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
 
+    @Test
+    void 상품_수정(){
+        var url = "http://localhost:" + port + "/api/products/1";
+
+        ProductRequestDto requestDto = new ProductRequestDto();
+        requestDto.setName("맥북Air(M4)");
+        requestDto.setPrice(1235000);
+        requestDto.setImageUrl("https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcQIOLM8rb3eJVMzijKJcSS5NFVgVRkkGVUVJu8_X_CkcGB4WW-VJrtT9E2l-qgHI0N1bOwhojEe");
+
+        var response = restClient.put()
+                .uri(url)
+                .body(requestDto)
+                .retrieve()
+                .toEntity(Product.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    void 상품_수정_허용되지_않는_상품명(){
+        var url = "http://localhost:" + port + "/api/products/1";
+
+        ProductRequestDto requestDto = new ProductRequestDto();
+        requestDto.setName("카카오북Air(M4)");
+        requestDto.setPrice(1235000);
+        requestDto.setImageUrl("https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcQIOLM8rb3eJVMzijKJcSS5NFVgVRkkGVUVJu8_X_CkcGB4WW-VJrtT9E2l-qgHI0N1bOwhojEe");
+
+        assertThrows(HttpClientErrorException.BadRequest.class,
+                () -> restClient.put()
+                        .uri(url)
+                        .body(requestDto)
+                        .retrieve()
+                        .toEntity(Product.class));
+    }
 }

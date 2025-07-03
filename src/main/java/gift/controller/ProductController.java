@@ -69,7 +69,7 @@ public class ProductController {
     //상품 수정
     @PutMapping("/products/{id}")
     public ResponseEntity<Product> modifyProduct(
-            @RequestBody ProductRequestDto requestDto,
+            @RequestBody @Valid ProductRequestDto requestDto,
             @PathVariable Long id
     ) {
         productService.modify(id, requestDto);
