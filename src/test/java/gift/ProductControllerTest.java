@@ -43,6 +43,7 @@ public class ProductControllerTest {
         assertThat(products).isInstanceOf(List.class);
         assertThat(products.get(0).getName()).isEqualTo("초코송이");
         assertThat(products.get(0).getPrice()).isEqualTo(1000);
+        assertThat(products.get(0).getImageUrl()).startsWith("https://");
     }
 
     @Test
@@ -57,6 +58,7 @@ public class ProductControllerTest {
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getName()).isEqualTo("초코송이");
         assertThat(response.getBody().getPrice()).isEqualTo(1000);
+        assertThat(response.getBody().getImageUrl()).startsWith("https://");
     }
 
     @Test
@@ -90,6 +92,8 @@ public class ProductControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getName()).isEqualTo(requestDto.getName());
+        assertThat(response.getBody().getPrice()).isEqualTo(requestDto.getPrice());
+        assertThat(response.getBody().getImageUrl()).startsWith("https://");
     }
 
     @Test
@@ -110,6 +114,8 @@ public class ProductControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getName()).isEqualTo(requestDto.getName());
+        assertThat(response.getBody().getPrice()).isEqualTo(requestDto.getPrice());
+        assertThat(response.getBody().getImageUrl()).startsWith("https://");
     }
 
     @Test
