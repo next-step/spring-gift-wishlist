@@ -4,6 +4,7 @@ import gift.domain.Product;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.repository.ProductRepository;
+import gift.validation.ProductNameValidator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -19,6 +20,8 @@ public class ProductServiceImpl implements ProductService {
   }
 
   public ProductResponseDto createProduct(ProductRequestDto productRequestDto) {
+    ProductNameValidator.validate(productRequestDto.name(), productRequestDto.kakaoConfirmed());
+
     Product product = new Product(productRequestDto.name(), productRequestDto.price(),
         productRequestDto.imageUrl());
     return productRepository.createProduct(product);
@@ -39,7 +42,9 @@ public class ProductServiceImpl implements ProductService {
   }
 
   public ProductResponseDto updateProduct(Long id, ProductRequestDto productRequestDto) {
+    ProductNameValidator.validate(productRequestDto.name(), productRequestDto.kakaoConfirmed());
 
+    searchProductById(id);
     Product updated = productRepository.updateProduct(
         id,
         productRequestDto.name(),
@@ -51,6 +56,7 @@ public class ProductServiceImpl implements ProductService {
   }
 
   public void deleteProduct(Long id) {
+    searchProductById(id);
     productRepository.deleteProduct(id);
   }
 }
