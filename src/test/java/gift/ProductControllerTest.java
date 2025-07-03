@@ -81,4 +81,17 @@ public class ProductControllerTest {
             .andExpect(jsonPath("$.name").value("상품명은 필수입니다."));
     }
 
+    @Test
+    @DisplayName("[API] 상품 등록 실패 - 상품명 15자 초과")
+    void createProduct_fail_nameTooLong() throws Exception {
+
+        var dto = new ProductCreateRequestDto("1234567890123456", 15000, "https://image.com/item.jpg");
+
+        mockMvc.perform(post("/api/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.name").value("최대 15자까지 가능합니다."));
+    }
+
 }
