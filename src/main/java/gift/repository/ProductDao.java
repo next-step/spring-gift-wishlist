@@ -14,18 +14,18 @@ import org.springframework.stereotype.Repository;
 public class ProductDao implements ProductRepository {
 
     private final JdbcClient client;
+    private final RowMapper<Product> getProductRowMapper = (rs, rowNum) -> {
+        Long id = rs.getLong("id");
+        String name = rs.getString("name");
+        Long price = rs.getLong("price");
+        String imageUrl = rs.getString("imageUrl");
+
+        return new Product(id, name, price, imageUrl);
+    };
+
     public ProductDao(JdbcClient client) {
         this.client = client;
     }
-
-    private final RowMapper<Product> getProductRowMapper = (rs, rowNum) -> {
-            Long id = rs.getLong("id");
-            String name = rs.getString("name");
-            Long price = rs.getLong("price");
-            String imageUrl = rs.getString("imageUrl");
-
-            return new Product(id, name, price, imageUrl);
-        };
 
     @Override
     public Product createProduct(Product newProduct) {
