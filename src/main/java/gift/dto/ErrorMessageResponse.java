@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
@@ -129,5 +130,22 @@ public record ErrorMessageResponse (
                 validationErrors
             );
         }
+    }
+
+    ProblemDetail toProblemDetail() {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.valueOf(status), message);
+        problemDetail.setTitle(error);
+        problemDetail.setProperty("path", path);
+        problemDetail.setProperty("timestamp", timestamp.toString());
+        if (validationErrors != null && !validationErrors.isEmpty()) {
+            List<ProblemDetail> validationDetails = new ArrayList<>();
+            for (ValidationError error : validationErrors) {
+                ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, error.message());
+                detail.setProperty("field", error.field());
+                validationDetails.add(detail);
+            }
+            problemDetail.setProperty("validationErrors", validationDetails);
+        }
+        return problemDetail;
     }
 }
