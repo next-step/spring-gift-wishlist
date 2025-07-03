@@ -264,4 +264,18 @@ public class ProductControllerTest {
             .andExpect(jsonPath("$.error").value("상품을 찾을 수 없습니다."));
     }
 
+    @Test
+    @DisplayName("[API] 상품 수정 실패 - 잘못된 ID 형식(400)")
+    void updateProduct_invalidIdFormat() throws Exception {
+        var dto = new ProductUpdateRequestDto(
+            "이름", 500, "https://image.com/ok.jpg"
+        );
+
+        mockMvc.perform(put("/api/products/{id}", "abc")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.error").value("'id' 파라미터는 long 형식이어야 합니다."));
+    }
+
 }
