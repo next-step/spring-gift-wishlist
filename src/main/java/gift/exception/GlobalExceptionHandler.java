@@ -44,6 +44,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
+    // JSON 바디 파싱 오류(HttpMessageNotReadableException) 예외 처리 핸들러
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<Map<String, String>> handleHttpMessageNotReadable(HttpMessageNotReadableException e) {
         Map<String, String> errors = new HashMap<>();
