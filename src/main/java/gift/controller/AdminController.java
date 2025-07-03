@@ -38,7 +38,7 @@ public class AdminController {
 
   @GetMapping("/new")
   public String createForm(Model model) {
-    model.addAttribute("CreateFormDto", new ProductCreateFormDto());
+    model.addAttribute("createFormDto", new ProductCreateFormDto());
     return "createProductForm";
   }
 
@@ -46,7 +46,7 @@ public class AdminController {
   public String create(@Valid @ModelAttribute ProductCreateFormDto createFormDto,
       BindingResult bindingResult, Model model) {
     if (bindingResult.hasErrors()) {
-      model.addAttribute("CreateFormDto", new ProductCreateFormDto());
+      model.addAttribute("createFormDto", new ProductCreateFormDto());
       model.addAttribute("validationError", "validation에 맞지 않으니 다시 입력하세요");
       return "createProductForm";
     }
