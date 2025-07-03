@@ -4,5 +4,6 @@ CREATE TABLE products
     name     VARCHAR(255) NOT NULL,
     price    INT          NOT NULL,
     imageUrl VARCHAR(255) NOT NULL,
+    kakaoApproval BOOLEAN NOT NULL DEFAULT FALSE,
     PRIMARY KEY (id)
 );

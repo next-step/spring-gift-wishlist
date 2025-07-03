@@ -1,4 +1,4 @@
-# spring-gift-wishlist
+# spring-gift-product
 ***
 ## Step 1 : API 명세(RestController)
 | 기능    | Method | URL                       |request|response| 상태코드     |
@@ -21,3 +21,18 @@
 - H2 DB 사용 설정
 - Product schema 및 data.sql 설정
 - 상품정보 : 자바 컬렉션 기반 -> H2 DB (Repository 구현)
+
+# spring-gift-wishlist
+
+## Step 1 : 유효성 검사 및 예외 처리
+### 요구사항 분석
+- 상품을 추가하거나 수정하는 경우, 클라이언트로부터 잘못된 값이 전달될 수 있다. 
+  잘못된 값이 전달되면 클라이언트가 어떤 부분이 왜 잘못되었는지 인지할 수 있도록 응답을 제공한다.
+- 상품 이름은 공백을 포함하여 최대 15자까지 입력할 수 있다.
+- 특수 문자 검증
+- "카카오"가 포함된 문구 검증
+### 구현 방향  
+- Service layer의 create와 update 로직에서 `try-catch`문을 중복하여 사용하지말고, `@ExceptionalHandler` 사용
+- 상품 이름은 `@NotBlank`로 가장 엄격하게 입력값을 검증함과 동시에 `@Size`를 이용
+- `@Pattern`과 `regex`를 이용
+- `Custom Validator` 이용

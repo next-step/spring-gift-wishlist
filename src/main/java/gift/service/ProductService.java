@@ -3,7 +3,9 @@ package gift.service;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.entity.Product;
-import gift.exception.InvalidPriceException;
+import gift.exception.BusinessException;
+import gift.exception.ErrorCode;
+import gift.exception.KakaoApprovalException;
 import gift.exception.ProductNotFoundException;
 import gift.repository.ProductRepository;
 import java.util.List;
@@ -28,27 +30,27 @@ public class ProductService {
   }
 
   public ProductResponseDto findProductById(Long productId) {
-    return findProductByIdOrFail(productId).toDto();
+    Product product = findProductByIdOrFail(productId);
+    return ProductResponseDto.from(product);
   }
 
   public ProductResponseDto saveProduct(ProductRequestDto dto) {
     Product product = productRepository.saveProduct(dto.name(), dto.price(), dto.imageUrl());
-    return product.toDto();
+    validateKaKaoApproval(product.getId());
+    return ProductResponseDto.from(product);
   }
 
   public ProductResponseDto updateProduct(Long productId, ProductRequestDto dto) {
     Product updatedProduct = productRepository.updateProduct(productId, dto.name(), dto.price(),
         dto.imageUrl());
-    return updatedProduct.toDto();
+    return ProductResponseDto.from(updatedProduct);
   }
 
   //가격만 수정하는 것은 꽤 합리적이라고 생각
   public ProductResponseDto updateProductPrice(Long productId, int price) {
-    if (price < 0) {
-      throw new InvalidPriceException();
-    }
+
     Product updatedProduct = productRepository.updatePrice(productId, price);
-    return updatedProduct.toDto();
+    return ProductResponseDto.from(updatedProduct);
   }
 
   public void deleteProduct(Long productId) {
@@ -60,8 +62,15 @@ public class ProductService {
     return
         productRepository.findAllProducts()
             .stream()
-            .map(Product::toDto)
+            .map(ProductResponseDto::from)
             .collect(Collectors.toList());
+  }
+
+  private void validateKaKaoApproval(Long productId) {
+    Product product = findProductByIdOrFail(productId);
+    if (product.getName().contains("카카오") && !product.isKakaoApproval()) {
+      throw new KakaoApprovalException();
+    }
   }
 
 }
