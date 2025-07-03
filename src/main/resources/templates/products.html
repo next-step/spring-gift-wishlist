@@ -83,6 +83,19 @@
         .modal .modal-title {
             font-size: 22px;
         }
+        .invalid-feedback {
+            display: none; /* 평소에는 숨김 */
+            width: 100%;
+            margin-top: .25rem;
+            font-size: .875em;
+            color: #dc3545;
+        }
+        .form-control.is-invalid {
+            border-color: #dc3545;
+        }
+        .form-control.is-invalid ~ .invalid-feedback {
+            display: block; /* is-invalid 클래스가 있을 때만 보임 */
+        }
         /* 상세 보기 모달 스타일 */
         #viewProductName {
             font-weight: bold;
@@ -148,14 +161,17 @@
                     <div class="form-group mb-3">
                         <label>상품명</label>
                         <input type="text" class="form-control" name="name" required>
+                        <div class="invalid-feedback" data-field="name"></div>
                     </div>
                     <div class="form-group mb-3">
                         <label>가격</label>
                         <input type="number" class="form-control" name="price" required>
+                        <div class="invalid-feedback" data-field="price"></div>
                     </div>
                     <div class="form-group mb-3">
                         <label>이미지 링크</label>
                         <input type="text" class="form-control" name="imageUrl" required>
+                        <div class="invalid-feedback" data-field="imageUrl"></div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -181,14 +197,17 @@
                     <div class="form-group mb-3">
                         <label>상품명</label>
                         <input type="text" class="form-control" name="name" required>
+                        <div class="invalid-feedback" data-field="name"></div>
                     </div>
                     <div class="form-group mb-3">
                         <label>가격</label>
                         <input type="number" class="form-control" name="price" required>
+                        <div class="invalid-feedback" data-field="price"></div>
                     </div>
                     <div class="form-group mb-3">
                         <label>이미지 링크</label>
                         <input type="text" class="form-control" name="imageUrl" required>
+                        <div class="invalid-feedback" data-field="imageUrl"></div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -262,6 +281,49 @@
         const deleteModal = new bootstrap.Modal(document.getElementById('deleteProductModal'));
         const viewModal = new bootstrap.Modal(document.getElementById('viewProductModal'));
 
+        function clearErrors(formId) {
+            $(`#${formId} .invalid-feedback`).text('');
+            $(`#${formId} .form-control`).removeClass('is-invalid');
+        }
+
+        function displayErrors(formId, errors) {
+            clearErrors(formId);
+            if (errors) {
+                errors.forEach(function(error) {
+                    const fieldName = error.field;
+                    const errorMessage = error.defaultMessage;
+                    const errorDiv = $(`#${formId} .invalid-feedback[data-field="${fieldName}"]`);
+                    errorDiv.text(errorMessage);
+                    errorDiv.siblings('.form-control').addClass('is-invalid');
+                });
+            }
+        }
+
+        // 모달이 닫힐 때 에러 메시지 초기화
+        $('#addProductModal, #editProductModal').on('hidden.bs.modal', function () {
+            clearErrors($(this).find('form').attr('id'));
+        });
+
+        function handleAjaxError(formId, jqXHR) {
+            if (jqXHR.status === 400 && jqXHR.responseJSON) {
+                // Case 1: DTO 유효성 검사 에러 (errors 배열이 존재)
+                if (jqXHR.responseJSON.errors) {
+                    displayErrors(formId, jqXHR.responseJSON.errors);
+                }
+                // Case 2: 비즈니스 규칙 위반 에러 (message 만 존재)
+                else if (jqXHR.responseJSON.message) {
+                    alert(jqXHR.responseJSON.message);
+                }
+                // Case 3: 그 외의 400 에러
+                else {
+                    alert('입력 값에 알 수 없는 오류가 있습니다.');
+                }
+            } else {
+                // Case 4: 500 에러 등 서버 문제
+                alert('요청 처리에 실패했습니다. 서버에 문제가 발생했을 수 있습니다.');
+            }
+        }
+
         // 상품 목록 로드 함수
         function loadProducts() {
             $.ajax({
@@ -328,6 +390,9 @@
         // 신규 상품 추가 처리
         $('#addProductForm').submit(function(event) {
             event.preventDefault();
+            const formId = $(this).attr('id'); // [수정] formId 정의
+            clearErrors(formId);
+
             const productRequest = {
                 name: $(this).find('input[name="name"]').val(),
                 price: parseInt($(this).find('input[name="price"]').val(), 10),
@@ -344,8 +409,8 @@
                     $('#addProductForm')[0].reset();
                     loadProducts();
                 },
-                error: function() {
-                    alert('상품 추가에 실패했습니다.');
+                error: function(jqXHR) {
+                    handleAjaxError(formId, jqXHR);
                 }
             });
         });
@@ -354,6 +419,8 @@
         $('#productTableBody').on('click', '.edit', function(event) {
             event.preventDefault();
             const productId = $(this).closest('tr').data('id');
+            const formId = 'editProductForm';
+            clearErrors(formId);
 
             $.ajax({
                 url: `${API_URL}/${productId}`,
@@ -376,6 +443,8 @@
         $('#editProductForm').submit(function(event) {
             event.preventDefault();
             const productId = $(this).find('input[name="id"]').val();
+            const formId = $(this).attr('id');
+            clearErrors(formId);
             const productUpdateRequest = {
                 name: $(this).find('input[name="name"]').val(),
                 price: parseInt($(this).find('input[name="price"]').val(), 10),
@@ -391,8 +460,8 @@
                     editModal.hide();
                     loadProducts();
                 },
-                error: function() {
-                    alert('상품 정보 수정에 실패했습니다.');
+                error: function(jqXHR) {
+                    handleAjaxError(formId, jqXHR);
                 }
             });
         });
