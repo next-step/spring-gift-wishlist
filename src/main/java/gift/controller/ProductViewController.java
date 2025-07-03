@@ -62,7 +62,7 @@ public class ProductViewController {
         try {
             productService.addProduct(requestDto);
         } catch (IllegalArgumentException ex) {
-            bindingResult.rejectValue("name", "kakaoNotApproved", ex.getMessage());
+            bindingResult.rejectValue("name", "NotApprovedUsingKakaoName", ex.getMessage());
             model.addAttribute("product", requestDto);
             return "add";
         }
@@ -102,7 +102,7 @@ public class ProductViewController {
         try {
             productService.updateProduct(id, requestDto);
         } catch (IllegalArgumentException ex) {
-            bindingResult.rejectValue("name", "kakaoNotApproved", ex.getMessage());
+            bindingResult.rejectValue("name", "NotApprovedUsingKakaoName", ex.getMessage());
             model.addAttribute("product", requestDto);
             return "edit";
         }
