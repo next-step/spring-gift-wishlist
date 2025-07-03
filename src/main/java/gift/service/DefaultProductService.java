@@ -3,6 +3,7 @@ package gift.service;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.entity.Product;
+import gift.exception.ForbiddenWordException;
 import gift.exception.ProductNotFoundException;
 import gift.repository.ProductRepository;
 import org.springframework.jdbc.core.RowMapper;
@@ -21,6 +22,10 @@ public class DefaultProductService implements ProductService {
     // 상품 생성
     @Override
     public ProductResponseDto addProduct(ProductRequestDto requestDto) {
+        if (requestDto.name().contains("카카오")) {
+            throw new ForbiddenWordException("카카오");
+        }
+
         return productRepository.saveProduct(requestDto);
     }
 
