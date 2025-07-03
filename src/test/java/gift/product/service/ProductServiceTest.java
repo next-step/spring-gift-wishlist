@@ -76,7 +76,7 @@ class ProductServiceTest {
     @DisplayName("상품 수정 성공")
     void updateProductSuccess() {
         Product product = addProductCase();
-        ProductUpdateRequest updateDto = new ProductUpdateRequest("스윙칩", 3500, "data://image");
+        ProductUpdateRequest updateDto = new ProductUpdateRequest("스윙칩", 3500, "data:image/~base64,");
 
         productService.updateProduct(product.getId(), updateDto);
 
@@ -90,7 +90,7 @@ class ProductServiceTest {
     @Test
     @DisplayName("상품 수정 실패")
     void updateProductFail() {
-        ProductUpdateRequest updateDto = new ProductUpdateRequest("스윙칩", 3500, "data://image");
+        ProductUpdateRequest updateDto = new ProductUpdateRequest("스윙칩", 3500, "data:image/~base64,");
 
         assertThatThrownBy(()->productService.updateProduct(UUID.randomUUID(), updateDto))
                 .isInstanceOf(NotFoundProductException.class);
@@ -98,7 +98,7 @@ class ProductServiceTest {
     }
 
     private Product addProductCase() {
-        UUID uuid = productService.addProduct(new ProductCreateRequest("스윙칩", 3000, "data://image"));
-        return new Product(uuid, "스윙칩", 3000, "data://image");
+        UUID uuid = productService.addProduct(new ProductCreateRequest("스윙칩", 3000, "data:image/~base64,"));
+        return new Product(uuid, "스윙칩", 3000, "data:image/~base64,");
     }
 }

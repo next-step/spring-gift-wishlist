@@ -46,7 +46,7 @@ class ProductControllerTest {
     void addProductSuccess() {
 
         String url = "http://localhost:" + port +"/api/products";
-        ProductCreateRequest productDto = new ProductCreateRequest("스윙칩", 3000, "data://image");
+        ProductCreateRequest productDto = new ProductCreateRequest("스윙칩", 3000, "data:image/~base64,");
 
         ResponseEntity<Void> response = restClient.post()
                 .uri(url)
@@ -61,7 +61,7 @@ class ProductControllerTest {
     @DisplayName("상품 등록 실패 - 상품 이름에 카카오 포함")
     void addProductFailCase1() {
         String url = "http://localhost:" + port +"/api/products";
-        ProductCreateRequest productDto = new ProductCreateRequest("카카오", 3000, "data://image");
+        ProductCreateRequest productDto = new ProductCreateRequest("카카오", 3000, "data:image/~base64,");
 
         assertThatThrownBy(()->restClient.post()
                 .uri(url)
@@ -75,7 +75,7 @@ class ProductControllerTest {
     @DisplayName("상품 등록 실패 - 상품 가격이 0이하")
     void addProductFailCase2() {
         String url = "http://localhost:" + port +"/api/products";
-        ProductCreateRequest productDto = new ProductCreateRequest("스윙칩", 0, "data://image");
+        ProductCreateRequest productDto = new ProductCreateRequest("스윙칩", 0, "data:image/~base64,");
 
         assertThatThrownBy(()->restClient.post()
                 .uri(url)
@@ -145,7 +145,7 @@ class ProductControllerTest {
     void updateProductSuccess() {
         Product product = addProductCase();
 
-        ProductUpdateRequest productDto = new ProductUpdateRequest("포카칩", 3000, "data://image");
+        ProductUpdateRequest productDto = new ProductUpdateRequest("포카칩", 3000, "data:image/~base64,");
         ResponseEntity<Void> response = restClient.put()
                 .uri("http://localhost:" + port + "/api/products/" + product.getId())
                 .body(productDto)
@@ -159,7 +159,7 @@ class ProductControllerTest {
     @DisplayName("상품 업데이트 실패 - 존재하는 상품 없음")
     void updateProductFailCase1() {
 
-        ProductUpdateRequest productDto = new ProductUpdateRequest("포카칩", 3000, "data://image");
+        ProductUpdateRequest productDto = new ProductUpdateRequest("포카칩", 3000, "data:image/~base64,");
         assertThatThrownBy(()->restClient.put()
                 .uri("http://localhost:" + port + "/api/products/" + UUID.randomUUID())
                 .body(productDto)
@@ -174,7 +174,7 @@ class ProductControllerTest {
 
         Product product = addProductCase();
 
-        ProductUpdateRequest productDto = new ProductUpdateRequest("카카오", -1, "data://image");
+        ProductUpdateRequest productDto = new ProductUpdateRequest("카카오", -1, "data:image/~base64,");
         assertThatThrownBy(()->restClient.put()
                 .uri("http://localhost:" + port + "/api/products/" + product.getId())
                 .body(productDto)
@@ -212,7 +212,7 @@ class ProductControllerTest {
     }
 
     private Product addProductCase() {
-        Product product = new Product("스윙칩", 3000, "data://image");
+        Product product = new Product("스윙칩", 3000, "data:image/~base64,");
         UUID uuid = productRepository.save(product);
         return product;
     }
