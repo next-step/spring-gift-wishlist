@@ -27,7 +27,7 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<ProductResponseDto> addProduct( @RequestBody @Valid ProductRequestDto requestDto) {
-        if (requestDto.getName() != null && requestDto.getName().contains("카카오")) {
+        if (requestDto.getName() != null && requestDto.getName().contains("카카오")&& !requestDto.isMdApproved()) {
             throw new IllegalArgumentException("상품 이름에 '카카오'를 포함할 수 없습니다. 담당 MD와 협의해 주세요");
         }
 
@@ -47,7 +47,7 @@ public class ProductController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponseDto> updateProduct(@PathVariable Long id,@RequestBody @Valid ProductRequestDto requestDto) {
-        if (requestDto.getName() != null && requestDto.getName().contains("카카오")) {
+        if (requestDto.getName() != null && requestDto.getName().contains("카카오")&& !requestDto.isMdApproved()) {
             throw new IllegalArgumentException("상품 이름에 '카카오'를 포함할 수 없습니다. 담당 MD와 협의해 주세요");
         }
         Product updated =productService.updateProduct(id,requestDto);

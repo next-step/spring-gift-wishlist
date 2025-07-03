@@ -39,7 +39,7 @@ public class AdminProductController {
     @PostMapping
     public String addProduct(@ModelAttribute("product") @Valid ProductRequestDto productRequestDto,
                              BindingResult bindingResult) {
-        if ( productRequestDto.getName().contains("카카오")) {
+        if ( productRequestDto.getName().contains("카카오")&& !productRequestDto.isMdApproved()) {
             bindingResult.rejectValue("name", "invalid.name", "상품 이름에 '카카오'를 포함할 수 없습니다. 담당 MD와 협의해 주세요");
         }
 
@@ -67,7 +67,7 @@ public class AdminProductController {
                                 @ModelAttribute("product") @Valid ProductRequestDto dto,
                                 BindingResult bindingResult,
                                 Model model) {
-        if (dto.getName() != null && dto.getName().contains("카카오")) {
+        if (dto.getName() != null && dto.getName().contains("카카오")&& !dto.isMdApproved()) {
             bindingResult.rejectValue("name", "invalid.name", "'상품 이름에 '카카오'를 포함할 수 없습니다. 담당 MD와 협의해 주세요");
         }
 

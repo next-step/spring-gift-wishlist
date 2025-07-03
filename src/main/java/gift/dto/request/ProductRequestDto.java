@@ -18,6 +18,8 @@ public class ProductRequestDto {
 
     private String imageUrl;
 
+    private boolean mdApproved;
+
 
     public ProductRequestDto(String name, int price, String imageUrl) {
         this.name = name;
@@ -40,6 +42,8 @@ public class ProductRequestDto {
         return imageUrl;
     }
 
+    public boolean isMdApproved() {return mdApproved;}
+
     ///  등록폼 setter 필요
     public void setName(String name) {
         this.name = name;
@@ -52,4 +56,6 @@ public class ProductRequestDto {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
+
+    public void setMdApproved(boolean mdApproved) {this.mdApproved = mdApproved;}
 }
