@@ -107,4 +107,17 @@ public class ProductControllerTest {
             .andExpect(jsonPath("$.price").value("가격은 필수입니다."));
     }
 
+    @Test
+    @DisplayName("[API] 상품 등록 실패 - 가격 음수")
+    void createProduct_fail_negativePrice() throws Exception {
+
+        var dto = new ProductCreateRequestDto("초콜릿", -1000, "https://image.com/item.jpg");
+
+        mockMvc.perform(post("/api/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.price").value("가격은 0 이상이어야 합니다."));
+    }
+
 }
