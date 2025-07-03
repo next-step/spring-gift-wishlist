@@ -5,12 +5,15 @@ import gift.dto.ProductResponseDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
+
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
@@ -31,9 +34,15 @@ public class ProductControllerTest {
         var response = client.get()
                 .uri(url)
                 .retrieve()
-                .toEntity(Void.class);
+                .toEntity(new ParameterizedTypeReference<List<ProductResponseDto>>() {});
+
+        List<ProductResponseDto> products = response.getBody();
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(products).isNotNull();
+        assertThat(products).isInstanceOf(List.class);
+        assertThat(products.get(0).getName()).isEqualTo("초코송이");
+        assertThat(products.get(0).getPrice()).isEqualTo(1000);
     }
 
     @Test
