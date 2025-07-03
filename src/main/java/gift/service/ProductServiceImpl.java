@@ -3,6 +3,7 @@ package gift.service;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.entity.Product;
+import gift.exception.MdApprovalException;
 import gift.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,9 +28,16 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.toList());
     }
 
+    public void validateMdApprovalForSave(ProductRequestDto dto) {
+        if (dto.name().contains("카카오")) {
+            throw new MdApprovalException("상품 이름에 ‘카카오’가 포함된 상품은 MD 승인 후 등록할 수 있습니다.");
+        }
+    }
+
     @Override
     @Transactional
     public ProductResponseDto saveProduct(ProductRequestDto dto) {
+        validateMdApprovalForSave(dto);
         Product product = new Product(dto.name(), dto.price(), dto.imageUrl());
         Product savedProduct = productRepository.saveProduct(product);
         return new ProductResponseDto(savedProduct);
@@ -42,9 +50,17 @@ public class ProductServiceImpl implements ProductService {
         return new ProductResponseDto(product);
     }
 
+    public void validateMdApprovalForUpdate(ProductRequestDto dto, boolean mdApproved) {
+        if (dto.name().contains("카카오") && !mdApproved) {
+            throw new MdApprovalException("상품 이름에 ‘카카오’가 포함된 상품은 MD 승인 후 등록할 수 있습니다.");
+        }
+    }
+
     @Override
     @Transactional
     public ProductResponseDto updateProduct(Long id, ProductRequestDto dto) {
+        boolean mdApproved = productRepository.findMdApprovedById(id);
+        validateMdApprovalForUpdate(dto, mdApproved);
         productRepository.updateProduct(id, dto.name(), dto.price(), dto.imageUrl());
         Product updatedProduct = productRepository.findProductById(id);
         return new ProductResponseDto(updatedProduct);

@@ -1,13 +1,14 @@
 package gift.dto;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 public record ProductRequestDto(
         @NotNull(message = "이름은 필수입니다.")
-        @Size(min = 1, max = 50, message = "이름은 1자 이상 50자 이하여야 합니다.")
+        @Size(min = 1, max = 15, message = "상품 이름은 1자 이상 15자 이하여야 합니다.")
+        @Pattern(
+                regexp = "^[a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ()\\[\\]+\\-&/_\s]*$",
+                message = "상품 이름에는 (), [], +, -, &, /, _ 이외의 특수 문자를 사용할 수 없습니다."
+        )
         String name,
         @NotNull(message = "가격은 필수입니다.")
         @Min(value = 0, message = "가격은 0 이상이어야 합니다.")

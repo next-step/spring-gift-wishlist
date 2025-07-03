@@ -19,12 +19,13 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public List<Product> findAllProducts() {
-        String sql = "SELECT id, name, price, image_url FROM product";
+        String sql = "SELECT id, name, price, image_url, md_approved FROM product";
         return jdbcTemplate.query(sql, (rs, rowNum) -> new Product(
                 rs.getLong("id"),
                 rs.getString("name"),
                 rs.getLong("price"),
-                rs.getString("image_url")
+                rs.getString("image_url"),
+                rs.getBoolean("md_approved")
         ));
     }
 
@@ -69,5 +70,11 @@ public class ProductRepositoryImpl implements ProductRepository {
     public void deleteProduct(Long id) {
         String sql = "DELETE FROM product WHERE id = ?";
         jdbcTemplate.update(sql, id);
+    }
+
+    @Override
+    public boolean findMdApprovedById(Long id) {
+        String sql = "SELECT md_approved FROM product WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{id}, Boolean.class);
     }
 }
