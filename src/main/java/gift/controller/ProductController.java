@@ -1,7 +1,9 @@
 package gift.controller;
 
 import gift.domain.Product;
+import gift.dto.ProductRequest;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +22,8 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<Product> create(@RequestBody Product product) {
-        Product saved = productService.create(product);
+    public ResponseEntity<Product> create(@Valid @RequestBody ProductRequest productRequest) {
+        Product saved = productService.create(productRequest.toEntity());
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
@@ -51,14 +53,13 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody Product updatedProduct) {
+    public ResponseEntity<Void> update(@PathVariable Long id, @Valid @RequestBody ProductRequest request) {
         try {
-            productService.update(id, updatedProduct);
+            productService.update(id, request.toEntity());
             return ResponseEntity.noContent().build();
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
     }
-
 }
 
