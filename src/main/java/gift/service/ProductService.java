@@ -34,14 +34,14 @@ public class ProductService {
 
     @Transactional
     public ProductResponseDto createProduct(CreateProductRequestDto requestDto) {
-        if (requestDto.getName().contains("카카오") && !requestDto.getIsMdApproved()) {
+        if (requestDto.name().contains("카카오") && !requestDto.isMdApproved()) {
             throw new IllegalArgumentException("상품 이름에 '카카오'를 포함하려면 MD 승인이 필요합니다.");
         }
 
         Product createdProduct = productRepository.createProduct(
-                requestDto.getName(),
-                requestDto.getPrice(),
-                requestDto.getImageUrl()
+                requestDto.name(),
+                requestDto.price(),
+                requestDto.imageUrl()
         );
 
         return ProductResponseDto.from(createdProduct);
@@ -55,14 +55,14 @@ public class ProductService {
 
     @Transactional
     public void updateProduct(UpdateProductRequestDto requestDto) {
-        if (requestDto.getName().contains("카카오") && !requestDto.getIsMdApproved()) {
+        if (requestDto.name().contains("카카오") && !requestDto.isMdApproved()) {
             throw new IllegalArgumentException("상품 이름에 '카카오'를 포함하려면 MD 승인이 필요합니다.");
         }
 
-        Product findProduct = productRepository.findProductByIdOrElseThrow(requestDto.getId());
-        findProduct.setName(requestDto.getName());
-        findProduct.setPrice(requestDto.getPrice());
-        findProduct.setImageUrl(requestDto.getImageUrl());
+        Product findProduct = productRepository.findProductByIdOrElseThrow(requestDto.id());
+        findProduct.setName(requestDto.name());
+        findProduct.setPrice(requestDto.price());
+        findProduct.setImageUrl(requestDto.imageUrl());
         productRepository.updateProduct(findProduct);
     }
 }

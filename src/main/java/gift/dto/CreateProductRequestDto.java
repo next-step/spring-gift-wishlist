@@ -1,15 +1,20 @@
 package gift.dto;
 
-public class CreateProductRequestDto extends ProductRequestBase {
-    public CreateProductRequestDto() {
-        super();
-    }
+import gift.validation.ValidProductName;
+import gift.validation.ValidProductPrice;
 
+public record CreateProductRequestDto(
+        @ValidProductName
+        String name,
+
+        @ValidProductPrice
+        Long price,
+
+        String imageUrl,
+
+        boolean isMdApproved
+) {
     public CreateProductRequestDto(String name, Long price, String imageUrl) {
-        super(name, price, imageUrl);
-    }
-
-    public CreateProductRequestDto(String name, Long price, String imageUrl, boolean isMdApproved) {
-        super(name, price, imageUrl, isMdApproved);
+        this(name, price, imageUrl, false);
     }
 }
