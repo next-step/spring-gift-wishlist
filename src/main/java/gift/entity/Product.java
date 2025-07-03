@@ -26,9 +26,6 @@ public class Product {
     this.kakaoApproval = kakaoApproval;
   }
 
-  public ProductResponseDto toDto() {
-    return new ProductResponseDto(id, name, price, imageUrl, kakaoApproval);
-  }
 
   //kakaoApproval validation을 위해 Getter가 3개나 추가..
   public Long getId() {
@@ -37,6 +34,14 @@ public class Product {
 
   public String getName() {
     return name;
+  }
+
+  public int getPrice() {
+    return price;
+  }
+
+  public String getImageUrl() {
+    return imageUrl;
   }
 
   public boolean isKakaoApproval() {
