@@ -16,7 +16,7 @@ public record ProductRequest(
 
     @NotNull(message = "상품명은 필수입니다.")
     @Size(max = 15, message = "상품명은 최대 15자까지 가능합니다.")
-    @Pattern(regexp = "^((?!카카오).)*$", message = "'카카오'가 들어간 상품명 등록은 관리자에게 문의해 주세요.")
+    //@Pattern(regexp = "^((?!카카오).)*$", message = "'카카오'가 들어간 상품명 등록은 관리자에게 문의해 주세요.")
     @Pattern(regexp = "^[a-zA-Z0-9가-힣()\\[\\]+\\-&/_\\s]+$", message="사용가능한 특수문자: (), [], +, -, &, /, _")
     String name,
     Integer price,

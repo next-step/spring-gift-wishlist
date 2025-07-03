@@ -9,6 +9,7 @@ import gift.exception.InvalidProductException;
 import gift.repository.ProductRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 @Service
 public class ProductService{
@@ -29,6 +30,10 @@ public class ProductService{
     public Long insert(ProductRequest request) {
         validateRequest(request);
 
+        if(request.name().contains("카카오")){
+            throw new InvalidProductException(ErrorCode.INVALID_KAKAO_NAME);
+        }
+
         Long id = productRepository.insert(ProductMapper.toEntity(request));
         return id;
     }
@@ -39,6 +44,10 @@ public class ProductService{
 
         productRepository.findById(request.id())
             .orElseThrow(() -> new InvalidProductException(ErrorCode.NOT_EXISTS_PRODUCT));
+
+        if(request.name().contains("카카오")){
+            throw new InvalidProductException(ErrorCode.INVALID_KAKAO_NAME);
+        }
 
         productRepository.update(request);
     }
