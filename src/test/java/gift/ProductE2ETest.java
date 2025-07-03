@@ -60,23 +60,23 @@ class ProductE2ETest {
     @Test
     void 상품을_수정하고_조회(){
         // 상품 수정
-        ProductRequestDto request = new ProductRequestDto(null, "아이스 아메리카노", 5000, "ice_america.jpg");
+        ProductRequestDto request = new ProductRequestDto(null, "아이스 카페라떼", 7000, "ice_cafe_latte.jpg");
 
         restClient.put()
-                .uri("/api/products/1")
+                .uri("/api/products/2")
                 .body(request)
                 .retrieve()
                 .toBodilessEntity();
 
         // 상품 단건 조회
         ProductResponseDto response = restClient.get()
-                .uri("/api/products/1")
+                .uri("/api/products/2")
                 .retrieve()
                 .toEntity(ProductResponseDto.class)
                 .getBody();
 
         Assertions.assertNotNull(response);
-        assertThat(response.price()).isEqualTo(5000);
+        assertThat(response.price()).isEqualTo(7000);
     }
 
     @Test
