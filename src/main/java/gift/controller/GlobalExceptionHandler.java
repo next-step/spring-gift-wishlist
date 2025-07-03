@@ -1,6 +1,6 @@
 package gift.controller;
 
-import java.util.stream.Collectors;
+import java.util.List;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
@@ -19,12 +19,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ProblemDetail handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        String errorMessage = e.getBindingResult().getFieldErrors()
+        List<String> messages = e.getBindingResult().getFieldErrors()
             .stream()
             .map(DefaultMessageSourceResolvable::getDefaultMessage)
-            .collect(Collectors.joining(" ")); // 여러 오류가 있을 경우, 공백으로 구분
+            .toList(); // 오류가 발생하는 항목들을 리스트에 담아 응답
 
-        return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, errorMessage);
+        ProblemDetail error =
+            ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "요청에 오류가 있습니다.");
+        error.setProperty("errors", messages); // `detail`엔 String만 담을 수 있기 때문에, 별도의 필드 사용
+
+        return error;
     }
 
     @ExceptionHandler(ApprovalRequiredException.class)
