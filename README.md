@@ -14,3 +14,12 @@
 ### 테스트코드 작성
 - `ProductController`에 대한 테스트코드 작성
 - `AdminPageController`에 대한 테스트코드 작성
+### 코드리뷰 코멘트 반영
+- Dto 명칭 변경 및 분리
+- Product의 Setter 삭제, update메소드(신규 객체 반환)를 통한 대체
+- Service 레이어의 2종 검사를 Product로의 역할 재할당 및 신규 객체 반환처리
+  - 각 파라미터 null 여부 검사
+  - 상품명의 '카카오' 등 금지단어 포함여부 검사
+- GlobalExceptionHandler의 404/500 에러 Handling
+- SpringBootTest 실행 순서가 결과에 영향을 주지 않도록 조치
+- SpringBootTest 검사 중 response body의 값을 notnull이 아닌 실제 값 검사를 수행하도록 조치
