@@ -67,25 +67,27 @@ public class ProductRepositoryImpl implements ProductRepository{
     }
 
     @Override
-    public Product saveProduct(String name, Long price, String imageUrl) {
+    public Product saveProduct(String name, Long price, String imageUrl, Boolean approved, String description) {
 
         final Map<String, Object> params = Map.of(
                 "name", name,
                 "price", price,
-                "imageUrl", imageUrl
+                "imageUrl", imageUrl,
+                "approved", approved,
+                "description", description
         );
 
         Number key = jdbcInsert.executeAndReturnKey(params);
         Long id = key.longValue();
 
-        return new Product(id, name, price, imageUrl);
+        return new Product(id, name, price, imageUrl, approved, description);
     }
 
     @Override
-    public int updateProduct(Long id, String name, Long price, String imageUrl) {
+    public int updateProduct(Long id, String name, Long price, String imageUrl, Boolean approved, String description) {
 
         String sql = """
-                update products set name = :name, price = :price, imageUrl = :imageUrl
+                update products set name = :name, price = :price, imageUrl = :imageUrl, approved = :approved, description = :description
                 where id = :id
                 """;
 
@@ -93,6 +95,8 @@ public class ProductRepositoryImpl implements ProductRepository{
                 .param("name", name)
                 .param("price", price)
                 .param("imageUrl", imageUrl)
+                .param("approved", approved)
+                .param("description", description)
                 .param("id", id)
                 .update();
 

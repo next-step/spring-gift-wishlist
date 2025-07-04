@@ -15,7 +15,8 @@
         <th>상품명</th>
         <th>가격</th>
         <th>이미지</th>
-        <th>Actions</th>
+        <th>MD 승인</th>
+        <th>설명</th>
     </tr>
     </thead>
     <tbody>
@@ -24,6 +25,8 @@
         <td th:text="${product.name}">name</td>
         <td th:text="${product.price}">price</td>
         <td th:text="${product.imageUrl}">imageUrl</td>
+        <td th:text="${product.approved ? '승인' : '미승인'}">approved</td>
+        <td th:text="${product.description}">description</td>
         <td class="action-buttons">
             <a th:href="@{/admin/products/{id}/edit(id=${product.id})}">
                 <button type="button">수정</button>

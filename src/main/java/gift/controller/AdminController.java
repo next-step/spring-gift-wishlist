@@ -3,6 +3,7 @@ package gift.controller;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -62,7 +63,7 @@ public class AdminController {
 
     // 상품 추가 기능 구현
     @PostMapping
-    public String saveProduct(@ModelAttribute ProductRequestDto dto) {
+    public String saveProduct(@Valid @ModelAttribute ProductRequestDto dto) {
 
         productService.saveProduct(dto);
         return "redirect:/admin/products";
@@ -72,7 +73,7 @@ public class AdminController {
     @PutMapping("{id}")
     public String updateProduct(
             @PathVariable Long id,
-            @ModelAttribute ProductRequestDto dto) {
+            @Valid @ModelAttribute ProductRequestDto dto) {
 
         productService.updateProduct(id, dto);
         return "redirect:/admin/products";
