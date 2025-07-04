@@ -1,15 +1,11 @@
 package gift.admin.controller;
 
 import gift.item.dto.CreateItemDto;
-import gift.item.dto.ItemDto;
 import gift.item.dto.UpdateItemDto;
-import gift.item.entity.Item;
 import gift.item.service.ItemService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Controller
 public class AdminController {

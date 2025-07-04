@@ -2,15 +2,14 @@ package gift.item.service;
 
 import gift.global.exception.CustomException;
 import gift.global.exception.ErrorCode;
+import gift.item.constant.ItemConstants;
 import gift.item.dto.CreateItemDto;
 import gift.item.dto.ItemDto;
 import gift.item.dto.UpdateItemDto;
 import gift.item.entity.Item;
 import gift.item.repository.ItemRepository;
-import jakarta.validation.ValidationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 
 @Service
@@ -63,7 +62,7 @@ public class ItemService {
     }
 
     private void validateKeyword(String name) {
-        if (name.contains("카카오")) {
+        if (name.contains(ItemConstants.BLOCKED_KEYWORD_KAKAO)) {
             throw new CustomException(ErrorCode.ITEM_KEYWORD_INVALID);
         }
     }

@@ -1,9 +1,7 @@
 package gift.item.validator;
 
-import jakarta.validation.Constraint;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-
 import java.util.regex.Pattern;
 
 public class ItemNameValidator implements ConstraintValidator<ValidItemName, String> {

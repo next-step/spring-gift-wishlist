@@ -5,10 +5,8 @@ import gift.item.dto.ItemDto;
 import gift.item.dto.UpdateItemDto;
 import gift.item.service.ItemService;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
