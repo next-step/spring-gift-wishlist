@@ -1,10 +1,7 @@
 package gift.product.dto;
 
 import gift.product.entity.Product;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 public class ProductRequestDto {
 
@@ -12,7 +9,6 @@ public class ProductRequestDto {
     @Pattern(regexp = "^[a-zA-Z0-9가-힣()\\[\\]+\\-&/_ ]*$", message = "특수문자는 (), [], +, -, &, /, _ 만 허용됩니다.")
     private String name;
 
-    @NotBlank
     @NotNull(message = "비울 수 없습니다")
     private Integer price;
     private String imageUrl;

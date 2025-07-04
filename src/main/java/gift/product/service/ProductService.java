@@ -71,16 +71,10 @@ public class ProductService {
     }
 
     //상품 이름 검사
-    public Boolean validateProduct(ProductRequestDto productRequestDto) {
+    public void validateProduct(ProductRequestDto productRequestDto) {
         if(productRequestDto.getName().contains("카카오")){
-            Optional<Product> product = productRepository.findById(productRequestDto.getId());
-            if(product.isPresent()) {
-                return product.get().getNamePermission(); //허가 받았는지 확인
-            }else{
-                return false; // 아이디가 없으므로 허가 x
-            }
+            throw new IllegalArgumentException("카카오가 포함된 문구는 담당 MD와 협의한 경우에만 사용할 수 있다.");
         }
-        return true; // 카카오가 이름에 포함 x
     }
 
 }

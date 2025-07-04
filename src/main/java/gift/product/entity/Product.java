@@ -43,11 +43,4 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
-    public Boolean getNamePermission() {
-        return namePermission;
-    }
-
-    public void setNamePermission(Boolean namePermission) {
-        this.namePermission = namePermission;
-    }
 }
