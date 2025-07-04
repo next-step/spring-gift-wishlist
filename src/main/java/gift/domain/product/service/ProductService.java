@@ -3,18 +3,17 @@ package gift.domain.product.service;
 
 import gift.common.pagination.Page;
 import gift.common.pagination.Pageable;
-import gift.domain.product.dto.ProductRequest;
-import gift.domain.product.dto.ProductResponse;
+import gift.domain.product.model.Product;
 
 public interface ProductService {
 
-    Page<ProductResponse> getAllProducts(Pageable pageable);
+    Page<Product> getAllProducts(Pageable pageable);
 
-    ProductResponse getProductById(Long id);
+    Product getProductById(Long id);
 
-    ProductResponse addProduct(ProductRequest productRequest);
+    Product addProduct(Product product);
 
-    void updateProduct(Long id, ProductRequest productRequest);
+    void updateProduct(Product product);
 
     void deleteProduct(Long id);
 

@@ -24,7 +24,7 @@ public class ProductRepositoryImpl implements ProductRepository {
         this.jdbcClient = jdbcClient;
     }
 
-    private static final RowMapper<Product> PRODUCT_MAPPER = (rs, rowNum) -> new Product(
+    private static final RowMapper<Product> PRODUCT_MAPPER = (rs, rowNum) -> Product.of(
             rs.getLong("id"),
             rs.getString("name"),
             rs.getInt("price"),
@@ -101,7 +101,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 
         }
 
-        return new Product(id,
+        return Product.of(id,
                 product.getName(),
                 product.getPrice(),
                 product.getImageUrl());

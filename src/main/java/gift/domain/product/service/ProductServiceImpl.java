@@ -1,15 +1,12 @@
 package gift.domain.product.service;
 
-import java.util.NoSuchElementException;
-
-import org.springframework.stereotype.Service;
-
 import gift.common.pagination.Page;
 import gift.common.pagination.Pageable;
-import gift.domain.product.dto.ProductRequest;
-import gift.domain.product.dto.ProductResponse;
 import gift.domain.product.model.Product;
 import gift.domain.product.repository.ProductRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.NoSuchElementException;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -21,33 +18,31 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<ProductResponse> getAllProducts(Pageable pageable) {
-        return productRepository.find(pageable).map(ProductResponse::from);
+    public Page<Product> getAllProducts(Pageable pageable) {
+        return productRepository.find(pageable);
+
     }
 
     @Override
-    public ProductResponse getProductById(Long id) {
+    public Product getProductById(Long id) {
         if (!productRepository.existsById(id)) {
             throw new NoSuchElementException("상품을 찾을 수 없습니다.");
         }
-        Product product = productRepository.findById(id).orElseThrow(NoSuchElementException::new);
-        return ProductResponse.from(product);
+        return productRepository.findById(id).orElseThrow(NoSuchElementException::new);
+
     }
 
     @Override
-    public ProductResponse addProduct(ProductRequest productRequest) {
-        Product product = new Product(null, productRequest.getName(), productRequest.getPrice(), productRequest.getImageUrl());
-        Product savedProduct = productRepository.save(product);
-        return ProductResponse.from(savedProduct);
+    public Product addProduct(Product product) {
+        return productRepository.save(product);
     }
 
     @Override
-    public void updateProduct(Long id, ProductRequest productRequest) {
-        if (!productRepository.existsById(id)) {
+    public void updateProduct(Product product) {
+        if (!productRepository.existsById(product.getId())) {
             throw new NoSuchElementException("상품을 찾을 수 없습니다.");
         }
-        Product updatedProduct = new Product(id, productRequest.getName(), productRequest.getPrice(), productRequest.getImageUrl());
-        productRepository.save(updatedProduct);
+        productRepository.save(product);
     }
 
     @Override

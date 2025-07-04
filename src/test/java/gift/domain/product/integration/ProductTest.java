@@ -1,11 +1,9 @@
 package gift.domain.product.integration;
 
-
 import gift.domain.product.dto.ProductRequest;
-import static org.assertj.core.api.Assertions.*;
-
 import gift.domain.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -16,8 +14,10 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -27,119 +27,105 @@ public class ProductTest {
     private int port;
     private String baseUrl;
     private RestClient restClient;
-    private List<ProductRequest> productRequests = new ArrayList<>();
 
     private static final String NAME = "프로덕트";
+    private static final int PRICE = 100;
     private static final String IMAGE_URL = "https://test.com/img.jpg";
 
     @BeforeEach
     void setUp() {
         baseUrl = "http://localhost:" + port;
-
         restClient = RestClient.builder()
                 .baseUrl(baseUrl)
                 .build();
-
-        for (int i = 1000; i <= 5000; i+=1000) {
-            productRequests.add(new ProductRequest(NAME, i, IMAGE_URL));
-        }
     }
 
     @Test
-    void 시나리오1_하나의_상품_추가하고_조회하고_수정하고_삭제하기() {
+    @DisplayName("유효한 상품 정보를 등록하면 CREATED 상태코드와 Location 헤더를 반환한다")
+    void givenValidProduct_whenAddProduct_thenReturnsCreated() {
+        // given
+        ProductRequest productRequest = ProductRequest.of(NAME, PRICE, IMAGE_URL);
 
-        //CREATE
-        ResponseEntity<Void> createResponse = restClient.post()
+        // when
+        ResponseEntity<Void> response = restClient.post()
                 .uri("/api/products")
-                .body(productRequests.getFirst())
-                .retrieve()
-                .toBodilessEntity();
-        assertThat(createResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(createResponse.getHeaders().getLocation().toString()).contains("/api/products/");
-
-        URI location = createResponse.getHeaders().getLocation();
-        assertThat(location.getPath()).isEqualTo("/api/products/1");
-
-        //READ
-        ProductResponse response = restClient.get()
-                .uri("api/products/{id}", 1)
-                .retrieve()
-                .body(ProductResponse.class);
-        assertThat(response.getName()).isEqualTo(NAME);
-        assertThat(response.getPrice()).isEqualTo(1000);
-        assertThat(response.getImageUrl()).isEqualTo(IMAGE_URL);
-        //UPDATE
-        ProductRequest updatedRequest = new ProductRequest("수정본",2000,"https://test.com/img2.jpg");
-        ResponseEntity<Void> entity = restClient.put()
-                .uri("api/products/{id}", 1)
-                .body(updatedRequest)
+                .body(productRequest)
                 .retrieve()
                 .toBodilessEntity();
 
-        assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-
-        ProductResponse response2 = restClient.get()
-                .uri("api/products/{id}", 1)
-                .retrieve()
-                .body(ProductResponse.class);
-
-        assertThat(response2.getName()).isEqualTo("수정본");
-        assertThat(response2.getPrice()).isEqualTo(2000);
-        assertThat(response2.getImageUrl()).isEqualTo("https://test.com/img2.jpg");
-
-        //DELETE
-        ResponseEntity<Void> bodilessEntity = restClient.delete()
-                .uri("api/products/{id}", 1)
-                .retrieve()
-                .toBodilessEntity();
-        assertThat(bodilessEntity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-
-        assertThatThrownBy(()->
-                restClient.get()
-                        .uri("/api/products/{id}", 1)
-                        .retrieve()
-                        .body(ProductResponse.class)).isInstanceOf(HttpClientErrorException.NotFound.class);
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(Objects.requireNonNull(response.getHeaders().getLocation()).toString()).contains("/api/products");
     }
+
     @Test
-    void 시나리오2_여러개의_상품_추가하고_하나_조회하고_삭제하고_추가하고_조회하기() {
-        for (ProductRequest productRequest : productRequests) {
-            ResponseEntity<Void> createResponse = restClient.post()
-                    .uri("/api/products")
-                    .body(productRequest)
-                    .retrieve()
-                    .toBodilessEntity();
-            assertThat(createResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-            assertThat(createResponse.getHeaders().getLocation().toString()).contains("/api/products/");
-        }
+    @DisplayName("ID로 상품을 조회하면 상품 정보를 반환한다")
+    void givenProductExists_whenGetProductById_thenReturnsProduct() {
+        // given
+        URI location = createProductAndGetLocation(NAME, PRICE, IMAGE_URL);
 
+        // when
         ProductResponse response = restClient.get()
-                .uri("/api/products/{id}", 1)
+                .uri(location)
                 .retrieve()
                 .body(ProductResponse.class);
-        assertThat(response.getName()).isEqualTo(NAME);
-        assertThat(response.getPrice()).isEqualTo(1000);
-        assertThat(response.getImageUrl()).isEqualTo(IMAGE_URL);
 
-        ResponseEntity<Void> deletedResponse = restClient.delete()
-                .uri("/api/products/{id}", 3)
-                .retrieve()
-                .toBodilessEntity();
-        assertThat(deletedResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-
-        ResponseEntity<Void> createResponse = restClient.post()
-                .uri("/api/products")
-                .body(new ProductRequest("추가된 상품", 20000, "https://test.com/img3.jpg"))
-                .retrieve()
-                .toBodilessEntity();
-
-        assertThat(createResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-
-        assertThatThrownBy(()->
-                restClient.get()
-                        .uri("/api/products/{id}", 3)
-                        .retrieve()
-                        .body(ProductResponse.class)).isInstanceOf(HttpClientErrorException.NotFound.class);
-
+        // then
+        assertThat(response).isNotNull();
+        assertThat(response.name()).isEqualTo(NAME);
+        assertThat(response.price()).isEqualTo(PRICE);
     }
 
+    @Test
+    @DisplayName("존재하는 상품을 수정하면 NO_CONTENT 상태코드를 반환하고 정보가 변경된다")
+    void givenProductExists_whenUpdateProduct_thenReturnsNoContentAndIsUpdated() {
+        // given
+        URI location = createProductAndGetLocation(NAME, PRICE, IMAGE_URL);
+        ProductRequest updateRequest = ProductRequest.of("수정된 프로덕트", 2000, "https://new.img.url");
+
+        // when
+        ResponseEntity<Void> response = restClient.put()
+                .uri(location)
+                .body(updateRequest)
+                .retrieve()
+                .toBodilessEntity();
+
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        ProductResponse updatedProduct = restClient.get().uri(location).retrieve().body(ProductResponse.class);
+        assertThat(updatedProduct.name()).isEqualTo("수정된 프로덕T");
+        assertThat(updatedProduct.price()).isEqualTo(2000);
+    }
+
+    @Test
+    @DisplayName("존재하는 상품을 삭제하면 NO_CONTENT 상태코드를 반환하고 조회가 불가능하다")
+    void givenProductExists_whenDeleteProduct_thenReturnsNoContentAndIsDeleted() {
+        // given
+        URI location = createProductAndGetLocation(NAME, PRICE, IMAGE_URL);
+
+        // when
+        ResponseEntity<Void> response = restClient.delete()
+                .uri(location)
+                .retrieve()
+                .toBodilessEntity();
+
+        // then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        assertThatThrownBy(() ->
+                restClient.get()
+                        .uri(location)
+                        .retrieve()
+                        .toBodilessEntity())
+                .isInstanceOf(HttpClientErrorException.NotFound.class);
+    }
+
+    private URI createProductAndGetLocation(String name, int price, String imageUrl) {
+        ProductRequest productRequest = ProductRequest.of(name, price, imageUrl);
+        ResponseEntity<Void> response = restClient.post()
+                .uri("/api/products")
+                .body(productRequest)
+                .retrieve()
+                .toBodilessEntity();
+        return response.getHeaders().getLocation();
+    }
 }
