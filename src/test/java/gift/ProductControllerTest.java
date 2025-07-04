@@ -532,4 +532,26 @@ public class ProductControllerTest {
             .andExpect(jsonPath("$.error").value("'price' 필드는 Integer 형식이어야 합니다."));
     }
 
+    @Test
+    @DisplayName("[API] 상품 수정 실패 - JSON 파싱 오류(400) - 값 누락")
+    void updateProduct_fail_missingPrice() throws Exception {
+
+        var saved = productRepository.save(
+            new Product("초콜릿", 1000, "https://image.com/item.jpg")
+        );
+        Long id = saved.getId();
+
+        String badJson = "{"
+            + "\"name\": \"다크 초콜릿\","
+            + "\"price\": \"1500\","
+            + "\"imageUrl\": "              // imageUrl 값 누락
+            + "}";
+
+        mockMvc.perform(put("/api/products/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(badJson))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.error").value("요청 JSON 형식이 잘못되었습니다."));
+    }
+
 }
