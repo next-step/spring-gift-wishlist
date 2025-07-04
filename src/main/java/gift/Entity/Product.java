@@ -1,16 +1,30 @@
 package gift.Entity;
 
-// 검색으로 찾아내어 간편화된 코드
-//public record Product(Long id, String name, int price, String imageUrl){}
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
-// 기존 코드
-
-import gift.dto.ProductRequestDto;
-
+@Entity
 public class Product {
+
+    //MD와 협의 여부 파악
+    private boolean MDapproved;
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    //NotNull -> null이 아니어야함
+    //NotEmpty -> null도 안 되고, 길이 0도 안됨
+    //NotBlank -> 문자열만 대상, null/빈 문자열/공백 모두 허용 안함
+    // 기능 요구사항에서 공백을 포함하였으니 NotNull이 적합함
+    @NotNull
+    @Size(max=15, message = "상품 이름은 15자 이하로 작성부탁드립니다.")
+    @Pattern(regexp = "^[a-zA-Z0-9가-힣()\\[\\]+\\-\\&/_ ]*$")
     private String name;
+
+    @NotNull
+    @Min(value = 0, message = "가격은 0원 이상이어야 합니다.")
     private int price;
+
     private String imageUrl;
 
     public Product() {
@@ -35,13 +49,9 @@ public class Product {
     public void setPrice(int price) { this.price = price; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
-
-
-    public void update(ProductRequestDto requestDto) {
-        this.name = requestDto.getName();
-        this.price = requestDto.getPrice();
-        this.imageUrl = requestDto.getImageUrl();
-    }
+    // MD 확인여부 getter와 setter
+    public boolean getMDapproved() { return MDapproved; }
+    public void setMDapproved(boolean MDapproved) { this.MDapproved = MDapproved; }
 }
 
 

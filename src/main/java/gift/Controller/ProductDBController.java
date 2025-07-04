@@ -1,7 +1,7 @@
 package gift.Controller;
 
 import gift.Entity.Product;
-import gift.dao.ProductDao;
+import gift.service.ProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,37 +10,54 @@ import java.util.List;
 @RestController
 public class ProductDBController {
 
-    private final ProductDao productDao;
+    private final ProductService productService;
 
-    public ProductDBController(ProductDao productDao) {
-        this.productDao = productDao;
+    public ProductDBController( ProductService productService) {
+        this.productService = productService;
     }
 
     @PostMapping("/products")
     public ResponseEntity<Product> insertProduct(@RequestBody Product product) {
-        productDao.insertProduct(product);
-        return ResponseEntity.ok(product);
+        try{
+            productService.validateProductException(product);
+            productService.insertProduct(product);
+            return ResponseEntity.ok(product);
+        } catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().build();
+        }
+
     }
 
     @GetMapping("/products")
     public ResponseEntity<List<Product>> showAllProducts() {
-        return ResponseEntity.ok(productDao.showProducts());
+        return ResponseEntity.ok(productService.getAllProducts());
     }
 
     @GetMapping("/products/{id}")
-    public Product selectProduct(@PathVariable Long id) {
-        return productDao.selectProduct(id);
+    public ResponseEntity<Object> selectProduct(@PathVariable Long id) {
+        try{
+            Product product = productService.getProductById(id);
+            return ResponseEntity.ok(product);
+        } catch (Exception e){
+            return ResponseEntity.notFound().build();
+        }
+
     }
 
     @PutMapping("/products/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product product) {
-        productDao.updateProduct(id, product);
-        return ResponseEntity.ok(product);
+        try{
+            productService.validateProductException(product);
+            productService.updateProduct(id, product);
+            return ResponseEntity.ok(product);
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @DeleteMapping("/products/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
-        productDao.deleteProduct(id);
+        productService.deleteProductById(id);
         return ResponseEntity.ok().build();
     }
 }
