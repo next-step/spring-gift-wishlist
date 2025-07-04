@@ -7,7 +7,6 @@ import gift.service.ProductService;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -34,7 +33,7 @@ public class ProductApiController {
     @ResponseStatus(HttpStatus.OK)
     public ProductResponse getProduct(
         @PathVariable Long productId
-    ){
+    ) {
         return productService.getProductById(productId);
     }
 
