@@ -24,6 +24,15 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     runtimeOnly 'com.h2database:h2'
 
+    // jwt dependencies
+    ext {
+        JWT_VERSION = '0.12.6'
+    }
+    implementation "io.jsonwebtoken:jjwt-api:${JWT_VERSION}"
+    implementation "io.jsonwebtoken:jjwt-impl:${JWT_VERSION}"
+    implementation "io.jsonwebtoken:jjwt-jackson:${JWT_VERSION}"
+
+    // Spring REST Docs & Test Dependencies
     testImplementation 'io.rest-assured:rest-assured'
     testImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
