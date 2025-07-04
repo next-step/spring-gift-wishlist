@@ -5,6 +5,7 @@ import gift.dto.view.ProductViewRequestDto;
 import gift.entity.Product;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
+import java.util.NoSuchElementException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/admin/products")
@@ -69,10 +71,17 @@ public class ProductViewController {
 
     // 상품 개별 조회 요청 처리
     @GetMapping("/{id}")
-    public String viewProductDetail(@PathVariable Long id, Model model) {
-        Product product = productService.getProductById(id);
-        model.addAttribute("product", product);
-        return "products/detail";
+    public String viewProductDetail(@PathVariable Long id,
+        Model model,
+        RedirectAttributes ra) {
+        try {
+            Product product = productService.getProductById(id);
+            model.addAttribute("product", product);
+            return "products/detail";
+        } catch (NoSuchElementException e) {
+            ra.addFlashAttribute("errorMsg", "상품을 찾을 수 없습니다.");
+            return "redirect:/admin/products";
+        }
     }
 
     // 상품 수정 폼 보여주기
