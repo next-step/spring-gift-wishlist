@@ -1,5 +1,7 @@
 package gift.user.service;
 
+import gift.user.dto.LoginRequestDto;
+import gift.user.dto.LoginResponseDto;
 import gift.user.dto.RegisterRequestDto;
 import gift.user.dto.RegisterResponseDto;
 import gift.user.repository.MemberRepository;
@@ -14,9 +16,13 @@ public class MemberServiceImpl implements MemberService {
         this.memberRepository = memberRepository;
     }
 
-
     @Override
     public RegisterResponseDto registerMember(RegisterRequestDto registerRequestDto) {
+        return null;
+    }
+
+    @Override
+    public LoginResponseDto loginMember(LoginRequestDto loginRequestDto) {
         return null;
     }
 }

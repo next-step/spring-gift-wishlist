@@ -1,5 +1,7 @@
 package gift.user.controller;
 
+import gift.user.dto.LoginRequestDto;
+import gift.user.dto.LoginResponseDto;
 import gift.user.dto.RegisterRequestDto;
 import gift.user.dto.RegisterResponseDto;
 import gift.user.service.MemberService;
@@ -30,6 +32,9 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public void loginMember() {
+    public ResponseEntity<LoginResponseDto> loginMember(
+        @RequestBody LoginRequestDto loginRequestDto) {
+
+        return new ResponseEntity<>(memberService.loginMember(loginRequestDto), HttpStatus.OK);
     }
 }
