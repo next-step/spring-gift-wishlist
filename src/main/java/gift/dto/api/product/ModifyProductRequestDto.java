@@ -1,4 +1,4 @@
-package gift.dto.api;
+package gift.dto.api.product;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;

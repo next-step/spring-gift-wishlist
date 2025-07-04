@@ -2,9 +2,9 @@ package gift.controller;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-import gift.dto.api.AddProductRequestDto;
-import gift.dto.api.ModifyProductRequestDto;
-import gift.dto.api.ProductResponseDto;
+import gift.dto.api.product.AddProductRequestDto;
+import gift.dto.api.product.ModifyProductRequestDto;
+import gift.dto.api.product.ProductResponseDto;
 import java.io.IOException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;

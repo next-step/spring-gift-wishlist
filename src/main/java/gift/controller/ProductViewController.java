@@ -1,11 +1,11 @@
 package gift.controller;
 
-import gift.dto.api.AddProductRequestDto;
-import gift.dto.api.ModifyProductRequestDto;
-import gift.dto.api.ProductResponseDto;
+import gift.dto.api.product.AddProductRequestDto;
+import gift.dto.api.product.ModifyProductRequestDto;
+import gift.dto.api.product.ProductResponseDto;
 import gift.dto.htmlform.AddProductForm;
 import gift.dto.htmlform.ModifyProductForm;
-import gift.service.ProductService;
+import gift.service.product.ProductService;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.stereotype.Controller;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/products")
+@RequestMapping("/admin/products")
 public class ProductViewController {
     
     private final ProductService productService;
