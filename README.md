@@ -45,7 +45,6 @@
 ### 3. 전역 예외 처리기 추가 (`GlobalExceptionHandler`)
 - `HttpMessageNotReadableException` → JSON 파싱 오류 핸들러 (400 + 메시지)
 - `MethodArgumentTypeMismatchException` → PathVariable/RequestParam 타입 불일치 핸들러 (400 + 메시지)
-- `MethodArgumentNotValidException` → `@Valid` 바인딩 오류 핸들러 (400 + field–message 매핑)
 
 ---
 
