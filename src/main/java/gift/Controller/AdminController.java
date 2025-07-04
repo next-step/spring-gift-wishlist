@@ -1,12 +1,15 @@
 package gift.Controller;
 
 import gift.dto.ProductDto;
+import gift.exception.ValidationException;
 import gift.model.Product;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/admin/products")
@@ -70,7 +74,7 @@ public class AdminController {
     containsProhibitedName(productDto, bindingResult);
 
     if (bindingResult.hasErrors()) {
-      return renderForm(model,productDto,"/admin/products","post");
+      throw new ValidationException(bindingResult);
     }
 
     productService.save(productDto.toEntity());
@@ -88,7 +92,7 @@ public class AdminController {
     containsProhibitedName(productDto, bindingResult);
 
     if(bindingResult.hasErrors()) {
-      return renderForm(model, productDto, "/admin/products/"+id, "put");
+      throw new ValidationException(bindingResult);
     }
 
     productService.update(id, productDto.toEntity());
@@ -102,13 +106,5 @@ public class AdminController {
     if(product.hasProhibitedName()){
       bindingResult.rejectValue("name", "invalid", product.prohibitedMessage());
     }
-  }
-
-  // 공통적으로 Rendering 후 보여주는 함수
-  private String renderForm(Model model, ProductDto productDto, String action, String method) {
-    model.addAttribute("product", productDto);
-    model.addAttribute("action", action);
-    model.addAttribute("method", method);
-    return "admin/product-form";
   }
 }

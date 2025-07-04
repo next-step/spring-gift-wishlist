@@ -1,6 +1,7 @@
 package gift;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import gift.dto.ProductDto;
 import gift.model.Product;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
 @DisplayName("Product 삽입 Test")
@@ -56,44 +58,104 @@ public class ProductRestControllerTest {
   }
 
   @Test
-  @DisplayName("상품 이름 길이 초과 시 오류 메시지가 나타나는지 확인")
-  void overLengthTest() {
-    // 잘못된 상품 이름 데이터
-    String invalidFormData = "name=이름이15자를초과하는상품명이랍니다&price=1500";
+  @DisplayName("[Product.name] 최대 글자 수 길이 제한 초과")
+  void overLength_ProductName() {
+    // given: 유효하지 않은 상품명
+    ProductDto productDto = new ProductDto();
+    productDto.setName("이름이15자를초과하는상품명입니다");
+    productDto.setPrice(1000);
+    productDto.setImageUrl("https://example.com/image.jpg");
 
-    var response = client.post()
-        .uri("http://localhost:" + port + "/admin/products")
-        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-        .body(invalidFormData)
-        .retrieve()
-        .toEntity(String.class); // => HTML 텍스트 그대로 받아서 확인
+    String url = "http://localhost:" + port + "/admin/products";
 
-    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    // when & then
+    HttpClientErrorException ex = assertThrows(HttpClientErrorException.class, () -> {
+      client.post()
+          .uri(url)
+          .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+          .body("name=" + productDto.getName() +
+              "&price=" + productDto.getPrice() +
+              "&imageUrl=" + productDto.getImageUrl())
+          .retrieve()
+          .toBodilessEntity();
+    });
 
-    String html = response.getBody();
+    assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+  }
 
-    // HTML 내 오류 메시지 확인 (기본 메시지 혹은 커스텀 메시지)
-    assertThat(html).contains("상품 이름은 최대 15자까지 입력가능 합니다");
+
+  @Test
+  @DisplayName("[Product.name] 허용되지 않은 특수문자 사용")
+  void invalidHyperText_ProductName() {
+    // given: 유효하지 않은 상품명
+    ProductDto productDto = new ProductDto();
+    productDto.setName("**아메리카노");
+    productDto.setPrice(1000);
+    productDto.setImageUrl("https://example.com/image.jpg");
+
+    String url = "http://localhost:" + port + "/admin/products";
+
+    // when & then
+    HttpClientErrorException ex = assertThrows(HttpClientErrorException.class, () -> {
+      client.post()
+          .uri(url)
+          .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+          .body("name=" + productDto.getName() +
+              "&price=" + productDto.getPrice() +
+              "&imageUrl=" + productDto.getImageUrl())
+          .retrieve()
+          .toBodilessEntity();
+    });
+    assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
   @Test
-  @DisplayName("허가되지 않은 특수문자 필터링 확인")
-  void invalidHyperTextTest() {
-    // 잘못된 상품 이름 데이터
-    String invalidFormData = "name=**&price=1500";
+  @DisplayName("[Product.name] '카카오'가 상품명에 포함")
+  void invalidWord_ProductName() {
+    // given: 유효하지 않은 상품명
+    ProductDto productDto = new ProductDto();
+    productDto.setName("카카오 나무");
+    productDto.setPrice(1000);
+    productDto.setImageUrl("https://example.com/image.jpg");
 
-    var response = client.post()
-        .uri("http://localhost:" + port + "/admin/products")
-        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-        .body(invalidFormData)
-        .retrieve()
-        .toEntity(String.class); // => HTML 텍스트 그대로 받아서 확인
+    String url = "http://localhost:" + port + "/admin/products";
 
-    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    // when & then
+    HttpClientErrorException ex = assertThrows(HttpClientErrorException.class, () -> {
+      client.post()
+          .uri(url)
+          .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+          .body("name=" + productDto.getName() +
+              "&price=" + productDto.getPrice() +
+              "&imageUrl=" + productDto.getImageUrl())
+          .retrieve()
+          .toBodilessEntity();
+    });
+    assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+  }
 
-    String html = response.getBody();
+  @Test
+  @DisplayName("[Product.price] 음수 가격 삽입")
+  void minusPrice_ProductPrice() {
+    // given: 유효하지 않은 상품명
+    ProductDto productDto = new ProductDto();
+    productDto.setName("주사위");
+    productDto.setPrice(-7200);
+    productDto.setImageUrl("https://example.com/image.jpg");
 
-    // HTML 내 오류 메시지 확인 (기본 메시지 혹은 커스텀 메시지)
-    assertThat(html).contains("상품 이름에는 (), [], +, -, &amp;, /, _ 외의 특수문자는 사용 불가합니다");
+    String url = "http://localhost:" + port + "/admin/products";
+
+    // when & then
+    HttpClientErrorException ex = assertThrows(HttpClientErrorException.class, () -> {
+      client.post()
+          .uri(url)
+          .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+          .body("name=" + productDto.getName() +
+              "&price=" + productDto.getPrice() +
+              "&imageUrl=" + productDto.getImageUrl())
+          .retrieve()
+          .toBodilessEntity();
+    });
+    assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
   }
 }
