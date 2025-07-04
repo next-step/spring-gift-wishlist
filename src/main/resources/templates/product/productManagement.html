@@ -70,7 +70,16 @@
             .then(res => {
                 if(!res.ok){
                     return res.json().then(error=>{
-                       alert("입력 형식이 잘못됐습니다: " +error.map(e=>e.defaultMessage).join('\n'));
+                        if (error && error.data) {
+                            const errorMessages = Object.entries(error.data)
+                                .map(([field, message]) => `${field}: ${message}`)
+                                .join('\n');
+                            alert("입력 형식이 잘못됐습니다:\n" + errorMessages);
+                        } else if (error && error.message) {
+                            alert("오류: " + error.message);
+                        } else {
+                            alert("알 수 없는 오류가 발생했습니다.");
+                        }
                        throw new Error("Validation error");
                     });
                 }
@@ -121,31 +130,33 @@
 
         const payload = { id ,name, price, imageUrl };
 
-        fetch(`/api/products/${id}`, {
-            method: 'PUT',
+        fetch('/api/products', {
+            method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         })
             .then(res => {
-                if(!res.ok){
-                    if(res.status === 403){
-                        return res.text().then(msg => {
-                            alert(msg);
-                            throw new Error("Forbidden error");
-                        });
-                    }else{
-                        return res.json().then(error=>{
-                            alert("입력 형식이 잘못됐습니다: " +error.map(e=>e.defaultMessage.join('\n') ));
-                            throw new Error("Validation error");
-                        });
-                    }
+                if (!res.ok) {
+                    return res.json().then(error => {
+                        if (error && error.data) {
+                            const errorMessages = Object.entries(error.data)
+                                .map(([field, message]) => `${field}: ${message}`)
+                                .join('\n');
+                            alert("입력 형식이 잘못됐습니다:\n" + errorMessages);
+                        } else if (error && error.message) {
+                            alert("오류: " + error.message);
+                        } else {
+                            alert("알 수 없는 오류가 발생했습니다.");
+                        }
+                    });
                 }
                 return res.json();
             })
             .then(() => {
                 fetchProducts();
                 document.getElementById('productForm').reset();
-            })
+            });
+
     }
 
     function fillForm(id, name, price, imageUrl) {

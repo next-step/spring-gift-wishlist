@@ -45,12 +45,12 @@ public class ProductController {
 
     //특정 상품 수정
     @PutMapping("{id}")
-    public ResponseEntity<?> updateProduct(@Valid @RequestBody ProductRequestDto productRequestDto,
+    public ResponseEntity<ApiResponse<ProductResponseDto>> updateProduct(@Valid @RequestBody ProductRequestDto productRequestDto,
                                                             @PathVariable Long id) {
 
         productService.validateProduct(productRequestDto);
         ProductResponseDto productResponseDto = productService.updateProduct(id,productRequestDto);
-        return  ResponseEntity.ok(productResponseDto);
+        return  ResponseEntity.ok(new ApiResponse<>(200,"수정 완료" , productResponseDto));
     }
 
     //삭제
