@@ -24,12 +24,12 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
-    public Member findMemberByEmail(String email) {
+    public void findMemberByEmail(String email) {
 
         String sql = "SELECT email, password FROM members WHERE email = ?";
 
         try {
-            return jdbcTemplate.queryForObject(sql,
+            jdbcTemplate.queryForObject(sql,
                 (rs, rowNum) -> new Member(rs.getString("email"), rs.getString("password")), email);
         } catch (EmptyResultDataAccessException e) {
             throw new MemberNotFoundException("가입된 이메일이 존재하지 않습니다.");

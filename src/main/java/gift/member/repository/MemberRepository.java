@@ -6,5 +6,5 @@ public interface MemberRepository {
 
     void saveMember(Member member);
 
-    Member findMemberByEmail(String email);
+    void findMemberByEmail(String email);
 }
