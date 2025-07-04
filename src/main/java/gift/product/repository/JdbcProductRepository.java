@@ -27,6 +27,12 @@ public class JdbcProductRepository implements ProductRepository{
         .usingGeneratedKeyColumns("id");
   }
 
+  public JdbcProductRepository(NamedParameterJdbcTemplate jdbcTemplate,
+      SimpleJdbcInsert jdbcInsert) {
+    this.jdbcTemplate = jdbcTemplate;
+    this.jdbcInsert = jdbcInsert;
+  }
+
   @Override
   public Long save(Product product) {
     Objects.requireNonNull(product,"상품은 null이 될 수 없습니다.");
