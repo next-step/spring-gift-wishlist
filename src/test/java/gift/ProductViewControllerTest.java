@@ -323,4 +323,23 @@ public class ProductViewControllerTest {
             .andExpect(redirectedUrl("/admin/products"));
     }
 
+    @Test
+    @DisplayName("[Form] 상품 수정 실패 - '카카오' 포함 & 승인되지 않은 상품명")
+    void updateProduct_fail_unapprovedKakaoName() throws Exception {
+
+        Product saved = productRepository.save(
+            new Product("초콜릿", 1000, "https://image.com/choco.jpg")
+        );
+        Long id = saved.getId();
+
+        mockMvc.perform(post("/admin/products/{id}/edit", id)
+                .param("name", "카카오 지갑")
+                .param("price", "15000")
+                .param("imageUrl", "https://image.com/kakaoWallet.jpg")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+            .andExpect(status().isOk())
+            .andExpect(view().name("products/form"))
+            .andExpect(model().attributeExists("errorMessage"));
+    }
+
 }
