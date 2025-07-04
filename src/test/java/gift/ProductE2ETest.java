@@ -80,7 +80,7 @@ class ProductE2ETest {
     }
 
     @Test
-    void 상품을_삭제하고_삭제됐는지_확인(){
+    void 상품을_삭제한다(){
         // 상품 삭제
         restClient.delete()
                 .uri("/api/products/1")
