@@ -26,7 +26,7 @@ public class ProductPageController {
     }
 
     // 메인 페이지: 상품 목록 조회
-    @GetMapping("")
+    @GetMapping
     public String findAll(Model model){
         List<Product> list = productServiceAdmin.getProductListAdmin();
         model.addAttribute("productList", list);
@@ -43,7 +43,7 @@ public class ProductPageController {
     }
 
     // 상품 등록
-    @PostMapping("")
+    @PostMapping
     public String createProduct(
         @Valid @ModelAttribute("request") ProductRequest request,
         BindingResult bindingResult

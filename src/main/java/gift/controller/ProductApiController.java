@@ -46,7 +46,7 @@ public class ProductApiController {
     }
 
     // 상품 생성
-    @PostMapping("")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public ProductCreateResponse createProduct(
