@@ -259,4 +259,29 @@ public class ProductViewControllerTest {
             .andExpect(flash().attribute("errorMsg", "상품을 찾을 수 없습니다."));
     }
 
+    @Test
+    @DisplayName("[VIEW] 상품 수정 폼 진입 - GET /admin/products/{id}/edit")
+    void showUpdateForm() throws Exception {
+
+        productRepository.deleteAll();
+        Product saved = productRepository.save(
+            new Product("초콜릿", 1000, "https://image.com/choco.jpg")
+        );
+        Long id = saved.getId();
+
+        mockMvc.perform(get("/admin/products/{id}/edit", id))
+            .andExpect(status().isOk())
+            .andExpect(view().name("products/form"))
+            .andExpect(model().attributeExists("productRequest"))
+            .andExpect(model().attribute("productRequest",
+                hasProperty("name", is("초콜릿"))
+            ))
+            .andExpect(model().attribute("productRequest",
+                hasProperty("price", is(1000))
+            ))
+            .andExpect(model().attribute("productRequest",
+                hasProperty("imageUrl", is("https://image.com/choco.jpg"))
+            ));
+    }
+
 }
