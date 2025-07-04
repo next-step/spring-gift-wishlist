@@ -35,9 +35,9 @@ public class ProductValidator implements ConstraintValidator<ValidProduct, Produ
             valid = false;
         }
 
-        // 4. "카카오" 금지
-        else if (dto.getName().contains("카카오")) {
-            context.buildConstraintViolationWithTemplate("상품명에 '카카오'는 포함할 수 없습니다.")
+        // 4. "카카오" 금지 (MD 협의 시에만 허용)
+        else if (dto.getName().contains("카카오") && !dto.isMdApproved()) {
+            context.buildConstraintViolationWithTemplate("상품명에 '카카오'는 MD 협의 시에만 사용할 수 있습니다.")
                     .addPropertyNode("name").addConstraintViolation();
             valid = false;
         }
