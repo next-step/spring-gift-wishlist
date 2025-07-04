@@ -286,6 +286,33 @@ public class ProductControllerTest {
     }
 
     @Test
+    @DisplayName("[API] 상품 수정 성공 - '카카오' 포함된 승인된 상품명")
+    void updateProduct_success_withApprovedName() throws Exception {
+
+        // '카카오' 포함된 승인된 상품명 추가
+        approvedProductRepository.save(new ApprovedProduct("카카오 프렌즈 볼펜"));
+
+        var saved = productRepository.save(
+            new Product("초콜릿", 1000, "https://image.com/item.jpg")
+        );
+        Long id = saved.getId();
+
+        var dto = new ProductUpdateRequestDto(
+            "카카오 프렌즈 볼펜", 3000, "https://image.com/new.jpg"
+        );
+
+        // 수행 & 검증
+        mockMvc.perform(put("/api/products/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").value(id))
+            .andExpect(jsonPath("$.name").value("카카오 프렌즈 볼펜"))
+            .andExpect(jsonPath("$.price").value(3000))
+            .andExpect(jsonPath("$.imageUrl").value("https://image.com/new.jpg"));
+    }
+
+    @Test
     @DisplayName("[API] 상품 수정 실패 - 없는 ID(404)")
     void updateProduct_notFound() throws Exception {
         var dto = new ProductUpdateRequestDto(
