@@ -41,6 +41,24 @@ public class ProductControllerTest {
     }
 
     @Test
+    void 상품생성시_협의된상품에_카카오가들어가면_200이_반환된다(){
+        String url = "http://localhost:" + port + "/api/products";
+        ProductRequestDto productRequestDto = new ProductRequestDto();
+        productRequestDto.setName("상품명은카카오");
+        productRequestDto.setPrice(1000L);
+        productRequestDto.setImageUrl("image.jpg");
+        productRequestDto.setKakaoWordAllow(true);
+
+        var response = client.post()
+                .uri(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(productRequestDto)
+                .retrieve()
+                .toEntity(ProductResponseDto.class);
+        assert(response.getStatusCode() == HttpStatus.OK);
+    }
+
+    @Test
     void 상품생성시_이름을_입력하지않으면_400이_반환된다(){
         String url = "http://localhost:" + port + "/api/products";
         ProductRequestDto productRequestDto = new ProductRequestDto();
