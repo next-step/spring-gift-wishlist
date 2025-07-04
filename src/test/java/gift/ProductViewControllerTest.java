@@ -189,4 +189,37 @@ public class ProductViewControllerTest {
             .andExpect(model().attributeHasFieldErrors("productRequest", "imageUrl"));
     }
 
+    @Test
+    @DisplayName("[VIEW] 상품 목록 조회 - GET /admin/products")
+    void listProducts() throws Exception {
+        productRepository.save(new Product("초콜릿", 1000, "https://image.com/choco.jpg"));
+        productRepository.save(new Product("캔디",    500,  "https://image.com/candy.jpg"));
+
+        // 수행 & 검증
+        mockMvc.perform(get("/admin/products"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("products/list"))
+            .andExpect(model().attributeExists("products"))
+            .andExpect(model().attribute("products", hasSize(2)))
+            .andExpect(model().attribute("products",
+                contains(
+                    hasProperty("name", is("초콜릿")),
+                    hasProperty("name", is("캔디"))
+                )
+            ))
+            .andExpect(model().attribute("products",
+                contains(
+                    hasProperty("price", is(1000)),
+                    hasProperty("price", is(500))
+                )
+            ))
+            .andExpect(model().attribute("products",
+                contains(
+                    hasProperty("imageUrl", is("https://image.com/choco.jpg")),
+                    hasProperty("imageUrl", is("https://image.com/candy.jpg"))
+                )
+            ))
+        ;
+    }
+
 }
