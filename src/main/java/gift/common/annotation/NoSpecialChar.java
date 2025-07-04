@@ -14,7 +14,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target({ FIELD })
 @Retention(RUNTIME)
 public @interface NoSpecialChar {
-    String message() default "알파벳, 한글, (, ), [, ], +, -, &, /, _ 만 입력 가능합니다";
+    String message() default "알파벳, 한글, 숫자, (, ), [, ], +, -, &, /, _ 만 입력 가능합니다";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }
