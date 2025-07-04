@@ -456,4 +456,23 @@ public class ProductViewControllerTest {
             .andExpect(model().attributeHasFieldErrors("productRequest", "imageUrl"));
     }
 
+    @Test
+    @DisplayName("[Form] 상품 수정 실패 - 유효하지 않은 이미지 URL")
+    void updateProduct_fail_invalidImageUrl() throws Exception {
+
+        Product saved = productRepository.save(
+            new Product("초콜릿", 1000, "https://image.com/choco.jpg")
+        );
+        Long id = saved.getId();
+
+        mockMvc.perform(post("/admin/products/{id}/edit", id)
+                .param("name", "다크 초콜릿")
+                .param("price", "1000")
+                .param("imageUrl", "image.com/item.jpg")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+            .andExpect(status().isOk())
+            .andExpect(view().name("products/form"))
+            .andExpect(model().attributeHasFieldErrors("productRequest", "imageUrl"));
+    }
+
 }
