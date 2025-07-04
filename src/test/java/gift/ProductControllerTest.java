@@ -519,13 +519,19 @@ public class ProductControllerTest {
     @Test
     @DisplayName("[API] 상품 수정 실패 - JSON 파싱 오류(400) - 가격에 문자를 넣는 경우")
     void updateProduct_fail_invalidJsonFormat() throws Exception {
+
+        var saved = productRepository.save(
+            new Product("초콜릿", 1000, "https://image.com/item.jpg")
+        );
+        Long id = saved.getId();
+
         String badJson = "{"
             + "\"name\": \"새 이름\","
             + "\"price\": \"abc\","
             + "\"imageUrl\": \"https://image.com/ok.jpg\""
             + "}";
 
-        mockMvc.perform(put("/api/products/{id}", 1L)
+        mockMvc.perform(put("/api/products/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(badJson))
             .andExpect(status().isBadRequest())
