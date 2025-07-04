@@ -2,6 +2,9 @@ package gift.controller;
 
 import gift.dto.ProductRequestDto;
 import gift.entity.Product;
+import gift.service.ProductService;
+import jakarta.validation.Valid;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,56 +12,56 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 //@ResponseBody + @Controller
 @RestController
+@RequestMapping("/api")
 public class ProductController {
 
-    private final Map<Long, Product> products = new HashMap<>();
-    private static Long pid = 0L;
+
+    private final ProductService productService;
+
+    public ProductController(ProductService productService){
+        this.productService = productService;
+    }
 
     //create
     //생성한 product는 HashMap에 저장
     @PostMapping("/products")
-    public ResponseEntity<Product> createProduct(@RequestBody ProductRequestDto requestDto) {
-        if (checkProduct(requestDto)) {
-            Product product = new Product(
-                    ++pid,
-                    requestDto.getName(),
-                    requestDto.getPrice(),
-                    requestDto.getImageUrl()
-            );
-            products.put(product.getId(), product);
-            //ResponseEntity의 경우, 객체와 상태를 함께 반환(상태 지정 가능)
-            return new ResponseEntity<>(product, HttpStatus.CREATED);
-        }
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                "가격은 음수가 될 수 없으며, 상품명, 가격, 이미지 주소는 필수 값입니다.");
+    public ResponseEntity<Void> createProduct(
+            @RequestBody @Valid ProductRequestDto requestDto
+    ) {
+        Long id = productService.add(requestDto);
+        return ResponseEntity.created(URI.create("api/products/" + id)).build();
     }
 
     //read
     //특정 상품을 조회(id)
     @GetMapping("/products/{id}")
     public ResponseEntity<Product> getProduct(@PathVariable Long id) {
-        Product product = findProductById(id);
-        return new ResponseEntity<>(product, HttpStatus.OK);
+        if(productService.findOne(id).isPresent()){
+            Product product = productService.findOne(id).get();
+            return new ResponseEntity<>(product, HttpStatus.OK);
+        }
+        return ResponseEntity.notFound().build();
     }
 
     //read
     //전체 상품을 조회
     @GetMapping("/products")
     public ResponseEntity<List<Product>> getProducts() {
-        List<Product> productList = products.values()
-                .stream()
-                .collect(Collectors.toList());
+        List<Product> productList = productService.findAll();
         return new ResponseEntity<>(productList, HttpStatus.OK);
     }
 
@@ -66,45 +69,21 @@ public class ProductController {
     //상품 수정
     @PutMapping("/products/{id}")
     public ResponseEntity<Product> modifyProduct(
-            @RequestBody ProductRequestDto requestDto,
+            @RequestBody @Valid ProductRequestDto requestDto,
             @PathVariable Long id
     ) {
-        Long found = findProductById(id).getId();
-        Product product = new Product(found,
-                requestDto.getName(),
-                requestDto.getPrice(),
-                requestDto.getImageUrl());
-        products.put(found, product);
-        return new ResponseEntity<>(product, HttpStatus.OK);
+        productService.modify(id, requestDto);
+        //특정 상품을 찾는 기능과 종속성을 가짐으로 좋지 않은 코드인지, 상관 없는지 궁금합니다.
+        Product modifiedProduct = productService.findOne(id).get();
+        return new ResponseEntity<>(modifiedProduct, HttpStatus.OK);
     }
 
     //delete
     //등록된 상품을 삭제
     @DeleteMapping("/products/{id}")
     public ResponseEntity<Void> removeProduct(@PathVariable Long id) {
-        Long productId = findProductById(id).getId();
-        products.remove(productId);
+        productService.remove(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    public boolean checkProduct(ProductRequestDto requestDto) {
-        //상품명, 가격, 이미지의 경우 모두 필수 값
-        if (requestDto.getName() == null || requestDto.getPrice() == null
-                || requestDto.getImageUrl() == null) {
-            return false;
-        }
-        //가격은 0이하가 될 수 없음
-        else if (requestDto.getPrice() < 0) {
-            return false;
-        }
-        return true;
-    }
-
-    public Product findProductById(Long id){
-        Optional<Product> optionalProduct = Optional.ofNullable(products.get(id));
-        if (optionalProduct.isPresent()) {
-            return optionalProduct.get();
-        }
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "존재하지 않는 상품입니다.");
-    }
 }

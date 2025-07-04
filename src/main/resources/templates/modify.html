@@ -1,21 +1,25 @@
 <html layout:decorate="~{layout}">
 <div layout:fragment="content">
   <div id="productForm">
-    <form th:action="@{/admin/products/modify/{id}(id=${product.id})}" th:method="put">
+    <form th:action="@{/admin/products/modify/{id}(id=${product.id})}"
+          th:object="${productRequestDto}" th:method="put">
       <p>
-        상품 수정하기
+        <h3>상품 수정하기</h3>
       </p>
-      <p>
+      <p style="display: flex; align-items: center; gap: 10px;">
         <strong>상품명</strong>
-        <input type="text" name="name" th:value="${product.name}">
+        <input type="text" name="name" placeholder="상품명 입력" th:value="${product.name}">
+        <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color: crimson;">Name Error</span>
       </p>
       <p>
         <strong>가격</strong>
         <input type="number" name="price" th:value="${product.price}">
+        <span th:if="${#fields.hasErrors('price')}" th:errors="*{price}">Price Error</span>
       </p>
       <p>
         <strong>이미지 주소</strong>
         <input type="text" name="imageUrl" th:value="${product.imageUrl}">
+        <span th:if="${#fields.hasErrors('imageUrl')}" th:errors="*{imageUrl}">imageUrl Error</span>
       </p>
       <p>
         <input type="submit" value="상품 수정하기">
