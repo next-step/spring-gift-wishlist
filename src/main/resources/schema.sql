@@ -6,3 +6,11 @@ CREATE TABLE products
     imageUrl    VARCHAR(1000) NOT NULL,
     mdConfirmed BOOLEAN       NOT NULL DEFAULT FALSE
 );
+
+
+CREATE TABLE members
+(
+       memberId  BIGINT PRIMARY KEY AUTO_INCREMENT,
+       email     VARCHAR(255) NOT NULL UNIQUE,
+       password  VARCHAR(255) NOT NULL
+)

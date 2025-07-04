@@ -1,0 +1,35 @@
+package gift.user.controller;
+
+import gift.user.dto.RegisterRequestDto;
+import gift.user.dto.RegisterResponseDto;
+import gift.user.service.MemberService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/members")
+public class MemberController {
+
+    private final MemberService memberService;
+
+    public MemberController(MemberService memberService) {
+        this.memberService = memberService;
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<RegisterResponseDto> registerMember(
+        @RequestBody RegisterRequestDto registerRequestDto) {
+
+        return new ResponseEntity<>(memberService.registerMember(registerRequestDto),
+            HttpStatus.CREATED);
+
+    }
+
+    @PostMapping("/login")
+    public void loginMember() {
+    }
+}
