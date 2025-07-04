@@ -4,9 +4,8 @@ DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS user_roles;
 
 CREATE TABLE  roles (
-    id BIGINT AUTO_INCREMENT,
     name VARCHAR(20) NOT NULL,
-    PRIMARY KEY (id)
+    PRIMARY KEY (name)
 );
 
 CREATE TABLE users (
@@ -18,10 +17,10 @@ CREATE TABLE users (
 
 CREATE TABLE user_roles (
     user_id BIGINT NOT NULL,
-    role_id BIGINT NOT NULL,
-    PRIMARY KEY (user_id, role_id),
+    role_name VARCHAR(20) NOT NULL,
+    PRIMARY KEY (user_id, role_name),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE
+    FOREIGN KEY (role_name) REFERENCES roles(name) ON DELETE CASCADE
 );
 
 CREATE TABLE products (

@@ -1,7 +1,6 @@
 CREATE TABLE IF NOT EXISTS  roles (
-    id BIGINT AUTO_INCREMENT,
     name VARCHAR(20) NOT NULL,
-    PRIMARY KEY (id)
+    PRIMARY KEY (name)
 );
 
 CREATE TABLE IF NOT EXISTS users (
@@ -13,10 +12,10 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS user_roles (
     user_id BIGINT NOT NULL,
-    role_id BIGINT NOT NULL,
-    PRIMARY KEY (user_id, role_id),
+    role_name BIGINT NOT NULL,
+    PRIMARY KEY (user_id, role_name),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE
+    FOREIGN KEY (role_name) REFERENCES roles(name) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS products (
@@ -38,8 +37,8 @@ INSERT INTO roles (name) VALUES
 INSERT INTO users (email, password) VALUES
       ('test@test.com', 'qwery1234');
 
-INSERT INTO user_roles (user_id, role_id) VALUES
-      (1, 1); -- Admin
+INSERT INTO user_roles (user_id, role_name) VALUES
+      (1, 'ROLE_ADMIN'); -- Admin
 
 INSERT INTO products (name, price, image_url, owner_id) VALUES
       ('Product 01', 1000, 'https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OHx8c25lYWtlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60"', 1),
