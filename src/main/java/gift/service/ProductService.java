@@ -1,14 +1,13 @@
 package gift.service;
 
+import gift.domain.Product;
 import gift.dto.request.CreateProductDto;
 import gift.dto.request.UpdateProductDto;
 import gift.dto.response.MessageResponseDto;
 import gift.dto.response.ProductDto;
-import gift.entity.Product;
 import gift.exception.CreationFailException;
 import gift.exception.EntityNotFoundException;
 import gift.repository.ProductRepository;
-import gift.validator.ProductValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -18,16 +17,14 @@ import java.util.List;
 public class ProductService {
 
     private final ProductRepository productRepository;
-    private final ProductValidator validator;
 
-    public ProductService(ProductRepository productRepository, ProductValidator validator) {
+    public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
-        this.validator = validator;
     }
 
     public MessageResponseDto<ProductDto> createProduct(CreateProductDto body) {
         Product instance = body.toEntity();
-        if (!validator.validate(instance)) {
+        if (instance.involveKakao()) {
             // 승인 대기 큐에 추가
             return new MessageResponseDto<>(false, "카카오 관련 상품 승인 대기중", 202, null);
         }
@@ -51,10 +48,9 @@ public class ProductService {
 
     public MessageResponseDto<ProductDto> updateProduct(Long id, UpdateProductDto body) {
         findProduct(id);
-        Product instance = body.toEntity(id);
-        if (!validator.validate(instance)) {
+        Product instance = body.toEntity();
+        if (instance.involveKakao()) {
             // 승인 대기 큐에 추가
-            deleteProduct(id);
             return new MessageResponseDto<>(false, "카카오 관련 상품 승인 대기중", 202, null);
         }
         Product product = productRepository.update(id, instance).get();
