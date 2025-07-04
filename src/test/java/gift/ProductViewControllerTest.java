@@ -284,4 +284,23 @@ public class ProductViewControllerTest {
             ));
     }
 
+    @Test
+    @DisplayName("[Form] 상품 수정 성공 - 유효한 데이터")
+    void updateProduct_success() throws Exception {
+
+        productRepository.deleteAll();
+        Product saved = productRepository.save(
+            new Product("초콜릿", 1000, "https://image.com/choco.jpg")
+        );
+        Long id = saved.getId();
+
+        mockMvc.perform(post("/admin/products/{id}/edit", id)
+                .param("name", "다크 초콜릿")
+                .param("price", "1500")
+                .param("imageUrl", "https://image.com/dark.jpg")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+            .andExpect(status().isFound())
+            .andExpect(redirectedUrl("/admin/products"));
+    }
+
 }
