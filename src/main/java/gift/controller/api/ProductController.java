@@ -1,5 +1,6 @@
 package gift.controller.api;
 
+import gift.dto.product.ProductResponse;
 import gift.model.CustomPage;
 import gift.dto.product.ProductCreateRequest;
 import gift.dto.product.ProductUpdateRequest;
@@ -13,6 +14,7 @@ import jakarta.validation.Validator;
 import jakarta.validation.constraints.Min;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.web.server.ErrorPageRegistrar;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -26,7 +28,7 @@ public class ProductController {
     private final ProductService productService;
     private final Validator validator;
 
-    public ProductController(ProductService productService, Validator validator) {
+    public ProductController(ProductService productService, Validator validator, ErrorPageRegistrar errorPageRegistrar) {
         this.productService = productService;
         this.validator = validator;
     }
@@ -51,36 +53,37 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<CustomPage<Product>> getAllProducts(
+    public ResponseEntity<CustomPage<ProductResponse>> getAllProducts(
             @RequestParam(value = "page", defaultValue = "0")
             @Min(value = 0, message = "페이지 번호는 0 이상이여야 합니다.") Integer page,
             @RequestParam(value = "size", defaultValue = "5")
             @Min(value = 1, message = "페이지 크기는 양수여야 합니다.") Integer size
     ) {
-        return new ResponseEntity<>(productService.getBy(page, size), HttpStatus.OK);
+        var productPage = CustomPage.convert(productService.getBy(page, size), ProductResponse::from);
+        return new ResponseEntity<>(productPage, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(
+    public ResponseEntity<ProductResponse> getProductById(
             @PathVariable @Min(value = 0, message = "상품 ID는 0 이상이어야 합니다.") Long id
     ) {
         Product product = productService.getById(id);
-        return new ResponseEntity<>(product, HttpStatus.OK);
+        return new ResponseEntity<>(ProductResponse.from(product), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<Product> createProduct(
+    public ResponseEntity<ProductResponse> createProduct(
             @Valid @RequestBody ProductCreateRequest dto,
             @RequestHeader(value = "X-User-Role", required = false) String userRole
     ) {
         handleGroupValidation(userRole, dto);
         Product product = productService.create(dto.toProduct());
         log.info("상품 생성 성공: {}", product);
-        return new ResponseEntity<>(product, HttpStatus.CREATED);
+        return new ResponseEntity<>(ProductResponse.from(product), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(
+    public ResponseEntity<ProductResponse> updateProduct(
             @PathVariable @Min(value = 0, message = "상품 ID는 0 이상이어야 합니다.") Long id,
             @Valid @RequestBody ProductUpdateRequest dto,
             @RequestHeader(value = "X-User-Role", required = false) String userRole
@@ -88,11 +91,11 @@ public class ProductController {
         handleGroupValidation(userRole, dto);
         Product updatedProduct = productService.update(dto.toEntity(id));
         log.info("상품 업데이트 성공: {}", updatedProduct);
-        return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
+        return new ResponseEntity<>(ProductResponse.from(updatedProduct), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Product> patchProduct(
+    public ResponseEntity<ProductResponse> patchProduct(
             @PathVariable @Min(value = 0, message = "상품 ID는 0 이상이어야 합니다.") Long id,
             @Valid @RequestBody ProductUpdateRequest dto,
             @RequestHeader(value = "X-User-Role", required = false) String userRole
@@ -100,7 +103,7 @@ public class ProductController {
         handleGroupValidation(userRole, dto);
         Product patchedProduct = productService.patch(dto.toEntity(id));
         log.info("상품 패치 성공: {}", patchedProduct);
-        return new ResponseEntity<>(patchedProduct, HttpStatus.OK);
+        return new ResponseEntity<>(ProductResponse.from(patchedProduct), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
