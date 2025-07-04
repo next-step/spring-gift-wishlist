@@ -12,12 +12,14 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.web.client.RestClient;
-
 import java.util.List;
-
+import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
+
+@Sql("/test.sql")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ProductControllerTest {
     @LocalServerPort
@@ -161,4 +163,47 @@ public class ProductControllerTest {
 
         assertThat(updateResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
+
+    @Test
+    void 존재하지_않는_아이디로_상품조회시_실패() {
+        var productId = -1L;
+
+        var response = client.get()
+                .uri("/api/products/" + productId)
+                .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {})
+                .toEntity(String.class);
+
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(response.getBody()).isEqualTo("ID가 " + productId + "인 상품은 없습니다.");
+    }
+
+    @Test
+    void 이름에_카카오가_포함되고_협의하지_않았을_때_상품_추가_실패() {
+        var invalidProduct = new ProductRequestDto(
+                "카카오 상품",
+                25000L,
+                "http://image.url",
+                false
+        );
+
+        var response = client.post()
+                .uri("/api/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(invalidProduct)
+                .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {})
+                .toEntity(new ParameterizedTypeReference<Map<String, String>>() {});
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+
+        Map<String, String> expectedError = Map.of(
+                "name", "이름에 카카오가 포함된 상품은 MD와 협의 후 등록 가능합니다."
+        );
+
+        assertThat(response.getBody()).isEqualTo(expectedError);
+    }
+
+
 }
