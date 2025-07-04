@@ -1,33 +1,30 @@
-package gift.product;
+package gift.product.service;
 
 
+import gift.product.entity.Item;
+import gift.product.repository.ItemRepository;
+import gift.product.repository.ItemRepositoryImpl;
 import gift.product.dto.GetItemResponse;
 import gift.product.dto.ItemRequest;
-import jakarta.annotation.PostConstruct;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.PreparedStatement;
-import java.sql.Statement;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.NoSuchElementException;
 
 
 @Service
 @Transactional
 public class ItemService {
 
-	private final ItemRepositoryImpl itemRepository;
+	private final ItemRepository itemRepository;
 
 	public ItemService(ItemRepositoryImpl itemRepository) {this.itemRepository = itemRepository;}
 
 
 	public Long createItem(ItemRequest req) {
+
+		Item.validateKakaoKeyword(req.name());
 
 		Item item = new Item(req.name(), req.price(), req.imageUrl());
 
@@ -54,13 +51,15 @@ public class ItemService {
 	public GetItemResponse getItem(Long itemId) {
 
 		Item item = itemRepository.findById(itemId)
-			.orElseThrow(() -> new RuntimeException("존재하지 않는 아이템입니다."));
+			.orElseThrow(() -> new NoSuchElementException("존재하지 않는 아이템입니다."));
 
 		return new GetItemResponse(item.getId(), item.getName(), item.getPrice(), item.getImageUrl());
 	}
 
 
 	public GetItemResponse updateItem(Long itemId, ItemRequest req) {
+
+		Item.validateKakaoKeyword(req.name());
 
 		itemRepository.findById(itemId)
 			.orElseThrow(() -> new RuntimeException("존재하지 않는 아이템입니다."));

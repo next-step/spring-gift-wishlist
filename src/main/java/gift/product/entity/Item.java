@@ -1,4 +1,4 @@
-package gift.product;
+package gift.product.entity;
 
 
 public class Item {
@@ -22,6 +22,11 @@ public class Item {
 		this.name = name;
 		this.price = price;
 		this.imageUrl = imageUrl;
+	}
+
+	public static void validateKakaoKeyword(String name){
+		if (name.contains("카카오"))
+			throw new IllegalArgumentException("'카카오'는 담당자와 협의 후 사용가능한 키워드입니다.");
 	}
 
 	public Long getId() {

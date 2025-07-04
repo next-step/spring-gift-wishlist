@@ -1,7 +1,7 @@
-package gift.product;
+package gift.product.repository;
 
 
-import org.springframework.stereotype.Repository;
+import gift.product.entity.Item;
 
 import java.util.List;
 import java.util.Optional;
