@@ -42,6 +42,18 @@ public class ProductViewControllerTest {
     }
 
     @Test
+    @DisplayName("[Form] 상품 등록 성공 - 일반 상품명")
+    void createProduct_success_normalName() throws Exception {
+        mockMvc.perform(post("/admin/products/new")
+                .param("name", "초콜릿")
+                .param("price", "1000")
+                .param("imageUrl", "https://image.com/item.jpg")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+            .andExpect(status().isFound())
+            .andExpect(redirectedUrl("/admin/products"));
+    }
+
+    @Test
     @DisplayName("[Form] 상품 등록 성공 - '카카오' 포함된 승인된 상품명")
     void createProduct_success_withApprovedName() throws Exception {
 
