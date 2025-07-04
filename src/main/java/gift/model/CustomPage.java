@@ -1,6 +1,7 @@
 package gift.model;
 
 import java.util.List;
+import java.util.function.Function;
 
 public record CustomPage<T> (
     List<T> contents,
@@ -51,5 +52,19 @@ public record CustomPage<T> (
                 totalPages
             );
         }
+    }
+
+    public static <T> Builder<T> builder(List<T> contents, Integer totalElements) {
+        return new Builder<>(contents, totalElements);
+    }
+
+    public static <F, T> CustomPage<T> convert(CustomPage<F> page, Function<F, T> converter) {
+        return new CustomPage<>(
+            page.contents().stream().map(converter).toList(),
+            page.page(),
+            page.size(),
+            page.totalElements(),
+            page.totalPages()
+        );
     }
 }
