@@ -1,5 +1,5 @@
 package gift.dto.api.member;
 
-public class MemberRequestDto {
+public record MemberRequestDto(String email, String password) {
 
 }

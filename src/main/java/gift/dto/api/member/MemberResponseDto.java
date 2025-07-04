@@ -1,5 +1,5 @@
 package gift.dto.api.member;
 
-public class MemberResponseDto {
+public record MemberResponseDto(String token) {
 
 }

@@ -1,5 +1,11 @@
 package gift.repository.member;
 
-public interface MemberRepository {
+import gift.dto.api.member.MemberResponseDto;
+import gift.entity.Member;
 
+public interface MemberRepository {
+    
+    boolean alreadyRegitered(String email);
+    
+    MemberResponseDto registerMember(Member newMember);
 }
