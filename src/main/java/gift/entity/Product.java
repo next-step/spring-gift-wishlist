@@ -1,12 +1,17 @@
 package gift.entity;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
 public class Product {
+
     private Long id;
     private String name;
     private Integer price;
     private String imageUrl;
 
     public Product(Long id, String name, Integer price, String imageUrl) {
+        validateName(name);
         this.id = id;
         this.name = name;
         this.price = price;
@@ -14,9 +19,17 @@ public class Product {
     }
 
     public Product(String name, Integer price, String imageUrl) {
+        validateName(name);
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
+    }
+
+    private void validateName(String name) {
+        if (name.contains("카카오")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "\"카카오\"가 포함된 문구는 담당 MD와 협의한 경우에만 사용 가능합니다.");
+        }
     }
 
     public Long getId() {
@@ -52,6 +65,7 @@ public class Product {
     }
 
     public void update(String name, Integer price, String url) {
+        validateName(name);
         this.name = name;
         this.price = price;
         this.imageUrl = url;
