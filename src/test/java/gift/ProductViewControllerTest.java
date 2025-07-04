@@ -288,7 +288,6 @@ public class ProductViewControllerTest {
     @DisplayName("[Form] 상품 수정 성공 - 유효한 데이터")
     void updateProduct_success() throws Exception {
 
-        productRepository.deleteAll();
         Product saved = productRepository.save(
             new Product("초콜릿", 1000, "https://image.com/choco.jpg")
         );
