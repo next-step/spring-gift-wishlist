@@ -1,5 +1,7 @@
 package gift;
 
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -7,10 +9,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.contains;
 
 import gift.dto.view.ProductViewRequestDto;
 import gift.entity.ApprovedProduct;
+import gift.entity.Product;
 import gift.repository.ApprovedProductRepository;
+import gift.repository.ProductRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +37,14 @@ public class ProductViewControllerTest {
 
     @Autowired
     private ApprovedProductRepository approvedProductRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @BeforeEach
+    void setUp() {
+        productRepository.deleteAll();
+    }
 
     @Test
     @DisplayName("[VIEW] 상품 등록 폼 진입 - GET /admin/products/new")
