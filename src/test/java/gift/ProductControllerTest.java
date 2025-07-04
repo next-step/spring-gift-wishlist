@@ -576,12 +576,10 @@ public class ProductControllerTest {
     @Test
     @DisplayName("[API] 상품 삭제 실패 - 없는 ID(404)")
     void deleteProduct_notFound() throws Exception {
-
-        productRepository.save(new Product("초콜릿", 1000, "https://image.com/item.jpg"));
-
         mockMvc.perform(delete("/api/products/{id}", 9999L)
                 .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isNotFound());
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.error").value("상품을 찾을 수 없습니다."));
     }
 
     @Test
