@@ -18,7 +18,13 @@ public class ProductService {
     }
 
     private void validateProductRequest(ProductRequest request) {
-        if (request.name() == null || request.name().length() > 15) {
+        if (request == null) {
+            throw new IllegalArgumentException("Request cannot be null");
+        }
+        if (request.name() == null) {
+            throw new IllegalArgumentException("상품명은 필수입니다.");
+        }
+        if (request.name().length() > 15) {
             throw new IllegalArgumentException("상품 이름은 최대 15자까지 입력 가능합니다.");
         }
         if (!request.name().matches("^[a-zA-Z0-9\\s\\(\\)\\[\\]\\+\\-&/_\\uAC00-\\uD7AF]+$")) {
@@ -26,6 +32,9 @@ public class ProductService {
         }
         if (request.name().contains("카카오")) {
             throw new IllegalArgumentException("상품명에 '카카오'가 포함되었습니다. 담당자와 협의가 필요합니다.");
+        }
+        if (request.price() == null) {
+            throw new IllegalArgumentException("가격은 필수입니다.");
         }
     }
 
