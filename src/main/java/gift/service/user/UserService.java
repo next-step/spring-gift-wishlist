@@ -2,7 +2,7 @@ package gift.service.user;
 
 import gift.entity.User;
 import gift.entity.UserRole;
-import gift.model.CustomPage;
+import gift.common.model.CustomPage;
 import java.util.List;
 
 public interface UserService {

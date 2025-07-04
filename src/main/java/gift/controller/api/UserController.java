@@ -4,7 +4,7 @@ package gift.controller.api;
 import gift.dto.user.UserCreateRequest;
 import gift.dto.user.UserResponse;
 import gift.entity.User;
-import gift.model.CustomPage;
+import gift.common.model.CustomPage;
 import gift.service.user.UserService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;

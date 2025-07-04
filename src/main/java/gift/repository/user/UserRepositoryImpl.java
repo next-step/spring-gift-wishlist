@@ -2,7 +2,7 @@ package gift.repository.user;
 
 import gift.dao.user.UserDaoImpl;
 import gift.entity.User;
-import gift.model.CustomPage;
+import gift.common.model.CustomPage;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,18 +1,11 @@
 package gift.product;
 
 import gift.AbstractControllerTest;
-import gift.entity.Product;
-import gift.model.CustomPage;
 import io.restassured.RestAssured;
-import org.apache.tomcat.util.json.JSONFilter;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.ResponseEntity;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.web.client.HttpClientErrorException;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.notNullValue;

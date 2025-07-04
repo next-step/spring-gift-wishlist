@@ -1,4 +1,4 @@
-package gift.exception;
+package gift.common.aop;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;

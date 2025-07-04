@@ -17,6 +17,10 @@ repositories {
     mavenCentral()
 }
 
+ext {
+    JWT_VERSION = '0.12.6'
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
@@ -25,9 +29,6 @@ dependencies {
     runtimeOnly 'com.h2database:h2'
 
     // jwt dependencies
-    ext {
-        JWT_VERSION = '0.12.6'
-    }
     implementation "io.jsonwebtoken:jjwt-api:${JWT_VERSION}"
     implementation "io.jsonwebtoken:jjwt-impl:${JWT_VERSION}"
     implementation "io.jsonwebtoken:jjwt-jackson:${JWT_VERSION}"

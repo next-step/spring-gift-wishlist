@@ -1,9 +1,9 @@
 package gift.dao.product;
 
 import gift.entity.Product;
-import gift.exception.DBServerException;
 import java.util.Optional;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -114,7 +114,8 @@ public class ProductDaoImpl implements ProductDao {
             .query(Integer.class)
             .stream()
             .findFirst().orElseThrow(
-                () -> new DBServerException("상품의 개수를 조회하는 중 오류가 발생했습니다.")
+                () -> new DataAccessException("상품의 개수를 조회하는 중 오류가 발생했습니다.") {
+                }
             );
     }
 }

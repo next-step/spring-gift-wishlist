@@ -1,4 +1,4 @@
-package gift.exception;
+package gift.common.aop;
 
 import gift.dto.error.ErrorMessageResponse;
 import jakarta.servlet.http.HttpServletRequest;

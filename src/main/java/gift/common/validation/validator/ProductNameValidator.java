@@ -1,5 +1,5 @@
-package gift.validation.validator;
-import gift.validation.annotation.ValidProductName;
+package gift.common.validation.validator;
+import gift.common.validation.annotation.ValidProductName;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 

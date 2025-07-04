@@ -1,6 +1,6 @@
 package gift.controller.view;
 
-import gift.model.CustomPage;
+import gift.common.model.CustomPage;
 import gift.entity.Product;
 import gift.service.product.ProductService;
 import jakarta.validation.constraints.Min;

@@ -2,7 +2,7 @@ package gift.repository.user;
 
 
 import gift.entity.User;
-import gift.model.CustomPage;
+import gift.common.model.CustomPage;
 
 import java.util.List;
 import java.util.Optional;

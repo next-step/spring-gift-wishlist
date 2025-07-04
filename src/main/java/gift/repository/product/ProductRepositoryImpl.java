@@ -1,7 +1,7 @@
 package gift.repository.product;
 
 import gift.dao.product.ProductDao;
-import gift.model.CustomPage;
+import gift.common.model.CustomPage;
 import gift.entity.Product;
 import java.util.Optional;
 

@@ -2,7 +2,7 @@ package gift.service.user;
 
 import gift.entity.User;
 import gift.entity.UserRole;
-import gift.model.CustomPage;
+import gift.common.model.CustomPage;
 import gift.repository.role.RoleRepository;
 import gift.repository.user.UserRepository;
 import org.springframework.stereotype.Service;

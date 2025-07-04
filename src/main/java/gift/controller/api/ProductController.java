@@ -1,12 +1,12 @@
 package gift.controller.api;
 
 import gift.dto.product.ProductResponse;
-import gift.model.CustomPage;
+import gift.common.model.CustomPage;
 import gift.dto.product.ProductCreateRequest;
 import gift.dto.product.ProductUpdateRequest;
 import gift.entity.Product;
 import gift.service.product.ProductService;
-import gift.validation.group.AuthenticationGroups;
+import gift.common.validation.group.AuthenticationGroups;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;

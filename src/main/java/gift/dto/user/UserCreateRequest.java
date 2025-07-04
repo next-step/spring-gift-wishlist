@@ -1,7 +1,7 @@
 package gift.dto.user;
 
 import gift.entity.User;
-import gift.validation.annotation.ValidPassword;
+import gift.common.validation.annotation.ValidPassword;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 

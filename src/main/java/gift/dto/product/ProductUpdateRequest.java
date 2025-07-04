@@ -1,9 +1,9 @@
 package gift.dto.product;
 
 import gift.entity.Product;
-import gift.validation.annotation.KakaoNotContained;
-import gift.validation.annotation.ValidProductName;
-import gift.validation.group.AuthenticationGroups;
+import gift.common.validation.annotation.KakaoNotContained;
+import gift.common.validation.annotation.ValidProductName;
+import gift.common.validation.group.AuthenticationGroups;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 

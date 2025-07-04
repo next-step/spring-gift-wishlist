@@ -1,6 +1,6 @@
-package gift.validation.validator;
+package gift.common.validation.validator;
 
-import gift.validation.annotation.ValidPassword;
+import gift.common.validation.annotation.ValidPassword;
 import jakarta.validation.ConstraintValidator;
 
 public class PasswordValidator  implements ConstraintValidator<ValidPassword, String> {

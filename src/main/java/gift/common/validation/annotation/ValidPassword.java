@@ -1,6 +1,6 @@
-package gift.validation.annotation;
+package gift.common.validation.annotation;
 
-import gift.validation.validator.PasswordValidator;
+import gift.common.validation.validator.PasswordValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 

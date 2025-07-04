@@ -1,6 +1,6 @@
-package gift.validation.annotation;
+package gift.common.validation.annotation;
 
-import gift.validation.validator.KakaoNotContainedValidator;
+import gift.common.validation.validator.KakaoNotContainedValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
