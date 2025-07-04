@@ -11,7 +11,7 @@ public class ProductNameValidator implements ConstraintValidator<ValidProductNam
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         if (value == null) {
-            return false;
+            return true; // null인 경우에는 Product name필드의 NotBlank 조건에 걸림.
         }
         return value.matches(PATTERN);
     }

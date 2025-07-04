@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = ProductNameValidator.class)
 public @interface ValidProductName {
 
-    String message() default "특수 문자는 '(, ), [, ], +, -, &, /, _'만 가능합니다. ";
+    String message() default "특수 문자는 '(, ), [, ], +, -, &, /, _'만 가능합니다.";
 
     Class[] groups() default {};
 

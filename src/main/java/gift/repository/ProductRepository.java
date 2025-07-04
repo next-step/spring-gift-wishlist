@@ -4,6 +4,7 @@ import gift.model.Product;
 import java.util.List;
 import java.util.Optional;
 import javax.sql.DataSource;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -44,7 +45,11 @@ public class ProductRepository {
     // 상품 단건 조회
     public Optional<Product> findById(Long id) {
         String sql = "SELECT id, name, price, imageUrl FROM PRODUCT WHERE id = ? and needsMdApproval = false";
-        return Optional.of(jdbcTemplate.queryForObject(sql, productRowMapper(), id));
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, productRowMapper(), id));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     // 상품 수정
