@@ -196,7 +196,7 @@ DELETE /api/products/1 HTTP/1.1
   "status": 404,
   "error": "Not Found",
   "path": "/api/products/1111",
-  "stackTrace": "gift.service.ProductServiceImpl.lambda$getById$0(ProductServiceImpl.java:45)"
+  "stackTrace": "/*오류*/"
 }
 ```
 + **필드 설명**

@@ -2,7 +2,7 @@ package gift.controller.view;
 
 import gift.model.CustomPage;
 import gift.entity.Product;
-import gift.service.ProductService;
+import gift.service.product.ProductService;
 import jakarta.validation.constraints.Min;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

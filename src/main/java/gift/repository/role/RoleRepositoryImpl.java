@@ -2,9 +2,13 @@ package gift.repository.role;
 
 import gift.dao.role.UserRoleDao;
 import gift.entity.UserRole;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Repository
+@Transactional
 public class RoleRepositoryImpl implements RoleRepository {
     private final UserRoleDao userRoleDao;
 

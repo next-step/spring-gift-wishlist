@@ -4,7 +4,7 @@ import gift.model.CustomPage;
 import gift.dto.product.ProductCreateRequest;
 import gift.dto.product.ProductUpdateRequest;
 import gift.entity.Product;
-import gift.service.ProductService;
+import gift.service.product.ProductService;
 import gift.validation.group.AuthenticationGroups;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;

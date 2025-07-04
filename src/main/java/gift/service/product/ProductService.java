@@ -1,4 +1,4 @@
-package gift.service;
+package gift.service.product;
 
 import gift.model.CustomPage;
 import gift.entity.Product;
@@ -12,6 +12,6 @@ public interface ProductService {
     Product getById(Long productId);
     Product create(Product product);
     Product update(Product product);
-    Product patch(Product product); // 부분 업데이트 메소드 추가
-    void deleteById(Long productId); // 삭제 메소드 추가
+    Product patch(Product product);
+    void deleteById(Long productId);
 }

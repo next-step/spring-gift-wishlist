@@ -1,4 +1,4 @@
-package gift.service;
+package gift.service.product;
 
 import gift.model.CustomPage;
 import gift.entity.Product;
