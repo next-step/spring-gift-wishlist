@@ -341,22 +341,6 @@ public class ProductControllerTest {
     }
 
     @Test
-    @DisplayName("[API] 상품 수정 실패 - JSON 파싱 오류(400) - 가격에 문자를 넣는 경우")
-    void updateProduct_fail_invalidJsonFormat() throws Exception {
-        String badJson = "{"
-            + "\"name\": \"새 이름\","
-            + "\"price\": \"abc\","
-            + "\"imageUrl\": \"https://image.com/ok.jpg\""
-            + "}";
-
-        mockMvc.perform(put("/api/products/{id}", 1L)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(badJson))
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.error").value("'price' 필드는 Integer 형식이어야 합니다."));
-    }
-
-    @Test
     @DisplayName("[API] 상품 수정 실패 - 빈 이름")
     void updateProduct_fail_validationNameEmpty() throws Exception {
 
@@ -420,6 +404,22 @@ public class ProductControllerTest {
                 .content(objectMapper.writeValueAsString(dto)))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.name").value("유효한 특수문자 ( '( )', '[ ]', '+', '-', '&', '/', '_' ) 가 아닙니다."));
+    }
+
+    @Test
+    @DisplayName("[API] 상품 수정 실패 - JSON 파싱 오류(400) - 가격에 문자를 넣는 경우")
+    void updateProduct_fail_invalidJsonFormat() throws Exception {
+        String badJson = "{"
+            + "\"name\": \"새 이름\","
+            + "\"price\": \"abc\","
+            + "\"imageUrl\": \"https://image.com/ok.jpg\""
+            + "}";
+
+        mockMvc.perform(put("/api/products/{id}", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(badJson))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.error").value("'price' 필드는 Integer 형식이어야 합니다."));
     }
 
 }
