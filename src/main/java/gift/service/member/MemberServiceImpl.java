@@ -5,6 +5,8 @@ import gift.dto.api.member.MemberResponseDto;
 import gift.entity.Member;
 import gift.entity.Role;
 import gift.exception.conflict.AlreadyRegisteredException;
+import gift.exception.forbidden.WrongPasswordException;
+import gift.exception.notfound.NotRegisteredException;
 import gift.repository.member.MemberRepository;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +33,16 @@ public class MemberServiceImpl implements MemberService {
     
     @Override
     public MemberResponseDto loginMember(MemberRequestDto requestDto) {
-        return null;
+        if(!memberRepository.alreadyRegistered(requestDto.email())) {
+            throw new NotRegisteredException();
+        }
+        
+        if(memberRepository.wrongPassword(requestDto.email(), requestDto.password())) {
+            throw new WrongPasswordException();
+        }
+        
+        Member member = memberRepository.findMember(requestDto.email(), requestDto.password());
+        
+        return memberRepository.loginMember(member);
     }
 }
