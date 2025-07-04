@@ -1,6 +1,7 @@
 package gift.repository;
 
 import gift.entity.Product;
+import gift.exception.ProductNotFoundException;
 import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
@@ -88,7 +89,10 @@ public class ProductJdbcRepositoryImpl implements ProductRepository {
   @Override
   public int deleteProduct(Long id) {
     String sql = "delete from products where id=?";
-    int delete = jdbcTemplate.update(sql, id);
-    return delete;
+    int deletedProduct = jdbcTemplate.update(sql, id);
+    if (deletedProduct != 1) {
+      throw new ProductNotFoundException("삭제할 것이 없습니다");
+    }
+    return deletedProduct;
   }
 }
