@@ -43,6 +43,23 @@ public class ProductControllerTest {
     private ApprovedProductRepository approvedProductRepository;
 
     @Test
+    @DisplayName("[API] 상품 수정 성공 - 일반 상품명")
+    void createProduct_success_normalName() throws Exception {
+
+        var dto = new ProductCreateRequestDto("초콜릿", 1000, "https://image.com/item.jpg");
+
+        // when & then
+        mockMvc.perform(post("/api/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)))
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.id").isNumber())
+            .andExpect(jsonPath("$.name").value(dto.getName()))
+            .andExpect(jsonPath("$.price").value(dto.getPrice()))
+            .andExpect(jsonPath("$.imageUrl").value(dto.getImageUrl()));
+    }
+
+    @Test
     @DisplayName("[API] 상품 등록 성공 - '카카오' 포함된 승인된 상품명")
     void createProduct_success_withApprovedName() throws Exception {
 
