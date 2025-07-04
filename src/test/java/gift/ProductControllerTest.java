@@ -356,4 +356,26 @@ public class ProductControllerTest {
             .andExpect(jsonPath("$.name").value("최대 15자까지 가능합니다."));
     }
 
+    @Test
+    @DisplayName("[API] 상품 수정 실패 - 상품명에 허용되지 않은 문자 사용")
+    void updateProduct_fail_invalidNameCharacters() throws Exception {
+
+        var saved = productRepository.save(
+            new Product("초콜릿", 1000, "https://image.com/item.jpg")
+        );
+        Long id = saved.getId();
+
+        var dto = new ProductUpdateRequestDto(
+            "초콜릿%",      // 허용되지 않은 문자열 % 사용
+            1000,
+            "https://image.com/item.jpg"
+        );
+
+        mockMvc.perform(put("/api/products/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.name").value("유효한 특수문자 ( '( )', '[ ]', '+', '-', '&', '/', '_' ) 가 아닙니다."));
+    }
+
 }
