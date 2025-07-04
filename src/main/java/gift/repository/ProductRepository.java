@@ -28,10 +28,10 @@ public class ProductRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Optional<Product> findById(Long productId) {
+    public Product findById(Long productId) {
         String sql = "select * from products where id = ?";
 
-        return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, productId));
+        return jdbcTemplate.queryForObject(sql, rowMapper, productId);
     }
 
     public Long insert(Product product) {

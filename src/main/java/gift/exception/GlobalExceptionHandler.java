@@ -16,7 +16,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidProductException.class)
     public ResponseEntity<?> handleInvalidProductException(InvalidProductException e) {
         return ResponseEntity.status(e.getErrorCode().getHttpStatus())
-            .body(e.getErrorCode().getErrorMessage());
+            .body(new ErrorResponse(e.getErrorCode(), e.getMessage()));
+    }
+
+    @ExceptionHandler(DataAccessException.class)
+    public ResponseEntity<?> handleDataAccessException(EmptyResultDataAccessException e){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .body(new ErrorResponse(ErrorCode.NOT_EXISTS_PRODUCT, ErrorCode.NOT_EXISTS_PRODUCT.getErrorMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

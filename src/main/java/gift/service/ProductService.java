@@ -9,10 +9,9 @@ import gift.exception.InvalidProductException;
 import gift.repository.ProductRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 @Service
-public class ProductService{
+public class ProductService {
 
     private final ProductRepository productRepository;
 
@@ -21,14 +20,13 @@ public class ProductService{
     }
 
     public ProductResponse getProductById(Long productId) {
-        Product product = productRepository.findById(productId)
-            .orElseThrow(() -> new InvalidProductException(ErrorCode.NOT_EXISTS_PRODUCT));
+        Product product = productRepository.findById(productId);
 
         return ProductResponse.of(product.getName(), product.getPrice(), product.getImageUrl());
     }
 
     public Long insert(ProductRequest request) {
-        if(request.name().contains("카카오")){
+        if (request.name().contains("카카오")) {
             throw new InvalidProductException(ErrorCode.INVALID_KAKAO_NAME);
         }
 
@@ -37,10 +35,9 @@ public class ProductService{
     }
 
     public void update(ProductRequest request) {
-        productRepository.findById(request.id())
-            .orElseThrow(() -> new InvalidProductException(ErrorCode.NOT_EXISTS_PRODUCT));
+        productRepository.findById(request.id());
 
-        if(request.name().contains("카카오")){
+        if (request.name().contains("카카오")) {
             throw new InvalidProductException(ErrorCode.INVALID_KAKAO_NAME);
         }
 
@@ -48,6 +45,8 @@ public class ProductService{
     }
 
     public void deleteById(Long productId) {
+        productRepository.findById(productId);
+
         productRepository.deleteById(productId);
     }
 
