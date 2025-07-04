@@ -1,5 +1,6 @@
 package gift;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -558,6 +559,18 @@ public class ProductControllerTest {
                 .content(badJson))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.error").value("요청 JSON 형식이 잘못되었습니다."));
+    }
+
+    @Test
+    @DisplayName("[API] 상품 삭제 성공 - 204 NO CONTENT")
+    void deleteProduct_success() throws Exception {
+
+        var saved = productRepository.save(new Product("초콜릿", 1000, "https://image.com/item.jpg"));
+        Long id = saved.getId();
+
+        mockMvc.perform(delete("/api/products/{id}", id)
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNoContent());
     }
 
 }
