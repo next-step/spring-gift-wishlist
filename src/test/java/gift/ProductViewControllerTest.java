@@ -399,4 +399,23 @@ public class ProductViewControllerTest {
             .andExpect(model().attributeHasFieldErrors("productRequest", "name"));
     }
 
+    @Test
+    @DisplayName("[Form] 상품 수정 실패 - 가격 없음")
+    void updateProduct_fail_priceMissing() throws Exception {
+
+        Product saved = productRepository.save(
+            new Product("초콜릿", 1000, "https://image.com/choco.jpg")
+        );
+        Long id = saved.getId();
+
+        mockMvc.perform(post("/admin/products/{id}/edit", id)
+                .param("name", "다크 초콜릿")
+                .param("price", "")
+                .param("imageUrl", "https://image.com/item.jpg")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+            .andExpect(status().isOk())
+            .andExpect(view().name("products/form"))
+            .andExpect(model().attributeHasFieldErrors("productRequest", "price"));
+    }
+
 }
