@@ -28,14 +28,8 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ProductResponse>> getProducts(
-            @RequestParam(name = "page", defaultValue = "0") int page,
-            @RequestParam(name = "size", defaultValue = "5") int size) {
-        Pageable pageable = new Pageable(page, size);
+    public ResponseEntity<Page<ProductResponse>> getProducts(Pageable pageable) {
         Page<ProductResponse> productResponses = productApplicationService.getAllProducts(pageable);
-        if (productResponses.getContent().isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
         return ResponseEntity.ok(productResponses);
     }
 

@@ -1,66 +1,94 @@
+const ui = {
+    productModal: null,
+    productForm: null,
+    modalTitle: null,
+    productIdField: null,
+    nameInput: null,
+    priceInput: null,
+    imageUrlInput: null,
+    tableBody: null,
+    paginationControls: null,
+    addProductBtn: null,
+    closeModalBtn: null,
+};
+
+const openModal = () => ui.productModal.style.display = 'block';
+const closeModal = () => ui.productModal.style.display = 'none';
+
+
 document.addEventListener('DOMContentLoaded', () => {
-    const addProductBtn = document.getElementById('add-product-btn');
-    const productModal = document.getElementById('product-modal');
-    const closeModalBtn = document.querySelector('.close-button');
-    const productForm = document.getElementById('product-form');
-    const modalTitle = document.getElementById('modal-title');
-    const productIdField = document.getElementById('product-id');
-    const tableBody = document.querySelector("#product-table tbody");
-    getProducts();
+    ui.productModal = document.getElementById('product-modal');
+    ui.productForm = document.getElementById('product-form');
+    ui.modalTitle = document.getElementById('modal-title');
+    ui.productIdField = document.getElementById('product-id');
+    ui.nameInput = document.getElementById('name');
+    ui.priceInput = document.getElementById('price');
+    ui.imageUrlInput = document.getElementById('imageUrl');
+    ui.tableBody = document.querySelector("#product-table tbody");
+    ui.paginationControls = document.getElementById('pagination-controls');
+    ui.addProductBtn = document.getElementById('add-product-btn');
+    ui.closeModalBtn = document.querySelector('.close-button');
 
-    const openModal = () => {
-        productModal.style.display = 'block';
-    };
-
-    const closeModal = () => {
-        productModal.style.display = 'none';
-    };
-
-    addProductBtn.addEventListener('click', () => {
-        productForm.reset();
-        modalTitle.textContent = '새 상품 추가';
-        productIdField.value = '';
-        openModal();
-    });
-
-    closeModalBtn.addEventListener('click', closeModal);
+    ui.addProductBtn.addEventListener('click', setupAddModal);
+    ui.closeModalBtn.addEventListener('click', closeModal);
 
     window.addEventListener('click', (event) => {
-        if (event.target === productModal) {
+        if (event.target === ui.productModal) {
             closeModal();
         }
     });
 
-    productForm.addEventListener('submit', (event) => {
-            event.preventDefault();
+    ui.productForm.addEventListener('submit', handleFormSubmit);
+    ui.tableBody.addEventListener('click', handleTableClick);
 
-            const productData = {
-                name: document.getElementById('name').value,
-                price: parseInt(document.getElementById('price').value, 10),
-                imageUrl: document.getElementById('imageUrl').value,
-            };
-            const id = document.getElementById('product-id').value;
-
-            if (id) {
-                updateProduct(id, productData);
-            } else {
-                addNewProduct(productData);
-            }
-        }
-    );
-
-    tableBody.addEventListener('click', (event) => {
-        const target = event.target;
-        if (target.classList.contains('edit-btn')) {
-            const productId = target.dataset.id;
-            openEditModal(productId);
-        }
-        if (target.classList.contains('delete-btn')) {
-            const productId = target.dataset.id;
-            deleteProduct(productId);
-        }
-    });
+    getProducts();
 });
+
+
+function handleFormSubmit(event) {
+    event.preventDefault();
+
+    const productData = {
+        name: ui.nameInput.value,
+        price: parseInt(ui.priceInput.value, 10),
+        imageUrl: ui.imageUrlInput.value,
+    };
+    const id = ui.productIdField.value;
+
+    if (id) {
+        updateProduct(id, productData);
+    } else {
+        addNewProduct(productData);
+    }
+}
+
+function handleTableClick(event) {
+    const target = event.target;
+    if (target.classList.contains('edit-btn')) {
+        const productId = target.dataset.id;
+        openEditModal(productId);
+    }
+    if (target.classList.contains('delete-btn')) {
+        const productId = target.dataset.id;
+        deleteProduct(productId);
+    }
+}
+
+function setupAddModal() {
+    ui.productForm.reset();
+    ui.modalTitle.textContent = '새 상품 추가';
+    ui.productIdField.value = '';
+    openModal();
+}
+
+function setupEditModal(product) {
+    ui.modalTitle.textContent = '상품 수정';
+    ui.productIdField.value = product.id;
+    ui.nameInput.value = product.name;
+    ui.priceInput.value = product.price;
+    ui.imageUrlInput.value = product.imageUrl;
+    openModal();
+}
 
 
 function getProducts(page = 0, size = 5) {
@@ -70,11 +98,15 @@ function getProducts(page = 0, size = 5) {
             renderTable(pageData.content);
             renderPagination(pageData);
         })
+        .catch(error => {
+            handleApiError(error, '상품 목록을 불러오는 데 실패했습니다.');
+            renderTable([]);
+            renderPagination({ totalPages: 0 });
+        });
 }
 
 function renderTable(products) {
-    const tableBody = document.querySelector("#product-table tbody");
-    tableBody.innerHTML = '';
+    ui.tableBody.innerHTML = '';
 
     products.forEach(product => {
         const row = document.createElement('tr');
@@ -88,13 +120,12 @@ function renderTable(products) {
                 <button class="delete-btn" data-id="${product.id}">삭제</button>
             </td>
         `;
-        tableBody.appendChild(row);
+        ui.tableBody.appendChild(row);
     });
 }
 
 function renderPagination(pageData) {
-    const paginationControls = document.getElementById('pagination-controls');
-    paginationControls.innerHTML = '';
+    ui.paginationControls.innerHTML = '';
 
     if (pageData.totalPages === 0) return;
 
@@ -102,7 +133,7 @@ function renderPagination(pageData) {
         const pageButton = document.createElement('button');
         pageButton.innerText = '1';
         pageButton.classList.add('current');
-        paginationControls.appendChild(pageButton);
+        ui.paginationControls.appendChild(pageButton);
         return;
     }
 
@@ -112,7 +143,7 @@ function renderPagination(pageData) {
         const prevButton = document.createElement('button');
         prevButton.innerText = '이전';
         prevButton.onclick = () => getProducts(currentPageNumber - 1);
-        paginationControls.appendChild(prevButton);
+        ui.paginationControls.appendChild(prevButton);
     }
 
     for (let i = 0; i < pageData.totalPages; i++) {
@@ -122,15 +153,33 @@ function renderPagination(pageData) {
             pageButton.classList.add('current');
         }
         pageButton.onclick = () => getProducts(i);
-        paginationControls.appendChild(pageButton);
+        ui.paginationControls.appendChild(pageButton);
     }
 
     if (pageData.hasNext) {
         const nextButton = document.createElement('button');
         nextButton.innerText = '다음';
         nextButton.onclick = () => getProducts(currentPageNumber + 1);
-        paginationControls.appendChild(nextButton);
+        ui.paginationControls.appendChild(nextButton);
     }
+}
+
+function handleApiError(error, defaultMessage) {
+    console.error(defaultMessage, error);
+    console.log('서버로부터 받은 실제 에러 응답:', error.response);
+
+    const data = error.response?.data;
+    let errorMessage = defaultMessage;
+
+    if (data) {
+        if (data.errors && data.errors.length > 0) {
+            errorMessage = data.errors.map(err => err.detail).join('\\n');
+        } else if (data.detail) {
+            errorMessage = data.detail;
+        }
+    }
+
+    alert(errorMessage);
 }
 
 function addNewProduct(productData) {
@@ -138,36 +187,22 @@ function addNewProduct(productData) {
         .then(response => {
             if (response.status === 201) {
                 alert('상품이 성공적으로 추가되었습니다.');
-                document.getElementById('product-modal').style.display = 'none';
+                closeModal();
                 getProducts();
             }
         })
         .catch(error => {
-            console.error('상품 추가 실패:', error);
-            const errorMessage = error.response?.data?.message || '상품 추가에 실패했습니다.';
-            alert(errorMessage);
+            handleApiError(error, '상품 추가에 실패했습니다.');
         });
 }
 
 function openEditModal(id) {
     axios.get(`/api/products/${id}`)
         .then(response => {
-            const product = response.data;
-            const productModal = document.getElementById('product-modal');
-            const productForm = document.getElementById('product-form');
-
-            productForm.querySelector('#modal-title').textContent = '상품 수정';
-            productForm.querySelector('#product-id').value = product.id;
-            productForm.querySelector('#name').value = product.name;
-            productForm.querySelector('#price').value = product.price;
-            productForm.querySelector('#imageUrl').value = product.imageUrl;
-
-            productModal.style.display = 'block';
+            setupEditModal(response.data);
         })
         .catch(error => {
-            console.error('상품 정보 조회 실패:', error);
-            const errorMessage = error.response?.data?.message || '상품 정보를 불러오는 데 실패했습니다.';
-            alert(errorMessage);
+            handleApiError(error, '상품 정보를 불러오는 데 실패했습니다.');
         });
 }
 
@@ -176,14 +211,12 @@ function updateProduct(id, productData) {
         .then(response => {
             if (response.status === 204) {
                 alert('상품이 성공적으로 수정되었습니다.');
-                document.getElementById('product-modal').style.display = 'none';
+                closeModal();
                 getProducts();
             }
         })
         .catch(error => {
-            console.error('상품 수정 실패:', error);
-            const errorMessage = error.response?.data?.message || '상품 수정에 실패했습니다.';
-            alert(errorMessage);
+            handleApiError(error, '상품 수정에 실패했습니다.');
         });
 }
 
@@ -197,9 +230,7 @@ function deleteProduct(id) {
                 }
             })
             .catch(error => {
-                console.error('상품 삭제 실패:', error);
-                const errorMessage = error.response?.data?.message || '상품 삭제에 실패했습니다.';
-                alert(errorMessage);
+                handleApiError(error, '상품 삭제에 실패했습니다.');
             });
     }
 }
