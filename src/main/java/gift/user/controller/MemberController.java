@@ -5,6 +5,7 @@ import gift.user.dto.LoginResponseDto;
 import gift.user.dto.RegisterRequestDto;
 import gift.user.dto.RegisterResponseDto;
 import gift.user.service.MemberService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +25,7 @@ public class MemberController {
 
     @PostMapping("/register")
     public ResponseEntity<RegisterResponseDto> registerMember(
-        @RequestBody RegisterRequestDto registerRequestDto) {
+        @Valid @RequestBody RegisterRequestDto registerRequestDto) {
 
         return new ResponseEntity<>(memberService.registerMember(registerRequestDto),
             HttpStatus.CREATED);
@@ -33,7 +34,7 @@ public class MemberController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> loginMember(
-        @RequestBody LoginRequestDto loginRequestDto) {
+        @Valid @RequestBody LoginRequestDto loginRequestDto) {
 
         return new ResponseEntity<>(memberService.loginMember(loginRequestDto), HttpStatus.OK);
     }
