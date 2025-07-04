@@ -1,6 +1,6 @@
 package gift.repository;
 
-import gift.dto.Product;
+import gift.dto.ProductDto;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -17,49 +17,49 @@ public class ProductRepository {
         this.jdbc = jdbc;
     }
 
-    public List<Product> findAll() {
-        return jdbc.sql("SELECT * FROM product")
-                .query(Product.class)
+    public List<ProductDto> findAll() {
+        return jdbc.sql("SELECT * FROM productDto")
+                .query(ProductDto.class)
                 .list();
     }
 
-    public Optional<Product> findById(Long id) {
-        return jdbc.sql("SELECT * FROM product WHERE id= :id")
+    public Optional<ProductDto> findById(Long id) {
+        return jdbc.sql("SELECT * FROM productDto WHERE id= :id")
                 .param("id", id)
-                .query(Product.class)
+                .query(ProductDto.class)
                 .optional();
     }
 
-    public Product save(Product product) {
+    public ProductDto save(ProductDto productDto) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbc.sql("""
-                    INSERT INTO product (name, price, image_url)
+                    INSERT INTO productDto (name, price, image_url)
                     VALUES (:name, :price, :image_url)
                    """)
-                .param("name", product.getName())
-                .param("price", product.getPrice())
-                .param("image_url",product.getImageUrl())
+                .param("name", productDto.getName())
+                .param("price", productDto.getPrice())
+                .param("image_url", productDto.getImageUrl())
                 .update(keyHolder);
         Long id = keyHolder.getKey().longValue();
-        product.setId(id);
-        return product;
+        productDto.setId(id);
+        return productDto;
     }
 
-    public void update(Product product) {
+    public void update(ProductDto productDto) {
         jdbc.sql("""
-                    Update product
+                    Update productDto
                     set name = :name, price = :price, image_url = :image_url
                     where id = :id
                 """)
-                .param("name", product.getName())
-                .param("price", product.getPrice())
-                .param("image_url", product.getImageUrl())
-                .param("id", product.getId())
+                .param("name", productDto.getName())
+                .param("price", productDto.getPrice())
+                .param("image_url", productDto.getImageUrl())
+                .param("id", productDto.getId())
                 .update();
     }
 
     public void delete(Long id) {
-        jdbc.sql("DELETE FROM product WHERE id = :id")
+        jdbc.sql("DELETE FROM productDto WHERE id = :id")
                 .param("id", id)
                 .update();
     }

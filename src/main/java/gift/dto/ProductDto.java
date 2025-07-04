@@ -3,14 +3,14 @@ package gift.dto;
 import jakarta.validation.constraints.*;
 
 
-public class Product {
+public class ProductDto {
     private Long id;
     private boolean usableKakao;
 
     @NotBlank(message = "상품명을 입력해주세요.")
     @Size(max=15, message = "상품명의 길이는 15이하로 입력해주세요.")
     @Pattern(regexp = "^[a-zA-Z0-9가-힣\\s()\\[\\]+\\-&/_]*$",
-            message = "혀용되지 않는 특수 기호를 사용하셨습니다. (가능한 특수 기호: ( ), [ ], +, -, &, /, _)")
+            message = "허용되지 않는 입력 방식을 사용하셨습니다. (가능한 특수 기호: ( ), [ ], +, -, &, /, _)")
     private String name;
 
     @NotNull(message = "상품의 가격을 입력해주세요.")
@@ -27,8 +27,8 @@ public class Product {
         return usableKakao;
     }
 
-    public Product() {}
-    public Product(Long id, String name, int price, String imageUrl) {
+    public ProductDto() {}
+    public ProductDto(Long id, String name, int price, String imageUrl) {
         this.id = id;
         this.name = name;
         this.price = price;

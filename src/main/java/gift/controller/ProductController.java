@@ -1,6 +1,6 @@
 package gift.controller;
 
-import gift.dto.Product;
+import gift.dto.ProductDto;
 import gift.repository.ProductRepository;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -34,35 +34,38 @@ public class ProductController {
 
     @GetMapping("/new")
     public String createForm(Model model) {
-        model.addAttribute("product",new Product());
+        model.addAttribute("productDto",new ProductDto());
         model.addAttribute("editMode",false);
         return "admin/product_form";
     }
 
     @PostMapping
-    public String createProduct(@Valid @ModelAttribute Product product, BindingResult bindingResult) {
+    public String createProduct(@Valid @ModelAttribute ProductDto productdto, BindingResult bindingResult, Model  model) {
         if(bindingResult.hasErrors()) {
+            if (productdto.getName() != null && productdto.getName().contains("카카오") && !productdto.getUsableKakao()) {
+                model.addAttribute("showKakaoPopup", true);
+            }
             return "admin/product_form";
         }
 
-        if(product.getImageUrl() == null || product.getImageUrl().isEmpty()) {
-            product.setImageUrl(IMAGE_BASE_URL);
+        if(productdto.getImageUrl() == null || productdto.getImageUrl().isEmpty()) {
+            productdto.setImageUrl(IMAGE_BASE_URL);
         }
-        repository.save(product);
+        repository.save(productdto);
         return "redirect:/admin/products";
     }
 
     @GetMapping("/{id}/edit")
     public String editProduct(@PathVariable Long id, Model model) {
-        Product product = repository.findById(id).orElseThrow();
-        model.addAttribute("product", product);
+        ProductDto productDto = repository.findById(id).orElseThrow();
+        model.addAttribute("productDto", productDto);
         model.addAttribute("editMode", true);
         return "/admin/product_form";
     }
 
     @PostMapping("/{id}")
-    public String updateProduct(@ModelAttribute Product product) {
-        repository.update(product);
+    public String updateProduct(@ModelAttribute ProductDto productDto) {
+        repository.update(productDto);
         return "redirect:/admin/products";
     }
 
