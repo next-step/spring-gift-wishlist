@@ -2,6 +2,7 @@ package gift.controller;
 
 import gift.domain.Product;
 import gift.dto.ProductRequest;
+import gift.dto.ProductResponse;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin/products")
@@ -24,20 +26,25 @@ public class AdminProductController {
     @GetMapping
     public String list(Model model) {
         List<Product> products = productService.getAll();
-        model.addAttribute("products", products);
+        List<ProductResponse> responses = products.stream()
+                .map(ProductResponse::from)
+                .collect(Collectors.toList());
+        model.addAttribute("products", responses);
         return "admin/product-list";
     }
 
     @GetMapping("/{id}")
     public String detail(@PathVariable Long id, Model model) {
         Product product = productService.getById(id);
-        model.addAttribute("product", product);
+        ProductResponse response = ProductResponse.from(product);
+        model.addAttribute("product", response);
         return "admin/product-detail";
     }
 
     @GetMapping("/new")
     public String createForm(Model model) {
-        model.addAttribute("productRequest", new ProductRequest());
+        ProductRequest empty = new ProductRequest("", 0, "");
+        model.addAttribute("productRequest", empty);
         return "admin/product-form";
     }
 
