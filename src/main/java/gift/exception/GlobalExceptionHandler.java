@@ -27,12 +27,6 @@ public class GlobalExceptionHandler {
             .body(errors);
     }
 
-    @ExceptionHandler(KakaoNameNotAllowedException.class)
-    public ResponseEntity<String> kakaoNamedException(KakaoNameNotAllowedException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-            .body(ex.getMessage());
-    }
-
     @ExceptionHandler(FailedGenerateKeyException.class)
     public ResponseEntity<String> handleFailedGenerateKey(FailedGenerateKeyException ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

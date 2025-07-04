@@ -1,22 +1,24 @@
 package gift.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import gift.entity.Product;
-import gift.repository.ProductRepository;
+import gift.dto.ProductRequestDto;
+import gift.dto.ProductResponseDto;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClient;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("dev")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class ProductControllerTest {
 
     @LocalServerPort
@@ -24,105 +26,152 @@ public class ProductControllerTest {
 
     private String baseUrl;
 
-    @Autowired
-    private TestRestTemplate restTemplate;
-
-    @Autowired
-    private ProductRepository productRepository;
+    RestClient restClient;
 
     @BeforeEach
     void setUp() {
-        productRepository.findAllProducts()
-            .forEach(p -> productRepository.deleteProduct(p.getId()));
-        baseUrl = "http://localhost:" + port + "/admin/products";
+        baseUrl = "http://localhost:" + port + "/api/products";
+        restClient = RestClient.builder()
+            .baseUrl(baseUrl)
+            .build();
     }
 
     @Test
-    void createProduct_success() {
-        MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
-        form.add("name", "ValidName");
-        form.add("price", "1000");
-        form.add("imageUrl", "http://image.com");
-
-        ResponseEntity<String> response = restTemplate.postForEntity(baseUrl,
-            new HttpEntity<>(form, formHeaders()), String.class);
+    @DisplayName("상품 목록 조회 테스트")
+    void 상품_목록_조회_테스트() {
+        var response = restClient.get()
+            .retrieve()
+            .toEntity(new ParameterizedTypeReference<List<ProductResponseDto>>() {
+            });
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(productRepository.findAllProducts()).hasSize(1);
+        assertThat(response.getBody().getFirst().name()).isEqualTo("샘플 상품1");
     }
 
     @Test
-    void createProduct_validation_fail() {
-        // 여러 validation 실패 케이스
-        String[][] invalidCases = {
-            // name 없음
-            {"", "1000", "http://image.com"},
-            // 이름에 특수문자 포함
-            {"Invalid!!", "1000", "http://image.com"},
-            // 이름 길이 초과
-            {"ThisProductNameIsWayTooLongForValidation", "1000", "http://image.com"},
-            // 금칙어 포함
-            {"카카오테크캠퍼스", "1000", "http://image.com"},
-            // imageUrl 없음
-            {"ValidName", "1000", ""}
-        };
-
-        for (String[] c : invalidCases) {
-            MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
-            form.add("name", c[0]);
-            form.add("price", c[1]);
-            form.add("imageUrl", c[2]);
-
-            ResponseEntity<String> response = restTemplate.postForEntity(baseUrl,
-                new HttpEntity<>(form, formHeaders()), String.class);
-
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @Test
-    void updateProduct_success_and_not_found() {
-        long id = productRepository.createProduct(new Product(null, "Old", 1000, "img"));
-
-        MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
-        form.add("_method", "put");
-        form.add("name", "Updated");
-        form.add("price", "2000");
-        form.add("imageUrl", "newImg");
-
-        ResponseEntity<String> response = restTemplate.postForEntity(baseUrl + "/" + id,
-            new HttpEntity<>(form, formHeaders()), String.class);
+    @DisplayName("단일 상품 조회 테스트")
+    void 단일_상품_조회_테스트() {
+        var response = restClient.get()
+            .uri("/1")
+            .retrieve()
+            .toEntity(ProductResponseDto.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(productRepository.findProductById(id).getName()).isEqualTo("Updated");
-
-        // 없는 ID로 요청
-        ResponseEntity<String> notFound = restTemplate.postForEntity(baseUrl + "/9999",
-            new HttpEntity<>(form, formHeaders()), String.class);
-        assertThat(notFound.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(response.getBody().name()).isEqualTo("샘플 상품1");
     }
 
     @Test
-    void deleteProduct_success_and_not_found() {
-        long id = productRepository.createProduct(new Product(null, "ToDelete", 500, "del"));
+    @DisplayName("존재하지 않는 상품 조회 테스트")
+    void 존재하지_않는_상품_테스트() {
+        var exception = assertThrows(HttpClientErrorException.class, () ->
+            restClient.get()
+                .uri("/99")
+                .retrieve()
+                .toEntity(ProductResponseDto.class));
 
-        MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
-        form.add("_method", "delete");
-
-        ResponseEntity<String> response = restTemplate.postForEntity(baseUrl + "/" + id,
-            new HttpEntity<>(form, formHeaders()), String.class);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-        // 없는 ID로 요청
-        ResponseEntity<String> notFound = restTemplate.postForEntity(baseUrl + "/9999",
-            new HttpEntity<>(form, formHeaders()), String.class);
-        assertThat(notFound.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
-    private HttpHeaders formHeaders() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        return headers;
+    @Test
+    @DisplayName("상품 생성 테스트")
+    void 상품_생성_테스트() {
+        ProductRequestDto requestDto = new ProductRequestDto("샘플 상품3", 30000, "sample3.jpg");
+        var response = restClient.post()
+            .body(requestDto)
+            .retrieve()
+            .toEntity(ProductResponseDto.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(response.getBody().name()).isEqualTo("샘플 상품3");
+    }
+
+    @Test
+    @DisplayName("이름이 15자 초과인 상품 생성 테스트")
+    void 이름이_15자_초과인_상품_생성_테스트() {
+        ProductRequestDto requestDto = new ProductRequestDto("이름이 15자를 초과해서 오류가 발생하는 샘플 상품", 10000, "sample.jpg");
+        var exception = assertThrows(HttpClientErrorException.class, () ->
+            restClient.post()
+                .body(requestDto)
+                .retrieve()
+                .toEntity(ProductResponseDto.class));
+
+        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    @DisplayName("이름에 사용 불가 특수문자가 포함된 상품 생성 테스트")
+    void 이름에_사용_불가_특수문자가_포함된_상품_생성_테스트() {
+        ProductRequestDto requestDto = new ProductRequestDto("상품!", 10000, "sample.jpg");
+        var exception = assertThrows(HttpClientErrorException.class, () ->
+            restClient.post()
+                .body(requestDto)
+                .retrieve()
+                .toEntity(ProductResponseDto.class));
+
+        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    @DisplayName("이름에 카카오가 포함된 상품 생성 테스트")
+    void 이름에_카카오가_포함된_상품_생성_테스트() {
+        ProductRequestDto requestDto = new ProductRequestDto("카카오 상품", 10000, "sample.jpg");
+        var exception = assertThrows(HttpClientErrorException.class, () ->
+            restClient.post()
+                .body(requestDto)
+                .retrieve()
+                .toEntity(ProductResponseDto.class));
+
+        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    @DisplayName("상품 수정 테스트")
+    void 상품_수정_테스트() {
+        ProductRequestDto requestDto = new ProductRequestDto("수정된 샘플 상품1", 100000, "updated1.jpg");
+        var response = restClient.put()
+            .uri("/1")
+            .body(requestDto)
+            .retrieve()
+            .toEntity(ProductResponseDto.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().name()).isEqualTo("수정된 샘플 상품1");
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 상품 수정 테스트")
+    void 존재하지_않는_상품_수정_테스트() {
+        ProductRequestDto requestDto = new ProductRequestDto("수정된 샘플 상품99", 990000, "updated99.jpg");
+        var exception = assertThrows(HttpClientErrorException.class, () ->
+            restClient.put()
+                .uri("/99")
+                .body(requestDto)
+                .retrieve()
+                .toEntity(ProductResponseDto.class));
+
+        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    @DisplayName("상품 삭제 테스트")
+    void 상품_삭제_테스트() {
+        var response = restClient.delete()
+            .uri("/1")
+            .retrieve()
+            .toEntity(Void.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 상품 삭제 테스트")
+    void 존재하지_않는_상품_삭제_테스트() {
+        var exception = assertThrows(HttpClientErrorException.class, () ->
+            restClient.delete()
+                .uri("/99")
+                .retrieve()
+                .toEntity(ProductResponseDto.class));
+
+        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 }

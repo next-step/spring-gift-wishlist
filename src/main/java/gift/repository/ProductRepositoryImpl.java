@@ -7,6 +7,7 @@ import gift.exception.ProductNotFoundException;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -51,11 +52,12 @@ public class ProductRepositoryImpl implements ProductRepository {
     public Product findProductById(Long id) {
         final String sql = "SELECT * FROM products WHERE id = ?";
 
-        Product product = jdbcTemplate.queryForObject(sql, productRowMapper(), id);
-        if (product == null) {
+        try {
+            return jdbcTemplate.queryForObject(sql, productRowMapper(), id);
+        } catch (EmptyResultDataAccessException e) {
             throw new ProductNotFoundException(id);
         }
-        return product;
+
     }
 
     @Override

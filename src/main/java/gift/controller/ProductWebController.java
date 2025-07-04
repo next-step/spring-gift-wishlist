@@ -2,7 +2,6 @@ package gift.controller;
 
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
-import gift.exception.KakaoNameNotAllowedException;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -49,14 +48,12 @@ public class ProductWebController {
 
     @PostMapping
     public String create(@Valid @ModelAttribute ProductRequestDto requestDto) {
-        checkNameContainsKakao(requestDto.name());
         productService.createProduct(requestDto);
         return "redirect:/admin/products";
     }
 
     @PutMapping("/{id}")
     public String update(@PathVariable Long id, @Valid @ModelAttribute ProductRequestDto requestDto) {
-        checkNameContainsKakao(requestDto.name());
         productService.updateProduct(id, requestDto);
         return "redirect:/admin/products";
     }
@@ -65,12 +62,6 @@ public class ProductWebController {
     public String delete(@PathVariable Long id) {
         productService.deleteProduct(id);
         return "redirect:/admin/products";
-    }
-
-    private void checkNameContainsKakao(String name) {
-        if (name.contains("카카오")) {
-            throw new KakaoNameNotAllowedException();
-        }
     }
 }
 
