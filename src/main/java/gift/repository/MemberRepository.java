@@ -2,6 +2,7 @@ package gift.repository;
 
 
 import gift.dto.Member;
+import java.util.Optional;
 
 //DIP를 준수해보자 -> DIP : 한 클래스는 다른 클래스에 직접 의존하지 않는다. (인터페이스에 의존)
 public interface MemberRepository {
@@ -14,6 +15,6 @@ public interface MemberRepository {
     void findMemberByEmailAndPassword();
 
     //회원 조회 -> 중복 검증을 위함
-    void findMemberById();
+    Optional<Member> findMemberByEmail(String email);
 
 }
