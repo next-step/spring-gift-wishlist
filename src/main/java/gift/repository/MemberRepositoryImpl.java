@@ -33,9 +33,11 @@ public class MemberRepositoryImpl implements MemberRepository{
     }
 
     @Override
-    public void findMemberByEmailAndPassword() {
-
+    public Optional<Member> findMemberByEmailAndPassword(String email, String password) {
+        String sql = "select * from members where email = ? and password = ?";
+        return jdbcTemplate.query(sql, memberRowMapper(), email, password).stream().findAny();
     }
+
 
     @Override
     public Optional<Member> findMemberByEmail(String email) {

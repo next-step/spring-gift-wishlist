@@ -5,6 +5,8 @@ import gift.service.MemberService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,8 +29,16 @@ public class MemberController {
 
     //TODO: 로그인 기능 -> 토큰을 반환
     @PostMapping("/login")
-    public void login(){
+    public ResponseEntity<String> login(
+            @RequestBody  MemberRequestDto memberRequestDto,
+            @RequestHeader(value = "Authorization") String accessToken
+    ){
+        //서버에 저장된 id-pw 쌍과 일치하는지 확인
+        if(memberService.checkMember(memberRequestDto)){
 
+        }
+        //토큰에 대한 유효성 검사를 수행
+        return ResponseEntity.ok().body(accessToken);
     }
 
 }

@@ -12,7 +12,7 @@ public interface MemberRepository {
     void addMember(Member member);
 
     //회원 조회 -> 이메일과 비밀번호를 통해 회원 조회(로그인시 확인...)
-    void findMemberByEmailAndPassword();
+    Optional<Member> findMemberByEmailAndPassword(String email, String password);
 
     //회원 조회 -> 중복 검증을 위함
     Optional<Member> findMemberByEmail(String email);
