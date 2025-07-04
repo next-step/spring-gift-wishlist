@@ -2,8 +2,10 @@ package gift.controller;
 
 import gift.model.Product;
 import gift.repository.ProductDao;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -28,7 +30,11 @@ public class AdminProductController {
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute Product product) {
+    public String add(@Valid @ModelAttribute Product product, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            bindingResult.getAllErrors().forEach(error -> System.out.println("오류: " + error.getDefaultMessage()));
+            return "product/form";
+        }
         productDao.insertProduct(product);
         return "redirect:/admin/products";
     }
@@ -41,7 +47,12 @@ public class AdminProductController {
     }
 
     @PostMapping("/edit")
-    public String edit(@ModelAttribute Product product) {
+    public String edit(@Valid @ModelAttribute Product product, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            bindingResult.getAllErrors().forEach(error -> System.out.println("오류: " + error.getDefaultMessage()));
+            return "product/form";
+        }
+
         productDao.updateProduct(product.getId(), product, product);
         return "redirect:/admin/products";
     }

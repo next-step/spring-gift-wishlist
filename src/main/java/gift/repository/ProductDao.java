@@ -12,6 +12,7 @@ import java.util.List;
 @Repository
 public class ProductDao {
     private final JdbcTemplate jdbcTemplate;
+    private static final ProductRowMapper PRODUCT_ROW_MAPPER = new ProductRowMapper();
 
     public ProductDao(JdbcTemplate jdbcTemplate) { this.jdbcTemplate = jdbcTemplate; }
 
@@ -21,11 +22,11 @@ public class ProductDao {
     }
     public List<Product> getAllProducts() {
         final var sql = "select * from product";
-        return jdbcTemplate.query(sql, new ProductRowMapper());
+        return jdbcTemplate.query(sql, PRODUCT_ROW_MAPPER);
     }
     public Product getProductById(long id) {
         final var sql = "select * from product where id = ?";
-        return jdbcTemplate.queryForObject(sql, new ProductRowMapper(),id);
+        return jdbcTemplate.queryForObject(sql, PRODUCT_ROW_MAPPER,id);
     }
     public void removeProduct(long id) {
         final var sql = "delete from product where id = ?";
@@ -36,7 +37,7 @@ public class ProductDao {
         product.updateFields(product_changed);
         jdbcTemplate.update(sql, product.getName(), product.getPrice(), product.getImage(),id);
     }
-    public class ProductRowMapper implements RowMapper<Product> {
+    public static class ProductRowMapper implements RowMapper<Product> {
         @Override
         public Product mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new Product(
