@@ -12,3 +12,6 @@
 예외처리 핸들러 주석 업데이트
 
 Service 레이어에 하드 코딩돼있던 금지 단어를 application.properties에 정의, 이에 따른 application.properties 인코딩 방식 UTF-8로 변경
+
+# 회원 로그인
+1. Dto, Entity 구현 및 Controller, Service 정의
