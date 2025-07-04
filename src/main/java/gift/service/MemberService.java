@@ -17,16 +17,13 @@ public class MemberService {
     }
 
     //TODO:멤버 회원 가입 -> 리포지토리에 저장
-    public String register(MemberRequestDto memberRequestDto){
+    public boolean register(MemberRequestDto memberRequestDto){
         //중복을 확인하고
-        if(!checkUniqueEmail(memberRequestDto.email())){
-
+        if(checkDuplicateEmail(memberRequestDto.email())){
+            return false;
         }
-        Member member = new Member();
-        memberRepository.addMember(member);
-        //JWT에서 토큰 생성 후, 반환;
-        String tempToken = "mytoken";
-        return tempToken;
+        memberRepository.addMember(memberRequestDto);
+        return true;
     }
 
     //TODO:로그인 기능 -> 이메일과 비밀번호가 일치하는지 확인하는 로직
@@ -40,12 +37,12 @@ public class MemberService {
     }
 
     //TODO:중복 이메일 불가 -> 회원 가입시, 해당 이메일로 가입된 정보가 있는지 확인하기
-    boolean checkUniqueEmail(String email){
+    boolean checkDuplicateEmail(String email){
         Optional<Member> member = memberRepository.findMemberByEmail(email);
-        if(member.isEmpty()){
-            return false;
+        if(member.isPresent()){
+            return true;
         }
-        return true;
+        return false;
     }
 
 }

@@ -1,6 +1,7 @@
 package gift.repository;
 
 import gift.dto.Member;
+import gift.dto.MemberRequestDto;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -21,13 +22,13 @@ public class MemberRepositoryImpl implements MemberRepository{
     }
 
     @Override
-    public void addMember(Member member) {
+    public void addMember(MemberRequestDto memberRequestDto) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         simpleJdbcInsert.withTableName("members").usingGeneratedKeyColumns("id");
 
         Map<String, Object> params = new HashMap<>();
-        params.put("email", member.getEmail());
-        params.put("password", member.getPassword());
+        params.put("email", memberRequestDto.email());
+        params.put("password", memberRequestDto.password());
 
         simpleJdbcInsert.execute(params);
     }
