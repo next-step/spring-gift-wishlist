@@ -17,6 +17,7 @@ import gift.entity.ApprovedProduct;
 import gift.entity.Product;
 import gift.repository.ApprovedProductRepository;
 import gift.repository.ProductRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,11 @@ public class ProductControllerTest {
 
     @Autowired
     private ApprovedProductRepository approvedProductRepository;
+
+    @BeforeEach
+    void setUp() {
+        productRepository.deleteAll();
+    }
 
     @Test
     @DisplayName("[API] 상품 수정 성공 - 일반 상품명")
