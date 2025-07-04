@@ -23,6 +23,12 @@ public class ProductDto {
         this.imageUrl = product.getImageUrl();
     }
 
+    public ProductDto(String name, int price, String imageUrl) {
+        this.name = name;
+        this.price = price;
+        this.imageUrl = imageUrl;
+    }
+
     public String getName() {
         return name;
     }
