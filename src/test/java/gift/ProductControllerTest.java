@@ -103,6 +103,24 @@ public class ProductControllerTest {
     }
 
     @Test
+    @DisplayName("[API] 상품 등록 실패 - 상품명에 허용되지 않은 문자 사용")
+    void createProduct_fail_invalidNameCharacters() throws Exception {
+        // 준비: 허용되지 않은 특수문자가 포함된 상품명 DTO 생성
+        var dto = new ProductCreateRequestDto(
+            "초@콜#릿!",   // 허용되지 않은 문자 포함
+            1000,
+            "https://image.com/item.jpg"
+        );
+
+        // 수행 & 검증
+        mockMvc.perform(post("/api/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.name").value("유효한 특수문자 ( '( )', '[ ]', '+', '-', '&', '/', '_' ) 가 아닙니다."));
+    }
+
+    @Test
     @DisplayName("[API] 상품 등록 실패 - 가격 없음")
     void createProduct_fail_priceMissing() throws Exception {
 
