@@ -5,6 +5,7 @@ import gift.dto.request.ProductRequestDto;
 import gift.dto.response.ProductResponseDto;
 import gift.entity.Product;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,11 @@ public class ProductController {
 
 
     @PostMapping
-    public ResponseEntity<ProductResponseDto> addProduct(@RequestBody ProductRequestDto requestDto) {
+    public ResponseEntity<ProductResponseDto> addProduct( @RequestBody @Valid ProductRequestDto requestDto) {
+        if (requestDto.getName() != null && requestDto.getName().contains("카카오")&& !requestDto.isMdApproved()) {
+            throw new IllegalArgumentException("상품 이름에 '카카오'를 포함할 수 없습니다. 담당 MD와 협의해 주세요");
+        }
+
         Product saved = productService.createProduct(requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ProductResponseDto(saved)); //피드백 반영
     }
@@ -41,7 +46,10 @@ public class ProductController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductResponseDto> updateProduct(@PathVariable Long id,@RequestBody ProductRequestDto requestDto) {
+    public ResponseEntity<ProductResponseDto> updateProduct(@PathVariable Long id,@RequestBody @Valid ProductRequestDto requestDto) {
+        if (requestDto.getName() != null && requestDto.getName().contains("카카오")&& !requestDto.isMdApproved()) {
+            throw new IllegalArgumentException("상품 이름에 '카카오'를 포함할 수 없습니다. 담당 MD와 협의해 주세요");
+        }
         Product updated =productService.updateProduct(id,requestDto);
 
         return ResponseEntity.ok(new ProductResponseDto(updated));

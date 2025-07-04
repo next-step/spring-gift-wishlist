@@ -3,8 +3,10 @@ package gift.controller;
 import gift.dto.request.ProductRequestDto;
 import gift.entity.Product;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,7 +37,16 @@ public class AdminProductController {
     }
 
     @PostMapping
-    public String addProduct(@ModelAttribute ProductRequestDto productRequestDto) {
+    public String addProduct(@ModelAttribute("product") @Valid ProductRequestDto productRequestDto,
+                             BindingResult bindingResult) {
+        if ( productRequestDto.getName().contains("카카오")&& !productRequestDto.isMdApproved()) {
+            bindingResult.rejectValue("name", "invalid.name", "상품 이름에 '카카오'를 포함할 수 없습니다. 담당 MD와 협의해 주세요");
+        }
+
+        if (bindingResult.hasErrors()) {
+            return "admin/product-form"; // 오류 있을 경우 다시 등록 폼 보여줌
+        }
+
         productService.createProduct(productRequestDto);
         return "redirect:/admin/products";
     }
@@ -52,10 +63,21 @@ public class AdminProductController {
     }
 
     @PostMapping("/{id}")
-    public String updateProduct(@PathVariable Long id,@ModelAttribute ProductRequestDto productRequestDto) {
-        productService.updateProduct(id, productRequestDto);
-        return "redirect:/admin/products";
+    public String updateProduct(@PathVariable Long id,
+                                @ModelAttribute("product") @Valid ProductRequestDto dto,
+                                BindingResult bindingResult,
+                                Model model) {
+        if (dto.getName() != null && dto.getName().contains("카카오")&& !dto.isMdApproved()) {
+            bindingResult.rejectValue("name", "invalid.name", "'상품 이름에 '카카오'를 포함할 수 없습니다. 담당 MD와 협의해 주세요");
+        }
 
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("productId", id);
+            return "admin/product-edit-form";
+        }
+
+        productService.updateProduct(id, dto);
+        return "redirect:/admin/products";
     }
 
 
