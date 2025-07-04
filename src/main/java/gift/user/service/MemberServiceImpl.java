@@ -22,7 +22,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public LoginResponseDto loginMember(LoginRequestDto loginRequestDto) {
+    public LoginResponseDto login(LoginRequestDto loginRequestDto) {
         return null;
     }
 }

@@ -9,5 +9,5 @@ public interface MemberService {
 
     RegisterResponseDto registerMember(RegisterRequestDto registerRequestDto);
 
-    LoginResponseDto loginMember(LoginRequestDto loginRequestDto);
+    LoginResponseDto login(LoginRequestDto loginRequestDto);
 }
