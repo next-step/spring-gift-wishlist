@@ -1,7 +1,7 @@
-// src/main/java/gift/service/ProductServiceImpl.java
 package gift.service;
 
 import gift.entity.Product;
+import gift.entity.Product.ValidationMode;
 import gift.exception.ResourceNotFoundException;
 import gift.repository.ProductRepository;
 import java.util.List;
@@ -32,17 +32,21 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product createProduct(Product product) {
-        Product created = product.withId(null);
+    @Transactional
+    public Product createProduct(Product product, ValidationMode validationMode) {
+        Product created = Product.createProduct(null, product.name(), product.price(),
+                product.imageUrl(), validationMode);
+
         return repo.save(created);
     }
 
     @Override
-    public Product updateProduct(Long id, Product product) {
-        Product existing = repo.findById(id)
+    @Transactional
+    public Product updateProduct(Long id, Product product, ValidationMode validationMode) {
+        Product toChange = repo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("상품을 찾을 수 없습니다: " + id));
 
-        Product updated = existing.withName(product.name())
+        Product updated = toChange.withName(product.name(), validationMode)
                 .withPrice(product.price())
                 .withImageUrl(product.imageUrl());
         return repo.save(updated);
@@ -50,9 +54,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteProduct(Long id) {
-        if (!repo.existsById(id)) {
-            throw new ResourceNotFoundException("상품을 찾을 수 없습니다: " + id);
-        }
+        repo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("상품을 찾을 수 없습니다: " + id));
         repo.deleteById(id);
     }
 }
