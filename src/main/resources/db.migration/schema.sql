@@ -1,4 +1,4 @@
-DROP TABLE Gift;
+DROP TABLE IF EXISTS Gift;
 
 CREATE TABLE Gift(
   id BIGINT NOT NULL,
@@ -8,6 +8,13 @@ CREATE TABLE Gift(
   giftPhotoUrl VARCHAR(255),
   isKakaoMDAccepted BOOLEAN,
   primary key(id)
+);
+
+DROP TABLE IF EXISTS Users;
+
+CREATE TABLE Users(
+    email VARCHAR(255) UNIQUE,
+    password VARCHAR(255)
 );
 
 commit;
