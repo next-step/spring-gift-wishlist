@@ -363,8 +363,8 @@ public class ProductControllerTest {
     }
 
     @Test
-    @DisplayName("[API] 상품 수정 실패 - 빈 이름")
-    void updateProduct_fail_validationNameEmpty() throws Exception {
+    @DisplayName("[API] 상품 수정 실패 - 상품명 없음")
+    void updateProduct_fail_blankName() throws Exception {
 
         var saved = productRepository.save(
             new Product("초콜릿", 1000, "https://image.com/item.jpg")
