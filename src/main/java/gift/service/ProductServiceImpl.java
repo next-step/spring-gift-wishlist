@@ -2,7 +2,7 @@ package gift.service;
 
 import gift.model.CustomPage;
 import gift.entity.Product;
-import gift.repository.ProductRepository;
+import gift.repository.product.ProductRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
