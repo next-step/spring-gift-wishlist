@@ -1,6 +1,6 @@
-package gift.builder;
+package gift.product.builder;
 
-import gift.entity.Product;
+import gift.product.entity.Product;
 
 public class ProductBuilder {
 

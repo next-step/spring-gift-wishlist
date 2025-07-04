@@ -1,11 +1,11 @@
-package gift.dto.request;
+package gift.product.dto.request;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-public record ProductCreateRequestDto(
+public record ProductUpdateRequestDto(
     @NotNull(message = "Product Name must not be null.")
     @Size(max = 15, message = "Product Name must be less than or equal to 15 characters.")
     @Pattern(
@@ -22,7 +22,6 @@ public record ProductCreateRequestDto(
     String imageUrl,
 
     @NotNull(message = "Product Md Confirmed must not be null.")
-    Boolean mdConfirmed
-) {
+    Boolean mdConfirmed) {
 
 }

@@ -1,12 +1,12 @@
-package gift.controller;
+package gift.product.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import gift.builder.ProductBuilder;
-import gift.dto.response.ProductCreateResponseDto;
-import gift.dto.response.ProductGetResponseDto;
-import gift.entity.Product;
+import gift.product.builder.ProductBuilder;
+import gift.product.dto.ProductCreateResponseDto;
+import gift.product.dto.ProductGetResponseDto;
+import gift.product.entity.Product;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

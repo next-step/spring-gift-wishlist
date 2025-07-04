@@ -1,12 +1,12 @@
-package gift.controller;
+package gift.product.controller;
 
-import gift.dto.request.ProductCreateRequestDto;
-import gift.dto.request.ProductUpdateRequestDto;
-import gift.dto.response.ProductCreateResponseDto;
-import gift.dto.response.ProductGetResponseDto;
-import gift.exception.ProductNotFoundException;
-import gift.exception.UnapprovedProductException;
-import gift.service.ProductService;
+import gift.product.dto.ProductCreateRequestDto;
+import gift.product.dto.ProductUpdateRequestDto;
+import gift.product.dto.ProductCreateResponseDto;
+import gift.product.dto.ProductGetResponseDto;
+import gift.product.exception.ProductNotFoundException;
+import gift.product.exception.UnapprovedProductException;
+import gift.product.service.ProductService;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;

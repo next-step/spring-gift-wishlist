@@ -1,8 +1,8 @@
-package gift.repository;
+package gift.product.repository;
 
-import gift.dto.response.ProductGetResponseDto;
-import gift.entity.Product;
-import gift.exception.ProductNotFoundException;
+import gift.product.dto.ProductGetResponseDto;
+import gift.product.entity.Product;
+import gift.product.exception.ProductNotFoundException;
 import java.util.List;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;

@@ -1,4 +1,4 @@
-package gift.controller;
+package gift.product.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -14,10 +14,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import gift.dto.request.ProductCreateRequestDto;
-import gift.dto.request.ProductUpdateRequestDto;
-import gift.dto.response.ProductGetResponseDto;
-import gift.service.ProductService;
+import gift.product.dto.ProductCreateRequestDto;
+import gift.product.dto.ProductUpdateRequestDto;
+import gift.product.dto.ProductGetResponseDto;
+import gift.product.service.ProductService;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

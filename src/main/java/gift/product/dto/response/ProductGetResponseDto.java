@@ -1,4 +1,4 @@
-package gift.dto.response;
+package gift.product.dto.response;
 
 public record ProductGetResponseDto(Long productId,
                                     String name,
