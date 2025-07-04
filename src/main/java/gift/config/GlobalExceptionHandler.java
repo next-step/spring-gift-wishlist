@@ -1,10 +1,10 @@
 package gift.config;
 
-import gift.dto.response.ErrorResponseDto;
-import gift.exception.CreationFailException;
-import gift.exception.EntityNotFoundException;
-import gift.exception.ProductDomainRuleException;
-import gift.exception.RequestValidateFailException;
+import gift.common.dto.response.ErrorResponseDto;
+import gift.common.exception.CreationFailException;
+import gift.common.exception.EntityNotFoundException;
+import gift.common.exception.RequestValidateFailException;
+import gift.domain.product.ProductDomainRuleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;

@@ -1,6 +1,6 @@
-package gift.dto.request;
+package gift.common.dto.request;
 
-import gift.domain.Product;
+import gift.domain.product.Product;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -17,6 +17,6 @@ public record UpdateProductDto(
         String imageUrl
 ) {
     public Product toEntity() {
-        return Product.of(null, name, price, imageUrl);
+        return Product.tempInstance(name, price, imageUrl);
     }
 }

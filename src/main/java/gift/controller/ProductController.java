@@ -1,9 +1,9 @@
 package gift.controller;
 
-import gift.dto.request.CreateProductDto;
-import gift.dto.request.UpdateProductDto;
-import gift.dto.response.MessageResponseDto;
-import gift.dto.response.ProductDto;
+import gift.common.dto.request.CreateProductDto;
+import gift.common.dto.request.UpdateProductDto;
+import gift.common.dto.response.MessageResponseDto;
+import gift.common.dto.response.ProductDto;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

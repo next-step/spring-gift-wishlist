@@ -1,9 +1,9 @@
 package gift;
 
-import gift.dto.request.CreateProductDto;
-import gift.dto.request.UpdateProductDto;
-import gift.dto.response.MessageResponseDto;
-import gift.dto.response.ProductDto;
+import gift.common.dto.request.CreateProductDto;
+import gift.common.dto.request.UpdateProductDto;
+import gift.common.dto.response.MessageResponseDto;
+import gift.common.dto.response.ProductDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -28,10 +28,10 @@ public class ApplicationTest {
     private int port;
 
     public ApplicationTest() {
-        predefined.add(new ProductDto(1L, "아메리카노", 3000L, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3bgpr9EPuJ47gcYCWg7jrEXJ3M15nEXZ9WdKpUsF11wMJFwIPXpOtIkDwoTUUi8_S_WbVTmcus1R7oEx0ongOCiJtjK8iLm-JxAp4swI_-Q"));
-        predefined.add(new ProductDto(2L, "카페라떼", 4000L, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjYwdtYk0ww-YSRxAG1stQYFuTT6K2D5lQcQ&s"));
-        predefined.add(new ProductDto(3L, "모카", 5000L, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkd11qAyK1kPY8z6tpvKO4KM97cTpCphVeOQ&s"));
-        predefined.add(new ProductDto(4L, "아포가토", 4500L, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvgoCg5CPPBL8MZGAWT3ilkSeBnr1SkR-x2A&s"));
+        predefined.add(new ProductDto(1L, "아메리카노", 3000L, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3bgpr9EPuJ47gcYCWg7jrEXJ3M15nEXZ9WdKpUsF11wMJFwIPXpOtIkDwoTUUi8_S_WbVTmcus1R7oEx0ongOCiJtjK8iLm-JxAp4swI_-Q", "판매중"));
+        predefined.add(new ProductDto(2L, "카페라떼", 4000L, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjYwdtYk0ww-YSRxAG1stQYFuTT6K2D5lQcQ&s", "판매중"));
+        predefined.add(new ProductDto(3L, "모카", 5000L, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkd11qAyK1kPY8z6tpvKO4KM97cTpCphVeOQ&s", "판매중"));
+        predefined.add(new ProductDto(4L, "아포가토", 4500L, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvgoCg5CPPBL8MZGAWT3ilkSeBnr1SkR-x2A&s", "판매중"));
     }
 
     @Test
@@ -49,7 +49,7 @@ public class ApplicationTest {
         var locationId = response.getHeaders().getLocation().toString().split("/")[3];
         var expectedId = Long.parseLong(locationId);
         var data = response.getBody().data();
-        assertBody(data, new ProductDto(expectedId, "coffee", 3500L, "test-url"));
+        assertBody(data, expectedId, "coffee", 3500L, "test-url");
 
         // reset
         client.delete().uri(url + "/" + expectedId);
@@ -63,7 +63,8 @@ public class ApplicationTest {
                 .retrieve()
                 .toEntity(ProductDto.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertBody(response.getBody(), predefined.get(0));
+        var expected = predefined.get(0);
+        assertBody(response.getBody(), expected.id(), expected.name(), expected.price(), expected.imageUrl());
     }
 
     @Test
@@ -79,7 +80,7 @@ public class ApplicationTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         var data = response.getBody().data();
-        assertBody(data, new ProductDto(2L, "coffee", 3500L, "test-url"));
+        assertBody(data, 2L, "coffee", 3500L, "test-url");
 
         // reset
         var reset = predefined.get(1);
@@ -153,10 +154,10 @@ public class ApplicationTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.ACCEPTED);
     }
 
-    private void assertBody(ProductDto actual, ProductDto expected) {
-        assertThat(actual.id()).isEqualTo(expected.id());
-        assertThat(actual.name()).isEqualTo(expected.name());
-        assertThat(actual.price()).isEqualTo(expected.price());
-        assertThat(actual.imageUrl()).isEqualTo(expected.imageUrl());
+    private void assertBody(ProductDto actual, Long id, String name, Long price, String imageUrl) {
+        assertThat(actual.id()).isEqualTo(id);
+        assertThat(actual.name()).isEqualTo(name);
+        assertThat(actual.price()).isEqualTo(price);
+        assertThat(actual.imageUrl()).isEqualTo(imageUrl);
     }
 }
