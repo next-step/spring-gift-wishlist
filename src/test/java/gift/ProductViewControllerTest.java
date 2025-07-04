@@ -380,4 +380,23 @@ public class ProductViewControllerTest {
             .andExpect(model().attributeHasFieldErrors("productRequest", "name"));
     }
 
+    @Test
+    @DisplayName("[Form] 상품 수정 실패 - 상품명에 허용되지 않은 문자 사용")
+    void updateProduct_fail_invalidNameCharacters() throws Exception {
+
+        Product saved = productRepository.save(
+            new Product("초콜릿", 1000, "https://image.com/choco.jpg")
+        );
+        Long id = saved.getId();
+
+        mockMvc.perform(post("/admin/products/{id}/edit", id)
+                .param("name", "초콜릿%")      // 허용되지 않은 문자 '%' 사용
+                .param("price", "1500")
+                .param("imageUrl", "https://image.com/item.jpg")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+            .andExpect(status().isOk())
+            .andExpect(view().name("products/form"))
+            .andExpect(model().attributeHasFieldErrors("productRequest", "name"));
+    }
+
 }
