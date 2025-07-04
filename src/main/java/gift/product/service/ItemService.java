@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 
 @Service
@@ -50,7 +51,7 @@ public class ItemService {
 	public GetItemResponse getItem(Long itemId) {
 
 		Item item = itemRepository.findById(itemId)
-			.orElseThrow(() -> new RuntimeException("존재하지 않는 아이템입니다."));
+			.orElseThrow(() -> new NoSuchElementException("존재하지 않는 아이템입니다."));
 
 		return new GetItemResponse(item.getId(), item.getName(), item.getPrice(), item.getImageUrl());
 	}

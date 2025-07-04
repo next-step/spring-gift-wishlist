@@ -7,6 +7,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.NoSuchElementException;
+
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -28,6 +30,12 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException e) {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 			.body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
+	}
+
+	@ExceptionHandler(NoSuchElementException.class)
+	public ResponseEntity<ErrorResponse> handleNoSuchElementExceptionForNPE(NoSuchElementException e) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND)
+			.body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage()));
 	}
 
 

@@ -44,12 +44,17 @@ public class ItemRepositoryImpl implements ItemRepository {
 	public Optional<Item> findById(Long id) {
 		final String sql = "select * from item where id = ?";
 
-		return Optional.ofNullable(jdbcTemplate.queryForObject(sql, (rs, rowNum) -> new Item(
-			rs.getLong("ID"),
-			rs.getString("NAME"),
-			rs.getInt("PRICE"),
-			rs.getString("IMAGE_URL")
-		), id));
+		try {
+			Item item = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> new Item(
+				rs.getLong("ID"),
+				rs.getString("NAME"),
+				rs.getInt("PRICE"),
+				rs.getString("IMAGE_URL")
+			), id);
+			return Optional.ofNullable(item);
+		} catch (Exception e) {
+			return Optional.empty();
+		}
 	}
 
 
