@@ -3,6 +3,8 @@ package gift.controller;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.service.ProductService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,13 +22,21 @@ public class ProductControllerTest {
     private ProductService productService;
 
     @LocalServerPort
-    int port;
+    private int port;
 
-    private RestClient client = RestClient.builder().build();
+    private RestClient client;
+    private String url;
 
+    @BeforeEach
+    void setUp() {
+        client = RestClient.builder().build();
+        url = "http://localhost:" + port + "/api/products";
+    }
+
+    @DisplayName("상품 생성 시, 정상적으로 생성되고 응답이 올바른지 테스트")
     @Test
-    void 정상적인상품저장() {
-        var url = "http://localhost:" + port + "/api/products";
+    void 정상적인_상품저장() {
+
         ProductRequestDto requestDto = new ProductRequestDto(
                 "인형",
                 39900L,
@@ -50,10 +60,10 @@ public class ProductControllerTest {
         assertThat(dtoBody.getApproved()).isEqualTo(true);
     }
 
-
+    @DisplayName("이름이 15자를 초과하는 상품 생성 시, 400 에러코드와 메세지 반환하는지 테스트")
     @Test
-    void 상품길이가15자를초과하는경우의상품저장() {
-        var url = "http://localhost:" + port + "/api/products";
+    void 상품길이가_15자를_초과하는_경우의_상품저장() {
+
         ProductRequestDto requestDto = new ProductRequestDto(
                 "이것은이름이겁나게길고긴상품이름",
                 9900L,
@@ -75,9 +85,10 @@ public class ProductControllerTest {
                 });
     }
 
+    @DisplayName("허용하지 않는 특수문자가 포함된 상품 생성 시, 400 에러코드와 메세지 반환하는지 테스트")
     @Test
-    void 허용하지않는특수문자가포함된상품저장() {
-        var url = "http://localhost:" + port + "/api/products";
+    void 허용하지_않는_특수문자가_포함된_상품저장() {
+
         ProductRequestDto requestDto = new ProductRequestDto(
                 "@@상품이름@@",
                 9900L,
@@ -99,9 +110,10 @@ public class ProductControllerTest {
                 });
     }
 
+    @DisplayName("상품가격이 음수인 상품 생성 시, 400 에러코드와 메세지 반환하는지 테스트")
     @Test
-    void 상품가격이음수인상품저장() {
-        var url = "http://localhost:" + port + "/api/products";
+    void 상품가격이_음수인_상품저장() {
+
         ProductRequestDto requestDto = new ProductRequestDto(
                 "인형",
                 -10000L,
@@ -123,9 +135,10 @@ public class ProductControllerTest {
                 });
     }
 
+    @DisplayName("잘못된 이미지url을 가진 상품 생성 시, 400 에러코드와 메세지 반환하는지 테스트")
     @Test
-    void 잘못된이미지URL을가진상품저장() {
-        var url = "http://localhost:" + port + "/api/products";
+    void 잘못된_이미지URL을_가진_상품저장() {
+
         ProductRequestDto requestDto = new ProductRequestDto(
                 "인형",
                 10000L,
@@ -147,9 +160,10 @@ public class ProductControllerTest {
                 });
     }
 
+    @DisplayName("카카오 문구가 포함된 상품 생성 시, 201코드와 함께 approved가 false를 가지는지 테스트")
     @Test
-    void 카카오문구가포함된상품저장() {
-        var url = "http://localhost:" + port + "/api/products";
+    void 카카오문구가_포함된_상품저장() {
+
         ProductRequestDto requestDto = new ProductRequestDto(
                 "카카오 인형",
                 39900L,
@@ -171,9 +185,10 @@ public class ProductControllerTest {
         assertThat(dtoBody.getDescription()).isEqualTo("카카오 문구가 담긴 상품은 담당 MD와 협의 후 사용가능합니다.");
     }
 
+    @DisplayName("카카오 문구가 포함된 상품 수정 시, 200코드와 함께 approved가 false를 가지는지 테스트")
     @Test
-    void 카카오문구가포함된상품수정() {
-        var url = "http://localhost:" + port + "/api/products/1";
+    void 카카오문구가_포함된_상품수정() {
+
         ProductRequestDto requestDto = new ProductRequestDto(
                 "카카오 인형",
                 39900L,
@@ -181,7 +196,7 @@ public class ProductControllerTest {
         );
 
         var response = client.put()
-                .uri(url)
+                .uri(url + "/1")
                 .body(requestDto)
                 .retrieve()
                 .toEntity(ProductResponseDto.class);
