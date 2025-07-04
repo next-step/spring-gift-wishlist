@@ -8,6 +8,7 @@ import gift.product.repository.ProductRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static gift.product.dto.ProductResponseDto.fromEntity;
 
@@ -67,6 +68,13 @@ public class ProductService {
     //삭제
     public void deleteProduct(Long id) {
         productRepository.delete(id);
+    }
+
+    //상품 이름 검사
+    public void validateProduct(ProductRequestDto productRequestDto) {
+        if(productRequestDto.getName().contains("카카오")){
+            throw new IllegalArgumentException("카카오가 포함된 문구는 담당 MD와 협의한 경우에만 사용할 수 있다.");
+        }
     }
 
 }
