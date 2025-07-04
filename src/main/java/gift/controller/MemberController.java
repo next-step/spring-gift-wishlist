@@ -24,4 +24,10 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(token);
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<TokenResponseDto> login(@RequestBody MemberRequsetDto memberRequsetDto) {
+        TokenResponseDto token=memberService.login(memberRequsetDto);
+        return ResponseEntity.ok(token);
+    }
 }

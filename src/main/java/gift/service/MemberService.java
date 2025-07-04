@@ -30,4 +30,17 @@ public class MemberService {
         return new TokenResponseDto(token);
 
     }
+
+
+    public TokenResponseDto login(MemberRequsetDto dto) {
+        Member saved = memberRepository.findByEmail(dto.getEmail())
+                .orElseThrow(() -> new IllegalStateException("가입 되지 않은 회원 입니다."));
+
+        if (!saved.getPassword().equals(dto.getPassword())) {
+            throw new IllegalArgumentException("이메일 또는 비밀번호가 올바르지 않습니다.");
+        }
+
+        String token = jwtProvider.generateToken(saved);
+        return new TokenResponseDto(token);
+    }
 }
