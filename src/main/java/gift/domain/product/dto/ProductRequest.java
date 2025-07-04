@@ -1,38 +1,24 @@
 package gift.domain.product.dto;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 
-public class ProductRequest {
-    @NotBlank(message = "상품 이름은 비어 있을 수 없습니다.")
-    private String name;
+import static gift.common.validation.ValidationMessages.*;
 
-    @NotNull(message = "상품 가격은 비어 있을 수 없습니다.")
-    @Min(value = 1, message = "상품 가격은 1 이상의 값이어야 합니다.")
-    private int price;
+public record ProductRequest(
+        @NotBlank(message = NOT_BLANK_MESSAGE)
+        @Size(max = 15, message = NAME_SIZE_MESSAGE)
+        @Pattern(regexp = "^[가-힣a-zA-Z0-9\\s()\\[\\]+&/_-]*$", message = NAME_PATTERN_MESSAGE)
+        @Pattern(regexp = "^(?!.*카카오).*$", message = NAME_KAKAO_MESSAGE)
+        String name,
 
-    @NotBlank(message = "이미지 URL은 비어 있을 수 없습니다.")
-    private String imageUrl;
+        @NotNull(message = PRICE_NOT_NULL_MESSAGE)
+        @Min(value = 1, message = PRICE_MIN_MESSAGE)
+        int price,
 
-    public ProductRequest() {
-    }
-    
-    public ProductRequest(String name, int price, String imageUrl) {
-        this.name = name;
-        this.price = price;
-        this.imageUrl = imageUrl;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
+        @NotBlank(message = NOT_BLANK_MESSAGE)
+        String imageUrl
+) {
+        public static ProductRequest of(String name, int price, String imageUrl) {
+                return new ProductRequest(name, price, imageUrl);
+        }
 }

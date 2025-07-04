@@ -1,27 +1,21 @@
 package gift.domain.product.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Service;
 
 import gift.common.pagination.Page;
 import gift.common.pagination.Pageable;
-import gift.domain.product.dto.ProductRequest;
-import gift.domain.product.dto.ProductResponse;
-import gift.domain.product.repository.ProductRepository;
+import gift.domain.product.model.Product;
 
 public interface ProductService {
 
-    public Page<ProductResponse> getAllProducts(Pageable pageable);
+    Page<Product> getAllProducts(Pageable pageable);
 
-    public ProductResponse getProductById(Long id);
+    Product getProductById(Long id);
 
-    public ProductResponse addProduct(ProductRequest productRequest);
+    Product addProduct(Product product);
 
-    public void updateProduct(Long id, ProductRequest productRequest);
+    void updateProduct(Product product);
 
-    public void deleteProduct(Long id);
+    void deleteProduct(Long id);
 
 
 }

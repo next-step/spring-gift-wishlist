@@ -1,3 +1,14 @@
+#spring-gift-wishlist
+## 0단계 기본 코드 준비
+## 1단계 유효성 검사 및 예외 처리
+상품을 추가하거나 수정하는 경우
+잘못된 값이 전달되면 클라이언트가 어떤 부분이 왜 잘못되었는지 인지할 수 있도록 응답을 제공한다.
+
+1. 상품 이름은 공백을 포함하여 최대 15자까지 입력할 수 있다.
+2. 특수 문자 가능: ( ), [ ], +, -, &, /, _(그 외에는 불가)
+3. "카카오"가 포함된 문구는 담당 MD와 협의한 경우에만 사용할 수 있다.
+
+
 # spring-gift-product
 ## 1단계
 
@@ -42,7 +53,6 @@ DELETE /api/products/{productId}
     - src/main/resources/schema.sql
 
 3. CREATE 기능 구현(JdbcClient)
-    
 
 4. READ 기능 구현(JdbcClient)
 
