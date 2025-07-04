@@ -11,17 +11,17 @@ public class Item {
 
 	private String imageUrl;
 
-	public Item(String name, Integer price, String imageUrl) {
+	public Item(Long id, String name, Integer price, String imageUrl) {
+		validateKakaoKeyword(name);
+
+		this.id = id;
 		this.name = name;
 		this.price = price;
 		this.imageUrl = imageUrl;
 	}
 
-	public Item(Long id, String name, Integer price, String imageUrl) {
-		this.id = id;
-		this.name = name;
-		this.price = price;
-		this.imageUrl = imageUrl;
+	public Item(String name, Integer price, String imageUrl) {
+		this(null, name, price, imageUrl);
 	}
 
 	public static void validateKakaoKeyword(String name){
