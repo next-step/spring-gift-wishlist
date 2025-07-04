@@ -28,13 +28,14 @@ public class ProductRepositoryImpl implements ProductRepository {
         product.setName(rs.getString("name"));
         product.setPrice(rs.getInt("price"));
         product.setImageUrl(rs.getString("image_url"));
+        product.setMdApproved(rs.getBoolean("md_approved"));
         return product;
     };
 
     @Override
     public Product save(Product product) {
         // 새로운 상품 등록
-        String sql = "INSERT INTO product (name, price, image_url) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO product (name, price, image_url, md_approved) VALUES (?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
@@ -42,6 +43,7 @@ public class ProductRepositoryImpl implements ProductRepository {
             ps.setString(1, product.getName());
             ps.setInt(2, product.getPrice());
             ps.setString(3, product.getImageUrl());
+            ps.setBoolean(4, product.isMdApproved());
             return ps;
         }, keyHolder);
 
@@ -52,21 +54,21 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public Product update(Product product) {
         // 상품 정보 수정
-        String sql = "UPDATE product SET name = ?, price = ?, image_url = ? WHERE id = ?";
-        jdbcTemplate.update(sql, product.getName(), product.getPrice(), product.getImageUrl(), product.getId());
+        String sql = "UPDATE product SET name = ?, price = ?, image_url = ?, md_approved = ? WHERE id = ?";
+        jdbcTemplate.update(sql, product.getName(), product.getPrice(), product.getImageUrl(), product.isMdApproved(), product.getId());
         return product;
     }
 
     @Override
     public Optional<Product> findById(Long id) {
-        String sql = "SELECT id, name, price, image_url FROM product WHERE id = ?";
+        String sql = "SELECT id, name, price, image_url, md_approved FROM product WHERE id = ?";
         List<Product> results = jdbcTemplate.query(sql, productRowMapper, id);
         return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
     }
 
     @Override
     public List<Product> findAll() {
-        String sql = "SELECT id, name, price, image_url FROM product ORDER BY id";
+        String sql = "SELECT id, name, price, image_url, md_approved FROM product ORDER BY id";
         return jdbcTemplate.query(sql, productRowMapper);
     }
 
@@ -78,7 +80,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public List<Product> findPage(int page, int size) {
-        String sql = "SELECT id, name, price, image_url FROM product ORDER BY id LIMIT ? OFFSET ?";
+        String sql = "SELECT id, name, price, image_url, md_approved FROM product ORDER BY id LIMIT ? OFFSET ?";
         int offset = page * size;
         return jdbcTemplate.query(sql, productRowMapper, size, offset);
     }

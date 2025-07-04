@@ -25,7 +25,7 @@ public class ProductService {
     }
 
     public ProductResponseDto createProduct(ProductRequestDto requestDto) {
-        Product product = new Product(null, requestDto.getName(), requestDto.getPrice(), requestDto.getImageUrl());
+        Product product = new Product(null, requestDto.getName(), requestDto.getPrice(), requestDto.getImageUrl(), requestDto.isMdApproved());
         Product saved = productRepository.save(product);
         return new ProductResponseDto(saved);
     }
