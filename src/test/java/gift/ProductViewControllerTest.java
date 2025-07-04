@@ -254,7 +254,7 @@ public class ProductViewControllerTest {
     @DisplayName("[VIEW] 상품 상세 조회 실패 - 리다이렉트+플래시")
     void showProductDetail_notFoundRedirect() throws Exception {
         mockMvc.perform(get("/admin/products/{id}", 9999L))
-            .andExpect(status().is3xxRedirection())
+            .andExpect(status().isFound())
             .andExpect(redirectedUrl("/admin/products"))
             .andExpect(flash().attribute("errorMsg", "상품을 찾을 수 없습니다."));
     }
