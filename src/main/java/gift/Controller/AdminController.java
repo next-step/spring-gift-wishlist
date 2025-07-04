@@ -43,9 +43,7 @@ public class AdminController {
   // ✅ 상품 추가 페이지
   @GetMapping("/add")
   public String showAddForm(Model model) {
-    if(!model.containsAttribute("product")) {
-      model.addAttribute("product", new ProductDto());
-    }
+    model.addAttribute("product", new ProductDto());
     model.addAttribute("action", "/admin/products");
     model.addAttribute("method", "post");
     return "admin/product-form";
@@ -68,15 +66,11 @@ public class AdminController {
   public String addProduct(@Valid @ModelAttribute("product") ProductDto productDto,
       BindingResult bindingResult,
       Model model) {
-    if (containsProhibitedName(productDto.getName())) {
-      bindingResult.rejectValue("name", "invalid", "'카카오'는 담당 MD 협의 시에만 사용할 수 있습니다.");
-    }
+
+    containsProhibitedName(productDto, bindingResult);
 
     if (bindingResult.hasErrors()) {
-      model.addAttribute("product", productDto);
-      model.addAttribute("action", "/admin/products");
-      model.addAttribute("method", "post");
-      return "admin/product-form";
+      return renderForm(model,productDto,"/admin/products","post");
     }
 
     productService.save(productDto.toEntity());
@@ -90,23 +84,31 @@ public class AdminController {
       @Valid @ModelAttribute("product") ProductDto productDto,
       BindingResult bindingResult,
       Model model) {
-    if (containsProhibitedName(productDto.getName())) {
-      bindingResult.rejectValue("name", "invalid", "'카카오'는 담당 MD 협의 시에만 사용할 수 있습니다.");
-    }
 
-    if (bindingResult.hasErrors()) {
-      model.addAttribute("product", productDto);
-      model.addAttribute("action", "/admin/products/" + id);
-      model.addAttribute("method", "put");
-      return "admin/product-form";
+    containsProhibitedName(productDto, bindingResult);
+
+    if(bindingResult.hasErrors()) {
+      return renderForm(model, productDto, "/admin/products/"+id, "put");
     }
 
     productService.update(id, productDto.toEntity());
     return "redirect:/admin/products";
   }
 
+  // 금지된 단어를 포함하고 있는지 체크하는 함수
+  private void containsProhibitedName(ProductDto productDto, BindingResult bindingResult) {
+    Product product = productDto.toEntity();
+    // Entity로 바꾸어서 해당 함수를 불러와 가지고있는지 체크 수행
+    if(product.hasProhibitedName()){
+      bindingResult.rejectValue("name", "invalid", product.prohibitedMessage());
+    }
+  }
 
-  private boolean containsProhibitedName(String name) {
-    return name != null && name.contains("카카오");
+  // 공통적으로 Rendering 후 보여주는 함수
+  private String renderForm(Model model, ProductDto productDto, String action, String method) {
+    model.addAttribute("product", productDto);
+    model.addAttribute("action", action);
+    model.addAttribute("method", method);
+    return "admin/product-form";
   }
 }

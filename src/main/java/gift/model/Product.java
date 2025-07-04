@@ -48,4 +48,11 @@ public class Product {
   public void setImageUrl(String imageUrl) {
     this.imageUrl = imageUrl;
   }
+
+  public boolean hasProhibitedName() {
+    return name != null && name.contains("카카오");
+  }
+  public String prohibitedMessage() {
+    return "'카카오'는 담당 MD 협의 시에만 사용할 수 있습니다.";
+  }
 }
