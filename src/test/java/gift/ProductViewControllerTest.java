@@ -302,4 +302,25 @@ public class ProductViewControllerTest {
             .andExpect(redirectedUrl("/admin/products"));
     }
 
+    @Test
+    @DisplayName("[Form] 상품 수정 성공 - '카카오' 포함된 승인된 상품명")
+    void updateProduct_success_withApprovedName() throws Exception {
+
+        // '카카오' 포함된 승인된 상품명 추가
+        approvedProductRepository.save(new ApprovedProduct("카카오 프렌즈 볼펜"));
+
+        Product saved = productRepository.save(
+            new Product("초콜릿", 1000, "https://image.com/choco.jpg")
+        );
+        Long id = saved.getId();
+
+        mockMvc.perform(post("/admin/products/{id}/edit", id)
+                .param("name", "카카오 프렌즈 볼펜")
+                .param("price", "15000")
+                .param("imageUrl", "https://image.com/kakaoPen.jpg")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+            .andExpect(status().isFound())
+            .andExpect(redirectedUrl("/admin/products"));
+    }
+
 }
