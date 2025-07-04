@@ -7,15 +7,12 @@ import jakarta.validation.constraints.Size;
 
 public class ProductRequest {
 
-
     @NotBlank(message = "상품 이름은 필수입니다.")
     @Size(max = 15, message = "상품 이름은 최대 15자까지 입력할 수 있습니다.")
     @ValidProductName
-    private String name;
-    private int price;
-    private String imageUrl;
-
-    public ProductRequest() {}
+    private final String name;
+    private final int price;
+    private final String imageUrl;
 
     public ProductRequest(String name, int price, String imageUrl) {
         this.name = name;
@@ -33,18 +30,6 @@ public class ProductRequest {
 
     public String getImageUrl() {
         return imageUrl;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPrice(int price) {
-        this.price = price;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
     }
 
     public Product toEntity() {
