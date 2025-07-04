@@ -17,7 +17,7 @@ public class ProductService {
     }
 
     public ProductResponseDto addProduct(ProductRequestDto requestDto){
-        Product product = new Product(requestDto.name(), requestDto.price(), requestDto.imageUrl());
+        Product product = new Product(requestDto.name(), requestDto.price(), requestDto.imageUrl(), requestDto.isKakaoApprovedByMd());
         Product savedProduct = productRepository.save(product);
         return ProductResponseDto.from(savedProduct);
     }
@@ -41,7 +41,8 @@ public class ProductService {
                 id,
                 requestDto.name(),
                 requestDto.price(),
-                requestDto.imageUrl()
+                requestDto.imageUrl(),
+                requestDto.isKakaoApprovedByMd()
         );
 
         Product updatedProduct = productRepository.update(productToUpdate);
