@@ -27,6 +27,31 @@
 - [x] 상품명에 "카카오"가 포함된 경우, 사전에 승인된 상품만 등록 가능
 - [x] 테스트 코드 구현
 
+### 📌 변경 사항 요약
+
+### 1. View 레이어 테스트 추가 (`ProductViewControllerTest`)
+- 상품 등록 폼 진입, 등록 처리(성공·유효성 오류) 테스트 구현
+- 상품 목록 조회(빈 리스트 포함) 테스트 구현
+- 상품 상세 조회(성공·없는 ID 리다이렉트+플래시) 테스트 구현
+- 상품 수정 폼 진입, 수정 처리(성공·유효성 오류·‘카카오’ 승인 로직) 테스트 구현
+- 상품 삭제 처리(성공) 테스트 구현
+
+### 2. REST API 테스트 추가 (`ProductControllerTest`)
+- 상품 등록 API: 성공, 유효성 오류(빈값·길이·특수문자·URL), JSON 파싱 오류(타입 불일치·값 누락)
+- 상품 조회 API: 단건 조회(200·404·잘못된 ID 형식) 및 전체 조회(200, 빈 리스트) 테스트 구현
+- 상품 수정 API: 성공, 404·잘못된 ID 형식, 유효성 오류, JSON 파싱 오류 테스트 구현
+- 상품 삭제 API: 성공(204), 404·잘못된 ID 형식 테스트 구현
+
+### 3. 전역 예외 처리기 추가 (`GlobalExceptionHandler`)
+- `HttpMessageNotReadableException` → JSON 파싱 오류 핸들러 (400 + 메시지)
+- `MethodArgumentTypeMismatchException` → PathVariable/RequestParam 타입 불일치 핸들러 (400 + 메시지)
+- `MethodArgumentNotValidException` → `@Valid` 바인딩 오류 핸들러 (400 + field–message 매핑)
+
+---
+
+> 이 변경으로 E2E 수준의 API 검증과 View 렌더링 흐름 모두를 커버하며,  
+> JSON 바디·경로 파라미터 타입 오류 및 유효성 검사 오류까지 일관된 방식으로 처리합니다.
+
 ## 🔍 유효성 검증 항목
 
 ### 🛍️ 상품명 (name)
