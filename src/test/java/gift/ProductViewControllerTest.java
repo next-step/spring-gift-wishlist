@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -247,6 +248,15 @@ public class ProductViewControllerTest {
             .andExpect(model().attribute("product",
                 hasProperty("imageUrl", is("https://image.com/choco.jpg"))
             ));
+    }
+
+    @Test
+    @DisplayName("[VIEW] 상품 상세 조회 실패 - 리다이렉트+플래시")
+    void showProductDetail_notFoundRedirect() throws Exception {
+        mockMvc.perform(get("/admin/products/{id}", 9999L))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/admin/products"))
+            .andExpect(flash().attribute("errorMsg", "상품을 찾을 수 없습니다."));
     }
 
 }
