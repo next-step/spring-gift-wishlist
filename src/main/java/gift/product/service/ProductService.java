@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public interface ProductService {
 
-    UUID addProduct(ProductCreateRequest dto);
+    UUID save(ProductCreateRequest dto);
     List<ProductResponse> findAllProducts();
     ProductResponse findProduct(UUID id);
     void deleteProduct(UUID id);

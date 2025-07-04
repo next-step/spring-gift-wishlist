@@ -32,11 +32,24 @@
                         fetchProducts();
                     },
                     error: function (jqXHR) {
-                        let message = '상품 추가 실패!';
-                        if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
-                            message = jqXHR.responseJSON.message;
+                        let message = "상품 추가 실패"
+                        if (jqXHR.responseJSON) {
+                            const errors = [];
+                            if (jqXHR.responseJSON.fieldErrors) {
+                                for (const err of jqXHR.responseJSON.fieldErrors) {
+                                    errors.push(err.message);
+                                }
+                            }
+                            if (jqXHR.responseJSON.objectErrors) {
+                                for (const err of jqXHR.responseJSON.objectErrors) {
+                                    errors.push(err.message);
+                                }
+                            }
+                            if (errors.length > 0) {
+                                message = errors.join('\n');
+                            }
                         }
-                        alert(message);
+                        alert(message)
                     },
                     complete: function () {
                         $btn.prop('disabled', false);
@@ -94,11 +107,24 @@
                             fetchProducts();
                         },
                         error: function (jqXHR) {
-                            let message = '상품 삭제 실패!';
-                            if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
-                                message = jqXHR.responseJSON.message;
+                            let message = "상품 삭제 실패"
+                            if (jqXHR.responseJSON) {
+                                const errors = [];
+                                if (jqXHR.responseJSON.fieldErrors) {
+                                    for (const err of jqXHR.responseJSON.fieldErrors) {
+                                        errors.push(err.message);
+                                    }
+                                }
+                                if (jqXHR.responseJSON.objectErrors) {
+                                    for (const err of jqXHR.responseJSON.objectErrors) {
+                                        errors.push(err.message);
+                                    }
+                                }
+                                if (errors.length > 0) {
+                                    message = errors.join('\n');
+                                }
                             }
-                            alert(message);
+                            alert(message)
                         },
                         complete: function () {
                             $btn.prop('disabled', false);

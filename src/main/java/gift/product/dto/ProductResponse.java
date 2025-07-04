@@ -18,6 +18,8 @@ public class ProductResponse {
         this.imageURL = product.getImageURL();
     }
 
+    protected ProductResponse() {}
+  
     public UUID getId() {
         return id;
     }

@@ -1,12 +1,11 @@
 package gift.product.controller;
 
-import gift.global.exception.BadProductRequestException;
 import gift.product.dto.ProductCreateRequest;
 import gift.product.dto.ProductResponse;
 import gift.product.dto.ProductUpdateRequest;
 import gift.product.service.ProductService;
 import gift.util.LocationGenerator;
-import gift.util.StringValidator;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,14 +24,9 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> addProduct(@RequestBody ProductCreateRequest dto) {
-        if (!StringValidator.isNotBlank(dto.getName()) ||
-                !StringValidator.isNotBlank(dto.getImageURL()) || dto.getPrice() <= 0)
-            throw new BadProductRequestException("이름, 가격, 이미지 주소는 필수입니다.");
+    public ResponseEntity<Void> addProduct(@Valid @RequestBody ProductCreateRequest dto) {
 
-
-        UUID savedId = productService.addProduct(dto);
-
+        UUID savedId = productService.save(dto);
 
         return ResponseEntity.status(HttpStatus.CREATED).location(
                 LocationGenerator.generate(savedId)
@@ -63,11 +57,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateProduct(@PathVariable UUID id, @RequestBody ProductUpdateRequest dto) {
-
-        if (!StringValidator.isNotBlank(dto.getName()) ||
-                !StringValidator.isNotBlank(dto.getImageURL()) || dto.getPrice() <= 0)
-            throw new BadProductRequestException("이름, 가격, 이미지 주소는 필수입니다.");
+    public ResponseEntity<Void> updateProduct(@PathVariable UUID id, @Valid @RequestBody ProductUpdateRequest dto) {
 
         productService.updateProduct(id, dto);
 
