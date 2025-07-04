@@ -34,4 +34,11 @@ public class GlobalExceptionHandler {
     }
     public record ValidationError(String field, String code, String message) {}
 
+
+    @ExceptionHandler(DuplicateMemberException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateMember(DuplicateMemberException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(ex.getMessage()));
+    }
 }
