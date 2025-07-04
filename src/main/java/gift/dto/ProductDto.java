@@ -15,6 +15,7 @@ public class ProductDto {
   )
   private String name;
 
+  @PositiveOrZero(message = "가격은 0 이상이어야 합니다")
   private int price;
   private String imageUrl;
 
