@@ -3,6 +3,7 @@ package gift.model;
 import gift.validation.ValidProductName;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
@@ -20,6 +21,7 @@ public class Product {
     private Integer price;
 
     @NotBlank(message = "이미지 Url은 필수 입력 값입니다.")
+    @Pattern(regexp = "^https?:\\/\\/.*\\.(jpg|jpeg|png|gif|bmp|tiff)$", message = "imageUrl의 형식이 잘못되었습니다.")
     private String imageUrl;
 
     // 생성자
