@@ -1,4 +1,4 @@
-package gift.dao;
+package gift.dao.product;
 
 import gift.entity.Product;
 import gift.exception.DBServerException;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class ProductDao {
+public class ProductDaoImpl implements ProductDao {
     private final JdbcClient jdbcClient;
 
     private static class ProductRowMapper implements RowMapper<Product> {
@@ -24,15 +24,17 @@ public class ProductDao {
                     rs.getLong("id"),
                     rs.getString("name"),
                     rs.getLong("price"),
-                    rs.getString("image_url")
+                    rs.getString("image_url"),
+                    rs.getLong("owner_id")
             );
         }
     }
 
-    public ProductDao(JdbcClient client) {
+    public ProductDaoImpl(JdbcClient client) {
         this.jdbcClient = client;
     }
 
+    @Override
     public List<Product> findAll() {
         String sql = "SELECT * FROM products";
         return jdbcClient.sql(sql)
@@ -41,6 +43,7 @@ public class ProductDao {
                 .toList();
     }
 
+    @Override
     public List<Product> findAll(int page, int size) {
         int offset = page * size;
         String sql = "SELECT * FROM products LIMIT ? OFFSET ?";
@@ -52,6 +55,7 @@ public class ProductDao {
                 .toList();
     }
 
+    @Override
     public Optional<Product> findById(Long productId) {
         String sql = "SELECT * FROM products WHERE id = ?";
         return jdbcClient.sql(sql)
@@ -61,6 +65,7 @@ public class ProductDao {
                 .findFirst();
     }
 
+    @Override
     public Long insertWithKey(Product product) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         String sql = "INSERT INTO products (name, price, image_url) VALUES (?, ?, ?)";
@@ -75,7 +80,7 @@ public class ProductDao {
         return keyHolder.getKey().longValue();
     }
 
-    public int update(Product product) {
+    public Integer update(Product product) {
         String sql = "UPDATE products SET name = ?, price = ?, image_url = ? WHERE id = ?";
         return jdbcClient.sql(sql)
                 .param(product.getName())
@@ -85,7 +90,10 @@ public class ProductDao {
                 .update();
     }
 
-    public int updateFieldById(Long productId, String fieldName, Object value) {
+    public Integer updateFieldById(Long productId, String fieldName, Object value) {
+        if (fieldName == null || value == null) {
+            throw new IllegalArgumentException("필드 이름과 값은 필수입니다.");
+        }
         String sql = "UPDATE products SET " + fieldName + " = ? WHERE id = ?";
         return jdbcClient.sql(sql)
                 .param(value)
@@ -93,14 +101,14 @@ public class ProductDao {
                 .update();
     }
 
-    public int deleteById(Long productId) {
+    public Integer deleteById(Long productId) {
         String sql = "DELETE FROM products WHERE id = ?";
         return jdbcClient.sql(sql)
                 .param(productId)
                 .update();
     }
 
-    public int count() {
+    public Integer count() {
         String sql = "SELECT COUNT(*) FROM products";
         return jdbcClient.sql(sql)
             .query(Integer.class)
