@@ -341,6 +341,28 @@ public class ProductControllerTest {
     }
 
     @Test
+    @DisplayName("[API] 상품 수정 실패 - '카카오' 포함 & 승인되지 않은 상품명")
+    void updateProduct_fail_unapprovedKakaoName() throws Exception {
+
+        var saved = productRepository.save(
+            new Product("초콜릿", 1000, "https://image.com/item.jpg")
+        );
+        Long id = saved.getId();
+
+        var dto = new ProductUpdateRequestDto(
+            "카카오 지갑",
+            1000,
+            "https://image.com/item.jpg"
+        );
+
+        mockMvc.perform(put("/api/products/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.error").value("'카카오'가 포함된 상품은 MD 승인이 필요합니다."));
+    }
+
+    @Test
     @DisplayName("[API] 상품 수정 실패 - 빈 이름")
     void updateProduct_fail_validationNameEmpty() throws Exception {
 
