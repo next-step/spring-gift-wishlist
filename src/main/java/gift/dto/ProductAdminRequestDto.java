@@ -2,15 +2,26 @@ package gift.dto;
 
 
 import gift.entity.Product;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 public class ProductAdminRequestDto {
 
-
-
+    @NotBlank(message = "상품 이름은 필수 입력 사항입니다.")
+    @Size(max = 15, message = "상품 이름은 공백 포함 최대 15자까지 가능합니다.")
+    @Pattern(
+            regexp = "^[\\p{L}\\p{N} ()\\[\\]+\\-\\&/_]*$",
+            message = "허용되지 않은 특수문자가 포함되어 있습니다."
+    )
     private String name;
-    private int price;
-    private String imageUrl;
 
+    @Min(value = 0, message = "상품 가격은 0원 이상이어야 합니다.")
+    private int price;
+
+    @NotBlank(message = "이미지 URL은 비어 있을 수 없습니다.")
+    private String imageUrl;
 
     public ProductAdminRequestDto() {
     }
