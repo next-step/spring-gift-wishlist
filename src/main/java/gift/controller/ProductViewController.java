@@ -2,24 +2,19 @@ package gift.controller;
 
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
-import gift.entity.Product;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import java.util.List;
-import java.util.Map;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/view")
@@ -36,36 +31,88 @@ public class ProductViewController {
         List<ProductResponseDto> productList = productService.findAll();
 
         model.addAttribute("productList", productList);
+
+        if (!model.containsAttribute("requestDto")) {
+            model.addAttribute("requestDto", new ProductRequestDto(null, 0, ""));
+        }
+
+        if (!model.containsAttribute("updateDto")) {
+            model.addAttribute("updateDto", new ProductRequestDto(null, 0, ""));
+        }
+
+        if (!model.containsAttribute("productId")) {
+            model.addAttribute("productId", null);
+        }
+
         return "home";
     }
 
-    @GetMapping("/create-product.html")
-    public String showCreateProductView() {
-        return "create-product";
-    }
-
-    @GetMapping("/update-product.html")
-    public String showUpdateProductView() {
-        return "update-product";
-    }
-
     @PostMapping("/products")
-    public String createProduct(@ModelAttribute ProductRequestDto requestDto) {
-        productService.create(new ProductRequestDto(requestDto.name(), requestDto.price(), requestDto.imageUrl()));
+    public String createProduct(@ModelAttribute("requestDto") @Valid ProductRequestDto requestDto,
+        BindingResult bindingResult,
+        Model model) {
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("openCreateModal", true);
+            model.addAttribute("requestDto", requestDto);
+            model.addAttribute("updateDto", new ProductRequestDto(null, 0, ""));
+            model.addAttribute("productList", productService.findAll());
+            return "home";
+        }
+        productService.create(requestDto);
 
         return "redirect:/view/products";
     }
 
     @PostMapping("/products/update/{id}")
-    public String updateProduct(@PathVariable Long id, @ModelAttribute ProductRequestDto requestDto) {
-        productService.update(id, new ProductRequestDto(requestDto.name(), requestDto.price(), requestDto.imageUrl()));
+    public String updateProduct(
+        @PathVariable Long id,
+        @ModelAttribute("updateDto") @Valid ProductRequestDto requestDto,
+        BindingResult bindingResult,
+        RedirectAttributes redirectAttributes
+    ) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("openUpdateModal", true);
+            redirectAttributes.addFlashAttribute("productId", id);
+            redirectAttributes.addFlashAttribute("updateDto", requestDto);
+            redirectAttributes.addFlashAttribute("productList", productService.findAll());
+            redirectAttributes.addFlashAttribute(
+                "org.springframework.validation.BindingResult.updateDto",
+                bindingResult
+            );
+
+            if (!redirectAttributes.containsAttribute("requestDto")) {
+                redirectAttributes.addFlashAttribute("requestDto",
+                    new ProductRequestDto(null, 0, ""));
+            }
+
+            return "redirect:/view/products";
+        }
+
+        productService.update(id,
+            new ProductRequestDto(requestDto.name(), requestDto.price(), requestDto.imageUrl()));
 
         return "redirect:/view/products";
     }
 
     @DeleteMapping("/products/{id}")
-    public String deleteProduct(@PathVariable Long id) {
+    public String deleteProduct(
+        @PathVariable Long id,
+        Model model
+    ) {
         productService.delete(id);
+
+        if (!model.containsAttribute("requestDto")) {
+            model.addAttribute("requestDto", new ProductRequestDto(null, 0, ""));
+        }
+
+        if (!model.containsAttribute("updateDto")) {
+            model.addAttribute("updateDto", new ProductRequestDto(null, 0, ""));
+        }
+
+        if (!model.containsAttribute("productId")) {
+            model.addAttribute("productId", null);
+        }
 
         return "home";
     }

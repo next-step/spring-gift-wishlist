@@ -82,7 +82,7 @@ public class ProductRepositoryImpl implements ProductRepository {
         int deleteRowCount = jdbcTemplate.update(sql, id);
 
         if (deleteRowCount <= 0) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
 }
