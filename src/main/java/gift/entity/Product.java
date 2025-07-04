@@ -14,6 +14,7 @@ public class Product {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
+
     }
 
     public Long getId() {
@@ -30,11 +31,5 @@ public class Product {
 
     public String getImageUrl() {
         return imageUrl;
-    }
-
-    public void update(CreateProductRequestDto requestDto) {
-        this.name = requestDto.name();
-        this.price = requestDto.price();
-        this.imageUrl = requestDto.imageUrl();
     }
 }

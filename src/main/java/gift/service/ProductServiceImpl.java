@@ -3,10 +3,11 @@ package gift.service;
 import gift.dto.CreateProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.entity.Product;
+import gift.exception.CustomException;
+import gift.exception.ErrorCode;
 import gift.repository.ProductRepository;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -14,7 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
     public ProductServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
@@ -22,9 +23,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponseDto createProduct(CreateProductRequestDto requestDto) {
+
         Product newProduct = new Product(null, requestDto.name(), requestDto.price(),
                 requestDto.imageUrl());
+
         Product savedProduct = productRepository.createProduct(newProduct);
+
         return new ProductResponseDto(savedProduct.getId(), savedProduct.getName(),
                 savedProduct.getPrice(), savedProduct.getImageUrl());
     }
@@ -45,6 +49,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponseDto findProductById(Long id) {
         Product find = findProductByIdOrElseThrow(id);
+
         ProductResponseDto responseDto = new ProductResponseDto(find.getId(), find.getName(),
                 find.getPrice(), find.getImageUrl());
         return responseDto;
@@ -55,6 +60,7 @@ public class ProductServiceImpl implements ProductService {
         Product find = findProductByIdOrElseThrow(id);
         Product newProduct = new Product(id, requestDto.name(), requestDto.price(),
                 requestDto.imageUrl());
+
         productRepository.updateProductById(id, newProduct);
         Product updated = findProductByIdOrElseThrow(id);
         return new ProductResponseDto(updated.getId(), updated.getName(), updated.getPrice(),
@@ -67,8 +73,8 @@ public class ProductServiceImpl implements ProductService {
         productRepository.deleteProductById(id);
     }
 
-    public Product findProductByIdOrElseThrow(Long id) {
+    private Product findProductByIdOrElseThrow(Long id) {
         return productRepository.findProductById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.Notfound));
     }
 }
