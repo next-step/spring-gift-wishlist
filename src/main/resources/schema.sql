@@ -6,3 +6,11 @@ CREATE TABLE product
     imageUrl VARCHAR(255),
     PRIMARY KEY (id)
 );
+
+CREATE TABLE `user`
+(
+    id      BIGINT AUTO_INCREMENT,
+    email    VARCHAR(100),
+    password VARCHAR(100),
+    PRIMARY KEY (id)
+);

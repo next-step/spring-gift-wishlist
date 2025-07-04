@@ -13,6 +13,7 @@ import gift.exception.ApprovalRequiredException;
 import gift.exception.ProductCreateException;
 import gift.exception.ProductNotFoundException;
 import gift.exception.ProductUpdateException;
+import gift.exception.SignupException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -29,6 +30,11 @@ public class GlobalExceptionHandler {
         error.setProperty("errors", messages); // `detail`엔 String만 담을 수 있기 때문에, 별도의 필드 사용
 
         return error;
+    }
+
+    @ExceptionHandler(SignupException.class)
+    public ProblemDetail handleSignupException(SignupException e) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, e.getMessage());
     }
 
     @ExceptionHandler(ApprovalRequiredException.class)
