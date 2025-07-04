@@ -39,7 +39,7 @@ public class ProductManageService {
     }
 
     public void deleteProduct(Long id) {
-        productRepository.deleteByid(id);
+        productRepository.deleteById(id);
     }
 
     public Product updateProduct(Long id, UpdateProductRequest request) {

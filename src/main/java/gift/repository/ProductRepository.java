@@ -1,5 +1,6 @@
 package gift.repository;
 
+import gift.common.exception.ProductNotFoundException;
 import gift.domain.Product;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -57,9 +58,12 @@ public class ProductRepository {
         }
     }
 
-    public void deleteByid(Long id) {
+    public void deleteById(Long id) {
         String sql = "delete from product where id=?";
-        jdbcTemplate.update(sql, id);
+        int updated = jdbcTemplate.update(sql, id);
+        if (updated == 0) {
+            throw new ProductNotFoundException(id);
+        }
     }
 
     public void update(Product product) {

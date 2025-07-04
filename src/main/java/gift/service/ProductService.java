@@ -40,7 +40,7 @@ public class ProductService {
     }
 
     public void deleteProduct(Long id) {
-        productRepository.deleteByid(id);
+        productRepository.deleteById(id);
     }
 
     private Product getById(Long id) {
