@@ -20,13 +20,14 @@
 
 ## Step 2. 회원 로그인
 1. step1에서 리뷰 받은 부분에 대해 적절한 수정 진행
-### Boolean과 getter, setter
-- boolean은 true, false 밖에 가지지 않아 getter 이름으로 isOO() 형이 가능
-- Boolean은 여기에 null도 가능하고, 가급적 getOO() 형의 이름을 사용 권장
-- setter의 경우 둘다 setOO 사용 권장
-- 이 때문에 intellij에서 Boolean에 대한 getter와 setter의 인식에 문제가 생길 수가 있으므로, 네이밍에 항상 주의!
-- 인식 문제가 생긴다고 해서 동작 문제가 생기지는 않음
-- 다만 혼란 방지를 위해 @JsonProperty 어노테이션을 붙여주면 intellij에서도 인식을 잘 한다!
-- Json과 연결되는 Dto가 아닌 경우 @SupressWarning 어노테이션을 활용할 수도 있다
-2. 미션이 뭐지...?
+2. member entity 생성
+3. member와 관련한 controller, service, repository 생성
+4. 회원가입 구현
+5. 로그인 구현
+
+| api                   | method | 기능                    | 완료여부 |
+|-----------------------|--------|-----------------------|------|
+| /api/members/register | POST   | 회원가입(request body 요구) | 완료   |
+| /api/members/login    | POST   | 로그인(request body 요구)  | 완료   |
+
 

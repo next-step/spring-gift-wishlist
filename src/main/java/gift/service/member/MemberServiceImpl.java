@@ -21,7 +21,6 @@ public class MemberServiceImpl implements MemberService {
         this.memberRepository = memberRepository;
     }
     
-    
     @Override
     public MemberResponseDto registerMember(MemberRequestDto requestDto) {
         if(memberRepository.existsByEmail(requestDto.email())) {
