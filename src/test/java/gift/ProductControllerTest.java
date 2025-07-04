@@ -50,7 +50,7 @@ public class ProductControllerTest {
     }
 
     @Test
-    @DisplayName("[API] 상품 수정 성공 - 일반 상품명")
+    @DisplayName("[API] 상품 등록 성공 - 일반 상품명")
     void createProduct_success_normalName() throws Exception {
 
         var dto = new ProductCreateRequestDto("초콜릿", 1000, "https://image.com/item.jpg");
