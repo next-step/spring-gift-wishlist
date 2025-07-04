@@ -33,7 +33,6 @@ public class ProductRepository {
         product.setName(resultSet.getString("name"));
         product.setPrice(resultSet.getInt("price"));
         product.setImageUrl(resultSet.getString("image_url"));
-        product.setNamePermission(resultSet.getBoolean("name_permission"));
         return product;
     };
 
