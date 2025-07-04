@@ -20,7 +20,9 @@ public record CreateProductRequest(
         Integer quantity
 ) {
 
+    private static final CreateProductRequest EMPTY = new CreateProductRequest(null, null, null);
+
     public static CreateProductRequest empty() {
-        return new CreateProductRequest(null, null, null);
+        return EMPTY;
     }
 }

@@ -58,15 +58,12 @@ public class ProductRepository {
         }
     }
 
-    public void deleteByid(Long id) {
-        String find = "select * from product where id=?";
-        try {
-            jdbcTemplate.queryForObject(find, toProduct(), id);
-        } catch (EmptyResultDataAccessException e) {
+    public void deleteById(Long id) {
+        String sql = "delete from product where id=?";
+        int updated = jdbcTemplate.update(sql, id);
+        if (updated == 0) {
             throw new ProductNotFoundException(id);
         }
-        String sql = "delete from product where id=?";
-        jdbcTemplate.update(sql, id);
     }
 
     public void update(Product product) {
