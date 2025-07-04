@@ -1,13 +1,12 @@
 package gift.product.controller;
 
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import gift.product.dto.ProductRequestDto;
 import gift.product.dto.ProductResponseDto;
 import gift.product.service.ProductService;
+import gift.exception.GlobalExceptionHandler.ApiResponse;
 
 import java.util.List;
 
@@ -37,33 +36,19 @@ public class ProductController {
 
     //특정 상품 추가
     @PostMapping
-    public ResponseEntity<?> addProduct(@Valid @RequestBody ProductRequestDto productRequestDto,
-                                                         BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
-        }
+    public ResponseEntity<ApiResponse<ProductResponseDto>> addProduct(@Valid @RequestBody ProductRequestDto productRequestDto) {
 
-        if(productRequestDto.getName().contains("카카오")) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("카카오란 이름은 MD승인을 받아야합니다");
-        }
-
+        productService.validateProduct(productRequestDto);
         ProductResponseDto productResponseDto = productService.addProduct(productRequestDto);
-        return  ResponseEntity.ok(productResponseDto);
+        return  ResponseEntity.ok(new ApiResponse<>(200,"추가 완료" , productResponseDto));
     }
 
     //특정 상품 수정
     @PutMapping("{id}")
     public ResponseEntity<?> updateProduct(@Valid @RequestBody ProductRequestDto productRequestDto,
-                                                            @PathVariable Long id,
-                                                            BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
-        }
+                                                            @PathVariable Long id) {
 
-        if(!productService.validateProduct(productRequestDto)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("카카오란 이름은 MD승인을 받아야합니다");
-        }
-
+        productService.validateProduct(productRequestDto);
         ProductResponseDto productResponseDto = productService.updateProduct(id,productRequestDto);
         return  ResponseEntity.ok(productResponseDto);
     }
