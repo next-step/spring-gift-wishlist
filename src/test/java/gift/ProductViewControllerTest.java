@@ -110,6 +110,19 @@ public class ProductViewControllerTest {
     }
 
     @Test
+    @DisplayName("[Form] 상품 등록 실패 - 상품명에 허용되지 않은 문자 사용")
+    void createProduct_fail_invalidNameCharacters() throws Exception {
+        mockMvc.perform(post("/admin/products/new")
+                .param("name", "초콜릿%")      // 허용되지 않은 문자 '%' 사용
+                .param("price", "1000")
+                .param("imageUrl", "https://image.com/item.jpg")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+            .andExpect(status().isOk())
+            .andExpect(view().name("products/form"))
+            .andExpect(model().attributeHasFieldErrors("productRequest", "name"));
+    }
+
+    @Test
     @DisplayName("[Form] 상품 등록 실패 - 가격 음수")
     void createProduct_fail_negativePrice() throws Exception {
         mockMvc.perform(post("/admin/products/new")
