@@ -1,6 +1,6 @@
 package gift.controller;
 
-import gift.dto.ErrorMessageResponse;
+import gift.dto.error.ErrorMessageResponse;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;

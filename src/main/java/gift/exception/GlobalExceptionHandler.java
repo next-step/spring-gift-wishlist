@@ -1,6 +1,6 @@
 package gift.exception;
 
-import gift.dto.ErrorMessageResponse;
+import gift.dto.error.ErrorMessageResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.core.annotation.Order;

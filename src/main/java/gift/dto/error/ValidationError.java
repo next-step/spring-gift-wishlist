@@ -1,4 +1,4 @@
-package gift.dto;
+package gift.dto.error;
 
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;

@@ -1,4 +1,4 @@
-package gift.dto;
+package gift.dto.error;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.servlet.http.HttpServletRequest;

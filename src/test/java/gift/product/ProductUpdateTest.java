@@ -1,7 +1,7 @@
 package gift.product;
 
 import gift.AbstractControllerTest;
-import gift.dto.ProductUpdateRequest;
+import gift.dto.product.ProductUpdateRequest;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

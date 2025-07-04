@@ -5,14 +5,16 @@ public class Product {
     private String name;
     private Long price;
     private String imageUrl;
+    private Long ownerId;
 
     public Product() { }
 
-    public Product(Long id, String name, Long price, String imageUrl) {
+    public Product(Long id, String name, Long price, String imageUrl, Long ownerId) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
+        this.ownerId = ownerId;
     }
 
     public Long getId() {
@@ -47,6 +49,14 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
+    public Long getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
+    }
+
     @Override
     public String toString() {
         return "Product{" +
@@ -67,4 +77,6 @@ public class Product {
                price != null && price.equals(objProd.price) &&
                imageUrl != null && imageUrl.equals(objProd.imageUrl);
     }
+
+
 }

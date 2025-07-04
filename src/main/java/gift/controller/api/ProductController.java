@@ -1,8 +1,8 @@
 package gift.controller.api;
 
 import gift.model.CustomPage;
-import gift.dto.ProductCreateRequest;
-import gift.dto.ProductUpdateRequest;
+import gift.dto.product.ProductCreateRequest;
+import gift.dto.product.ProductUpdateRequest;
 import gift.entity.Product;
 import gift.service.ProductService;
 import gift.validation.group.AuthenticationGroups;
