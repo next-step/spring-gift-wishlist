@@ -233,6 +233,26 @@ public class ProductControllerTest {
     }
 
     @Test
+    @DisplayName("[API] 상품 전체 조회 성공 - 200 OK")
+    void getAllProducts_success() throws Exception {
+        // 준비: 여러 상품 저장
+        productRepository.save(new Product("초콜릿", 1000, "https://image.com/choco.jpg"));
+        productRepository.save(new Product("캔디",    500,  "https://image.com/candy.jpg"));
+
+        // 수행 & 검증
+        mockMvc.perform(get("/api/products")
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            // 배열 길이 검증
+            .andExpect(jsonPath("$.length()").value(2))
+            // 각 요소 필드 검증
+            .andExpect(jsonPath("$[0].name").value("초콜릿"))
+            .andExpect(jsonPath("$[0].price").value(1000))
+            .andExpect(jsonPath("$[1].name").value("캔디"))
+            .andExpect(jsonPath("$[1].price").value(500));
+    }
+
+    @Test
     @DisplayName("[API] 상품 조회 성공 - 200 OK")
     void getProduct_success() throws Exception {
         // 준비: 상품 저장
