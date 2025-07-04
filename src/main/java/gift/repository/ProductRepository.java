@@ -12,11 +12,6 @@ public class ProductRepository implements ProductRepositoryInterface {
     private final Map<Long, Product> products = new HashMap<>();
     private long productId = 1L;
 
-    @Override
-    public long getNewProductId() {
-        return productId;
-    }
-
     @Transactional
     @Override
     public Product addProduct(Product product) {
@@ -59,12 +54,7 @@ public class ProductRepository implements ProductRepositoryInterface {
     public Optional<Product> findProductById(Long id) {
         Product product = products.get(id);
         if (product != null) {
-            return Optional.of(new Product(
-                    product.getId(),
-                    product.getName(),
-                    product.getPrice(),
-                    product.getImageUrl()
-            ));
+            return Optional.of(product);
         } else {
             return Optional.empty();
         }
@@ -78,12 +68,7 @@ public class ProductRepository implements ProductRepositoryInterface {
             originProduct.setName(product.getName());
             originProduct.setPrice(product.getPrice());
             originProduct.setImageUrl(product.getImageUrl());
-            return Optional.of(new Product(
-                    id,
-                    product.getName(),
-                    product.getPrice(),
-                    product.getImageUrl()
-            ));
+            return Optional.of(originProduct);
         } else {
             return Optional.empty();
         }
@@ -102,6 +87,11 @@ public class ProductRepository implements ProductRepositoryInterface {
     @Override
     public int countAllProducts() {
         return products.size();
+    }
+
+    @Override
+    public boolean isApprovedKakao(String name) {
+        return false;
     }
 
 }

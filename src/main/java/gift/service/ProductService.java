@@ -4,6 +4,7 @@ import gift.dto.PageResponseDto;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.entity.Product;
+import gift.repository.JdbcProductRepository;
 import gift.repository.ProductRepositoryInterface;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,9 @@ public class ProductService implements ProductServiceInterface {
 
     @Override
     public ProductResponseDto addProduct(ProductRequestDto requestDto) {
+
+        String name = requestDto.getName();
+        validateUsingKakaoName(name);
 
         Product product = new Product(
                 requestDto.getName(),
@@ -91,6 +95,9 @@ public class ProductService implements ProductServiceInterface {
     @Override
     public Optional<ProductResponseDto> updateProduct(Long id, ProductRequestDto requestDto) {
 
+        String name = requestDto.getName();
+        validateUsingKakaoName(name);
+
         Product product = new Product(
                 id,
                 requestDto.getName(),
@@ -118,6 +125,15 @@ public class ProductService implements ProductServiceInterface {
     @Override
     public int countAllProducts() {
         return productRepository.countAllProducts();
+    }
+
+    private void validateUsingKakaoName(String name){
+        if (name != null && name.contains("카카오")) {
+            boolean approved = productRepository.isApprovedKakao(name);
+            if (!approved) {
+                throw new IllegalArgumentException("'카카오'가 포함된 상품명은 담당 MD 승인 후 등록할 수 있습니다.");
+            }
+        }
     }
 
 }

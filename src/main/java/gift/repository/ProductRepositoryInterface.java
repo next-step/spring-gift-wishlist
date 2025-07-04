@@ -9,9 +9,6 @@ import java.util.Optional;
 
 public interface ProductRepositoryInterface {
 
-    // 상품 생성을 위한 ID 얻기
-    long getNewProductId();
-
     // 상품 생성
     Product addProduct(Product product);
 
@@ -33,5 +30,6 @@ public interface ProductRepositoryInterface {
     // 전체 상품 개수 조회
     int countAllProducts();
 
-
+    // 승인된 카카오 이름 사용 검증
+    boolean isApprovedKakao(String name);
 }
