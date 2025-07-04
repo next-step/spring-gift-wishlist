@@ -2,10 +2,13 @@ package gift.repository;
 
 import gift.entity.Product;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -63,5 +66,18 @@ public class ProductRepository {
     public void delete(Long id) {
         String sql = "DELETE FROM products WHERE id = ?";
         jdbcTemplate.update(sql, id);
+    }
+
+    private static class ProductRowMapper implements RowMapper<Product> {
+
+        @Override
+        public Product mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new Product(
+                    rs.getLong("id"),
+                    rs.getString("name"),
+                    rs.getInt("price"),
+                    rs.getString("image_url")
+            );
+        }
     }
 }

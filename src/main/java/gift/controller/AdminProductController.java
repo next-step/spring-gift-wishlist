@@ -24,7 +24,6 @@ public class AdminProductController {
         this.productService = productService;
     }
 
-    // 목록
     @GetMapping
     public String showProductList(Model model) {
         List<ProductResponseDto> products = productService.findAll();
@@ -32,7 +31,6 @@ public class AdminProductController {
         return "product/list";
     }
 
-    // 상품 등록
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("product", new ProductRequestDto("", 0, ""));
@@ -40,7 +38,6 @@ public class AdminProductController {
         return "product/form";
     }
 
-    // 등록 처리
     @PostMapping
     public String createProduct(@Valid @ModelAttribute("product") ProductRequestDto requestDto,
             BindingResult bindingResult, Model model) {
@@ -52,7 +49,6 @@ public class AdminProductController {
         return "redirect:/admin/products";
     }
 
-    // 상품 수정
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
         ProductResponseDto product = productService.findById(id);
@@ -63,7 +59,6 @@ public class AdminProductController {
         return "product/form";
     }
 
-    // 수정 처리
     @PostMapping("/edit/{id}")
     public String updateProduct(@PathVariable Long id,
             @Valid @ModelAttribute("product") ProductRequestDto requestDto,
@@ -78,7 +73,6 @@ public class AdminProductController {
         return "redirect:/admin/products";
     }
 
-    // 삭제 처리
     @PostMapping("/delete/{id}")
     public String deleteProduct(@PathVariable Long id) {
         productService.delete(id);

@@ -108,7 +108,7 @@ class ProductControllerTest {
 
         assertAll(
                 () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST),
-                () -> assertThat(response.getBody().get("message")).isEqualTo(
+                () -> assertThat(response.getBody().get("error")).isEqualTo(
                         "\"카카오\"가 포함된 문구는 담당 MD와 협의한 경우에만 사용 가능합니다.")
         );
     }
