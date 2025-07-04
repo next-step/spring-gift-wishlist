@@ -43,12 +43,12 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public Product updateProduct(Long id, Product product, ValidationMode validationMode) {
-        repo.findById(id)
+        Product toChange = repo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("상품을 찾을 수 없습니다: " + id));
 
-        Product updated =
-                Product.createProduct(id, product.name(), product.price(),
-                        product.imageUrl(), validationMode);
+        Product updated = toChange.withName(product.name(), validationMode)
+                .withPrice(product.price())
+                .withImageUrl(product.imageUrl());
         return repo.save(updated);
     }
 
