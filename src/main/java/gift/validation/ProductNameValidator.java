@@ -13,9 +13,6 @@ public class ProductNameValidator implements ConstraintValidator<ValidProductNam
         if (value == null) {
             return false;
         }
-        if (value.contains("카카오")) {
-            return false;
-        }
         return value.matches(PATTERN);
     }
 }

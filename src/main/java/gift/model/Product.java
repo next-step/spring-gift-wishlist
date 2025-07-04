@@ -24,6 +24,8 @@ public class Product {
     @Pattern(regexp = "^https?:\\/\\/.*\\.(jpg|jpeg|png|gif|bmp|tiff)$", message = "imageUrl의 형식이 잘못되었습니다.")
     private String imageUrl;
 
+    private boolean needsMdApproval;
+
     // 생성자
     public Product() {
     }
@@ -72,6 +74,14 @@ public class Product {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public boolean getNeedsMdApproval() {
+        return needsMdApproval;
+    }
+
+    public void setNeedsMdApproval(boolean needsMdApproval) {
+        this.needsMdApproval = needsMdApproval;
     }
 
 }

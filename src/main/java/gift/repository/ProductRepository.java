@@ -28,7 +28,8 @@ public class ProductRepository {
         SqlParameterSource parameters = new MapSqlParameterSource()
             .addValue("name", product.getName())
             .addValue("price", product.getPrice())
-            .addValue("imageUrl", product.getImageUrl());
+            .addValue("imageUrl", product.getImageUrl())
+            .addValue("needsMdApproval", product.getNeedsMdApproval());
         Long newId = jdbcInsert.executeAndReturnKey(parameters).longValue();
 
         return new Product(newId, product.getName(), product.getPrice(), product.getImageUrl());
@@ -36,21 +37,21 @@ public class ProductRepository {
 
     // 상품 전체 조회
     public List<Product> findAll() {
-        String sql = "SELECT id, name, price, imageUrl FROM PRODUCT";
+        String sql = "SELECT id, name, price, imageUrl FROM PRODUCT WHERE needsMdApproval = false";
         return jdbcTemplate.query(sql, productRowMapper());
     }
 
     // 상품 단건 조회
     public Optional<Product> findById(Long id) {
-        String sql = "SELECT id, name, price, imageUrl FROM PRODUCT WHERE id = ?";
+        String sql = "SELECT id, name, price, imageUrl FROM PRODUCT WHERE id = ? and needsMdApproval = false";
         return Optional.of(jdbcTemplate.queryForObject(sql, productRowMapper(), id));
     }
 
     // 상품 수정
     public void update(Product product) {
-        String sql = "UPDATE PRODUCT SET name = ?, price = ?, imageUrl = ? WHERE id = ?";
+        String sql = "UPDATE PRODUCT SET name = ?, price = ?, imageUrl = ?, needsMdApproval = ? WHERE id = ?";
         jdbcTemplate.update(sql, product.getName(), product.getPrice(), product.getImageUrl(),
-            product.getId());
+            product.getNeedsMdApproval(), product.getId());
     }
 
     // 상품 삭제
