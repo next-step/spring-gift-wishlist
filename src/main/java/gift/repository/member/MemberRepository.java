@@ -5,13 +5,11 @@ import gift.entity.Member;
 
 public interface MemberRepository {
     
-    boolean alreadyRegistered(String email);
+    boolean existsByEmail(String email);
     
-    MemberResponseDto registerMember(Member newMember);
+    Member registerMember(Member newMember);
     
-    boolean wrongPassword(String email, String password);
+    String findPassword(String email);
     
-    Member findMember(String email, String password);
-    
-    MemberResponseDto loginMember(Member member);
+    Member findMember(String email);
 }

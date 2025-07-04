@@ -21,21 +21,19 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
     
     @Override
-    public boolean alreadyRegistered(String email) {
-        var sql = """
-            select count(*) from members where email = :email;
-            """;
+    public boolean existsByEmail(String email) {
+        String sql = "SELECT EXISTS (SELECT 1 FROM members WHERE email = :email)";
         
-        Integer memberCnt =  members.sql(sql)
+        Boolean exists = members.sql(sql)
             .param("email", email)
-            .query(Integer.class)
+            .query(Boolean.class)
             .single();
         
-        return memberCnt > 0;
+        return Boolean.TRUE.equals(exists);
     }
     
     @Override
-    public MemberResponseDto registerMember(Member newMember) {
+    public Member registerMember(Member newMember) {
         var sql = """
             insert into members(email, password, role)
             values (:email, :password, :role);
@@ -50,58 +48,34 @@ public class MemberRepositoryImpl implements MemberRepository {
         
         long recentKey = generatedKey.getKey().longValue();
         
-        String secretKey = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";
-        String accessToken = Jwts.builder()
-            .subject(Long.toString(recentKey))
-            .claim("email", newMember.getEmail())
-            .claim("role", newMember.getRole())
-            .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
-            .compact();
-        
-        return new MemberResponseDto(accessToken);
+        return new Member(recentKey, newMember.getEmail(), newMember.getPassword(), newMember.getRole());
     }
     
     @Override
-    public boolean wrongPassword(String email, String password) {
+    public String findPassword(String email) {
         var sql = """
             select password from members where email = :email;
             """;
         
-        String registeredPassword =  members.sql(sql)
+        return members.sql(sql)
             .param("email", email)
             .query(String.class)
             .single();
-        
-        return !registeredPassword.equals(password);
     }
     
     @Override
-    public Member findMember(String email, String password) {
+    public Member findMember(String email) {
         var sql = """
-            select * from members where email = :email and password = :password;
+            select * from members where email = :email;
             """;
         
         return members.sql(sql)
             .param("email", email)
-            .param("password", password)
             .query((rs, rowNum) -> new Member(
                 rs.getLong("id"),
                 rs.getString("email"),
                 rs.getString("password"),
                 Role.valueOf(rs.getString("role"))
             )).single();
-    }
-    
-    @Override
-    public MemberResponseDto loginMember(Member member) {
-        String secretKey = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";
-        String accessToken = Jwts.builder()
-            .subject(Long.toString(member.getId()))
-            .claim("email", member.getEmail())
-            .claim("role", member.getRole())
-            .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
-            .compact();
-        
-        return new MemberResponseDto(accessToken);
     }
 }

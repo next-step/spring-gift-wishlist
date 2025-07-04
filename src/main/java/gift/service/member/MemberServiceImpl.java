@@ -8,11 +8,14 @@ import gift.exception.conflict.AlreadyRegisteredException;
 import gift.exception.forbidden.WrongPasswordException;
 import gift.exception.notfound.NotRegisteredException;
 import gift.repository.member.MemberRepository;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MemberServiceImpl implements MemberService {
     MemberRepository memberRepository;
+    String secretKey = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";
     
     public MemberServiceImpl(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
@@ -21,28 +24,44 @@ public class MemberServiceImpl implements MemberService {
     
     @Override
     public MemberResponseDto registerMember(MemberRequestDto requestDto) {
-        
-        if(memberRepository.alreadyRegistered(requestDto.email())) {
+        if(memberRepository.existsByEmail(requestDto.email())) {
             throw new AlreadyRegisteredException();
         }
         
         Member newMember = new Member(0L, requestDto.email(), requestDto.password(), Role.USER);
         
-        return memberRepository.registerMember(newMember);
+        Member registeredMember = memberRepository.registerMember(newMember);
+        
+        String accessToken = createToken(registeredMember);
+        
+        return new MemberResponseDto(accessToken);
     }
     
     @Override
     public MemberResponseDto loginMember(MemberRequestDto requestDto) {
-        if(!memberRepository.alreadyRegistered(requestDto.email())) {
+        if(!memberRepository.existsByEmail(requestDto.email())) {
             throw new NotRegisteredException();
         }
         
-        if(memberRepository.wrongPassword(requestDto.email(), requestDto.password())) {
+        String checkPassword = memberRepository.findPassword(requestDto.email());
+        
+        if(!checkPassword.equals(requestDto.password())) {
             throw new WrongPasswordException();
         }
         
-        Member member = memberRepository.findMember(requestDto.email(), requestDto.password());
+        Member member = memberRepository.findMember(requestDto.email());
         
-        return memberRepository.loginMember(member);
+        String accessToken = createToken(member);
+        
+        return new MemberResponseDto(accessToken);
+    }
+    
+    private String createToken(Member member) {
+        return Jwts.builder()
+            .subject(Long.toString(member.getId()))
+            .claim("email", member.getEmail())
+            .claim("role", member.getRole())
+            .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
+            .compact();
     }
 }
