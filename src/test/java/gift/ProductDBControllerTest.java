@@ -1,17 +1,14 @@
 package gift;
 
 import gift.Entity.Product;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/data.sql")
@@ -21,8 +18,24 @@ public class ProductDBControllerTest {
 
     private RestClient client = RestClient.builder().build();
 
+    //CRUD Test 만들기
     @Test
-    public void test1() {
+    public void testCreateProduct() {
+        var url = "http://localhost:" + port + "/products";
+        var newProduct = new Product(10L, "민트 초코 라떼", 5500, "https://test");
+        var response = client.post()
+                .uri(url)
+                .body(newProduct)
+                .retrieve()
+                .toEntity(Product.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        var actual = response.getBody();
+        assertThat(actual.getName()).isEqualTo("민트 초코 라떼");
+    }
+
+    @Test
+    public void testReadProduct() {
         var url = "http://localhost:" + port + "/products/1";
         var response = client.get()
                 .uri(url)
@@ -33,22 +46,24 @@ public class ProductDBControllerTest {
         assertThat(actual.getName()).isEqualTo("아이스 카페 아메리카노 T");
     }
 
-    /*
-    // 없는 데이터를 조회 시 예외 처리를 시도했으나 잘 안됨....
-
-
+    // 처음에 첫번째 데이터를 넣고 시작하니 1번째 데이터를 업데이트하여 테스트
     @Test
-    public void notFoundId() {
-        var url = "http://localhost:" + port + "/products/2";
-        assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
-                .isThrownBy(
-                    () ->
-                            client.get()
-                                    .uri(url)
-                                    .retrieve()
-                                    .toEntity(Void.class)
-                );
+    public void testUpdateProduct() {
+        var url = "http://localhost:" + port + "/products/1";
+        var updateProduct = new Product(1L, "에스프레소", 5500, "https://test.com/update");
+        var response = client.post()
+                .uri(url)
+                .body(updateProduct)
+                .retrieve()
+                .toEntity(Product.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        var actual = response.getBody();
+        assertThat(actual.getName()).isEqualTo("에스프레소");
     }
 
-     */
+    @Test
+    public void testDeleteProduct() {
+
+    }
+
 }
