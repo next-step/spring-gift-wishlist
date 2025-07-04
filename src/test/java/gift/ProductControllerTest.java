@@ -261,8 +261,8 @@ public class ProductControllerTest {
     }
 
     @Test
-    @DisplayName("[API] 상품 수정 성공")
-    void updateProduct_success() throws Exception {
+    @DisplayName("[API] 상품 수정 성공 - 일반 상품명")
+    void updateProduct_success_normalName() throws Exception {
         // 준비: 기존 상품 저장
         var saved = productRepository.save(
             new Product("초콜릿", 1000, "https://image.com/item.jpg")
