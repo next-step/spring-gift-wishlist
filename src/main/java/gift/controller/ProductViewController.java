@@ -1,17 +1,21 @@
 package gift.controller;
 
 import gift.dto.request.ProductCreateRequestDto;
+import gift.dto.request.ProductUpdateRequestDto;
 import gift.dto.response.ProductGetResponseDto;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/admin/products")
@@ -23,30 +27,34 @@ public class ProductViewController {
         this.productService = productService;
     }
 
-    @GetMapping("/create-product")
+    @GetMapping("/create")
     public String createProductPage() {
         return "create-product";
     }
 
-    @PostMapping("/create-product")
+    @PostMapping("/create")
     public String createProduct(
-        @RequestParam String name,
-        @RequestParam Double price,
-        @RequestParam String imageUrl
+        @Valid @ModelAttribute ProductCreateRequestDto productCreateRequestDto,
+        BindingResult bindingResult, Model model
     ) {
 
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("errors", bindingResult.getAllErrors());
+            return "create-product";
+        }
+
         try {
-            ProductCreateRequestDto productCreaterequestDto = new ProductCreateRequestDto(name,
-                price, imageUrl);
-            productService.saveProduct(productCreaterequestDto);
+            productService.saveProduct(productCreateRequestDto);
             return "redirect:/admin/products";
-        } catch (ResponseStatusException e) {
-            return "redirect:/admin/products/create-product";
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "create-product";
         }
     }
 
     @GetMapping
     public String getProductsPage(Model model) {
+
         List<ProductGetResponseDto> products = productService.findAllProducts();
         model.addAttribute("products", products);
         return "products";
@@ -54,14 +62,12 @@ public class ProductViewController {
 
     @GetMapping("/{productId}")
     public String getProductById(@RequestParam Long productId, Model model) {
-        if (productId != null) {
-            try {
-                ProductGetResponseDto product = productService.findProductById(productId);
-                model.addAttribute("products", List.of(product));
-            } catch (ResponseStatusException e) {
-                model.addAttribute("products", List.of());
-                model.addAttribute("error", "해당 상품이 없습니다.");
-            }
+
+        try {
+            ProductGetResponseDto product = productService.findProductById(productId);
+            model.addAttribute("products", List.of(product));
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", e.getMessage());
         }
 
         return "products";
@@ -69,11 +75,13 @@ public class ProductViewController {
 
     @GetMapping("/update/{productId}")
     public String updateProductPage(@PathVariable Long productId, Model model) {
+
         try {
             ProductGetResponseDto product = productService.findProductById(productId);
             model.addAttribute("product", product);
             return "update-product";
-        } catch (ResponseStatusException e) {
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", e.getMessage());
             return "redirect:/admin/products";
         }
     }
@@ -81,25 +89,35 @@ public class ProductViewController {
     @PostMapping("/update/{productId}")
     public String updateProductById(
         @PathVariable Long productId,
-        @RequestParam String name,
-        @RequestParam Double price,
-        @RequestParam String imageUrl
+        @Valid @ModelAttribute ProductUpdateRequestDto productUpdateRequestDto,
+        BindingResult bindingResult, RedirectAttributes redirectAttributes
     ) {
+
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
+            redirectAttributes.addFlashAttribute("productUpdateRequestDto",
+                productUpdateRequestDto);
+            return "redirect:/admin/products/update/" + productId;
+        }
+
         try {
-            productService.updateProductById(productId, name, price, imageUrl);
+            productService.updateProductById(productId, productUpdateRequestDto);
             return "redirect:/admin/products";
-        } catch (ResponseStatusException e) {
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+
             return "redirect:/admin/products/update/" + productId;
         }
     }
 
     @PostMapping("/delete/{productId}")
-    public String deleteProductById(@PathVariable Long productId) {
+    public String deleteProductById(@PathVariable Long productId, Model model) {
+
         try {
             productService.deleteProductById(productId);
-            return "redirect:/admin/products";
-        } catch (ResponseStatusException e) {
-            return "redirect:/admin/products";
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", e.getMessage());
         }
+        return "redirect:/admin/products";
     }
 }

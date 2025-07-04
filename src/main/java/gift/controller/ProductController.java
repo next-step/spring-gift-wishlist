@@ -4,12 +4,15 @@ import gift.dto.request.ProductCreateRequestDto;
 import gift.dto.request.ProductUpdateRequestDto;
 import gift.dto.response.ProductCreateResponseDto;
 import gift.dto.response.ProductGetResponseDto;
+import gift.exception.ProductNotFoundException;
+import gift.exception.UnapprovedProductException;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +30,7 @@ public class ProductController {
     public ProductController(ProductService productService) {
         this.productService = productService;
     }
+
 
     @PostMapping
     public ResponseEntity<ProductCreateResponseDto> createProduct(
@@ -52,16 +56,29 @@ public class ProductController {
     public ResponseEntity<Void> updateProductById(@PathVariable Long productId,
         @Valid @RequestBody ProductUpdateRequestDto productUpdateRequestDto) {
 
-        productService.updateProductById(productId, productUpdateRequestDto.name(),
-            productUpdateRequestDto.price(), productUpdateRequestDto.imageUrl());
-
-        return ResponseEntity.noContent().build();
+        productService.updateProductById(productId, productUpdateRequestDto);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/{productId}")
     public ResponseEntity<Void> deleteProductById(@PathVariable Long productId) {
 
         productService.deleteProductById(productId);
-        return ResponseEntity.noContent().build();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @ExceptionHandler(UnapprovedProductException.class)
+    public ResponseEntity<String> handleUnapprovedProductException(UnapprovedProductException ex) {
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body("오류: " + ex.getMessage());
+    }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<String> handleProductNotFoundExceptionException(
+        ProductNotFoundException ex) {
+        return ResponseEntity
+            .status(HttpStatus.NOT_FOUND)
+            .body("오류: " + ex.getMessage());
     }
 }
