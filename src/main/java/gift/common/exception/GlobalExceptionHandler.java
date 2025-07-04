@@ -29,7 +29,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ErrorResponse handleBind(BindException ex, HttpServletRequest req) {
         List<ProblemDetail> fieldErrors = ex.getFieldErrors().stream()
                 .map(fe -> {
-                    ErrorCode errorCode = determineErrorCodeFromMessage(fe.getDefaultMessage());
+                    ErrorCode errorCode = ErrorCode.fromMessage(fe.getDefaultMessage());
                     ProblemDetail pd = ProblemDetail.forStatusAndDetail(
                         errorCode.getHttpStatus(), 
                         errorCode.getMessage()
@@ -58,7 +58,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         List<ProblemDetail> fieldErrors = ex.getFieldErrors().stream()
                 .map(fe -> {
-                    ErrorCode errorCode = determineErrorCodeFromMessage(fe.getDefaultMessage());
+                    ErrorCode errorCode = ErrorCode.fromMessage(fe.getDefaultMessage());
                     ProblemDetail pd = ProblemDetail.forStatusAndDetail(
                             errorCode.getHttpStatus(),
                             errorCode.getMessage()
@@ -162,35 +162,5 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         ProblemDetail body = err.updateAndGetBody(getMessageSource(), LocaleContextHolder.getLocale());
         return handleExceptionInternal(ex, body, headers, errorCode.getHttpStatus(), request);
-    }
-
-    //TODO : 현재 메세지 기반으로 에러코드를 추출하는데 해결책을 찾고 리팩토링이 필요함
-    private ErrorCode determineErrorCodeFromMessage(String message) {
-        if (message == null) {
-            return ErrorCode.VALIDATION_FAILED;
-        }
-        
-        if (message.contains("최대 길이를 초과")) {
-            return ErrorCode.PRODUCT_NAME_TOO_LONG;
-        }
-        if (message.contains("허용되지 않은 특수문자")) {
-            return ErrorCode.PRODUCT_NAME_INVALID_CHARS;
-        }
-        if (message.contains("카카오")) {
-            return ErrorCode.PRODUCT_NAME_KAKAO_RESTRICTED;
-        }
-        
-        if (message.contains("1원 이상")) {
-            return ErrorCode.PRODUCT_PRICE_INVALID;
-        }
-        if (message.contains("가격은 필수")) {
-            return ErrorCode.PRODUCT_PRICE_REQUIRED;
-        }
-        
-        if (message.contains("공백입니다") || message.contains("필수 입력값")) {
-            return ErrorCode.REQUIRED_VALUE_MISSING;
-        }
-        
-        return ErrorCode.VALIDATION_FAILED;
     }
 }
