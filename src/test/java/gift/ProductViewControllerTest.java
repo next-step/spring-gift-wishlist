@@ -222,4 +222,31 @@ public class ProductViewControllerTest {
         ;
     }
 
+    @Test
+    @DisplayName("[VIEW] 상품 상세 조회 - GET /admin/products/{id}")
+    void showProductDetail_success() throws Exception {
+
+        Product saved = productRepository.save(
+            new Product("초콜릿", 1000, "https://image.com/choco.jpg")
+        );
+        Long id = saved.getId();
+
+        mockMvc.perform(get("/admin/products/{id}", id))
+            .andExpect(status().isOk())
+            .andExpect(view().name("products/detail"))
+            .andExpect(model().attributeExists("product"))
+            .andExpect(model().attribute("product",
+                hasProperty("id", is(id))
+            ))
+            .andExpect(model().attribute("product",
+                hasProperty("name", is("초콜릿"))
+            ))
+            .andExpect(model().attribute("product",
+                hasProperty("price", is(1000))
+            ))
+            .andExpect(model().attribute("product",
+                hasProperty("imageUrl", is("https://image.com/choco.jpg"))
+            ));
+    }
+
 }
