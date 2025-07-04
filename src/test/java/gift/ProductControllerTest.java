@@ -451,6 +451,28 @@ public class ProductControllerTest {
     }
 
     @Test
+    @DisplayName("[API] 상품 등록 실패 - 가격 음수")
+    void updateProduct_fail_negativePrice() throws Exception {
+
+        var saved = productRepository.save(
+            new Product("초콜릿", 1000, "https://image.com/item.jpg")
+        );
+        Long id = saved.getId();
+
+        var dto = new ProductUpdateRequestDto(
+            "다크 초콜릿",
+            -1000,
+            "https://image.com/item.jpg"
+        );
+
+        mockMvc.perform(put("/api/products/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.price").value("가격은 0 이상이어야 합니다."));
+    }
+
+    @Test
     @DisplayName("[API] 상품 수정 실패 - JSON 파싱 오류(400) - 가격에 문자를 넣는 경우")
     void updateProduct_fail_invalidJsonFormat() throws Exception {
         String badJson = "{"
