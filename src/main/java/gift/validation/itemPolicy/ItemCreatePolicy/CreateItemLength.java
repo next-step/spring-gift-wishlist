@@ -6,24 +6,19 @@ import gift.validation.itemPolicy.ItemViolationHandler.ViolationHandler;
 import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.stereotype.Component;
 
-import java.util.regex.Pattern;
-
 
 @Component
-public class SpecialSymbol implements ItemPolicy<ItemCreateDto> {
-
+public class CreateItemLength implements ItemPolicy<ItemCreateDto> {
     private final ViolationHandler violationHandler;
 
-    public SpecialSymbol(ViolationHandler violationHandler) {
+    public CreateItemLength(ViolationHandler violationHandler) {
         this.violationHandler = violationHandler;
     }
 
-    private static final Pattern pattern = Pattern.compile("^[a-zA-Z0-9()\\[\\]+\\-\\&/_가-힣ㄱ-ㅎㅏ-ㅣ\\s]*$");
-
     @Override
     public boolean isValid(ItemCreateDto dto, ConstraintValidatorContext context) {
-        if (!pattern.matcher(dto.name()).matches()) {
-            violationHandler.addViolation(context,"( ), [ ], +, -, &, /, _\" 외에는 특수 문자가 허용되지 않습니다.");
+        if (dto.name().length() > 15) {
+            violationHandler.addViolation(context,"상품 이름은 최대 15자까지 입니다.");
             return false;
         }
         return true;

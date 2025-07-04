@@ -7,10 +7,10 @@ import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UseNameKaKao implements ItemPolicy<ItemUpdateDto> {
+public class UpdateItemUseNameKaKao implements ItemPolicy<ItemUpdateDto> {
     private final ViolationHandler violationHandler;
 
-    public UseNameKaKao(ViolationHandler violationHandler) {
+    public UpdateItemUseNameKaKao(ViolationHandler violationHandler) {
         this.violationHandler = violationHandler;
     }
 

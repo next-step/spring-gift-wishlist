@@ -8,17 +8,18 @@ import org.springframework.stereotype.Component;
 
 
 @Component
-public class Length implements ItemPolicy<ItemCreateDto> {
+public class CreateItemUseNameKaKao implements ItemPolicy<ItemCreateDto> {
     private final ViolationHandler violationHandler;
 
-    public Length(ViolationHandler violationHandler) {
+    public CreateItemUseNameKaKao(ViolationHandler violationHandler) {
         this.violationHandler = violationHandler;
     }
 
     @Override
     public boolean isValid(ItemCreateDto dto, ConstraintValidatorContext context) {
-        if (dto.name().length() > 15) {
-            violationHandler.addViolation(context,"상품 이름은 최대 15자까지 입니다.");
+        if (!dto.useKakaoName() && dto.name().contains("카카오")) {
+            violationHandler.addViolation(context, "\"카카오\"는 MD와 협의한 경우에만 사용할 수 있습니다.");
+
             return false;
         }
         return true;
