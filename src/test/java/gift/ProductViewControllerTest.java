@@ -1,11 +1,14 @@
 package gift;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.hamcrest.Matchers.instanceOf;
 
+import gift.dto.view.ProductViewRequestDto;
 import gift.entity.ApprovedProduct;
 import gift.repository.ApprovedProductRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -27,6 +30,16 @@ public class ProductViewControllerTest {
 
     @Autowired
     private ApprovedProductRepository approvedProductRepository;
+
+    @Test
+    @DisplayName("[VIEW] 상품 등록 폼 진입 - GET /admin/products/new")
+    void showCreateForm() throws Exception {
+        mockMvc.perform(get("/admin/products/new"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("products/form"))
+            .andExpect(model().attributeExists("productRequest"))
+            .andExpect(model().attribute("productRequest", instanceOf(ProductViewRequestDto.class)));
+    }
 
     @Test
     @DisplayName("[Form] 상품 등록 성공 - '카카오' 포함된 승인된 상품명")
