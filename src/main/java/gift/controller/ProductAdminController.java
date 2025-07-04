@@ -1,16 +1,24 @@
 package gift.controller;
 
+import gift.dto.ProductAdminRequestDto;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
+import java.net.URI;
 import java.util.List;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @Controller
 @RequestMapping("/admin/products")
@@ -35,9 +43,25 @@ public class ProductAdminController {
   }
 
   @PostMapping
-  public String create(@ModelAttribute ProductRequestDto productDto) {
-    productService.createProduct(productDto);
+  public String create(@Valid @ModelAttribute ProductAdminRequestDto productAdminRequestDto) {
+    productService.createAdminProduct(productAdminRequestDto);
     return "redirect:/admin/products";
+  }
+
+  @PostMapping(consumes = "application/json", produces = "application/json")
+  @ResponseBody
+  public ResponseEntity<ProductResponseDto> createUsingJson(@RequestBody @Valid ProductAdminRequestDto productAdminRequestDto) {
+    ProductResponseDto createdProduct = productService.createAdminProduct(productAdminRequestDto);
+
+    URI location = ServletUriComponentsBuilder
+        .fromCurrentRequest()
+        .path("/{id}")
+        .buildAndExpand(createdProduct.id())
+        .toUri();
+
+    return ResponseEntity
+        .created(location)
+        .body(createdProduct);
   }
 
   @GetMapping("/{id}/edit")
@@ -47,9 +71,16 @@ public class ProductAdminController {
   }
 
   @PostMapping("/{id}")
-  public String update(@PathVariable Long id, @ModelAttribute ProductRequestDto productDto) {
-    productService.updateProduct(id, productDto);
+  public String update(@PathVariable Long id, @Valid @ModelAttribute ProductAdminRequestDto productAdminRequestDto) {
+    productService.updateAdminProduct(id, productAdminRequestDto);
     return "redirect:/admin/products";
+  }
+
+  @PostMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
+  @ResponseBody
+  public ResponseEntity<ProductResponseDto> updateUsingJson(@PathVariable Long id,
+      @RequestBody @Valid ProductAdminRequestDto productAdminRequestDto) {
+    return ResponseEntity.ok(productService.updateAdminProduct(id, productAdminRequestDto));
   }
 
   @PostMapping("/{id}/delete")
