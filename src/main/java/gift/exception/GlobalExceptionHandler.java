@@ -1,8 +1,13 @@
 package gift.exception;
 
 import jakarta.validation.ConstraintViolationException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import org.springframework.boot.autoconfigure.graphql.GraphQlProperties.Http;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -27,12 +32,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        Map<String, String> errors = new HashMap<>();
+        List<ErrorResponse> errors = new ArrayList<>();
 
         e.getBindingResult().getAllErrors().forEach(error -> {
-            String fieldName = "invalid in "+ ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
+            errors.add(new ErrorResponse(ErrorCode.INVALID_FORM_REQUEST, error.getDefaultMessage()));
         });
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -42,7 +45,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleException(Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(e.getMessage());
+            .body(new ErrorResponse(ErrorCode.OTHERS, e.getMessage()));
     }
 
 }
