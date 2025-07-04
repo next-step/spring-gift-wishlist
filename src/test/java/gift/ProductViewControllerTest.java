@@ -475,4 +475,19 @@ public class ProductViewControllerTest {
             .andExpect(model().attributeHasFieldErrors("productRequest", "imageUrl"));
     }
 
+    @Test
+    @DisplayName("[Form] 상품 삭제 처리 - 성공")
+    void deleteProduct_success() throws Exception {
+
+        Product saved = productRepository.save(
+            new Product("초콜릿", 1000, "https://image.com/choco.jpg")
+        );
+        Long id = saved.getId();
+
+        mockMvc.perform(post("/admin/products/{id}/delete", id)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+            .andExpect(status().isFound())
+            .andExpect(redirectedUrl("/admin/products"));
+    }
+
 }
