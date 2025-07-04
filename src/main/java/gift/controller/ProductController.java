@@ -3,6 +3,7 @@ package gift.controller;
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
 import gift.entity.Product;
+import gift.entity.Product.ValidationMode;
 import gift.exception.ResourceNotFoundException;
 import gift.service.ProductService;
 import gift.validation.ValidationGroups;
@@ -22,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
+
+    private static final ValidationMode validationMode = ValidationMode.NORMAL;
 
     private final ProductService productService;
 
@@ -47,8 +50,7 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<ProductResponse> create(
             @Validated(ValidationGroups.DefaultGroup.class) @RequestBody ProductRequest req) {
-        Product saved = productService.createProduct(toEntity(req),
-                (p, name) -> Product.createProduct(null, name, p.price(), p.imageUrl()));
+        Product saved = productService.createProduct(toEntity(req), validationMode);
         return ResponseEntity.status(201).body(toResponse(saved));
     }
 
@@ -56,7 +58,7 @@ public class ProductController {
     public ResponseEntity<ProductResponse> update(
             @PathVariable Long id,
             @Validated(ValidationGroups.DefaultGroup.class) @RequestBody ProductRequest req) {
-        Product updated = productService.updateProduct(id, toEntity(req), Product::withName);
+        Product updated = productService.updateProduct(id, toEntity(req), validationMode);
         return ResponseEntity.ok(toResponse(updated));
     }
 
@@ -67,7 +69,7 @@ public class ProductController {
     }
 
     private Product toEntity(ProductRequest r) {
-        return Product.createProduct(null, r.name(), r.price(), r.imageUrl());
+        return new Product(null, r.name(), r.price(), r.imageUrl());
     }
 
     private ProductResponse toResponse(Product e) {

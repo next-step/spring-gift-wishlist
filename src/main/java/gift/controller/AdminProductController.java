@@ -2,6 +2,7 @@ package gift.controller;
 
 import gift.dto.ProductRequest;
 import gift.entity.Product;
+import gift.entity.Product.ValidationMode;
 import gift.exception.ResourceNotFoundException;
 import gift.service.ProductService;
 import gift.validation.ValidationGroups;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/admin/products")
 public class AdminProductController {
 
+    private static final ValidationMode validationMode = ValidationMode.PERMITTED;
     private final ProductService productService;
 
     public AdminProductController(ProductService productService) {
@@ -51,10 +53,7 @@ public class AdminProductController {
     @PostMapping
     public String create(
             @Validated(ValidationGroups.PermittedGroup.class) @ModelAttribute("product") ProductRequest req) {
-        Product toSave = Product.createPermittedProduct(null, req.name(), req.price(),
-                req.imageUrl());
-        productService.createProduct(toSave,
-                (p, name) -> Product.createPermittedProduct(null, name, p.price(), p.imageUrl()));
+        productService.createProduct(toEntity(req), validationMode);
         return "redirect:/admin/products";
     }
 
@@ -62,9 +61,7 @@ public class AdminProductController {
     @PutMapping("/{id}")
     public String update(@PathVariable("id") Long id,
             @Validated(ValidationGroups.PermittedGroup.class) @ModelAttribute("product") ProductRequest req) {
-        Product toUpdate = Product.createPermittedProduct(id, req.name(), req.price(),
-                req.imageUrl());
-        productService.updateProduct(id, toUpdate, Product::withPermittedName);
+        productService.updateProduct(id, toEntity(req), validationMode);
         return "redirect:/admin/products";
     }
 
@@ -72,5 +69,9 @@ public class AdminProductController {
     public String delete(@PathVariable("id") Long id) {
         productService.deleteProduct(id);
         return "redirect:/admin/products";
+    }
+
+    private Product toEntity(ProductRequest r) {
+        return new Product(null, r.name(), r.price(), r.imageUrl());
     }
 }

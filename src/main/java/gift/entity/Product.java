@@ -1,7 +1,6 @@
 package gift.entity;
 
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 public record Product(
@@ -20,40 +19,20 @@ public record Product(
 
     private static final int MAX_NAME_LENGTH = 15;
 
-    private static Product create(
+    public static Product createProduct(
             Long id,
             String name,
             int price,
             String imageUrl,
-            Consumer<String> nameValidator
+            ValidationMode mode
     ) {
         if (id != null) {
             validateId(id);
         }
-        nameValidator.accept(name);
+        validateName(name, mode);
         validatePrice(price);
         validateImageUrl(imageUrl);
         return new Product(id, name, price, imageUrl);
-    }
-
-    public static Product createProduct(Long id, String name, int price, String imageUrl) {
-        return create(
-                id,
-                name,
-                price,
-                imageUrl,
-                Product::validateName
-        );
-    }
-
-    public static Product createPermittedProduct(Long id, String name, int price, String imageUrl) {
-        return create(
-                id,
-                name,
-                price,
-                imageUrl,
-                Product::validatePermittedName
-        );
     }
 
     private static void validateId(Long id) {
@@ -62,20 +41,7 @@ public record Product(
         }
     }
 
-    private static void validateName(String name) {
-        validatePermittedName(name);
-
-        boolean valid = MANAGEMENT_PATTERNS.stream()
-                .allMatch(pattern -> pattern.matcher(name).matches());
-        if (!valid) {
-            throw new IllegalArgumentException(
-                    "상품명에 포함된 특정 문구는 담당 MD와 협의 후에만 사용할 수 있습니다."
-            );
-        }
-    }
-
-
-    private static void validatePermittedName(String name) {
+    private static void validateName(String name, ValidationMode validationMode) {
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("상품 이름은 필수 입력값입니다.");
         }
@@ -84,6 +50,9 @@ public record Product(
         }
         if (!NAME_PATTERN.matcher(name).matches()) {
             throw new IllegalArgumentException("상품 이름에 허용되지 않는 문자가 포함되었습니다.");
+        }
+        if (validationMode == ValidationMode.NORMAL) {
+            validatePattern(name);
         }
     }
 
@@ -99,18 +68,23 @@ public record Product(
         }
     }
 
+    private static void validatePattern(String name) {
+        boolean valid = MANAGEMENT_PATTERNS.stream()
+                .allMatch(pattern -> pattern.matcher(name).matches());
+        if (!valid) {
+            throw new IllegalArgumentException(
+                    "상품명에 포함된 특정 문구는 담당 MD와 협의 후에만 사용할 수 있습니다."
+            );
+        }
+    }
+    
     public Product withId(Long id) {
         validateId(id);
         return new Product(id, this.name, this.price, this.imageUrl);
     }
 
-    public Product withName(String name) {
-        validateName(name);
-        return new Product(this.id, name, this.price, this.imageUrl);
-    }
-
-    public Product withPermittedName(String name) {
-        validatePermittedName(name);
+    public Product withName(String name, ValidationMode validationMode) {
+        validateName(name, validationMode);
         return new Product(this.id, name, this.price, this.imageUrl);
     }
 
@@ -122,5 +96,11 @@ public record Product(
     public Product withImageUrl(String imageUrl) {
         validateImageUrl(imageUrl);
         return new Product(this.id, this.name, this.price, imageUrl);
+    }
+
+    public enum ValidationMode {
+        NORMAL,
+        PERMITTED,
+        DATABASE
     }
 }

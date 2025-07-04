@@ -1,11 +1,11 @@
 package gift.service;
 
 import gift.entity.Product;
+import gift.entity.Product.ValidationMode;
 import gift.exception.ResourceNotFoundException;
 import gift.repository.ProductRepository;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiFunction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,22 +33,22 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public Product createProduct(Product product,
-            BiFunction<Product, String, Product> productCreator) {
-        Product created = productCreator.apply(product, product.name());
+    public Product createProduct(Product product, ValidationMode validationMode) {
+        Product created = Product.createProduct(null, product.name(), product.price(),
+                product.imageUrl(), validationMode);
+
         return repo.save(created);
     }
 
     @Override
     @Transactional
-    public Product updateProduct(Long id, Product product,
-            BiFunction<Product, String, Product> productUpdater) {
-        Product existing = repo.findById(id)
+    public Product updateProduct(Long id, Product product, ValidationMode validationMode) {
+        repo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("상품을 찾을 수 없습니다: " + id));
 
-        Product updated = productUpdater.apply(existing, product.name())
-                .withPrice(product.price())
-                .withImageUrl(product.imageUrl());
+        Product updated =
+                Product.createProduct(id, product.name(), product.price(),
+                        product.imageUrl(), validationMode);
         return repo.save(updated);
     }
 
