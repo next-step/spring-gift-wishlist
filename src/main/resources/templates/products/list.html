@@ -10,6 +10,10 @@
 <div class="container">
   <h1>Manage <strong>Products</strong></h1>
 
+  <div th:if="${errorMsg}" class="alert alert-danger" role="alert">
+    <p th:text="${errorMsg}"></p>
+  </div>
+
   <div class="button-group">
     <a href="/admin/products/new" class="button add">+ Add Product</a>
   </div>

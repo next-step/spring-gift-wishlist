@@ -5,6 +5,7 @@ import gift.dto.view.ProductViewRequestDto;
 import gift.entity.Product;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
+import java.util.NoSuchElementException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/admin/products")
@@ -42,27 +44,44 @@ public class ProductViewController {
     // 상품 등록 요청 처리
     @PostMapping("/new")
     public String createProduct(@Valid @ModelAttribute("productRequest") ProductViewRequestDto request,
-        BindingResult bindingResult) {
+                                BindingResult bindingResult,
+                                Model model) {
         if (bindingResult.hasErrors()) {
             return "products/form";     // 유효성 오류 있으면 다시 폼으로
         }
 
-        Product product = new Product(
-            request.getName(),
-            request.getPrice(),
-            request.getImageUrl()
-        );
+        try {
 
-        productService.registerProduct(product);
-        return "redirect:/admin/products";
+            Product product = new Product(
+                request.getName(),
+                request.getPrice(),
+                request.getImageUrl()
+            );
+
+            productService.registerProduct(product);
+            return "redirect:/admin/products";
+
+        } catch (IllegalArgumentException e) {
+            // 예외 메세지를 모델에 추가
+            model.addAttribute("errorMessage", e.getMessage());
+            return "products/form";
+        }
+
     }
 
     // 상품 개별 조회 요청 처리
     @GetMapping("/{id}")
-    public String viewProductDetail(@PathVariable Long id, Model model) {
-        Product product = productService.getProductById(id);
-        model.addAttribute("product", product);
-        return "products/detail";
+    public String viewProductDetail(@PathVariable Long id,
+        Model model,
+        RedirectAttributes ra) {
+        try {
+            Product product = productService.getProductById(id);
+            model.addAttribute("product", product);
+            return "products/detail";
+        } catch (NoSuchElementException e) {
+            ra.addFlashAttribute("errorMsg", "상품을 찾을 수 없습니다.");
+            return "redirect:/admin/products";
+        }
     }
 
     // 상품 수정 폼 보여주기
@@ -92,13 +111,22 @@ public class ProductViewController {
             return "products/form";
         }
 
-        // dto를 변환해서 넘김
-        ProductUpdateRequestDto updateDto = new ProductUpdateRequestDto(
-            dto.getName(), dto.getPrice(), dto.getImageUrl()
-        );
+        try {
 
-        productService.updateProduct(id, updateDto);
-        return "redirect:/admin/products";
+            // dto를 변환해서 넘김
+            ProductUpdateRequestDto updateDto = new ProductUpdateRequestDto(
+                dto.getName(), dto.getPrice(), dto.getImageUrl()
+            );
+
+            productService.updateProduct(id, updateDto);
+            return "redirect:/admin/products";
+
+        } catch (IllegalArgumentException e) {
+            // 예외 메세지를 모델에 추가
+            model.addAttribute("errorMessage", e.getMessage());
+            return "products/form";
+        }
+
     }
 
     // 상품 삭제 요청 처리
