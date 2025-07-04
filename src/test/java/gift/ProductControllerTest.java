@@ -429,7 +429,7 @@ public class ProductControllerTest {
     }
 
     @Test
-    @DisplayName("[API] 상품 등록 실패 - 가격 없음")
+    @DisplayName("[API] 상품 수정 실패 - 가격 없음")
     void updateProduct_fail_priceMissing() throws Exception {
 
         var saved = productRepository.save(
