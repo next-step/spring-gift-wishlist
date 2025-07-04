@@ -334,4 +334,26 @@ public class ProductControllerTest {
             .andExpect(jsonPath("$.name").value("상품명은 필수입니다."));
     }
 
+    @Test
+    @DisplayName("[API] 상품 수정 실패 - 상품명 15자 초과")
+    void updateProduct_fail_nameTooLong() throws Exception {
+
+        var saved = productRepository.save(
+            new Product("초콜릿", 1000, "https://image.com/item.jpg")
+        );
+        Long id = saved.getId();
+
+        var dto = new ProductUpdateRequestDto(
+            "1234567890123456",      // 16자 문자열
+            1000,
+            "https://image.com/item.jpg"
+        );
+
+        mockMvc.perform(put("/api/products/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.name").value("최대 15자까지 가능합니다."));
+    }
+
 }
