@@ -81,4 +81,11 @@ public class ProductRepository {
                 .update();
     }
 
+    public void deleteAll() {
+        String sql = "DELETE FROM products";
+        jdbcClient
+            .sql(sql)
+            .update();
+    }
+
 }
