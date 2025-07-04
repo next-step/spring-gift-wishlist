@@ -1,4 +1,4 @@
-package gift.user.entity;
+package gift.member.entity;
 
 public class Member {
 

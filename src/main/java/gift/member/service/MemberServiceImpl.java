@@ -1,11 +1,11 @@
-package gift.user.service;
+package gift.member.service;
 
-import gift.user.dto.LoginRequestDto;
-import gift.user.dto.LoginResponseDto;
-import gift.user.dto.RegisterRequestDto;
-import gift.user.dto.RegisterResponseDto;
-import gift.user.entity.Member;
-import gift.user.repository.MemberRepository;
+import gift.member.dto.LoginRequestDto;
+import gift.member.dto.LoginResponseDto;
+import gift.member.dto.RegisterRequestDto;
+import gift.member.dto.RegisterResponseDto;
+import gift.member.entity.Member;
+import gift.member.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,6 +26,11 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
+        // DB 조회 -> 성공 시 Token 생성, 실패 시 로그인 실패
+        memberRepository.findMemberByEmail(loginRequestDto.email());
+
+        // TODO: 성공 시 Token 생성
+
         return null;
     }
 }

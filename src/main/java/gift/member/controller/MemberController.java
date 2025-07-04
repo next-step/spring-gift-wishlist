@@ -1,13 +1,15 @@
-package gift.user.controller;
+package gift.member.controller;
 
-import gift.user.dto.LoginRequestDto;
-import gift.user.dto.LoginResponseDto;
-import gift.user.dto.RegisterRequestDto;
-import gift.user.dto.RegisterResponseDto;
-import gift.user.service.MemberService;
+import gift.member.dto.LoginRequestDto;
+import gift.member.dto.LoginResponseDto;
+import gift.member.dto.RegisterRequestDto;
+import gift.member.dto.RegisterResponseDto;
+import gift.member.exception.MemberNotFoundException;
+import gift.member.service.MemberService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,5 +39,12 @@ public class MemberController {
         @Valid @RequestBody LoginRequestDto loginRequestDto) {
 
         return new ResponseEntity<>(memberService.login(loginRequestDto), HttpStatus.OK);
+    }
+
+    @ExceptionHandler(MemberNotFoundException.class)
+    public ResponseEntity<String> handleMemberNotFoundException(MemberNotFoundException ex) {
+        return ResponseEntity
+            .status(HttpStatus.NOT_FOUND)
+            .body("오류: " + ex.getMessage());
     }
 }

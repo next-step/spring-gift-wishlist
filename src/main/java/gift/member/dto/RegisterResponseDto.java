@@ -1,4 +1,4 @@
-package gift.user.dto;
+package gift.member.dto;
 
 public record RegisterResponseDto(
     String token
