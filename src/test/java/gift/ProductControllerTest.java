@@ -584,4 +584,15 @@ public class ProductControllerTest {
             .andExpect(status().isNotFound());
     }
 
+    @Test
+    @DisplayName("[API] 상품 삭제 실패 - 잘못된 ID 형식(400)")
+    void deleteProduct_invalidIdFormat() throws Exception {
+
+        productRepository.save(new Product("초콜릿", 1000, "https://image.com/item.jpg"));
+
+        mockMvc.perform(delete("/api/products/{id}", "abc")
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest());
+    }
+
 }
