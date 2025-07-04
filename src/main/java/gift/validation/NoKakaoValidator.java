@@ -1,9 +1,9 @@
 package gift.validation;
 
-import jakarta.validation.*;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
-
-public class NoKakaoValidator implements ConstraintValidator<NoKakao, String> {
+public class NoKakaoValidator implements ConstraintValidator<ForbiddenWordKakao, String> {
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         if (value == null) return true;

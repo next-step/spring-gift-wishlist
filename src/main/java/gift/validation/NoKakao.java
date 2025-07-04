@@ -9,7 +9,7 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = NoKakaoValidator.class)
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface NoKakao {
+public @interface ForbiddenWordKakao {
     String message() default "\"카카오\" 단어는 사용할 수 없습니다.";
     Class<?>[] groups() default { };
     Class<? extends Payload>[] payload() default { };
