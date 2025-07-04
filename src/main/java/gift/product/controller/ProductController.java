@@ -75,7 +75,7 @@ public class ProductController {
     }
 
     @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<String> handleProductNotFoundExceptionException(
+    public ResponseEntity<String> handleProductNotFoundException(
         ProductNotFoundException ex) {
         return ResponseEntity
             .status(HttpStatus.NOT_FOUND)
