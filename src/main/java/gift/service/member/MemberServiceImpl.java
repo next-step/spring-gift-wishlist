@@ -20,7 +20,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberResponseDto registerMember(MemberRequestDto requestDto) {
         
-        if(memberRepository.alreadyRegitered(requestDto.email())) {
+        if(memberRepository.alreadyRegistered(requestDto.email())) {
             throw new AlreadyRegisteredException();
         }
         

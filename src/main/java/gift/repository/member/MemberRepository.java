@@ -5,7 +5,7 @@ import gift.entity.Member;
 
 public interface MemberRepository {
     
-    boolean alreadyRegitered(String email);
+    boolean alreadyRegistered(String email);
     
     MemberResponseDto registerMember(Member newMember);
 }

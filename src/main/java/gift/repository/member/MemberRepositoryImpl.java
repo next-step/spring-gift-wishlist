@@ -1,6 +1,7 @@
 package gift.repository.member;
 
 import gift.dto.api.member.MemberResponseDto;
+import gift.dto.api.product.ProductResponseDto;
 import gift.entity.Member;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
@@ -15,8 +16,17 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
     
     @Override
-    public boolean alreadyRegitered(String email) {
-        return false;
+    public boolean alreadyRegistered(String email) {
+        var sql = """
+            select count(*) from members where email = :email;
+            """;
+        
+        Integer memberCnt =  members.sql(sql)
+            .param("email", email)
+            .query(Integer.class)
+            .single();
+        
+        return memberCnt > 0;
     }
     
     @Override
