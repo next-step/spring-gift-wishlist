@@ -23,8 +23,7 @@ public class ItemService {
 
 	public Long createItem(ItemRequest req) {
 
-		if (req.name().contains("카카오"))
-			throw new IllegalArgumentException("'카카오'는 담당자와 협의 후 사용가능한 키워드입니다.");
+		Item.validateKakaoKeyword(req.name());
 
 		Item item = new Item(req.name(), req.price(), req.imageUrl());
 
@@ -59,8 +58,7 @@ public class ItemService {
 
 	public GetItemResponse updateItem(Long itemId, ItemRequest req) {
 
-		if (req.name().contains("카카오"))
-			throw new IllegalArgumentException("'카카오'는 담당자와 협의 후 사용가능한 키워드입니다.");
+		Item.validateKakaoKeyword(req.name());
 
 		itemRepository.findById(itemId)
 			.orElseThrow(() -> new RuntimeException("존재하지 않는 아이템입니다."));
