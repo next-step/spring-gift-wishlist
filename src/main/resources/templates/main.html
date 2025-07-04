@@ -4,24 +4,19 @@
   <link rel="stylesheet" href="/css/style.css">
   <meta charset="UTF-8">
   <title>상품 관리자 페이지</title>
+  <style>
+    .error { color: red; }
+  </style>
 </head>
 <body>
 <h1>상품 관리자 페이지</h1>
 
 <div>
-  <h2>상품 등록</h2>
-  <form th:action="@{/admin/products}" th:object="${request}" method="post">
-    <label>Name: <input type="text" th:field="*{name}" /></label>
-    <label>Price: <input type="number" th:field="*{price}" /></label>
-    <label>Image Url: <input type="text" th:field="*{imageUrl}" /></label>
-    <button type="submit">등록</button>
-  </form>
-</div>
-
-<br><br>
-
-<div>
   <h2>상품 목록</h2>
+  <br>
+  <a th:href="@{/admin/products/new}">
+    <button type="button">상품 등록</button>
+  </a>
   <table border="1">
     <thead>
     <tr>

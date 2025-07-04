@@ -2,14 +2,12 @@ package gift.service;
 
 import gift.domain.Product;
 import gift.dto.ProductRequest;
-import gift.exception.ErrorCode;
-import gift.exception.InvalidProductException;
 import gift.repository.ProductRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ProductServiceAdmin{
+public class ProductServiceAdmin {
 
     private final ProductRepository productRepository;
 
@@ -18,8 +16,7 @@ public class ProductServiceAdmin{
     }
 
     public Product getProductByIdAdmin(Long productId) {
-        return productRepository.findById(productId)
-            .orElseThrow(() -> new InvalidProductException(ErrorCode.NOT_EXISTS_PRODUCT));
+        return productRepository.findById(productId);
     }
 
     public List<Product> getProductListAdmin() {
@@ -31,19 +28,13 @@ public class ProductServiceAdmin{
     }
 
     public void updateAdmin(ProductRequest request) {
-        if (request == null || request.id() == null) {
-            throw new InvalidProductException(ErrorCode.INVALID_PRODUCT_UPDATE_REQUEST);
-        }
-
-        productRepository.findById(request.id())
-            .orElseThrow(() -> new InvalidProductException(ErrorCode.NOT_EXISTS_PRODUCT));
+        productRepository.findById(request.id());
 
         productRepository.update(request);
     }
 
     public void deleteByIdAdmin(Long productId) {
-        productRepository.findById(productId)
-            .orElseThrow(() -> new InvalidProductException(ErrorCode.NOT_EXISTS_PRODUCT));
+        productRepository.findById(productId);
 
         productRepository.deleteById(productId);
     }

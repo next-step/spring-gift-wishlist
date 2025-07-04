@@ -11,7 +11,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ProductService{
+public class ProductService {
 
     private final ProductRepository productRepository;
 
@@ -20,30 +20,33 @@ public class ProductService{
     }
 
     public ProductResponse getProductById(Long productId) {
-        Product product = productRepository.findById(productId)
-            .orElseThrow(() -> new InvalidProductException(ErrorCode.NOT_EXISTS_PRODUCT));
+        Product product = productRepository.findById(productId);
 
         return ProductResponse.of(product.getName(), product.getPrice(), product.getImageUrl());
     }
 
     public Long insert(ProductRequest request) {
-        validateRequest(request);
+        if (request.name().contains("카카오")) {
+            throw new InvalidProductException(ErrorCode.INVALID_KAKAO_NAME);
+        }
 
         Long id = productRepository.insert(ProductMapper.toEntity(request));
         return id;
     }
 
     public void update(ProductRequest request) {
-        if(request==null || request.id()==null)
-            throw new InvalidProductException(ErrorCode.INVALID_PRODUCT_UPDATE_REQUEST);
+        productRepository.findById(request.id());
 
-        productRepository.findById(request.id())
-            .orElseThrow(() -> new InvalidProductException(ErrorCode.NOT_EXISTS_PRODUCT));
+        if (request.name().contains("카카오")) {
+            throw new InvalidProductException(ErrorCode.INVALID_KAKAO_NAME);
+        }
 
         productRepository.update(request);
     }
 
     public void deleteById(Long productId) {
+        productRepository.findById(productId);
+
         productRepository.deleteById(productId);
     }
 
@@ -53,17 +56,4 @@ public class ProductService{
             .toList();
     }
 
-    private void validateRequest(ProductRequest request) {
-        if (request == null) {
-            throw new InvalidProductException(ErrorCode.NOT_EXISTS_PRODUCT);
-        }
-
-        if (request.name() == null || request.imageUrl() == null) {
-            throw new InvalidProductException(ErrorCode.INVALID_PRODUCT_REQUEST);
-        }
-
-        if (request.price() < 0) {
-            throw new InvalidProductException(ErrorCode.INVALID_PRODUCT_PRICE);
-        }
-    }
 }
