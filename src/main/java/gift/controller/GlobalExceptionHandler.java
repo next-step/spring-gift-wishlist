@@ -13,6 +13,7 @@ import gift.exception.ApprovalRequiredException;
 import gift.exception.ProductCreateException;
 import gift.exception.ProductNotFoundException;
 import gift.exception.ProductUpdateException;
+import gift.exception.SigninException;
 import gift.exception.SignupException;
 
 @RestControllerAdvice
@@ -34,7 +35,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(SignupException.class)
     public ProblemDetail handleSignupException(SignupException e) {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, e.getMessage());
+        return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+
+    @ExceptionHandler(SigninException.class)
+    public ProblemDetail handleSigninException(SigninException e) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, e.getMessage());
     }
 
     @ExceptionHandler(ApprovalRequiredException.class)

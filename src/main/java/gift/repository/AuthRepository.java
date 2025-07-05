@@ -18,7 +18,7 @@ public class AuthRepository {
         this.jdbcClient = jdbcClient;
     }
 
-    static final RowMapper<User> rowMapper = (rs, rowNum) -> User.of(
+    private static final RowMapper<User> rowMapper = (rs, rowNum) -> User.of(
         rs.getLong("id"),
         rs.getString("email"),
         rs.getString("password")
@@ -29,6 +29,15 @@ public class AuthRepository {
 
         return jdbcClient.sql(sql)
             .param("id", id)
+            .query(rowMapper)
+            .optional();
+    }
+
+    public Optional<User> findByEmail(String email) {
+        String sql = "SELECT id, email, password FROM `user` WHERE email = :email";
+
+        return jdbcClient.sql(sql)
+            .param("email", email)
             .query(rowMapper)
             .optional();
     }

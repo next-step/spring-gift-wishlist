@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import gift.dto.CreateUserRequest;
-import gift.dto.CreateUserResponse;
+import gift.dto.SigninRequest;
+import gift.dto.SigninResponse;
+import gift.dto.SignupRequest;
+import gift.dto.SignupResponse;
 import gift.service.AuthService;
 import jakarta.validation.Valid;
 
@@ -23,10 +25,18 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<CreateUserResponse> signup(
-        @Valid @RequestBody CreateUserRequest request
+    public ResponseEntity<SignupResponse> signup(
+        @Valid @RequestBody SignupRequest request
     ){
-        CreateUserResponse response = authService.createUser(request);
+        SignupResponse response = authService.signup(request);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PostMapping("/signin")
+    public ResponseEntity<SigninResponse> signin(
+        @Valid @RequestBody SigninRequest request
+    ) {
+        SigninResponse response = authService.signin(request);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
