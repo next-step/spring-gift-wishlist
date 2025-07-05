@@ -214,7 +214,7 @@ function saveChanges(row, id) {
     return res.json();
   })
   .then(() => {
-    alert("상품이 수정되었습니다.");
+    alert("상품이 수정 되었습니다.");
     window.location.href = getProductListUrl();
   })
   .catch((error) => {
