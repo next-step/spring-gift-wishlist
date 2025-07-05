@@ -8,6 +8,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
+import java.util.List;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository{
@@ -36,5 +37,17 @@ public class UserRepositoryImpl implements UserRepository{
         Long id = keyHolder.getKey().longValue();
         return new User(id, user.email(), user.password());
 
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        var sql = "SELECT ID, EMAIL, PASSWORD FROM USERS";
+
+        return jdbcTemplate.update(sql,userRowMapper);
+    }
+
+    @Override
+    public List<User> findUserByEmail(String email) {
+        return List.of();
     }
 }
