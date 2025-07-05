@@ -54,7 +54,7 @@ public class ProductRepository {
                     .param("name", product.getName())
                     .param("price", product.getPrice())
                     .param("image_url", product.getImageUrl())
-                    .param("state", product.getState())
+                    .param("state", product.getStateName())
                     .update(keyHolder, "id");
         } catch (DataAccessException e) {
             return Optional.empty();
@@ -77,7 +77,7 @@ public class ProductRepository {
                 .param("name", product.getName())
                 .param("price", product.getPrice())
                 .param("image_url", product.getImageUrl())
-                .param("state", product.getState())
+                .param("state", product.getStateName())
                 .update();
 
         if (affected == 0) {

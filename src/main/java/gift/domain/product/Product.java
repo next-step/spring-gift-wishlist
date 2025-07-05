@@ -61,7 +61,7 @@ public class Product {
         return imageUrl;
     }
 
-    public String getState() {
+    public String getStateName() {
         return state.getStateName();
     }
 
@@ -88,6 +88,13 @@ public class Product {
             throw new ProductStateException("Product is not waiting for approve: " + this);
         }
         state = ProductState.REJECTED;
+    }
+
+    public boolean isShowable(ProductQueryOption option) {
+        return switch (option) {
+            case ALL -> true;
+            case SELLING -> state == ProductState.SELLING;
+        };
     }
 
     @Override

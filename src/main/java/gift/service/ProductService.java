@@ -7,6 +7,7 @@ import gift.common.dto.response.ProductDto;
 import gift.common.exception.CreationFailException;
 import gift.common.exception.EntityNotFoundException;
 import gift.domain.product.Product;
+import gift.domain.product.ProductQueryOption;
 import gift.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
@@ -36,13 +37,17 @@ public class ProductService {
         return new MessageResponseDto<>(true, "상품 생성 완료", 201, ProductDto.from(created));
     }
 
-    public ProductDto getProduct(Long id) {
+    public ProductDto getProduct(Long id, ProductQueryOption option) {
         Product result = findProduct(id);
+        if (!result.isShowable(option)) {
+            throw new EntityNotFoundException("Product cannot show: " + id);
+        }
         return ProductDto.from(result);
     }
 
-    public List<ProductDto> getAllProduct() {
+    public List<ProductDto> getAllProduct(ProductQueryOption option) {
         return productRepository.findAll().stream()
+                .filter(p -> p.isShowable(option))
                 .sorted(Comparator.comparing(Product::getId))
                 .map(ProductDto::from)
                 .toList();
