@@ -1,10 +1,12 @@
 package gift.controller;
 
 import gift.domain.Product;
+import gift.dto.ProductRequest;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
@@ -14,7 +16,6 @@ public class ProductController {
 
     private final ProductService productService;
 
-    // 롬복 제거하고 직접 생성자 씀.
     public ProductController(ProductService productService) {
         this.productService = productService;
     }
@@ -32,14 +33,17 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody Product product) {
-        productService.save(product);
+    public ResponseEntity<Void> create(@RequestBody @Valid ProductRequest request) {
+        Product p = new Product(null, request.getName(), request.getPrice(), request.getImageUrl());
+        productService.save(p);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody Product product) {
-        if (productService.update(id, product)) {
+    public ResponseEntity<Void> update(@PathVariable Long id,
+                                       @RequestBody @Valid ProductRequest request) {
+        Product p = new Product(id, request.getName(), request.getPrice(), request.getImageUrl());
+        if (productService.update(id, p)) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
