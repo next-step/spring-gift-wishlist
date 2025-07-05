@@ -4,6 +4,7 @@ import com.example.demo.entity.Product;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -18,12 +19,18 @@ public class ProductJdbcClientRepositoryImpl implements ProductJdbcClientReposit
   @Override
   public Product addProduct(Product product) {
     String sql = "INSERT INTO product (name, price, image_url) VALUES (:name, :price, :imageUrl)";
+
+    GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+
     jdbcClient.sql(sql)
               .param("name", product.getName())
               .param("price", product.getPrice())
               .param("imageUrl", product.getImageUrl())
-              .update();
+              .update(keyHolder);
 
+    if (keyHolder.getKeys() != null) {
+      product.setId(keyHolder.getKey().longValue());
+    }
     return product;
   }
 
