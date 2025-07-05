@@ -9,9 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/api/users")
@@ -23,6 +23,10 @@ public class UserController {
         this.userService = userService;
     }
 
+    /***
+     * Todo. 관리자 User 관리 페이지를 위한 model 생성
+     *
+     */
     @PostMapping()
     public ResponseEntity<UserResponseDto> registerUser(
             @RequestBody @Valid UserRegisterDto dto,
@@ -30,5 +34,15 @@ public class UserController {
     ) {
         UserResponseDto user =userService.registerUser(dto);
         return new ResponseEntity<UserResponseDto>(user, HttpStatus.CREATED);
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<UserResponseDto>> getUserList(
+            @RequestParam(required = false) String email,
+            Model model
+    ) {
+        List<UserResponseDto> users = userService.getUserList(email);
+
+        return new ResponseEntity<List<UserResponseDto>>(users, HttpStatus.OK);
     }
 }
