@@ -8,10 +8,17 @@ public class Member {
 
     private String password;
 
-    public Member(String email, String password) {
+    public Member(Long id, String email, String password) {
         validate(email, password);
+
+        this.id = id;
         this.email = email;
         this.password = password;
+    }
+
+    // 등록 시 사용하는 생성자
+    public Member(String email, String password) {
+        this(null, email, password);
     }
 
     private void validate(String email, String password) {
