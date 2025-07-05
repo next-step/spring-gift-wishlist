@@ -28,10 +28,14 @@ public class MemberServiceV1 implements MemberService{
     @Override
     public UUID save(MemberCreateRequest memberCreateRequest) {
 
+        if (!memberCreateRequest.getConfirmPassword().equals(memberCreateRequest.getPassword()))
+            throw new BadRequestEntityException("비밀번호와 확인 비밀번호가 다릅니다.");
+
         memberRepository.findByEmail(memberCreateRequest.getEmail())
                 .ifPresent(member -> {
                     throw new DuplicateEntityException(member.getEmail() + "은 이미 존재하는 이메일 입니다.");
                 });
+
 
         Member saved = memberRepository.save(new Member(memberCreateRequest.getEmail(), memberCreateRequest.getPassword(), Role.REGULAR));
 
@@ -78,5 +82,17 @@ public class MemberServiceV1 implements MemberService{
         }
 
         memberRepository.deleteById(id);
+    }
+
+    @Override
+    public MemberResponse validate(String email, String password) {
+
+        Member findMember = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundEntityException("존재하는 회원이 아닙니다"));
+
+        if (!findMember.getPassword().equals(password))
+            throw new AuthenticationException("비밀번호가 다릅니다.");
+
+        return new  MemberResponse(findMember.getId(), findMember.getEmail(), findMember.getRole());
     }
 }

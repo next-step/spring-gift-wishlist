@@ -19,4 +19,6 @@ public interface MemberService {
     List<MemberResponse> findAll();
 
     void deleteMember(UUID id, MemberDeleteRequest memberDeleteRequest);
+
+    MemberResponse validate(String email, String password);
 }

@@ -116,6 +116,20 @@ class MemberServiceV1Test {
     }
 
     @Test
+    @DisplayName("회원가입 실패 - 서로 다른 비밀번호")
+    void joinMemberFail2() {
+
+        // given
+        MemberCreateRequest memberDto =
+                new MemberCreateRequest("ljw2109@naver.com", "Qwer1234!!", "Qwer1234!!5" );
+
+        //when & then
+        assertThatThrownBy(() -> memberService.save(memberDto))
+                .isInstanceOf(BadRequestEntityException.class);
+        verifyNoMoreInteractions(memberRepository);
+    }
+
+    @Test
     @DisplayName("회원 탈퇴 성공")
     void deleteMemberSuccess() {
 
@@ -230,6 +244,59 @@ class MemberServiceV1Test {
         verifyNoMoreInteractions(memberRepository);
     }
 
+    @Test
+    @DisplayName("인증 성공")
+    void AuthenticationSuccess() {
+
+        // given
+        Member member = createMember();
+
+        given(memberRepository.findByEmail(member.getEmail()))
+                .willReturn(Optional.of(member));
+
+        // when
+        MemberResponse result = memberService.validate(member.getEmail(), member.getPassword());
+
+        // then
+        assertThat(result.getEmail()).isEqualTo(member.getEmail());
+        assertThat(result.getId()).isEqualTo(member.getId());
+        assertThat(result.getRole()).isEqualTo(member.getRole());
+        verify(memberRepository).findByEmail(member.getEmail());
+        verifyNoMoreInteractions(memberRepository);
+    }
+
+    @Test
+    @DisplayName("인증 실패 - 존재하는 회원 없음")
+    void AuthenticationFail1() {
+
+        // given
+        Member member = createMember();
+
+        given(memberRepository.findByEmail(anyString()))
+                .willReturn(Optional.empty());
+
+        // when & then
+        assertThatThrownBy(()->memberService.validate(anyString(), member.getPassword()))
+                .isInstanceOf(NotFoundEntityException.class);
+        verify(memberRepository).findByEmail(anyString());
+        verifyNoMoreInteractions(memberRepository);
+    }
+
+    @Test
+    @DisplayName("인증 실패 - 비밀번호 불일치")
+    void AuthenticationFail2() {
+
+        // given
+        Member member = createMember();
+
+        given(memberRepository.findByEmail(member.getEmail()))
+                .willReturn(Optional.of(member));
+        //when & then
+        assertThatThrownBy(()->memberService.validate(member.getEmail(), "1234Qwer!!"))
+                .isInstanceOf(AuthenticationException.class);
+        verify(memberRepository).findByEmail(member.getEmail());
+        verifyNoMoreInteractions(memberRepository);
+    }
 
     MemberCreateRequest createRequest() {
         return new MemberCreateRequest("ljw2109@naver.com", "curPassword", "curPassword");

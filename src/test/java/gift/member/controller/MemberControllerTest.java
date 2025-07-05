@@ -3,10 +3,13 @@ package gift.member.controller;
 import gift.domain.Member;
 import gift.member.dto.MemberCreateRequest;
 import gift.member.dto.MemberResponse;
+import gift.member.repository.MemberRepository;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
@@ -24,6 +27,9 @@ class MemberControllerTest {
     @LocalServerPort
     private int port;
 
+    @Autowired
+    private MemberRepository memberRepository;
+
     private RestClient restClient;
 
     @BeforeEach
@@ -31,6 +37,11 @@ class MemberControllerTest {
         restClient = RestClient.builder()
                 .baseUrl("http://localhost:" + port + "/api/members")
                 .build();
+    }
+
+    @AfterEach
+    void clear() {
+        memberRepository.deleteAll();
     }
 
     @Test
@@ -79,7 +90,7 @@ class MemberControllerTest {
                 .body(wrongRequest)
                 .retrieve()
                 .toEntity(Void.class))
-                .isInstanceOf(HttpClientErrorException.Conflict.class);
+                .isInstanceOf(HttpClientErrorException.BadRequest.class);
     }
 
     private MemberCreateRequest memberCreateRequest() {
