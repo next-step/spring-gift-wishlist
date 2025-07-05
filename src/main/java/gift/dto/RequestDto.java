@@ -1,5 +1,6 @@
 package gift.dto;
 
+import gift.validation.WarningKakao;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.NotNull;
@@ -14,6 +15,8 @@ public class RequestDto {
             regexp = "^[a-zA-Z0-9가-힣 ()\\[\\]+\\-&/_]*$",
             message = "특수문자는 (), [], +, -, &, /, _ 만 가능합니다."
     )
+
+    @WarningKakao
     private String name;
 
     private String imageUrl;
