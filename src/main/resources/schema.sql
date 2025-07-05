@@ -5,3 +5,11 @@ Create table Product(
     imageUrl varchar(512),
     primary key (id)
 );
+
+
+Create table Member(
+    id bigint AUTO_INCREMENT,
+    email varchar(50),
+    password varchar(255),
+    primary key (id)
+);
