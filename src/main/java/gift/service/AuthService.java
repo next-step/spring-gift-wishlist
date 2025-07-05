@@ -1,5 +1,6 @@
 package gift.service;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,15 +14,19 @@ import gift.repository.AuthRepository;
 public class AuthService {
 
     private final AuthRepository authRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthService(AuthRepository authRepository) {
+    public AuthService(AuthRepository authRepository, PasswordEncoder passwordEncoder) {
         this.authRepository = authRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
     public CreateUserResponse createUser(CreateUserRequest request) {
-        // TODO: 비밀번호 암호화 Best Practice 얼른 공부해서 적용하기!!
-        Long generatedId = authRepository.save(User.of(request.email(), request.password()));
+        Long generatedId = authRepository.save(User.of(
+            request.email(),
+            passwordEncoder.encode(request.password()))
+        );
 
         User user = authRepository.findById(generatedId)
             .orElseThrow(() -> new SignupException("사용자 생성에 실패했습니다."));
