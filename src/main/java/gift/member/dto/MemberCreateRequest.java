@@ -15,7 +15,7 @@ public class MemberCreateRequest {
             regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[~`!@#$%^&*()_+=\\-\\[\\]{}|\\\\:;\"'<>,.?/]).{10,20}$",
             message = "비밀번호는 대문자, 소문자, 숫자, 특수문자를 모두 포함해야 합니다."
     )
-    @NotBlank
+    @NotBlank(message = "비밀번호를 입력해주세요")
     private String password;
 
     @Size(min = 10, max = 20, message = "비밀번호는 10자이상 20자이하로 입력해주세요")
@@ -23,7 +23,7 @@ public class MemberCreateRequest {
             regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[~`!@#$%^&*()_+=\\-\\[\\]{}|\\\\:;\"'<>,.?/]).{10,20}$",
             message = "비밀번호는 대문자, 소문자, 숫자, 특수문자를 모두 포함해야 합니다."
     )
-    @NotBlank
+    @NotBlank(message = "확인 비밀번호를 입력해주세요")
     private String confirmPassword;
 
     public MemberCreateRequest(String email, String password, String confirmPassword) {

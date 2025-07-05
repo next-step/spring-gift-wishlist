@@ -1,7 +1,9 @@
 package gift.member.controller;
 
 import gift.domain.Member;
+import gift.domain.Role;
 import gift.member.dto.MemberCreateRequest;
+import gift.member.dto.MemberLoginRequest;
 import gift.member.dto.MemberResponse;
 import gift.member.repository.MemberRepository;
 import org.assertj.core.api.Assertions;
@@ -32,10 +34,15 @@ class MemberControllerTest {
 
     private RestClient restClient;
 
+    private RestClient loginRestClient;
+
     @BeforeEach
     void setUp() {
         restClient = RestClient.builder()
                 .baseUrl("http://localhost:" + port + "/api/members")
+                .build();
+        loginRestClient = RestClient.builder()
+                .baseUrl("http://localhost:" + port + "/login")
                 .build();
     }
 
@@ -91,6 +98,51 @@ class MemberControllerTest {
                 .retrieve()
                 .toEntity(Void.class))
                 .isInstanceOf(HttpClientErrorException.BadRequest.class);
+    }
+
+    @Test
+    @DisplayName("로그인 성공")
+    void loginSuccess() {
+
+        memberRepository.save(createMember());
+
+        ResponseEntity<Void> response = loginRestClient.post()
+                .body(new MemberLoginRequest("ljw2109@naver.com", "Qwer1234!!"))
+                .retrieve()
+                .toEntity(Void.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getHeaders().get("Authorization")).isNotNull();
+    }
+
+    @Test
+    @DisplayName("로그인 실패 - 비밀번호 틀림")
+    void loginFail() {
+        memberRepository.save(createMember());
+
+        assertThatThrownBy(()->loginRestClient.post()
+                .body(new MemberLoginRequest("ljw2109@naver.com", "Qwer1235!!"))
+                .retrieve()
+                .toEntity(Void.class))
+                .isInstanceOf(HttpClientErrorException.Unauthorized.class)
+                .hasMessageContaining("비밀번호가 다릅니다.");
+    }
+
+    @Test
+    @DisplayName("로그인 실패 - 아이디 틀림")
+    void loginFail2() {
+        memberRepository.save(createMember());
+
+        assertThatThrownBy(()->loginRestClient.post()
+                .body(new MemberLoginRequest("ljw2108@naver.com", "Qwer1234!!"))
+                .retrieve()
+                .toEntity(Void.class))
+                .isInstanceOf(HttpClientErrorException.Unauthorized.class)
+                .hasMessageContaining("존재하는 회원이 아닙니다");
+    }
+
+    private Member createMember() {
+        return new Member("ljw2109@naver.com", "Qwer1234!!", Role.REGULAR);
     }
 
     private MemberCreateRequest memberCreateRequest() {
