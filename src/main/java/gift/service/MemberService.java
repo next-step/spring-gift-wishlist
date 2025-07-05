@@ -1,6 +1,6 @@
 package gift.service;
 
-import gift.dto.Member;
+import gift.entity.Member;
 import gift.dto.MemberRequestDto;
 import gift.repository.MemberRepository;
 import gift.repository.MemberRepositoryImpl;

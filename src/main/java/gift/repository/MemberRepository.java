@@ -1,7 +1,7 @@
 package gift.repository;
 
 
-import gift.dto.Member;
+import gift.entity.Member;
 import gift.dto.MemberRequestDto;
 import java.util.List;
 import java.util.Optional;

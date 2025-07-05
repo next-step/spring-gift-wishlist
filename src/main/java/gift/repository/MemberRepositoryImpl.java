@@ -1,6 +1,6 @@
 package gift.repository;
 
-import gift.dto.Member;
+import gift.entity.Member;
 import gift.dto.MemberRequestDto;
 import java.sql.ResultSet;
 import java.sql.SQLException;

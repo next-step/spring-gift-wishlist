@@ -138,4 +138,19 @@ class MemberControllerTest {
                         .toEntity(String.class));
     }
 
+    @Test
+    void 이메일_형식에_대한_테스트() {
+        var url = "http://localhost:" + port + "/api/members/register";
+
+        MemberRequestDto member1 = new MemberRequestDto("abc123", "password");
+
+        var response = restClient.post()
+                .uri(url)
+                .body(member1)
+                .retrieve()
+                .toEntity(String.class);
+
+        System.out.println("createdToken = " + response.getBody());
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    }
 }

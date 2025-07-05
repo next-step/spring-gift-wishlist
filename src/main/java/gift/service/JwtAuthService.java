@@ -1,11 +1,8 @@
 package gift.service;
 
-import gift.dto.Member;
 import gift.dto.MemberRequestDto;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import java.security.Key;
-import java.util.Date;
 import org.springframework.stereotype.Service;
 
 //JWT와 관련된 서비스 :

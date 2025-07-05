@@ -1,6 +1,6 @@
 package gift.controller;
 
-import gift.dto.Member;
+import gift.entity.Member;
 import gift.dto.MemberRequestDto;
 import gift.exception.MemberNotFoundException;
 import gift.service.MemberService;
