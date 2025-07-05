@@ -1,7 +1,9 @@
 package gift.controller;
 
 import gift.dto.MemberRequestDto;
+import gift.dto.TokenResponseDto;
 import gift.service.MemberService;
+import gift.util.JwtUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,14 +18,19 @@ import java.sql.SQLOutput;
 public class MemberController {
 
     private final MemberService memberService;
+    private final JwtUtil jwtUtil;
 
-    public MemberController(MemberService memberService) {
+    public MemberController(MemberService memberService, JwtUtil jwtUtil) {
         this.memberService = memberService;
+        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Void> registerMember(@RequestBody MemberRequestDto memberRequestDto) {
+    public ResponseEntity<?> registerMember(@RequestBody MemberRequestDto memberRequestDto) {
         memberService.saveMember(memberRequestDto);
-        return ResponseEntity.ok().build();
+        String token = jwtUtil.generateToken(memberRequestDto);
+        System.out.println(token);
+
+        return ResponseEntity.ok(new TokenResponseDto(token));
     }
 }
