@@ -3,6 +3,7 @@ package gift.product.dto;
 import gift.global.annotation.ImageURLConstraint;
 import gift.product.annotation.ProductNameConstraint;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
@@ -12,6 +13,7 @@ public class ProductCreateRequest {
     @Pattern(regexp = "^[a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\\s\\(\\)\\[\\]\\+\\-\\&\\/\\_]*$",
     message = "( ), [ ], +, -, &, /, _ 외의 특수문자는 사용할 수 없습니다.")
     @ProductNameConstraint
+    @NotBlank
     private String name;
 
     @Min(value = 1, message = "0원 이하는 가격으로 설정할 수 없습니다.")
