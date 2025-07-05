@@ -5,10 +5,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import gift.dto.ProductCreateResponse;
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
+import gift.exception.ErrorCode;
+import gift.exception.ErrorResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.graphql.GraphQlProperties.Http;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -147,17 +150,136 @@ public class ProductApiTest {
         assertThat(notFoundResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
-//    @Test
-//    @DisplayName("상품 단건 조회 예외발생")
-//
-//    @Test
-//    @DisplayName("상품 둥록 예외 발생")
-//
-//    @Test
-//    @DisplayName("상품 수정 예외 발생")
-//
-//    @Test
-//    @DisplayName("상품 삭제 예외 발생")
+    @Test
+    @DisplayName("상품 단건 조회 예외발생")
+    void 상품_단건_조회_예외발생(){
+        Long productId = 999L;
+        var url = "http://localhost:" + port + "/api/products/" + productId;
+
+        var response = restClient.get()
+            .uri(url)
+            .retrieve()
+            .onStatus(status -> status.is4xxClientError(), (req, res)->{})
+            .toEntity(ErrorResponse.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().errorCode()).isEqualTo(ErrorCode.NOT_EXISTS_PRODUCT);
+        assertThat(response.getBody().message()).isEqualTo(ErrorCode.NOT_EXISTS_PRODUCT.getErrorMessage());
+    }
+
+    @Test
+    @DisplayName("상품 등록 예외 발생")
+    void 상품_등록_예외_발생(){
+        var url = "http://localhost:" + port + "/api/products";
+
+        // name 필드에 허용되지 않는 특수문자
+        ProductRequest request = new ProductRequest(null, "test%", 100, "test url");
+        var response1 = restClient.post()
+            .uri(url)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(request)
+            .retrieve()
+            .onStatus(status -> status.is4xxClientError(), (req, res)->{})
+            .toEntity(ErrorResponse[].class);
+
+        assertThat(response1.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response1.getBody()).isNotNull();
+        assertThat(response1.getBody()[0].errorCode()).isEqualTo(ErrorCode.INVALID_FORM_REQUEST);
+        assertThat(response1.getBody()[0].message()).isEqualTo("사용가능한 특수문자: (), [], +, -, &, /, _");
+
+        // name 필드 15자 초과
+        request = new ProductRequest(null, "testtesttesttest", 100, "test url");
+        var response2 = restClient.post()
+            .uri(url)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(request)
+            .retrieve()
+            .onStatus(status -> status.is4xxClientError(), (req, res)->{})
+            .toEntity(ErrorResponse[].class);
+
+        assertThat(response2.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response2.getBody()).isNotNull();
+        assertThat(response2.getBody()[0].errorCode()).isEqualTo(ErrorCode.INVALID_FORM_REQUEST);
+        assertThat(response2.getBody()[0].message()).isEqualTo("상품명은 최대 15자까지 가능합니다.");
+
+        // name 필드에 '카카오' 이름 포함
+        request = new ProductRequest(null, "test카카오", 100, "test url");
+        var response3 = restClient.post()
+            .uri(url)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(request)
+            .retrieve()
+            .onStatus(status -> status.is4xxClientError(), (req, res)->{})
+            .toEntity(ErrorResponse.class);
+
+        assertThat(response3.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response3.getBody()).isNotNull();
+        assertThat(response3.getBody().errorCode()).isEqualTo(ErrorCode.INVALID_KAKAO_NAME);
+        assertThat(response3.getBody().message()).isEqualTo(ErrorCode.INVALID_KAKAO_NAME.getErrorMessage());
+
+    }
+
+    @Test
+    @DisplayName("상품 수정 예외 발생")
+    void 상품_수정_예외_발생(){
+
+        // 유효하지 않은 name 필드 제공
+        Long productId = 5L;
+        var url = "http://localhost:" + port + "/api/products/" + productId;
+        ProductRequest updateRequest = new ProductRequest(productId, "updated name%", 2000,
+            "updated url");
+
+        var response1 = restClient.patch()
+            .uri(url)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(updateRequest)
+            .retrieve()
+            .onStatus(status -> status.is4xxClientError(), (req, res)->{})
+            .toEntity(ErrorResponse[].class);
+
+        assertThat(response1.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response1.getBody()).isNotNull();
+        assertThat(response1.getBody()[0].errorCode()).isEqualTo(ErrorCode.INVALID_FORM_REQUEST);
+        assertThat(response1.getBody()[0].message()).isEqualTo("사용가능한 특수문자: (), [], +, -, &, /, _");
 
 
+        // 존재하지 않는 id
+        productId = 999L;
+        url = "http://localhost:" + port + "/api/products/" + productId;
+        updateRequest = new ProductRequest(productId, "updated name", 2000,
+            "updated url");
+
+        var response2 = restClient.patch()
+            .uri(url)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(updateRequest)
+            .retrieve()
+            .onStatus(status -> status.is4xxClientError(), (req, res)->{})
+            .toEntity(ErrorResponse.class);
+
+        assertThat(response2.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(response2.getBody()).isNotNull();
+        assertThat(response2.getBody().errorCode()).isEqualTo(ErrorCode.NOT_EXISTS_PRODUCT);
+        assertThat(response2.getBody().message()).isEqualTo(ErrorCode.NOT_EXISTS_PRODUCT.getErrorMessage());
+
+    }
+
+    @Test
+    @DisplayName("상품 삭제 예외 발생")
+    void 상품_삭제_예외_발생(){
+        Long productId = 999L;
+        var url = "http://localhost:" + port + "/api/products/" + productId;
+
+        var response = restClient.delete()
+            .uri(url)
+            .retrieve()
+            .onStatus(status -> status.is4xxClientError(), (req, res)->{})
+            .toEntity(ErrorResponse.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().errorCode()).isEqualTo(ErrorCode.NOT_EXISTS_PRODUCT);
+        assertThat(response.getBody().message()).isEqualTo(ErrorCode.NOT_EXISTS_PRODUCT.getErrorMessage());
+    }
 }
