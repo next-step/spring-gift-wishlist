@@ -26,7 +26,10 @@ public class ProductControllerTest {
 
     @BeforeEach
     void setUp() {
-        this.client = builder.build();
+        this.client = builder.defaultStatusHandler(response -> {
+                                return response.getStatusCode().is4xxClientError();
+                             })
+                             .build();
     }
 
     @Test
