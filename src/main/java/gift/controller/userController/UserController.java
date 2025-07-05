@@ -3,6 +3,7 @@ package gift.controller.userController;
 
 import gift.dto.itemDto.userDto.UserRegisterDto;
 import gift.dto.itemDto.userDto.UserResponseDto;
+import gift.entity.User;
 import gift.service.itemService.userService.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -44,5 +45,13 @@ public class UserController {
         List<UserResponseDto> users = userService.getUserList(email);
 
         return new ResponseEntity<List<UserResponseDto>>(users, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<UserResponseDto> deleteUser(
+            @RequestParam Long id,
+            Model model
+    ) {
+        UserResponseDto response = userService.finUserById(id);
     }
 }
