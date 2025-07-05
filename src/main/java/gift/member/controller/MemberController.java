@@ -1,7 +1,5 @@
 package gift.member.controller;
 
-import gift.member.dto.LoginRequestDto;
-import gift.member.dto.LoginResponseDto;
 import gift.member.dto.RegisterRequestDto;
 import gift.member.dto.RegisterResponseDto;
 import gift.member.exception.MemberNotFoundException;
@@ -32,13 +30,6 @@ public class MemberController {
         return new ResponseEntity<>(memberService.registerMember(registerRequestDto),
             HttpStatus.CREATED);
 
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> login(
-        @Valid @RequestBody LoginRequestDto loginRequestDto) {
-
-        return new ResponseEntity<>(memberService.login(loginRequestDto), HttpStatus.OK);
     }
 
     @ExceptionHandler(MemberNotFoundException.class)
