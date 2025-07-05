@@ -3,10 +3,6 @@ package gift.controller;
 import static org.assertj.core.api.Assertions.*;
 
 import gift.dto.MemberRequestDto;
-import gift.entity.Product;
-import gift.repository.MemberRepositoryImpl;
-import gift.service.JwtAuthService;
-import gift.service.MemberService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
@@ -68,6 +63,79 @@ class MemberControllerTest {
                         .retrieve()
                         .toEntity(String.class)
         );
+    }
+
+    @Test
+    void 로그인_성공시_200과_토큰이_반환(){
+
+        //회원가입
+        var registerUrl = "http://localhost:" + port + "/api/members/register";
+
+        MemberRequestDto member = new MemberRequestDto("test123@gmail.com", "password");
+
+        var register = restClient.post()
+                .uri(registerUrl)
+                .body(member)
+                .retrieve()
+                .toEntity(String.class);
+
+        System.out.println("created token = " + register.getBody());
+        assertThat(register.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        //로그인
+        var loginUrl = "http://localhost:" + port + "/api/members/login";
+
+        var login = restClient.post()
+                .uri(loginUrl)
+                .body(member)
+                .retrieve()
+                .toEntity(String.class);
+
+        System.out.println("createdToken = " + login.getBody());
+        assertThat(login.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+    }
+
+    @Test
+    void 로그인_실패_비밀번호_틀린경우(){
+
+        //회원가입
+        var registerUrl = "http://localhost:" + port + "/api/members/register";
+
+        MemberRequestDto member = new MemberRequestDto("test321@gmail.com", "password");
+
+        var register = restClient.post()
+                .uri(registerUrl)
+                .body(member)
+                .retrieve()
+                .toEntity(String.class);
+
+        System.out.println("created token = " + register.getBody());
+        assertThat(register.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        //비밀번호가 틀리는 경우
+        var loginUrl = "http://localhost:" + port + "/api/members/login";
+        MemberRequestDto loginMember = new MemberRequestDto("test321@gmail.com", "passwor");
+
+        Assertions.assertThrows(HttpClientErrorException.Forbidden.class,
+                () -> restClient.post()
+                        .uri(loginUrl)
+                        .body(loginMember)
+                        .retrieve()
+                        .toEntity(String.class));
+    }
+
+    @Test
+    void 가입되지_않은_이메일로_가입하는_경우(){
+        var url = "http://localhost:" + port + "/api/members/login";
+        MemberRequestDto loginMember = new MemberRequestDto("qewer123@gmail.com", "passwor");
+
+        Assertions.assertThrows(HttpClientErrorException.Forbidden.class,
+                () -> restClient.post()
+                        .uri(url)
+                        .body(loginMember)
+                        .retrieve()
+                        .toEntity(String.class));
     }
 
 }
