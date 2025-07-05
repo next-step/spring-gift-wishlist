@@ -39,4 +39,22 @@ public class GlobalExceptionHandler {
         .status(HttpStatus.BAD_REQUEST)
         .body(errorResponseDto);
   }
+
+  @ExceptionHandler(IllegalArgumentException.class)
+  public ResponseEntity<ErrorResponseDto> handleIllegalArgument(
+      IllegalArgumentException ex,
+      HttpServletRequest request
+  ){
+    ErrorResponseDto errorResponseDto = new ErrorResponseDto(
+        "https://example.com/not-found",
+        "Resource Not Found",
+        HttpStatus.NOT_FOUND.value(),
+        ex.getMessage(),
+        request.getRequestURI(),
+        null
+    );
+    return ResponseEntity
+        .status(HttpStatus.NOT_FOUND)
+        .body(errorResponseDto);
+    }
 }
