@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RestControllerAdvice(basePackages = "gift.product")
+@RestControllerAdvice
 public class ProductExceptionHandler {
 
   private static final Logger logger = LoggerFactory.getLogger(ProductExceptionHandler.class);
@@ -23,6 +23,12 @@ public class ProductExceptionHandler {
   public ResponseEntity<ErrorResponse> handleInvalidProductNameException(
       InvalidProductNameException exception) {
     logger.error("Invalid product name: {}", exception.getMessage());
+    return createErrorResponse(exception.getErrorCode(), exception);
+  }
+
+  @ExceptionHandler(InvalidProductSortFieldException.class)
+  public ResponseEntity<ErrorResponse> handleSortFieldException(
+      InvalidProductSortFieldException exception) {
     return createErrorResponse(exception.getErrorCode(), exception);
   }
 

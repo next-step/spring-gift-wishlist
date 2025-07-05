@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 public enum GlobalErrorCode implements ErrorCode {
   INVALID_ARGUMENT_ERROR(HttpStatus.BAD_REQUEST, "G001", "요청 값이 유효하지 않습니다"),
   INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "G002", "내부 서버 오류가 발생했습니다"),
-  INVALID_SORT_FIELD_ERROR(HttpStatus.BAD_REQUEST, "G003", "페이징 정렬 필드 값이 올바르지 않습니다"),
   UNAUTHORIZED_ERROR(HttpStatus.UNAUTHORIZED, "G004", "인증이 필요합니다"),
   FORBIDDEN_ERROR(HttpStatus.FORBIDDEN, "G005", "접근 권한이 없습니다");
 
