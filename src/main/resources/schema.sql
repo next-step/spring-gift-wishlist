@@ -5,5 +5,6 @@ CREATE TABLE product (
     name VARCHAR(100) NOT NULL,
     price BIGINT NOT NULL,
     image_url VARCHAR(500) NOT NULL,
+    is_kakao_approved BOOLEAN NOT NULL DEFAULT FALSE,
     PRIMARY KEY (id)
 );

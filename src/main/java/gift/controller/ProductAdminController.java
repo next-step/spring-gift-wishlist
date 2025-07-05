@@ -3,7 +3,8 @@ package gift.controller;
 
 import gift.dto.request.ProductRequestDto;
 import gift.dto.response.ProductResponseDto;
-import gift.view.ProductView;
+import gift.dto.view.ProductFormDto;
+import gift.dto.view.ProductView;
 import gift.service.ProductService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,7 +39,7 @@ public class ProductAdminController {
     @GetMapping("/add")
     public String showAddForm(Model model){
         model.addAttribute("product",
-                new ProductRequestDto("", 0L, ""));
+                ProductFormDto.emptyForm());
 
         return "admin/add-form";
     }
@@ -61,7 +62,9 @@ public class ProductAdminController {
     public String showEditForm(@PathVariable Long id, Model model){
         ProductResponseDto productDto = productService.getProduct(id);
 
-        model.addAttribute("product", productDto);
+        ProductFormDto productFormDto = ProductFormDto.from(productDto);
+
+        model.addAttribute("product", productFormDto);
         model.addAttribute("productId", id);
 
         return "admin/edit-form";
