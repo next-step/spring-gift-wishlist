@@ -1,12 +1,14 @@
 # spring-gift-wishlist
 
-| method | url                | 기능       |
-|--------|--------------------|----------|
-| GET    | /api/products      | 상품 전체 조회 |
-| POST   | /api/products      | 상품 생성    |
-| PATCH  | /api/products/{id} | 상품 수정    |
-| DELETE | /api/products/{id} | 상품 삭제    |
-| GET    | /admin             | 관리자 페이지  |
+| method | url                   | 기능       |
+|--------|-----------------------|----------|
+| GET    | /api/products         | 상품 전체 조회 |
+| POST   | /api/products         | 상품 생성    |
+| PATCH  | /api/products/{id}    | 상품 수정    |
+| DELETE | /api/products/{id}    | 상품 삭제    |
+| GET    | /admin                | 관리자 페이지  |
+| POST   | /api/members/register | 회원가입     |
+| POST   | /api/members/login    | 로그인      |
 
 step 0. 기본 코드 준비
 
@@ -28,3 +30,8 @@ step 1. 피드백
 1. 가격에 양수만 받게 하기
 2. 가격에 음수가 들어갔을때 테스트케이스 만들기
 3. 제목에 "카카오"가 포함될수 있는상품 테스트케이스 만들기
+
+step 2. 회원 로그인
+1. 회원가입 api 구현
+2. 로그인 api 구현
+3. 토큰 구현
