@@ -58,7 +58,7 @@ public class ProductJdbcRepository implements ProductRepository {
         parameters.put("image_url", imageUrl);
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
 
-        return new Product(key.longValue(), name, price, imageUrl);
+        return Product.of(key.longValue(), name, price, imageUrl);
     }
 
     @Override
@@ -90,7 +90,7 @@ public class ProductJdbcRepository implements ProductRepository {
         return new RowMapper<Product>() {
             @Override
             public Product mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new Product(
+                return Product.of(
                         rs.getLong("id"),
                         rs.getString("name"),
                         rs.getLong("price"),

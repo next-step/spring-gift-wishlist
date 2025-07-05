@@ -52,9 +52,12 @@ public class ProductService {
     @Transactional
     public void updateProduct(UpdateProductRequestDto requestDto) {
         Product findProduct = productRepository.findProductByIdOrElseThrow(requestDto.id());
-        findProduct.setName(requestDto.name());
-        findProduct.setPrice(requestDto.price());
-        findProduct.setImageUrl(requestDto.imageUrl());
-        productRepository.updateProduct(findProduct);
+        Product updatedProduct = Product.of(
+                requestDto.id(),
+                requestDto.name(),
+                requestDto.price(),
+                requestDto.imageUrl()
+        );
+        productRepository.updateProduct(updatedProduct);
     }
 }
