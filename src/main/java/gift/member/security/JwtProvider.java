@@ -1,4 +1,4 @@
-package gift.member;
+package gift.member.security;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
