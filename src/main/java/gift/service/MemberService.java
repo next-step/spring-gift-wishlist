@@ -54,12 +54,30 @@ public class MemberService {
         return memberRepository.findMemberByEmail(email);
     }
 
+    //멤버의 정보 수정이 가능한지 확인하는 기능
+    public boolean checkAvailableModify(Long id, MemberRequestDto memberRequestDto){
+        Optional<Member> member = memberRepository.findMemberByEmail(memberRequestDto.email());
 
+        //이메일을 변경하는 경우 (이메일 + 비밀번호 모두 변경)
+        if(member.isEmpty()){
+            return true; //변경 반영
+        }
+
+        //비밀번호만 변경하는 경우(이메일은 변경하지 않음)
+        String email = memberRepository.findMemberById(id).get().getEmail();
+        if(email.equals(memberRequestDto.email())){
+            return true; //변경 반영
+        }
+
+        return false; //변경 못함 -> 이메일 중복이 발생
+    }
 
     //멤버의 정보를 수정하는 기능
     public void modifyMember(Long id, MemberRequestDto memberRequestDto){
         memberRepository.modifyMember(id, memberRequestDto);
     }
+
+
 
     //멤버를 삭제하는 기능
     public void removeMember(Long id){
