@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ProductControllerTest {
-    
+
     @LocalServerPort
     private int port;
 
@@ -32,24 +32,34 @@ public class ProductControllerTest {
                              .build();
     }
 
-    @Test
-    void 상품명_15자_초과시_400이_반환된다() throws Exception{
-        String url = "http://localhost:" + port + "/api/products";
+    private static final String PRODUCT_API = "/api/products";
 
-        ProductRequest request = new ProductRequest(
-                " 0123456789카카오!!~",
-                -2000,
-                ""
-        );
-
-        ResponseEntity<String> response = client.post()
+    private ResponseEntity<String> postProduct(ProductRequest request){
+        String url = "http://localhost:" + port + PRODUCT_API;
+        return client.post()
                 .uri(url)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
                 .retrieve()
                 .toEntity(String.class);
+    }
 
+    private void assertBadRequest(ProductRequest request){
+        ResponseEntity<String> response = postProduct(request);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void 상품명_15자_초과시_400이_반환된다() throws Exception{
+        String url = "http://localhost:" + port + "/api/products";
+
+        ProductRequest request = new ProductRequest(
+                " 0123456789abc",
+                1000,
+                "http://image.jpg"
+        );
+
+        assertBadRequest(request);
     }
 
     @Test
@@ -62,18 +72,11 @@ public class ProductControllerTest {
                 "http://"
         );
 
-        ResponseEntity<String> response = client.post()
-                .uri(url)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(request)
-                .retrieve()
-                .toEntity(String.class);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertBadRequest(request);
     }
 
     @Test
-    void 상품명에_카카오_포함시_400이_반환된다() throws Exception{
+    void 상품명에_카카오_포함시_400이_반환된다() throws Exception {
         String url = "http://localhost:" + port + "/api/products";
 
         ProductRequest request = new ProductRequest(
@@ -82,13 +85,6 @@ public class ProductControllerTest {
                 "http://"
         );
 
-        ResponseEntity<String> response = client.post()
-                .uri(url)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(request)
-                .retrieve()
-                .toEntity(String.class);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertBadRequest(request);
     }
 }
