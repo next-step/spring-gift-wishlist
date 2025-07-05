@@ -1,7 +1,5 @@
 package gift.product.dto;
 
-import gift.global.validation.NameType;
-import gift.product.validation.NotContain;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -15,7 +13,6 @@ public record UpdateProductReqDto(
         regexp = "^[a-zA-Z0-9 ()\\[\\]+\\-&/_가-힣]*$",
         message = "상품 이름에는 허용되지 않은 특수문자가 포함되어 있습니다."
     )
-    @NotContain(nameType = NameType.PRODUCT)
     String name,
 
     @PositiveOrZero(message = "가격은 0원 이상이어야 합니다")
