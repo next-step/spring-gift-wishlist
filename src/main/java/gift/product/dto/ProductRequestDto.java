@@ -13,15 +13,11 @@ public class ProductRequestDto {
     private Integer price;
     private String imageUrl;
 
+    private ProductRequestDto() {}
+    private ProductRequestDto(Product product) {}
+
     public static ProductRequestDto fromEntity(Product product) {
-
-        ProductRequestDto dto = new ProductRequestDto();
-
-        dto.name = product.getName();
-        dto.price = product.getPrice();
-        dto.imageUrl = product.getImageUrl();
-
-        return dto;
+        return new ProductRequestDto(product);
     }
 
     public String getName() {
