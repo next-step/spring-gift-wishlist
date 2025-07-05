@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.server.ResponseStatusException;
 
 @ControllerAdvice(assignableTypes = AdminPageController.class)
-public class WebExceptionHandler {
+public class AdminPageControllerExceptionHandler {
 
     @ExceptionHandler(ResponseStatusException.class)
     public String handleWebException(ResponseStatusException ex, Model model) {
