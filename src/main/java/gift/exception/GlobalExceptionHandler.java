@@ -19,6 +19,7 @@ public class GlobalExceptionHandler {
             .body(new ErrorResponse(e.getErrorCode(), e.getMessage()));
     }
 
+    // jdbcTemplate.query()의 결과값이 없을 때
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<?> handleDataAccessException(EmptyResultDataAccessException e){
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
