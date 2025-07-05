@@ -3,6 +3,7 @@ package gift.service;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.entity.Product;
+import gift.exception.ProductNotFoundException;
 import gift.repository.ProductRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -66,6 +67,6 @@ public class ProductService {
 
     private Product findProductOrThrow(Long productId) {
         return productRepository.findProduct(productId)
-                                .orElseThrow(IllegalArgumentException::new);
+                                .orElseThrow(() -> new ProductNotFoundException(productId));
     }
 }

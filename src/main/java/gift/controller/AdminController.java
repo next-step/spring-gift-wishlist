@@ -1,6 +1,7 @@
 package gift.controller;
 
 import gift.dto.ProductRequestDto;
+import gift.exception.ProductNotFoundException;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -37,7 +38,7 @@ public class AdminController {
     public String detailProduct(@PathVariable Long id, Model model) {
         try {
             model.addAttribute("product", productService.findProduct(id));
-        } catch (IllegalArgumentException e) {
+        } catch (ProductNotFoundException ex) {
             model.addAttribute("errorMessage", "상품을 찾을 수 없습니다.");
         }
         return "admin/products/detail";
@@ -69,7 +70,7 @@ public class AdminController {
         try {
             model.addAttribute("product", productService.findProduct(id));
             model.addAttribute("productId", id);
-        } catch (IllegalArgumentException e) {
+        } catch (ProductNotFoundException ex) {
             model.addAttribute("errorMessage", "상품을 찾을 수 없습니다.");
         }
         return "admin/products/edit";
@@ -90,7 +91,7 @@ public class AdminController {
 
         try {
             productService.updateProduct(id, productRequestDto);
-        } catch (IllegalArgumentException e) {
+        } catch (ProductNotFoundException ex) {
             redirectAttributes.addFlashAttribute("errorMessage", "상품을 찾을 수 없습니다.");
         }
         return "redirect:/admin/products";
@@ -102,7 +103,7 @@ public class AdminController {
             RedirectAttributes redirectAttributes) {
         try {
             productService.deleteProduct(id);
-        } catch (IllegalArgumentException e) {
+        } catch (ProductNotFoundException ex) {
             redirectAttributes.addFlashAttribute("errorMessage", "상품을 찾을 수 없습니다.");
         }
         return "redirect:/admin/products";
