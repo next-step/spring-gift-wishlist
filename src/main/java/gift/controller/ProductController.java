@@ -16,7 +16,6 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
-    private static final Logger log = LoggerFactory.getLogger(ProductController.class);
 
     public ProductController(ProductService productService) {
         this.productService = productService;
@@ -41,12 +40,8 @@ public class ProductController {
     @PutMapping("/{productId}")
     public ResponseEntity<String> updateProduct(
             @PathVariable Long productId,
-            @Validated @RequestBody ProductRequestDto productRequestDto,
-            BindingResult bindingResult
+            @Validated @RequestBody ProductRequestDto productRequestDto
     ) {
-        if (bindingResult.hasErrors()) {
-            throw new RequestNotValidException(bindingResult);
-        }
         productService.updateProduct(productId, productRequestDto);
         return ResponseEntity.ok().build();
     }
