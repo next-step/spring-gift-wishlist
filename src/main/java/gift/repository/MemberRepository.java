@@ -17,7 +17,7 @@ public class MemberRepository {
 
     // 회원 저장
     public Member save(Member member) {
-        String sql = "INSERT INTO member (email, password) VALUES (?, ?)";
+        String sql = "INSERT INTO members (email, password) VALUES (?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcClient
             .sql(sql)
