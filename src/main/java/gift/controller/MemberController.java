@@ -36,16 +36,16 @@ public class MemberController {
     //TODO: 로그인 기능 -> 토큰을 반환
     @PostMapping("/login")
     public ResponseEntity<String> login(
-            @RequestBody  MemberRequestDto memberRequestDto,
-            @RequestHeader(value = "Authorization") String accessToken
+            @RequestBody  MemberRequestDto memberRequestDto
     ){
         //서버에 저장된 id-pw 쌍과 일치하는지 확인
-        if(memberService.checkMember(memberRequestDto)){
-            return ResponseEntity.badRequest().body("이메일 또는 비밀번호가 일치하지 않습니다.");
+        if(!memberService.checkMember(memberRequestDto)){
+            //잘못된 로그인에 대해서는 403을 반환
+            return new ResponseEntity<>("아이디 또는 비밀번호가 잘못 되었습니다.", HttpStatus.FORBIDDEN);
         }
-        //토큰에 대한 유효성 검사를 수행
-        //jwtAuthService.checkValidation(accessToken);
-        return ResponseEntity.ok().body(accessToken);
+        //서버에 저장된 id-pw 쌍과 일치한다면 토큰을 발급
+        String token = jwtAuthService.createJwt(memberRequestDto);
+        return ResponseEntity.ok().body(token);
     }
 
 }

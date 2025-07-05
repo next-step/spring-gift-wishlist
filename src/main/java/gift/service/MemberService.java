@@ -28,8 +28,7 @@ public class MemberService {
 
     //TODO:로그인 기능 -> 이메일과 비밀번호가 일치하는지 확인하는 로직
     public Boolean checkMember(MemberRequestDto memberRequestDto){
-        String Encryptedpw = "password";
-        Optional<Member> member = memberRepository.findMemberByEmailAndPassword(memberRequestDto.email(), Encryptedpw);
+        Optional<Member> member = memberRepository.findMemberByEmailAndPassword(memberRequestDto.email(), memberRequestDto.password());
         if(member.isEmpty()){
             return false;
         }
