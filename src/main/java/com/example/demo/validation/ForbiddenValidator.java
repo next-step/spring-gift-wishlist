@@ -2,14 +2,16 @@ package com.example.demo.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import java.util.Arrays;
 import java.util.List;
 
 public class ForbiddenValidator implements ConstraintValidator<NoForbiddenWords, String> {
 
-  private final List<String> forbiddenWords;
+  private List<String> forbiddenWords;
 
-  public ForbiddenValidator() {
-    this.forbiddenWords = List.of("카카오");
+  @Override
+  public void initialize(NoForbiddenWords annotation){
+    this.forbiddenWords = Arrays.asList(annotation.words());
   }
 
   @Override
