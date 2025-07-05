@@ -1,4 +1,4 @@
-package gift.controller;
+package gift.controller.product;
 
 import gift.dto.api.product.AddProductRequestDto;
 import gift.dto.api.product.ModifyProductRequestDto;
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ProductViewController {
     
     private final ProductService productService;
-    private final String PRODUCTS_LIST_PATH = "/products";
+    private final String PRODUCTS_LIST_PATH = "/admin/products";
     
     public ProductViewController(ProductService productService) {
         this.productService = productService;

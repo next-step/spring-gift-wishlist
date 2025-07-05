@@ -1,4 +1,4 @@
-package gift.controller;
+package gift.controller.member;
 
 import gift.dto.api.member.MemberRequestDto;
 import gift.dto.api.member.MemberResponseDto;
@@ -20,6 +20,7 @@ public class MemberController {
         this.memberService = memberService;
     }
     
+    //회원가입
     @PostMapping("/register")
     public ResponseEntity<MemberResponseDto> registerMember(
         @RequestBody MemberRequestDto requestDto
@@ -28,6 +29,7 @@ public class MemberController {
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
     
+    //로그인
     @PostMapping("/login")
     public ResponseEntity<MemberResponseDto> loginMember(
         @RequestBody MemberRequestDto requestDto
