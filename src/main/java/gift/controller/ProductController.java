@@ -7,7 +7,9 @@ import gift.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 
@@ -24,7 +26,12 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<ProductResponse> register(@RequestBody @Valid ProductRequest request) {
         ProductResponse response = productService.register(request);
-        return ResponseEntity.created(null).body(response);
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(response.id())
+                .toUri();
+        return ResponseEntity.created(location).body(response);
     }
 
     @GetMapping("/{productId}")
