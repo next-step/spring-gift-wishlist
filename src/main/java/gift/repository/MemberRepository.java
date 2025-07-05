@@ -31,4 +31,13 @@ public class MemberRepository {
             .query(Long.class)
             .single() == 1;
     }
+
+    public Optional<Long> getMemberIdentifyNumber(String email, String password) {
+        return jdbcClient.sql("select identify_number from member where email = :email and password = :password")
+                .param("email", email)
+                .param("password", password)
+                .query(Long.class)
+                .optional();
+    }
+
 }

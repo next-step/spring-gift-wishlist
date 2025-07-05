@@ -34,4 +34,14 @@ public class MemberController {
             .body(CreateMemberResponse.from(member));
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<LoginMemberResponse> login (
+            @Valid @RequestBody LoginMemberRequest loginMemberRequest
+    ) {
+        Long identifyNumber = memberService.getMemberIdentifyNumber(loginMemberRequest.email(), loginMemberRequest.password());
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new LoginMemberResponse(identifyNumber));
+    }
+
 }

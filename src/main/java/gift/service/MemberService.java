@@ -29,4 +29,12 @@ public class MemberService {
         return member.updateIdentifyNumber(optionalIdentifyNumber.get());
     }
 
+    public Long getMemberIdentifyNumber(String email, String password) {
+        Optional<Long> optionalIdentifyNumber = memberRepository.getMemberIdentifyNumber(email, password);
+        if (optionalIdentifyNumber.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid email or password");
+        }
+        return optionalIdentifyNumber.get();
+    }
+
 }
