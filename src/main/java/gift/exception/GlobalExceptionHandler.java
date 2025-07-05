@@ -12,13 +12,15 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    public record ErrorResponse(String message) {}
+    public record ValidationError(String field, String code, String message) {}
+
     @ExceptionHandler(ProductNotExistException.class)
     public ResponseEntity<ErrorResponse> handleProductNotExist(ProductNotExistException ex) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponse(ex.getMessage()));
     }
-    public record ErrorResponse(String message) {}
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, List<ValidationError>>> handleValidationExceptions(MethodArgumentNotValidException ex) {
@@ -32,11 +34,23 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.badRequest().body(Map.of("errors", errors));
     }
-    public record ValidationError(String field, String code, String message) {}
-
 
     @ExceptionHandler(DuplicateMemberException.class)
     public ResponseEntity<ErrorResponse> handleDuplicateMember(DuplicateMemberException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(ex.getMessage()));
+    }
+
+    @ExceptionHandler(MemberNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleMemberNotFound(MemberNotFoundException ex) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(ex.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidPasswordException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidPassword(InvalidPasswordException ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse(ex.getMessage()));
