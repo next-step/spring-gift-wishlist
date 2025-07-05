@@ -23,3 +23,13 @@
 - GlobalExceptionHandler의 404/500 에러 Handling
 - SpringBootTest 실행 순서가 결과에 영향을 주지 않도록 조치
 - SpringBootTest 검사 중 response body의 값을 notnull이 아닌 실제 값 검사를 수행하도록 조치
+
+## 2단계 코드리뷰 요청 (구현내용 명세)
+### 토큰기법을 제외한 기능구현
+- `POST /api/users`를 통한 유저 등록
+  - email, password 필요. email과 password 각 유효성검사 수행
+- `POST /api/users/login`를 통한 로그인 수행
+  - email, password 필요. email & password 쌍에 대해 정보가 존재하는지 확인
+### 토큰기법을 추가한 기능 구현
+- `POST /api/users`를 통한 유저 등록 시, 해당 유저에 대한 로그인 토큰 반환
+- `POST /api/users/login`를 통한 로그인 수행 시, 해당 유저에 대한 토큰 반환
