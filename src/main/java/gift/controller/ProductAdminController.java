@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,7 +35,7 @@ public class ProductAdminController {
     @GetMapping("/create")
     public String createForm(Model model) {
         model.addAttribute("productRequestDto", new ProductRequestDto("", 0L, ""));
-        return "admin/create";
+
     }
 
     // 상품 추가
@@ -44,6 +45,7 @@ public class ProductAdminController {
         if(bindingResult.hasErrors()){
             return "admin/create";
         }
+
         Product product = new Product(null, dto.name(), dto.price(), dto.imageUrl());
         service.createProduct(product);
         return "redirect:/admin/products";
@@ -61,6 +63,7 @@ public class ProductAdminController {
         );
         model.addAttribute("product", dto);
         model.addAttribute("productId", id);
+
         return "admin/update";
     }
 
@@ -78,6 +81,7 @@ public class ProductAdminController {
                 .orElseThrow(() -> new IllegalArgumentException("수정 실패"));
         return "redirect:/admin/products";
     }
+
 
 
     // 상품 삭제
