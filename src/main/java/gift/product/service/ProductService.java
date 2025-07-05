@@ -23,10 +23,12 @@ public class ProductService {
     this.productRepository = productRepository;
   }
 
-  public PagedResult<GetProductResDto> getAllByPage(PageRequest pageRequest) throws IllegalArgumentException {
+  public PagedResult<GetProductResDto> getAllByPage(PageRequest pageRequest)
+      throws IllegalArgumentException {
     List<Product> pagedProductList = productRepository.findAllByPage(pageRequest.offset(),
-        pageRequest.pageSize(),pageRequest.sortInfo());
-    return PagedResult.of(pagedProductList, pageRequest.offset(), pageRequest.pageSize()).map(GetProductResDto::from);
+        pageRequest.pageSize(), pageRequest.sortInfo());
+    return PagedResult.of(pagedProductList, pageRequest.offset(), pageRequest.pageSize())
+        .map(GetProductResDto::from);
   }
 
   public GetProductResDto getProductById(Long id) throws ProductNotFoundException {
@@ -34,6 +36,7 @@ public class ProductService {
         .orElseThrow(() -> new ProductNotFoundException(ErrorCode.PRODUCT_NOT_FOUND));
     return GetProductResDto.from(product);
   }
+
   @Transactional
   public Long createProduct(CreateProductReqDto dto) {
     Product newProduct = Product.of(
@@ -44,9 +47,10 @@ public class ProductService {
     );
     return productRepository.save(newProduct);
   }
+
   @Transactional
   public void updateProduct(Long id, UpdateProductReqDto dto) throws ProductNotFoundException {
-    if(productRepository.findById(id).isEmpty()){
+    if (productRepository.findById(id).isEmpty()) {
       throw new ProductNotFoundException(ErrorCode.PRODUCT_NOT_FOUND);
     }
     Product newProduct = Product.withId(
@@ -58,9 +62,10 @@ public class ProductService {
     );
     productRepository.update(id, newProduct);
   }
+
   @Transactional
   public void deleteProduct(Long id) throws ProductNotFoundException {
-    if(productRepository.findById(id).isEmpty()){
+    if (productRepository.findById(id).isEmpty()) {
       throw new ProductNotFoundException(ErrorCode.PRODUCT_NOT_FOUND);
     }
     productRepository.deleteById(id);

@@ -5,7 +5,8 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import java.util.List;
 
-public class MustNotContainValidator implements ConstraintValidator<NotContain,String> {
+public class MustNotContainValidator implements ConstraintValidator<NotContain, String> {
+
   private List<String> blacklist;
 
   @Override
@@ -15,7 +16,9 @@ public class MustNotContainValidator implements ConstraintValidator<NotContain,S
 
   @Override
   public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
-    if (s == null) return true;
+    if (s == null) {
+      return true;
+    }
 
     boolean isValid = blacklist.stream().noneMatch(s::contains);
     if (!isValid) {

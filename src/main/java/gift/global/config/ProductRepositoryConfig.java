@@ -16,6 +16,7 @@ public class ProductRepositoryConfig {
   public ProductRepository jdbcProductRepository(DataSource dataSource) {
     return new JdbcProductRepository(dataSource);
   }
+
   @Bean
   @Profile("default")
   public ProductRepository inMemoryProductRepository() {

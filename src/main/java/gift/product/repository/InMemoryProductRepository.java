@@ -18,17 +18,17 @@ public class InMemoryProductRepository implements ProductRepository {
 
   @Override
   public Long save(Product product) {
-    Objects.requireNonNull(product,"상품은 null일 수 없습니다");
+    Objects.requireNonNull(product, "상품은 null일 수 없습니다");
 
     Long id = idGenerator.incrementAndGet();
-    Product newProduct = Product.withId(id,product);
+    Product newProduct = Product.withId(id, product);
     productMap.put(id, newProduct);
     return id;
   }
 
   @Override
   public Optional<Product> findById(Long id) {
-    Objects.requireNonNull(id,"ID는 null일 수 없습니다");
+    Objects.requireNonNull(id, "ID는 null일 수 없습니다");
 
     return Optional.ofNullable(productMap.get(id));
   }
@@ -45,7 +45,7 @@ public class InMemoryProductRepository implements ProductRepository {
     List<Product> sortedAndPaged = productMap.values().stream()
         .sorted(comparator)
         .skip((long) offset * pageSize)
-        .limit(pageSize+1)
+        .limit(pageSize + 1)
         .toList();
 
     return new ArrayList<>(sortedAndPaged);
@@ -53,15 +53,15 @@ public class InMemoryProductRepository implements ProductRepository {
 
   @Override
   public void update(Long id, Product updatedProduct) {
-    Objects.requireNonNull(id,"ID는 null일 수 없습니다");
-    Objects.requireNonNull(updatedProduct,"상품은 null일 수 없습니다");
+    Objects.requireNonNull(id, "ID는 null일 수 없습니다");
+    Objects.requireNonNull(updatedProduct, "상품은 null일 수 없습니다");
 
     productMap.put(id, updatedProduct);
   }
 
   @Override
   public void deleteById(Long id) {
-    Objects.requireNonNull(id,"ID는 null일 수 없습니다");
+    Objects.requireNonNull(id, "ID는 null일 수 없습니다");
 
     productMap.remove(id);
   }

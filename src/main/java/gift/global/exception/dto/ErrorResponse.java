@@ -5,10 +5,11 @@ import java.util.Collections;
 import java.util.Map;
 
 public record ErrorResponse(
-  String errorCode,
-  String errorMessage,
-  Map<String, Object> extras
+    String errorCode,
+    String errorMessage,
+    Map<String, Object> extras
 ) {
+
   public ErrorResponse(String errorCode, String errorMessage) {
     this(errorCode, errorMessage, Collections.emptyMap());
   }

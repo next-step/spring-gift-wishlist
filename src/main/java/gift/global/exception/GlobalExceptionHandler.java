@@ -19,7 +19,8 @@ public class GlobalExceptionHandler {
   private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
+  public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(
+      MethodArgumentNotValidException exception) {
     List<Map<String, String>> invalidParams = exception.getFieldErrors().stream()
         .map(fieldError -> Map.of(
             "name", fieldError.getField(),
@@ -32,8 +33,10 @@ public class GlobalExceptionHandler {
 
     return createErrorResponse(ErrorCode.INVALID_ARGUMENT_ERROR, exception, additionalInfo);
   }
+
   @ExceptionHandler(ConstraintViolationException.class)
-  public ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException exception) {
+  public ResponseEntity<ErrorResponse> handleConstraintViolationException(
+      ConstraintViolationException exception) {
     List<Map<String, String>> invalidParams = exception.getConstraintViolations().stream()
         .map(violation -> Map.of(
             "name", PropertyPathUtils.extractFieldName(violation.getPropertyPath().toString()),
@@ -53,29 +56,32 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(InvalidSortFieldException.class)
-  public ResponseEntity<ErrorResponse> handleSortFieldException(InvalidSortFieldException exception) {
-    return createErrorResponse(exception.getErrorCode(),exception);
+  public ResponseEntity<ErrorResponse> handleSortFieldException(
+      InvalidSortFieldException exception) {
+    return createErrorResponse(exception.getErrorCode(), exception);
   }
 
   @ExceptionHandler(ProductNotFoundException.class)
   public ResponseEntity<ErrorResponse> handleNotFoundException(
       ProductNotFoundException exception) {
-    return createErrorResponse(exception.getErrorCode(),exception);
+    return createErrorResponse(exception.getErrorCode(), exception);
   }
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ErrorResponse> handleException(Exception exception) {
-    return createErrorResponse(ErrorCode.INTERNAL_ERROR,exception);
+    return createErrorResponse(ErrorCode.INTERNAL_ERROR, exception);
   }
 
-  private static ResponseEntity<ErrorResponse> createErrorResponse(ErrorCode errorCode, Exception exception) {
+  private static ResponseEntity<ErrorResponse> createErrorResponse(ErrorCode errorCode,
+      Exception exception) {
     logger.error("Exception occurred: {}", exception.getMessage());
     return ResponseEntity
         .status(errorCode.getStatus())
         .body(ErrorResponse.from(errorCode));
   }
 
-  private static ResponseEntity<ErrorResponse> createErrorResponse(ErrorCode errorCode, Exception exception, Map<String, Object> additionalInfo) {
+  private static ResponseEntity<ErrorResponse> createErrorResponse(ErrorCode errorCode,
+      Exception exception, Map<String, Object> additionalInfo) {
     logger.error("Exception occurred: {}", exception.getMessage());
     return ResponseEntity
         .status(errorCode.getStatus())
