@@ -1,13 +1,13 @@
 package gift.dto;
 
-import jakarta.validation.constraints.Min;
+import gift.validation.ValidProduct;
 
+@ValidProduct
 public class ProductRequestDto {
     private String name;
-
-    @Min(value = 0, message = "가격은 음수일 수 없습니다.")// 유효성 검사 추가
     private int price;
     private String imageUrl;
+    private boolean mdApproved; // MD 협의 여부
 
     public ProductRequestDto() {}
 
@@ -15,6 +15,14 @@ public class ProductRequestDto {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
+        this.mdApproved = false;
+    }
+
+    public ProductRequestDto(String name, int price, String imageUrl, boolean mdApproved) {
+        this.name = name;
+        this.price = price;
+        this.imageUrl = imageUrl;
+        this.mdApproved = mdApproved;
     }
 
     public String getName() { return name; }
@@ -24,5 +32,7 @@ public class ProductRequestDto {
     public void setName(String name) { this.name = name; }
     public void setPrice(int price) { this.price = price; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl;}
+    public boolean isMdApproved() { return mdApproved; }
+    public void setMdApproved(boolean mdApproved) { this.mdApproved = mdApproved; }
 
 }

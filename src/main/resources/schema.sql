@@ -2,5 +2,6 @@ CREATE TABLE IF NOT EXISTS product (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL UNIQUE,
     price INT NOT NULL,
-    image_url VARCHAR(500)
+    image_url VARCHAR(500),
+    md_approved BOOLEAN DEFAULT FALSE
 );
