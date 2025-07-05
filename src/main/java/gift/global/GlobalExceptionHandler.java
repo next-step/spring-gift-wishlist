@@ -1,7 +1,6 @@
 package gift.global;
 
 import gift.global.error.ErrorResponse;
-import gift.global.error.FieldErrorResponse;
 import gift.global.error.ObjectErrorResponse;
 import gift.global.exception.*;
 import org.springframework.http.HttpStatus;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,9 +28,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse>  handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        List<FieldErrorResponse> fieldErrorResponses = ex.getBindingResult().getFieldErrors()
-                .stream()
-                .map(fieldError -> new FieldErrorResponse(fieldError.getDefaultMessage())).toList();
+
+
+        Map<String,String> fieldErrorResponses = new HashMap<>();
+
+        ex.getBindingResult().getFieldErrors()
+                .forEach(fieldError -> fieldErrorResponses.put(fieldError.getField(), fieldError.getDefaultMessage()));
 
         List<ObjectErrorResponse> globalErrorResponses = ex.getBindingResult().getGlobalErrors()
                 .stream()
