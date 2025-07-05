@@ -9,4 +9,6 @@ public interface UserService {
     UserResponseDto registerUser(UserRegisterDto dto);
 
     List<UserResponseDto> getUserList(String email);
+
+    UserResponseDto finUserById(Long id);
 }

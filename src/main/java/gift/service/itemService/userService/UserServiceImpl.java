@@ -44,4 +44,11 @@ public class UserServiceImpl implements UserService{
 
         return result;
     }
+
+    @Override
+    public UserResponseDto finUserById(Long id) {
+        User user = userRepository.findUserById(id);
+
+        return new UserResponseDto(user.email(), user.password());
+    }
 }

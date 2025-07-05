@@ -67,4 +67,10 @@ public class UserRepositoryImpl implements UserRepository{
 
     }
 
+    @Override
+    public User findUserById(Long id) {
+        var sql = "SELECT ID, EMAIL, PASSWORD FROM USERS WHERE ID = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{id}, userRowMapper)
+    }
+
 }
