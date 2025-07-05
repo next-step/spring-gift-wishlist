@@ -3,17 +3,31 @@ package gift.repository.itemRepository.userRepository;
 
 import gift.entity.User;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository{
 
     private final JdbcTemplate jdbcTemplate;
+
+    private final RowMapper<User> userRowMapper = new RowMapper<User>() {
+        @Override
+        public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new User(
+                    rs.getLong("id"),
+                    rs.getString("email"),
+                    rs.getString("password")
+            );
+        }
+    };
 
     public UserRepositoryImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -43,7 +57,7 @@ public class UserRepositoryImpl implements UserRepository{
     public List<User> getAllUsers() {
         var sql = "SELECT ID, EMAIL, PASSWORD FROM USERS";
 
-        return jdbcTemplate.update(sql,userRowMapper);
+        return jdbcTemplate.query(sql,userRowMapper);
     }
 
     @Override
