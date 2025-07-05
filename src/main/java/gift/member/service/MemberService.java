@@ -7,5 +7,5 @@ public interface MemberService {
 
     RegisterResponseDto registerMember(RegisterRequestDto registerRequestDto);
 
-    void findMemberByEmail(String email);
+    void findMemberByEmail(RegisterRequestDto registerRequestDto);
 }

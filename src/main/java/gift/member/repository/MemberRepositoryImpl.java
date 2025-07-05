@@ -32,6 +32,4 @@ public class MemberRepositoryImpl implements MemberRepository {
                 rs.getString("name"),
                 rs.getString("role")), email);
     }
-
-
 }

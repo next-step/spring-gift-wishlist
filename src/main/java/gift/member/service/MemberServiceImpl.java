@@ -24,8 +24,6 @@ public class MemberServiceImpl implements MemberService {
             registerRequestDto.name());
         memberRepository.saveMember(member);
 
-        this.findMemberByEmail(registerRequestDto.email());
-
         Member savedMember = memberRepository.findMemberByEmail(registerRequestDto.email());
         System.out.println(savedMember);
 
@@ -37,13 +35,12 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void findMemberByEmail(String email) {
+    public void findMemberByEmail(RegisterRequestDto registerRequestDto) {
+
         try {
-            Member member = memberRepository.findMemberByEmail(email);
+            Member foundMember = memberRepository.findMemberByEmail(registerRequestDto.email());
         } catch (EmptyResultDataAccessException e) {
             throw new MemberNotFoundException("이메일이 존재하지 않습니다.");
         }
     }
-
-
 }

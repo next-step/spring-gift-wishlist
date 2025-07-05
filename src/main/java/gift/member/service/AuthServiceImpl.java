@@ -22,23 +22,24 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
         // TODO: DB 조회 -> 성공 시 Token 생성, 실패 시 로그인 실패(상태코드 처리 어떻게 하지)
-        Member member;
 
+        Member foundMember;
         try {
-            member = memberRepository.findMemberByEmail(loginRequestDto.email());
+            foundMember = memberRepository.findMemberByEmail(loginRequestDto.email());
         } catch (EmptyResultDataAccessException e) {
             throw new LoginFailedException("이메일 또는 비밀번호가 올바르지 않습니다.");
         }
 
         // TODO: 성공 시 password 확인 -> 성공 시 Token 생성, 실패 시 로그인 실패(403 Forbidden)
-        if (!member.getPassword().equals(loginRequestDto.password())) {
+        if (!foundMember.getPassword().equals(loginRequestDto.password())) {
             // 실패 시 로그인 실패(403 Forbidden)
             throw new LoginFailedException("이메일 또는 비밀번호가 올바르지 않습니다.");
         }
 
         // 성공 시 Token 생성 후 반환
-        String token = new JwtProvider().generateToken(member.getMemberId(), member.getName(),
-            member.getRole());
+        String token = new JwtProvider().generateToken(foundMember.getMemberId(),
+            foundMember.getName(),
+            foundMember.getRole());
 
         return new LoginResponseDto(token);
     }

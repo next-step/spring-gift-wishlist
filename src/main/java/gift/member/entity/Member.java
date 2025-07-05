@@ -7,7 +7,7 @@ public class Member {
     private String password;
     private String name;
     private String role;
-
+    
     public Member(String email, String password, String name) {
         this.email = email;
         this.password = password;
