@@ -1,18 +1,32 @@
 package gift.product.dto;
 
+import gift.common.annotation.BannedWord;
+import gift.common.annotation.NoSpecialChar;
 import gift.product.domain.Product;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
-public class ProductDto {
+public class RequestDto {
+    @NotNull
+    @Size(min = 1, max = 15)
+    @NoSpecialChar
+    @BannedWord(words = {"카카오"})
     private String name;
     private int price;
     private String imageUrl;
 
-    public ProductDto() {}
+    public RequestDto() {}
 
-    public ProductDto(Product product) {
+    public RequestDto(Product product) {
         this.name = product.getName();
         this.price = product.getPrice();
         this.imageUrl = product.getImageUrl();
+    }
+
+    public RequestDto(String name, int price, String imageUrl) {
+        this.name = name;
+        this.price = price;
+        this.imageUrl = imageUrl;
     }
 
     public String getName() {

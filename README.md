@@ -1,4 +1,11 @@
 # spring-gift-wishlist
+
+## 구현 기능 목록
+
+### Step1
+
+### 1. 상품 이름 validation 추가
+
 # spring-gift-product
 
 ## 구현 기능 목록
