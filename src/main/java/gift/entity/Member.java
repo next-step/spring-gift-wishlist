@@ -4,11 +4,14 @@ public class Member {
     private Long id;
     private String email;
     private String password;
+    private String role;
 
-    public Member(Long id, String email, String password) {
+    public Member(Long id, String email, String password, String role) {
         this.id = id;
         this.email = email;
         this.password = password;
+        this.role = "user";
+
     }
 
     public Long getId() {
@@ -23,6 +26,10 @@ public class Member {
         return password;
     }
 
+    public String getRole() {
+        return role;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -33,6 +40,10 @@ public class Member {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }
 

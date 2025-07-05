@@ -17,10 +17,11 @@ public class MemberRepository {
     }
 
     public Member save(Member member) {
-        String sql="INSERT INTO member(email,password) VALUES(:email,:password)";
+        String sql="INSERT INTO member(email,password,role) VALUES(:email,:password,:role)";
         jdbcClient.sql(sql)
                 .param("email", member.getEmail())
                 .param("password", member.getPassword())
+                .param("role", member.getRole())
                 .update();
 
 
@@ -40,7 +41,8 @@ public class MemberRepository {
             new Member(
                     rs.getLong("id"),
                     rs.getString("email"),
-                    rs.getString("password")
+                    rs.getString("password"),
+                    rs.getString("role")
             );
 
 }

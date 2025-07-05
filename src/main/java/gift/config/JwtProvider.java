@@ -3,23 +3,25 @@ package gift.config;
 import gift.entity.Member;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 
 @Component
 public class JwtProvider {
 
+    @Value("${jwt.secret-key}")
+    private String secretKey;
 
-    private final String secretKey = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";
 
 
     public String generateToken(Member member) {
-        String accessToken = Jwts.builder()
+
+        return Jwts.builder()
                 .setSubject(member.getId().toString())
                 .claim("email", member.getEmail())
+                .claim("role", member.getRole())
                 .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
                 .compact();
-
-        return accessToken;
     }
 }

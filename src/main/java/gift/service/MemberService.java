@@ -8,7 +8,6 @@ import gift.exception.ForbiddenException;
 import gift.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 
-import java.awt.*;
 
 @Service
 public class MemberService {
@@ -16,9 +15,9 @@ public class MemberService {
     private MemberRepository memberRepository;
     private final JwtProvider jwtProvider;
 
-    public MemberService(MemberRepository memberRepository) {
+    public MemberService(MemberRepository memberRepository, JwtProvider jwtProvider) {
         this.memberRepository = memberRepository;
-        this.jwtProvider = new JwtProvider();
+        this.jwtProvider =  jwtProvider;
     }
 
 
@@ -28,7 +27,7 @@ public class MemberService {
             throw new IllegalStateException("이미 사용 중인 이메일입니다.");
         }
 
-        Member member = new Member(null, dto.getEmail(), dto.getPassword());
+        Member member = new Member(null, dto.getEmail(), dto.getPassword(),"USER");
         memberRepository.save(member);
 
         Member saved = memberRepository.findByEmail(member.getEmail())
