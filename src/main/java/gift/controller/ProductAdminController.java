@@ -4,8 +4,12 @@ import gift.dto.ProductRequestDto;
 import gift.entity.Product;
 import gift.service.ProductService;
 import org.springframework.stereotype.Controller;
+import jakarta.validation.Valid;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,13 +33,18 @@ public class ProductAdminController {
 
     // 추가 폼
     @GetMapping("/create")
-    public String createForm() {
+    public String createForm(Model model) {
+        model.addAttribute("productRequestDto", new ProductRequestDto("", 0L, ""));
         return "admin/create";
     }
 
     // 상품 추가
     @PostMapping("/create")
-    public String create(ProductRequestDto dto) {
+    public String create(@Valid @ModelAttribute("productRequestDto") ProductRequestDto dto, BindingResult bindingResult ) {
+
+        if(bindingResult.hasErrors()){
+            return "admin/create";
+        }
         Product product = new Product(null, dto.name(), dto.price(), dto.imageUrl());
         service.createProduct(product);
         return "redirect:/admin/products";
@@ -52,11 +61,18 @@ public class ProductAdminController {
 
     // 상품 수정
     @PostMapping("/{id}/update")
-    public String update(@PathVariable Long id, ProductRequestDto dto) {
+    public String update(@PathVariable Long id, @Valid @ModelAttribute("product") ProductRequestDto dto, BindingResult bindingResult, Model model) {
+
+        if(bindingResult.hasErrors()){
+            Product product = new Product(id, dto.name(), dto.price(), dto.imageUrl());
+            model.addAttribute("product", product);
+            return "admin/update";
+        }
         Product product = new Product(id, dto.name(), dto.price(), dto.imageUrl());
         service.update(id, product).orElseThrow(() -> new IllegalArgumentException("수정 실패"));
         return "redirect:/admin/products";
     }
+
 
     // 상품 삭제
     @PostMapping("/{id}/delete")
