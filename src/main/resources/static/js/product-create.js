@@ -4,6 +4,7 @@ function handleCancel() {
 
 function handleSubmit(e) {
   e.preventDefault();
+
   const form = e.target;
   const productData = extractProductData(form);
 
@@ -12,16 +13,32 @@ function handleSubmit(e) {
     return;
   }
 
-  submitProduct(form.action, productData)
+  fetch(form.action, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(productData)
+  })
+  .then(async (res) => {
+    if (!res.ok) {
+      const errorBody = await res.json();
+      const message = errorBody?.message || "상품 등록 중 오류가 발생했습니다.";
+      throw new Error(message);
+    }
+    return res.json();
+  })
   .then(() => {
     alert("상품이 등록되었습니다.");
     window.location.href = getProductListUrl();
   })
   .catch((error) => {
-    console.error(error);
-    alert("상품 등록 중 오류가 발생했습니다.");
+    console.error("서버 오류:", error);
+    alert(error.message || "상품 등록 중 오류가 발생했습니다.");
   });
 }
+
+
 
 function extractProductData(form) {
   return {
