@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import gift.dto.ProductCreateResponse;
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -36,11 +34,16 @@ public class ProductApiTest {
         jdbcTemplate.update("DELETE FROM products");
         jdbcTemplate.update("ALTER TABLE products ALTER COLUMN id RESTART WITH 1");
 
-        jdbcTemplate.update("INSERT INTO products (name, price, image_url) VALUES (?, ?, ?)", "p1", 1000, "url1");
-        jdbcTemplate.update("INSERT INTO products (name, price, image_url) VALUES (?, ?, ?)", "p2", 2000, "url2");
-        jdbcTemplate.update("INSERT INTO products (name, price, image_url) VALUES (?, ?, ?)", "p3", 3000, "url3");
-        jdbcTemplate.update("INSERT INTO products (name, price, image_url) VALUES (?, ?, ?)", "p4", 4000, "url4");
-        jdbcTemplate.update("INSERT INTO products (name, price, image_url) VALUES (?, ?, ?)", "p5", 5000, "url5");
+        jdbcTemplate.update("INSERT INTO products (name, price, image_url) VALUES (?, ?, ?)", "p1",
+            1000, "url1");
+        jdbcTemplate.update("INSERT INTO products (name, price, image_url) VALUES (?, ?, ?)", "p2",
+            2000, "url2");
+        jdbcTemplate.update("INSERT INTO products (name, price, image_url) VALUES (?, ?, ?)", "p3",
+            3000, "url3");
+        jdbcTemplate.update("INSERT INTO products (name, price, image_url) VALUES (?, ?, ?)", "p4",
+            4000, "url4");
+        jdbcTemplate.update("INSERT INTO products (name, price, image_url) VALUES (?, ?, ?)", "p5",
+            5000, "url5");
     }
 
     @Test
@@ -66,13 +69,13 @@ public class ProductApiTest {
         var response = restClient.get()
             .uri(url)
             .retrieve()
-            // parameterizedTypeReference<> 사용법?
-            .toEntity(new ParameterizedTypeReference<List<ProductResponse>>() {
-            });
+            // List로 변환하지 않고 배열로 간단하게 처리
+            .toEntity(ProductResponse[].class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().size()).isEqualTo(5);
+        assertThat(response.getBody())
+            .isNotNull()
+            .hasSize(5);
     }
 
     @Test
@@ -96,8 +99,9 @@ public class ProductApiTest {
     @DisplayName("상품 수정")
     void 상품_수정() {
         Long productId = 5L;
-        var url = "http://localhost:" + port + "/api/products/"+productId;
-        ProductRequest updateRequest = new ProductRequest(productId, "updated name", 2000, "updated url");
+        var url = "http://localhost:" + port + "/api/products/" + productId;
+        ProductRequest updateRequest = new ProductRequest(productId, "updated name", 2000,
+            "updated url");
 
         var response = restClient.patch()
             .uri(url)
