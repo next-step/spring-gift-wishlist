@@ -20,7 +20,6 @@ public class ProductJdbcClientRepositoryImpl implements ProductJdbcClientReposit
   public Product addProduct(Product product) {
     String sql = "INSERT INTO product (name, price, image_url) VALUES (:name, :price, :imageUrl)";
 
-    // 생성된 ID를 담을 KeyHolder를 생성.
     GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 
     jdbcClient.sql(sql)
@@ -30,7 +29,6 @@ public class ProductJdbcClientRepositoryImpl implements ProductJdbcClientReposit
               .update(keyHolder);
 
     if (keyHolder.getKeys() != null) {
-      // H2의 경우, 생성된 ID는 Long 타입.
       product.setId(keyHolder.getKey().longValue());
     }
     return product;
