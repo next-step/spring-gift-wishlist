@@ -1,16 +1,9 @@
-package gift.exception;
+package gift.util;
 
 import org.springframework.validation.BindingResult;
 
-public class RequestNotValidException extends RuntimeException {
-    private final BindingResult bindingResult;
-
-    public RequestNotValidException(BindingResult bindingResult) {
-        this.bindingResult = bindingResult;
-    }
-
-    @Override
-    public String getMessage() {
+public abstract class BindingResultUtil {
+    public static String getErrorMessage(BindingResult bindingResult) {
         StringBuilder errorMessageBuilder = new StringBuilder();
         bindingResult.getFieldErrors().forEach( fieldError -> {
             errorMessageBuilder.append(fieldError.getField())

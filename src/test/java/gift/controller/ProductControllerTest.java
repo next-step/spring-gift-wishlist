@@ -1,0 +1,110 @@
+package gift.controller;
+
+import gift.dto.ProductRequestDto;
+import gift.dto.ProductResponseDto;
+import gift.entity.Product;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClient;
+
+import java.util.stream.Stream;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public class ProductControllerTest {
+
+    @LocalServerPort
+    private int port;
+
+    private final RestClient client = RestClient.builder().build();
+
+    @ParameterizedTest
+    @MethodSource("invalidProducts")
+    void Validation_테스트(ProductRequestDto productRequestDto, String message) {
+        String url = "http://localhost:" + port + "/api/products";
+        RestClient.ResponseSpec responseSpec = client.post()
+                .uri(url)
+                .body(productRequestDto)
+                .retrieve();
+
+        HttpClientErrorException.BadRequest exception = assertThrows(HttpClientErrorException.BadRequest.class,
+                () -> {
+                    responseSpec.toEntity(String.class);
+                });
+
+        assertThat(exception.getResponseBodyAsString()).contains(message);
+    }
+
+    Stream<Arguments> invalidProducts() {
+        return Stream.of(
+                Arguments.of(new ProductRequestDto(
+                        "1234567890123456",
+                        123,
+                        "http://~/~"
+                ), "length"),
+                Arguments.of(new ProductRequestDto(
+                        "$#",
+                        123,
+                        "http://~/~"
+                ), "special"),
+                Arguments.of(new ProductRequestDto(
+                        "1234567890",
+                        -1,
+                        "http://~/~"
+                ), "price")
+        );
+    }
+
+    @Test
+    void 카카오_들어가는_이름_테스트_입력_테스트() {
+        String url = "http://localhost:" + port + "/api/products";
+        RestClient.ResponseSpec responseSpec = client.post()
+                .uri(url)
+                .body(new ProductRequestDto(
+                        "카카오 들어감",
+                        123,
+                        "http://path/"
+                ))
+                .retrieve();
+
+        ResponseEntity<ProductResponseDto> response = responseSpec.toEntity(ProductResponseDto.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().status()).isEqualTo(Product.Status.PENDING);
+    }
+
+    @Test
+    void 존재하는_상품_읽기_테스트() {
+        String url = "http://localhost:" + port + "/api/products/1";
+        RestClient.ResponseSpec response = client.get()
+                .uri(url)
+                .retrieve();
+        ResponseEntity<ProductResponseDto> entity = response.toEntity(ProductResponseDto.class);
+
+        assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        ProductResponseDto productResponseDto = entity.getBody();
+        assertThat(productResponseDto.name()).isEqualTo("상품 1");
+    }
+
+    @Test
+    void 존재하지_않는_제폼_테스트() {
+        String url = "http://localhost:" + port + "/api/products/3";
+        RestClient.ResponseSpec response = client.get()
+                .uri(url)
+                .retrieve();
+        ResponseEntity<ProductResponseDto> entity = response.toEntity(ProductResponseDto.class);
+
+        assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    }
+}
