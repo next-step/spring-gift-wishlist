@@ -1,5 +1,6 @@
 package gift.controller;
 
+import gift.dto.MemberLoginRequestDto;
 import gift.dto.MemberRequestDto;
 import gift.dto.MemberResponseDto;
 import gift.service.MemberService;
@@ -28,6 +29,11 @@ public class MemberController {
     public ResponseEntity<MemberResponseDto> createMember(@Valid @RequestBody MemberRequestDto requestDto){
         MemberResponseDto responseDto = memberService.create(requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@Valid @RequestBody MemberLoginRequestDto requestDto){
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.login(requestDto));
     }
 
 }
