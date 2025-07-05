@@ -3,8 +3,7 @@ package gift.global;
 import gift.global.error.ErrorResponse;
 import gift.global.error.FieldErrorResponse;
 import gift.global.error.ObjectErrorResponse;
-import gift.global.exception.CustomDatabaseException;
-import gift.global.exception.NotFoundEntityException;
+import gift.global.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -38,5 +37,20 @@ public class GlobalExceptionHandler {
                 .map(globalError -> new ObjectErrorResponse(globalError.getDefaultMessage())).toList();
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(fieldErrorResponses, globalErrorResponses));
+    }
+
+    @ExceptionHandler(DuplicateEntityException.class)
+    public ResponseEntity<Map<String, String>> handleDuplicateEntityException(DuplicateEntityException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("message", ex.getMessage()));
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<Map<String, String>> handleAuthenticationException(AuthenticationException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", ex.getMessage()));
+    }
+
+    @ExceptionHandler(BadRequestEntityException.class)
+    public ResponseEntity<Map<String, String>> handleBadRequestEntityException(BadRequestEntityException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", ex.getMessage()));
     }
 }
