@@ -5,6 +5,7 @@ import gift.dto.api.product.ProductResponseDto;
 import gift.entity.Member;
 import gift.entity.Product;
 import gift.entity.Role;
+import gift.exception.notfound.NotRegisteredException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -60,7 +61,8 @@ public class MemberRepositoryImpl implements MemberRepository {
         return members.sql(sql)
             .param("email", email)
             .query(String.class)
-            .single();
+            .optional()
+            .orElseThrow(NotRegisteredException::new);
     }
     
     @Override
@@ -76,6 +78,7 @@ public class MemberRepositoryImpl implements MemberRepository {
                 rs.getString("email"),
                 rs.getString("password"),
                 Role.valueOf(rs.getString("role"))
-            )).single();
+            )).optional()
+            .orElseThrow(NotRegisteredException::new);
     }
 }
