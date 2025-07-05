@@ -12,4 +12,4 @@ CREATE TABLE members (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     email VARCHAR(30) NOT NULL UNIQUE,
     password CHAR(60) NOT NULL
-)
+);
