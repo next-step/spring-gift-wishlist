@@ -7,7 +7,7 @@ import org.thymeleaf.util.StringUtils;
 public class WarningKakaoImpl implements ConstraintValidator<WarningKakao, String> {
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if(StringUtils.isEmpty(value) == true) {
+        if(StringUtils.isEmpty(value)) {
             return true;
         }
 
