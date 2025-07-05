@@ -69,9 +69,9 @@
 
 사용자가 회원 가입, 로그인, 추후 회원별 기능을 이용할 수 있도록 구현한다.
 
-- [ ] 회원은 이메일과 비밀번호를 입력하여 가입한다.
-- [ ] 토큰을 받으려면 이메일과 비밀번호를 보내야 하며, 가입한 이메일과 비밀번호가 일치하면 토큰이 발급된다.
-- [ ] 토큰을 생성하는 방법에는 여러 가지가 있다. 방법 중 하나를 선택한다.
+- [x] 회원은 이메일과 비밀번호를 입력하여 가입한다.
+- [x] 토큰을 받으려면 이메일과 비밀번호를 보내야 하며, 가입한 이메일과 비밀번호가 일치하면 토큰이 발급된다.
+- [x] 토큰을 생성하는 방법에는 여러 가지가 있다. 방법 중 하나를 선택한다.
 - [ ] (**선택**) 회원을 조회, 추가, 수정, 삭제할 수 있는 관리자 화면을 구현한다.
 
 #### 🛠 구현할 기능 목록
@@ -84,7 +84,7 @@
 | /api/members/login    | POST | 로그인   | 회원을 인증하고 토큰을 받는다.   |
 
 - [ ] 회원 가입
-    - [ ] **Request**
+    - [x] **Request**
         ```http
         POST /api/members/register HTTP/1.1
         Content-Type: application/json
@@ -97,7 +97,7 @@
         }
         ```
 
-    - [ ] **Response**
+    - [x] **Response**
         ```http
         HTTP/1.1 201
         Content-Type: application/json
@@ -108,8 +108,13 @@
         }
         ```
 
-- [ ] 로그인
-    - [ ] Request
+    - [x] **예외**:
+        - email, password, name 중 하나라도 존재하지 않을 때: `400 Bad Request`
+
+    - [ ] (선택) 회원을 조회, 추가, 수정, 삭제할 수 있는 관리자 화면을 구현
+
+- [x] 로그인
+    - [x] **Request**
         ```http
         POST /api/members/login HTTP/1.1
         Content-Type: application/json
@@ -122,7 +127,7 @@
         }
         ```
 
-    - [ ] Response
+    - [x] **Response**
         ```http
         HTTP/1.1 200
         Content-Type: application/json
@@ -132,3 +137,7 @@
             "token": ""
         }
         ```
+
+    - [x] **예외**:
+        - email, password 중 하나라도 값이 존재하지 않을 때: `400 Bad Request`
+        - email, password 중 하나라도 틀릴 때: `403 Forbidden`
