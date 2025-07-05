@@ -5,6 +5,7 @@ import gift.dto.MemberRequestDto;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -39,11 +40,16 @@ public class MemberRepositoryImpl implements MemberRepository{
         return jdbcTemplate.query(sql, memberRowMapper(), email, password).stream().findAny();
     }
 
-
     @Override
     public Optional<Member> findMemberByEmail(String email) {
         String sql = "select * from members where email = ?";
         return jdbcTemplate.query(sql, memberRowMapper(), email).stream().findAny();
+    }
+
+    @Override
+    public List<Member> findAllMember() {
+        String sql = "select * from members";
+        return jdbcTemplate.query(sql, memberRowMapper());
     }
 
     private RowMapper<Member> memberRowMapper(){

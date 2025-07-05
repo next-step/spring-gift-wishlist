@@ -1,13 +1,14 @@
 package gift.controller;
 
+import gift.dto.Member;
 import gift.dto.ProductRequestDto;
 import gift.entity.Product;
 import gift.exception.ProductNotFoundException;
+import gift.service.MemberService;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.server.ResponseStatusException;
 
 @RequestMapping("/admin") //prefix설정
 @Controller//Controller는 mvc에서 화면을 구성하기 위해서 뷰 이름을 반환하고 ViewResolver를 거치게 됩니다.
@@ -28,9 +28,12 @@ public class AdminController {
 
     private final ProductService productService;
 
+    private final MemberService memberService;
+
     //의존성 주입(생성자가 1개인 경우 @Autowired 생략 가능)
-    public AdminController(ProductService productService) {
+    public AdminController(ProductService productService, MemberService memberService) {
         this.productService = productService;
+        this.memberService = memberService;
     }
 
     @GetMapping
@@ -140,6 +143,20 @@ public class AdminController {
         productService.remove(id);
         return "redirect:/admin/products/list";
     }
+
+    //회원을 조회
+    @GetMapping("/members/list")
+    public String getMembers(Model model){
+        List<Member> memberList = memberService.getAllMembers();
+        model.addAttribute("memberList", memberList);
+        return "members/home";
+    }
+
+    //회원을 추가
+
+    //회원을 수정
+
+    //회원을 삭제
 
 }
 

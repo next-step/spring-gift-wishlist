@@ -11,6 +11,10 @@ public class Member {
         this.password = password;
     }
 
+    public Long getMemberId(){
+        return memberId;
+    }
+
     public String getEmail(){
         return email;
     }

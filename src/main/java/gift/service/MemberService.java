@@ -4,6 +4,7 @@ import gift.dto.Member;
 import gift.dto.MemberRequestDto;
 import gift.repository.MemberRepository;
 import gift.repository.MemberRepositoryImpl;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +43,10 @@ public class MemberService {
             return true;
         }
         return false;
+    }
+
+    public List<Member> getAllMembers(){
+        return memberRepository.findAllMember();
     }
 
 }
