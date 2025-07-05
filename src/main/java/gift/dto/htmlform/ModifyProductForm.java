@@ -46,6 +46,7 @@ public class ModifyProductForm {
         this.imageUrl = imageUrl;
     }
     
+    @SuppressWarnings("unused")
     public void setMdOk(Boolean mdOk) {
         this.mdOk = mdOk;
     }

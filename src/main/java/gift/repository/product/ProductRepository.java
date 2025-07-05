@@ -1,6 +1,6 @@
-package gift.repository;
+package gift.repository.product;
 
-import gift.dto.api.ProductResponseDto;
+import gift.dto.api.product.ProductResponseDto;
 import gift.entity.Product;
 import java.util.List;
 

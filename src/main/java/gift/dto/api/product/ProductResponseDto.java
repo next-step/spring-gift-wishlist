@@ -1,4 +1,4 @@
-package gift.dto.api;
+package gift.dto.api.product;
 
 import gift.entity.Product;
 
@@ -14,7 +14,7 @@ public class ProductResponseDto {
     }
     
     public ProductResponseDto(Product product) {
-        this(product.id(), product.name(), product.price(), product.imageUrl());
+        this(product.getId(), product.getName(), product.getPrice(), product.getImageUrl());
     }
     
     public ProductResponseDto(Long id, String name, Long price, String imageUrl) {
@@ -54,5 +54,9 @@ public class ProductResponseDto {
     
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+    
+    public Boolean containKakao() {
+        return name.contains("카카오");
     }
 }

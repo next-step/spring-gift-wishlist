@@ -1,17 +1,15 @@
-package gift.service;
+package gift.service.product;
 
-import gift.dto.api.AddProductRequestDto;
-import gift.dto.api.ModifyProductRequestDto;
-import gift.dto.api.ProductResponseDto;
+import gift.dto.api.product.AddProductRequestDto;
+import gift.dto.api.product.ModifyProductRequestDto;
+import gift.dto.api.product.ProductResponseDto;
 import gift.entity.Product;
-import gift.exception.custom.CheckMdOkException;
-import gift.exception.custom.FillAllInfoException;
-import gift.exception.custom.FillSomeInfoException;
-import gift.repository.ProductRepository;
+import gift.exception.badrequest.CheckMdOkException;
+import gift.exception.badrequest.FillAllInfoException;
+import gift.exception.badrequest.FillSomeInfoException;
+import gift.repository.product.ProductRepository;
 import java.util.List;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -26,15 +24,15 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponseDto addProduct(AddProductRequestDto requestDto) {
         
-        if(!requestDto.isGoodName()) {
+        if(!requestDto.goodName()) {
             throw new CheckMdOkException();
         }
         
         Product product = new Product(
             0L,
-            requestDto.getName(),
-            requestDto.getPrice(),
-            requestDto.getImageUrl()
+            requestDto.name(),
+            requestDto.price(),
+            requestDto.imageUrl()
         );
         
         return productRepository.addProduct(product);
@@ -63,15 +61,15 @@ public class ProductServiceImpl implements ProductService {
             throw new FillAllInfoException();
         }
         
-        if(!requestDto.isGoodName()) {
+        if(!requestDto.goodName()) {
             throw new CheckMdOkException();
         }
         
         Product newProduct = new Product(
             id,
-            requestDto.getName(),
-            requestDto.getPrice(),
-            requestDto.getImageUrl()
+            requestDto.name(),
+            requestDto.price(),
+            requestDto.imageUrl()
         );
         
         return productRepository.modifyProductWithId(id,
@@ -95,15 +93,15 @@ public class ProductServiceImpl implements ProductService {
             throw new FillSomeInfoException();
         }
         
-        if(!requestDto.isGoodName()) {
+        if(!requestDto.goodName()) {
             throw new CheckMdOkException();
         }
         
         Product newProduct = new Product(
             id,
-            requestDto.getName() != null ? requestDto.getName() : product.name(),
-            requestDto.getPrice() != null ? requestDto.getPrice() : product.price(),
-            requestDto.getImageUrl() != null ? requestDto.getImageUrl() : product.imageUrl()
+            requestDto.name() != null ? requestDto.name() : product.getName(),
+            requestDto.price() != null ? requestDto.price() : product.getPrice(),
+            requestDto.imageUrl() != null ? requestDto.imageUrl() : product.getImageUrl()
         );
         
         return productRepository.modifyProductWithId(id,
