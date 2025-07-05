@@ -1,4 +1,4 @@
-package gift.controller.Product;
+package gift.controller.product;
 
 import gift.domain.Product;
 import gift.dto.product.ProductMapper;
