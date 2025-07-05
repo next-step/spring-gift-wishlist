@@ -70,31 +70,43 @@
     a:hover {
       text-decoration: underline;
     }
+
+    .error-message {
+      color: red;
+      font-size: 13px;
+      margin-top: 4px;
+      margin-bottom: 15px;
+    }
   </style>
 </head>
 <body>
 <div class="container">
   <h1 th:text="${formAction.contains('edit')} ? 'Edit Product' : 'Add New Product'">Product Form</h1>
 
-  <form th:action="@{${formAction}}" method="post" th:object="${product}">
-    <label>Name:
-      <input type="text" th:field="*{name}" required/>
-    </label>
+  <form th:action="@{${formAction}}" th:object="${product}" method="post">
+    <label>상품 이름</label>
+    <input type="text" th:field="*{name}" />
+    <div class="error-message" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
 
-    <label>Price:
-      <input type="number" th:field="*{price}" required/>
-    </label>
+    <label>가격</label>
+    <input type="number" th:field="*{price}" />
+    <div class="error-message" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
 
-    <label>Image URL:
-      <input type="text" th:field="*{imageUrl}" required/>
-    </label>
+    <label>이미지 URL</label>
+    <input type="text" th:field="*{imageUrl}" />
+    <div class="error-message" th:if="${#fields.hasErrors('imageUrl')}" th:errors="*{imageUrl}"></div>
 
-    <button type="submit"
-            th:text="${formAction.contains('edit')} ? 'Update' : 'Submit'">Submit
-    </button>
+    <button type="submit">저장</button>
   </form>
 
   <a href="/product-page">← Back to List</a>
 </div>
+<script th:if="${errorMessage != null}" th:inline="javascript">
+  alert([[${errorMessage}]]);
+</script>
+
+
+
+
 </body>
 </html>

@@ -27,12 +27,12 @@ public class GlobalExceptionHandler {
       );
 
     ErrorResponseDto errorResponseDto = new ErrorResponseDto(
-        "https://example.com/validation-error",     // type (URI)
-        "Validation Failed",                        // title
-        HttpStatus.BAD_REQUEST.value(),             // status
-        "입력값이 유효하지 않습니다.",                 // detail
-        request.getRequestURI(),                    // instance
-        errors                                      // field errors
+        "https://example.com/validation-error",
+        "Validation Failed",
+        HttpStatus.BAD_REQUEST.value(),
+        "입력값이 유효하지 않습니다.",
+        request.getRequestURI(),
+        errors
     );
 
     return ResponseEntity

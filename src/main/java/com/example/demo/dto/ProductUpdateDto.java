@@ -1,6 +1,6 @@
 package com.example.demo.dto;
 
-import com.example.demo.validation.NoKakao;
+import com.example.demo.validation.NoForbiddenWords;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -12,7 +12,7 @@ public class ProductUpdateDto {
       regexp = "^[a-zA-Z0-9가-힣 ()\\[\\]+\\-&/_]*$",
       message = "상품 이름에는 (), [], +, -, &, /, _ 외 특수문자는 사용할 수 없습니다."
   )
-  @NoKakao
+  @NoForbiddenWords
   private String name;
 
   @Min(value = 0, message = "상품 가격은 0원 이상이어야 합니다.")

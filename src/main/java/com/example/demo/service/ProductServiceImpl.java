@@ -6,7 +6,9 @@ import com.example.demo.dto.ProductUpdateDto;
 import com.example.demo.entity.Product;
 import com.example.demo.repository.ProductJdbcClientRepository;
 import java.util.List;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class ProductServiceImpl implements ProductService{
@@ -31,7 +33,8 @@ public class ProductServiceImpl implements ProductService{
   @Override
   public ProductResponseDto productFindById(Long id) {
     Product product = productJdbcClientRepository.productFindById(id)
-        .orElseThrow(()-> new IllegalArgumentException("해당 상품이 존재하지 않습니다."));
+                                                 .orElseThrow(() -> new ResponseStatusException(
+                                                     HttpStatus.NOT_FOUND, "해당 상품이 존재하지 않습니다."));
     return toDto(product);
   }
 
