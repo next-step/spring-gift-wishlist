@@ -1,11 +1,11 @@
 package gift.member.service;
 
-import gift.member.security.JwtProvider;
 import gift.member.dto.LoginRequestDto;
-import gift.member.dto.LoginResponseDto;
+import gift.member.dto.TokenResponseDto;
 import gift.member.entity.Member;
 import gift.member.exception.LoginFailedException;
 import gift.member.repository.MemberRepository;
+import gift.member.security.JwtProvider;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +20,7 @@ public class AuthServiceImpl implements AuthService {
 
 
     @Override
-    public LoginResponseDto login(LoginRequestDto loginRequestDto) {
+    public TokenResponseDto login(LoginRequestDto loginRequestDto) {
         // DB 조회 -> 성공 시 Token 생성, 실패 시 로그인 실패
 
         Member foundMember;
@@ -41,6 +41,6 @@ public class AuthServiceImpl implements AuthService {
             foundMember.getName(),
             foundMember.getRole());
 
-        return new LoginResponseDto(token);
+        return new TokenResponseDto(token);
     }
 }

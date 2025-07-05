@@ -1,11 +1,11 @@
 package gift.member.service;
 
 import gift.member.dto.RegisterRequestDto;
-import gift.member.dto.RegisterResponseDto;
+import gift.member.dto.TokenResponseDto;
 
 public interface MemberService {
 
-    RegisterResponseDto registerMember(RegisterRequestDto registerRequestDto);
+    TokenResponseDto registerMember(RegisterRequestDto registerRequestDto);
 
     void findMemberByEmail(RegisterRequestDto registerRequestDto);
 }

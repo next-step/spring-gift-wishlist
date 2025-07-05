@@ -1,7 +1,7 @@
 package gift.member.controller;
 
 import gift.member.dto.LoginRequestDto;
-import gift.member.dto.LoginResponseDto;
+import gift.member.dto.TokenResponseDto;
 import gift.member.exception.LoginFailedException;
 import gift.member.service.AuthService;
 import jakarta.validation.Valid;
@@ -24,7 +24,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> login(
+    public ResponseEntity<TokenResponseDto> login(
         @Valid @RequestBody LoginRequestDto loginRequestDto) {
 
         return new ResponseEntity<>(authService.login(loginRequestDto), HttpStatus.OK);

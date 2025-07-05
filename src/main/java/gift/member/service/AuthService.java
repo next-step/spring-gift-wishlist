@@ -1,10 +1,10 @@
 package gift.member.service;
 
 import gift.member.dto.LoginRequestDto;
-import gift.member.dto.LoginResponseDto;
+import gift.member.dto.TokenResponseDto;
 
 public interface AuthService {
 
-    LoginResponseDto login(LoginRequestDto loginRequestDto);
+    TokenResponseDto login(LoginRequestDto loginRequestDto);
 
 }

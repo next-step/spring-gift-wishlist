@@ -2,7 +2,7 @@ package gift.member.service;
 
 import gift.member.security.JwtProvider;
 import gift.member.dto.RegisterRequestDto;
-import gift.member.dto.RegisterResponseDto;
+import gift.member.dto.TokenResponseDto;
 import gift.member.entity.Member;
 import gift.member.exception.MemberNotFoundException;
 import gift.member.repository.MemberRepository;
@@ -19,7 +19,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public RegisterResponseDto registerMember(RegisterRequestDto registerRequestDto) {
+    public TokenResponseDto registerMember(RegisterRequestDto registerRequestDto) {
         Member member = new Member(registerRequestDto.email(), registerRequestDto.password(),
             registerRequestDto.name());
         memberRepository.saveMember(member);
@@ -31,7 +31,7 @@ public class MemberServiceImpl implements MemberService {
             savedMember.getName(),
             savedMember.getRole());
 
-        return new RegisterResponseDto(token);
+        return new TokenResponseDto(token);
     }
 
     @Override

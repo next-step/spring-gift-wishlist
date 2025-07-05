@@ -1,7 +1,7 @@
 package gift.member.controller;
 
 import gift.member.dto.RegisterRequestDto;
-import gift.member.dto.RegisterResponseDto;
+import gift.member.dto.TokenResponseDto;
 import gift.member.exception.MemberNotFoundException;
 import gift.member.service.MemberService;
 import jakarta.validation.Valid;
@@ -24,7 +24,7 @@ public class MemberController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<RegisterResponseDto> registerMember(
+    public ResponseEntity<TokenResponseDto> registerMember(
         @Valid @RequestBody RegisterRequestDto registerRequestDto) {
 
         return new ResponseEntity<>(memberService.registerMember(registerRequestDto),
