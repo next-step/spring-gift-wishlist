@@ -5,16 +5,21 @@ public class Member {
     private Long memberId;
     private String email;
     private String password;
+    private String name;
+    private String role;
 
-    public Member(String email, String password) {
+    public Member(String email, String password, String name) {
         this.email = email;
         this.password = password;
+        this.name = name;
     }
 
-    public Member(Long userId, String email, String password) {
-        this.memberId = userId;
+    public Member(Long memberId, String email, String password, String name, String role) {
+        this.memberId = memberId;
         this.email = email;
         this.password = password;
+        this.name = name;
+        this.role = role;
     }
 
     public Long getMemberId() {
@@ -27,5 +32,13 @@ public class Member {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getRole() {
+        return role;
     }
 }

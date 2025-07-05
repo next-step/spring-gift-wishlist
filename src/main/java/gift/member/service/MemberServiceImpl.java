@@ -1,9 +1,12 @@
 package gift.member.service;
 
+import gift.member.JwtProvider;
 import gift.member.dto.RegisterRequestDto;
 import gift.member.dto.RegisterResponseDto;
 import gift.member.entity.Member;
+import gift.member.exception.MemberNotFoundException;
 import gift.member.repository.MemberRepository;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,8 +20,30 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public RegisterResponseDto registerMember(RegisterRequestDto registerRequestDto) {
-        Member member = new Member(registerRequestDto.email(), registerRequestDto.password());
+        Member member = new Member(registerRequestDto.email(), registerRequestDto.password(),
+            registerRequestDto.name());
         memberRepository.saveMember(member);
-        return null;
+
+        this.findMemberByEmail(registerRequestDto.email());
+
+        Member savedMember = memberRepository.findMemberByEmail(registerRequestDto.email());
+        System.out.println(savedMember);
+
+        String token = new JwtProvider().generateToken(savedMember.getMemberId(),
+            savedMember.getName(),
+            savedMember.getRole());
+
+        return new RegisterResponseDto(token);
     }
+
+    @Override
+    public void findMemberByEmail(String email) {
+        try {
+            Member member = memberRepository.findMemberByEmail(email);
+        } catch (EmptyResultDataAccessException e) {
+            throw new MemberNotFoundException("이메일이 존재하지 않습니다.");
+        }
+    }
+
+
 }

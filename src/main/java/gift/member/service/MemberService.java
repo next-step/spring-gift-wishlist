@@ -6,4 +6,6 @@ import gift.member.dto.RegisterResponseDto;
 public interface MemberService {
 
     RegisterResponseDto registerMember(RegisterRequestDto registerRequestDto);
+
+    void findMemberByEmail(String email);
 }

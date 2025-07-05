@@ -1,8 +1,6 @@
 package gift.member.repository;
 
 import gift.member.entity.Member;
-import gift.member.exception.MemberNotFoundException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -18,22 +16,21 @@ public class MemberRepositoryImpl implements MemberRepository {
     @Override
     public void saveMember(Member member) {
 
-        String sql = "INSERT INTO members(email, password) VALUES(?,?)";
+        String sql = "INSERT INTO members(email, password, name) VALUES(?,?,?)";
 
-        jdbcTemplate.update(sql, member.getEmail(), member.getPassword());
+        jdbcTemplate.update(sql, member.getEmail(), member.getPassword(), member.getName());
     }
 
     @Override
-    public void findMemberByEmail(String email) {
+    public Member findMemberByEmail(String email) {
 
-        String sql = "SELECT email, password FROM members WHERE email = ?";
+        String sql = "SELECT memberId, email, password, name, role FROM members WHERE email = ?";
 
-        try {
-            jdbcTemplate.queryForObject(sql,
-                (rs, rowNum) -> new Member(rs.getString("email"), rs.getString("password")), email);
-        } catch (EmptyResultDataAccessException e) {
-            throw new MemberNotFoundException("가입된 이메일이 존재하지 않습니다.");
-        }
+        return jdbcTemplate.queryForObject(sql,
+            (rs, rowNum) -> new Member(rs.getLong("memberId"), rs.getString("email"),
+                rs.getString("password"),
+                rs.getString("name"),
+                rs.getString("role")), email);
     }
 
 
