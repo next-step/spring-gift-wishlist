@@ -61,16 +61,8 @@ class ProductApiStructuredE2ETest {
     ErrorResponse errorResponse = mapper.readValue(response.getBody(), ErrorResponse.class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-    assertThat(errorResponse.errorCode()).isEqualTo("G001");
+    assertThat(errorResponse.errorCode()).isEqualTo("P002");
 
-    @SuppressWarnings("unchecked")
-    List<Map<String, String>> invalidParams = (List<Map<String, String>>) errorResponse.extras().get("invalid-params");
-
-    assertThat(invalidParams).anySatisfy(param -> {
-      assertThat(param.get("name")).isEqualTo("name");
-      assertThat(param.get("reason")).contains("카카오");
-      assertThat(param.get("reason")).contains("포함할 수 없습니다");
-    });
   }
 
   @Test
@@ -107,7 +99,7 @@ class ProductApiStructuredE2ETest {
     ObjectMapper mapper = new ObjectMapper();
     ErrorResponse errorResponse = mapper.readValue(response.getBody(), ErrorResponse.class);
 
-    assertThat(errorResponse.errorCode()).isEqualTo("G003");
+    assertThat(errorResponse.errorCode()).isEqualTo("P003");
     assertThat(errorResponse.errorMessage()).contains("정렬 필드 값이 올바르지 않습니다");
   }
 

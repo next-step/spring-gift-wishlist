@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -54,17 +56,11 @@ public class GlobalExceptionHandler {
     return createErrorResponse(GlobalErrorCode.INVALID_ARGUMENT_ERROR, exception);
   }
 
-  @ExceptionHandler(ProductInvalidSortFieldException.class)
-  public ResponseEntity<ErrorResponse> handleSortFieldException(
-      ProductInvalidSortFieldException exception) {
-    return createErrorResponse(exception.getErrorCode(), exception);
-  }
 
-
-  @ExceptionHandler(Exception.class)
+  /*@ExceptionHandler(Exception.class)
   public ResponseEntity<ErrorResponse> handleException(Exception exception) {
     return createErrorResponse(GlobalErrorCode.INTERNAL_ERROR, exception);
-  }
+  }*/
 
   private static ResponseEntity<ErrorResponse> createErrorResponse(GlobalErrorCode errorCode,
       Exception exception) {
