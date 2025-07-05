@@ -1,12 +1,18 @@
 package gift.product.controller.api;
 
 import gift.product.domain.Product;
-import gift.product.dto.ProductDto;
+import gift.product.dto.RequestDto;
+import gift.product.dto.ResponseDto;
 import gift.product.service.ProductService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -18,29 +24,37 @@ public class ProductController {
     }
 
     @GetMapping("/product/list")
-    public List<ProductDto> findAll() {
-        return productService.findAll();
+    public ResponseEntity<List<ResponseDto>> findAll() {
+        List<ResponseDto> responseDtoList = productService.findAll()
+                .stream()
+                .map(ResponseDto::new)
+                .toList();
+        return ResponseEntity.ok(responseDtoList);
     }
 
     @PostMapping("/product/add")
-    public ProductDto saveProduct(@RequestBody @Valid ProductDto productdto) {
-        productService.saveProduct(productdto);
-        return productdto;
+    public ResponseEntity<ResponseDto> saveProduct(@RequestBody @Valid RequestDto requestDto) {
+        Product product =  productService.saveProduct(requestDto);
+        return ResponseEntity
+                .created(URI.create("/api/product/" + product.getId()))
+                .body(new ResponseDto(product));
     }
 
     @GetMapping("/product/{id}")
-    public ProductDto findById(@PathVariable String id) {
-        return productService.findById(id);
+    public ResponseEntity<ResponseDto> findById(@PathVariable UUID id) {
+        Product product = productService.findById(id);
+        return ResponseEntity.ok(new ResponseDto(product));
     }
 
     @PatchMapping("/product/{id}/update")
-    public ProductDto updateProduct(@PathVariable String id, @RequestBody @Valid ProductDto updateProductdto) {
-        productService.updateProduct(id, updateProductdto);
-        return updateProductdto;
+    public ResponseEntity<ResponseDto> updateProduct(@PathVariable UUID id, @RequestBody @Valid RequestDto requestDto) {
+        Product product = productService.updateProduct(id, requestDto);
+        return ResponseEntity.ok(new ResponseDto(product));
     }
 
     @DeleteMapping("/product/{id}/delete")
-    public ProductDto deleteById(@PathVariable String id) {
-        return productService.deleteProduct(id);
+    public ResponseEntity<Void> deleteById(@PathVariable UUID id) {
+        productService.deleteProduct(id);
+        return ResponseEntity.noContent().build();
     }
 }

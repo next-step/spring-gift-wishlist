@@ -1,12 +1,11 @@
 package gift.product.controller.view;
 
 import gift.product.domain.Product;
-import gift.product.dto.ProductDto;
+import gift.product.dto.RequestDto;
 import gift.product.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -22,44 +21,44 @@ public class ProductAdminController {
 
     @GetMapping("/product/list")
     public String findAll(Model model) {
-        List<Product> products = productService.adminFindAll();
+        List<Product> products = productService.findAll();
         model.addAttribute("products", products);
         return "products";
     }
 
     @GetMapping("/product/add")
     public String addForm(Model model) {
-        model.addAttribute("productdto", new ProductDto());
+        model.addAttribute("requestDto", new RequestDto());
         return "addForm";
     }
 
     @PostMapping("/product/add")
-    public String saveProduct(@Valid @ModelAttribute ProductDto productdto) {
-        productService.saveProduct(productdto);
+    public String saveProduct(@Valid @ModelAttribute RequestDto requestDto) {
+        productService.saveProduct(requestDto);
         return "redirect:/api/admin/product/list";
     }
 
     @ResponseBody
     @GetMapping("/product/{id}")
-    public Product findById(@PathVariable String id) {
-        return productService.adminFindById(id);
+    public Product findById(@PathVariable UUID id) {
+        return productService.findById(id);
     }
 
     @GetMapping("/product/{id}/update")
-    public String updateForm(@PathVariable String id, Model model) {
-        Product product = productService.adminFindById(id);
+    public String updateForm(@PathVariable UUID id, Model model) {
+        Product product = productService.findById(id);
         model.addAttribute("product", product);
         return "updateForm";
     }
 
     @PatchMapping("/product/{id}/update")
-    public String updateProduct(@PathVariable String id, @Valid @ModelAttribute ProductDto updateProductdto) {
-        productService.updateProduct(id, updateProductdto);
+    public String updateProduct(@PathVariable UUID id, @Valid @ModelAttribute RequestDto requestDto) {
+        productService.updateProduct(id, requestDto);
         return "redirect:/api/admin/product/list";
     }
 
     @DeleteMapping("/product/{id}/delete")
-    public String deleteById(@PathVariable String id) {
+    public String deleteById(@PathVariable UUID id) {
         productService.deleteProduct(id);
         return "redirect:/api/admin/product/list";
     }

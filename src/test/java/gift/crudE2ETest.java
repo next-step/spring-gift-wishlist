@@ -1,7 +1,8 @@
 package gift;
 
-import gift.product.dto.ProductDto;
-import gift.product.repository.ProductDao;
+import gift.product.dto.RequestDto;
+import gift.product.dto.ResponseDto;
+import gift.product.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +10,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientResponseException;
+
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -21,41 +23,41 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 class crudE2ETest {
     @LocalServerPort
     private int port;
-    private String firstUUID;
+    private UUID lastUUID;
 
     private RestClient restClient = RestClient.builder().build();
 
     @Autowired
-    ProductDao productDao;
+    ProductService productService;
 
     @BeforeEach
     void setUp() {
-        ProductDto productDto = new ProductDto("testProduct1", 1000, "imageUrl1");
-        productDao.save(productDto);
-        firstUUID = productDao.findAll().getFirst().getId();
+        RequestDto requestDto = new RequestDto("testProduct1", 1000, "imageUrl1");
+        productService.saveProduct(requestDto);
+        lastUUID = productService.findAll().getLast().getId();
     }
 
     @Test
     void productCreateTest() {
         String url = "http://localhost:" + port + "/api/product/add";
-        ProductDto requestDto = new ProductDto("testProduct2", 2000, "imageUrl2");
-        ResponseEntity<ProductDto> response = restClient
+        RequestDto requestDto = new RequestDto("testProduct2", 2000, "imageUrl2");
+        ResponseEntity<ResponseDto> response = restClient
                 .post()
                 .uri(url)
                 .body(requestDto)
                 .retrieve()
-                .toEntity(ProductDto.class);
+                .toEntity(ResponseDto.class);
 
-        ProductDto expectedDto = requestDto;
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody())
                 .extracting("name", "price", "imageUrl")
-                .containsExactly(expectedDto.getName(), expectedDto.getPrice(), expectedDto.getImageUrl());
+                .containsExactly(requestDto.getName(), requestDto.getPrice(), requestDto.getImageUrl());
     }
 
     @Test
     void productCreateWithSpecialCharacterTest() {
         String url = "http://localhost:" + port + "/api/product/add";
-        ProductDto requestDto = new ProductDto("testProduct2!?", 2000, "imageUrl2");
+        RequestDto requestDto = new RequestDto("testProduct2!?", 2000, "imageUrl2");
         assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
                 .isThrownBy(
                         () -> restClient
@@ -72,12 +74,12 @@ class crudE2ETest {
 
     @Test
     void productReadTest() {
-        String url = "http://localhost:" + port + "/api/product/" + firstUUID;
-        ResponseEntity<ProductDto> response = restClient
+        String url = "http://localhost:" + port + "/api/product/" + lastUUID;
+        ResponseEntity<ResponseDto> response = restClient
                 .get()
                 .uri(url)
                 .retrieve()
-                .toEntity(ProductDto.class);
+                .toEntity(ResponseDto.class);
 
         assertThat(response.getBody())
                 .extracting("name", "price", "imageUrl")
@@ -86,7 +88,7 @@ class crudE2ETest {
 
     @Test
     void productReadNotFoundTest() {
-        String url = "http://localhost:" + port + "/api/product/" + "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
+        String url = "http://localhost:" + port + "/api/product/" + "00000000-0000-0000-0000-000000000000";
         assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
                 .isThrownBy(
                         () -> restClient
@@ -102,14 +104,14 @@ class crudE2ETest {
 
     @Test
     void productUpdateTest() {
-        String url = "http://localhost:" + port + "/api/product/" + firstUUID + "/update";
-        ProductDto requestDto = new ProductDto("updatedName", 10, "updatedUrl");
-        ResponseEntity<ProductDto> response = restClient
+        String url = "http://localhost:" + port + "/api/product/" + lastUUID + "/update";
+        RequestDto requestDto = new RequestDto("updatedName", 10, "updatedUrl");
+        ResponseEntity<ResponseDto> response = restClient
                 .patch()
                 .uri(url)
                 .body(requestDto)
                 .retrieve()
-                .toEntity(ProductDto.class);
+                .toEntity(ResponseDto.class);
 
         assertThat(response.getBody())
                 .extracting("name", "price", "imageUrl")
@@ -118,8 +120,8 @@ class crudE2ETest {
 
     @Test
     void productUpdateNotFoundTest() {
-        String url = "http://localhost:" + port + "/api/product/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/update";
-        ProductDto requestDto = new ProductDto("updatedName", 10, "updatedUrl");
+        String url = "http://localhost:" + port + "/api/product/00000000-0000-0000-0000-000000000000/update";
+        RequestDto requestDto = new RequestDto("updatedName", 10, "updatedUrl");
         assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
                 .isThrownBy(
                         () -> restClient
@@ -136,21 +138,19 @@ class crudE2ETest {
 
     @Test
     void productDeleteTest() {
-        String url = "http://localhost:" + port + "/api/product/" + firstUUID + "/delete";
-        ResponseEntity<ProductDto> response = restClient
+        String url = "http://localhost:" + port + "/api/product/" + lastUUID + "/delete";
+        ResponseEntity<ResponseDto> response = restClient
                 .delete()
                 .uri(url)
                 .retrieve()
-                .toEntity(ProductDto.class);
+                .toEntity(ResponseDto.class);
 
-        assertThat(response.getBody())
-                .extracting("name", "price", "imageUrl")
-                .containsExactly("testProduct1", 1000, "imageUrl1");
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
 
     @Test
     void productDeleteNotFoundTest() {
-        String url = "http://localhost:" + port + "/api/product/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/delete";
+        String url = "http://localhost:" + port + "/api/product/00000000-0000-0000-0000-000000000000/delete";
         assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
                 .isThrownBy(
                         () -> restClient
