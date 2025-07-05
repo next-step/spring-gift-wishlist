@@ -3,11 +3,11 @@ package gift.member.entity;
 public class Member {
 
     private Long memberId;
-    private String email;
-    private String password;
-    private String name;
+    private final String email;
+    private final String password;
+    private final String name;
     private String role;
-    
+
     public Member(String email, String password, String name) {
         this.email = email;
         this.password = password;
