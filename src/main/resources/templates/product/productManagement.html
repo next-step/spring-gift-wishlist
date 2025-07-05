@@ -122,16 +122,15 @@
     }
 
     // 상품 수정
-    function updateProduct() {
-        const id = document.getElementById('productId').value;
+    function updateProduct(id) {
         const name = document.getElementById('productName').value;
         const price = document.getElementById('productPrice').value;
         const imageUrl = document.getElementById('productImageUrl').value;
 
         const payload = { id ,name, price, imageUrl };
 
-        fetch('/api/products', {
-            method: 'POST',
+        fetch(`/api/products/${id}`, {
+            method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         })
