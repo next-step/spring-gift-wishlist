@@ -1,6 +1,7 @@
 package gift.controller;
 
 import gift.dto.MemberLoginRequestDto;
+import gift.dto.MemberLoginResponseDto;
 import gift.dto.MemberRequestDto;
 import gift.dto.MemberResponseDto;
 import gift.service.MemberService;
@@ -11,9 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import java.net.URI;
 
 @RestController
 @RequestMapping("/api/members")
@@ -32,8 +30,10 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@Valid @RequestBody MemberLoginRequestDto requestDto){
-        return ResponseEntity.status(HttpStatus.OK).body(memberService.login(requestDto));
+    public ResponseEntity<MemberLoginResponseDto> login(@Valid @RequestBody MemberLoginRequestDto requestDto){
+        String token = memberService.login(requestDto);
+        MemberLoginResponseDto responseDto = new MemberLoginResponseDto(token);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
 }

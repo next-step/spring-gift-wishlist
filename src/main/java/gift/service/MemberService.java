@@ -5,6 +5,9 @@ import gift.dto.MemberRequestDto;
 import gift.dto.MemberResponseDto;
 import gift.entity.Member;
 import gift.exception.DuplicateMemberException;
+import gift.exception.InvalidPasswordException;
+import gift.exception.MemberNotFoundException;
+import gift.jwt.JwtProvider;
 import gift.repository.MemberRepository;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
@@ -15,9 +18,13 @@ import java.util.Optional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-    public MemberService(MemberRepository memberRepository) {
+    private final JwtProvider jwtProvider;
+
+    public MemberService(MemberRepository memberRepository,  JwtProvider jwtProvider) {
         this.memberRepository = memberRepository;
+        this.jwtProvider = jwtProvider;
     }
+
 
 
     public MemberResponseDto create(MemberRequestDto requestDto) {
@@ -33,17 +40,14 @@ public class MemberService {
     }
 
     public String login(@Valid MemberLoginRequestDto requestDto) {
-        Optional<Member> existedMember = memberRepository.findByEmail(requestDto.email());
-        if (existedMember.isPresent()) {
-            if (existedMember.get().getPassword().equals(requestDto.password())) {
-                return "success";
-            }
-            else{
-                return "fail";
-            }
+        Member existedMember = memberRepository.findByEmail(requestDto.email())
+                .orElseThrow(() -> new MemberNotFoundException(requestDto.email()));
+
+        if (existedMember.getPassword().equals(requestDto.password())) {
+             return jwtProvider.generateToken(existedMember);
         }
         else{
-            return "fail";
+            throw new InvalidPasswordException();
         }
     }
 }
