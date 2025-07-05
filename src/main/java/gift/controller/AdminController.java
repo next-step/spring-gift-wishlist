@@ -7,7 +7,6 @@ import gift.service.ProductService;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.server.ResponseStatusException;
 
 @RequestMapping("/admin") //prefix설정
 @Controller//Controller는 mvc에서 화면을 구성하기 위해서 뷰 이름을 반환하고 ViewResolver를 거치게 됩니다.
@@ -29,7 +27,7 @@ public class AdminController {
     private final ProductService productService;
 
     //의존성 주입(생성자가 1개인 경우 @Autowired 생략 가능)
-    public AdminController(ProductService productService) {
+    public AdminController(ProductService productService){
         this.productService = productService;
     }
 
@@ -82,7 +80,7 @@ public class AdminController {
             String errorMsg = "상품 ID가 " + id + "인 상품은 존재하지 않습니다.";
             throw new ProductNotFoundException(errorMsg);
         }
-        model.addAttribute("sproduct", product.get());
+        model.addAttribute("product", product.get());
         return "productinfo";
     }
 

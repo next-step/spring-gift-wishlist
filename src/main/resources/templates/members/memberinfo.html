@@ -1,0 +1,31 @@
+<html layout:decorate="~{members/layout}">
+<div layout:fragment="content">
+  <table>
+
+    <thead>
+    <tr>
+      <th>회원ID</th>
+      <th>회원 이메일</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+
+    <tbody>
+      <td th:text="${member.memberId}"></td>
+      <td th:text="${member.email}"></td>
+
+      <td>
+        <form th:action="@{/admin/members/remove/{id}(id=${member.memberId})}" method="post">
+          <button type="submit">상품 삭제</button>
+        </form>
+        <button th:onclick="|location.href='@{/admin/members/modify/{id}(id=${member.memberId})}'|">회원 정보 수정</button>
+      </td>
+
+
+    </tr>
+    </tbody>
+  </table>
+
+</div>
+
+</html>
