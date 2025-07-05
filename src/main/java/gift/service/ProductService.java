@@ -17,6 +17,10 @@ public class ProductService {
 
     // 상품 저장
     public Product addProduct(Product product) {
+        // 카카오가 포함된 이름은 MD의 승인 필요
+        boolean isContainedKakao = product.getName().contains("카카오");
+        product.setNeedsMdApproval(isContainedKakao);
+
         return productRepository.save(product);
     }
 
@@ -41,6 +45,10 @@ public class ProductService {
         if (productRepository.findById(id).isEmpty()) {
             throw new IllegalArgumentException("id: " + id + ". 수정할 상품이 존재하지 않습니다.");
         }
+        // 카카오가 포함된 이름은 MD의 승인 필요
+        boolean isContainedKakao = product.getName().contains("카카오");
+        product.setNeedsMdApproval(isContainedKakao);
+
         productRepository.update(product);
     }
 

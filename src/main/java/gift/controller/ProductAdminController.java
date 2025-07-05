@@ -2,12 +2,16 @@ package gift.controller;
 
 import gift.model.Product;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -25,15 +29,22 @@ public class ProductAdminController {
         model.addAttribute("products", productService.getAllProducts());
         return "product/list"; // templates/product/list.html
     }
-    
+
     @GetMapping("/new")
     public String showAddForm(Model model) {
         model.addAttribute("product", new Product());
         return "product/create-form";
     }
 
-    @PostMapping
-    public String addProduct(@ModelAttribute Product product) {
+    @PostMapping("/new")
+    public String addProduct(@Valid @ModelAttribute Product product, BindingResult bindingResult,
+        Model model) {
+        if (bindingResult.hasErrors()) {
+            // 유효성 실패 시 다시 작성 폼으로 이동
+            model.addAttribute("product", product); // 작성 폼에 입력값 유지
+            return "product/create-form";
+        }
+
         productService.addProduct(product);
         return "redirect:/admin/products";
     }
@@ -44,8 +55,14 @@ public class ProductAdminController {
         return "product/edit-form";
     }
 
-    @PostMapping("/{id}")
-    public String updateProduct(@PathVariable Long id, @ModelAttribute Product product) {
+    @PostMapping("edit/{id}")
+    public String updateProduct(@PathVariable Long id, @Valid @ModelAttribute Product product,
+        BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            // 유효성 실패 시 다시 작성 폼으로 이동
+            model.addAttribute("product", product); // 작성 폼에 입력값 유지
+            return "product/edit-form";
+        }
         productService.updateProduct(id, product);
         return "redirect:/admin/products";
     }
