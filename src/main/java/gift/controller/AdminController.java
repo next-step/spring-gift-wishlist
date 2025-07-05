@@ -1,6 +1,7 @@
 package gift.controller;
 
 import gift.dto.Member;
+import gift.dto.MemberRequestDto;
 import gift.dto.ProductRequestDto;
 import gift.entity.Product;
 import gift.exception.ProductNotFoundException;
@@ -152,9 +153,22 @@ public class AdminController {
         return "members/home";
     }
 
-    //회원을 추가
+    //회원 추가
+    //1. 회원 등록 폼을 가져오기
+    @GetMapping("/members/add")
+    public String getMemeberForm(){
+        return "members/form";
+    }
 
-    //회원을 수정
+    //2. 회원 등록(추가)
+    @PostMapping("/members/add")
+    public String addMember(@ModelAttribute MemberRequestDto memberRequestDto){
+        memberService.register(memberRequestDto);
+        return "redirect:/admin/members/list";
+    }
+
+    //회원 수정
+
 
     //회원을 삭제
 
