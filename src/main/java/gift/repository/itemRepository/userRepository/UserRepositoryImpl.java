@@ -55,13 +55,16 @@ public class UserRepositoryImpl implements UserRepository{
 
     @Override
     public List<User> getAllUsers() {
-        var sql = "SELECT ID, EMAIL, PASSWORD FROM USERS";
+        var sql = "SELECT ID, EMAIL, PASSWORD FROM users";
 
         return jdbcTemplate.query(sql,userRowMapper);
     }
 
     @Override
     public List<User> findUserByEmail(String email) {
-        return List.of();
+        var sql = "SELECT ID, EMAIL, PASSWORD FROM users WHERE EMAIL = ?";
+        return jdbcTemplate.query(sql, new Object[]{email}, userRowMapper);
+
     }
+
 }
