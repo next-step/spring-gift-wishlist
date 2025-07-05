@@ -26,4 +26,7 @@ public interface MemberRepository {
 
     void modifyMember(Long id, MemberRequestDto memberRequestDto);
 
+    void removeMemberById(Long id);
+
+
 }

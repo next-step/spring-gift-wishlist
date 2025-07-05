@@ -50,9 +50,20 @@ public class MemberService {
         return memberRepository.findMemberById(id);
     }
 
+    public Optional<Member> getMemberByEmail(String email){
+        return memberRepository.findMemberByEmail(email);
+    }
+
+
+
     //멤버의 정보를 수정하는 기능
     public void modifyMember(Long id, MemberRequestDto memberRequestDto){
         memberRepository.modifyMember(id, memberRequestDto);
+    }
+
+    //멤버를 삭제하는 기능
+    public void removeMember(Long id){
+        memberRepository.removeMemberById(id);
     }
 
     public List<Member> getAllMembers(){

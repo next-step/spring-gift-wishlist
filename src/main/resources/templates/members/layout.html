@@ -68,8 +68,8 @@
       <li><a th:href="@{/admin/members/list}">전체 회원 조회하기</a></li>
       <li><a th:href="@{/admin/members/add}">회원 등록하기</a></li>
       <li>
-        <form th:action="@{/admin/products/info}" method="get">
-          <input type="number" name="id" placeholder="회원ID 입력">
+        <form th:action="@{/admin/members/info}" method="get">
+          <input type="email" name="email" placeholder="회원 이메일 입력">
           <input type="submit" value="회원 검색하기">
         </form>
       </li>

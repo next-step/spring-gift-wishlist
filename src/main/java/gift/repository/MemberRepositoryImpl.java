@@ -64,6 +64,12 @@ public class MemberRepositoryImpl implements MemberRepository{
         jdbcTemplate.update(sql,memberRequestDto.email(), memberRequestDto.password(), id);
     }
 
+    @Override
+    public void removeMemberById(Long id) {
+        String sql = "delete from members where id = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
     private RowMapper<Member> memberRowMapper(){
         return new RowMapper<Member>() {
             @Override

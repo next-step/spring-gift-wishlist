@@ -1,11 +1,8 @@
 package gift.controller;
 
-import gift.dto.Member;
-import gift.dto.MemberRequestDto;
 import gift.dto.ProductRequestDto;
 import gift.entity.Product;
 import gift.exception.ProductNotFoundException;
-import gift.service.MemberService;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -29,12 +26,9 @@ public class AdminController {
 
     private final ProductService productService;
 
-    private final MemberService memberService;
-
     //의존성 주입(생성자가 1개인 경우 @Autowired 생략 가능)
-    public AdminController(ProductService productService, MemberService memberService) {
+    public AdminController(ProductService productService){
         this.productService = productService;
-        this.memberService = memberService;
     }
 
     @GetMapping
@@ -86,7 +80,7 @@ public class AdminController {
             String errorMsg = "상품 ID가 " + id + "인 상품은 존재하지 않습니다.";
             throw new ProductNotFoundException(errorMsg);
         }
-        model.addAttribute("sproduct", product.get());
+        model.addAttribute("product", product.get());
         return "productinfo";
     }
 
@@ -144,52 +138,6 @@ public class AdminController {
         productService.remove(id);
         return "redirect:/admin/products/list";
     }
-
-    //회원을 조회
-    @GetMapping("/members/list")
-    public String getMembers(Model model){
-        List<Member> memberList = memberService.getAllMembers();
-        model.addAttribute("memberList", memberList);
-        return "members/home";
-    }
-
-    //회원 추가
-    //1. 회원 등록 폼을 가져오기
-    @GetMapping("/members/add")
-    public String getMemeberForm(){
-        return "members/form";
-    }
-
-    //2. 회원 등록(추가)
-    @PostMapping("/members/add")
-    public String addMember(@ModelAttribute MemberRequestDto memberRequestDto){
-        memberService.register(memberRequestDto);
-        return "redirect:/admin/members/list";
-    }
-
-    //회원 수정
-    //1. 수정 화면 가져오기
-    @GetMapping("/members/modify/{id}")
-    public String modifyMemberForm(
-            @PathVariable Long id,
-            Model model
-    ){
-        System.out.println("here!!!!!");
-        Member member = memberService.findMember(id).get();
-        model.addAttribute("member", member);
-        return "members/modifyForm";
-    }
-
-    @PostMapping("/members/modify/{id}")
-    public String modifyMember(
-            @ModelAttribute MemberRequestDto memberRequestDto,
-            @PathVariable Long id
-    ){
-        memberService.modifyMember(id, memberRequestDto);
-        return "redirect:/admin/members/list";
-    }
-
-    //회원을 삭제
 
 }
 
