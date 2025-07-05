@@ -1,4 +1,4 @@
-package gift.exception;
+package gift.common.exception;
 
 public class CreationFailException extends RuntimeException {
     public CreationFailException(String message) {

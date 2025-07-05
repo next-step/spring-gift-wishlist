@@ -1,11 +1,13 @@
 package gift;
 
-import gift.dto.request.CreateProductDto;
-import gift.dto.request.UpdateProductDto;
-import gift.dto.response.ProductDto;
+import gift.common.dto.request.CreateProductDto;
+import gift.common.dto.request.UpdateProductDto;
+import gift.common.dto.response.MessageResponseDto;
+import gift.common.dto.response.ProductDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestClient;
@@ -26,10 +28,10 @@ public class ApplicationTest {
     private int port;
 
     public ApplicationTest() {
-        predefined.add(new ProductDto(1L, "아메리카노", 3000L, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3bgpr9EPuJ47gcYCWg7jrEXJ3M15nEXZ9WdKpUsF11wMJFwIPXpOtIkDwoTUUi8_S_WbVTmcus1R7oEx0ongOCiJtjK8iLm-JxAp4swI_-Q"));
-        predefined.add(new ProductDto(2L, "카페라떼", 4000L, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjYwdtYk0ww-YSRxAG1stQYFuTT6K2D5lQcQ&s"));
-        predefined.add(new ProductDto(3L, "모카", 5000L, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkd11qAyK1kPY8z6tpvKO4KM97cTpCphVeOQ&s"));
-        predefined.add(new ProductDto(4L, "아포가토", 4500L, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvgoCg5CPPBL8MZGAWT3ilkSeBnr1SkR-x2A&s"));
+        predefined.add(new ProductDto(1L, "아메리카노", 3000L, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3bgpr9EPuJ47gcYCWg7jrEXJ3M15nEXZ9WdKpUsF11wMJFwIPXpOtIkDwoTUUi8_S_WbVTmcus1R7oEx0ongOCiJtjK8iLm-JxAp4swI_-Q", "판매중"));
+        predefined.add(new ProductDto(2L, "카페라떼", 4000L, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjYwdtYk0ww-YSRxAG1stQYFuTT6K2D5lQcQ&s", "판매중"));
+        predefined.add(new ProductDto(3L, "모카", 5000L, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkd11qAyK1kPY8z6tpvKO4KM97cTpCphVeOQ&s", "판매중"));
+        predefined.add(new ProductDto(4L, "아포가토", 4500L, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvgoCg5CPPBL8MZGAWT3ilkSeBnr1SkR-x2A&s", "판매중"));
     }
 
     @Test
@@ -38,14 +40,16 @@ public class ApplicationTest {
         var response = client.post()
                 .uri(url)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new CreateProductDto("아이스 아메리카노", 3500L, "test-url"))
+                .body(new CreateProductDto("coffee", 3500L, "test-url"))
                 .retrieve()
-                .toEntity(ProductDto.class);
+                .toEntity(new ParameterizedTypeReference<MessageResponseDto<ProductDto>>() {
+                });
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
         var locationId = response.getHeaders().getLocation().toString().split("/")[3];
         var expectedId = Long.parseLong(locationId);
-        assertBody(response.getBody(), new ProductDto(expectedId, "아이스 아메리카노", 3500L, "test-url"));
+        var data = response.getBody().data();
+        assertBody(data, expectedId, "coffee", 3500L, "test-url");
 
         // reset
         client.delete().uri(url + "/" + expectedId);
@@ -59,7 +63,8 @@ public class ApplicationTest {
                 .retrieve()
                 .toEntity(ProductDto.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertBody(response.getBody(), predefined.get(0));
+        var expected = predefined.get(0);
+        assertBody(response.getBody(), expected.id(), expected.name(), expected.price(), expected.imageUrl());
     }
 
     @Test
@@ -68,11 +73,21 @@ public class ApplicationTest {
         var response = client.put()
                 .uri(url)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new UpdateProductDto("아이스 아메리카노", 3500L, "test-url"))
+                .body(new UpdateProductDto("coffee", 3500L, "test-url"))
                 .retrieve()
-                .toEntity(ProductDto.class);
+                .toEntity(new ParameterizedTypeReference<MessageResponseDto<ProductDto>>() {
+                });
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertBody(response.getBody(), new ProductDto(2L, "아이스 아메리카노", 3500L, "test-url"));
+
+        var data = response.getBody().data();
+        assertBody(data, 2L, "coffee", 3500L, "test-url");
+
+        // reset
+        var reset = predefined.get(1);
+        client.put()
+                .uri(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new UpdateProductDto(reset.name(), reset.price(), reset.imageUrl()));
     }
 
     @Test
@@ -111,10 +126,38 @@ public class ApplicationTest {
                 .isEqualTo(HttpStatus.NOT_FOUND);
     }
 
-    private void assertBody(ProductDto actual, ProductDto expected) {
-        assertThat(actual.id()).isEqualTo(expected.id());
-        assertThat(actual.name()).isEqualTo(expected.name());
-        assertThat(actual.price()).isEqualTo(expected.price());
-        assertThat(actual.imageUrl()).isEqualTo(expected.imageUrl());
+    @Test
+    void 잘못된_이름의_상품_생성시_400반환() throws IOException {
+        var url = "http://localhost:" + port + "/api/products";
+        String[] badNames = {"길이 15 초과 상품 1234", "상품!", "상품@", "상품#", "상품$", "상품%", "상품^", "상품*", "상품=",
+                "상품~", "상품`", "상품{", "상품}", "상품\\", "상품|", "상품;", "상품:", "상품?"};
+
+        for (String name : badNames) {
+            var response = client.post()
+                    .uri(url)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(new CreateProductDto(name, 0L, "test-url"))
+                    .exchange((req, res) -> res);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Test
+    void 카카오가_포함된_이름의_상품_생성시_202반환() {
+        var url = "http://localhost:" + port + "/api/products";
+        var response = client.post()
+                .uri(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new CreateProductDto("카카오_관련상품", 1000000L, "test-url"))
+                .retrieve()
+                .toEntity(MessageResponseDto.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.ACCEPTED);
+    }
+
+    private void assertBody(ProductDto actual, Long id, String name, Long price, String imageUrl) {
+        assertThat(actual.id()).isEqualTo(id);
+        assertThat(actual.name()).isEqualTo(name);
+        assertThat(actual.price()).isEqualTo(price);
+        assertThat(actual.imageUrl()).isEqualTo(imageUrl);
     }
 }

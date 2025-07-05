@@ -24,11 +24,17 @@ function saveProduct(id) {
         },
         body: JSON.stringify(productData)
     })
-    .then(response => {
-        if (response.ok) {
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
             location.reload();
-        } else {
-            alert("수정 실패");
+        }
+        else if (data.code == 202) {
+            alert(data.message);
+            window.location.href = "/products/management/home";
+        }
+        else {
+            alert(data.message);
         }
     })
     .catch(error => {
