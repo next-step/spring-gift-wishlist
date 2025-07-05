@@ -53,5 +53,7 @@ public class UserController {
             Model model
     ) {
         UserResponseDto response = userService.finUserById(id);
+
+        return new ResponseEntity<UserResponseDto>(response, HttpStatus.OK);
     }
 }
