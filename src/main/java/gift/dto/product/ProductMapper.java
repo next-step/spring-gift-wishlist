@@ -1,7 +1,6 @@
-package gift.dto;
+package gift.dto.product;
 
 import gift.domain.Product;
-import org.springframework.stereotype.Component;
 
 
 public class ProductMapper {

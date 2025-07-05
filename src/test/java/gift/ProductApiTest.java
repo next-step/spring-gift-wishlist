@@ -2,16 +2,15 @@ package gift;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import gift.dto.ProductCreateResponse;
-import gift.dto.ProductRequest;
-import gift.dto.ProductResponse;
+import gift.dto.product.ProductCreateResponse;
+import gift.dto.product.ProductRequest;
+import gift.dto.product.ProductResponse;
 import gift.exception.ErrorCode;
 import gift.exception.ErrorResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.graphql.GraphQlProperties.Http;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
