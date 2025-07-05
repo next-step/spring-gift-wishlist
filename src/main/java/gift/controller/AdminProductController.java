@@ -3,9 +3,11 @@ package gift.controller;
 import gift.dto.RequestDto;
 import gift.dto.ResponseDto;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,15 +28,24 @@ public class AdminProductController {
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("product", new RequestDto());
+        model.addAttribute("actionUrl", "/admin/products/new");
         return "admin/form";
     }
 
     // 1-2.상품 등록 처리
     @PostMapping("/new")
-    public String create(RequestDto dto) {
+    public String create(@Valid @ModelAttribute("product") RequestDto dto,
+            BindingResult br,
+            Model model) {
+        if (br.hasErrors()) {
+            model.addAttribute("actionUrl", "/admin/products/new");  // 이 줄도 잊지 말기!
+            return "admin/form";
+        }
+
         productService.create(dto);
         return "redirect:/admin/products";
     }
+
 
     // 2. 상품 목록
     @GetMapping
@@ -49,12 +60,19 @@ public class AdminProductController {
     public String showEditForm(@PathVariable Long id, Model model) {
         ResponseDto product = productService.findById(id);
         model.addAttribute("product", product);
+        model.addAttribute("actionUrl", "/admin/products/" + id + "/edit");
         return "admin/form";
     }
 
     // 3-2. 상품 수정 처리
     @PostMapping("/{id}/edit")
-    public String update(@PathVariable Long id, @ModelAttribute RequestDto dto) {
+    public String update(@Valid @PathVariable Long id, @ModelAttribute RequestDto dto,
+            BindingResult br, Model model) {
+        if (br.hasErrors()) {
+            model.addAttribute("actionUrl", "/admin/products/" + id + "/edit");
+            return "admin/form";
+        }
+
         productService.update(id, dto);
         return "redirect:/admin/products";
     }

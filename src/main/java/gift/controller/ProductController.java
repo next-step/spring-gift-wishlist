@@ -2,7 +2,7 @@ package gift.controller;
 
 import gift.dto.RequestDto;
 import gift.dto.ResponseDto;
-import gift.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import gift.service.ProductService;
 
 @RestController
 @RequestMapping("/api/products")
@@ -26,7 +28,11 @@ public class ProductController {
 
     // 1. 상품 추가
     @PostMapping
-    public ResponseEntity<ResponseDto> createProduct(@RequestBody RequestDto dto) {
+    public ResponseEntity<ResponseDto> createProduct(@Valid @RequestBody RequestDto dto) {
+        if(dto.getName().contains("카카오")) {
+            throw new IllegalArgumentException("상품명에 '카카오'를 포함하려면 담당 MD와의 협의가 필요합니다.");
+        }
+
         ResponseDto response = productService.create(dto);
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -43,7 +49,7 @@ public class ProductController {
     // 3. 상품 수정
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseDto> updateProduct(
+    public ResponseEntity<ResponseDto> updateProduct(@Valid
             @PathVariable Long id,
             @RequestBody RequestDto dto
     ) {
