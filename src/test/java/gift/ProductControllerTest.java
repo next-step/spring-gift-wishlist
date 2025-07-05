@@ -34,6 +34,10 @@ public class ProductControllerTest {
 
     private static final String PRODUCT_API = "/api/products";
 
+    private ProductRequest createProductRequest(String name,Integer price, String imageUrl){
+        return new ProductRequest(name,price,imageUrl);
+    }
+
     private ResponseEntity<String> postProduct(ProductRequest request){
         String url = "http://localhost:" + port + PRODUCT_API;
         return client.post()
@@ -53,7 +57,7 @@ public class ProductControllerTest {
     void 상품명_15자_초과시_400이_반환된다() throws Exception{
         String url = "http://localhost:" + port + "/api/products";
 
-        ProductRequest request = new ProductRequest(
+        ProductRequest request = createProductRequest(
                 " 0123456789abc",
                 1000,
                 "http://image.jpg"
@@ -66,7 +70,7 @@ public class ProductControllerTest {
     void 허용되지않은_특수문자_입력시_400이_반환된다() throws Exception{
         String url = "http://localhost:" + port + "/api/products";
 
-        ProductRequest request = new ProductRequest(
+        ProductRequest request = createProductRequest(
                 "9abcdef!!!",
                 1000,
                 "http://"
@@ -79,7 +83,7 @@ public class ProductControllerTest {
     void 상품명에_카카오_포함시_400이_반환된다() throws Exception {
         String url = "http://localhost:" + port + "/api/products";
 
-        ProductRequest request = new ProductRequest(
+        ProductRequest request = createProductRequest(
                 "카카오97 초콜릿",
                 1000,
                 "http://"
