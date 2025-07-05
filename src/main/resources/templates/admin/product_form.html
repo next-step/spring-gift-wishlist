@@ -3,27 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="${editMode} ? '상품 수정' : '상품 추가'"></title>
+    <style>
+        .field-error {
+            color: #bd2130;
+            font-size: 0.9em;
+        }
+    </style>
 </head>
 <body>
 
 <h1 th:text="${editMode} ? '상품 수정' : '상품 추가'"></h1>
 
 <!-- 수정 모드 -->
-<form th:if="${editMode}" th:action="@{/admin/products/{id}(id=${product.id})}" method="post">
-    <label>이름: <input type="text" name="name" th:value="${product.name}"/></label><br>
-    <label>가격: <input type="number" name="price" th:value="${product.price}"/></label><br>
-    <label>이미지 URL: <input type="text" name="imageUrl" th:value="${product.imageUrl}"/></label><br>
+<form th:if="${editMode}" th:action="@{/admin/products/{id}(id=${productDto.id})}" th:object="${productDto} " method="post">
+    <div th:if="${#fields.hasErrors()}">
+        <p class="error">입력 값에 오류가 있습니다. 아래 내용을 확인해주세요.</p>
+    </div>
+    <div>
+        <label>이름: <input type="text" name="name" th:value="${productDto.name}" th:field="*{name}"/></label>
+        <span class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</span>
+    </div>
+    <div>
+        <input type="checkbox" id="usableKakao" th:field="*{usableKakao}" />
+        <label for="usableKakao">"카카오" 이름 포함시: 담당 MD와 협의를 완료했습니다.</label>
+    </div>
+    <div>
+        <label>가격: <input type="number" name="price" th:value="${productDto.price}"/></label>
+        <span class="field-error" th:if="${#fields.hasErrors('price')}" th:errors="*{price}">Price Error</span>
+    </div>
+    <label>이미지 URL: <input type="text" name="imageUrl" th:value="${productDto.imageUrl}"/></label><br>
     <button type="submit">수정</button>
 </form>
 
 <!-- 추가 모드 -->
-<form th:unless="${editMode}" th:action="@{/admin/products}" method="post">
-    <label>이름: <input type="text" name="name" th:value="${product.name}"/></label><br>
-    <label>가격: <input type="number" name="price" th:value="${product.price}"/></label><br>
-    <label>이미지 URL: <input type="text" name="imageUrl" th:value="${product.imageUrl}"/></label><br>
+<form th:unless="${editMode}" th:action="@{/admin/products}" th:object="${productDto}" method="post">
+    <div th:if="${#fields.hasErrors()}">
+        <p class="error">입력 값에 오류가 있습니다. 아래 내용을 확인해주세요.</p>
+    </div>
+    <div>
+        <label>이름: <input type="text" name="name" th:value="${productDto.name}" th:field="*{name}"/></label>
+        <span class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</span>
+    </div>
+    <div>
+        <input type="checkbox"  th:field="*{usableKakao}" />
+        <label for="usableKakao">"카카오" 이름 포함시: 담당 MD와 협의를 완료했습니다.</label>
+    </div>
+    <div>
+        <label>가격: <input type="number" name="price" th:value="${productDto.price}"/></label>
+        <span class="field-error" th:if="${#fields.hasErrors('price')}" th:errors="*{price}">Price Error</span>
+    </div>
+    <label>이미지 URL: <input type="text" name="imageUrl" th:value="${productDto.imageUrl}"/></label><br>
     <button type="submit">등록</button>
 </form>
 
 <a th:href="@{/admin/products}">← 목록으로</a>
+<script th:inline="javascript" th:if="${showKakaoPopup}">
+        alert("'카카오'가 포함된 상품명은 담당 MD와 협의가 필요합니다.");
+</script>
 </body>
 </html>
