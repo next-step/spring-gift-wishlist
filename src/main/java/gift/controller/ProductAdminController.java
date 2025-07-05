@@ -7,7 +7,6 @@ import org.springframework.stereotype.Controller;
 import jakarta.validation.Valid;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -55,7 +54,13 @@ public class ProductAdminController {
     public String updateForm(@PathVariable Long id, Model model) {
         Product product = service.getById(id)
                 .orElseThrow(() -> new IllegalArgumentException("상품 없음"));
-        model.addAttribute("product", product);
+        ProductRequestDto dto = new ProductRequestDto(
+                product.getName(),
+                product.getPrice(),
+                product.getImageUrl()
+        );
+        model.addAttribute("product", dto);
+        model.addAttribute("productId", id);
         return "admin/update";
     }
 
@@ -64,12 +69,13 @@ public class ProductAdminController {
     public String update(@PathVariable Long id, @Valid @ModelAttribute("product") ProductRequestDto dto, BindingResult bindingResult, Model model) {
 
         if(bindingResult.hasErrors()){
-            Product product = new Product(id, dto.name(), dto.price(), dto.imageUrl());
-            model.addAttribute("product", product);
+            model.addAttribute("productRequestDto", dto);
+            model.addAttribute("productId", id);
             return "admin/update";
         }
         Product product = new Product(id, dto.name(), dto.price(), dto.imageUrl());
-        service.update(id, product).orElseThrow(() -> new IllegalArgumentException("수정 실패"));
+        service.update(id, product)
+                .orElseThrow(() -> new IllegalArgumentException("수정 실패"));
         return "redirect:/admin/products";
     }
 
