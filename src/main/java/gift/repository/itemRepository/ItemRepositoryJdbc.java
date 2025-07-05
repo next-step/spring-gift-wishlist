@@ -1,4 +1,4 @@
-package gift.repository;
+package gift.repository.itemRepository;
 
 import gift.entity.Item;
 import gift.exception.ItemNotFoundException;

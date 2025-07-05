@@ -1,8 +1,8 @@
-package gift.service;
+package gift.service.itemService;
 
-import gift.dto.ItemCreateDto;
+import gift.dto.itemDto.ItemCreateDto;
 import gift.entity.Item;
-import gift.repository.ItemRepositoryJdbc;
+import gift.repository.itemRepository.ItemRepositoryJdbc;
 
 //@Service
 public class ItemServiceImplV2 {

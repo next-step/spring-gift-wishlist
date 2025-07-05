@@ -1,7 +1,7 @@
 package gift.validation;
 
 
-import gift.dto.ItemCreateDto;
+import gift.dto.itemDto.ItemCreateDto;
 import gift.validation.itemPolicy.ItemPolicy;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

@@ -1,11 +1,11 @@
-package gift.controller;
+package gift.controller.itemController;
 
 
-import gift.dto.ItemCreateDto;
-import gift.dto.ItemDto;
-import gift.dto.ItemResponseDto;
-import gift.dto.ItemUpdateDto;
-import gift.service.ItemService;
+import gift.dto.itemDto.ItemCreateDto;
+import gift.dto.itemDto.ItemDto;
+import gift.dto.itemDto.ItemResponseDto;
+import gift.dto.itemDto.ItemUpdateDto;
+import gift.service.itemService.ItemService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

@@ -1,6 +1,6 @@
 package gift.validation.itemPolicy.ItemUpdatePolicy;
 
-import gift.dto.ItemUpdateDto;
+import gift.dto.itemDto.ItemUpdateDto;
 import gift.validation.itemPolicy.ItemPolicy;
 import gift.validation.itemPolicy.ItemViolationHandler.ViolationHandler;
 import jakarta.validation.ConstraintValidatorContext;

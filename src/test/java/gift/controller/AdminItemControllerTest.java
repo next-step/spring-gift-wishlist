@@ -1,8 +1,8 @@
 package gift.controller;
 
-import gift.dto.ItemCreateDto;
-import gift.repository.ItemRepository;
-import gift.service.ItemService;
+import gift.dto.itemDto.ItemCreateDto;
+import gift.repository.itemRepository.ItemRepository;
+import gift.service.itemService.ItemService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;

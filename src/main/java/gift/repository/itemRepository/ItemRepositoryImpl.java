@@ -1,8 +1,7 @@
-package gift.repository;
+package gift.repository.itemRepository;
 
 
 import gift.entity.Item;
-import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;

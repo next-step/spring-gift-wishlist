@@ -1,4 +1,4 @@
-package gift.dto;
+package gift.dto.itemDto;
 
 import gift.entity.Item;
 import gift.validation.ItemFieldValid;

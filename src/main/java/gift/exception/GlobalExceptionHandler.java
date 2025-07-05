@@ -1,7 +1,7 @@
 package gift.exception;
 
-import gift.dto.ItemCreateDto;
-import gift.dto.ItemUpdateDto;
+import gift.dto.itemDto.ItemCreateDto;
+import gift.dto.itemDto.ItemUpdateDto;
 import org.springframework.ui.Model;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;

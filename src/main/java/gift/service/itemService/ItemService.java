@@ -1,9 +1,9 @@
-package gift.service;
+package gift.service.itemService;
 
-import gift.dto.ItemCreateDto;
-import gift.dto.ItemDto;
-import gift.dto.ItemResponseDto;
-import gift.dto.ItemUpdateDto;
+import gift.dto.itemDto.ItemCreateDto;
+import gift.dto.itemDto.ItemDto;
+import gift.dto.itemDto.ItemResponseDto;
+import gift.dto.itemDto.ItemUpdateDto;
 
 import java.util.List;
 
