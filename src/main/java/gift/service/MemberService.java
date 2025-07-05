@@ -45,6 +45,16 @@ public class MemberService {
         return false;
     }
 
+    //특정 멤버를 조회하는 기능
+    public Optional<Member> findMember(Long id){
+        return memberRepository.findMemberById(id);
+    }
+
+    //멤버의 정보를 수정하는 기능
+    public void modifyMember(Long id, MemberRequestDto memberRequestDto){
+        memberRepository.modifyMember(id, memberRequestDto);
+    }
+
     public List<Member> getAllMembers(){
         return memberRepository.findAllMember();
     }

@@ -15,12 +15,12 @@
       <td th:text="${memebr.memberId}"></td>
       <td th:text="${memebr.email}"></td>
 
-<!--      <td>-->
+      <td>
 <!--        <form th:action="@{}" method="post">-->
 <!--          <button type="submit">상품 삭제</button>-->
 <!--        </form>-->
-<!--        <button th:onclick="|location.href='@{}'|">상품 수정</button>-->
-<!--      </td>-->
+        <button th:onclick="|location.href='@{/admin/members/modify/{id}(id=${memebr.memberId})}'|">회원 정보 수정</button>
+      </td>
 
 
     </tr>

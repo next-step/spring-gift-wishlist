@@ -22,4 +22,8 @@ public interface MemberRepository {
     //모든 회원을 조회
     List<Member> findAllMember();
 
+    Optional<Member> findMemberById(Long id);
+
+    void modifyMember(Long id, MemberRequestDto memberRequestDto);
+
 }

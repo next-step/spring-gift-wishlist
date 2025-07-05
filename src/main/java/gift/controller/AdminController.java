@@ -168,7 +168,26 @@ public class AdminController {
     }
 
     //회원 수정
+    //1. 수정 화면 가져오기
+    @GetMapping("/members/modify/{id}")
+    public String modifyMemberForm(
+            @PathVariable Long id,
+            Model model
+    ){
+        System.out.println("here!!!!!");
+        Member member = memberService.findMember(id).get();
+        model.addAttribute("member", member);
+        return "members/modifyForm";
+    }
 
+    @PostMapping("/members/modify/{id}")
+    public String modifyMember(
+            @ModelAttribute MemberRequestDto memberRequestDto,
+            @PathVariable Long id
+    ){
+        memberService.modifyMember(id, memberRequestDto);
+        return "redirect:/admin/members/list";
+    }
 
     //회원을 삭제
 

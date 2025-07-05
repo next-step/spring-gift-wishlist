@@ -52,6 +52,18 @@ public class MemberRepositoryImpl implements MemberRepository{
         return jdbcTemplate.query(sql, memberRowMapper());
     }
 
+    @Override
+    public Optional<Member> findMemberById(Long id) {
+        String sql = "select * from members where id = ?";
+        return jdbcTemplate.query(sql,memberRowMapper(), id).stream().findAny();
+    }
+
+    @Override
+    public void modifyMember(Long id, MemberRequestDto memberRequestDto) {
+        String sql = "update members set email = ?, password = ? where id = ?";
+        jdbcTemplate.update(sql,memberRequestDto.email(), memberRequestDto.password(), id);
+    }
+
     private RowMapper<Member> memberRowMapper(){
         return new RowMapper<Member>() {
             @Override
