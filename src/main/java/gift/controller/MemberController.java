@@ -4,6 +4,7 @@ import gift.dto.MemberRequestDto;
 import gift.dto.TokenResponseDto;
 import gift.service.MemberService;
 import gift.util.JwtUtil;
+import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,6 +32,18 @@ public class MemberController {
         String token = jwtUtil.generateToken(memberRequestDto);
         System.out.println(token);
 
+        return ResponseEntity.ok(new TokenResponseDto(token));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> loginMember(@RequestBody MemberRequestDto memberRequestDto) {
+        String token;
+        try{
+            memberService.login(memberRequestDto);
+            token = jwtUtil.generateToken(memberRequestDto);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(new TokenResponseDto(token));
     }
 }

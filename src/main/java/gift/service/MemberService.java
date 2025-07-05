@@ -8,4 +8,6 @@ import java.lang.reflect.Member;
 public interface MemberService {
 
     void saveMember(MemberRequestDto memberRequestDto);
+
+    void login(MemberRequestDto memberRequestDto);
 }
