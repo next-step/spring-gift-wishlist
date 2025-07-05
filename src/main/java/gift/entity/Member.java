@@ -1,5 +1,7 @@
 package gift.entity;
 
+import gift.dto.request.MemberRequsetDto;
+
 public class Member {
     private Long id;
     private String email;
@@ -12,6 +14,10 @@ public class Member {
         this.password = password;
         this.role = "user";
 
+    }
+    //부 생성자
+    public Member(MemberRequsetDto dto) {
+        this(null, dto.getEmail(), dto.getPassword(), "USER");
     }
 
     public Long getId() {
