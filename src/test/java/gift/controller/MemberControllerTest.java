@@ -115,7 +115,7 @@ class MemberControllerTest {
 
         //비밀번호가 틀리는 경우
         var loginUrl = "http://localhost:" + port + "/api/members/login";
-        MemberRequestDto loginMember = new MemberRequestDto("test321@gmail.com", "passwor");
+        MemberRequestDto loginMember = new MemberRequestDto("test321@gmail.com", "password1");
 
         Assertions.assertThrows(HttpClientErrorException.Forbidden.class,
                 () -> restClient.post()
@@ -128,7 +128,7 @@ class MemberControllerTest {
     @Test
     void 가입되지_않은_이메일로_가입하는_경우(){
         var url = "http://localhost:" + port + "/api/members/login";
-        MemberRequestDto loginMember = new MemberRequestDto("qewer123@gmail.com", "passwor");
+        MemberRequestDto loginMember = new MemberRequestDto("qewer123@gmail.com", "password");
 
         Assertions.assertThrows(HttpClientErrorException.Forbidden.class,
                 () -> restClient.post()
@@ -139,18 +139,16 @@ class MemberControllerTest {
     }
 
     @Test
-    void 이메일_형식에_대한_테스트() {
+    void 이메일_형식_유효성_검사_테스트() {
         var url = "http://localhost:" + port + "/api/members/register";
 
-        MemberRequestDto member1 = new MemberRequestDto("abc123", "password");
+        MemberRequestDto member = new MemberRequestDto("abc123", "password");
 
-        var response = restClient.post()
-                .uri(url)
-                .body(member1)
-                .retrieve()
-                .toEntity(String.class);
-
-        System.out.println("createdToken = " + response.getBody());
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        Assertions.assertThrows(HttpClientErrorException.BadRequest.class,
+                () -> restClient.post()
+                        .uri(url)
+                        .body(member)
+                        .retrieve()
+                        .toEntity(String.class));
     }
 }
