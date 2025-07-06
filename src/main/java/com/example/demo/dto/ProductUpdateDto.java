@@ -7,6 +7,8 @@ import jakarta.validation.constraints.Size;
 
 public class ProductUpdateDto {
 
+  private Long id;
+
   @Size(max = 15, message = "상품 이름은 15자 이하로 입력해주세요.")
   @Pattern(
       regexp = "^[a-zA-Z0-9가-힣 ()\\[\\]+\\-&/_]*$",
@@ -24,10 +26,15 @@ public class ProductUpdateDto {
   public ProductUpdateDto() {
   }
 
-  public ProductUpdateDto(String name, int price, String imageUrl) {
+  public ProductUpdateDto(Long id, String name, int price, String imageUrl) {
+    this.id = id;
     this.name = name;
     this.price = price;
     this.imageUrl = imageUrl;
+  }
+
+  public Long getId() {
+    return id;
   }
 
   public String getName() {
@@ -40,5 +47,21 @@ public class ProductUpdateDto {
 
   public String getImageUrl() {
     return imageUrl;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public void setPrice(int price) {
+    this.price = price;
+  }
+
+  public void setImageUrl(String imageUrl) {
+    this.imageUrl = imageUrl;
   }
 }
