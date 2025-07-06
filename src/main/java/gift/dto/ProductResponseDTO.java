@@ -8,6 +8,7 @@ public class ProductResponseDTO {
     private Long price;
     private String imageUrl;
 
+    public ProductResponseDTO() { }
     public ProductResponseDTO(Long id, String name, Long price, String imageUrl) {
         this.id = id;
         this.name = name;
