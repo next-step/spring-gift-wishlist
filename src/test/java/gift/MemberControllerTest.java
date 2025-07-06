@@ -152,4 +152,18 @@ public class MemberControllerTest {
                 .value("Authorization 헤더 형식이 올바르지 않습니다."));
     }
 
+    @Test
+    @DisplayName("로그인 실패 – 디코딩 오류/구분자 누락 → 401 Unauthorized + 메시지")
+    void login_fail_invalidFormat() throws Exception {
+        // Base64로 인코딩했지만 콜론(:)이 없음
+        String bad = Base64.getEncoder()
+            .encodeToString("noconstr".getBytes(StandardCharsets.UTF_8));
+
+        mockMvc.perform(post("/api/members/login")
+                .header("Authorization", "Basic " + bad))
+            .andExpect(status().isUnauthorized())
+            .andExpect(jsonPath("$.error")
+                .value("Authorization 헤더 형식이 올바르지 않습니다."));
+    }
+
 }
