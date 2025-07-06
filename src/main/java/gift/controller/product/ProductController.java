@@ -1,9 +1,10 @@
-package gift.controller;
+package gift.controller.product;
 
-import gift.dto.api.AddProductRequestDto;
-import gift.dto.api.ModifyProductRequestDto;
-import gift.dto.api.ProductResponseDto;
-import gift.service.ProductService;
+import gift.dto.api.product.AddProductRequestDto;
+import gift.dto.api.product.ModifyProductRequestDto;
+import gift.dto.api.product.ProductResponseDto;
+import gift.service.auth.AuthService;
+import gift.service.product.ProductService;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,16 +25,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProductController {
     
     private final ProductService productService;
+    private final AuthService authService;
     
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, AuthService authService) {
         this.productService = productService;
+        this.authService = authService;
     }
     
     //상품 추가 api
     @PostMapping
     public ResponseEntity<ProductResponseDto> addProduct(
-        @RequestBody @Valid AddProductRequestDto requestDto
+        @RequestBody @Valid AddProductRequestDto requestDto,
+        @RequestHeader("Authorization") String authorizationHeader
     ) {
+        authService.checkPermissonForAdmin(authorizationHeader);
         ProductResponseDto responseDto = productService.addProduct(requestDto);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
@@ -57,8 +63,10 @@ public class ProductController {
     @PutMapping("/{productId}")
     public ResponseEntity<ProductResponseDto> modifyProductWithId(
         @PathVariable(name="productId") Long id,
-        @RequestBody @Valid ModifyProductRequestDto requestDto
+        @RequestBody @Valid ModifyProductRequestDto requestDto,
+        @RequestHeader("Authorization") String authorizationHeader
     ) {
+        authService.checkPermissonForAdmin(authorizationHeader);
         ProductResponseDto responseDto = productService.modifyProductWithId(id, requestDto);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
@@ -67,8 +75,10 @@ public class ProductController {
     @PatchMapping("/{productId}")
     public ResponseEntity<ProductResponseDto> modifyProductInfoWithId(
         @PathVariable(name="productId") Long id,
-        @RequestBody @Valid ModifyProductRequestDto requestDto
+        @RequestBody @Valid ModifyProductRequestDto requestDto,
+        @RequestHeader("Authorization") String authorizationHeader
     ) {
+        authService.checkPermissonForAdmin(authorizationHeader);
         ProductResponseDto responseDto = productService.modifyProductInfoWithId(id,
             requestDto);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
@@ -77,8 +87,10 @@ public class ProductController {
     //상품 단건 삭제 api
     @DeleteMapping("/{productId}")
     public ResponseEntity<Void> deleteProductWithId(
-        @PathVariable(name="productId") Long id
+        @PathVariable(name="productId") Long id,
+        @RequestHeader("Authorization") String authorizationHeader
     ) {
+        authService.checkPermissonForAdmin(authorizationHeader);
         productService.deleteProductWithId(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

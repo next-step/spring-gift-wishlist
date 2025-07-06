@@ -1,11 +1,11 @@
-package gift.controller;
+package gift.controller.product;
 
-import gift.dto.api.AddProductRequestDto;
-import gift.dto.api.ModifyProductRequestDto;
-import gift.dto.api.ProductResponseDto;
+import gift.dto.api.product.AddProductRequestDto;
+import gift.dto.api.product.ModifyProductRequestDto;
+import gift.dto.api.product.ProductResponseDto;
 import gift.dto.htmlform.AddProductForm;
 import gift.dto.htmlform.ModifyProductForm;
-import gift.service.ProductService;
+import gift.service.product.ProductService;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.stereotype.Controller;
@@ -20,11 +20,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/products")
+@RequestMapping("/admin/products")
 public class ProductViewController {
     
     private final ProductService productService;
-    private final String PRODUCTS_LIST_PATH = "/products";
+    private final String PRODUCTS_LIST_PATH = "/admin/products";
     
     public ProductViewController(ProductService productService) {
         this.productService = productService;
@@ -46,7 +46,7 @@ public class ProductViewController {
     ) {
         ProductResponseDto product = productService.findProductWithId(id);
         ModifyProductForm modifyForm = new ModifyProductForm(product.getName(),
-            product.getPrice(), product.getImageUrl(), product.getName().contains("카카오"));
+            product.getPrice(), product.getImageUrl(), product.containKakao());
         
         model.addAttribute("product", product);
         model.addAttribute("modifyForm", modifyForm);

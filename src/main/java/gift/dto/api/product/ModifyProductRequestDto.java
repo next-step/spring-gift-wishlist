@@ -1,26 +1,22 @@
-package gift.dto.api;
+package gift.dto.api.product;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
-public class ModifyProductRequestDto {
-    
+public record ModifyProductRequestDto(
     @Pattern(
         regexp = "^[가-힣a-zA-Z0-9 ()\\[\\]+\\-&/_]{1,15}$",
         message = "이름은 한글, 영문, 숫자, 공백, (), [], +, -, &, /, _ 만 포함할 수 있으며 최대 15자까지 입력 가능합니다."
     )
-    private String name;
-    private Long price;
-    private String imageUrl;
-    
+    String name,
+    Long price,
+    String imageUrl,
     @NotNull(
         message = "MD 협의 여부는 필수입니다."
     )
-    private Boolean mdOk;
-    
-    public ModifyProductRequestDto() {
-        this(null, null, null, null);
-    }
+    Boolean mdOk
+) {
     
     public ModifyProductRequestDto(String name, Long price, String imageUrl, Boolean mdOk) {
         this.name = name;
@@ -29,37 +25,17 @@ public class ModifyProductRequestDto {
         this.mdOk = mdOk;
     }
     
-    public String getName() {
+    @Override
+    public String name() {
         return name;
     }
     
-    public Long getPrice() {
-        return price;
-    }
-    
-    public String getImageUrl() {
-        return imageUrl;
-    }
-    
-    public Boolean getMdOk() {
+    @Override
+    @JsonProperty("mdOk")
+    public Boolean mdOk() {
         return mdOk;
     }
     
-    public void setName(String name) {
-        this.name = name;
-    }
-    
-    public void setPrice(Long price) {
-        this.price = price;
-    }
-    
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-    
-    public void setMdOk(Boolean mdOk) {
-        this.mdOk = mdOk;
-    }
     
     public Boolean isNotValidForModify() {
         return (name == null || price == null || imageUrl == null);
@@ -69,8 +45,8 @@ public class ModifyProductRequestDto {
         return (name == null && price == null && imageUrl == null);
     }
     
-    public Boolean isGoodName() {
-        if(name.contains("카카오")) {
+    public Boolean goodName() {
+        if (name.contains("카카오")) {
             return mdOk;
         }
         return true;
