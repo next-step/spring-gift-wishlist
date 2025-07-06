@@ -8,13 +8,14 @@ import jakarta.validation.constraints.Size;
 
 public class ProductRequestDto {
 
+  private Long id;
+
   @NotBlank(message = "상품이름은 공백일 수 없습니다.")
   @Size(max= 15, message = "싱품의 이름은 공백 포함 15자 이하로 입력해주세요.")
   @Pattern(
       regexp = "^[a-zA-Z0-9가-힣  ()\\[\\]+\\-&/_]*$",
       message = "상품 이름에는 (), [], +, -, &, /, _ 외 특수문자는 사용할 수 없습니다."
   )
-
   @NoForbiddenWords
   private String name;
 
@@ -27,12 +28,26 @@ public class ProductRequestDto {
   public ProductRequestDto(){
   }
 
+  public ProductRequestDto(Long id, String name, int price, String imageUrl){
+    this.id = id;
+    this.name = name;
+    this.price = price;
+    this.imageUrl = imageUrl;
+  }
+
   public ProductRequestDto(String name, int price, String imageUrl){
     this.name = name;
     this.price = price;
     this.imageUrl = imageUrl;
   }
 
+  public Long getId(){
+    return id;
+  }
+
+  public void setId(Long id){
+    this.id = id;
+  }
   public String getName(){
     return name;
   }
