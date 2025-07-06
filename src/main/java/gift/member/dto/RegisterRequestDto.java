@@ -13,6 +13,7 @@ public record RegisterRequestDto(
     @NotNull(message = "Member Name must not be null.")
     String name,
 
+    @NotNull(message = "Role must not be null.")
     String role
 ) {
 

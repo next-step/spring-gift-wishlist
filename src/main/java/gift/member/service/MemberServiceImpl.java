@@ -3,12 +3,12 @@ package gift.member.service;
 import gift.member.dto.AdminMemberCreateRequestDto;
 import gift.member.dto.AdminMemberGetResponseDto;
 import gift.member.dto.AdminMemberUpdateRequestDto;
-import gift.member.security.JwtProvider;
 import gift.member.dto.RegisterRequestDto;
 import gift.member.dto.TokenResponseDto;
 import gift.member.entity.Member;
 import gift.member.exception.MemberNotFoundException;
 import gift.member.repository.MemberRepository;
+import gift.member.security.JwtProvider;
 import java.util.List;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -42,7 +42,7 @@ public class MemberServiceImpl implements MemberService {
     public void findMemberByEmail(RegisterRequestDto registerRequestDto) {
 
         try {
-            Member foundMember = memberRepository.findMemberByEmail(registerRequestDto.email());
+            memberRepository.findMemberByEmail(registerRequestDto.email());
         } catch (EmptyResultDataAccessException e) {
             throw new MemberNotFoundException("이메일이 존재하지 않습니다.");
         }
