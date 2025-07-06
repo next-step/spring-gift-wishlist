@@ -8,7 +8,6 @@ import gift.global.exception.BadRequestEntityException;
 import gift.global.exception.DuplicateEntityException;
 import gift.global.exception.NotFoundEntityException;
 import gift.member.dto.MemberCreateRequest;
-import gift.member.dto.MemberDeleteRequest;
 import gift.member.dto.MemberResponse;
 import gift.member.dto.MemberUpdateRequest;
 import gift.member.repository.MemberRepository;
@@ -134,13 +133,12 @@ class MemberServiceV1Test {
     void deleteMemberSuccess() {
 
         Member joinMember = createMember();
-        MemberDeleteRequest deleteRequest = new MemberDeleteRequest("curPassword");
         // given
         given(memberRepository.findByEmail(joinMember.getEmail()))
                 .willReturn(Optional.of(joinMember));
 
         // when
-        memberService.deleteMember(joinMember.getEmail(), deleteRequest);
+        memberService.deleteMember(joinMember.getEmail());
 
         // then
         verify(memberRepository).deleteById(joinMember.getId());
@@ -152,15 +150,12 @@ class MemberServiceV1Test {
     @DisplayName("회원 탈퇴 실패 - 존재하는 회원 없음")
     void deleteMemberFail1() {
 
-
-        MemberDeleteRequest deleteRequest = new MemberDeleteRequest("wrong");
-
         // given
         given(memberRepository.findByEmail(anyString()))
                 .willReturn(Optional.empty());
 
         // when
-        assertThatThrownBy(()->memberService.deleteMember(anyString(), deleteRequest))
+        assertThatThrownBy(()->memberService.deleteMember(anyString()))
                 .isInstanceOf(NotFoundEntityException.class);
 
         // then
@@ -168,24 +163,6 @@ class MemberServiceV1Test {
         verifyNoMoreInteractions(memberRepository);
     }
 
-    @Test
-    @DisplayName("회원 탈퇴 실패 - 비밀번호가 다름")
-    void deleteMemberFail2() {
-
-        Member member = createMember();
-        MemberDeleteRequest deleteRequest = new MemberDeleteRequest("wrong");
-        // given
-        given(memberRepository.findByEmail(member.getEmail()))
-                .willReturn(Optional.of(member));
-
-        // when
-        assertThatThrownBy(()->memberService.deleteMember(member.getEmail(), deleteRequest))
-                .isInstanceOf(AuthenticationException.class);
-
-        // then
-        verify(memberRepository).findByEmail(member.getEmail());
-        verifyNoMoreInteractions(memberRepository);
-    }
 
     @Test
     @DisplayName("비밀번호 변경 성공")

@@ -18,7 +18,7 @@ public interface MemberService {
 
     List<MemberResponse> findAll();
 
-    void deleteMember(String email, MemberDeleteRequest memberDeleteRequest);
+    void deleteMember(String email);
 
     MemberResponse validate(String email, String password);
 }

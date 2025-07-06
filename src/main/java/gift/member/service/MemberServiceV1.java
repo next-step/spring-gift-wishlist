@@ -7,7 +7,6 @@ import gift.global.exception.BadRequestEntityException;
 import gift.global.exception.DuplicateEntityException;
 import gift.global.exception.NotFoundEntityException;
 import gift.member.dto.MemberCreateRequest;
-import gift.member.dto.MemberDeleteRequest;
 import gift.member.dto.MemberResponse;
 import gift.member.dto.MemberUpdateRequest;
 import gift.member.repository.MemberRepository;
@@ -73,13 +72,10 @@ public class MemberServiceV1 implements MemberService{
     }
 
     @Override
-    public void deleteMember(String email, MemberDeleteRequest memberDeleteRequest) {
+    public void deleteMember(String email) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundEntityException("존재하는 회원이 아닙니다."));
 
-        if (!member.getPassword().equals(memberDeleteRequest.getPassword())) {
-            throw new AuthenticationException("비밀번호가 다릅니다.");
-        }
 
         memberRepository.deleteById(member.getId());
     }
