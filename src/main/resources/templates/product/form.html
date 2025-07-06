@@ -10,19 +10,28 @@
 <h1>상품 등록</h1>
 
 <form th:action="@{/admin/products}" th:object="${product}" method="post">
-  <label>상품명:
-    <input type="text" th:field="*{name}"/>
-  </label>
+  <div>
+    <label>상품명:
+      <input type="text" th:field="*{name}" />
+    </label>
+    <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+  </div>
   <br>
 
-  <label>가격:
-    <input type="number" th:field="*{price}"/>
-  </label>
+  <div>
+    <label>가격:
+      <input type="number" th:field="*{price}" />
+    </label>
+    <div th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
+  </div>
   <br>
 
-  <label>이미지 URL:
-    <input type="text" th:field="*{imageUrl}"/>
-  </label>
+  <div>
+    <label>이미지 URL:
+      <input type="text" th:field="*{imageUrl}" />
+    </label>
+    <div th:if="${#fields.hasErrors('imageUrl')}" th:errors="*{imageUrl}"></div>
+  </div>
   <br>
 
   <button type="submit">등록</button>
