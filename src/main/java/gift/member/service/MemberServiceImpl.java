@@ -23,12 +23,12 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public TokenResponseDto registerMember(RegisterRequestDto requestDto) {
-        Member member = new Member(requestDto.email(), requestDto.password(),
-            requestDto.name(), requestDto.role());
+    public TokenResponseDto registerMember(RegisterRequestDto registerRequestDto) {
+        Member member = new Member(registerRequestDto.email(), registerRequestDto.password(),
+            registerRequestDto.name(), registerRequestDto.role());
         memberRepository.saveMember(member);
 
-        Member savedMember = memberRepository.findMemberByEmail(requestDto.email());
+        Member savedMember = memberRepository.findMemberByEmail(registerRequestDto.email());
         System.out.println(savedMember);
 
         String token = new JwtProvider().generateToken(savedMember.getMemberId(),
@@ -39,20 +39,21 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void findMemberByEmail(RegisterRequestDto requestDto) {
+    public void findMemberByEmail(RegisterRequestDto registerRequestDto) {
 
         try {
-            Member foundMember = memberRepository.findMemberByEmail(requestDto.email());
+            Member foundMember = memberRepository.findMemberByEmail(registerRequestDto.email());
         } catch (EmptyResultDataAccessException e) {
             throw new MemberNotFoundException("이메일이 존재하지 않습니다.");
         }
     }
 
     @Override
-    public void saveMember(AdminMemberCreateRequestDto requestDto) {
+    public void saveMember(AdminMemberCreateRequestDto adminMemberCreateRequestDto) {
 
-        Member member = new Member(requestDto.email(), requestDto.password(), requestDto.name(),
-            requestDto.role());
+        Member member = new Member(adminMemberCreateRequestDto.email(),
+            adminMemberCreateRequestDto.password(), adminMemberCreateRequestDto.name(),
+            adminMemberCreateRequestDto.role());
 
         memberRepository.saveMember(member);
     }
@@ -72,12 +73,12 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public void updateMemberById(Long memberId,
-        AdminMemberUpdateRequestDto requestDto) {
+        AdminMemberUpdateRequestDto adminMemberUpdateRequestDto) {
         findMemberById(memberId);
 
         Member member = new Member(memberId,
-            requestDto.email(), requestDto.password(),
-            requestDto.name(), requestDto.role());
+            adminMemberUpdateRequestDto.email(), adminMemberUpdateRequestDto.password(),
+            adminMemberUpdateRequestDto.name(), adminMemberUpdateRequestDto.role());
 
         memberRepository.updateMemberById(member);
     }

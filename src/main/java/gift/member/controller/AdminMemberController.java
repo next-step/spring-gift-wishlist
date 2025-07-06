@@ -34,7 +34,7 @@ public class AdminMemberController {
 
     @PostMapping("/create")
     public String createMember(
-        @Valid @ModelAttribute AdminMemberCreateRequestDto requestDto,
+        @Valid @ModelAttribute AdminMemberCreateRequestDto adminMemberCreateRequestDto,
         BindingResult bindingResult, Model model
     ) {
 
@@ -44,7 +44,7 @@ public class AdminMemberController {
         }
 
         try {
-            memberService.saveMember(requestDto);
+            memberService.saveMember(adminMemberCreateRequestDto);
             return "redirect:/admin/members";
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());

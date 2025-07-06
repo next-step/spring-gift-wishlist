@@ -9,17 +9,17 @@ import java.util.List;
 
 public interface MemberService {
 
-    TokenResponseDto registerMember(RegisterRequestDto requestDto);
+    TokenResponseDto registerMember(RegisterRequestDto registerRequestDto);
 
-    void findMemberByEmail(RegisterRequestDto requestDto);
+    void findMemberByEmail(RegisterRequestDto registerRequestDto);
 
-    void saveMember(AdminMemberCreateRequestDto requestDto);
+    void saveMember(AdminMemberCreateRequestDto adminMemberCreateRequestDto);
 
     List<AdminMemberGetResponseDto> findAllMembers();
 
     AdminMemberGetResponseDto findMemberById(Long memberId);
 
-    void updateMemberById(Long memberId, AdminMemberUpdateRequestDto requestDto);
+    void updateMemberById(Long memberId, AdminMemberUpdateRequestDto adminMemberUpdateRequestDto);
 
     void deleteMemberById(Long memberId);
 }
