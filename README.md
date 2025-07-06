@@ -6,6 +6,9 @@
 - ProductUpdateRequestDto에 id를 추가하기
 - AdminProductController 전용 Exception Handler 만들기
 - 에러 응답 형식 바꿔보기
+## 2. 회원가입 기능 만들기
+## 3. 로그인 기능 만들기
+## 4. 회원 관리자 화면 만들기
 # 1단계
 
 ## 1. 상품 이름에 검증 기능 넣기
