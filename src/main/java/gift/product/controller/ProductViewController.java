@@ -1,8 +1,8 @@
-package gift.controller;
+package gift.product.controller;
 
-import gift.dto.ProductRequestDto;
-import gift.dto.ProductResponseDto;
-import gift.service.ProductService;
+import gift.product.dto.ProductRequestDto;
+import gift.product.dto.ProductResponseDto;
+import gift.product.service.ProductService;
 import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
