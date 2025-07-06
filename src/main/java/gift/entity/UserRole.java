@@ -1,12 +1,16 @@
 package gift.entity;
 
 public enum UserRole {
-    ROLE_USER("ROLE_USER"), ROLE_MD("ROLE_MD"), ROLE_ADMIN("ROLE_ADMIN");
+    ROLE_USER("ROLE_USER", 1),
+    ROLE_MD("ROLE_MD", 2),
+    ROLE_ADMIN("ROLE_ADMIN", 3);
 
     private final String roleName;
+    private final int priority;
 
-    UserRole(String roleName) {
+    UserRole(String roleName, int priority) {
         this.roleName = roleName;
+        this.priority = priority;
     }
 
     public static UserRole fromString(String roleName) {
@@ -23,4 +27,9 @@ public enum UserRole {
     public String toString() {
         return roleName;
     }
+
+    public int getPriority() {
+        return priority;
+    }
+
 }

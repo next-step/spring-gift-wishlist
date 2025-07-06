@@ -20,7 +20,7 @@ public record ErrorMessageResponse (
     int status,
     String error,
     String path,
-    String stackTrace,
+    List<String> stackTrace,
     LocalDateTime timestamp,
     List<ValidationError> validationErrors
 ) {
@@ -31,7 +31,7 @@ public record ErrorMessageResponse (
         private String error;
         private String path = null;
         private LocalDateTime timestamp;
-        private String stackTrace = null;
+        private List<String> stackTrace = null;
         private List<ValidationError> validationErrors = null;
 
         public Builder(String message, HttpStatus status) {
@@ -47,16 +47,11 @@ public record ErrorMessageResponse (
             this.error = status.getReasonPhrase();
             this.path = request.getRequestURI();
             this.timestamp = LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault());
+            this.stackTrace = new ArrayList<>();
 
-            StringBuilder sb = new StringBuilder();
-            if (exception.getStackTrace() != null) {
-                exception.getStackTrace();
-                for (StackTraceElement element : exception.getStackTrace()) {
-                    sb.append(element.toString()).append("\n");
-                }
+            for (StackTraceElement element : exception.getStackTrace()) {
+                stackTrace.add(element.toString());
             }
-
-            this.stackTrace = sb.toString();
         }
 
         public Builder error(String error) {
@@ -73,7 +68,7 @@ public record ErrorMessageResponse (
             this.timestamp = timestamp;
             return this;
         }
-        public Builder stackTrace(String stackTrace) {
+        public Builder stackTrace(List<String> stackTrace) {
             this.stackTrace = stackTrace;
             return this;
         }
@@ -132,11 +127,9 @@ public record ErrorMessageResponse (
         }
     }
 
-    ProblemDetail toProblemDetail() {
+    public ProblemDetail toProblemDetail() {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.valueOf(status), message);
         problemDetail.setTitle(error);
-        problemDetail.setProperty("path", path);
-        problemDetail.setProperty("timestamp", timestamp.toString());
         if (validationErrors != null && !validationErrors.isEmpty()) {
             List<ProblemDetail> validationDetails = new ArrayList<>();
             for (ValidationError error : validationErrors) {
@@ -146,6 +139,8 @@ public record ErrorMessageResponse (
             }
             problemDetail.setProperty("validationErrors", validationDetails);
         }
+        problemDetail.setProperty("timestamp", timestamp.toString());
+        problemDetail.setProperty("stackTrace", stackTrace);
         return problemDetail;
     }
 }

@@ -3,52 +3,60 @@ package gift.common.aop;
 import gift.dto.error.ErrorMessageResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
-import org.springframework.core.annotation.Order;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
+
+import javax.security.sasl.AuthenticationException;
 import java.util.NoSuchElementException;
 
 @RestControllerAdvice(basePackages = "gift.controller.api")
 public class GlobalExceptionHandler {
 
-    @Order(1)
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ProblemDetail> handleAuthenticationException(
+            AuthenticationException e, HttpServletRequest request
+    ) {
+        var errorMessage = new ErrorMessageResponse.Builder(request, e, HttpStatus.UNAUTHORIZED)
+                .build();
+        return new ResponseEntity<>(errorMessage.toProblemDetail(), HttpStatus.UNAUTHORIZED);
+    }
+
+
     @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<ErrorMessageResponse> handleNoSuchElementException(
+    public ResponseEntity<ProblemDetail> handleNoSuchElementException(
             NoSuchElementException e, HttpServletRequest request
     ) {
         var errorMessage = new ErrorMessageResponse.Builder(request, e, HttpStatus.NOT_FOUND)
                 .build();
-        return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(errorMessage.toProblemDetail(), HttpStatus.NOT_FOUND);
     }
 
-    @Order(2)
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErrorMessageResponse> handleIllegalArgumentException(
+    public ResponseEntity<ProblemDetail> handleIllegalArgumentException(
             IllegalArgumentException e, HttpServletRequest request
     ) {
         var errorMessage = new ErrorMessageResponse.Builder(request, e, HttpStatus.BAD_REQUEST)
                 .build();
-        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorMessage.toProblemDetail(), HttpStatus.BAD_REQUEST);
     }
 
-    @Order(3)
     @ExceptionHandler(EmptyResultDataAccessException.class)
-    public ResponseEntity<ErrorMessageResponse> handleEmptyResultDataAccessException(
+    public ResponseEntity<ProblemDetail> handleEmptyResultDataAccessException(
             EmptyResultDataAccessException e, HttpServletRequest request
     ) {
         var errorMessage = new ErrorMessageResponse.Builder(request, e, HttpStatus.NOT_FOUND)
                 .build();
-        return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(errorMessage.toProblemDetail(), HttpStatus.NOT_FOUND);
     }
 
-    @Order(4)
     @ExceptionHandler(HandlerMethodValidationException.class)
-    public ResponseEntity<ErrorMessageResponse> handleHandlerMethodValidationException(
+    public ResponseEntity<ProblemDetail> handleHandlerMethodValidationException(
             HandlerMethodValidationException e,
             HttpServletRequest request
     ) {
@@ -56,39 +64,37 @@ public class GlobalExceptionHandler {
                 .path(request.getRequestURI())
                 .extractValidationErrorsFrom(e)
                 .build();
-        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorMessage.toProblemDetail(), HttpStatus.BAD_REQUEST);
     }
 
-    @Order(5)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorMessageResponse> handleMethodArgumentNotValidException(
+    public ResponseEntity<ProblemDetail> handleMethodArgumentNotValidException(
             MethodArgumentNotValidException e, HttpServletRequest request
     ) {
         var errorMessage = new ErrorMessageResponse.Builder("유효성 검사에서 오류가 발생했습니다.", HttpStatus.BAD_REQUEST)
                 .path(request.getRequestURI())
                 .extractValidationErrorsFrom(e)
                 .build();
-        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorMessage.toProblemDetail(), HttpStatus.BAD_REQUEST);
     }
 
-    @Order(6)
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ErrorMessageResponse> handleConstraintViolationException(
+    public ResponseEntity<ProblemDetail> handleConstraintViolationException(
           ConstraintViolationException e, HttpServletRequest request
     ) {
       var errorMessage = new ErrorMessageResponse.Builder("유효성 검사에서 오류가 발생했습니다.", HttpStatus.BAD_REQUEST)
               .path(request.getRequestURI())
               .extractValidationErrorsFrom(e)
               .build();
-      return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>(errorMessage.toProblemDetail(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorMessageResponse> handleDefaultException(
+    public ResponseEntity<ProblemDetail> handleDefaultException(
             Exception e, HttpServletRequest request
     ) {
         var errorMessage = new ErrorMessageResponse.Builder(request, e, HttpStatus.INTERNAL_SERVER_ERROR)
                 .build();
-        return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(errorMessage.toProblemDetail(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

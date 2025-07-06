@@ -14,7 +14,6 @@ import jakarta.validation.Validator;
 import jakarta.validation.constraints.Min;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.web.server.ErrorPageRegistrar;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -28,7 +27,7 @@ public class ProductController {
     private final ProductService productService;
     private final Validator validator;
 
-    public ProductController(ProductService productService, Validator validator, ErrorPageRegistrar errorPageRegistrar) {
+    public ProductController(ProductService productService, Validator validator) {
         this.productService = productService;
         this.validator = validator;
     }
@@ -59,6 +58,7 @@ public class ProductController {
             @RequestParam(value = "size", defaultValue = "5")
             @Min(value = 1, message = "페이지 크기는 양수여야 합니다.") Integer size
     ) {
+
         var productPage = CustomPage.convert(productService.getBy(page, size), ProductResponse::from);
         return new ResponseEntity<>(productPage, HttpStatus.OK);
     }

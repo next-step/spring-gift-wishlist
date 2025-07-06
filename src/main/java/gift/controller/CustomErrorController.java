@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,12 +37,12 @@ public class CustomErrorController implements ErrorController {
     }
 
     @RequestMapping(value = "/error", produces = "application/json")
-    public ResponseEntity<ErrorMessageResponse> handleApiError(HttpServletRequest request) {
+    public ResponseEntity<ProblemDetail> handleApiError(HttpServletRequest request) {
         Exception exception = (Exception) request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
         Object statusCode = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
 
         if (exception == null) {
-            exception = new Exception("알 수 없는 오류가 발생했습니다.");
+            exception = new Exception("일치하는 응답을 찾을 수 없습니다.");
         }
         if (statusCode == null) {
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
@@ -55,6 +56,6 @@ public class CustomErrorController implements ErrorController {
 
         var errorMessage = new ErrorMessageResponse.Builder(request, exception, status)
                 .build();
-        return new ResponseEntity<>(errorMessage, status);
+        return new ResponseEntity<>(errorMessage.toProblemDetail(), status);
     }
 }
