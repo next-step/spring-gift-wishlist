@@ -3,6 +3,8 @@
 <head>
   <title>상품 추가</title>
   <style>
+    .error { color: red; }
+
     input[type=number]::-webkit-inner-spin-button,
     input[type=number]::-webkit-outer-spin-button {
       -webkit-appearance: none;
@@ -14,19 +16,21 @@
 
 <h1>상품 추가</h1>
 
-<form th:action="@{/admin/products/create}" method="post">
+<form th:action="@{/admin/products/create}" th:object="${productRequestDto}" method="post">
   <div>
     <label>이름:</label>
-    <input type="text" name="name" required>
+    <input type="text" th:field="*{name}" required>
+    <div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
   </div>
   <div>
     <label>가격:</label>
-    <input type="number" name="price" required
+    <input type="number" th:field="*{price}" required
            onkeydown="return event.keyCode !== 69 && event.keyCode !== 190">
   </div>
   <div>
     <label>이미지 URL:</label>
-    <input type="text" name="imageUrl">
+    <input type="text" th:field="*{imageUrl}">
+
   </div>
   <button type="submit">저장</button>
 </form>
