@@ -1,7 +1,7 @@
-package gift.repository;
+package gift.product.repository;
 
-import gift.entity.Product;
-import gift.exception.ProductNotFoundException;
+import gift.product.entity.Product;
+import gift.product.exception.ProductNotFoundException;
 import java.util.List;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
