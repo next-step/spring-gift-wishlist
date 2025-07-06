@@ -4,6 +4,7 @@ import gift.dto.MemberRequestDto;
 import gift.dto.TokenResponseDto;
 import gift.service.MemberService;
 import gift.util.JwtUtil;
+import jakarta.validation.Valid;
 import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +28,7 @@ public class MemberController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerMember(@RequestBody MemberRequestDto memberRequestDto) {
+    public ResponseEntity<?> registerMember(@Valid @RequestBody MemberRequestDto memberRequestDto) {
         memberService.saveMember(memberRequestDto);
         String token = jwtUtil.generateToken(memberRequestDto);
         System.out.println(token);
@@ -36,7 +37,7 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginMember(@RequestBody MemberRequestDto memberRequestDto) {
+    public ResponseEntity<?> loginMember(@Valid @RequestBody MemberRequestDto memberRequestDto) {
         String token;
         try{
             memberService.login(memberRequestDto);
