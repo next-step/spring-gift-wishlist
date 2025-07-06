@@ -166,4 +166,21 @@ public class MemberControllerTest {
                 .value("Authorization 헤더 형식이 올바르지 않습니다."));
     }
 
+    @Test
+    @DisplayName("로그인 실패 – 잘못된 비밀번호 → 403 Forbidden + 메시지")
+    void login_fail_wrongCredentials() throws Exception {
+        String email = "test@example.com";
+        String pw    = "correctpw";
+        register(email, pw);
+
+        String wrong = Base64.getEncoder()
+            .encodeToString((email + ":wrongpw").getBytes(StandardCharsets.UTF_8));
+
+        mockMvc.perform(post("/api/members/login")
+                .header("Authorization", "Basic " + wrong))
+            .andExpect(status().isForbidden())
+            .andExpect(jsonPath("$.error")
+                .value("이메일 또는 비밀번호가 올바르지 않습니다."));
+    }
+
 }
