@@ -9,7 +9,5 @@ public interface MemberRepository {
     
     Member registerMember(Member newMember);
     
-    String findPassword(String email);
-    
     Member findMember(String email);
 }

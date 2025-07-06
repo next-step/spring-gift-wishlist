@@ -53,19 +53,6 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
     
     @Override
-    public String findPassword(String email) {
-        var sql = """
-            select password from members where email = :email;
-            """;
-        
-        return members.sql(sql)
-            .param("email", email)
-            .query(String.class)
-            .optional()
-            .orElseThrow(NotRegisteredException::new);
-    }
-    
-    @Override
     public Member findMember(String email) {
         var sql = """
             select * from members where email = :email;

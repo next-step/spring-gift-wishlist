@@ -1,13 +1,15 @@
 package gift.service.auth;
 
 import gift.auth.JwtProvider;
+import gift.dto.api.member.LoginRequestDto;
 import gift.dto.api.member.MemberRequestDto;
 import gift.dto.api.member.MemberResponseDto;
 import gift.entity.Member;
 import gift.exception.forbidden.WrongPasswordException;
-import gift.exception.notfound.NotRegisteredException;
 import gift.repository.member.MemberRepository;
+import org.springframework.stereotype.Service;
 
+@Service
 public class AuthServiceImpl implements AuthService {
     
     private final MemberRepository memberRepository;
@@ -19,7 +21,7 @@ public class AuthServiceImpl implements AuthService {
     }
     
     @Override
-    public MemberResponseDto login(MemberRequestDto requestDto) {
+    public MemberResponseDto login(LoginRequestDto requestDto) {
         Member member = memberRepository.findMember(requestDto.email());
         
         if(!member.getPassword().equals(requestDto.password())) {

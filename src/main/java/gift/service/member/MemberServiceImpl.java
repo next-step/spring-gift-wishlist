@@ -1,5 +1,6 @@
 package gift.service.member;
 
+import gift.dto.api.member.LoginRequestDto;
 import gift.dto.api.member.MemberRequestDto;
 import gift.dto.api.member.MemberResponseDto;
 import gift.entity.Member;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MemberServiceImpl implements MemberService {
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
     
     @Value(value = "${jwt.secret}")
     private String secretKey;
@@ -25,8 +26,8 @@ public class MemberServiceImpl implements MemberService {
     }
     
     @Override
-    public MemberResponseDto registerMember(MemberRequestDto requestDto) {
-        if(memberRepository.existsByEmail(requestDto.email())) {
+    public LoginRequestDto registerMember(MemberRequestDto requestDto) {
+        if (memberRepository.existsByEmail(requestDto.email())) {
             throw new AlreadyRegisteredException();
         }
         
@@ -34,28 +35,13 @@ public class MemberServiceImpl implements MemberService {
         
         Member registeredMember = memberRepository.registerMember(newMember);
         
-        String accessToken = createToken(registeredMember);
-        
-        return new MemberResponseDto(accessToken);
+        return new LoginRequestDto(registeredMember);
     }
     
     @Override
-    public MemberResponseDto loginMember(MemberRequestDto requestDto) {
-        if(!memberRepository.existsByEmail(requestDto.email())) {
-            throw new NotRegisteredException();
-        }
-        
-        String checkPassword = memberRepository.findPassword(requestDto.email());
-        
-        if(!checkPassword.equals(requestDto.password())) {
-            throw new WrongPasswordException();
-        }
-        
+    public LoginRequestDto findMemberToLogin(MemberRequestDto requestDto) {
         Member member = memberRepository.findMember(requestDto.email());
-        
-        String accessToken = createToken(member);
-        
-        return new MemberResponseDto(accessToken);
+        return new LoginRequestDto(member);
     }
     
     private String createToken(Member member) {
