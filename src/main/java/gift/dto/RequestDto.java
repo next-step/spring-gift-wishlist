@@ -16,7 +16,7 @@ public class RequestDto {
             message = "특수문자는 (), [], +, -, &, /, _ 만 가능합니다."
     )
 
-    @WarningKakao
+    //@WarningKakao
     private String name;
 
     private String imageUrl;
