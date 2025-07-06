@@ -76,4 +76,18 @@ public class MemberControllerTest {
                 .value("이메일은 필수입니다."));
     }
 
+    @Test
+    @DisplayName("회원가입 실패 – 잘못된 요청 바디(이메일 포맷 오류) - 이메일 형식 오류 → 400 Bad Request")
+    void register_fail_invalidEmailFormat() throws Exception {
+        MemberRegisterRequestDto req = new MemberRegisterRequestDto("email", "1234567890");
+
+        mockMvc.perform(post("/api/members/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req)))
+            .andExpect(status().isBadRequest())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.email")
+                .value("유효한 이메일 형식이 아닙니다."));
+    }
+
 }
