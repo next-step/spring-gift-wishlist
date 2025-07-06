@@ -8,3 +8,12 @@ CREATE TABLE product (
     is_kakao_approved BOOLEAN NOT NULL DEFAULT FALSE,
     PRIMARY KEY (id)
 );
+
+CREATE TABLE member (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    email VARCHAR(200) NOT NULL,
+    password VARCHAR(200) NOT NULL,
+    role VARCHAR(50) NOT NULL DEFAULT 'USER',
+    PRIMARY KEY (id),
+    UNIQUE (email)
+);
