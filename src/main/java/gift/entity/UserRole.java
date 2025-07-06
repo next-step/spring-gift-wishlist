@@ -1,6 +1,7 @@
 package gift.entity;
 
 public enum UserRole {
+    ROLE_GUEST("ROLE_GUEST", 0),
     ROLE_USER("ROLE_USER", 1),
     ROLE_MD("ROLE_MD", 2),
     ROLE_ADMIN("ROLE_ADMIN", 3);

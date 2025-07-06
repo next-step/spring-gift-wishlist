@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
-import javax.security.sasl.AuthenticationException;
+import javax.naming.AuthenticationException;
+import gift.common.exception.AccessDeniedException;
 import java.util.NoSuchElementException;
 
 @RestControllerAdvice(basePackages = "gift.controller.api")
@@ -25,6 +26,15 @@ public class GlobalExceptionHandler {
         var errorMessage = new ErrorMessageResponse.Builder(request, e, HttpStatus.UNAUTHORIZED)
                 .build();
         return new ResponseEntity<>(errorMessage.toProblemDetail(), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ProblemDetail> handleAccessDeniedException(
+            AccessDeniedException e, HttpServletRequest request
+    ) {
+        var errorMessage = new ErrorMessageResponse.Builder(request, e, HttpStatus.FORBIDDEN)
+                .build();
+        return new ResponseEntity<>(errorMessage.toProblemDetail(), HttpStatus.FORBIDDEN);
     }
 
 

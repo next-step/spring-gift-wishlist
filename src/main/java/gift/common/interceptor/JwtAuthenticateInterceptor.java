@@ -2,6 +2,7 @@ package gift.common.interceptor;
 
 import gift.common.model.CustomAuth;
 import gift.common.util.TokenProvider;
+import gift.entity.UserRole;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
@@ -33,8 +34,8 @@ public class JwtAuthenticateInterceptor implements HandlerInterceptor {
         String token = extractToken(authorizationHeader);
 
         if (token == null) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            throw new AuthenticationException("인증 헤더가 없습니다. 요청 헤더에 Authorization 헤더를 추가해야 합니다.");
+            request.setAttribute("auth", new CustomAuth(null, UserRole.ROLE_GUEST));
+            return true; // 토큰이 없으면 인증을 건너뜁니다.
         }
 
         if (!tokenProvider.validateToken(token)) {
@@ -49,5 +50,4 @@ public class JwtAuthenticateInterceptor implements HandlerInterceptor {
         request.setAttribute("auth", auth);
         return true;
     }
-
 }
