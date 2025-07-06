@@ -12,6 +12,14 @@ public class User {
         this.id = id;
         this.email = email;
         this.password = password;
+        this.roles = null;
+    }
+
+    public User(Long id, String email, String password, Set<UserRole> roles) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.roles = roles;
     }
 
     public Long getId() {

@@ -27,34 +27,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    void validateRole(UserRole role) {
-        if (role == null) {
-            throw new IllegalArgumentException("역할 정보가 유효하지 않습니다.");
-        }
-    }
-
-    @Override
-    public List<User> getAll() {
-        return userRepository.findAll();
-    }
-
-    @Override
-    public CustomPage<User> getBy(int page, int size) {
-        return userRepository.findAll(page, size);
-    }
-
-    @Override
-    public User getById(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 사용자를 찾을 수 없습니다. : " + userId));
-    }
-
-    @Override
-    public User getByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("해당 이메일의 사용자를 찾을 수 없습니다. : " + email));
-    }
-
     @Override
     @Transactional
     public User loadRoles(User user) {
@@ -68,26 +40,40 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> getAll() {
+        return userRepository.findAll();
+    }
+
+
+    @Override
+    public CustomPage<User> getBy(int page, int size) {
+        return CustomPage.convert(userRepository.findAll(page, size), this::loadRoles);
+    }
+
+    @Override
     @Transactional
-    public User addRole(User user, UserRole role) {
-        validateUser(user);
-        validateRole(role);
-        this.userRoleRepository.save(user.getId(), role);
+    public User getById(Long userId) {
+        var user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 사용자를 찾을 수 없습니다. : " + userId));
         return loadRoles(user);
     }
 
     @Override
     @Transactional
-    public User removeRole(User user, UserRole role) {
-        validateUser(user);
-        validateRole(role);
-        this.userRoleRepository.delete(user.getId(), role);
-        return loadRoles(user);
-    }
-
-    @Override
     public User create(User user) {
-        return userRepository.save(user);
+        if (user == null || user.getEmail() == null || user.getPassword() == null ||
+                user.getRoles() == null || user.getRoles().isEmpty()) {
+            throw new IllegalArgumentException("사용자 정보가 유효하지 않습니다.");
+        }
+        if (userRepository.findByEmail(user.getEmail()).isPresent()){
+            throw new IllegalArgumentException("이미 존재하는 이메일입니다: " + user.getEmail());
+        }
+        User savedUser = userRepository.save(user);
+        for (UserRole role : user.getRoles()) {
+            userRoleRepository.save(savedUser.getId(), role);
+        }
+
+        return loadRoles(savedUser);
     }
 
     @Override
@@ -100,20 +86,20 @@ public class UserServiceImpl implements UserService {
         if (user.getPassword() != null) {
             existingUser.setPassword(user.getPassword());
         }
-        return userRepository.save(existingUser);
-    }
 
-    @Override
-    @Transactional
-    public User patch(User user) {
-        if (user == null || user.getId() == null) {
-            throw new IllegalArgumentException("패치할 사용자 정보가 유효하지 않습니다.");
+        if (user.getEmail() != null) {
+            if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+                throw new IllegalArgumentException("이미 존재하는 이메일입니다: " + user.getEmail());
+            }
+            existingUser.setEmail(user.getEmail());
         }
-        User existingUser = getById(user.getId());
-        if (user.getPassword() != null) {
-            existingUser = userRepository.updateFieldById(user.getId(), "password", user.getPassword());
+
+        if (user.getRoles() != null && !user.getRoles().isEmpty()) {
+            userRoleRepository.sync(user.getId(), user.getRoles());
         }
-        return existingUser;
+        User updatedUser = userRepository.save(existingUser);
+
+        return loadRoles(updatedUser);
     }
 
     @Override
