@@ -45,7 +45,8 @@ public class ProductService {
         product.update(
                 productRequestDto.name(),
                 productRequestDto.price(),
-                productRequestDto.imageUrl()
+                productRequestDto.imageUrl(),
+                productStatusService.getProductStatus(productRequestDto.name())
         );
 
         productRepository.updateProduct(product);

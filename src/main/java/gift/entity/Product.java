@@ -40,9 +40,10 @@ public class Product {
         this.id = id;
     }
 
-    public void update(String name, Integer price, String imageUrl) {
+    public void update(String name, Integer price, String imageUrl, ProductStatus status) {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
+        this.status = status;
     }
 }
