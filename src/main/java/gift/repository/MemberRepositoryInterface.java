@@ -2,9 +2,11 @@ package gift.repository;
 
 import gift.entity.Member;
 
+import java.util.Optional;
+
 public interface MemberRepositoryInterface {
 
-    Member findByEmail(String email);
+    Optional<Member> findByEmail(String email);
 
     void save(Member member);
 }
