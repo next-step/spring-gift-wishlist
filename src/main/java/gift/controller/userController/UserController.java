@@ -3,6 +3,7 @@ package gift.controller.userController;
 
 import gift.dto.itemDto.userDto.UserRegisterDto;
 import gift.dto.itemDto.userDto.UserResponseDto;
+import gift.dto.itemDto.userDto.UserUpdateDto;
 import gift.entity.User;
 import gift.service.itemService.userService.UserService;
 import jakarta.validation.Valid;
@@ -55,5 +56,15 @@ public class UserController {
         UserResponseDto response = userService.finUserById(id);
 
         return new ResponseEntity<UserResponseDto>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}/edit")
+    public ResponseEntity<UserResponseDto> updateUser(
+            @PathVariable Long id,
+            @RequestBody @Valid UserUpdateDto dto
+    ) {
+        UserResponseDto updatedUser = userService.updateUser(id, dto);
+
+        return ResponseEntity.ok(updatedUser);
     }
 }
