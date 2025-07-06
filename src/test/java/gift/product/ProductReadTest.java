@@ -1,20 +1,18 @@
 package gift.product;
 
-import gift.AbstractControllerTest;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.payload.JsonFieldType;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 
-public class ProductReadTest extends AbstractControllerTest {
+public class ProductReadTest extends AbstractProductTest {
 
     static final FieldDescriptor [] PRODUCT_READ_RESPONSE = {
             fieldWithPath("id").description("제품 ID").type(JsonFieldType.NUMBER),
@@ -38,7 +36,7 @@ public class ProductReadTest extends AbstractControllerTest {
 
     @Test
     @DisplayName("전체 제품 조회 성공 테스트")
-    public void 전체_제품_조회_시_200_페이지_반환() {
+    public void find_All_Products_Success() {
         String url = getBaseUrl() + "/api/products";
         RestAssured.given(this.spec)
                 .filter(document("상품 전체 조회 성공",
@@ -64,7 +62,7 @@ public class ProductReadTest extends AbstractControllerTest {
 
     @Test
     @DisplayName("전체 제품 조회 실패 테스트 : 음수 페이지 요청 시 400 반환")
-    public void 전체_제품_조회_음수_페이지_요청_시_400_반환() {
+    public void find_All_Products_Failure_Negative_Page_Request_400_Returned() {
         RestAssured.given(this.spec)
                 .filter(document("상품 전체 조회 실패 - 음수 페이지 요청",
                         queryParameters(
@@ -81,7 +79,7 @@ public class ProductReadTest extends AbstractControllerTest {
 
     @Test
     @DisplayName("전체 제품 조회 실패 테스트 : 음수 크기 요청 시 400 반환")
-    public void 전체_제품_조회_음수_크기_요청_시_400_반환() {
+    public void find_All_Products_Failure_Negative_Size_Request_400_Returned() {
         String url = getBaseUrl() + "/api/products?page=0&size=-1";
         RestAssured.given(this.spec)
                 .filter(document("상품 전체 조회 실패 - 음수 크기 요청",
@@ -99,8 +97,9 @@ public class ProductReadTest extends AbstractControllerTest {
 
     @Test
     @DisplayName("특정 제품 조회 성공 테스트")
-    public void 특정_제품_조회_시_200_반환() {
+    public void find_Specific_Product_Success() {
         String url = getBaseUrl() + "/api/products/{id}"; // 존재하는 제품 ID
+        Long testProductId = this.testProductIds.getFirst().id(); // 테스트용 제품 ID 가져오기
         RestAssured
                 .given(this.spec)
                 .filter(document("상품 특정 조회 성공",
@@ -109,7 +108,7 @@ public class ProductReadTest extends AbstractControllerTest {
                         ),
                         responseFields(PRODUCT_READ_RESPONSE)))
                 .when()
-                .get(url, 1)
+                .get(url, testProductId)
                 .then()
                 .statusCode(200)
                 .body("id", notNullValue())
@@ -120,7 +119,7 @@ public class ProductReadTest extends AbstractControllerTest {
 
     @Test
     @DisplayName("특정 제품 조회 실패 테스트 : 존재하지 않는 제품 ID")
-    public void 존재하지_않는_제품_조회_시_404_반환() {
+    public void find_Specific_Product_Failure_NonExistentId_404_Returned() {
         String url = getBaseUrl() + "/api/products/{id}"; // 존재하지 않는 제품 ID
         RestAssured.given(this.spec)
                 .filter(document("상품 특정 조회 실패 - 존재하지 않는 제품 ID",
