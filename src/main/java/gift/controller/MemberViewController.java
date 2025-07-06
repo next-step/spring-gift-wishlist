@@ -49,6 +49,13 @@ public class MemberViewController {
         return new ModelAndView("redirect:/members");
     }
 
+    @GetMapping("/{id}")
+    public ModelAndView detail(@PathVariable Long id) {
+        Map<String, Object> model = new HashMap<>();
+        model.put("member", memberService.find(id));
+        return new ModelAndView("member/detail", model);
+    }
+
     @GetMapping("/edit/{id}")
     public ModelAndView editForm(@PathVariable Long id) {
         Map<String, Object> model = new HashMap<>();
