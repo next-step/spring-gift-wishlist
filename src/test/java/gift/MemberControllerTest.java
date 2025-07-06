@@ -41,4 +41,25 @@ public class MemberControllerTest {
             .andExpect(jsonPath("$.token").isNotEmpty());
     }
 
+    @Test
+    @DisplayName("회원가입 실패 – 이메일 중복 → 409 Conflict + 메시지")
+    void register_duplicateEmail() throws Exception {
+        // 먼저 한 번 가입시켜 둠
+        MemberRegisterRequestDto req = new MemberRegisterRequestDto("dup@example.com", "password123");
+
+        mockMvc.perform(post("/api/members/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req)))
+            .andExpect(status().isCreated());
+
+        // 같은 이메일로 다시 시도
+        mockMvc.perform(post("/api/members/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req)))
+            .andExpect(status().isConflict())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.error")
+                .value("이미 사용 중인 이메일입니다."));
+    }
+
 }
