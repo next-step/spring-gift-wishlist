@@ -104,4 +104,13 @@ public class MemberControllerTest {
                 .value("비밀번호는 최소 6자 이상이어야 합니다."));
     }
 
+    private void register(String email, String password) throws Exception {
+        var req = new MemberRegisterRequestDto(email, password);
+
+        mockMvc.perform(post("/api/members/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req)))
+            .andExpect(status().isCreated());
+    }
+
 }
