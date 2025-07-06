@@ -7,6 +7,7 @@ import gift.entity.Member;
 import gift.exception.DuplicateMemberException;
 import gift.exception.InvalidPasswordException;
 import gift.exception.MemberNotFoundException;
+import gift.exception.ProductNotExistException;
 import gift.jwt.JwtProvider;
 import gift.repository.MemberRepository;
 import jakarta.validation.Valid;
@@ -56,5 +57,12 @@ public class MemberService {
         return memberRepository.findAll().stream()
                 .map(m -> new MemberResponseDto(m.getId(), m.getName(), m.getEmail(), m.getPassword()))
                 .toList();
+    }
+
+    public void delete(Long memberId) {
+        boolean deleted = memberRepository.deleteById(memberId);
+        if (!deleted) {
+            throw new ProductNotExistException(memberId);
+        }
     }
 }

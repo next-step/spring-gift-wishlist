@@ -45,8 +45,25 @@ public class MemberRepository {
         return member;
     }
 
+    public Optional<Member> findById(Long id) {
+        String sql = "select * from members where id = ?";
+
+        List<Member> members = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Member.class), id);
+        return Optional.ofNullable(members.isEmpty() ? null : members.get(0));
+    }
+
     public List<Member> findAll() {
         String sql = "select * from members";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Member.class));
+    }
+
+    public boolean deleteById(Long id) {
+        Optional<Member> member = findById(id);
+        if (member.isEmpty()) {
+            return false;
+        }
+
+        String sql = "delete from members where id = ?";
+        return jdbcTemplate.update(sql, id) > 0;
     }
 }
