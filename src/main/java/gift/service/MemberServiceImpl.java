@@ -26,7 +26,7 @@ public class MemberServiceImpl implements MemberService {
     public void login(MemberRequestDto memberRequestDto) {
         int membercount = memberRepository.countMember(memberRequestDto.getEmail(), memberRequestDto.getPassword());
         if(membercount < 1) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "아이디 또는 비밀번호가 올바르지 않습니다.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "아이디 또는 비밀번호가 올바르지 않습니다.");
         }
     }
 
