@@ -13,8 +13,12 @@ public class ProductRequestDto {
     private Integer price;
     private String imageUrl;
 
-    private ProductRequestDto() {}
-    private ProductRequestDto(Product product) {}
+    public ProductRequestDto() {}
+    public ProductRequestDto(Product product) {
+        this.name = product.getName();
+        this.price = product.getPrice();
+        this.imageUrl = product.getImageUrl();
+    }
 
     public static ProductRequestDto fromEntity(Product product) {
         return new ProductRequestDto(product);
