@@ -142,4 +142,14 @@ public class MemberControllerTest {
                 .value("Authorization 헤더가 필요합니다."));
     }
 
+    @Test
+    @DisplayName("로그인 실패 – 잘못된 프리픽스 → 401 Unauthorized + 메시지")
+    void login_fail_invalidPrefix() throws Exception {
+        mockMvc.perform(post("/api/members/login")
+                .header("Authorization", "Bearer sometoken"))
+            .andExpect(status().isUnauthorized())
+            .andExpect(jsonPath("$.error")
+                .value("Authorization 헤더 형식이 올바르지 않습니다."));
+    }
+
 }
