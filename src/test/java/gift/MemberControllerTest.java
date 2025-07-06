@@ -90,4 +90,18 @@ public class MemberControllerTest {
                 .value("유효한 이메일 형식이 아닙니다."));
     }
 
+    @Test
+    @DisplayName("회원가입 실패 – 잘못된 요청 바디(이메일 포맷 오류) - 6자 미만 비밀번호 → 400 Bad Request")
+    void register_fail_passwordTooShort() throws Exception {
+        MemberRegisterRequestDto req = new MemberRegisterRequestDto("newuser@example.com", "123");
+
+        mockMvc.perform(post("/api/members/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req)))
+            .andExpect(status().isBadRequest())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.password")
+                .value("비밀번호는 최소 6자 이상이어야 합니다."));
+    }
+
 }
