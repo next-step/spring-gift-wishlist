@@ -20,9 +20,10 @@ public class MemberRepositoryImpl implements MemberRepository {
     @Override
     public void saveMember(Member member) {
 
-        String sql = "INSERT INTO members(email, password, name) VALUES(?,?,?)";
+        String sql = "INSERT INTO members(email, password, name, role) VALUES(?,?,?,?)";
 
-        jdbcTemplate.update(sql, member.getEmail(), member.getPassword(), member.getName());
+        jdbcTemplate.update(sql, member.getEmail(), member.getPassword(), member.getName(),
+            member.getRole());
     }
 
     @Override

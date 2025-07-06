@@ -1,5 +1,6 @@
 package gift.member.service;
 
+import gift.member.dto.AdminMemberCreateRequestDto;
 import gift.member.dto.AdminMemberGetResponseDto;
 import gift.member.dto.AdminMemberUpdateRequestDto;
 import gift.member.dto.RegisterRequestDto;
@@ -11,6 +12,8 @@ public interface MemberService {
     TokenResponseDto registerMember(RegisterRequestDto requestDto);
 
     void findMemberByEmail(RegisterRequestDto requestDto);
+
+    void saveMember(AdminMemberCreateRequestDto requestDto);
 
     List<AdminMemberGetResponseDto> findAllMembers();
 

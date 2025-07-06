@@ -1,5 +1,6 @@
 package gift.member.service;
 
+import gift.member.dto.AdminMemberCreateRequestDto;
 import gift.member.dto.AdminMemberGetResponseDto;
 import gift.member.dto.AdminMemberUpdateRequestDto;
 import gift.member.security.JwtProvider;
@@ -24,7 +25,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public TokenResponseDto registerMember(RegisterRequestDto requestDto) {
         Member member = new Member(requestDto.email(), requestDto.password(),
-            requestDto.name());
+            requestDto.name(), requestDto.role());
         memberRepository.saveMember(member);
 
         Member savedMember = memberRepository.findMemberByEmail(requestDto.email());
@@ -45,6 +46,15 @@ public class MemberServiceImpl implements MemberService {
         } catch (EmptyResultDataAccessException e) {
             throw new MemberNotFoundException("이메일이 존재하지 않습니다.");
         }
+    }
+
+    @Override
+    public void saveMember(AdminMemberCreateRequestDto requestDto) {
+
+        Member member = new Member(requestDto.email(), requestDto.password(), requestDto.name(),
+            requestDto.role());
+
+        memberRepository.saveMember(member);
     }
 
     @Override

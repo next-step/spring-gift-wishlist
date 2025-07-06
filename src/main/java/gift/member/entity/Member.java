@@ -6,12 +6,13 @@ public class Member {
     private final String email;
     private final String password;
     private final String name;
-    private String role;
+    private final String role;
 
-    public Member(String email, String password, String name) {
+    public Member(String email, String password, String name, String role) {
         this.email = email;
         this.password = password;
         this.name = name;
+        this.role = role;
     }
 
     public Member(Long memberId, String email, String password, String name, String role) {
