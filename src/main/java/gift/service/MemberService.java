@@ -1,8 +1,10 @@
 package gift.service;
 
+import com.sun.jdi.request.DuplicateRequestException;
 import gift.dto.api.MemberRegisterRequestDto;
 import gift.entity.Member;
 import gift.repository.MemberRepository;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,6 +21,11 @@ public class MemberService {
 
     // 회원 등록
     public String registerMember(MemberRegisterRequestDto requestDto) {
+
+        // 이메일 중복 검사
+        if (memberRepository.existByEmail(requestDto.getEmail())) {
+            throw new DuplicateKeyException("이미 사용 중인 이메일입니다.");
+        }
 
         // 회원 저장
         Member member = new Member(requestDto.getEmail(), requestDto.getPassword());
