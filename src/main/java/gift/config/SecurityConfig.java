@@ -34,7 +34,7 @@ public class SecurityConfig implements WebMvcConfigurer {
         FilterRegistrationBean<Filter> filterFilterRegistrationBean = new FilterRegistrationBean<>();
         filterFilterRegistrationBean.setFilter(new CustomLoginFilter(memberService, jwtUtil, objectMapper));
 
-        filterFilterRegistrationBean.addUrlPatterns("/login");
+        filterFilterRegistrationBean.addUrlPatterns("/api/members/login");
         filterFilterRegistrationBean.setOrder(2);
         return filterFilterRegistrationBean;
     }

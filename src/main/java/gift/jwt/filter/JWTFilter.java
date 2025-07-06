@@ -72,6 +72,7 @@ public class JWTFilter implements Filter {
 
     private boolean passRequestURI(String method, String requestURI) {
         if (requestURI.equals("/login")) return true;
+        if (requestURI.equals("/api/members/login"))  return true;
         if (requestURI.equals("/api/members") && "POST".equalsIgnoreCase(method)) return true;
 
         return false;

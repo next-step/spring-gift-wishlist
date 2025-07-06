@@ -48,7 +48,7 @@ class MemberControllerTest {
                 .baseUrl("http://localhost:" + port + "/api/members")
                 .build();
         loginRestClient = RestClient.builder()
-                .baseUrl("http://localhost:" + port + "/login")
+                .baseUrl("http://localhost:" + port + "/api/members/login")
                 .build();
     }
 

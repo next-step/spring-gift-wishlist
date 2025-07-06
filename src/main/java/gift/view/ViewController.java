@@ -1,4 +1,4 @@
-package gift.product.controller;
+package gift.view;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.UUID;
 
 @Controller
-public class AdminController {
+public class ViewController {
 
     @GetMapping("/admin")
     public String admin(){
