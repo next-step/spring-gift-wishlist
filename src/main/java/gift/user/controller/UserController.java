@@ -1,5 +1,7 @@
 package gift.user.controller;
 
+import gift.user.dto.LoginRequestDto;
+import gift.user.dto.LoginResponseDto;
 import gift.user.dto.RegisterRequestDto;
 import gift.user.dto.RegisterResponseDto;
 import gift.user.service.UserService;
@@ -28,5 +30,15 @@ public class UserController {
         HttpStatus.CREATED);
 
   }
+
+  @PostMapping("/login")
+  public ResponseEntity<LoginResponseDto> loginUser(
+      @RequestBody LoginRequestDto loginRequestDto) {
+
+    return new ResponseEntity<LoginResponseDto>(userService.loginUser(loginRequestDto),
+        HttpStatus.OK);
+
+  }
+
 
 }
