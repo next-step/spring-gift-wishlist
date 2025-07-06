@@ -9,3 +9,5 @@ VALUES ('카푸치노', 5500, 'http://image.url.capuchino');
 
 insert into members(email, password, role)
 values ('admin@admin.com', 'adminpw', 'ADMIN');
+insert into members(email, password, role)
+values ('user@user.com', 'userpw', 'USER');
