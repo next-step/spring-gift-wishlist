@@ -1,7 +1,6 @@
 package gift.member.service;
 
 import gift.member.dto.MemberCreateRequest;
-import gift.member.dto.MemberDeleteRequest;
 import gift.member.dto.MemberResponse;
 import gift.member.dto.MemberUpdateRequest;
 

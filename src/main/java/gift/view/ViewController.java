@@ -1,5 +1,6 @@
 package gift.view;
 
+import gift.global.annotation.Admin;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,11 +16,13 @@ public class ViewController {
         return "login";
     }
 
+    @Admin
     @GetMapping("/admin")
     public String admin(){
         return "adminpage";
     }
 
+    @Admin
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable UUID id, Model model){
 
