@@ -19,17 +19,17 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/admin/products")
-public class ProductViewController {
+public class AdminProductController {
 
     private final ProductService productService;
 
-    public ProductViewController(ProductService productService) {
+    public AdminProductController(ProductService productService) {
         this.productService = productService;
     }
 
     @GetMapping("/create")
     public String createProductPage() {
-        return "create-product";
+        return "product/create-product";
     }
 
     @PostMapping("/create")
@@ -40,7 +40,7 @@ public class ProductViewController {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("errors", bindingResult.getAllErrors());
-            return "create-product";
+            return "product/create-product";
         }
 
         try {
@@ -48,7 +48,7 @@ public class ProductViewController {
             return "redirect:/admin/products";
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());
-            return "create-product";
+            return "product/create-product";
         }
     }
 
@@ -57,7 +57,7 @@ public class ProductViewController {
 
         List<ProductGetResponseDto> products = productService.findAllProducts();
         model.addAttribute("products", products);
-        return "products";
+        return "product/products";
     }
 
     @GetMapping("/{productId}")
@@ -70,7 +70,7 @@ public class ProductViewController {
             model.addAttribute("errorMessage", e.getMessage());
         }
 
-        return "products";
+        return "product/products";
     }
 
     @GetMapping("/update/{productId}")
@@ -79,7 +79,7 @@ public class ProductViewController {
         try {
             ProductGetResponseDto product = productService.findProductById(productId);
             model.addAttribute("product", product);
-            return "update-product";
+            return "product/update-product";
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "redirect:/admin/products";
