@@ -6,6 +6,22 @@ public class User {
   private String password;
   private Role role;
 
+  public Long getId() {
+    return id;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public Role getRole() {
+    return role;
+  }
+
   public User(Long id, String email, String password, Role role) {
     this.id = id;
     this.email = email;
