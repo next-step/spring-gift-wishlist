@@ -5,6 +5,7 @@ import gift.entity.UserRole;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Set;
 
 @Repository
@@ -48,4 +49,27 @@ public class RoleRepositoryImpl implements RoleRepository {
         return userRoleDao.delete(userId, role) > 0;
     }
 
+    @Override
+    @Transactional
+    public Set<UserRole> sync(Long userId, Set<UserRole> roles) {
+        if (userId == null || roles == null) {
+            throw new IllegalArgumentException("사용자 ID와 역할 집합은 null일 수 없습니다.");
+        }
+        Set<UserRole> existingRoles = findByUserId(userId);
+        // 새로운 역할을 추가
+        roles.forEach(role -> {
+            if (!existingRoles.contains(role)) {
+                save(userId, role);
+            }
+        });
+        existingRoles.stream()
+                .filter(role -> !roles.contains(role))
+                .forEach(role -> delete(userId, role));
+
+        Set<UserRole> updatedRoles = findByUserId(userId);
+        if (updatedRoles.equals(roles)) {
+            throw new IllegalStateException("역할을 업데이트 하는데 실패했습니다.");
+        }
+        return updatedRoles;
+    }
 }
