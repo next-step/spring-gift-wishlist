@@ -2,6 +2,7 @@ package com.example.demo;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 
 import com.example.demo.dto.ProductRequestDto;
@@ -42,9 +43,10 @@ public class DemoApplicationTests {
                                                           .uri(url)
                                                           .retrieve()
                                                           .toEntity(ProductResponseDto[].class);
-
-    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-    assertThat(response.getBody()).isNotNull();
+    assertAll(
+        () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK),
+        () -> assertThat(response.getBody()).isNotNull()
+    );
   }
 
   @Test
@@ -56,8 +58,10 @@ public class DemoApplicationTests {
                                                         .retrieve()
                                                         .toEntity(ProductResponseDto.class);
 
-    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-    assertThat(response.getBody()).isNotNull();
+    assertAll(
+        () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK),
+        () -> assertThat(response.getBody()).isNotNull()
+    );
   }
 
   @Test
@@ -74,6 +78,27 @@ public class DemoApplicationTests {
         );
   }
 
+  @Test
+  void 존재하는_상품아이디로_이름을_수정하면_200이_반환된다(){
+    String url = "http://localhost:" + port + "/products/1";
+
+    ProductRequestDto dto = new ProductRequestDto();
+    dto.setName("수정된상품이름");
+    dto.setPrice(1000);
+    dto.setImageUrl("http://image.com/1.jpg");
+
+    ResponseEntity<ProductResponseDto> response = client.patch()
+        .uri(url)
+        .body(dto)
+        .retrieve()
+        .toEntity(ProductResponseDto.class);
+
+    assertAll(
+        () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK),
+        () -> assertThat(response.getBody()).isNotNull(),
+        () -> assertThat(response.getBody().name()).isEqualTo("수정된상품이름")
+    );
+  }
   @Test
   void 존재하는_상품ID로_삭제하면_204가_반환된다(){
     String url = "http://localhost:" + port + "/products/1";
