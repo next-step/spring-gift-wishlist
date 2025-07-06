@@ -7,7 +7,14 @@ import java.util.regex.Pattern;
 
 public class ProductNameValidator implements ConstraintValidator<ValidProductName, String> {
 
+    private boolean allowKakao;
+
     private static final Pattern ALLOWED_PATTERN = Pattern.compile("^[a-zA-Z0-9가-힣 ()\\[\\]+\\-\\&/_]*$");
+
+    @Override
+    public void initialize(ValidProductName constraintAnnotation) {
+        this.allowKakao = constraintAnnotation.allowKakao();
+    }
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {

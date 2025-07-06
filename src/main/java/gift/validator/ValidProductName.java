@@ -12,7 +12,7 @@ import java.lang.annotation.*;
 public @interface ValidProductName {
 
     String message() default "상품명 형식이 올바르지 않습니다.";
-
+    boolean allowKakao() default false;
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
