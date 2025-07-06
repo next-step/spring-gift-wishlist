@@ -49,4 +49,5 @@ public class JwtAuthenticateInterceptor implements HandlerInterceptor {
         request.setAttribute("auth", auth);
         return true;
     }
+
 }

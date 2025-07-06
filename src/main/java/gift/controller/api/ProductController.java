@@ -1,5 +1,6 @@
 package gift.controller.api;
 
+import gift.common.model.CustomAuth;
 import gift.dto.product.ProductResponse;
 import gift.common.model.CustomPage;
 import gift.dto.product.ProductCreateRequest;
@@ -32,22 +33,22 @@ public class ProductController {
         this.validator = validator;
     }
 
-    private <T> void handleGroupValidation (String userRole, T dto) {
-        Class<?> group = AuthenticationGroups.UserGroup.class;
-        if (userRole != null) {
-            group = switch (userRole.toUpperCase()) {
-                case "ROLE_ADMIN" -> AuthenticationGroups.AdminGroup.class;
-                case "ROLE_MD" -> AuthenticationGroups.MdGroup.class;
-                case "ROLE_USER" -> AuthenticationGroups.UserGroup.class;
-                default -> {
-                    log.error("알 수 없는 사용자 역할: {}", userRole);
-                    throw new IllegalArgumentException("알 수 없는 사용자 역할입니다. : " + userRole);
-                }
-            };
+    private <T> void handleGroupValidation (CustomAuth auth, T dto) {
+        if (auth == null) {
+            log.error("인증 정보가 없습니다. 요청 헤더에 Authorization 헤더를 추가해야 합니다.");
+            throw new IllegalArgumentException("인증 정보가 없습니다. 요청 헤더에 Authorization 헤더를 추가해야 합니다.");
         }
-        Set<ConstraintViolation<T>> violations = validator.validate(dto, group);
-        if (!violations.isEmpty()) {
-            throw new ConstraintViolationException("유효하지 않은 요청입니다.", violations);
+        if (dto != null) {
+            Class<?> group = switch (auth.role()) {
+                case ROLE_ADMIN -> AuthenticationGroups.AdminGroup.class;
+                case ROLE_MD -> AuthenticationGroups.MdGroup.class;
+                case ROLE_USER -> AuthenticationGroups.UserGroup.class;
+            };
+
+            Set<ConstraintViolation<T>> violations = validator.validate(dto, group);
+            if (!violations.isEmpty()) {
+                throw new ConstraintViolationException("유효하지 않은 요청입니다.", violations);
+            }
         }
     }
 
@@ -56,16 +57,17 @@ public class ProductController {
             @RequestParam(value = "page", defaultValue = "0")
             @Min(value = 0, message = "페이지 번호는 0 이상이여야 합니다.") Integer page,
             @RequestParam(value = "size", defaultValue = "5")
-            @Min(value = 1, message = "페이지 크기는 양수여야 합니다.") Integer size
-    ) {
-
+            @Min(value = 1, message = "페이지 크기는 양수여야 합니다.") Integer size,
+            @RequestAttribute("auth") CustomAuth auth
+            ) {
         var productPage = CustomPage.convert(productService.getBy(page, size), ProductResponse::from);
         return new ResponseEntity<>(productPage, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> getProductById(
-            @PathVariable @Min(value = 0, message = "상품 ID는 0 이상이어야 합니다.") Long id
+            @PathVariable @Min(value = 0, message = "상품 ID는 0 이상이어야 합니다.") Long id,
+            @RequestAttribute("auth") CustomAuth auth
     ) {
         Product product = productService.getById(id);
         return new ResponseEntity<>(ProductResponse.from(product), HttpStatus.OK);
@@ -74,9 +76,9 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<ProductResponse> createProduct(
             @Valid @RequestBody ProductCreateRequest dto,
-            @RequestHeader(value = "X-User-Role", required = false) String userRole
+            @RequestAttribute("auth") CustomAuth auth
     ) {
-        handleGroupValidation(userRole, dto);
+        handleGroupValidation(auth, dto);
         Product product = productService.create(dto.toProduct());
         log.info("상품 생성 성공: {}", product);
         return new ResponseEntity<>(ProductResponse.from(product), HttpStatus.CREATED);
@@ -86,9 +88,9 @@ public class ProductController {
     public ResponseEntity<ProductResponse> updateProduct(
             @PathVariable @Min(value = 0, message = "상품 ID는 0 이상이어야 합니다.") Long id,
             @Valid @RequestBody ProductUpdateRequest dto,
-            @RequestHeader(value = "X-User-Role", required = false) String userRole
+            @RequestAttribute("auth") CustomAuth auth
     ) {
-        handleGroupValidation(userRole, dto);
+        handleGroupValidation(auth, dto);
         Product updatedProduct = productService.update(dto.toEntity(id));
         log.info("상품 업데이트 성공: {}", updatedProduct);
         return new ResponseEntity<>(ProductResponse.from(updatedProduct), HttpStatus.OK);
@@ -98,9 +100,9 @@ public class ProductController {
     public ResponseEntity<ProductResponse> patchProduct(
             @PathVariable @Min(value = 0, message = "상품 ID는 0 이상이어야 합니다.") Long id,
             @Valid @RequestBody ProductUpdateRequest dto,
-            @RequestHeader(value = "X-User-Role", required = false) String userRole
+            @RequestAttribute("auth") CustomAuth auth
         ) {
-        handleGroupValidation(userRole, dto);
+        handleGroupValidation(auth, dto);
         Product patchedProduct = productService.patch(dto.toEntity(id));
         log.info("상품 패치 성공: {}", patchedProduct);
         return new ResponseEntity<>(ProductResponse.from(patchedProduct), HttpStatus.OK);
@@ -108,8 +110,10 @@ public class ProductController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(
-            @PathVariable @Min(value = 0, message = "상품 ID는 0 이상이어야 합니다.") Long id
+            @PathVariable @Min(value = 0, message = "상품 ID는 0 이상이어야 합니다.") Long id,
+            @RequestAttribute("auth") CustomAuth auth
     ) {
+        handleGroupValidation(auth, null);
         productService.deleteById(id);
         log.info("상품 삭제 성공: ID={}", id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
