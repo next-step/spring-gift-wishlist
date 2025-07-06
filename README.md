@@ -111,8 +111,6 @@
     - [x] **예외**:
         - email, password, name 중 하나라도 존재하지 않을 때: `400 Bad Request`
 
-    - [ ] (선택) 회원을 조회, 추가, 수정, 삭제할 수 있는 관리자 화면을 구현
-
 - [x] 로그인
     - [x] **Request**
         ```http
@@ -141,3 +139,5 @@
     - [x] **예외**:
         - email, password 중 하나라도 값이 존재하지 않을 때: `400 Bad Request`
         - email, password 중 하나라도 틀릴 때: `403 Forbidden`
+
+- [ ] (선택) 회원을 조회, 추가, 수정, 삭제할 수 있는 관리자 화면을 구현
