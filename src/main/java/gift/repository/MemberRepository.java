@@ -1,0 +1,12 @@
+package gift.repository;
+
+import gift.entity.Member;
+import gift.entity.Product;
+import java.util.Optional;
+
+public interface MemberRepository {
+    Member createMember(Member newMember);
+    Member loginMember(Member member);
+    Optional<Member> findMemberByEmail(String email);
+
+}
