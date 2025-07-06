@@ -2,7 +2,9 @@ package gift.service.itemService.userService;
 
 import gift.dto.itemDto.userDto.UserRegisterDto;
 import gift.dto.itemDto.userDto.UserResponseDto;
+import gift.dto.itemDto.userDto.UserUpdateDto;
 import gift.entity.User;
+import gift.exception.ItemNotFoundException;
 import gift.repository.itemRepository.userRepository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -50,5 +52,19 @@ public class UserServiceImpl implements UserService{
         User user = userRepository.findUserById(id);
 
         return new UserResponseDto(user.email(), user.password());
+    }
+
+    @Override
+    public UserResponseDto updateUser(Long id, UserUpdateDto dto) {
+        User findUser = userRepository.findUserById(id);
+        if (findUser.id() == null) {
+            throw new ItemNotFoundException();
+        }
+        String changeEmail = dto.email();
+        String changePassword = dto.password();
+        User updatedUser = userRepository.updateUser(findUser,changeEmail,changePassword);
+
+
+        return new UserResponseDto(updatedUser.email(), updatedUser.password());
     }
 }
