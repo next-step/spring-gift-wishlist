@@ -26,4 +26,11 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(NotMatchPasswordException.class)
+    public ResponseEntity<ErrorResponse> notMatchPassword(NotMatchPasswordException ex) {
+        ErrorResponse response = new ErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND.value());
+
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
 }

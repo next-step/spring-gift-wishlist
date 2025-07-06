@@ -13,7 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/api/products")
+//@RequestMapping("/api/products")
 public class ProductController {
 
     private final ProductService service;

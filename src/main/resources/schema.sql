@@ -7,3 +7,10 @@ create table product
    primary key (id)
 );
 
+create table member
+(
+   email varchar(100),
+   password varchar(255),
+   primary key (email)
+);
+
