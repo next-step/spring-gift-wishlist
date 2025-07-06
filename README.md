@@ -146,8 +146,12 @@
 
 ### 완료 체크리스트
 
-- [ ] 회원가입 API 구현 (POST /api/members/register)
-- [ ] 로그인 API 구현 (POST /api/members/login)
+- [x] 회원가입 API 구현 (POST /api/members/register)
+- [x] 로그인 API 구현 (POST /api/members/login)
+- [x] 회원가입/로그인 시나리오 테스트 작성
+- [x] README에 API 명세 추가
+
+### 선택 구현
+
 - [ ] Spring Security 및 JWT 필터 설정
-- [ ] 회원가입/로그인 시나리오 테스트 작성
-- [ ] README에 API 명세 추가
+- [ ] 보호된 API 구현 및 테스트
