@@ -3,6 +3,7 @@ package gift.service;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.entity.Product;
+import gift.entity.ProductStatus;
 import gift.exception.ProductNotFoundException;
 import gift.repository.ProductRepository;
 import java.util.List;
@@ -68,6 +69,12 @@ public class ProductService {
                                 .stream()
                                 .map(ProductResponseDto::from)
                                 .toList();
+    }
+
+    @Transactional
+    public void updateProductStatus(Long productId, ProductStatus newStatus) {
+        findProductOrThrow(productId);
+        productRepository.updateProductStatus(productId, newStatus);
     }
 
     private Product findProductOrThrow(Long productId) {

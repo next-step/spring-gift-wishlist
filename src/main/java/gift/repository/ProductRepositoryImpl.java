@@ -1,6 +1,7 @@
 package gift.repository;
 
 import gift.entity.Product;
+import gift.entity.ProductStatus;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -73,5 +74,15 @@ public class ProductRepositoryImpl implements ProductRepository {
         return client.sql(sql)
                      .query(Product.class)
                      .list();
+    }
+
+    @Override
+    public void updateProductStatus(Long productId, ProductStatus newStatus) {
+        var sql = "UPDATE product SET status = :status  WHERE id = :id";
+
+        client.sql(sql)
+              .param("status", newStatus.name())
+              .param("id", productId)
+              .update();
     }
 }
