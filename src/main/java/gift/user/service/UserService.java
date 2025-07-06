@@ -4,6 +4,7 @@ import gift.user.dto.LoginRequestDto;
 import gift.user.dto.LoginResponseDto;
 import gift.user.dto.RegisterRequestDto;
 import gift.user.dto.RegisterResponseDto;
+import gift.user.entity.User;
 import gift.user.repository.UserRepository;
 
 public class UserService {
@@ -15,8 +16,8 @@ public class UserService {
   }
 
   public RegisterResponseDto registerUser(RegisterRequestDto registerRequestDto) {
-        userRepository.saveUser(registerRequestDto.email(),registerRequestDto.password());
-        return new RegisterResponseDto(registerRequestDto);
+        User user = userRepository.saveUser(registerRequestDto.email(),registerRequestDto.password());
+        return RegisterResponseDto.from(user);
   }
 
   public LoginResponseDto loginUser(LoginRequestDto loginRequestDto) {
