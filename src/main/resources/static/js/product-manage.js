@@ -211,6 +211,9 @@ function saveChanges(row, id) {
       const message = errorBody?.message || "상품 수정 중 오류가 발생했습니다.";
       throw new Error(message);
     }
+    if(res.status === 204){
+      return null;
+    }
     return res.json();
   })
   .then(() => {
@@ -223,6 +226,9 @@ function saveChanges(row, id) {
   });
 }
 
+function getProductListUrl() {
+  return '/admin/products';
+}
 /**
  * 수정 모드 취소 후 다시 렌더링
  */
