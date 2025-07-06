@@ -1,5 +1,9 @@
 package gift.auth;
 
-public class JwtProvider {
+import org.springframework.beans.factory.annotation.Value;
 
+public class JwtProvider {
+    
+    @Value(value = "${jwt.secret}")
+    private String secretKey;
 }

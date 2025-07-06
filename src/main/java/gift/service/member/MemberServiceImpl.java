@@ -10,12 +10,15 @@ import gift.exception.notfound.NotRegisteredException;
 import gift.repository.member.MemberRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MemberServiceImpl implements MemberService {
-    MemberRepository memberRepository;
-    String secretKey = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";
+    private MemberRepository memberRepository;
+    
+    @Value(value = "${jwt.secret}")
+    private String secretKey;
     
     public MemberServiceImpl(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
