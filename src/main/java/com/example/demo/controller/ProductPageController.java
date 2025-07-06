@@ -31,8 +31,6 @@ public class ProductPageController {
     return "product/list";
   }
 
-
-
   @GetMapping("/new")
   public String showCreateForm(Model model) {
     model.addAttribute("product", new ProductRequestDto());
@@ -65,6 +63,7 @@ public class ProductPageController {
   public String showEditForm(@PathVariable Long id, Model model) {
     ProductResponseDto productToEdit = productService.productFindById(id);
     ProductUpdateDto updateDto = new ProductUpdateDto(
+        productToEdit.id(),
         productToEdit.name(),
         productToEdit.price(),
         productToEdit.imageUrl()
