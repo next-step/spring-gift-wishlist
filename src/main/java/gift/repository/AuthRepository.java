@@ -13,16 +13,15 @@ import gift.domain.User;
 public class AuthRepository {
 
     private final JdbcClient jdbcClient;
-
-    public AuthRepository(JdbcClient jdbcClient) {
-        this.jdbcClient = jdbcClient;
-    }
-
     private static final RowMapper<User> rowMapper = (rs, rowNum) -> User.of(
         rs.getLong("id"),
         rs.getString("email"),
         rs.getString("password")
     );
+
+    public AuthRepository(JdbcClient jdbcClient) {
+        this.jdbcClient = jdbcClient;
+    }
 
     public boolean existsByEmail(String email) {
         String sql = "SELECT COUNT(*) FROM `user` WHERE email = :email";

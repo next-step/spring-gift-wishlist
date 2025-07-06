@@ -14,19 +14,15 @@ import gift.domain.Product;
 public class ProductRepository {
 
     private final JdbcClient client;
+    private static final RowMapper<Product> rowMapper = (rs, rowNum) -> Product.of(
+        rs.getLong("id"),
+        rs.getString("name"),
+        rs.getInt("price"),
+        rs.getString("imageUrl")
+    );
 
     public ProductRepository(JdbcClient client) {
         this.client = client;
-    }
-
-    private static RowMapper<Product> getMemberRowMapper() {
-        return (rs, rowNum) -> {
-            var id = rs.getLong("id");
-            var name = rs.getString("name");
-            var price = rs.getInt("price");
-            var imageUrl = rs.getString("imageUrl");
-            return Product.of(id, name, price, imageUrl);
-        };
     }
 
     public List<Product> findAll() {
@@ -36,7 +32,7 @@ public class ProductRepository {
         """;
 
         return client.sql(sql)
-            .query(getMemberRowMapper())
+            .query(rowMapper)
             .list();
     }
 
@@ -49,7 +45,7 @@ public class ProductRepository {
 
         return client.sql(sql)
             .param("id", id)
-            .query(getMemberRowMapper())
+            .query(rowMapper)
             .optional();
     }
 
