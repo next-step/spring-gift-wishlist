@@ -136,15 +136,15 @@ class MemberServiceV1Test {
         Member joinMember = createMember();
         MemberDeleteRequest deleteRequest = new MemberDeleteRequest("curPassword");
         // given
-        given(memberRepository.findById(joinMember.getId()))
+        given(memberRepository.findByEmail(joinMember.getEmail()))
                 .willReturn(Optional.of(joinMember));
 
         // when
-        memberService.deleteMember(joinMember.getId(), deleteRequest);
+        memberService.deleteMember(joinMember.getEmail(), deleteRequest);
 
         // then
         verify(memberRepository).deleteById(joinMember.getId());
-        verify(memberRepository).findById(joinMember.getId());
+        verify(memberRepository).findByEmail(joinMember.getEmail());
         verifyNoMoreInteractions(memberRepository);
     }
 
@@ -156,15 +156,15 @@ class MemberServiceV1Test {
         MemberDeleteRequest deleteRequest = new MemberDeleteRequest("wrong");
 
         // given
-        given(memberRepository.findById(any(UUID.class)))
+        given(memberRepository.findByEmail(anyString()))
                 .willReturn(Optional.empty());
 
         // when
-        assertThatThrownBy(()->memberService.deleteMember(UUID.randomUUID(), deleteRequest))
+        assertThatThrownBy(()->memberService.deleteMember(anyString(), deleteRequest))
                 .isInstanceOf(NotFoundEntityException.class);
 
         // then
-        verify(memberRepository).findById(any(UUID.class));
+        verify(memberRepository).findByEmail(anyString());
         verifyNoMoreInteractions(memberRepository);
     }
 
@@ -175,15 +175,15 @@ class MemberServiceV1Test {
         Member member = createMember();
         MemberDeleteRequest deleteRequest = new MemberDeleteRequest("wrong");
         // given
-        given(memberRepository.findById(member.getId()))
+        given(memberRepository.findByEmail(member.getEmail()))
                 .willReturn(Optional.of(member));
 
         // when
-        assertThatThrownBy(()->memberService.deleteMember(member.getId(), deleteRequest))
+        assertThatThrownBy(()->memberService.deleteMember(member.getEmail(), deleteRequest))
                 .isInstanceOf(AuthenticationException.class);
 
         // then
-        verify(memberRepository).findById(member.getId());
+        verify(memberRepository).findByEmail(member.getEmail());
         verifyNoMoreInteractions(memberRepository);
     }
 
@@ -195,13 +195,13 @@ class MemberServiceV1Test {
         Member member = createMember();
         MemberUpdateRequest updateRequest = new MemberUpdateRequest("curPassword","changePassword", "changePassword");
 
-        given(memberRepository.findById(member.getId()))
+        given(memberRepository.findByEmail(member.getEmail()))
                 .willReturn(Optional.of(member));
 
         // when
-        memberService.changePassword(member.getId(), updateRequest);
+        memberService.changePassword(member.getEmail(), updateRequest);
 
-        verify(memberRepository).findById(member.getId());
+        verify(memberRepository).findByEmail(member.getEmail());
         verify(memberRepository).update(any(Member.class));
         verifyNoMoreInteractions(memberRepository);
     }
@@ -214,14 +214,14 @@ class MemberServiceV1Test {
         Member member = createMember();
         MemberUpdateRequest updateRequest = new MemberUpdateRequest("wrongPassword","changePassword", "changePassword");
 
-        given(memberRepository.findById(member.getId()))
+        given(memberRepository.findByEmail(member.getEmail()))
                 .willReturn(Optional.of(member));
 
         // when
-        assertThatThrownBy(()->memberService.changePassword(member.getId(), updateRequest))
+        assertThatThrownBy(()->memberService.changePassword(member.getEmail(), updateRequest))
                 .isInstanceOf(AuthenticationException.class);
 
-        verify(memberRepository).findById(member.getId());
+        verify(memberRepository).findByEmail(member.getEmail());
         verifyNoMoreInteractions(memberRepository);
     }
 
@@ -233,14 +233,14 @@ class MemberServiceV1Test {
         Member member = createMember();
         MemberUpdateRequest updateRequest = new MemberUpdateRequest("curPassword","changePassword", "changePassword2");
 
-        given(memberRepository.findById(member.getId()))
+        given(memberRepository.findByEmail(member.getEmail()))
                 .willReturn(Optional.of(member));
 
         // when
-        assertThatThrownBy(()->memberService.changePassword(member.getId(), updateRequest))
+        assertThatThrownBy(()->memberService.changePassword(member.getEmail(), updateRequest))
                 .isInstanceOf(BadRequestEntityException.class);
 
-        verify(memberRepository).findById(member.getId());
+        verify(memberRepository).findByEmail(member.getEmail());
         verifyNoMoreInteractions(memberRepository);
     }
 

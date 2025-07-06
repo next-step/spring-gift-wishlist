@@ -12,13 +12,13 @@ public interface MemberService {
 
     UUID save(MemberCreateRequest memberCreateRequest);
 
-    void changePassword(UUID id, MemberUpdateRequest memberUpdateRequest);
+    void changePassword(String email, MemberUpdateRequest memberUpdateRequest);
 
     MemberResponse findById(UUID id);
 
     List<MemberResponse> findAll();
 
-    void deleteMember(UUID id, MemberDeleteRequest memberDeleteRequest);
+    void deleteMember(String email, MemberDeleteRequest memberDeleteRequest);
 
     MemberResponse validate(String email, String password);
 }

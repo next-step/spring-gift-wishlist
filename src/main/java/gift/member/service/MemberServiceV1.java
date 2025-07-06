@@ -43,8 +43,8 @@ public class MemberServiceV1 implements MemberService{
     }
 
     @Override
-    public void changePassword(UUID id, MemberUpdateRequest memberUpdateRequest) {
-        Member member = memberRepository.findById(id)
+    public void changePassword(String email, MemberUpdateRequest memberUpdateRequest) {
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundEntityException("존재하는 회원이 아닙니다."));
 
         if (!member.getPassword().equals(memberUpdateRequest.getPassword()))
@@ -73,15 +73,15 @@ public class MemberServiceV1 implements MemberService{
     }
 
     @Override
-    public void deleteMember(UUID id, MemberDeleteRequest memberDeleteRequest) {
-        Member member = memberRepository.findById(id)
+    public void deleteMember(String email, MemberDeleteRequest memberDeleteRequest) {
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundEntityException("존재하는 회원이 아닙니다."));
 
         if (!member.getPassword().equals(memberDeleteRequest.getPassword())) {
             throw new AuthenticationException("비밀번호가 다릅니다.");
         }
 
-        memberRepository.deleteById(id);
+        memberRepository.deleteById(member.getId());
     }
 
     @Override
