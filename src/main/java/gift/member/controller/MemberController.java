@@ -25,9 +25,9 @@ public class MemberController {
 
     @PostMapping("/register")
     public ResponseEntity<TokenResponseDto> registerMember(
-        @Valid @RequestBody RegisterRequestDto registerRequestDto) {
+        @Valid @RequestBody RegisterRequestDto requestDto) {
 
-        return new ResponseEntity<>(memberService.registerMember(registerRequestDto),
+        return new ResponseEntity<>(memberService.registerMember(requestDto),
             HttpStatus.CREATED);
 
     }
