@@ -16,6 +16,7 @@ public class ProductRequestDTO {
     @Positive(message = "상품 가격은 0보다 큰 값이어야 합니다.")
     private Long price;
 
+    @Pattern(regexp = "^(https?://)([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$", message = "올바른 URL 형식이 아닙니다.")
     private String imageUrl;
 
     public String getName() { return name; }
