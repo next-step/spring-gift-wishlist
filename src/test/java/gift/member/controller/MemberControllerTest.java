@@ -124,7 +124,7 @@ class MemberControllerTest {
                 .body(new MemberLoginRequest("ljw2109@naver.com", "Qwer1235!!"))
                 .retrieve()
                 .toEntity(Void.class))
-                .isInstanceOf(HttpClientErrorException.Unauthorized.class)
+                .isInstanceOf(HttpClientErrorException.Forbidden.class)
                 .hasMessageContaining("비밀번호가 다릅니다.");
     }
 
@@ -137,7 +137,7 @@ class MemberControllerTest {
                 .body(new MemberLoginRequest("ljw2108@naver.com", "Qwer1234!!"))
                 .retrieve()
                 .toEntity(Void.class))
-                .isInstanceOf(HttpClientErrorException.Unauthorized.class)
+                .isInstanceOf(HttpClientErrorException.Forbidden.class)
                 .hasMessageContaining("존재하는 회원이 아닙니다");
     }
 

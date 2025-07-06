@@ -56,7 +56,7 @@ public class CustomLoginFilter implements Filter {
             response.setHeader("Authorization", "Bearer " + jwt);
 
         } catch (NotFoundEntityException | AuthenticationException ex) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.setContentType("application/json; charset=UTF-8");
             response.getWriter().write(objectMapper.writeValueAsString(Map.of("message", ex.getMessage())));
         }
