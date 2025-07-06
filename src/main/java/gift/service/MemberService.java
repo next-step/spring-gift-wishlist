@@ -2,6 +2,7 @@ package gift.service;
 
 import gift.dto.api.MemberRegisterRequestDto;
 import gift.entity.Member;
+import gift.exception.InvalidCredentialsException;
 import gift.repository.MemberRepository;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -37,9 +38,9 @@ public class MemberService {
     public String loginMember(String email, String password) {
 
         Member member = memberRepository.findByEmail(email)
-            .orElseThrow(() -> new IllegalArgumentException("로그인 정보가 올바르지 않습니다."));
+            .orElseThrow(() -> new InvalidCredentialsException("이메일 또는 비밀번호가 올바르지 않습니다."));
         if (!member.getPassword().equals(password)) {
-            throw new IllegalArgumentException("로그인 정보가 올바르지 않습니다.");
+            throw new InvalidCredentialsException("이메일 또는 비밀번호가 올바르지 않습니다.");
         }
 
         return tokenService.generateToken(member.getId(), member.getEmail());

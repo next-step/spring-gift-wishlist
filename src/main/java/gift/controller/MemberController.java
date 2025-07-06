@@ -64,13 +64,8 @@ public class MemberController {
         String email = parts[0];
         String rawPassword = parts[1];
 
-        try {
-            String token = memberService.loginMember(email, rawPassword);
-            return ResponseEntity.ok(new MemberRegisterResponseDto(token));
-        } catch (IllegalArgumentException ex) {
-            // 잘못된 자격 증명 → 403 Forbidden
-            throw new InvalidCredentialsException("이메일 또는 비밀번호가 올바르지 않습니다.");
-        }
+        String token = memberService.loginMember(email, rawPassword);
+        return ResponseEntity.ok(new MemberRegisterResponseDto(token));
 
     }
 
