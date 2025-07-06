@@ -55,4 +55,11 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.FORBIDDEN)
                 .body(new ErrorResponse(ex.getMessage()));
     }
+
+    @ExceptionHandler(MemberNotExistException.class)
+    public ResponseEntity<ErrorResponse> handleMemberNotExist(MemberNotExistException ex) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(ex.getMessage()));
+    }
 }
