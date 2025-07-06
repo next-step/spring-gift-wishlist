@@ -12,6 +12,7 @@ import gift.repository.MemberRepository;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -49,5 +50,11 @@ public class MemberService {
         else{
             throw new InvalidPasswordException();
         }
+    }
+
+    public List<MemberResponseDto> findAll() {
+        return memberRepository.findAll().stream()
+                .map(m -> new MemberResponseDto(m.getId(), m.getName(), m.getEmail(), m.getPassword()))
+                .toList();
     }
 }

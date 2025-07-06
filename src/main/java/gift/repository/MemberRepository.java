@@ -44,4 +44,9 @@ public class MemberRepository {
         }
         return member;
     }
+
+    public List<Member> findAll() {
+        String sql = "select * from members";
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Member.class));
+    }
 }
