@@ -46,6 +46,11 @@ public class UserRepository {
         }
     }
 
+    public void update(User user) {
+        String sql = "update users set email=?, password=?, role=? where id=?";
+        jdbcTemplate.update(sql, user.getEmail(), user.getPassword(), user.getRole().name(), user.getId());
+    }
+
     private RowMapper<User> toUser() {
         return (rs, rowNum) -> new User(
                 rs.getLong("id"),
