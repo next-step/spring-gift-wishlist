@@ -37,4 +37,21 @@ public class UserRepository {
         })
         .single();
   }
+
+  public User findByEmail(String email) {
+    String sql = "select memberId, email, password, role from users where email = ?";
+
+    return jdbcClient.sql(sql)
+        .param(email)
+        .query((result, rowNum) -> {
+          User user = new User(
+              result.getLong("memberId"),
+              result.getString("email"),
+              result.getString("password"),
+              Role.valueOf(result.getString("role"))
+          );
+          return user;
+        })
+        .single();
+  }
 }

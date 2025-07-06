@@ -6,6 +6,8 @@ import gift.user.dto.LoginResponseDto;
 import gift.user.dto.RegisterRequestDto;
 import gift.user.dto.RegisterResponseDto;
 import gift.user.entity.User;
+import gift.user.exception.InvalidLoginException;
+import gift.user.exception.UserNotFoundException;
 import gift.user.repository.UserRepository;
 
 public class UserService {
@@ -19,13 +21,27 @@ public class UserService {
   }
 
   public RegisterResponseDto registerUser(RegisterRequestDto registerRequestDto) {
-        User user = userRepository.saveUser(registerRequestDto.email(),registerRequestDto.password());
+    User user = userRepository.saveUser(registerRequestDto.email(), registerRequestDto.password());
 
-        String token = jwtTokenProvider.generateToken(user);
+    String token = jwtTokenProvider.generateToken(user);
 
-        return RegisterResponseDto.from(user);
+    return RegisterResponseDto.from(user);
   }
 
   public LoginResponseDto loginUser(LoginRequestDto loginRequestDto) {
-    return new LoginResponseDto(loginRequestDto);
+    User user = userRepository.findByEmail(loginRequestDto.email());
+
+    //TODO : exceptionHandler 구현하기 UserNotFound
+    if (user == null) {
+      throw new UserNotFoundException();
+    }
+
+    //TODO : exceptionHandler 구현하기 InvalidLogin
+    if (!user.isEqualPassword(loginRequestDto.password())) {
+      throw new InvalidLoginException();
+    }
+
+    String token = jwtTokenProvider.generateToken(user);
+
+    return new LoginResponseDto(token);
   }
