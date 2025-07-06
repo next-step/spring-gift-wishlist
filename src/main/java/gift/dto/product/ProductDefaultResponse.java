@@ -2,15 +2,15 @@ package gift.dto.product;
 
 import gift.entity.Product;
 
-public record ProductResponse(
+public record ProductDefaultResponse(
     Long id,
     String name,
     Long price,
     String imageUrl
 ) {
 
-    public static ProductResponse from(Product product) {
-        return new ProductResponse(
+    public static ProductDefaultResponse from(Product product) {
+        return new ProductDefaultResponse(
             product.getId(),
             product.getName(),
             product.getPrice(),

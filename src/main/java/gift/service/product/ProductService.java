@@ -1,5 +1,6 @@
 package gift.service.product;
 
+import gift.common.model.CustomAuth;
 import gift.common.model.CustomPage;
 import gift.entity.Product;
 
@@ -11,7 +12,7 @@ public interface ProductService {
     CustomPage<Product> getBy(int page, int size);
     Product getById(Long productId);
     Product create(Product product);
-    Product update(Product product);
-    Product patch(Product product);
-    void deleteById(Long productId);
+    Product update(Product product, CustomAuth auth);
+    Product patch(Product product, CustomAuth auth);
+    void deleteById(Long productId, CustomAuth auth);
 }

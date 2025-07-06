@@ -1,7 +1,9 @@
 package gift.service.product;
 
+import gift.common.model.CustomAuth;
 import gift.common.model.CustomPage;
 import gift.entity.Product;
+import gift.entity.UserRole;
 import gift.repository.product.ProductRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +22,29 @@ public class ProductServiceImpl implements ProductService {
     public ProductServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
+
+    private void validateProduct(Product product, CustomAuth auth) {
+        if (auth.role() == UserRole.ROLE_ADMIN) {
+            log.info("관리자 권한으로 상품 검증을 건너뜁니다.");
+            return;
+        }
+
+        if (product == null) {
+            log.error("상품 정보가 null 입니다.");
+            throw new IllegalArgumentException("상품 정보는 필수입니다.");
+        }
+        if (product.getOwnerId() == null) {
+            log.error("상품 소유자 ID가 null 입니다.");
+            throw new IllegalArgumentException("상품 소유자 ID는 필수입니다.");
+        }
+
+        if (!product.getOwnerId().equals(auth.userId())){
+            log.error("상품 소유자 ID가 인증된 사용자 ID와 일치하지 않습니다. 소유자 ID: {}, 인증된 사용자 ID: {}",
+                      product.getOwnerId(), auth.userId());
+            throw new IllegalArgumentException("상품 소유자 ID가 인증된 사용자 ID와 일치하지 않습니다.");
+        }
+    }
+
 
     @Override
     public List<Product> getAll() {
@@ -55,9 +80,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public Product update(Product product) {
+    public Product update(Product product, CustomAuth auth) {
         Product updated = getById(product.getId());
-
+        validateProduct(updated, auth);
         if (product.getName() != null) {
             updated.setName(product.getName());
         }
@@ -74,8 +99,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product patch(Product product) {
+    public Product patch(Product product, CustomAuth auth) {
         Product updated = getById(product.getId());
+        validateProduct(updated, auth);
         if (product.getName() != null) {
             updated = productRepository.updateFieldById(product.getId(), "name", product.getName());
         }
@@ -89,8 +115,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void deleteById(Long productId) {
-        getById(productId); // 존재 여부 확인
+    public void deleteById(Long productId, CustomAuth auth) {
+        Product deleted = getById(productId);
+        validateProduct(deleted, auth);
 
         if (!productRepository.deleteById(productId)) {
             throw new NoSuchElementException(
