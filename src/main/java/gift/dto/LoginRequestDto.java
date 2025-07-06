@@ -3,7 +3,7 @@ package gift.dto;
 import gift.validation.ValidMemberEmail;
 import jakarta.validation.constraints.NotBlank;
 
-public record RegisterMemberRequestDto(
+public record LoginRequestDto(
         @ValidMemberEmail
         String email,
 
