@@ -130,17 +130,14 @@ public record ErrorMessageResponse (
     public ProblemDetail toProblemDetail() {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.valueOf(status), message);
         problemDetail.setTitle(error);
-        if (validationErrors != null && !validationErrors.isEmpty()) {
-            List<ProblemDetail> validationDetails = new ArrayList<>();
-            for (ValidationError error : validationErrors) {
-                ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, error.message());
-                detail.setProperty("field", error.field());
-                validationDetails.add(detail);
-            }
-            problemDetail.setProperty("validationErrors", validationDetails);
-        }
         problemDetail.setProperty("timestamp", timestamp.toString());
-        problemDetail.setProperty("stackTrace", stackTrace);
+
+        if (stackTrace != null && !stackTrace.isEmpty()) {
+            problemDetail.setProperty("stackTrace", stackTrace);
+        }
+        if (validationErrors != null && !validationErrors.isEmpty()) {
+            problemDetail.setProperty("validationErrors", validationErrors);
+        }
         return problemDetail;
     }
 }

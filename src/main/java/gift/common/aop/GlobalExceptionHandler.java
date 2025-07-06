@@ -14,6 +14,8 @@ import org.springframework.web.method.annotation.HandlerMethodValidationExceptio
 
 import javax.naming.AuthenticationException;
 import gift.common.exception.AccessDeniedException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
+
 import java.util.NoSuchElementException;
 
 @RestControllerAdvice(basePackages = "gift.controller.api")
@@ -98,6 +100,18 @@ public class GlobalExceptionHandler {
               .build();
       return new ResponseEntity<>(errorMessage.toProblemDetail(), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ProblemDetail> handleNoResourceFoundException(
+            NoResourceFoundException e, HttpServletRequest request
+    ) {
+        var errorMessage = new ErrorMessageResponse.Builder(request, e, HttpStatus.NOT_FOUND)
+                .build();
+        ProblemDetail errorDetail = errorMessage.toProblemDetail();
+        errorDetail.setDetail("요청한 리소스를 찾을 수 없습니다.");
+        return new ResponseEntity<>(errorDetail, HttpStatus.NOT_FOUND);
+    }
+
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ProblemDetail> handleDefaultException(

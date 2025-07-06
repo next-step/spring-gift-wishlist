@@ -66,7 +66,7 @@ public class RoleRepositoryImpl implements RoleRepository {
                 .forEach(role -> delete(userId, role));
 
         Set<UserRole> updatedRoles = findByUserId(userId);
-        if (updatedRoles.equals(roles)) {
+        if (!updatedRoles.equals(roles)) {
             throw new IllegalStateException("역할을 업데이트 하는데 실패했습니다.");
         }
         return updatedRoles;

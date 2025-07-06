@@ -1,5 +1,6 @@
 package gift.service.user;
 
+import gift.common.util.PasswordEncoder;
 import gift.entity.User;
 import gift.entity.UserRole;
 import gift.common.model.CustomPage;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 @Service
@@ -54,7 +56,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public User getById(Long userId) {
         var user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 사용자를 찾을 수 없습니다. : " + userId));
+                .orElseThrow(() -> new NoSuchElementException("해당 ID의 사용자를 찾을 수 없습니다. : " + userId));
         return loadRoles(user);
     }
 
@@ -68,6 +70,7 @@ public class UserServiceImpl implements UserService {
         if (userRepository.findByEmail(user.getEmail()).isPresent()){
             throw new IllegalArgumentException("이미 존재하는 이메일입니다: " + user.getEmail());
         }
+        user.setPassword(PasswordEncoder.encode(user.getPassword()));
         User savedUser = userRepository.save(user);
         for (UserRole role : user.getRoles()) {
             userRoleRepository.save(savedUser.getId(), role);
