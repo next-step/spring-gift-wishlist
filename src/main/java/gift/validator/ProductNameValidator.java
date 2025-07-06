@@ -3,9 +3,11 @@ package gift.validator;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
+import java.util.regex.Pattern;
+
 public class ProductNameValidator implements ConstraintValidator<ValidProductName, String> {
 
-    private static final String ALLOWED_REGEX = "^[a-zA-Z0-9가-힣 ()\\[\\]+\\-\\&/_]*$";
+    private static final Pattern ALLOWED_PATTERN = Pattern.compile("^[a-zA-Z0-9가-힣 ()\\[\\]+\\-\\&/_]*$");
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
@@ -18,7 +20,7 @@ public class ProductNameValidator implements ConstraintValidator<ValidProductNam
             return false;
         }
 
-        if (!value.matches(ALLOWED_REGEX)) {
+        if (!ALLOWED_PATTERN.matcher(value).matches()) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate("상품명에는 (), [], +, -, &, /, _ 외 특수문자를 사용할 수 없습니다.")
                     .addConstraintViolation();
