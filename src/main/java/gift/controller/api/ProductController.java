@@ -50,9 +50,10 @@ public class ProductController {
     @PostMapping
     @PreAuthorize(UserRole.ROLE_USER)
     public ResponseEntity<ProductDefaultResponse> createProduct(
-            @Valid @RequestBody ProductCreateRequest dto
+            @Valid @RequestBody ProductCreateRequest dto,
+            @RequestAttribute("auth") CustomAuth auth
     ) {
-        Product product = productService.create(dto.toProduct());
+        Product product = productService.create(dto.toProduct(), auth);
         log.info("상품 생성 성공: {}", product);
         return new ResponseEntity<>(ProductDefaultResponse.from(product), HttpStatus.CREATED);
     }

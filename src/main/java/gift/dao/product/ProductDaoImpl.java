@@ -68,11 +68,12 @@ public class ProductDaoImpl implements ProductDao {
     @Override
     public Long insertWithKey(Product product) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        String sql = "INSERT INTO products (name, price, image_url) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO products (name, price, image_url, owner_id) VALUES (?, ?, ?, ?)";
         jdbcClient.sql(sql)
             .param(product.getName())
             .param(product.getPrice())
             .param(product.getImageUrl())
+            .param(product.getOwnerId())
             .update(keyHolder);
        if (keyHolder.getKey() == null) {
            throw new DataRetrievalFailureException("상품 저장 후 키를 반환받지 못했습니다.");

@@ -74,7 +74,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product create(Product product) {
+    public Product create(Product product, CustomAuth auth) {
+        product.setOwnerId(auth.userId());
         return productRepository.save(product);
     }
 

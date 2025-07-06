@@ -11,7 +11,7 @@ public interface ProductService {
     List<Product> getAll();
     CustomPage<Product> getBy(int page, int size);
     Product getById(Long productId);
-    Product create(Product product);
+    Product create(Product product, CustomAuth auth);
     Product update(Product product, CustomAuth auth);
     Product patch(Product product, CustomAuth auth);
     void deleteById(Long productId, CustomAuth auth);
