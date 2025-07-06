@@ -1,6 +1,5 @@
 package gift.dto;
 
-import gift.validation.WarningKakao;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.NotNull;

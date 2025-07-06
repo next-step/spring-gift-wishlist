@@ -38,11 +38,17 @@ public class AdminProductController {
             BindingResult br,
             Model model) {
         if (br.hasErrors()) {
-            model.addAttribute("actionUrl", "/admin/products/new");  // 이 줄도 잊지 말기!
+            model.addAttribute("actionUrl", "/admin/products/new");
             return "admin/form";
         }
 
-        productService.create(dto);
+        try {
+            productService.create(dto);
+        } catch(IllegalArgumentException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("actionUrl", "/admin/products/new");
+            return "admin/form";
+        }
         return "redirect:/admin/products";
     }
 
@@ -66,14 +72,20 @@ public class AdminProductController {
 
     // 3-2. 상품 수정 처리
     @PostMapping("/{id}/edit")
-    public String update(@Valid @PathVariable Long id, @ModelAttribute RequestDto dto,
+    public String update(@PathVariable Long id, @Valid @ModelAttribute("product") RequestDto dto,
             BindingResult br, Model model) {
         if (br.hasErrors()) {
             model.addAttribute("actionUrl", "/admin/products/" + id + "/edit");
             return "admin/form";
         }
 
-        productService.update(id, dto);
+        try {
+            productService.update(id, dto);
+        } catch(IllegalArgumentException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("actionUrl", "/admin/products/" + id + "/edit");
+            return "admin/form";
+        }
         return "redirect:/admin/products";
     }
 
