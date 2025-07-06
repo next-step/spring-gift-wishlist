@@ -1,12 +1,12 @@
 package gift.entity;
 
-import java.util.List;
+import java.util.Set;
 
 public class User {
     private Long id;
     private String email;
     private String password;
-    private List<UserRole> roles;
+    private Set<UserRole> roles;
 
     public User(Long id, String email, String password) {
         this.id = id;
@@ -38,11 +38,11 @@ public class User {
         this.password = password;
     }
 
-    public void setRoles(List<UserRole> roles) {
+    public void setRoles(Set<UserRole> roles) {
         this.roles = roles;
     }
 
-    public List<UserRole> getRoles() {
+    public Set<UserRole> getRoles() {
         return roles;
     }
     

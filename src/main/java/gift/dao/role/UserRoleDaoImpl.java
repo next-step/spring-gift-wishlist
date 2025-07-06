@@ -4,8 +4,8 @@ import gift.entity.UserRole;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Repository
 public class UserRoleDaoImpl implements UserRoleDao {
@@ -25,7 +25,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
     }
 
     @Override
-    public List<UserRole> findByUserId(Long userId) {
+    public Set<UserRole> findByUserId(Long userId) {
         String sql = """
                 SELECT role_name FROM user_roles WHERE user_id = ?
                 """;
@@ -33,7 +33,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
                 .param(userId)
                 .query(new UserRoleRowMapper())
                 .stream()
-                .toList();
+                .collect(Collectors.toSet());
     }
 
     @Override

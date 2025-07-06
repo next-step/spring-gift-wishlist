@@ -5,7 +5,7 @@ import gift.entity.UserRole;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.Set;
 
 @Repository
 @Transactional
@@ -17,7 +17,7 @@ public class RoleRepositoryImpl implements RoleRepository {
     }
 
     @Override
-    public List<UserRole> findByUserId(Long userId) {
+    public Set<UserRole> findByUserId(Long userId) {
         if (userId == null) {
             throw new IllegalArgumentException("사용자 ID는 null일 수 없습니다.");
         }

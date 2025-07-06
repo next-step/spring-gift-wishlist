@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -49,10 +50,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("해당 이메일의 사용자를 찾을 수 없습니다. : " + email));
+    }
+
+    @Override
     @Transactional
     public User loadRoles(User user) {
         validateUser(user);
-        List<UserRole> roles = userRoleRepository.findByUserId(user.getId());
+        Set<UserRole> roles = userRoleRepository.findByUserId(user.getId());
         if (roles == null || roles.isEmpty()) {
             throw new IllegalArgumentException("사용자의 역할을 찾을 수 없습니다. 사용자 ID: " + user.getId());
         }

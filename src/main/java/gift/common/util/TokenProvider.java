@@ -18,7 +18,7 @@ import javax.crypto.SecretKey;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -51,7 +51,7 @@ public class TokenProvider implements InitializingBean {
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    public String generateToken(String userId, List<UserRole> authorities) {
+    public String generateToken(String userId, Set<UserRole> authorities) {
         Instant now = Instant.now(Clock.systemDefaultZone());
         Instant expiryDate = now.plusSeconds(expiration);
 
@@ -76,9 +76,9 @@ public class TokenProvider implements InitializingBean {
                 .getPayload();
         String userId = claims.getSubject();
         String authoritiesString = claims.get(AUTHORITIES_KEY, String.class);
-        List<UserRole> authorities = Stream.of(authoritiesString.split(","))
+        Set<UserRole> authorities = Stream.of(authoritiesString.split(","))
                 .map(UserRole::fromString)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
         if (userId == null || authorities.isEmpty()) {
             return null;
         }
