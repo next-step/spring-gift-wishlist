@@ -29,4 +29,16 @@ public class MemberRepository {
         return new Member(id, member.getEmail(), member.getPassword());
     }
 
+    public boolean existByEmail(String email) {
+        String sql = "SELECT COUNT(*) FROM members WHERE email = ?";
+        Integer count = jdbcClient
+            .sql(sql)
+            .param(email)
+            .query(Integer.class)
+            .optional()
+            .orElse(0);
+
+        return count > 0;
+    }
+
 }
