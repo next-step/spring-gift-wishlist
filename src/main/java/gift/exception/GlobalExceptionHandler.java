@@ -104,4 +104,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
 
+    // 헤더 형식 오류 예외를 처리할 핸들러
+    @ExceptionHandler(InvalidAuthorizationHeaderException.class)
+    public ResponseEntity<Map<String, String>> handleMissingHeader(InvalidAuthorizationHeaderException e) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", e.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+    }
+
 }
