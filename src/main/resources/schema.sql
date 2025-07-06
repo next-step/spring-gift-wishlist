@@ -9,3 +9,13 @@ create table products
     approved    boolean default true not null,
     description varchar(1024)
 );
+
+drop table members if exists;
+
+create table members
+(
+    id          bigint auto_increment primary key,
+    email       varchar(255) not null unique,
+    password    varchar(255) not null,
+    role        varchar(50) not null default 'USER'
+);
