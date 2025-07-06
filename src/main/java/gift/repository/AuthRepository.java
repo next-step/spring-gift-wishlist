@@ -24,6 +24,15 @@ public class AuthRepository {
         rs.getString("password")
     );
 
+    public boolean existsByEmail(String email) {
+        String sql = "SELECT COUNT(*) FROM `user` WHERE email = :email";
+
+        return jdbcClient.sql(sql)
+            .param("email", email)
+            .query(Long.class)
+            .single() > 0;
+    }
+
     public Optional<User> findById(Long id) {
         String sql = "SELECT id, email, password FROM `user` WHERE id = :id";
 

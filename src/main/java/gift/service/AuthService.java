@@ -31,9 +31,12 @@ public class AuthService {
         this.tokenProvider = tokenProvider;
     }
 
-    // TODO: 회원이 중복으로 가입될 수 없도록 막아야 함!
     @Transactional
     public SignupResponse signup(SignupRequest request) {
+        if (authRepository.existsByEmail(request.email())) {
+            throw new SignupException("이미 가입된 이메일입니다.");
+        }
+
         Long generatedId = authRepository.save(User.of(
             request.email(),
             passwordEncoder.encode(request.password()))
