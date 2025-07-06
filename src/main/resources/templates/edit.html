@@ -44,16 +44,21 @@
                         let message = "상품 수정 실패"
                         if (jqXHR.responseJSON) {
                             const errors = [];
-                            if (jqXHR.responseJSON.fieldErrors) {
-                                for (const err of jqXHR.responseJSON.fieldErrors) {
+                            const fieldErrors = jqXHR.responseJSON.fieldErrors;
+                            const objectErrors = jqXHR.responseJSON.objectErrors;
+
+                            if (fieldErrors) {
+                                for (const key in fieldErrors) {
+                                    errors.push(fieldErrors[key]);
+                                }
+                            }
+
+                            if (objectErrors) {
+                                for (const err of objectErrors) {
                                     errors.push(err.message);
                                 }
                             }
-                            if (jqXHR.responseJSON.objectErrors) {
-                                for (const err of jqXHR.responseJSON.objectErrors) {
-                                    errors.push(err.message);
-                                }
-                            }
+
                             if (errors.length > 0) {
                                 message = errors.join('\n');
                             }
