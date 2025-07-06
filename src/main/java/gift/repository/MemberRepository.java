@@ -1,6 +1,9 @@
 package gift.repository;
 
 import gift.entity.Member;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Optional;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -39,6 +42,23 @@ public class MemberRepository {
             .orElse(0);
 
         return count > 0;
+    }
+
+    private Member mapRowToMember(ResultSet rs, int rowNum) throws SQLException {
+        return new Member(
+            rs.getLong("id"),
+            rs.getString("email"),
+            rs.getString("password")
+        );
+    }
+
+    public Optional<Member> findByEmail(String email) {
+        String sql = "SELECT id, email, password FROM members WHERE email = ?";
+        return jdbcClient
+            .sql(sql)
+            .param(email)
+            .query(this::mapRowToMember)
+            .optional();
     }
 
 }
