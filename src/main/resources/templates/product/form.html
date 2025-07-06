@@ -83,6 +83,7 @@
 <div class="container">
   <h1 th:text="${formAction.contains('edit')} ? 'Edit Product' : 'Add New Product'">Product Form</h1>
 
+  <input type="hidden" th:if="*{id} != null" th:field="*{id}" />
   <form th:action="@{${formAction}}" th:object="${product}" method="post">
     <label>상품 이름</label>
     <input type="text" th:field="*{name}" />
