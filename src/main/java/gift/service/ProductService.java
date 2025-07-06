@@ -34,6 +34,7 @@ public class ProductService {
 
 
     public ProductResponseDto addProduct(ProductRequestDto productRequestDto){
+        validateNameContent(productRequestDto.getName());
         Product product = toEntity(productRequestDto);
         Product savedProduct = productRepository.save(product);
         return toDto(savedProduct);
@@ -49,6 +50,7 @@ public class ProductService {
     }
 
     public ProductResponseDto updateProduct(Long id, ProductRequestDto productRequestDto){
+        validateNameContent(productRequestDto.getName());
         Product product = productRepository.findById(id);
         if(product==null){
             throw new NoSuchElementException("product does not exist.");
@@ -67,4 +69,11 @@ public class ProductService {
         }
         productRepository.deleteById(id);
     }
+
+    private void validateNameContent(String name) {
+        if (name.contains("카카오")) {
+            throw new IllegalArgumentException("상품 이름은 '카카오'를 포함할 수 없습니다.");
+        }
+    }
+
 }

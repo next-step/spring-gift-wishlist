@@ -4,7 +4,9 @@ package gift.controller;
 import gift.dto.ProductAdminRequestDto;
 import gift.entity.Product;
 import gift.service.ProductAdminService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +21,7 @@ public class ProductAdminController {
 
     private final ProductAdminService productAdminService;
 
-    //생성자 주입
+
 
     public ProductAdminController(ProductAdminService productAdminService) {
         this.productAdminService = productAdminService;
@@ -39,7 +41,15 @@ public class ProductAdminController {
     }
 
     @PostMapping
-    public String createProduct(@ModelAttribute ProductAdminRequestDto dto) {
+    public String createProduct(
+            @ModelAttribute("product") @Valid ProductAdminRequestDto dto,
+            BindingResult bindingResult,
+            Model model
+    ) {
+        if (bindingResult.hasErrors()) {
+            // 검증 오류가 있으면 다시 입력 폼으로
+            return "product/form";
+        }
         productAdminService.save(dto);
         return "redirect:/admin/products";
     }
@@ -55,7 +65,16 @@ public class ProductAdminController {
     }
 
     @PostMapping("/{id}")
-    public String updateProduct(@PathVariable Long id, @ModelAttribute ProductAdminRequestDto dto) {
+    public String updateProduct(
+            @PathVariable Long id,
+            @ModelAttribute("product") @Valid ProductAdminRequestDto dto,
+            BindingResult bindingResult,
+            Model model
+    ) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("id", id);
+            return "product/edit";
+        }
         productAdminService.update(id, dto);
         return "redirect:/admin/products";
     }
