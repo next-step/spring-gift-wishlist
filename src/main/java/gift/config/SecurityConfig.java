@@ -3,7 +3,7 @@ package gift.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.jwt.JWTUtil;
 import gift.jwt.filter.CustomLoginFilter;
-import gift.jwt.filter.JWTFilter;
+import gift.jwt.filter.ApiFilter;
 import gift.jwt.filter.ViewFilter;
 import gift.member.argumentresolver.MyAuthenticalResolver;
 import gift.member.service.MemberService;
@@ -43,7 +43,7 @@ public class SecurityConfig implements WebMvcConfigurer {
     @Bean
     public FilterRegistrationBean jwtFilter() {
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
-        filterRegistrationBean.setFilter(new JWTFilter(jwtUtil, objectMapper));
+        filterRegistrationBean.setFilter(new ApiFilter(jwtUtil, objectMapper));
 
         filterRegistrationBean.addUrlPatterns("/api/*");
         filterRegistrationBean.setOrder(2);

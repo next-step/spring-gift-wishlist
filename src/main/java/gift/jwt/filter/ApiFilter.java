@@ -5,6 +5,7 @@ import gift.domain.Role;
 import gift.global.MySecurityContextHolder;
 import gift.jwt.JWTUtil;
 import gift.member.dto.AuthMember;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.*;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,12 +15,12 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 
-public class JWTFilter implements Filter {
+public class ApiFilter implements Filter {
 
     private final JWTUtil jwtUtil;
     private final ObjectMapper objectMapper;
 
-    public JWTFilter(JWTUtil jwtUtil, ObjectMapper objectMapper) {
+    public ApiFilter(JWTUtil jwtUtil, ObjectMapper objectMapper) {
         this.jwtUtil = jwtUtil;
         this.objectMapper = objectMapper;
     }
@@ -55,8 +56,10 @@ public class JWTFilter implements Filter {
         }
 
 
-        if(jwtUtil.isExpired(accessToken)) {
-            writeUnauthorizedResponse(response, "만료된 토큰 입니다..");
+        try {
+            jwtUtil.isExpired(accessToken);
+        } catch (ExpiredJwtException e) {
+            writeUnauthorizedResponse(response, "만료된 토큰입니다.");
             return;
         }
 

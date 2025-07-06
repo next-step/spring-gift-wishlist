@@ -4,6 +4,7 @@ import gift.domain.Role;
 import gift.global.MySecurityContextHolder;
 import gift.jwt.JWTUtil;
 import gift.member.dto.AuthMember;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.*;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -56,7 +57,9 @@ public class ViewFilter implements Filter {
 
 
 
-        if(jwtUtil.isExpired(accessToken)) {
+        try {
+            jwtUtil.isExpired(accessToken);
+        } catch (ExpiredJwtException e) {
             response.sendRedirect(redirectUrl);
             return;
         }
