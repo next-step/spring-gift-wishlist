@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import javax.sql.DataSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -20,6 +21,7 @@ public class JdbcMemberRepository implements MemberRepository{
   private final NamedParameterJdbcTemplate jdbcTemplate;
   private final SimpleJdbcInsert jdbcInsert;
 
+  @Autowired
   public JdbcMemberRepository(DataSource dataSource) {
     this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     this.jdbcInsert = new SimpleJdbcInsert(dataSource)
@@ -59,18 +61,17 @@ public class JdbcMemberRepository implements MemberRepository{
     Objects.requireNonNull(updatedMember, "updatedMember는 null일 수 없습니다");
 
     String sql =
-        "UPDATE member SET email = :email, password = :password "
+        "UPDATE member SET name = :name "
             +
             "WHERE id = :id";
 
     SqlParameterSource params = new MapSqlParameterSource()
         .addValue("id", id)
-        .addValue("email",updatedMember.email())
-        .addValue("password",updatedMember.password());
+        .addValue("name",updatedMember.name());
 
     int affected = jdbcTemplate.update(sql, params);
     if (affected == 0) {
-      throw new IllegalArgumentException("수정 실패");
+      throw new IllegalArgumentException("member 수정 실패");
     }
   }
 
@@ -84,15 +85,14 @@ public class JdbcMemberRepository implements MemberRepository{
 
     int affected = jdbcTemplate.update(sql, params);
     if (affected == 0) {
-      throw new IllegalArgumentException("삭제 실패");
+      throw new IllegalArgumentException("member 삭제 실패");
     }
   }
 
   private RowMapper<Member> memberRowMapper() {
     return (rs, rowNum) -> Member.withId(
         rs.getLong("id"),
-        rs.getString("email"),
-        rs.getString("password")
+        rs.getString("name")
     );
   }
 }
