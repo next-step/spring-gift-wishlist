@@ -1,15 +1,18 @@
 package gift.dto.request;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import org.hibernate.validator.constraints.URL;
 
 public record ProductUpdateRequestDto(
+
     @NotBlank
-    @Size(max = 15, message = "15자 이내로 입력해주세요")
-    @Pattern(regexp = "^[가-힣a-zA-Z0-9 ()\\[\\]+\\-&/_]{1,15}$")
     String name,
+
+    @Min(value = 0, message = "가격은 0 이상이어야 합니다.")
     int price,
+
+    @URL(message = "URL형식의 입력만 허용됩니다.")
     String imageURL) {
 
 }

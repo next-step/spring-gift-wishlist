@@ -5,7 +5,7 @@ import java.util.Optional;
 
 
 public interface ProductRepository {
-
+    
     Optional<Product> findById(long productId);
 
     void createProduct(Product product);
@@ -14,6 +14,6 @@ public interface ProductRepository {
 
     void delete(long productId);
 
-    boolean containsKey(long id);
+    boolean productExists(long id);
 
 }

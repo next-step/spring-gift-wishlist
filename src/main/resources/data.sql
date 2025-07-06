@@ -1,0 +1,1 @@
+INSERT INTO product VALUES (1, '테스트용', 123, 'http://example.com/image.jpg');

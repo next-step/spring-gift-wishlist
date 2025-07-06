@@ -126,7 +126,7 @@
 <!-- 상품 추가/수정 폼 -->
 <div class="form-container">
   <h2 th:text="${selectedProduct != null ? '상품 수정' : '새 상품 등록'}"></h2>
-  <form th:action="@{/home}" method="post">
+  <form th:action="@{/managerHome}" method="post">
     <!-- ID 입력 필드 -->
     <div class="form-group">
       <label for="id">상품 ID:</label>

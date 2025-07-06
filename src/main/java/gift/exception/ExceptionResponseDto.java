@@ -1,9 +1,10 @@
 package gift.exception;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record ExceptionResponseDto(
-    String errMessage,
+    List<String> errMessages,
     int status,
     LocalDateTime timeStamp) {
 

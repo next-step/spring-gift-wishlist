@@ -20,7 +20,7 @@ public class ProductJdbcRepository implements ProductRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    //상품 반환용 매퍼
+
     private RowMapper<Product> productRowMapper() {
         return new RowMapper<>() {
             @Override
@@ -35,7 +35,7 @@ public class ProductJdbcRepository implements ProductRepository {
         };
     }
 
-    //상품 단 건 조회
+
     @Override
     public Optional<Product> findById(long productId) {
         return jdbcTemplate.query("select * from product where productId = ?",
@@ -43,7 +43,7 @@ public class ProductJdbcRepository implements ProductRepository {
             productId).stream().findFirst();
     }
 
-    //상품 추가
+
     @Override
     public void createProduct(Product product) {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(this.jdbcTemplate);
@@ -70,7 +70,7 @@ public class ProductJdbcRepository implements ProductRepository {
     }
 
     @Override
-    public boolean containsKey(long id) {
+    public boolean productExists(long id) {
         return jdbcTemplate.query("select 1 from product where productId = ? limit 1",
                 (rs, rowNum) -> 1, id)
             .stream().findFirst().isPresent();
