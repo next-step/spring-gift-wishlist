@@ -51,7 +51,7 @@ public class TokenProvider implements InitializingBean {
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    public String generateToken(String userId, Set<UserRole> authorities) {
+    public String generateToken(Long userId, Set<UserRole> authorities) {
         Instant now = Instant.now(Clock.systemDefaultZone());
         Instant expiryDate = now.plusSeconds(expiration);
 
@@ -60,7 +60,7 @@ public class TokenProvider implements InitializingBean {
                 .collect(Collectors.joining(","));
 
         return Jwts.builder()
-                .subject(userId)
+                .subject(userId.toString())
                 .claim(AUTHORITIES_KEY, authoritiesString)
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(expiryDate))
@@ -74,14 +74,23 @@ public class TokenProvider implements InitializingBean {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
-        String userId = claims.getSubject();
+
+        // Extract user ID from claims
+        String userIdString = claims.getSubject();
+        if (userIdString == null || userIdString.isEmpty()) {
+            return null;
+        }
+        Long userId = Long.valueOf(userIdString);
+
+        // Extract authorities from claims
         String authoritiesString = claims.get(AUTHORITIES_KEY, String.class);
         Set<UserRole> authorities = Stream.of(authoritiesString.split(","))
                 .map(UserRole::fromString)
                 .collect(Collectors.toSet());
-        if (userId == null || authorities.isEmpty()) {
+        if (authorities.isEmpty()) {
             return null;
         }
+
         return new CustomAuth(userId, authorities);
     }
 

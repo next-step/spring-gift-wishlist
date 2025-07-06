@@ -9,7 +9,7 @@ public class PasswordEncoder {
         // 객체 생성을 방지하기 위한 private 생성자
     }
 
-    public static String encode(String password) throws Exception {
+    public static String encode(String password) {
         if (password == null || password.isEmpty()) {
             throw new IllegalArgumentException("비밀번호는 null이거나 비어있을 수 없습니다.");
         }

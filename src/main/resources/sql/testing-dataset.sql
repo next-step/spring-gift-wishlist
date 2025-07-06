@@ -33,9 +33,9 @@ INSERT INTO roles (name) VALUES
       ('ROLE_ADMIN'),
         ('ROLE_MD'),
       ('ROLE_USER');
-
+-- password = "qwerty1234@"
 INSERT INTO users (email, password) VALUES
-      ('test@test.com', 'qwery1234');
+      ('test@test.com', '1469f57c482317fba59bb34d16c10b0f5116e64c2201e430a70cc16a34a6a785');
 
 INSERT INTO user_roles (user_id, role_name) VALUES
       (1, 'ROLE_ADMIN'); -- Admin
