@@ -6,3 +6,6 @@ insert into products(name, price, imageUrl)
 VALUES ('라떼', 5000, 'http://image.url.latte');
 insert into products(name, price, imageUrl)
 VALUES ('카푸치노', 5500, 'http://image.url.capuchino');
+
+insert into members(email, password, role)
+values ('admin@admin.com', 'adminpw', 'ADMIN');
