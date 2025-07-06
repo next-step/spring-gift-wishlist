@@ -15,19 +15,22 @@ import java.util.*;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, Object>> handleValidationException(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException ex) {
         BindingResult bindingResult = ex.getBindingResult();
-        List<Map<String, String>> errorList = new ArrayList<>();
 
-        for (FieldError fieldError : bindingResult.getFieldErrors()) {
-            Map<String, String> error = new HashMap<>();
-            error.put("field", fieldError.getField());
-            error.put("message", fieldError.getDefaultMessage());
-            errorList.add(error);
-        }
+        List<FieldErrorResponse> errors = bindingResult.getFieldErrors().stream()
+                .map(fieldError -> new FieldErrorResponse(
+                        fieldError.getField(),
+                        fieldError.getDefaultMessage()
+                ))
+                .toList();
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("errors", errorList);
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                "VALIDATION_ERROR",
+                "요청값이 유효하지 않습니다.",
+                errors
+        );
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
