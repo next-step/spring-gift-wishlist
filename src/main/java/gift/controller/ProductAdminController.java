@@ -21,7 +21,7 @@ public class ProductAdminController {
 
     private final ProductAdminService productAdminService;
 
-    //생성자 주입
+
 
     public ProductAdminController(ProductAdminService productAdminService) {
         this.productAdminService = productAdminService;
