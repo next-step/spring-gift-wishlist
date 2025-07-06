@@ -22,7 +22,7 @@ public class MemberController {
     }
 
     // 회원 생성
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<MemberRegisterResponseDto> createMember(
         @RequestBody @Valid MemberRegisterRequestDto requestDto
     ) {
