@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.jwt.JWTUtil;
 import gift.jwt.filter.CustomLoginFilter;
 import gift.jwt.filter.JWTFilter;
+import gift.jwt.filter.ViewFilter;
 import gift.member.argumentresolver.MyAuthenticalResolver;
 import gift.member.service.MemberService;
 import jakarta.servlet.Filter;
@@ -35,7 +36,7 @@ public class SecurityConfig implements WebMvcConfigurer {
         filterFilterRegistrationBean.setFilter(new CustomLoginFilter(memberService, jwtUtil, objectMapper));
 
         filterFilterRegistrationBean.addUrlPatterns("/api/members/login");
-        filterFilterRegistrationBean.setOrder(2);
+        filterFilterRegistrationBean.setOrder(3);
         return filterFilterRegistrationBean;
     }
 
@@ -44,8 +45,18 @@ public class SecurityConfig implements WebMvcConfigurer {
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new JWTFilter(jwtUtil, objectMapper));
 
+        filterRegistrationBean.addUrlPatterns("/api/*");
+        filterRegistrationBean.setOrder(2);
+        return filterRegistrationBean;
+    }
+
+    @Bean
+    public FilterRegistrationBean viewFilter() {
+        FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
+        filterRegistrationBean.setFilter(new ViewFilter(jwtUtil));
         filterRegistrationBean.addUrlPatterns("/*");
         filterRegistrationBean.setOrder(1);
+
         return filterRegistrationBean;
     }
 

@@ -10,6 +10,11 @@ import java.util.UUID;
 @Controller
 public class ViewController {
 
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
+
     @GetMapping("/admin")
     public String admin(){
         return "adminpage";

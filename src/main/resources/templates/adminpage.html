@@ -8,6 +8,12 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
+        $.ajaxSetup({
+            xhrFields: {
+                withCredentials: true
+            }
+        });
+
         $(document).ready(function () {
             $('#addProduct').on('click', function () {
                 const $btn = $(this)
