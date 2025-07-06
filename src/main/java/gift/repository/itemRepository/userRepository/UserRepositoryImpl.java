@@ -73,4 +73,11 @@ public class UserRepositoryImpl implements UserRepository{
         return jdbcTemplate.queryForObject(sql, new Object[]{id}, userRowMapper);
     }
 
+    @Override
+    public User updateUser(User findUser, String email, String password) {
+        var sql = "UPDATE users SET email = ?, password = ? WHERE id = ?";
+        jdbcTemplate.update(sql, email, password, findUser.id());
+        return new User(findUser.id(), email, password);
+    }
+
 }

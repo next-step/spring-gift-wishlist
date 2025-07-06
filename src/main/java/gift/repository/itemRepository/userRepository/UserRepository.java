@@ -1,7 +1,7 @@
 package gift.repository.itemRepository.userRepository;
 
 import gift.entity.User;
-import jakarta.validation.constraints.NotNull;
+
 
 import java.util.List;
 
@@ -14,5 +14,5 @@ public interface UserRepository {
 
     User findUserById(Long id);
 
-    User updateUser(User findUser, @NotNull String email, @NotNull String password);
+    User updateUser(User findUser, String email, String password);
 }
