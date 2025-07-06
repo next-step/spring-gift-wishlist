@@ -1,12 +1,14 @@
 package gift.dto;
 
 import gift.entity.Product;
+import gift.entity.ProductStatus;
 
 public record ProductResponseDto(
         Long id,
         String name,
         Integer price,
-        String imageUrl
+        String imageUrl,
+        ProductStatus status
 ) {
 
     public static ProductResponseDto from(Product product) {
@@ -14,7 +16,8 @@ public record ProductResponseDto(
                 product.getId(),
                 product.getName(),
                 product.getPrice(),
-                product.getImageUrl()
+                product.getImageUrl(),
+                product.getStatus()
         );
     }
 }

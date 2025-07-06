@@ -3,6 +3,7 @@ package gift.service;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.entity.Product;
+import gift.entity.ProductStatus;
 import gift.exception.ProductNotFoundException;
 import gift.repository.ProductRepository;
 import java.util.List;
@@ -21,7 +22,7 @@ public class ProductService {
     @Transactional
     public ProductResponseDto saveProduct(ProductRequestDto productRequestDto) {
         Product product = new Product(null, productRequestDto.name(),
-                productRequestDto.price(), productRequestDto.imageUrl());
+                productRequestDto.price(), productRequestDto.imageUrl(), ProductStatus.APPROVED);
 
         Product savedProduct = productRepository.saveProduct(product);
 

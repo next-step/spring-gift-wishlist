@@ -22,15 +22,16 @@ public class ProductRepositoryImpl implements ProductRepository {
     public Product saveProduct(Product product) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        var sql = "INSERT INTO product (name, price, image_url) VALUES (:name, :price, :image_url)";
+        var sql = "INSERT INTO product (name, price, image_url, status) VALUES (:name, :price, :image_url, :status)";
         client.sql(sql)
               .param("name", product.getName())
               .param("price", product.getPrice())
               .param("image_url", product.getImageUrl())
+              .param("status", product.getStatus().name())
               .update(keyHolder);
 
         return new Product(keyHolder.getKey().longValue(), product.getName(), product.getPrice(),
-                product.getImageUrl());
+                product.getImageUrl(), product.getStatus());
     }
 
     @Override

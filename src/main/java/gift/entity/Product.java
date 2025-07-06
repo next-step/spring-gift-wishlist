@@ -6,12 +6,14 @@ public class Product {
     private String name;
     private Integer price;
     private String imageUrl;
+    private ProductStatus status;
 
-    public Product(Long id, String name, Integer price, String imageUrl) {
+    public Product(Long id, String name, Integer price, String imageUrl, ProductStatus status) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
+        this.status = status;
     }
 
     public Long getId() {
@@ -28,6 +30,10 @@ public class Product {
 
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    public ProductStatus getStatus() {
+        return status;
     }
 
     public void setId(Long id) {
