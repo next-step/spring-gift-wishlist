@@ -1,8 +1,12 @@
 package gift.product.controller;
 
 
+import gift.domain.Member;
 import gift.domain.Product;
+import gift.domain.Role;
 import gift.global.error.ErrorResponse;
+import gift.jwt.JWTUtil;
+import gift.member.repository.MemberRepository;
 import gift.product.dto.ProductCreateRequest;
 import gift.product.dto.ProductResponse;
 import gift.product.dto.ProductUpdateRequest;
@@ -31,14 +35,26 @@ class ProductControllerTest {
     private int port;
 
     @Autowired
+    private MemberRepository memberRepository;
+
+    @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private JWTUtil jwtUtil;
 
     RestClient restClient;
 
     @BeforeEach
     void setUp() {
+        Member saved = memberRepository.save(new Member("ljw2109@naver.com", "Qwer1234", Role.REGULAR));
+
+        String token = jwtUtil
+                .createJWT(saved.getEmail(), saved.getRole().toString(), 1000 * 60L);
+
         restClient = RestClient.builder()
                 .baseUrl("http://localhost:" + port + "/api/products")
+                .defaultHeader("Authorization", "Bearer " + token)
                 .build();
     }
     @AfterEach

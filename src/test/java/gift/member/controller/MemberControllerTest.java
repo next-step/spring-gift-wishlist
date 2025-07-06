@@ -2,9 +2,11 @@ package gift.member.controller;
 
 import gift.domain.Member;
 import gift.domain.Role;
+import gift.jwt.JWTUtil;
 import gift.member.dto.MemberCreateRequest;
 import gift.member.dto.MemberLoginRequest;
 import gift.member.dto.MemberResponse;
+import gift.member.dto.MemberUpdateRequest;
 import gift.member.repository.MemberRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -14,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,6 +34,9 @@ class MemberControllerTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private JWTUtil jwtUtil;
 
     private RestClient restClient;
 
@@ -139,6 +145,70 @@ class MemberControllerTest {
                 .toEntity(Void.class))
                 .isInstanceOf(HttpClientErrorException.Forbidden.class)
                 .hasMessageContaining("존재하는 회원이 아닙니다");
+    }
+
+    @Test
+    @DisplayName("회원 탈퇴 성공")
+    void withDrawSuccess() {
+        Member member = createMember();
+        Member savedMember = memberRepository.save(member);
+
+        ResponseEntity<Void> response = restClient.delete()
+                .header("Authorization", "Bearer " + createJWT(savedMember))
+                .retrieve()
+                .toEntity(Void.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+
+    }
+
+    @Test
+    @DisplayName("회원 탈퇴 실패 - 존재하지 않는 회원")
+    void withDrawFail() {
+        String jwt = jwtUtil.createJWT("unkhown@email.com", Role.REGULAR.toString(),  1000 * 60L);
+        assertThatThrownBy(()->restClient.delete()
+                .header("Authorization", "Bearer " + jwt)
+                .retrieve()
+                .toEntity(Void.class)
+        ).isInstanceOf(HttpClientErrorException.NotFound.class);
+    }
+
+    @Test
+    @DisplayName("회원 비밀번호 변경 성공")
+    void changePasswordSuccess() {
+        Member member = createMember();
+        Member savedMember = memberRepository.save(member);
+        MemberUpdateRequest updateRequest =
+                new MemberUpdateRequest(savedMember.getPassword(), "Qwer12345!!", "Qwer12345!!");
+
+        ResponseEntity<Void> response = restClient.patch()
+                .body(updateRequest)
+                .header("Authorization", "Bearer " + createJWT(savedMember))
+                .retrieve()
+                .toEntity(Void.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+
+    }
+
+    @Test
+    @DisplayName("회원 비밀 번호 변경 실패 - 존재하지 않는 회원")
+    void changePasswordFail() {
+        MemberUpdateRequest updateRequest =
+                new MemberUpdateRequest("Qwer1234!!", "Qwer12345!!", "Qwer12345!!");
+
+        String jwt = jwtUtil.createJWT("unkhown@email.com", Role.REGULAR.toString(),  1000 * 60L);
+
+        assertThatThrownBy(()->restClient.patch()
+                .header("Authorization", "Bearer " + jwt)
+                .body(updateRequest)
+                .retrieve()
+                .toEntity(Void.class)
+        ).isInstanceOf(HttpClientErrorException.NotFound.class);
+    }
+
+    private String createJWT(Member member) {
+        return jwtUtil.createJWT(member.getEmail(), member.getRole().toString(), 1000 * 60L);
     }
 
     private Member createMember() {

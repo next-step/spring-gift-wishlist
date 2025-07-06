@@ -3,12 +3,17 @@ package gift.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.jwt.JWTUtil;
 import gift.jwt.filter.CustomLoginFilter;
+import gift.jwt.filter.JWTFilter;
+import gift.member.argumentresolver.MyAuthenticalResolver;
 import gift.member.service.MemberService;
 import jakarta.servlet.Filter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
 
 @Configuration
 public class SecurityConfig implements WebMvcConfigurer {
@@ -30,7 +35,22 @@ public class SecurityConfig implements WebMvcConfigurer {
         filterFilterRegistrationBean.setFilter(new CustomLoginFilter(memberService, jwtUtil, objectMapper));
 
         filterFilterRegistrationBean.addUrlPatterns("/login");
-        filterFilterRegistrationBean.setOrder(1);
+        filterFilterRegistrationBean.setOrder(2);
         return filterFilterRegistrationBean;
+    }
+
+    @Bean
+    public FilterRegistrationBean jwtFilter() {
+        FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
+        filterRegistrationBean.setFilter(new JWTFilter(jwtUtil, objectMapper));
+
+        filterRegistrationBean.addUrlPatterns("/*");
+        filterRegistrationBean.setOrder(1);
+        return filterRegistrationBean;
+    }
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(new MyAuthenticalResolver());
     }
 }
