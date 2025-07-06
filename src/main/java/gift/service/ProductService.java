@@ -1,11 +1,13 @@
 package gift.service;
 
-import gift.dto.request.CreateProductDto;
-import gift.dto.request.UpdateProductDto;
-import gift.dto.response.ProductDto;
-import gift.entity.Product;
-import gift.exception.CreationFailException;
-import gift.exception.EntityNotFoundException;
+import gift.common.dto.request.CreateProductDto;
+import gift.common.dto.request.UpdateProductDto;
+import gift.common.dto.response.MessageResponseDto;
+import gift.common.dto.response.ProductDto;
+import gift.common.exception.CreationFailException;
+import gift.common.exception.EntityNotFoundException;
+import gift.domain.product.Product;
+import gift.domain.product.ProductQueryOption;
 import gift.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
@@ -21,30 +23,46 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public ProductDto createProduct(CreateProductDto body) {
+    public MessageResponseDto<ProductDto> createProduct(CreateProductDto body) {
         Product instance = body.toEntity();
+        if (instance.involveKakao()) {
+            instance.waitApproval();
+            var created = productRepository.save(instance)
+                    .orElseThrow(() -> new CreationFailException("Fail to create Product"));
+            return new MessageResponseDto<>(false, "카카오 관련 상품 승인 대기중", 202, ProductDto.from(created));
+        }
+        instance.onBoard();
         Product created = productRepository.save(instance)
                 .orElseThrow(() -> new CreationFailException("Fail to create Product"));
-        return ProductDto.from(created);
+        return new MessageResponseDto<>(true, "상품 생성 완료", 201, ProductDto.from(created));
     }
 
-    public ProductDto getProduct(Long id) {
+    public ProductDto getProduct(Long id, ProductQueryOption option) {
         Product result = findProduct(id);
+        if (!result.isShowable(option)) {
+            throw new EntityNotFoundException("Product cannot show: " + id);
+        }
         return ProductDto.from(result);
     }
 
-    public List<ProductDto> getAllProduct() {
+    public List<ProductDto> getAllProduct(ProductQueryOption option) {
         return productRepository.findAll().stream()
+                .filter(p -> p.isShowable(option))
                 .sorted(Comparator.comparing(Product::getId))
                 .map(ProductDto::from)
                 .toList();
     }
 
-    public ProductDto updateProduct(Long id, UpdateProductDto body) {
+    public MessageResponseDto<ProductDto> updateProduct(Long id, UpdateProductDto body) {
         findProduct(id);
-        Product instance = body.toEntity(id);
-        Product product = productRepository.update(id, instance).get();
-        return ProductDto.from(product);
+        Product instance = body.toEntity();
+        if (instance.involveKakao()) {
+            instance.waitApproval();
+            var updated = productRepository.update(id, instance).get();
+            return new MessageResponseDto<>(false, "카카오 관련 상품 승인 대기중", 202, ProductDto.from(updated));
+        }
+        var updated = productRepository.update(id, instance).get();
+        return new MessageResponseDto<>(true, "상품 수정 완료", 200, ProductDto.from(updated));
     }
 
     public void deleteProduct(Long id) {

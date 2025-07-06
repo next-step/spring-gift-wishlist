@@ -20,12 +20,13 @@ function handleSubmit(event) {
         },
         body: JSON.stringify(productData)
     })
-    .then(response => {
-        if (response.ok) {
-            window.location.href = "/products/management/home";
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href("/products/management/home")
         }
         else {
-            alert("생성 실패");
+            alert(data.message + "\nHttp Code: "+data.code);
         }
     })
     .catch(error => {

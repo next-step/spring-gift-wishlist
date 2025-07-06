@@ -1,5 +1,6 @@
 package gift.controller;
 
+import gift.domain.product.ProductQueryOption;
 import gift.service.ProductService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,7 +20,7 @@ public class ProductManagementViewController {
 
     @GetMapping("/home")
     public String home(Model model) {
-        model.addAttribute("products", productService.getAllProduct());
+        model.addAttribute("products", productService.getAllProduct(ProductQueryOption.SELLING));
         return "management/home";
     }
 
@@ -30,7 +31,7 @@ public class ProductManagementViewController {
 
     @GetMapping("/{id}")
     public String product(@PathVariable Long id, Model model) {
-        model.addAttribute("product", productService.getProduct(id));
+        model.addAttribute("product", productService.getProduct(id, ProductQueryOption.SELLING));
         return "management/product";
     }
 }

@@ -1,6 +1,7 @@
 package gift.repository;
 
-import gift.entity.Product;
+import gift.domain.product.Product;
+import gift.domain.product.ProductState;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -25,7 +26,8 @@ public class ProductRepository {
             String name = rs.getString("name");
             Long price = (long) rs.getInt("price");
             String imageUrl = rs.getString("image_url");
-            return new Product(id, name, price, imageUrl);
+            String stateName = rs.getString("state");
+            return Product.of(id, name, price, imageUrl, ProductState.fromStateName(stateName));
         };
     }
 
@@ -45,19 +47,20 @@ public class ProductRepository {
     }
 
     public Optional<Product> save(Product product) {
-        var sql = "insert into product (name, price, image_url) values (:name, :price, :image_url);";
+        var sql = "insert into product (name, price, image_url, state) values (:name, :price, :image_url, :state);";
         var keyHolder = new GeneratedKeyHolder();
         try {
             client.sql(sql)
                     .param("name", product.getName())
                     .param("price", product.getPrice())
                     .param("image_url", product.getImageUrl())
+                    .param("state", product.getStateName())
                     .update(keyHolder, "id");
         } catch (DataAccessException e) {
             return Optional.empty();
         }
         Long id = keyHolder.getKey().longValue();
-        return Optional.of(new Product(id, product.getName(), product.getPrice(), product.getImageUrl()));
+        return findById(id);
     }
 
     public void delete(Long id) {
@@ -68,17 +71,18 @@ public class ProductRepository {
     }
 
     public Optional<Product> update(Long id, Product product) {
-        var sql = "update product set name = :name, price = :price, image_url = :image_url where id = :id;";
+        var sql = "update product set name = :name, price = :price, image_url = :image_url, state = :state where id = :id;";
         var affected = client.sql(sql)
-                .param("id", product.getId())
+                .param("id", id)
                 .param("name", product.getName())
                 .param("price", product.getPrice())
                 .param("image_url", product.getImageUrl())
+                .param("state", product.getStateName())
                 .update();
 
         if (affected == 0) {
             return Optional.empty();
         }
-        return Optional.of(new Product(id, product.getName(), product.getPrice(), product.getImageUrl()));
+        return findById(id);
     }
 }
