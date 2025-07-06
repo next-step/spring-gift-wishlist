@@ -25,7 +25,6 @@ public class MemberController {
         this.authService = authService;
     }
     
-    //회원가입
     @PostMapping("/register")
     public ResponseEntity<MemberResponseDto> registerMember(
         @RequestBody @Valid MemberRequestDto requestDto
@@ -35,7 +34,6 @@ public class MemberController {
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
     
-    //로그인
     @PostMapping("/login")
     public ResponseEntity<MemberResponseDto> loginMember(
         @RequestBody @Valid MemberRequestDto requestDto

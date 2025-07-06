@@ -1,13 +1,8 @@
 package gift.repository.member;
 
-import gift.dto.api.member.MemberResponseDto;
-import gift.dto.api.product.ProductResponseDto;
 import gift.entity.Member;
-import gift.entity.Product;
 import gift.entity.Role;
-import gift.exception.notfound.NotRegisteredException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
+import gift.exception.unauthorized.WrongIdOrPasswordException;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
@@ -66,6 +61,6 @@ public class MemberRepositoryImpl implements MemberRepository {
                 rs.getString("password"),
                 Role.valueOf(rs.getString("role"))
             )).optional()
-            .orElseThrow(NotRegisteredException::new);
+            .orElseThrow(WrongIdOrPasswordException::new);
     }
 }
