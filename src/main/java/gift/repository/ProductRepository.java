@@ -71,8 +71,6 @@ public class ProductRepository {
 
     public void deleteById(Long id) {
         String sql = "DELETE FROM product WHERE id = ?";
-        if (jdbcTemplate.update(sql, id) == 0) {
-            throw new EmptyResultDataAccessException("No product found with id: " + id, 1);
-        }
+        jdbcTemplate.update(sql, id);
     }
 }
