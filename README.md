@@ -31,3 +31,5 @@
 - [x] member 관련 파일을 담을 패키지, product 관련 파일을 담을 패키지 생성
 - [x] member 엔티티 구현 및 데이터베이스 구현
 - [ ] member 관련 API 구현
+  - [x] member 테이블에 접근하여 생성,조회,수정,삭제를 할 수 있는 MemberRepository 구현
+  
