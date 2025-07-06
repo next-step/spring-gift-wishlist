@@ -7,6 +7,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.dto.api.MemberRegisterRequestDto;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,6 +113,24 @@ public class MemberControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(req)))
             .andExpect(status().isCreated());
+    }
+
+    @Test
+    @DisplayName("로그인 성공 → 200 OK + token 반환")
+    void login_success() throws Exception {
+        String email = "user@example.com";
+        String pw    = "password123";
+        register(email, pw);
+
+        String credentials = Base64.getEncoder()
+            .encodeToString((email + ":" + pw).getBytes(StandardCharsets.UTF_8));
+
+        mockMvc.perform(post("/api/members/login")
+                .header("Authorization", "Basic " + credentials))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.token").isString())
+            .andExpect(jsonPath("$.token").isNotEmpty());
     }
 
 }
