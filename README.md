@@ -10,3 +10,4 @@
 - 사용자 정보를 담을 유저 테이블 생성
 - 로그인 인증을 위한 filter 생성
 - 토큰을 발급하는 jwtTokenProvider 생성
+- 토큰을 매 요청마다 검증하는 jwtAuthenticationFilter 생성
