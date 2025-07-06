@@ -30,4 +30,28 @@ public class GlobalExceptionHandler {
         exception.getMessage());
     return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
   }
+
+  @ExceptionHandler(value = AlreadyRegisterException.class)
+  public ResponseEntity<CustomErrorResponse> handleAlreadyRegisterException(
+      AlreadyRegisterException exception) {
+    CustomErrorResponse errorResponse = new CustomErrorResponse(HttpStatus.NOT_FOUND,
+        exception.getMessage());
+    return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(value = NotRegisterException.class)
+  public ResponseEntity<CustomErrorResponse> handleNotRegisterException(
+      NotRegisterException exception) {
+    CustomErrorResponse errorResponse = new CustomErrorResponse(HttpStatus.NOT_FOUND,
+        exception.getMessage());
+    return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+  }
+
+  @ExceptionHandler(value = InvalidPasswordException.class)
+  public ResponseEntity<CustomErrorResponse> handleInvalidPasswordException(
+      InvalidPasswordException exception) {
+    CustomErrorResponse errorResponse = new CustomErrorResponse(HttpStatus.NOT_FOUND,
+        exception.getMessage());
+    return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+  }
 }
