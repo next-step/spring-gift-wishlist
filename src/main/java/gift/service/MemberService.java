@@ -1,6 +1,5 @@
 package gift.service;
 
-import com.sun.jdi.request.DuplicateRequestException;
 import gift.dto.api.MemberRegisterRequestDto;
 import gift.entity.Member;
 import gift.repository.MemberRepository;
@@ -33,6 +32,17 @@ public class MemberService {
 
         // JWT 토큰 생성
         return tokenService.generateToken(saved.getId(), saved.getEmail());
+    }
+
+    public String loginMember(String email, String password) {
+
+        Member member = memberRepository.findByEmail(email)
+            .orElseThrow(() -> new IllegalArgumentException("로그인 정보가 올바르지 않습니다."));
+        if (!member.getPassword().equals(password)) {
+            throw new IllegalArgumentException("로그인 정보가 올바르지 않습니다.");
+        }
+
+        return tokenService.generateToken(member.getId(), member.getEmail());
     }
 
 }
