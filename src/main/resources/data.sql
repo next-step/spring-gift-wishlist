@@ -5,3 +5,6 @@ VALUES
 
 INSERT INTO kakao_product (name) VALUES ('카카오 볼펜');
 INSERT INTO kakao_product (name) VALUES ('카카오 수첩');
+
+INSERT INTO member (email, password) VALUES ("abc@pusan.ac.kr", "1234");
+INSERT INTO member (email, password) VALUES ("def@pusan.ac.kr", "5678");
