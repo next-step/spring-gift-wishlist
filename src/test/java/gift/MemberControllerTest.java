@@ -133,4 +133,13 @@ public class MemberControllerTest {
             .andExpect(jsonPath("$.token").isNotEmpty());
     }
 
+    @Test
+    @DisplayName("로그인 실패 – 헤더 누락 → 401 Unauthorized + 메시지")
+    void login_fail_missingHeader() throws Exception {
+        mockMvc.perform(post("/api/members/login"))
+            .andExpect(status().isUnauthorized())
+            .andExpect(jsonPath("$.error")
+                .value("Authorization 헤더가 필요합니다."));
+    }
+
 }
