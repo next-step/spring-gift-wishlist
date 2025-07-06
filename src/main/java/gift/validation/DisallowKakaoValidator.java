@@ -3,7 +3,7 @@ package gift.validation;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class NoKakaoValidator implements ConstraintValidator<NoKakao, String> {
+public class DisallowKakaoValidator implements ConstraintValidator<DisallowKakao, String> {
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {

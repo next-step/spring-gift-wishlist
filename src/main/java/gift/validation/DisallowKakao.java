@@ -9,8 +9,8 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = NoKakaoValidator.class)
-public @interface NoKakao {
+@Constraint(validatedBy = DisallowKakaoValidator.class)
+public @interface DisallowKakao {
     String message() default "카카오가 포함된 문구는 담당 MD와 협의한 경우에만 사용할 수 있습니다.";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
