@@ -80,4 +80,10 @@ public class UserRepositoryImpl implements UserRepository{
         return new User(findUser.id(), email, password);
     }
 
+    @Override
+    public void deleteUser(User findUser) {
+        var sql = "DELETE FROM users WHERE id = ?";
+        jdbcTemplate.update(sql, findUser.id());
+    }
+
 }

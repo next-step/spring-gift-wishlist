@@ -49,16 +49,16 @@ public class UserController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<UserResponseDto> deleteUser(
+    public ResponseEntity<Void> deleteUser(
             @RequestParam Long id,
             Model model
     ) {
-        UserResponseDto response = userService.finUserById(id);
+        userService.deleteUserById(id);
 
-        return new ResponseEntity<UserResponseDto>(response, HttpStatus.OK);
+        return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping("/{id}/edit")
+    @PutMapping("/{id}/edit")
     public ResponseEntity<UserResponseDto> updateUser(
             @PathVariable Long id,
             @RequestBody @Valid UserUpdateDto dto

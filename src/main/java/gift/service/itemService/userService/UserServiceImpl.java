@@ -57,14 +57,19 @@ public class UserServiceImpl implements UserService{
     @Override
     public UserResponseDto updateUser(Long id, UserUpdateDto dto) {
         User findUser = userRepository.findUserById(id);
-        if (findUser.id() == null) {
-            throw new ItemNotFoundException();
-        }
+        //Todo. 예외처리 추가 => CRUD, JWT 방식 적용 후 추가할 것
         String changeEmail = dto.email();
         String changePassword = dto.password();
         User updatedUser = userRepository.updateUser(findUser,changeEmail,changePassword);
 
 
         return new UserResponseDto(updatedUser.email(), updatedUser.password());
+    }
+
+    @Override
+    public void deleteUserById(Long id) {
+        User findUser = userRepository.findUserById(id);
+        userRepository.deleteUser(findUser);
+
     }
 }
