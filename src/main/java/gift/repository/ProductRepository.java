@@ -28,27 +28,6 @@ public class ProductRepository {
         return p;
     };
 
-    /*
-    public Product save(Product product) {
-        if(product.getId() == null){
-            jdbcTemplate.update("Insert into products (name, price, imgUrl) values (?, ?, ?)",
-            product.getName(),
-            product.getPrice(),
-            product.getImgUrl());
-
-            Long id = jdbcTemplate.queryForObject("select max(id) from products", Long.class);
-            product.setId(id);
-        } else {
-            jdbcTemplate.update("Update products set name =? ,price =? ,imgUrl =? where id =?",
-            product.getName(),
-            product.getPrice(),
-            product.getImgUrl(),
-            product.getId());
-        }
-        return product;
-    }
-    */
-
     public Product create(Product product) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
