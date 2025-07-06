@@ -8,22 +8,26 @@
 
 <h1>상품 등록/수정</h1>
 
-<form th:if="${product.id == null}" th:action="@{/admin/products/new}" th:object="${product}" method="post">
-  <form th:if="${product.id != null}" th:action="@{'/admin/products/' + ${product.id} + '/edit'}"
-        th:object="${product}" method="post">
+<div th:if="${errorMessage}">
+  <p th:text="${errorMessage}"></p>
+</div>
 
-      th:object="${product}" method="post">
+<form th:action="@{${actionUrl}}" th:object="${product}" method="post">
 
   <input type="hidden" th:field="*{id}" />
 
   <div>
     <label for="name">상품명:</label>
     <input type="text" id="name" th:field="*{name}">
+    <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+
   </div>
 
   <div>
     <label for="imageUrl">이미지 URL:</label>
     <input type="text" id="imageUrl" th:field="*{imageUrl}">
+    <div th:if="${#fields.hasErrors('imageUrl')}" th:errors="*{imageUrl}"></div>
+
   </div>
 
   <div>

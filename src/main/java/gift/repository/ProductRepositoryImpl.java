@@ -45,14 +45,14 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public List<Product> findAll() {
-        return jdbcTemplate.query("select * from product", getProductRowMapper());
+        return jdbcTemplate.query("select * from product", PRODUCT_ROW_MAPPER);
     }
 
     @Override
     public Optional<Product> findById(Long id) {
         String sql = "select id, name, imageUrl from product where id = ?";
 
-        return jdbcTemplate.query(sql, getProductRowMapper(), id)
+        return jdbcTemplate.query(sql, PRODUCT_ROW_MAPPER, id)
                 .stream()
                 .findFirst();
     }
@@ -71,11 +71,9 @@ public class ProductRepositoryImpl implements ProductRepository {
         jdbcTemplate.update(sql, id);
     }
 
-    private static RowMapper<Product> getProductRowMapper() {
-        return (rs, rowNum) -> new Product(
-                rs.getLong("id"),
-                rs.getString("name"),
-                rs.getString("imageUrl")
-        );
-    }
+    private static final RowMapper<Product> PRODUCT_ROW_MAPPER = (rs, rowNum) -> new Product(
+            rs.getLong("id"),
+            rs.getString("name"),
+            rs.getString("imageUrl")
+    );
 }
