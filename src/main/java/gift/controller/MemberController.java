@@ -6,6 +6,7 @@ import gift.service.MemberService;
 import gift.util.JwtUtil;
 import jakarta.validation.Valid;
 import org.apache.coyote.Response;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,7 +44,7 @@ public class MemberController {
             memberService.login(memberRequestDto);
             token = jwtUtil.generateToken(memberRequestDto);
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         }
         return ResponseEntity.ok(new TokenResponseDto(token));
     }
