@@ -1,14 +1,15 @@
 package gift.controller;
 
-import gift.dto.ProductRequest;
-import gift.entity.Product;
-import gift.entity.Product.ValidationMode;
-import gift.exception.ResourceNotFoundException;
+import gift.dto.ProductForm;
+import gift.entity.product.Product;
+import gift.exception.ProductNotFoundExection;
 import gift.service.ProductService;
-import gift.validation.ValidationGroups;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/admin/products")
 public class AdminProductController {
 
-    private static final ValidationMode validationMode = ValidationMode.PERMITTED;
     private final ProductService productService;
 
     public AdminProductController(ProductService productService) {
@@ -31,47 +31,87 @@ public class AdminProductController {
     @GetMapping
     public String list(Model model) {
         model.addAttribute("products", productService.getAllProducts());
-        return "/admin/product_list";
+        return "admin/product_list";
     }
-
 
     @GetMapping("/new")
     public String createForm(Model model) {
-        model.addAttribute("product", new Product(null, "", 0, ""));
-        return "/admin/product_form";
+        model.addAttribute("productForm", new ProductForm(null, "", null, ""));
+        return "admin/product_form";
     }
 
-
-    @GetMapping("/{id}/edit")
-    public String editForm(@PathVariable("id") Long id, Model model) {
-        Product p = productService.getProductById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("상품을 찾을 수 없습니다: " + id));
-        model.addAttribute("product", p);
-        return "/admin/product_form";
-    }
-
-    @PostMapping
+    @PostMapping("/new")
     public String create(
-            @Validated(ValidationGroups.PermittedGroup.class) @ModelAttribute("product") ProductRequest req) {
-        productService.createProduct(toEntity(req), validationMode);
+            @Valid @ModelAttribute ProductForm productForm,
+            BindingResult bindingResult,
+            HttpServletResponse response
+    ) {
+        if (bindingResult.hasErrors()) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            System.out.println(bindingResult.getAllErrors());
+            return "admin/product_form";
+        }
+        productService.createProduct(
+                productForm.getName(),
+                productForm.getPrice(),
+                productForm.getImageUrl()
+        );
         return "redirect:/admin/products";
     }
 
+    @GetMapping("/{id}/edit")
+    public String editForm(
+            @PathVariable Long id,
+            Model model
+    ) {
+        Product p = productService.getProductById(id)
+                .orElseThrow(() -> new ProductNotFoundExection(id));
+
+        ProductForm form = new ProductForm(
+                p.id().value(),
+                p.name().value(),
+                p.price().value(),
+                p.imageUrl().value()
+        );
+        model.addAttribute("productForm", form);
+        return "admin/product_form";
+    }
 
     @PutMapping("/{id}")
-    public String update(@PathVariable("id") Long id,
-            @Validated(ValidationGroups.PermittedGroup.class) @ModelAttribute("product") ProductRequest req) {
-        productService.updateProduct(id, toEntity(req), validationMode);
+    public String update(
+            @PathVariable Long id,
+            @Valid @ModelAttribute ProductForm productForm,
+            BindingResult bindingResult,
+            HttpServletResponse response
+    ) {
+        if (bindingResult.hasErrors()) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return "admin/product_form";
+        }
+        productService.updateProduct(
+                id,
+                productForm.getName(),
+                productForm.getPrice(),
+                productForm.getImageUrl()
+        );
         return "redirect:/admin/products";
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable("id") Long id) {
+    public String delete(@PathVariable Long id) {
         productService.deleteProduct(id);
         return "redirect:/admin/products";
     }
 
-    private Product toEntity(ProductRequest r) {
-        return new Product(null, r.name(), r.price(), r.imageUrl());
+    @PostMapping("/{id}/unhide")
+    public String unhide(@PathVariable Long id) {
+        productService.unhideProduct(id);
+        return "redirect:/admin/products";
+    }
+
+    @PostMapping("/{id}/hide")
+    public String hide(@PathVariable Long id) {
+        productService.unhideProduct(id);
+        return "redirect:/admin/products";
     }
 }

@@ -2,15 +2,14 @@ package gift.controller;
 
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
-import gift.entity.Product;
-import gift.entity.Product.ValidationMode;
-import gift.exception.ResourceNotFoundException;
+import gift.entity.product.Product;
+import gift.exception.ProductHiddenException;
+import gift.exception.ProductNotFoundExection;
 import gift.service.ProductService;
-import gift.validation.ValidationGroups;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/products")
 public class ProductController {
 
-    private static final ValidationMode validationMode = ValidationMode.NORMAL;
 
     private final ProductService productService;
 
@@ -35,46 +33,48 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<List<ProductResponse>> getAll() {
         List<ProductResponse> list = productService.getAllProducts().stream()
-                .map(this::toResponse)
+                .filter(p -> !p.hidden())
+                .map(Product::toResponse)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(list);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> getById(@PathVariable Long id) {
-        Product p = productService.getProductById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("상품을 찾을 수 없습니다: " + id));
-        return ResponseEntity.ok(toResponse(p));
+        Product p = findUnHiddenProduct(id);
+        return ResponseEntity.ok(p.toResponse());
     }
 
     @PostMapping
     public ResponseEntity<ProductResponse> create(
-            @Validated(ValidationGroups.DefaultGroup.class) @RequestBody ProductRequest req) {
-        Product saved = productService.createProduct(toEntity(req), validationMode);
-        return ResponseEntity.status(201).body(toResponse(saved));
+            @Valid @RequestBody ProductRequest req) {
+        Product saved = productService.createProduct(req.name(), req.price(), req.imageUrl());
+        return ResponseEntity.status(201).body(saved.toResponse());
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponse> update(
             @PathVariable Long id,
-            @Validated(ValidationGroups.DefaultGroup.class) @RequestBody ProductRequest req) {
-        Product updated = productService.updateProduct(id, toEntity(req), validationMode);
-        return ResponseEntity.ok(toResponse(updated));
+            @Valid @RequestBody ProductRequest req) {
+        Product p = findUnHiddenProduct(id);
+        Product updated = productService.updateProduct(p.id().value(), req.name(), req.price(),
+                req.imageUrl());
+        return ResponseEntity.ok(updated.toResponse());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        productService.deleteProduct(id);
+        Product p = findUnHiddenProduct(id);
+        productService.deleteProduct(p.id().value());
         return ResponseEntity.noContent().build();
     }
 
-    private Product toEntity(ProductRequest r) {
-        return new Product(null, r.name(), r.price(), r.imageUrl());
-    }
-
-    private ProductResponse toResponse(Product e) {
-        return new ProductResponse(
-                e.id(), e.name(), e.price(), e.imageUrl()
-        );
+    private Product findUnHiddenProduct(Long id) {
+        Product p = productService.getProductById(id)
+                .orElseThrow(() -> new ProductNotFoundExection(id));
+        if (p.hidden()) {
+            throw new ProductHiddenException(id);
+        }
+        return p;
     }
 }

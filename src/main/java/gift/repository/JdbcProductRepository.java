@@ -1,7 +1,7 @@
 package gift.repository;
 
-import gift.entity.Product;
-import gift.exception.ResourceNotFoundException;
+import gift.entity.product.Product;
+import gift.exception.ProductNotFoundExection;
 import jakarta.transaction.Transactional;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class JdbcProductRepository implements ProductRepository {
 
+    private static final String SELECT_BASE = "SELECT id, name, price, image_url, hidden FROM product";
     private final JdbcTemplate jdbc;
     private final SimpleJdbcInsert insert;
     private final RowMapper<Product> productRowMapper;
@@ -31,14 +32,13 @@ public class JdbcProductRepository implements ProductRepository {
 
     @Override
     public List<Product> findAll() {
-        return jdbc.query("SELECT id, name, price, image_url FROM product", productRowMapper);
+        return jdbc.query(SELECT_BASE, productRowMapper);
     }
 
     @Override
     public Optional<Product> findById(Long id) {
         List<Product> list = jdbc.query(
-                "SELECT id, name, price, image_url FROM product WHERE id = ?", productRowMapper,
-                id);
+                SELECT_BASE + " WHERE id = ?", productRowMapper, id);
         return list.stream().findFirst();
     }
 
@@ -51,7 +51,7 @@ public class JdbcProductRepository implements ProductRepository {
 
     @Override
     public Product save(Product product) {
-        if (product.id() == null || product.id() <= 0) {
+        if (product.id() == null || product.id().value() <= 0) {
             return insertProduct(product);
         } else {
             return updateProduct(product);
@@ -60,20 +60,25 @@ public class JdbcProductRepository implements ProductRepository {
 
     private Product insertProduct(Product product) {
         Map<String, Object> params = new HashMap<>();
-        params.put("name", product.name());
-        params.put("price", product.price());
-        params.put("image_url", product.imageUrl());
+        params.put("name", product.name().value());
+        params.put("price", product.price().value());
+        params.put("image_url", product.imageUrl().value());
+        params.put("hidden", product.hidden());
         Number key = insert.executeAndReturnKey(params);
         return product.withId(key.longValue());
     }
 
     private Product updateProduct(Product product) {
         int updated = jdbc.update(
-                "UPDATE product SET name = ?, price = ?, image_url = ? WHERE id = ?",
-                product.name(), product.price(), product.imageUrl(), product.id()
+                "UPDATE product SET name = ?, price = ?, image_url = ?, hidden = ? WHERE id = ?",
+                product.name().value(),
+                product.price().value(),
+                product.imageUrl().value(),
+                product.hidden(),
+                product.id().value()
         );
         if (updated == 0) {
-            throw new ResourceNotFoundException("상품을 찾을 수 없습니다: " + product.id());
+            throw new ProductNotFoundExection(product.id().value());
         }
         return product;
     }
@@ -86,7 +91,7 @@ public class JdbcProductRepository implements ProductRepository {
         }
         int deleted = jdbc.update("DELETE FROM product WHERE id = ?", id);
         if (deleted == 0) {
-            throw new ResourceNotFoundException("상품을 찾을 수 없습니다: " + id);
+            throw new ProductNotFoundExection(id);
         }
     }
 }

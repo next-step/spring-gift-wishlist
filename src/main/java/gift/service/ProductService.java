@@ -1,8 +1,7 @@
 // src/main/java/gift/service/ProductService.java
 package gift.service;
 
-import gift.entity.Product;
-import gift.entity.Product.ValidationMode;
+import gift.entity.product.Product;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,9 +11,13 @@ public interface ProductService {
 
     Optional<Product> getProductById(Long id);
 
-    Product createProduct(Product product, ValidationMode validationMode);
+    Product createProduct(String name, int price, String imageUrl);
 
-    Product updateProduct(Long id, Product product, ValidationMode validationMode);
+    Product updateProduct(Long id, String name, int price, String imageUrl);
+
+    void hideProduct(Long id);
+
+    void unhideProduct(Long id);
 
     void deleteProduct(Long id);
 }
