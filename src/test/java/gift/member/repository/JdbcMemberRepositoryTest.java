@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import gift.member.domain.Member;
-import gift.member.repository.JdbcMemberRepository;
 import java.util.Optional;
 import java.util.Map;
 
@@ -31,13 +30,13 @@ class JdbcMemberRepositoryTest {
   private JdbcMemberRepository repository;
 
   @BeforeEach
-  void 설정() {
+  void setUp() {
     repository = new JdbcMemberRepository(jdbcTemplate, jdbcInsert);
   }
 
   @Test
   void 멤버를_저장하면_ID가_반환된다() {
-    Member member = Member.of("test@email.com", "password123");
+    Member member = Member.of("kim");
     Long expectedId = 1L;
 
     when(jdbcInsert.executeAndReturnKey(any(SqlParameterSource.class)))
@@ -45,20 +44,25 @@ class JdbcMemberRepositoryTest {
 
     Long result = repository.save(member);
 
-    assertEquals(expectedId, result);
-    verify(jdbcInsert).executeAndReturnKey(any(SqlParameterSource.class));
+    assertAll(
+        ()->assertEquals(expectedId, result),
+        ()->verify(jdbcInsert).executeAndReturnKey(any(SqlParameterSource.class))
+    );
   }
 
   @Test
   void 멤버_저장시_null이면_예외가_발생한다() {
-    assertThrows(NullPointerException.class, () -> repository.save(null));
-    verify(jdbcInsert, never()).executeAndReturnKey(any(SqlParameterSource.class));
+    assertAll(
+        ()->assertThrows(NullPointerException.class, () -> repository.save(null)),
+        ()->verify(jdbcInsert, never()).executeAndReturnKey(any(SqlParameterSource.class))
+    );
+
   }
 
   @Test
   void ID로_멤버를_정상_조회할_수_있다() {
     Long id = 1L;
-    Member expectedMember = Member.withId(id, "test@email.com", "password123");
+    Member expectedMember = Member.withId(id, "kim");
     String expectedSql = "SELECT * FROM member WHERE id = :id";
 
     when(jdbcTemplate.queryForObject(eq(expectedSql), any(Map.class), any(RowMapper.class)))
@@ -66,9 +70,11 @@ class JdbcMemberRepositoryTest {
 
     Optional<Member> result = repository.findById(id);
 
-    assertTrue(result.isPresent());
-    assertEquals(expectedMember, result.get());
-    verify(jdbcTemplate).queryForObject(eq(expectedSql), any(Map.class), any(RowMapper.class));
+    assertAll(
+        ()->assertTrue(result.isPresent()),
+        ()->assertEquals(expectedMember, result.get()),
+        ()->verify(jdbcTemplate).queryForObject(eq(expectedSql), any(Map.class), any(RowMapper.class))
+    );
   }
 
   @Test
@@ -81,34 +87,40 @@ class JdbcMemberRepositoryTest {
 
     Optional<Member> result = repository.findById(id);
 
-    assertFalse(result.isPresent());
-    verify(jdbcTemplate).queryForObject(eq(expectedSql), any(Map.class), any(RowMapper.class));
+    assertAll(
+        ()->assertFalse(result.isPresent()),
+        ()->verify(jdbcTemplate).queryForObject(eq(expectedSql), any(Map.class), any(RowMapper.class))
+    );
   }
 
   @Test
   void ID가_null이면_조회시_예외가_발생한다() {
-    assertThrows(NullPointerException.class, () -> repository.findById(null));
-    verify(jdbcTemplate, never()).queryForObject(any(), any(Map.class), any(RowMapper.class));
+    assertAll(
+        ()->assertThrows(NullPointerException.class, () -> repository.findById(null)),
+        ()->verify(jdbcTemplate, never()).queryForObject(any(), any(Map.class), any(RowMapper.class))
+    );
   }
 
   @Test
   void 멤버를_업데이트할_수_있다() {
     Long id = 1L;
-    Member updatedMember = Member.of("updated@email.com", "newpassword");
-    String expectedSql = "UPDATE member SET email = :email, password = :password WHERE id = :id";
+    Member updatedMember = Member.of("kim");
+    String expectedSql = "UPDATE member SET name = :name WHERE id = :id";
 
     when(jdbcTemplate.update(eq(expectedSql), any(SqlParameterSource.class)))
         .thenReturn(1);
 
-    assertDoesNotThrow(() -> repository.update(id, updatedMember));
-    verify(jdbcTemplate).update(eq(expectedSql), any(SqlParameterSource.class));
+    assertAll(
+        ()->assertDoesNotThrow(() -> repository.update(id, updatedMember)),
+        ()->verify(jdbcTemplate).update(eq(expectedSql), any(SqlParameterSource.class))
+    );
   }
 
   @Test
   void 멤버_업데이트시_영향받은_행이_없으면_예외가_발생한다() {
     Long id = 999L;
-    Member updatedMember = Member.of("updated@email.com", "newpassword");
-    String expectedSql = "UPDATE member SET email = :email, password = :password WHERE id = :id";
+    Member updatedMember = Member.of("kim");
+    String expectedSql = "UPDATE member SET name = :name WHERE id = :id";
 
     when(jdbcTemplate.update(eq(expectedSql), any(SqlParameterSource.class)))
         .thenReturn(0);
@@ -117,22 +129,28 @@ class JdbcMemberRepositoryTest {
         IllegalArgumentException.class,
         () -> repository.update(id, updatedMember)
     );
-    assertEquals("수정 실패", exception.getMessage());
-    verify(jdbcTemplate).update(eq(expectedSql), any(SqlParameterSource.class));
+    assertAll(
+        ()->assertEquals("member 수정 실패", exception.getMessage()),
+        ()->verify(jdbcTemplate).update(eq(expectedSql), any(SqlParameterSource.class))
+    );
   }
 
   @Test
   void 멤버_업데이트시_ID가_null이면_예외가_발생한다() {
-    Member updatedMember = Member.of("updated@email.com", "newpassword");
-    assertThrows(NullPointerException.class, () -> repository.update(null, updatedMember));
-    verify(jdbcTemplate, never()).update(any(), any(SqlParameterSource.class));
+    Member updatedMember = Member.of("kim");
+    assertAll(
+        ()->assertThrows(NullPointerException.class, () -> repository.update(null, updatedMember)),
+        ()->verify(jdbcTemplate, never()).update(any(), any(SqlParameterSource.class))
+    );
   }
 
   @Test
   void 멤버_업데이트시_객체가_null이면_예외가_발생한다() {
     Long id = 1L;
-    assertThrows(NullPointerException.class, () -> repository.update(id, null));
-    verify(jdbcTemplate, never()).update(any(), any(SqlParameterSource.class));
+    assertAll(
+        ()->assertThrows(NullPointerException.class, () -> repository.update(id, null)),
+        ()->verify(jdbcTemplate, never()).update(any(), any(SqlParameterSource.class))
+    );
   }
 
   @Test
@@ -143,8 +161,10 @@ class JdbcMemberRepositoryTest {
     when(jdbcTemplate.update(eq(expectedSql), any(SqlParameterSource.class)))
         .thenReturn(1);
 
-    assertDoesNotThrow(() -> repository.delete(id));
-    verify(jdbcTemplate).update(eq(expectedSql), any(SqlParameterSource.class));
+    assertAll(
+        ()->assertDoesNotThrow(() -> repository.delete(id)),
+        ()->verify(jdbcTemplate).update(eq(expectedSql), any(SqlParameterSource.class))
+    );
   }
 
   @Test
@@ -159,13 +179,17 @@ class JdbcMemberRepositoryTest {
         IllegalArgumentException.class,
         () -> repository.delete(id)
     );
-    assertEquals("삭제 실패", exception.getMessage());
-    verify(jdbcTemplate).update(eq(expectedSql), any(SqlParameterSource.class));
+    assertAll(
+        ()->assertEquals("member 삭제 실패", exception.getMessage()),
+        ()->verify(jdbcTemplate).update(eq(expectedSql), any(SqlParameterSource.class))
+    );
   }
 
   @Test
   void 멤버_삭제시_ID가_null이면_예외가_발생한다() {
-    assertThrows(NullPointerException.class, () -> repository.delete(null));
-    verify(jdbcTemplate, never()).update(any(), any(SqlParameterSource.class));
+    assertAll(
+        ()->assertThrows(NullPointerException.class, () -> repository.delete(null)),
+        ()->verify(jdbcTemplate, never()).update(any(), any(SqlParameterSource.class))
+    );
   }
 }
