@@ -3,7 +3,6 @@ package gift.service;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.entity.Product;
-import gift.entity.ProductStatus;
 import gift.exception.ProductNotFoundException;
 import gift.repository.ProductRepository;
 import java.util.List;
@@ -14,15 +13,19 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final ProductStatusService productStatusService;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository,
+            ProductStatusService productStatusService) {
         this.productRepository = productRepository;
+        this.productStatusService = productStatusService;
     }
 
     @Transactional
     public ProductResponseDto saveProduct(ProductRequestDto productRequestDto) {
         Product product = new Product(null, productRequestDto.name(),
-                productRequestDto.price(), productRequestDto.imageUrl(), ProductStatus.APPROVED);
+                productRequestDto.price(), productRequestDto.imageUrl(),
+                productStatusService.getProductStatus(productRequestDto.name()));
 
         Product savedProduct = productRepository.saveProduct(product);
 
