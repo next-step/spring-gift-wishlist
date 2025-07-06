@@ -1,4 +1,4 @@
-package gift.entity;
+package gift.product.entity;
 
 public class Product {
     private Long id;

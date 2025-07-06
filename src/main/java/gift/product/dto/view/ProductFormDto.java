@@ -1,6 +1,6 @@
-package gift.dto.view;
+package gift.product.dto.view;
 
-import gift.dto.response.ProductResponseDto;
+import gift.product.dto.response.ProductResponseDto;
 
 public record ProductFormDto(
         String name,

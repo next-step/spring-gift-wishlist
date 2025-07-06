@@ -1,11 +1,11 @@
-package gift.controller;
+package gift.product.controller;
 
 
-import gift.dto.request.ProductRequestDto;
-import gift.dto.response.ProductResponseDto;
-import gift.dto.view.ProductFormDto;
-import gift.dto.view.ProductView;
-import gift.service.ProductService;
+import gift.product.dto.request.ProductRequestDto;
+import gift.product.dto.response.ProductResponseDto;
+import gift.product.dto.view.ProductFormDto;
+import gift.product.dto.view.ProductView;
+import gift.product.service.ProductService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;

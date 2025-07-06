@@ -1,8 +1,8 @@
-package gift.controller;
+package gift.product.controller;
 
-import gift.dto.request.ProductRequestDto;
-import gift.dto.response.ProductResponseDto;
-import gift.service.ProductService;
+import gift.product.dto.request.ProductRequestDto;
+import gift.product.dto.response.ProductResponseDto;
+import gift.product.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

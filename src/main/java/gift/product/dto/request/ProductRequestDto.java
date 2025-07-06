@@ -1,7 +1,7 @@
-package gift.dto.request;
+package gift.product.dto.request;
 
 
-import gift.validator.KakaoInName;
+import gift.product.validator.KakaoInName;
 import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.URL;
 

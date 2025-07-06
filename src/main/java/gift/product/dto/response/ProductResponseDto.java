@@ -1,6 +1,6 @@
-package gift.dto.response;
+package gift.product.dto.response;
 
-import gift.entity.Product;
+import gift.product.entity.Product;
 
 
 public record ProductResponseDto(Long id, String name, Long price, String imageUrl, Boolean isKakaoApprovedByMd) {
