@@ -1,6 +1,9 @@
 package gift.repository;
 
 import gift.entity.Member;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -55,6 +58,17 @@ public class MemberRepository {
     public List<Member> findAll() {
         String sql = "select * from members";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Member.class));
+    }
+
+    public Optional<Member> update(Long id, String name, String email, String password) {
+        Optional<Member> member = findById(id);
+        if (member.isEmpty()) {
+            return Optional.empty();
+        }
+        String sql = "update members set name = ?, email = ?, password = ? where id = ?";
+        jdbcTemplate.update(sql, name, email, password, id);
+
+        return Optional.of(new Member(id, name, email, password));
     }
 
     public boolean deleteById(Long id) {

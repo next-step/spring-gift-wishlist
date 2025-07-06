@@ -4,10 +4,7 @@ import gift.dto.MemberLoginRequestDto;
 import gift.dto.MemberRequestDto;
 import gift.dto.MemberResponseDto;
 import gift.entity.Member;
-import gift.exception.DuplicateMemberException;
-import gift.exception.InvalidPasswordException;
-import gift.exception.MemberNotFoundException;
-import gift.exception.ProductNotExistException;
+import gift.exception.*;
 import gift.jwt.JwtProvider;
 import gift.repository.MemberRepository;
 import jakarta.validation.Valid;
@@ -26,7 +23,6 @@ public class MemberService {
         this.memberRepository = memberRepository;
         this.jwtProvider = jwtProvider;
     }
-
 
 
     public MemberResponseDto create(MemberRequestDto requestDto) {
@@ -59,10 +55,25 @@ public class MemberService {
                 .toList();
     }
 
+    public MemberResponseDto find(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(()-> new MemberNotExistException(memberId));
+
+        return new MemberResponseDto(member.getId(), member.getName(), member.getEmail(), member.getPassword());
+    }
+
+    public MemberResponseDto update(Long memberId, @Valid MemberRequestDto requestDto) {
+        Member member = memberRepository.update(memberId, requestDto.name(), requestDto.email(), requestDto.password())
+                .orElseThrow(() -> new MemberNotExistException(memberId));
+        return new MemberResponseDto(member.getId(), member.getName(), member.getEmail(), member.getPassword());
+    }
+
     public void delete(Long memberId) {
         boolean deleted = memberRepository.deleteById(memberId);
         if (!deleted) {
             throw new ProductNotExistException(memberId);
         }
     }
+
+
 }

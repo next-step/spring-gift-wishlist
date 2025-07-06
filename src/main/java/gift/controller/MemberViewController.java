@@ -49,6 +49,26 @@ public class MemberViewController {
         return new ModelAndView("redirect:/members");
     }
 
+    @GetMapping("/edit/{id}")
+    public ModelAndView editForm(@PathVariable Long id) {
+        Map<String, Object> model = new HashMap<>();
+        model.put("member", memberService.find(id));
+        return new ModelAndView("member/edit", model);
+    }
+
+    @PostMapping("/{id}")
+    public ModelAndView update(@PathVariable Long id,
+                               @Valid @ModelAttribute("member") MemberRequestDto requestDto,
+                               BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            ModelAndView mav = new ModelAndView("member/edit");
+            mav.addObject("member", requestDto);
+            return mav;
+        }
+        memberService.update(id, requestDto);
+        return new ModelAndView("redirect:/members");
+    }
+
     @PostMapping("/{id}/delete")
     public ModelAndView delete(@PathVariable Long id) {
         memberService.delete(id);
