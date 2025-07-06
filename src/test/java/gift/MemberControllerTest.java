@@ -62,4 +62,18 @@ public class MemberControllerTest {
                 .value("이미 사용 중인 이메일입니다."));
     }
 
+    @Test
+    @DisplayName("회원가입 실패 – 잘못된 요청 바디(이메일 포맷 오류) - 이메일 없음 → 400 Bad Request")
+    void register_fail_emailMissing() throws Exception {
+        MemberRegisterRequestDto req = new MemberRegisterRequestDto("", "1234567890");
+
+        mockMvc.perform(post("/api/members/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req)))
+            .andExpect(status().isBadRequest())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.email")
+                .value("이메일은 필수입니다."));
+    }
+
 }
