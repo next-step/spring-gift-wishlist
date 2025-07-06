@@ -54,7 +54,7 @@ class ProductControllerTest {
 
         restClient = RestClient.builder()
                 .baseUrl("http://localhost:" + port + "/api/products")
-                .defaultHeader("Authorization", "Bearer " + token)
+                .defaultCookie("Authorization", token)
                 .build();
     }
     @AfterEach

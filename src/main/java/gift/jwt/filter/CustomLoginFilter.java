@@ -8,6 +8,7 @@ import gift.member.dto.MemberLoginRequest;
 import gift.member.dto.MemberResponse;
 import gift.member.service.MemberService;
 import jakarta.servlet.*;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.util.StreamUtils;
@@ -49,16 +50,24 @@ public class CustomLoginFilter implements Filter {
             String jwt = jwtUtil.createJWT(
                     validateMember.getEmail(),
                     validateMember.getRole().toString(),
-                    3600000L
+                    1000 * 60 * 60L
             );
 
             response.setStatus(HttpServletResponse.SC_OK);
-            response.setHeader("Authorization", "Bearer " + jwt);
+            response.addCookie(createCookie("Authorization", jwt));
 
         } catch (NotFoundEntityException | AuthenticationException ex) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.setContentType("application/json; charset=UTF-8");
             response.getWriter().write(objectMapper.writeValueAsString(Map.of("message", ex.getMessage())));
         }
+    }
+
+    private Cookie createCookie(String key, String value) {
+        Cookie cookie = new Cookie(key, value);
+        cookie.setMaxAge(60 * 60);
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        return cookie;
     }
 }

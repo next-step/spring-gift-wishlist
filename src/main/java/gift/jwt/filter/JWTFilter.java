@@ -6,10 +6,12 @@ import gift.global.MySecurityContextHolder;
 import gift.jwt.JWTUtil;
 import gift.member.dto.AuthMember;
 import jakarta.servlet.*;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Map;
 
 public class JWTFilter implements Filter {
@@ -35,19 +37,22 @@ public class JWTFilter implements Filter {
             return;
         };
 
-        String token = request.getHeader("Authorization");
+        Cookie[] cookies = request.getCookies();
+        if(cookies == null) {
+            writeUnauthorizedResponse(response,"쿠키가 존재하지 않습니다.");
+            return;
+        }
 
-        if (token == null) {
+        String accessToken = Arrays.stream(request.getCookies())
+                .filter(cookie -> cookie.getName().equals("Authorization"))
+                .findFirst()
+                .map(cookie -> cookie.getValue())
+                .orElse(null);
+
+        if (accessToken == null) {
             writeUnauthorizedResponse(response, "토큰이 존재하지 않습니다.");
             return;
         }
-
-        if (!token.startsWith("Bearer ")) {
-            writeUnauthorizedResponse(response, "잘못된 토큰 형식입니다.");
-            return;
-        }
-
-        String accessToken = token.substring("Bearer ".length());
 
 
         if(jwtUtil.isExpired(accessToken)) {

@@ -118,7 +118,6 @@ class MemberControllerTest {
                 .toEntity(Void.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getHeaders().get("Authorization")).isNotNull();
     }
 
     @Test
@@ -154,7 +153,7 @@ class MemberControllerTest {
         Member savedMember = memberRepository.save(member);
 
         ResponseEntity<Void> response = restClient.delete()
-                .header("Authorization", "Bearer " + createJWT(savedMember))
+                .cookie("Authorization",createJWT(savedMember))
                 .retrieve()
                 .toEntity(Void.class);
 
@@ -167,7 +166,7 @@ class MemberControllerTest {
     void withDrawFail() {
         String jwt = jwtUtil.createJWT("unkhown@email.com", Role.REGULAR.toString(),  1000 * 60L);
         assertThatThrownBy(()->restClient.delete()
-                .header("Authorization", "Bearer " + jwt)
+                .cookie("Authorization", jwt)
                 .retrieve()
                 .toEntity(Void.class)
         ).isInstanceOf(HttpClientErrorException.NotFound.class);
@@ -183,7 +182,7 @@ class MemberControllerTest {
 
         ResponseEntity<Void> response = restClient.patch()
                 .body(updateRequest)
-                .header("Authorization", "Bearer " + createJWT(savedMember))
+                .cookie("Authorization",createJWT(savedMember))
                 .retrieve()
                 .toEntity(Void.class);
 
@@ -200,7 +199,7 @@ class MemberControllerTest {
         String jwt = jwtUtil.createJWT("unkhown@email.com", Role.REGULAR.toString(),  1000 * 60L);
 
         assertThatThrownBy(()->restClient.patch()
-                .header("Authorization", "Bearer " + jwt)
+                .cookie("Authorization",jwt)
                 .body(updateRequest)
                 .retrieve()
                 .toEntity(Void.class)
