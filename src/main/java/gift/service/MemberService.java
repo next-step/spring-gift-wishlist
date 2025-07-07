@@ -25,4 +25,10 @@ public class MemberService {
         String token = jwtTokenProvider.createToken(savedMember.getEmail());
         return new MemberResponse(token);
     }
+
+    public MemberResponse login(MemberRequest request) {
+        // TODO: 사용자 조회 및 비밀번호 확인 로직 구현
+        // TODO: 토큰 발급 로직 구현
+        return null;
+    }
 }

@@ -25,4 +25,10 @@ public class MemberController {
         MemberResponse response = memberService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<MemberResponse> login(@RequestBody MemberRequest request) {
+        MemberResponse response = memberService.login(request);
+        return ResponseEntity.ok().body(response);
+    }
 }
