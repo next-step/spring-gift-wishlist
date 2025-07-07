@@ -29,6 +29,10 @@
 </div>
 
 <script>
+  // --- 페이지 로드 시 기존 인증 정보 강제 정리 ---
+  document.cookie = "Authorization=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  localStorage.removeItem('accessToken');
+
   document.getElementById('login-form').addEventListener('submit', async function (event) {
     event.preventDefault(); // 폼의 기본 제출 동작을 막음
 
@@ -53,7 +57,7 @@
         window.location.href = '/admin/products'; // 페이지 이동
       } else {
         const error = await response.json();
-        alert(`로그인 실패: ${error.message}`);
+        alert(error.message);
       }
     } catch (error) {
       console.error('Error:', error);

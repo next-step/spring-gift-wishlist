@@ -10,7 +10,12 @@
 <h1>상품 목록</h1>
 
 <div class="top-bar">
+  <div class="user-info">
+    <span th:text="${username}">user@example.com</span>님, 환영합니다!
+  </div>
+
   <a href="/admin/products/new" class="button">＋ 상품 등록</a>
+  <a href="/members/logout" class="button">로그아웃</a> </div>
 </div>
 
 <table>

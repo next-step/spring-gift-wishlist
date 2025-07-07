@@ -29,6 +29,10 @@
 </div>
 
 <script>
+  // --- 페이지 로드 시 기존 인증 정보 강제 정리 ---
+  document.cookie = "Authorization=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  localStorage.removeItem('accessToken');
+
   document.getElementById('register-form').addEventListener('submit', async function (event) {
     event.preventDefault();
 

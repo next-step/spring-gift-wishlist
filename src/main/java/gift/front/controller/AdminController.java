@@ -6,6 +6,8 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -32,8 +34,13 @@ public class AdminController {
     public String allProducts(
             @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
             @RequestParam(required = false) Long categoryId,
-            Model model
+            Model model,
+            @AuthenticationPrincipal UserDetails userDetails
     ) {
+        if (userDetails != null) {
+            model.addAttribute("username", userDetails.getUsername());
+        }
+        
         model.addAttribute("products", productService.findAllProducts(pageable, categoryId));
         model.addAttribute("page", pageable.getPageNumber());
 

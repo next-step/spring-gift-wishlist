@@ -17,10 +17,17 @@ h1 {
 }
 
 .top-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   margin-bottom: 16px;
   width: 100%;
   max-width: 800px;
-  text-align: right;
+}
+
+.user-info {
+  margin-right: auto;
+  font-weight: bold;
 }
 
 a.button, button {
@@ -47,7 +54,7 @@ table {
   background-color: white;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 th, td {
@@ -77,7 +84,7 @@ form {
   background-color: #fff;
   padding: 32px;
   border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 600px; /* 🔼 기존 400px → 600px */
   text-align: center;
@@ -85,7 +92,7 @@ form {
 }
 
 .product-detail img {
-  max-width: 300px;     /* 🔼 이미지 확대 */
+  max-width: 300px; /* 🔼 이미지 확대 */
   max-height: 300px;
   width: auto;
   height: auto;
@@ -132,7 +139,7 @@ form {
   background-color: #fff;
   padding: 32px;
   border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 500px;
   margin-bottom: 20px;
