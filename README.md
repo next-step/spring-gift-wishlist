@@ -37,3 +37,46 @@
 - '카카오'가 포함된 문구가 이름 입력에 존재 할 시 담당 MD와 협의한 경우에만 사용가능 구현 변경
   - Bean Validation을 적용해 클라이언트로부터 이름에 '카카오' 단어가 포함된 문자열이 전달되면 잘못된 요청으로 예외처리 됨
     {"httpStatus":"BAD_REQUEST","message":"'카카오'가 포함된 문구는 담당 MD와 협의한 경우에만 사용할 수 있습니다"}
+
+# step2
+- 사용자가 회원 가입, 로그인, 추후 회원별 기능을 이용할 수 있도록 구현
+  - 비회원은 이메일과 비밀번호를 입력해 가입할 수 있다, 정상 가입이 되면 JWT 토큰을 반환한다
+    - Request: 'POST /api/members/register'
+      {
+        "email":"testUser2@asdasd.asd",
+        "password":"asd"
+      }
+    - Response: 201 Created
+      {
+      "token": "eyJhbGciOiJIUzI ... (이하 생략)"
+    }
+  - 회원은 이메일과 비밀번호를 입력해 로그인 할 수 있다, 정상 로그인이 되면 JWT 토큰을 반환한다
+    - Request: 'POST /api/members/login'
+      {
+      "email":"testUser2@asdasd.asd",
+      "password":"asd"
+      }
+    - Response: 200 OK
+      {
+      "token": "eyJhbGciOiJIUzI ... (이하 생략)"
+      }
+  - 회원은 이메일, 기존 비밀번호, 신규 비밀번호를 입력해 비밀번호를 변경 할 수 있다
+    - Request: 'PATCH /api/members'
+      {
+      "email":"testUser2@asdasd.asd",
+      "oldPassword":"asd",
+      "newPassword":"asdasdasd"
+    }
+    - Response: 204 NO_CONTENT
+  - 회원은 이메일, 비밀번호를 입력해 탈퇴할 수 있다
+    - Request: 'DELETE /api/members'
+      {
+      "email":"testUser2@asdasd.asd",
+      "password":"asdasdasd"
+      }
+    - Response: 204 NO_CONTENT
+- 이제 회원만 상품 등록, 수정, 삭제가 가능하다
+  - 상품의 전체 조회, 개별 조회는 비회원(토큰인증이 되지 않은)도 가능하다
+  - 회원은 로그인 시 받은 토큰을 헤더의 Authorization키의 값으로 기입해 인증한다
+  - "카카오" 가 들어간 상품 이름은 role이 'admin'인 회원만 가능하다
+     
