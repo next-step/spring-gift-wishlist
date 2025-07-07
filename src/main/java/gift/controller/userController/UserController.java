@@ -1,11 +1,10 @@
 package gift.controller.userController;
 
 
-import gift.dto.itemDto.userDto.UserRegisterDto;
-import gift.dto.itemDto.userDto.UserResponseDto;
-import gift.dto.itemDto.userDto.UserUpdateDto;
-import gift.entity.User;
-import gift.service.itemService.userService.UserService;
+import gift.dto.userDto.UserRegisterDto;
+import gift.dto.userDto.UserResponseDto;
+import gift.dto.userDto.UserUpdateDto;
+import gift.service.userService.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

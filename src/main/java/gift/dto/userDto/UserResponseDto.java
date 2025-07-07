@@ -1,8 +1,8 @@
-package gift.dto.itemDto.userDto;
+package gift.dto.userDto;
 
 import jakarta.validation.constraints.NotNull;
 
-public record UserRegisterDto(
+public record UserResponseDto(
         @NotNull String email,
         @NotNull String password
 ) {

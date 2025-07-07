@@ -1,4 +1,4 @@
-package gift.repository.itemRepository.userRepository;
+package gift.repository.userRepository;
 
 
 import gift.entity.User;

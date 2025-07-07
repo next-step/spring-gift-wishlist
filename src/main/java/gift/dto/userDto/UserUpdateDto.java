@@ -1,4 +1,4 @@
-package gift.dto.itemDto.userDto;
+package gift.dto.userDto;
 
 import jakarta.validation.constraints.NotNull;
 

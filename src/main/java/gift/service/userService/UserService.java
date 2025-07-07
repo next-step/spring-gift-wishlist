@@ -1,8 +1,8 @@
-package gift.service.itemService.userService;
+package gift.service.userService;
 
-import gift.dto.itemDto.userDto.UserRegisterDto;
-import gift.dto.itemDto.userDto.UserResponseDto;
-import gift.dto.itemDto.userDto.UserUpdateDto;
+import gift.dto.userDto.UserRegisterDto;
+import gift.dto.userDto.UserResponseDto;
+import gift.dto.userDto.UserUpdateDto;
 import jakarta.validation.Valid;
 
 import java.util.List;
