@@ -48,9 +48,7 @@ public class JwtService {
         return Long.parseLong(claims.getSubject());
     }
     
-    /**
-     * JWT 토큰의 유효성을 검증합니다.
-     */
+    //JWT 토큰의 유효성을 검증
     public boolean validateToken(String token) {
         try {
             Jwts.parser()

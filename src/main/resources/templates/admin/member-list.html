@@ -26,8 +26,9 @@
                 <a th:href="@{|/admin/members/${m.id}/edit|}">✏️ 수정</a>
             </td>
             <td>
-                <form th:action="@{|/admin/members/${m.id}/delete|}" method="post"
+                <form th:action="@{|/admin/members/${m.id}|}" method="post"
                       onsubmit="return confirm('정말 삭제할까요?');">
+                    <input type="hidden" name="_method" value="delete"/>
                     <button type="submit">🗑 삭제</button>
                 </form>
             </td>

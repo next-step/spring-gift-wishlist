@@ -54,9 +54,9 @@ public class AdminMemberController {
 
     // 회원 삭제
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMember(@PathVariable Long id) {
+    public String deleteMember(@PathVariable Long id) {
         memberService.deleteMember(id);
-        return ResponseEntity.noContent().build();
+        return "redirect:/admin/members/list";
     }
 
     // 관리자 회원 목록 화면 (HTML)
@@ -107,6 +107,13 @@ public class AdminMemberController {
             return "admin/member-form";
         }
         memberService.updateMember(id, requestDto);
+        return "redirect:/admin/members/list";
+    }
+
+    // 폼에서 회원 삭제 요청을 받을 때
+    @PostMapping("/{id}")
+    public String deleteMemberForm(@PathVariable Long id) {
+        memberService.deleteMember(id);
         return "redirect:/admin/members/list";
     }
 } 
