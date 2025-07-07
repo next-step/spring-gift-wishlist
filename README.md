@@ -19,6 +19,7 @@ Service 레이어에 하드 코딩돼있던 금지 단어를 application.propert
 3. ResponseDto 생성자 추가, Entity의 권한 필드 삭제, Service 및 Repository 레이어 구현, users TABLE 구조 선언
 4. /login 기능 JWT 토큰 반환 추가, 이메일과 비밀번호 Base64 인코딩하여 데이터베이스에 저장하도록 수정, 이에 따른 User Entity 생성자 수정
 5. users 테이블에 id(primary key), role(역할) 속성 추가. 이에 따른 Entity, Repository, Dto 수정
+6. users 관리자 페이지 추가, 이를 위한 검색, 수정, 삭제 등의 비즈니스 로직 추가, 예외 처리 핸들러 추가
 
-애매한 것 : 역할 부여 및 토큰 검증? 현재 상황에서는 나뉘어진 역할도 없고 로그인해야만 사용 할 수 있는 기능도 없으므로 step3에서 구현하기로 rufwjd
+애매한 것 : 역할 부여 및 토큰 검증? 현재 상황에서는 나뉘어진 역할도 없고 로그인해야만 사용 할 수 있는 기능도 없으므로 step3에서 구현하기로 결정
 테스트 코드 : 테스트 코드 작성은 아직 공부가 좀 더 필요.... 일단 Postman으로 테스트
