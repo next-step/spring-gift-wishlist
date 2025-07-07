@@ -1,10 +1,12 @@
 package gift.interceptor;
 
 import gift.exception.AuthenticationException;
+import gift.login.Authenticated;
 import gift.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
@@ -18,8 +20,12 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        String authHeader = request.getHeader("Authorization");
+        if (!(handler instanceof HandlerMethod handlerMethod)
+            || !handlerMethod.hasMethodAnnotation(Authenticated.class)) {
+            return true;
+        }
 
+        String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             throw new AuthenticationException("인증 토큰이 필요합니다.");
         }

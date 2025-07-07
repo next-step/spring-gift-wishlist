@@ -1,13 +1,12 @@
 package gift.config;
 
 import gift.interceptor.AuthenticationInterceptor;
+import gift.login.LoginMemberArgumentResolver;
+import java.util.List;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import gift.login.LoginMemberArgumentResolver;
-import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import java.util.List;
-
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
@@ -24,8 +23,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authenticationInterceptor)
-            .addPathPatterns("/api/**", "/admin/**")
-            .excludePathPatterns("/api/members/register", "/api/members/login", "/api/products");
+            .addPathPatterns("/**")
+            .excludePathPatterns("/css/**", "/error");
     }
 
     @Override

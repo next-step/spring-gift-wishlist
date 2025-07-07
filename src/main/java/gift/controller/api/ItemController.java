@@ -3,6 +3,7 @@ package gift.controller.api;
 import gift.dto.ItemRequest;
 import gift.dto.ItemResponse;
 import gift.entity.Member;
+import gift.login.Authenticated;
 import gift.login.Login;
 import gift.service.ItemService;
 import jakarta.validation.Valid;
@@ -30,6 +31,7 @@ public class ItemController {
         this.itemService = itemService;
     }
 
+    @Authenticated
     @PostMapping
     public ResponseEntity<ItemResponse> createItem(@Valid @RequestBody ItemRequest request, @Login Member loginMember) {
         ItemResponse newItem = itemService.createItem(request, loginMember);
@@ -58,6 +60,7 @@ public class ItemController {
         return ResponseEntity.ok(items);
     }
 
+    @Authenticated
     @PutMapping("/{productId}")
     public ResponseEntity<ItemResponse> updateItem(@PathVariable("productId") Long id,
         @RequestBody ItemRequest request, @Login Member loginMember) {
@@ -65,6 +68,7 @@ public class ItemController {
         return ResponseEntity.ok(updatedItem);
     }
 
+    @Authenticated
     @DeleteMapping("/{productId}")
     public ResponseEntity<Void> deleteItem(@PathVariable("productId") Long id) {
         itemService.deleteItem(id);
