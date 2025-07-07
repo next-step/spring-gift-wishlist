@@ -1,5 +1,6 @@
 package gift.service;
 
+import gift.dto.MemberPasswordChangeDto;
 import gift.dto.MemberRequestDto;
 import gift.dto.MemberResponseDto;
 import gift.entity.Member;
@@ -52,11 +53,17 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void changePassword(MemberRequestDto requestDto) {
+    public void changePassword(MemberPasswordChangeDto requestDto) {
         Member member = memberRepository.findByEmail(requestDto.email())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
 
-        memberRepository.changePassword(new Member(requestDto.email(), requestDto.password()));
+        int changeRow = memberRepository.changePassword(
+            new Member(requestDto.email(), requestDto.beforePassword()),
+            requestDto.afterPassword());
+
+        if (changeRow <= 0) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
     }
 
     @Override
@@ -66,6 +73,6 @@ public class MemberServiceImpl implements MemberService {
 
         // TODO: 주어진 이메일에 대해 전송 후, 사용자에게 인증받는 절차는 거쳤다고 가정
 
-        memberRepository.changePassword(new Member(requestDto.email(), requestDto.password()));
+        memberRepository.resetPassword(new Member(requestDto.email(), requestDto.password()));
     }
 }

@@ -10,7 +10,9 @@ public interface MemberRepository {
 
     public Optional<Member> findByEmail(String email);
 
-    public void changePassword(Member member);
+    public int changePassword(Member member, String afterPassword);
 
     public boolean existsByEmail(String email);
+
+    void resetPassword(Member member);
 }

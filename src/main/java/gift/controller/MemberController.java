@@ -1,5 +1,6 @@
 package gift.controller;
 
+import gift.dto.MemberPasswordChangeDto;
 import gift.dto.MemberRequestDto;
 import gift.dto.MemberResponseDto;
 import gift.service.MemberService;
@@ -36,7 +37,7 @@ public class MemberController {
 
     @PutMapping("/password/change")
     public ResponseEntity<Void> changePassword(
-        @RequestBody MemberRequestDto requestDto
+        @RequestBody MemberPasswordChangeDto requestDto
     ) {
         memberService.changePassword(requestDto);
         return ResponseEntity.ok().build();

@@ -46,13 +46,16 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
-    public void changePassword(Member member) {
-        String sql = "UPDATE member SET password = :password WHERE email = :email";
+    public int changePassword(Member member, String afterPassword) {
+        String sql = "UPDATE member SET password = ? WHERE email = ? and password = ?";
 
-        jdbcClient.sql(sql)
-            .param("password", member.getPassword())
-            .param("email", member.getEmail())
+        int changeRow = jdbcClient.sql(sql)
+            .param(afterPassword)
+            .param(member.getEmail())
+            .param(member.getPassword())
             .update();
+
+        return changeRow;
     }
 
     @Override
@@ -65,5 +68,15 @@ public class MemberRepositoryImpl implements MemberRepository {
             .single();
 
         return findCount > 0;
+    }
+
+    @Override
+    public void resetPassword(Member member) {
+        String sql = "UPDATE member SET password = :password WHERE email = :email";
+
+        jdbcClient.sql(sql)
+            .param("password", member.getPassword())
+            .param("email", member.getEmail())
+            .update();
     }
 }
