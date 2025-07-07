@@ -33,6 +33,7 @@
 - [ ] member 관련 API 구현
   - [x] member 테이블에 접근하여 생성,조회,수정,삭제를 할 수 있는 MemberRepository 구현
   - [x] CRUD에 대한 비즈니스 로직을 수행하는 MemberService 구현
+  - [x] 회원 생성, 조회, 수정, 삭제 API 기능을 수행하는 MemberController 구현(관리자용)
 - [x] 회원 인증/인가 기능 추가 
   - [x] JJWT 라이브러리 사용을 위한 의존성 추가
   - [x] 로그인 요청을 보낼 때 사용하는 LoginRequestDto 생성

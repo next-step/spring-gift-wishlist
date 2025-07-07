@@ -1,5 +1,6 @@
 package gift.member.repository;
 
+import gift.member.dto.request.UpdateRequestDto;
 import gift.member.dto.response.MemberResponseDto;
 import gift.member.dto.request.RegisterRequestDto;
 import gift.member.entity.Member;
@@ -50,14 +51,21 @@ public class MemberService {
         return member;
     }
 
-    public MemberResponseDto updateMember(Member member) {
-        memberRepository.findByEmail(member.getEmail())
-                .filter(foundMember -> !foundMember.getId().equals(member.getId()))
+    public MemberResponseDto updateMember(Long id, UpdateRequestDto updateRequestDto) {
+        memberRepository.findByEmail(updateRequestDto.email())
+                .filter(foundMember -> !foundMember.getId().equals(id))
                 .ifPresent(m -> {
                     throw new IllegalArgumentException("변경하려는 이메일이 이미 사용 중인 이메일입니다.");
                 });
 
-        return MemberResponseDto.from(memberRepository.update(member));
+        Member memberToUpdate = new Member(
+                id,
+                updateRequestDto.email(),
+                updateRequestDto.password(),
+                updateRequestDto.role()
+        );
+
+        return MemberResponseDto.from(memberRepository.update(memberToUpdate));
     }
 
     public void deleteMember(Long id) {
