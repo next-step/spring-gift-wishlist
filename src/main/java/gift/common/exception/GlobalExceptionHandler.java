@@ -27,19 +27,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(BindException.class)
     public ErrorResponse handleBind(BindException ex, HttpServletRequest req) {
-        List<ProblemDetail> fieldErrors = ex.getFieldErrors().stream()
-                .map(fe -> {
-                    ErrorCode errorCode = ErrorCode.fromMessage(fe.getDefaultMessage());
-                    ProblemDetail pd = ProblemDetail.forStatusAndDetail(
-                        errorCode.getHttpStatus(), 
-                        errorCode.getMessage()
-                    );
-                    pd.setProperty("code", errorCode.name());
-                    pd.setProperty("field", fe.getField());
-                    pd.setProperty("rejectedValue", fe.getRejectedValue());
-                    return pd;
-                })
-                .toList();
+        List<ProblemDetail> fieldErrors = createProblemDetails(ex);
 
         ErrorCode validationError = ErrorCode.VALIDATION_FAILED;
         return ErrorResponse.builder(ex, validationError.getHttpStatus(), validationError.getMessage())
@@ -56,19 +44,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             HttpStatusCode status,
             WebRequest request) {
 
-        List<ProblemDetail> fieldErrors = ex.getFieldErrors().stream()
-                .map(fe -> {
-                    ErrorCode errorCode = ErrorCode.fromMessage(fe.getDefaultMessage());
-                    ProblemDetail pd = ProblemDetail.forStatusAndDetail(
-                            errorCode.getHttpStatus(),
-                            errorCode.getMessage()
-                    );
-                    pd.setProperty("code", errorCode.name());
-                    pd.setProperty("field", fe.getField());
-                    pd.setProperty("rejectedValue", fe.getRejectedValue());
-                    return pd;
-                })
-                .toList();
+        List<ProblemDetail> fieldErrors = createProblemDetails(ex);
 
         ErrorCode errorCode = ErrorCode.VALIDATION_FAILED;
         ErrorResponse err = ErrorResponse.builder(ex, errorCode.getHttpStatus(), errorCode.getMessage())
@@ -162,5 +138,21 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         ProblemDetail body = err.updateAndGetBody(getMessageSource(), LocaleContextHolder.getLocale());
         return handleExceptionInternal(ex, body, headers, errorCode.getHttpStatus(), request);
+    }
+
+    private List<ProblemDetail> createProblemDetails(BindException ex) {
+        return ex.getFieldErrors().stream()
+                .map(fe -> {
+                    ErrorCode errorCode = ErrorCode.fromMessage(fe.getDefaultMessage());
+                    ProblemDetail pd = ProblemDetail.forStatusAndDetail(
+                            errorCode.getHttpStatus(),
+                            errorCode.getMessage()
+                    );
+                    pd.setProperty("code", errorCode.name());
+                    pd.setProperty("field", fe.getField());
+                    pd.setProperty("rejectedValue", fe.getRejectedValue());
+                    return pd;
+                })
+                .toList();
     }
 }

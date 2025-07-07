@@ -20,6 +20,9 @@ public class Pageable {
         this.page = page;
         this.size = size;
     }
+    public static Pageable of(int page, int size) {
+        return new Pageable(page, size);
+    }
 
     public int getPage() {
         return page;
