@@ -6,19 +6,21 @@ import gift.dto.auth.LoginRequest;
 import gift.dto.auth.TokenResponse;
 import gift.dto.user.UserAdminResponse;
 import gift.dto.user.UserCreateRequest;
+import gift.entity.UserRole;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public abstract class AbstractUserTest extends AbstractControllerTest {
-
-    protected List<UserAdminResponse> testUsers;
-    protected String testAdminToken;
-    protected String testUserToken;
+    protected Map<UserRole, UserAdminResponse> testUsers;
+    protected Map<UserRole, String> testUserTokens;
+    protected List<Long> testedUserIds;
 
     private UserAdminResponse getAdminResponse(UserCreateRequest request) {
         return RestAssured.given()
@@ -48,25 +50,26 @@ public abstract class AbstractUserTest extends AbstractControllerTest {
     @BeforeEach
     public void setUp(RestDocumentationContextProvider provider) {
         super.setUp(provider);
-        this.testUsers = new ArrayList<>();
-
-        UserCreateRequest userRequest = new UserCreateRequest(
-                "user1@example.com",
-                "password123!",
-                "ROLE_USER"
+        Map<UserRole, UserCreateRequest> userRequests = Map.of(
+                UserRole.ROLE_ADMIN,
+                new UserCreateRequest("user1@test.com", "password123!", "ROLE_ADMIN"),
+                UserRole.ROLE_MD,
+                new UserCreateRequest("user2@test.com", "password123!", "ROLE_MD"),
+                UserRole.ROLE_USER,
+                new UserCreateRequest("user3@test.com", "password123!", "ROLE_USER")
         );
-        UserAdminResponse userResponse = getAdminResponse(userRequest);
-        this.testUsers.add(userResponse);
-        this.testUserToken = getToken(userRequest);
 
-        UserCreateRequest adminRequest = new UserCreateRequest(
-                "user2@example.com",
-                "password123!",
-                "ROLE_ADMIN"
-        );
-        UserAdminResponse adminResponse = getAdminResponse(adminRequest);
-        this.testUsers.add(adminResponse);
-        this.testAdminToken = getToken(adminRequest);
+        this.testUsers = new HashMap<>();
+        this.testUserTokens = new HashMap<>();
+
+        for (Map.Entry<UserRole, UserCreateRequest> entry : userRequests.entrySet()) {
+            UserRole role = entry.getKey();
+            UserCreateRequest request = entry.getValue();
+            UserAdminResponse response = getAdminResponse(request);
+            this.testUsers.put(role, response);
+            this.testUserTokens.put(role, getToken(request));
+        }
+        this.testedUserIds = new ArrayList<>();
     }
 
     @AfterEach
@@ -74,15 +77,25 @@ public abstract class AbstractUserTest extends AbstractControllerTest {
         if (this.testUsers == null || this.testUsers.isEmpty()) {
             return;
         }
-        for (UserAdminResponse user : this.testUsers) {
+        for (UserAdminResponse user : this.testUsers.values()) {
             RestAssured.given()
                     .header(AUTH_HEADER_KEY, this.adminToken)
-                    .when()
                     .delete(getBaseUrl() + "/api/users/" + user.id())
                     .then()
                     .statusCode(204);
         }
+        if (this.testedUserIds != null && !this.testedUserIds.isEmpty()) {
+            for (Long userId : this.testedUserIds) {
+                RestAssured.given()
+                        .header(AUTH_HEADER_KEY, this.adminToken)
+                        .delete(getBaseUrl() + "/api/users/" + userId)
+                        .then()
+                        .statusCode(204);
+            }
+        }
         this.testUsers.clear();
+        this.testUserTokens.clear();
+        this.testedUserIds.clear();
     }
 
     public String getRequestUrl() {

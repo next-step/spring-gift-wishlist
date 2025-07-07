@@ -1,6 +1,7 @@
 package gift.user;
 
 import gift.dto.user.UserAdminResponse;
+import gift.entity.UserRole;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,11 +9,8 @@ import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.request.ParameterDescriptor;
 
-import java.util.Optional;
-
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
@@ -63,7 +61,7 @@ public class UserReadTest extends  AbstractUserTest{
                         queryParameters(PAGE_PARAMETERS))
                 )
                 .contentType("application/json")
-                .header(AUTH_HEADER_KEY, this.testAdminToken) // 관리자 권한으로 요청
+                .header(AUTH_HEADER_KEY, this.testUserTokens.get(UserRole.ROLE_ADMIN)) // 관리자 권한으로 요청
                 .when()
                 .get(url)
                 .then()
@@ -97,25 +95,18 @@ public class UserReadTest extends  AbstractUserTest{
         String url = getRequestUrl();
         RestAssured.given()
                 .contentType("application/json")
-                .header(AUTH_HEADER_KEY, this.testAdminToken) // 관리자 권한으로 요청
+                .header(AUTH_HEADER_KEY, this.testUserTokens.get(UserRole.ROLE_ADMIN)) // 관리자 권한으로 요청
                 .when()
                 .get(url + "?page=-1&size=5")
                 .then()
                 .statusCode(400);
     }
 
-
-
-
     @Test
     @DisplayName("단건 사용자 조회 성공 테스트: 관리자 권한으로 요청")
     public void find_User_By_Id_Success() {
         String url = getRequestUrl() + "/{id}";
-        Optional<UserAdminResponse> adminResponse = this.testUsers.stream()
-                .filter(user -> user.roles().contains("ROLE_ADMIN"))
-                .findFirst();
-        assertTrue(adminResponse.isPresent(), "관리자 권한을 가진 사용자가 존재해야 합니다.");
-        Long userId = adminResponse.get().id();
+        UserAdminResponse userResponse = this.testUsers.get(UserRole.ROLE_ADMIN);
 
         RestAssured.given(this.spec)
                 .filter(document("사용자 ID로 조회 성공",
@@ -126,9 +117,9 @@ public class UserReadTest extends  AbstractUserTest{
                         )
                 ))
                 .contentType("application/json")
-                .header(AUTH_HEADER_KEY, this.adminToken) // 관리자 권한으로 요청
+                .header(AUTH_HEADER_KEY, this.testUserTokens.get(UserRole.ROLE_ADMIN)) // 관리자 권한으로 요청
                 .when()
-                .get(url, userId) // 존재하는 사용자 ID로 변경
+                .get(url, userResponse.id()) // 존재하는 사용자 ID로 변경
                 .then()
                 .statusCode(200)
                 .body("id", notNullValue())
@@ -154,16 +145,11 @@ public class UserReadTest extends  AbstractUserTest{
     @DisplayName("단건 사용자 조회 실패 테스트: 관리자 권한 없이 요청(403 Forbidden)")
     public void find_User_By_Id_Failure_NoAuth() {
         String url = getRequestUrl() + "/{id}";
-        Optional<UserAdminResponse> userResponse = this.testUsers.stream()
-                .filter(user -> user.roles().contains("ROLE_USER"))
-                .findFirst();
-        assertTrue(userResponse.isPresent(), "일반 사용자 권한을 가진 사용자가 존재해야 합니다.");
-        Long userId = userResponse.get().id();
         RestAssured.given()
                 .contentType("application/json")
-                .header(AUTH_HEADER_KEY, this.testUserToken) // 일반 사용자 권한으로 요청
+                .header(AUTH_HEADER_KEY, this.testUserTokens.get(UserRole.ROLE_USER)) // 일반 사용자 권한으로 요청
                 .when()
-                .get(url, userId) // 일반 사용자 권한으로 요청
+                .get(url, testUsers.get(UserRole.ROLE_USER).id()) // 일반 사용자 권한으로 요청
                 .then()
                 .statusCode(403);
     }
@@ -172,25 +158,21 @@ public class UserReadTest extends  AbstractUserTest{
     @DisplayName("단건 사용자 조회 성공 테스트: 일반 사용자 권한으로 요청")
     public void find_User_By_Id_Success_As_User() {
         String url = getRequestUrl() + "/me";
-        Optional<UserAdminResponse> userResponse = this.testUsers.stream()
-                .filter(user -> user.roles().contains("ROLE_USER"))
-                .findFirst();
-        assertTrue(userResponse.isPresent(), "일반 사용자 권한을 가진 사용자가 존재해야 합니다.");
-        UserAdminResponse user = userResponse.get();
+        UserAdminResponse userResponse = this.testUsers.get(UserRole.ROLE_USER);
         RestAssured.given(this.spec)
                 .filter(document("사용자 단건 조회 성공 - 일반 사용자 권한",
                         responseFields(SINGLE_USER_READ_RESPONSE),
                         requestHeaders(AUTHENTICATE_HEADERS)
                         ))
                 .contentType("application/json")
-                .header(AUTH_HEADER_KEY, this.testUserToken) // 일반 사용자 권한으로 요청
+                .header(AUTH_HEADER_KEY, this.testUserTokens.get(UserRole.ROLE_USER)) // 일반 사용자 권한으로 요청
                 .when()
                 .get(url)
                 .then()
                 .statusCode(200)
                 .body("id", notNullValue())
-                .body("id", equalTo(userResponse.get().id().intValue()))
+                .body("id", equalTo(userResponse.id().intValue()))
                 .body("email", notNullValue())
-                .body("email", equalTo(userResponse.get().email()));
+                .body("email", equalTo(userResponse.email()));
     }
 }

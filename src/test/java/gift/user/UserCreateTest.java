@@ -2,6 +2,7 @@ package gift.user;
 
 import gift.dto.user.UserAdminResponse;
 import gift.dto.user.UserCreateRequest;
+import gift.entity.UserRole;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,12 +20,6 @@ public class UserCreateTest extends AbstractUserTest {
     private final FieldDescriptor[] USER_CREATE_REQUEST = {
         fieldWithPath("email").description("사용자 이메일").type(JsonFieldType.STRING),
         fieldWithPath("password").description("사용자 비밀번호").type(JsonFieldType.STRING),
-        fieldWithPath("role").description("사용자 역할 (기본값: ROLE_USER)").type(JsonFieldType.STRING).optional()
-    };
-
-    private final FieldDescriptor[] USER_CREATE_BAD_REQUEST = {
-        fieldWithPath("email").description("사용자 이메일").type(JsonFieldType.STRING).optional(),
-        fieldWithPath("password").description("사용자 비밀번호").type(JsonFieldType.STRING).optional(),
         fieldWithPath("role").description("사용자 역할 (기본값: ROLE_USER)").type(JsonFieldType.STRING).optional()
     };
 
@@ -47,7 +42,7 @@ public class UserCreateTest extends AbstractUserTest {
                         requestHeaders(AUTHENTICATE_HEADERS),
                         responseFields(ADMIN_RESPONSE)))
                 .contentType("application/json")
-                .header(AUTH_HEADER_KEY, this.testAdminToken) // 관리자 권한으로 요청
+                .header(AUTH_HEADER_KEY, this.testUserTokens.get(UserRole.ROLE_ADMIN)) // 관리자 권한으로 요청
                 .body(request)
                 .when()
                 .post(url)
@@ -60,7 +55,7 @@ public class UserCreateTest extends AbstractUserTest {
                 .body("roles[0]", equalTo("ROLE_USER"))
                 .extract()
                 .as(UserAdminResponse.class);
-        this.testUsers.add(response);
+        this.testedUserIds.add(response.id());
     }
 
     @Test
@@ -86,14 +81,9 @@ public class UserCreateTest extends AbstractUserTest {
     public void User_Create_Failure_MissingFields() {
         String url = getRequestUrl();
         UserCreateRequest request = new UserCreateRequest(null, null, null);
-
-        RestAssured.given(this.spec)
-                .filter(document("사용자 생성 실패 - 필수 필드 누락",
-                        requestFields(USER_CREATE_BAD_REQUEST),
-                        requestHeaders(AUTHENTICATE_HEADERS),
-                        responseFields(ERROR_MESSAGE_FIELDS)))
+        RestAssured.given()
                 .contentType("application/json")
-                .header(AUTH_HEADER_KEY, this.testAdminToken) // 관리자 권한으로 요청
+                .header(AUTH_HEADER_KEY, this.testUserTokens.get(UserRole.ROLE_MD)) // 관리자 권한으로 요청
                 .body(request)
                 .when()
                 .post(url)

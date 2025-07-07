@@ -2,6 +2,7 @@ package gift.user;
 
 import gift.dto.user.UserAdminResponse;
 import gift.dto.user.UserUpdateRequest;
+import gift.entity.UserRole;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,9 +42,7 @@ public class UserUpdateTest extends AbstractUserTest {
     @DisplayName("사용자 수정 성공 테스트 - 관리자 권한")
     void update_User_Admin_Success() {
         String url = getRequestUrl() + "/{id}";
-        UserAdminResponse testUser = this.testUsers.stream().findFirst().orElseThrow(
-                () -> new IllegalStateException("테스트용 사용자가 존재하지 않습니다.")
-        );
+        UserAdminResponse userResponse = this.testUsers.get(UserRole.ROLE_USER);
         UserUpdateRequest request = new UserUpdateRequest(
                 "updated@test.com", "updated1234!", List.of("ROLE_USER"));
         RestAssured.given(this.spec)
@@ -53,10 +52,10 @@ public class UserUpdateTest extends AbstractUserTest {
                         pathParameters(parameterWithName("id").description("수정할 사용자 ID")),
                         responseFields(ADMIN_UPDATE_RESPONSE)))
                 .contentType("application/json")
-                .header(AUTH_HEADER_KEY, this.testAdminToken) // 관리자 권한으로 요청
+                .header(AUTH_HEADER_KEY, this.testUserTokens.get(UserRole.ROLE_ADMIN)) // 관리자 권한으로 요청
                 .body(request)
                 .when()
-                .put(url, testUser.id()) // 존재하는 사용자 ID로 변경
+                .put(url, userResponse.id()) // 존재하는 사용자 ID로 변경
                 .then()
                 .statusCode(200)
                 .body("id", notNullValue())
@@ -69,9 +68,7 @@ public class UserUpdateTest extends AbstractUserTest {
     @DisplayName("사용자 수정 성공 테스트 - 관리자 권한, 특정 필드 누락")
     void update_user_Admin_Success_With_Partial_Request() {
         String url = getRequestUrl() + "/{id}";
-        UserAdminResponse testUser = this.testUsers.stream().findFirst().orElseThrow(
-                () -> new IllegalStateException("테스트용 사용자가 존재하지 않습니다.")
-        );
+        UserAdminResponse userResponse = this.testUsers.get(UserRole.ROLE_USER);
         UserUpdateRequest request = new UserUpdateRequest(null, "updated1234!", null);
         RestAssured.given(this.spec)
                 .filter(document("관리자 권한으로 사용자 수정 성공 - 특정 필드 누락",
@@ -80,10 +77,10 @@ public class UserUpdateTest extends AbstractUserTest {
                         pathParameters(parameterWithName("id").description("수정할 사용자 ID")),
                         responseFields(ADMIN_UPDATE_RESPONSE)))
                 .contentType("application/json")
-                .header(AUTH_HEADER_KEY, this.testAdminToken) // 관리자 권한으로 요청
+                .header(AUTH_HEADER_KEY, this.testUserTokens.get(UserRole.ROLE_ADMIN)) // 관리자 권한으로 요청
                 .body(request)
                 .when()
-                .put(url, testUser.id()) // 존재하는 사용자 ID로 변경
+                .put(url, userResponse.id()) // 존재하는 사용자 ID로 변경
                 .then()
                 .statusCode(200)
                 .body("id", notNullValue())
@@ -103,7 +100,7 @@ public class UserUpdateTest extends AbstractUserTest {
                         requestHeaders(AUTHENTICATE_HEADERS),
                         responseFields(USER_UPDATE_RESPONSE)))
                 .contentType("application/json")
-                .header(AUTH_HEADER_KEY, this.testUserToken) // 일반 사용자 권한으로 요청
+                .header(AUTH_HEADER_KEY, this.testUserTokens.get(UserRole.ROLE_USER)) // 관리자 권한으로 요청
                 .body(request)
                 .when()
                 .put(url) // me 엔드포인트로 요청
@@ -117,9 +114,7 @@ public class UserUpdateTest extends AbstractUserTest {
     @DisplayName("사용자 수정 실패 테스트 - 일반 사용자 권한")
     void update_User_Fail_Not_Admin() {
         String url = getRequestUrl() + "/{id}";
-        UserAdminResponse testUser = this.testUsers.stream().findFirst().orElseThrow(
-                () -> new IllegalStateException("테스트용 사용자가 존재하지 않습니다.")
-        );
+        UserAdminResponse testUser = this.testUsers.get(UserRole.ROLE_USER);
         UserUpdateRequest request = new UserUpdateRequest(
                 "updated@test.com", "updated1234!", List.of("ROLE_USER"));
         RestAssured.given(this.spec)
@@ -129,7 +124,7 @@ public class UserUpdateTest extends AbstractUserTest {
                         pathParameters(parameterWithName("id").description("수정할 사용자 ID")),
                         responseFields(ERROR_MESSAGE_FIELDS)))
                 .contentType("application/json")
-                .header(AUTH_HEADER_KEY, this.testUserToken) // 일반 사용자 권한으로 요청
+                .header(AUTH_HEADER_KEY, this.testUserTokens.get(UserRole.ROLE_USER)) // 일반 사용자 권한으로 요청
                 .body(request)
                 .when()
                 .put(url, testUser.id()) // 존재하는 사용자 ID로 변경

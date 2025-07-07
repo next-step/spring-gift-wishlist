@@ -7,6 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.request.ParameterDescriptor;
+
+import java.util.List;
+
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -87,21 +90,29 @@ public class ProductUpdateTest extends AbstractProductTest {
     @DisplayName("제품 수정 실패 테스트 : 유효성 검사 실패 시 400 반환")
     public void update_Product_Validation_Failure_Returns_400() {
         String url = getBaseUrl() + "/api/products/{id}";
-        ProductUpdateRequest request = new ProductUpdateRequest("<><><><><><><><><><><><><>",
-                1000L, "이미지 URL"); // 유효하지 않은 데이터
-        RestAssured.given(this.spec)
-                .filter(document("상품 수정 실패 - 유효성 검사 실패",
-                        pathParameters(PRODUCT_UPDATE_PATH_PARAMETERS),
-                        requestHeaders(AUTHENTICATE_HEADERS),
-                        requestFields(PRODUCT_UPDATE_REQUEST),
-                        responseFields(ERROR_MESSAGE_FIELDS)))
-                .contentType("application/json")
-                .header(AUTH_HEADER_KEY, this.adminToken) // 관리자 권한으로 요청
-                .body(request)
-                .when()
-                .put(url, 1) // 존재하는 제품 ID로 변경
-                .then()
-                .statusCode(400);
+        Long validId = this.testProductIds.getFirst().id(); // 테스트용 제품 ID 가져오기
+
+        List<ProductUpdateRequest> invalidRequests = List.of(
+                new ProductUpdateRequest("", 1000L, "이미지 URL"), // 이름 필드 비어있음
+                new ProductUpdateRequest("유효한 이름", -100L, "이미지 URL"), // 가격 필드 음수
+                new ProductUpdateRequest("유효하지않은 이름<>", 1000L, "") // 이름 필드 유효하지 않음
+        );
+
+        for (ProductUpdateRequest request : invalidRequests) {
+            RestAssured.given(this.spec)
+                    .filter(document("상품 수정 실패 - 유효성 검사 실패",
+                            pathParameters(PRODUCT_UPDATE_PATH_PARAMETERS),
+                            requestHeaders(AUTHENTICATE_HEADERS),
+                            requestFields(PRODUCT_UPDATE_REQUEST),
+                            responseFields(ERROR_MESSAGE_FIELDS)))
+                    .contentType("application/json")
+                    .header(AUTH_HEADER_KEY, this.adminToken) // 관리자 권한으로 요청
+                    .body(request)
+                    .when()
+                    .put(url, validId) // 존재하는 제품 ID로 변경
+                    .then()
+                    .statusCode(400);
+        }
     }
 
     @Test
