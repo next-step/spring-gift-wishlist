@@ -1,5 +1,7 @@
 package gift.product.domain;
 
+import org.springframework.util.Assert;
+
 public record Product(
     Long id,
     String name,

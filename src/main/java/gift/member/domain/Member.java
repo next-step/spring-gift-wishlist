@@ -1,5 +1,7 @@
 package gift.member.domain;
 
+import org.springframework.util.Assert;
+
 public record Member(
     Long id, String name
 ){
@@ -21,8 +23,6 @@ public record Member(
     }
   }
   private static void validateName(String name){
-    if(name == null || name.isBlank()){
-      throw new IllegalArgumentException(("name은 null이거나 빈 값일 수 없습니다."));
-    }
+    Assert.hasText(name,"name은 null이거나 빈 값일 수 없습니다.");
   }
 }

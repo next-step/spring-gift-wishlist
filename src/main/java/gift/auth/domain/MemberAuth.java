@@ -1,5 +1,7 @@
 package gift.auth.domain;
 
+import org.springframework.util.Assert;
+
 public record MemberAuth (
     Long memberId,
     String email,
@@ -29,18 +31,12 @@ public record MemberAuth (
     }
   }
   private static void validateEmail(String email){
-    if(email==null || email.isBlank()) {
-      throw new IllegalArgumentException("이메일은 null이거나 빈 값일 수 없습니다,");
-    }
+    Assert.hasText(email,"이메일은 null이거나 빈 값일 수 없습니다,");
   }
   private static void validatePassword(String password){
-    if(password==null || password.isBlank()){
-      throw new IllegalArgumentException("비밀번호는 null이거나 빈 값일 수 없습니다.");
-    }
+    Assert.hasText(password,"비밀번호는 null이거나 빈 값일 수 없습니다.");
   }
   private static void validateToken(String token){
-    if(token==null || token.isBlank()){
-      throw new IllegalArgumentException("token은 null이거나 빈 값일 수 없습니다.");
-    }
+    Assert.hasText(token,"token은 null이거나 빈 값일 수 없습니다.");
   }
 }
