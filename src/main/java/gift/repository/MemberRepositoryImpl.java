@@ -54,4 +54,16 @@ public class MemberRepositoryImpl implements MemberRepository {
             .param("email", member.getEmail())
             .update();
     }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        String sql = "SELECT count(*) FROM member WHERE email = :email";
+
+        int findCount = jdbcClient.sql(sql)
+            .param("email", email)
+            .query(Integer.class)
+            .single();
+
+        return findCount > 0;
+    }
 }

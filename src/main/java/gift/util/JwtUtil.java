@@ -31,13 +31,13 @@ public class JwtUtil {
         key = Keys.hmacShaKeyFor(bytes);
     }
 
-    public String createToken(Member member) {
+    public String createToken(String email) {
         Date now = new Date();
         Date expiredDate = new Date(now.getTime() + TOKEN_TIME);
 
         return Jwts.builder()
-            .setSubject(member.getEmail())
-            .claim("email", member.getEmail())
+            .setSubject(email)
+            .claim("email", email)
             .setIssuedAt(now)
             .setExpiration(expiredDate)
             .signWith(key)

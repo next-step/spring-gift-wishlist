@@ -11,4 +11,6 @@ public interface MemberRepository {
     public Optional<Member> findByEmail(String email);
 
     public void changePassword(Member member);
+
+    public boolean existsByEmail(String email);
 }

@@ -22,16 +22,17 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberResponseDto create(MemberRequestDto requestDto) {
+        if (memberRepository.existsByEmail(requestDto.email())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT);
+        }
+
         int createRow = memberRepository.create(requestDto);
 
         if (createRow <= 0) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
 
-        Member member = memberRepository.findByEmail(requestDto.email())
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
-
-        String accessToken = jwtUtil.createToken(member);
+        String accessToken = jwtUtil.createToken(requestDto.email());
 
         return new MemberResponseDto(accessToken);
     }
@@ -45,7 +46,7 @@ public class MemberServiceImpl implements MemberService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
 
-        String accessToken = jwtUtil.createToken(member);
+        String accessToken = jwtUtil.createToken(requestDto.email());
 
         return new MemberResponseDto(accessToken);
     }
