@@ -21,8 +21,7 @@ public class MemberServiceImpl implements MemberService {
     this.repository = repository;
     this.jwtProvider = jwtProvider;
   }
-
-
+  
   @Override
   public Token register(Member member) {
     if (repository.findByEmail(member.getEmail()).isPresent()) {
