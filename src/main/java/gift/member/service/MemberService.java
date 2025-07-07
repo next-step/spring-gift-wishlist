@@ -1,10 +1,14 @@
 package gift.member.service;
 
+import gift.exception.EmailExistsException;
+import gift.exception.MemberNotFoundByEmailException;
+import gift.exception.MemberNotFoundByIdException;
 import gift.member.dto.request.UpdateRequestDto;
 import gift.member.dto.response.MemberResponseDto;
 import gift.member.dto.request.RegisterRequestDto;
 import gift.member.entity.Member;
 import gift.member.repository.MemberRepository;
+import jakarta.validation.constraints.Email;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +23,7 @@ public class MemberService {
 
     public MemberResponseDto register(RegisterRequestDto registerRequestDto) {
         if(memberRepository.findByEmail(registerRequestDto.email()).isPresent()) {
-            throw new IllegalArgumentException("해당 이메일은 이미 가입되어 있습니다.");
+            throw new EmailExistsException();
         }
 
         Member member = new Member(
@@ -39,14 +43,14 @@ public class MemberService {
 
     public MemberResponseDto getMemberById(Long id) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(id + "에 해당하는 멤버가 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundByIdException(id));
 
         return MemberResponseDto.from(member);
     }
 
     public Member getMemberByEmail(String email) {
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException(email + "에 해당하는 멤버가 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundByEmailException(email));
 
         return member;
     }
@@ -55,7 +59,7 @@ public class MemberService {
         memberRepository.findByEmail(updateRequestDto.email())
                 .filter(foundMember -> !foundMember.getId().equals(id))
                 .ifPresent(m -> {
-                    throw new IllegalArgumentException("변경하려는 이메일이 이미 사용 중인 이메일입니다.");
+                    throw new EmailExistsException();
                 });
 
         Member memberToUpdate = new Member(

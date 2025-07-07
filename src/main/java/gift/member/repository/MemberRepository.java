@@ -1,6 +1,7 @@
 package gift.member.repository;
 
 
+import gift.exception.MemberNotFoundByIdException;
 import gift.member.entity.Member;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -58,7 +59,7 @@ public class MemberRepository {
                 .update();
 
         if (affectedRows == 0) {
-            throw new IllegalArgumentException(id + "가 없습니다.");
+            throw new MemberNotFoundByIdException(id);
         }
     }
 
@@ -70,7 +71,7 @@ public class MemberRepository {
                 .update();
 
         if (affectedRows == 0) {
-            throw new IllegalArgumentException(member.getId() + "가 없습니다.");
+            throw new MemberNotFoundByIdException(member.getId());
         }
 
         return member;

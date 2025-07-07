@@ -1,5 +1,6 @@
 package gift.member.service;
 
+import gift.exception.InvalidLoginException;
 import gift.member.dto.request.LoginRequestDto;
 import gift.member.dto.response.MemberResponseDto;
 import gift.member.dto.request.RegisterRequestDto;
@@ -22,13 +23,13 @@ public class AuthService {
             Member member = memberService.getMemberByEmail(loginRequestDto.email());
 
             if(!member.getPassword().equals(loginRequestDto.password())) {
-                throw new IllegalArgumentException("잘못된 비밀번호입니다.");
+                throw new IllegalArgumentException();
             }
 
             return tokenProvider.generateToken(MemberResponseDto.from(member));
 
         }catch(IllegalArgumentException e){
-            throw new IllegalArgumentException("이메일 또는 비밀번호가 일치하지 않습니다.");
+            throw new InvalidLoginException();
         }
     }
 

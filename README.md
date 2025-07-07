@@ -48,8 +48,9 @@
   - [x] 관리자 권한 검사용 AdminInterceptor 구현
   - [x] feat: WebConfig 파일을 만들어 AdminInterceptor에 /admin/** 경로 등록
 - [x] 관리자 등록을 위해 data.sql에 INSERT 문 생성
-- [ ] 예외 처리 및 유효성 검사
+- [x] 예외 처리 및 유효성 검사
   - [x] Member의 요청 DTO에 Validation 어노테이션을 사용해 유효성 검사
   - [x] Controller에 @Valid 추가
+  - [x] 상황에 맞는 예외 클래스 생성 및 모든 예외 GlobalExceptionHandler에서 처리하도록 구현
 
   
