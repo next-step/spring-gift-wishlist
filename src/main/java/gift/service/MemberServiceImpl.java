@@ -27,13 +27,9 @@ public class MemberServiceImpl implements MemberService {
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
 
-        int createRow = memberRepository.create(requestDto);
+        Member member = memberRepository.create(requestDto);
 
-        if (createRow <= 0) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT);
-        }
-
-        String accessToken = jwtUtil.createToken(requestDto.email());
+        String accessToken = jwtUtil.createToken(member.getEmail());
 
         return new MemberResponseDto(accessToken);
     }

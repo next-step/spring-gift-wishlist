@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public interface MemberRepository {
 
-    public int create(MemberRequestDto requestDto);
+    public Member create(MemberRequestDto requestDto);
 
     public Optional<Member> findByEmail(String email);
 
