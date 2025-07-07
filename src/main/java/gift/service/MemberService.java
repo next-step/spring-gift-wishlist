@@ -38,7 +38,7 @@ public class MemberService {
     }
 
     //TODO:중복 이메일 불가 -> 회원 가입시, 해당 이메일로 가입된 정보가 있는지 확인하기
-    boolean checkDuplicateEmail(String email){
+    private boolean checkDuplicateEmail(String email){
         Optional<Member> member = memberRepository.findMemberByEmail(email);
         if(member.isPresent()){
             return true;
