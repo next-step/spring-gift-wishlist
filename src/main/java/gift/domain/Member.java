@@ -8,7 +8,7 @@ public class Member {
 
     private String password;
 
-    Member(Long id, String email, String password){
+    public Member(Long id, String email, String password){
         this.id=id;
         this.email=email;
         this.password=password;

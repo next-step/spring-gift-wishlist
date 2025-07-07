@@ -5,7 +5,7 @@ INSERT INTO products(name, price, image_url) VALUES('p4', 4000, 'url4');
 INSERT INTO products(name, price, image_url) VALUES('p5', 5000, 'url5');
 
 INSERT INTO members(email, password) VALUES('member1', 'password1');
-INSERT INTO members(email, password) VALUES('member2', 'password1');
-INSERT INTO members(email, password) VALUES('member3', 'password1');
-INSERT INTO members(email, password) VALUES('member4', 'password1');
-INSERT INTO members(email, password) VALUES('member5', 'password1');
+INSERT INTO members(email, password) VALUES('member2', 'password2');
+INSERT INTO members(email, password) VALUES('member3', 'password3');
+INSERT INTO members(email, password) VALUES('member4', 'password4');
+INSERT INTO members(email, password) VALUES('member5', 'password5');
