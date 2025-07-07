@@ -4,7 +4,7 @@ package gift.member.controller;
 import gift.member.dto.request.RegisterRequestDto;
 import gift.member.dto.request.UpdateRequestDto;
 import gift.member.dto.response.MemberResponseDto;
-import gift.member.repository.MemberService;
+import gift.member.service.MemberService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

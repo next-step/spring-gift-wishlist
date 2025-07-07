@@ -3,7 +3,7 @@ package gift.member.controller;
 import gift.member.dto.request.LoginRequestDto;
 import gift.member.dto.request.RegisterRequestDto;
 import gift.member.dto.response.TokenResponseDto;
-import gift.member.repository.AuthService;
+import gift.member.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

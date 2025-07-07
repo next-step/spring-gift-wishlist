@@ -1,4 +1,4 @@
-package gift.member.repository;
+package gift.member.service;
 
 import gift.member.dto.request.LoginRequestDto;
 import gift.member.dto.response.MemberResponseDto;

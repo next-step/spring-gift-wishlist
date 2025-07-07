@@ -1,4 +1,4 @@
-package gift.member.service;
+package gift.member.repository;
 
 
 import gift.member.entity.Member;

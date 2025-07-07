@@ -1,10 +1,10 @@
-package gift.member.repository;
+package gift.member.service;
 
 import gift.member.dto.request.UpdateRequestDto;
 import gift.member.dto.response.MemberResponseDto;
 import gift.member.dto.request.RegisterRequestDto;
 import gift.member.entity.Member;
-import gift.member.service.MemberRepository;
+import gift.member.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
