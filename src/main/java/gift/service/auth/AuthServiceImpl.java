@@ -55,4 +55,19 @@ public class AuthServiceImpl implements AuthService {
             throw new WrongPermissionException();
         }
     }
+    
+    @Override
+    public Long checkPermissonForUser(String authorizationHeader) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            throw new WrongHeaderException();
+        }
+        
+        String token = authorizationHeader.substring(7); // "Bearer " 제거
+        Claims claims = jwtProvider.parseToken(token);
+        
+        String email = claims.get("email", String.class);
+        Member member = memberRepository.findMember(email);
+        
+        return member.getId();
+    }
 }

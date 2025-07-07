@@ -8,4 +8,6 @@ public interface AuthService {
     MemberResponseDto login(LoginRequestDto requestDto);
     
     void checkPermissonForAdmin(String authorizationHeader);
+    
+    Long checkPermissonForUser(String authorizationHeader);
 }

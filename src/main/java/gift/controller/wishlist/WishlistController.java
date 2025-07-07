@@ -1,6 +1,9 @@
 package gift.controller.wishlist;
 
+import gift.dto.api.wishlist.WishlistRequestDto;
+import gift.dto.api.wishlist.WishlistResponseDto;
 import gift.service.auth.AuthService;
+import gift.service.wishlist.WishlistService;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +44,7 @@ public class WishlistController {
     ) {
         Long userId = authService.checkPermissonForUser(token);
         WishlistResponseDto responseDto = wishlistService.addToMyWishlist(userId, requestDto);
-        return new ResponseEntity<WishlistResponseDto>(responseDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
     /*
     @DeleteMapping
