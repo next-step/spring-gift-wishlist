@@ -2,6 +2,7 @@ package gift.controller;
 
 
 import gift.dto.request.ProductRequest;
+import gift.dto.request.ProductUpdateRequest;
 import gift.dto.response.ProductResponse;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
@@ -44,9 +45,10 @@ public class ProductController {
         return ResponseEntity.ok(productService.getAllProducts());
     }
 
-    @PutMapping("/{productId}")
-    public ResponseEntity<ProductResponse> updateProduct(@PathVariable Long productId, @RequestBody  @Valid ProductRequest request) {
-        return ResponseEntity.ok(productService.updateProduct(productId, request));
+    @PatchMapping("/{productId}")
+    public ResponseEntity<ProductResponse> updateProduct(@PathVariable Long productId, @RequestBody @Valid ProductUpdateRequest request){
+        ProductResponse response = productService.updateProduct(productId,request);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{productId}")
