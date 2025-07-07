@@ -18,7 +18,6 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
-    @Autowired
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
@@ -28,7 +27,7 @@ public class ProductService {
             productRequestDto.name(),
             productRequestDto.price(),
             productRequestDto.imageUrl(),
-            getStatus(productRequestDto)
+            Product.inferStatus(productRequestDto)
         );
     }
 
@@ -38,9 +37,7 @@ public class ProductService {
 
     public void updateProduct(Long id, ProductRequestDto productUpdateDto) {
         productRepository.updateProduct(
-                productUpdateDto.toEntity(
-                        id,
-                        getStatus(productUpdateDto))
+                new Product(id, productUpdateDto)
         );
     }
 
@@ -64,14 +61,6 @@ public class ProductService {
         return productRepository.findProductById(id)
                 .map(ProductResponseDto::new)
                 .orElseThrow(() -> new NotFoundByIdException("Not Found by id: " + id));
-    }
-
-    private Product.Status getStatus(ProductRequestDto productRequestDto) {
-        if (productRequestDto.name().contains("카카오")) {
-            return Product.Status.PENDING;
-        } else {
-            return Product.Status.APPROVED;
-        }
     }
 
     public void updateProductStatus(Long productId, ProductStatusPatchRequestDto statusPatchRequestDto) {

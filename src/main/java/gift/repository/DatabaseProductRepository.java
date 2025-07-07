@@ -43,7 +43,7 @@ public class DatabaseProductRepository implements ProductRepository {
                 WHERE id = :id;
             """;
 
-    DatabaseProductRepository(JdbcClient jdbcClient) {
+    public DatabaseProductRepository(JdbcClient jdbcClient) {
         this.jdbcClient = jdbcClient;
     }
 
