@@ -84,7 +84,6 @@ public class MemberServiceImpl implements MemberService {
         String accessToken = Jwts.builder()
                 .setSubject(member.getId().toString())
                 .claim("email", member.getEmail())
-                .claim("password", member.getPassword())
                 .claim("role", member.getRole())
                 .signWith(Keys.hmacShaKeyFor(key.getBytes()))
                 .compact();
