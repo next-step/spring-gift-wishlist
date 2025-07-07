@@ -33,6 +33,17 @@ public class MemberRepository implements MemberRepositoryInterface {
         jdbcTemplate.update(sql, member.getEmail(), member.getPassword());
     }
 
+    @Override
+    public Optional<Member> findByEmailAndPassword(String email, String password) {
+        String sql = "SELECT * FROM member WHERE email = ? AND password = ?";
+        try {
+            Member member = jdbcTemplate.queryForObject(sql, this::mapRowToMember, email, password);
+            return Optional.ofNullable(member);
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+
     private Member mapRowToMember(ResultSet rs, int rowNum) throws SQLException {
         Member member = new Member(
                 rs.getLong("id"),

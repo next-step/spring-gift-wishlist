@@ -6,4 +6,6 @@ import gift.dto.MemberResponseDto;
 public interface MemberServiceInterface {
 
     MemberResponseDto register(MemberRequestDto requestDto);
+
+    MemberResponseDto login(MemberRequestDto requestDto);
 }

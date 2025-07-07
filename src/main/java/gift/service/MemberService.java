@@ -30,4 +30,16 @@ public class MemberService implements MemberServiceInterface {
         String token = jwtAuth.createJwtToken(member);
         return new MemberResponseDto(token);
     }
+
+    @Override
+    public MemberResponseDto login(MemberRequestDto requestDto) {
+        if (memberRepository.findByEmail(requestDto.getEmail()).isEmpty()) {
+            throw new MemberExceptions.MemberNotFoundException(requestDto.getEmail());
+        }
+        Member member = memberRepository.findByEmailAndPassword(requestDto.getEmail(), requestDto.getPassword())
+                .orElseThrow(MemberExceptions.InvalidPasswordException::new);
+
+        String token = jwtAuth.createJwtToken(member);
+        return new MemberResponseDto(token);
+    }
 }
