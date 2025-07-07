@@ -1,6 +1,6 @@
-package gift.model;
+package gift.product.model;
 
-import gift.dto.ProductRequestDto;
+import gift.product.dto.ProductRequestDto;
 
 public class Product {
     private Long id;

@@ -1,7 +1,7 @@
-package gift.service;
+package gift.product.service;
 
-import gift.dto.ProductRequestDto;
-import gift.model.Product;
+import gift.product.dto.ProductRequestDto;
+import gift.product.model.Product;
 
 import java.util.List;
 

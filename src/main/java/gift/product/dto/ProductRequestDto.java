@@ -1,6 +1,6 @@
-package gift.dto;
+package gift.product.dto;
 
-import gift.model.Product;
+import gift.product.model.Product;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

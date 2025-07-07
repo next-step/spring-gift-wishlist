@@ -1,8 +1,8 @@
-package gift.repository.impl;
+package gift.product.repository.impl;
 
-import gift.dto.ProductRequestDto;
-import gift.model.Product;
-import gift.repository.ProductRepository;
+import gift.product.dto.ProductRequestDto;
+import gift.product.model.Product;
+import gift.product.repository.ProductRepository;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
