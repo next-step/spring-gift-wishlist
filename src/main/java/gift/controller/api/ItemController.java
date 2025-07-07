@@ -31,8 +31,8 @@ public class ItemController {
     }
 
     @PostMapping
-    public ResponseEntity<ItemResponse> createItem(@Valid @RequestBody @Login Member loginMember, ItemRequest request) {
-        ItemResponse newItem = itemService.createItem(loginMember, request);
+    public ResponseEntity<ItemResponse> createItem(@Valid @RequestBody ItemRequest request, @Login Member loginMember) {
+        ItemResponse newItem = itemService.createItem(request, loginMember);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")
             .buildAndExpand(
