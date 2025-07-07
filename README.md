@@ -41,4 +41,7 @@
   - [x] 발급된 토큰을 Controller에 전달하는 AuthService 구현
   - [x] TokenResponseDto 구현 및 dto 계층 세분화
   - [x] 회원가입, 로그인 API 기능을 수행하는 MemberAuthController 구현
+-[ ] 관리자 전용 API에 관리자만 접근할 수 있도록 구현
+  - [x] TokenProvider에 토큰이 유효한지 검사하는 메서드 구현
+
   

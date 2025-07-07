@@ -22,4 +22,17 @@ public class TokenProvider {
                 .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
                 .compact();
     }
+
+    public boolean isValidToken(String token){
+        try{
+            Jwts.parser()
+                    .verifyWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                    .build()
+                    .parseSignedClaims(token);
+
+            return true;
+        }catch(Exception e){
+            return false;
+        }
+    }
 }
