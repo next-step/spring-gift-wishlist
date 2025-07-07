@@ -1,5 +1,6 @@
 package gift.controller;
 
+import gift.dto.LoginRequest;
 import gift.dto.RegisterRequest;
 import gift.dto.TokenResponse;
 import gift.model.Member;
@@ -27,5 +28,12 @@ public class MemberController {
     public ResponseEntity<TokenResponse> addProduct(@Valid @RequestBody RegisterRequest request) {
         TokenResponse accessToken = memberService.save(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(accessToken);
+    }
+
+    // 로그인
+    @PostMapping("/login")
+    public ResponseEntity<TokenResponse> addProduct(@Valid @RequestBody LoginRequest request) {
+        TokenResponse accessToken = memberService.login(request);
+        return ResponseEntity.status(HttpStatus.OK).body(accessToken);
     }
 }
