@@ -1,5 +1,4 @@
-// src/test/java/gift/controller/AdminProductControllerTest.java
-package gift.E2E;
+package gift.e2e;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -7,7 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import gift.E2E.fixture.ProductFixture;
+import gift.e2e.fixture.ProductFixture;
 import gift.entity.product.Product;
 import gift.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;

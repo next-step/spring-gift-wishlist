@@ -1,4 +1,4 @@
-package gift.E2E.fixture;
+package gift.e2e.fixture;
 
 import gift.entity.product.Product;
 import gift.repository.ProductRepository;
