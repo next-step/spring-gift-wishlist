@@ -41,9 +41,9 @@
 
 - [ ] Member 도메인 구현, 스키마 추가
 - [ ] MemberRepository
+- [ ] JWT 토큰 생성, 검증 로직 구현
 - [ ] MemberService 구현
 - [ ] MemberController, 회원 관련 페이지 구현
-- [ ] JWT 토큰 생성, 검증 로직 구현
 - [ ] Member 예외 처리 구현
 
 # spring-gift-product (이전 구현)
