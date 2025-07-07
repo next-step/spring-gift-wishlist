@@ -6,6 +6,9 @@ import gift.dto.userDto.UserRegisterDto;
 import gift.dto.userDto.UserResponseDto;
 import gift.dto.userDto.UserUpdateDto;
 import gift.entity.User;
+import gift.exception.UserDuplicatedException;
+import gift.exception.UserNotFoundException;
+import gift.exception.UserPasswordException;
 import gift.repository.userRepository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -27,8 +30,11 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public String registerUser(UserRegisterDto dto) {
+        String email = dto.email();
+        if (userRepository.findUserByEmail(email) != null) {
+            throw new UserDuplicatedException();
+        }
         User user = new User(null,dto.email(), dto.password());
-
         User savedUser = userRepository.save(user);
         String token = jwtUtil.generateToken(savedUser);
 
@@ -39,9 +45,16 @@ public class UserServiceImpl implements UserService{
     public String loginUser(UserLoginDto dto) {
         String targetEmail = dto.email();
         String targetPassword = dto.password();
-        User findUser = userRepository.findUserByEmailAndPassword(targetEmail, targetPassword);
+        User findUser = userRepository.findUserByEmail(targetEmail);
+        if (findUser == null) {
+            throw new UserNotFoundException(targetEmail);
+        }
+        if (!findUser.password().equals(targetPassword)) {
+            throw new UserPasswordException();
+        }
 
         return jwtUtil.generateToken(findUser);
+
     }
 
     @Override
@@ -51,26 +64,26 @@ public class UserServiceImpl implements UserService{
         if (email == null) {
             users = userRepository.getAllUsers();
         }else
-            users = userRepository.findUserByEmail(email);
+            users = userRepository.findUsersByEmail(email);
 
         for (User user : users) {
             result.add(new UserResponseDto(user.email(),user.password()));
         }
-
         return result;
     }
 
     @Override
     public UserResponseDto finUserById(Long id) {
         User user = userRepository.findUserById(id);
-
+        if (user == null) {
+            throw new UserNotFoundException();
+        }
         return new UserResponseDto(user.email(), user.password());
     }
 
     @Override
     public UserResponseDto updateUser(Long id, UserUpdateDto dto) {
         User findUser = userRepository.findUserById(id);
-        //Todo. 예외처리 추가 => CRUD, JWT 방식 적용 후 추가할 것
         String changeEmail = dto.email();
         String changePassword = dto.password();
         User updatedUser = userRepository.updateUser(findUser,changeEmail,changePassword);
@@ -83,7 +96,6 @@ public class UserServiceImpl implements UserService{
     public void deleteUserById(Long id) {
         User findUser = userRepository.findUserById(id);
         userRepository.deleteUser(findUser);
-
     }
 
 

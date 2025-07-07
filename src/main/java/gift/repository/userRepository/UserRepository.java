@@ -5,13 +5,14 @@ import jakarta.validation.constraints.NotNull;
 
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserRepository {
     User save(User user);
 
     List<User> getAllUsers();
 
-    List<User> findUserByEmail(String email);
+    List<User> findUsersByEmail(String email);
 
     User findUserById(Long id);
 
@@ -19,5 +20,6 @@ public interface UserRepository {
 
     void deleteUser(User findUser);
 
-    User findUserByEmailAndPassword(String email,String password);
+
+    User findUserByEmail(String email);
 }

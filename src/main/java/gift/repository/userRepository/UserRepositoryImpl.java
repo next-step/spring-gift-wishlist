@@ -2,6 +2,7 @@ package gift.repository.userRepository;
 
 
 import gift.entity.User;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -12,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository{
@@ -61,7 +63,7 @@ public class UserRepositoryImpl implements UserRepository{
     }
 
     @Override
-    public List<User> findUserByEmail(String email) {
+    public List<User> findUsersByEmail(String email) {
         var sql = "SELECT ID, EMAIL, PASSWORD FROM users WHERE EMAIL = ?";
         return jdbcTemplate.query(sql, new Object[]{email}, userRowMapper);
 
@@ -84,6 +86,17 @@ public class UserRepositoryImpl implements UserRepository{
     public void deleteUser(User findUser) {
         var sql = "DELETE FROM users WHERE id = ?";
         jdbcTemplate.update(sql, findUser.id());
+    }
+
+
+    @Override
+    public User findUserByEmail(String email) {
+        var sql = "SELECT ID, EMAIL, PASSWORD FROM users WHERE email = ?";
+        try {
+            return jdbcTemplate.queryForObject(sql, userRowMapper, email);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
 }
