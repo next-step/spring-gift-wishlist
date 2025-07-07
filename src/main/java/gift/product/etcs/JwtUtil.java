@@ -31,8 +31,8 @@ public class JwtUtil {
 		Date expiryDate = new Date(now.getTime() + expirationMs);
 
 		return Jwts.builder()
-			.subject(user.getEmail())
-			.claim("userId", user.getId())
+			.subject(user.getId().toString())
+			.claim("email", user.getEmail())
 			.claim("nickName", user.getNickName())
 			.issuedAt(now)
 			.expiration(expiryDate)
@@ -69,6 +69,19 @@ public class JwtUtil {
 			throw new IllegalArgumentException("유효하지 않은 토큰입니다.", e);
 		}
 
+	}
+
+	public String getSubject(String token) {
+		try{
+			return Jwts.parser()
+				.verifyWith(secretKey)
+				.build()
+				.parseSignedClaims(token)
+				.getPayload()
+				.getSubject();
+		} catch (Exception e) {
+			throw new IllegalArgumentException("유효하지 않은 토큰입니다.", e);
+		}
 	}
 
 
