@@ -198,6 +198,37 @@ HTTP/1.1 204 No Content
 
 </details>
 
+# 👤 유저 화면
+
+---
+
+<details>
+<summary>✅ 로그인 및 회원가입</summary>
+
+### 로그인
+
+[GET] http://localhost:8080/members/login  
+→ 로그인 화면으로 이동합니다.
+
+### 특정 상품 조회
+
+[GET] http://localhost:8080/members/register  
+→ 회원 가입 화면으로 이동합니다.
+</details>
+<details>
+<summary>🔎 상품 조회</summary>
+
+### 전체 상품 목록
+
+[GET] http://localhost:8080/members/products  
+→ 등록된 모든 상품을 목록으로 확인할 수 있는 화면입니다.
+
+### 특정 상품 조회
+
+[GET] http://localhost:8080/members/products/{productId}  
+→ 선택한 상품의 상세 정보를 확인할 수 있는 화면입니다.
+</details>
+
 # 🧑‍💻 관리자 화면
 
 ---
