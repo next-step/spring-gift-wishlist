@@ -11,10 +11,12 @@ import gift.member.dto.MemberResponse;
 import gift.member.dto.MemberUpdateRequest;
 import gift.member.repository.MemberRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 
+@Transactional
 @Service
 public class MemberServiceV1 implements MemberService{
 

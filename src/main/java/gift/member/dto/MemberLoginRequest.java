@@ -9,7 +9,7 @@ public class MemberLoginRequest {
         this.password = password;
     }
 
-    public MemberLoginRequest() {}
+    protected MemberLoginRequest() {}
 
     public String getEmail() {
         return email;
