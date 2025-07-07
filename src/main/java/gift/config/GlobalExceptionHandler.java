@@ -3,6 +3,7 @@ package gift.config;
 import gift.common.dto.response.ErrorResponseDto;
 import gift.common.exception.CreationFailException;
 import gift.common.exception.EntityNotFoundException;
+import gift.common.exception.RegisterFailException;
 import gift.common.exception.RequestValidateFailException;
 import gift.domain.product.ProductDomainRuleException;
 import org.slf4j.Logger;
@@ -41,5 +42,12 @@ public class GlobalExceptionHandler {
         log.warn("ProductDomainRuleException: {}", e.getMessage());
         var response = new ErrorResponseDto(e.getMessage(), 422);
         return ResponseEntity.unprocessableEntity().body(response);
+    }
+
+    @ExceptionHandler(RegisterFailException.class)
+    public ResponseEntity<ErrorResponseDto> handleRegisterFail(RegisterFailException e) {
+        log.warn("RegisterFailException: {}", e.getMessage());
+        ErrorResponseDto response = new ErrorResponseDto(e.getMessage(), e.getStatus().value());
+        return ResponseEntity.status(response.code()).body(response);
     }
 }

@@ -18,6 +18,10 @@ public class Member {
         return new Member(id, email, password, role);
     }
 
+    public static Member createTemp(String email, String password) {
+        return of(null, email, password, MemberRole.USER);
+    }
+
     public String getEmail() {
         return email;
     }

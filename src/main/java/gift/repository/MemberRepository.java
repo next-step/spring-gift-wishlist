@@ -55,6 +55,14 @@ public class MemberRepository {
                 .optional();
     }
 
+    public Optional<Member> findByEmail(String email) {
+        String sql = "select * from member where email = :email;";
+        return client.sql(sql)
+                .param("email", email)
+                .query(getRowMapper())
+                .optional();
+    }
+
     public List<Member> findAll() {
         String sql = "select * from member;";
         return client.sql(sql)
