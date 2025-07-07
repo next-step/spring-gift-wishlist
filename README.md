@@ -36,4 +36,5 @@
 - [ ] 회원 인증/인가 기능 추가 
   - [x] JJWT 라이브러리 사용을 위한 의존성 추가
   - [x] 로그인 요청을 보낼 때 사용하는 LoginRequestDto 생성
+  - [x] 회원 인증 JWT를 발급하는 TokenProvider 구현
   
