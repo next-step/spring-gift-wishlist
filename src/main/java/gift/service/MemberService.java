@@ -3,6 +3,9 @@ package gift.service;
 import gift.auth.JwtProvider;
 import gift.dto.MemberRequestDto;
 import gift.entity.Member;
+import gift.exception.forbidden.EmailDuplicateException;
+import gift.exception.forbidden.EmailNotFoundException;
+import gift.exception.forbidden.WrongPasswordException;
 import gift.repository.MemberRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,7 +25,7 @@ public class MemberService {
 
     public void register(MemberRequestDto dto) {
         if (memberRepository.findByEmail(dto.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
+            throw new EmailDuplicateException();
         }
 
         String encodedPassword = passwordEncoder.encode(dto.getPassword());
@@ -32,10 +35,10 @@ public class MemberService {
 
     public String login(MemberRequestDto dto) {
         Member member = memberRepository.findByEmail(dto.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다."));
+                .orElseThrow(EmailNotFoundException::new);
 
         if (!passwordEncoder.matches(dto.getPassword(), member.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new WrongPasswordException();
         }
 
         return jwtProvider.createToken(member);
