@@ -1,6 +1,6 @@
 package gift.service.auth;
 
-import gift.common.exception.AccessDeniedException;
+import gift.common.exception.UnauthorizedException;
 import gift.common.util.PasswordEncoder;
 import gift.common.util.TokenProvider;
 import gift.entity.User;
@@ -10,7 +10,6 @@ import gift.repository.user.UserRepository;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Set;
 
 @Service
@@ -40,10 +39,10 @@ public class AuthServiceImpl implements AuthService {
     public String login(String email, String password) {
         validateParameters(email, password);
         User user = userRepository.findByEmail(email).orElseThrow(
-                () -> new IllegalArgumentException("해당 이메일의 사용자를 찾을 수 없습니다. : " + email)
+                () -> new UnauthorizedException("이메일 또는 비밀번호가 일치하지 않습니다.")
         );
         if (!PasswordEncoder.matches(password, user.getPassword())) {
-            throw new AccessDeniedException("이메일 또는 비밀번호가 일치하지 않습니다.");
+            throw new UnauthorizedException("이메일 또는 비밀번호가 일치하지 않습니다.");
         }
         Set<UserRole> roles = roleRepository.findByUserId(user.getId());
         return tokenProvider.generateToken(user.getId(), roles);

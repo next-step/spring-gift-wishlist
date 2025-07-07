@@ -1,6 +1,7 @@
 package gift.common.aop;
 
 import gift.common.exception.CriticalServerException;
+import gift.common.exception.UnauthorizedException;
 import gift.dto.error.ErrorMessageResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
-import javax.naming.AuthenticationException;
 import gift.common.exception.AccessDeniedException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
@@ -69,9 +69,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorMessage.toProblemDetail(), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(AuthenticationException.class)
+    @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<ProblemDetail> handleAuthenticationException(
-            AuthenticationException e, HttpServletRequest request
+            UnauthorizedException e, HttpServletRequest request
     ) {
         var errorMessage = new ErrorMessageResponse.Builder(request, e, HttpStatus.UNAUTHORIZED)
                 .build();

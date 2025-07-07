@@ -2,6 +2,7 @@ package gift.common.aop.aspect;
 
 import gift.common.aop.annotation.PreAuthorize;
 import gift.common.exception.AccessDeniedException;
+import gift.common.exception.UnauthorizedException;
 import gift.common.model.CustomAuth;
 import gift.entity.UserRole;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,7 +15,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
-import javax.naming.AuthenticationException;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -34,10 +34,10 @@ public class PreAuthorizeAspect {
         this.request = request;
         this.validator = validator;
     }
-    private UserRole extractUserRoleFromAnnotation(MethodSignature signature) throws AuthenticationException {
+    private UserRole extractUserRoleFromAnnotation(MethodSignature signature){
         PreAuthorize preAuthorize = signature.getMethod().getAnnotation(PreAuthorize.class);
         if (preAuthorize == null || preAuthorize.value() == null) {
-            throw new AuthenticationException("PreAuthorize에 제대로된 UserRole이 설정되어 있지 않습니다:"
+            throw new UnauthorizedException("PreAuthorize에 제대로된 UserRole이 설정되어 있지 않습니다:"
                     + signature.getMethod().getName());
         }
         return preAuthorize.value();
@@ -63,7 +63,7 @@ public class PreAuthorizeAspect {
     public Object preAuthorize(ProceedingJoinPoint joinPoint) throws Throwable {
         CustomAuth auth = (CustomAuth) request.getAttribute(AUTHORIZATION_ATTRIBUTE);
         if (auth == null) {
-            throw new AuthenticationException("인증 정보가 없습니다. 요청 헤더에 Authorization 헤더를 추가해야 합니다.");
+            throw new UnauthorizedException("인증 정보가 없습니다. 요청 헤더에 Authorization 헤더를 추가해야 합니다.");
         }
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         UserRole targetRole = extractUserRoleFromAnnotation(signature);

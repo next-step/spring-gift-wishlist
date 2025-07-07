@@ -1,6 +1,7 @@
 package gift.common.aop;
 
 import gift.common.exception.AccessDeniedException;
+import gift.common.exception.UnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -8,7 +9,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.naming.AuthenticationException;
 import java.util.NoSuchElementException;
 
 @ControllerAdvice(basePackages = "gift.controller.view")
@@ -20,8 +20,8 @@ public class GlobalViewExceptionHandler {
         return "redirect:/admin/login";
     }
 
-    @ExceptionHandler(AuthenticationException.class)
-    public String handleAuthenticationException(AuthenticationException e) {
+    @ExceptionHandler(UnauthorizedException.class)
+    public String handleAuthenticationException(UnauthorizedException e) {
         return "redirect:/admin/login";
     }
 
