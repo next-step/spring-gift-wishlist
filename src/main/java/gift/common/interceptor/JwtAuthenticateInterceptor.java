@@ -31,6 +31,10 @@ public class JwtAuthenticateInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String authorizationHeader = request.getHeader(AUTHORIZATION_HEADER);
+        // 만약 Authorization 헤더가 없으면, request의 속성에서 가져옵니다.
+        if (authorizationHeader == null || authorizationHeader.isEmpty()) {
+            authorizationHeader = (String) request.getAttribute(AUTHORIZATION_HEADER);
+        }
         String token = extractToken(authorizationHeader);
 
         if (token == null) {

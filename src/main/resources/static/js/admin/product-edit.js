@@ -15,7 +15,7 @@ const mapIdToKey = {
 const prodEditType = {
     "prod-name": "text",
     "prod-price": "number",
-    "prod-url": "textarea",
+    "prod-url": "url",
 };
 
 function enableEdit(id) {
@@ -24,8 +24,11 @@ function enableEdit(id) {
     const editArea = document.getElementById(id);
     const textArea =  editArea.querySelector("p");
     const inputArea = editArea.querySelector("input");
-    textArea.hidden = true;
-    inputArea.type = prodEditType[id];
+    if (inputArea) {
+        textArea.hidden = true;
+        inputArea.type = prodEditType[id];
+        inputArea.hidden = false;
+    }
     if (!isEdit) showEditButton();
 }
 
@@ -37,17 +40,18 @@ function showEditButton() {
 
 async function requestEditProduct() {
     const id = document.getElementById("prod-id").textContent;
-
     const requestBody = {}
     for (const key in prodEditMode) {
         if (prodEditMode[key]) {
             requestBody[mapIdToKey[key]] = document.getElementById(key).querySelector("input").value;
         }
     }
+    console.log("수정 요청 본문:", requestBody);
     const res = await fetch(`/api/products/${id}`, {
         "method": "PUT",
         "headers": {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "credentials": "include"
         }
         , "body": JSON.stringify(requestBody)
     });

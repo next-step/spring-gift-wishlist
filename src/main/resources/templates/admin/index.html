@@ -1,6 +1,6 @@
 <!-- 전체 페이지 레이아웃 -->
 <!DOCTYPE html>
-<html th:replace="~{layout/base :: admin_layout('관리자 대시보드', false, ~{::admin_dashboard}, ~{}, ~{})}">
+<html th:replace="~{layout/base :: admin_layout('관리자 대시보드', isLogin, ~{::admin_dashboard}, ~{}, ~{})}" lang="ko">
     <!-- 위의 admin_dashboard fragment가 여기에 들어갑니다 -->
     <div th:fragment="admin_dashboard">
         <div class="bg-white rounded-lg shadow-lg p-8">

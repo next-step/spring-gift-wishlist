@@ -1,25 +1,39 @@
 package gift.controller.view;
 
 import gift.common.aop.annotation.PreAuthorize;
+import gift.common.model.CustomAuth;
 import gift.common.model.CustomPage;
+import gift.dto.product.ProductCreateRequest;
 import gift.entity.Product;
 import gift.entity.UserRole;
 import gift.service.product.ProductService;
+import jakarta.validation.Validator;
 import jakarta.validation.constraints.Min;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/admin/products")
 public class ProductViewController {
     private final ProductService productService;
+    private final Validator validator;
 
-    public ProductViewController(ProductService productService) {
+    public ProductViewController(
+            ProductService productService,
+            Validator validator
+    ) {
         this.productService = productService;
+        this.validator = validator;
+    }
+
+    private void validateRequest(ProductCreateRequest request) {
+        var violations = validator.validate(request)
+                .stream()
+                .findFirst();
+        if (violations.isPresent()) {
+            throw new IllegalArgumentException(violations.get().getMessage());
+        }
     }
 
     @PreAuthorize(UserRole.ROLE_ADMIN)
@@ -39,7 +53,8 @@ public class ProductViewController {
         model.addAttribute("pageInfo", currentPage);
         model.addAttribute("pageStart", start);
         model.addAttribute("pageEnd", end);
-        return "admin/product-list";
+
+        return "admin/product/product-list";
     }
 
     @PreAuthorize(UserRole.ROLE_ADMIN)
@@ -52,13 +67,32 @@ public class ProductViewController {
 
         model.addAttribute("title", "상품 상세 정보");
         model.addAttribute("product", product);
-        return "admin/view-product";
+        return "admin/product/product-detail";
     }
 
     @PreAuthorize(UserRole.ROLE_ADMIN)
     @GetMapping("/create")
     public String createProductForm(Model model) {
         model.addAttribute("title", "상품 등록");
-        return "admin/create-product";
+        return "admin/product/create-product";
     }
+
+    @PreAuthorize(UserRole.ROLE_ADMIN)
+    @PostMapping("/create")
+    public String createProduct(
+            @ModelAttribute ProductCreateRequest request,
+            @RequestAttribute("auth") CustomAuth auth,
+            Model model
+    ) {
+        try {
+            validateRequest(request);
+            Product product = request.toProduct();
+            Product createdProduct = productService.create(product, auth);
+            return "redirect:/admin/products/" + createdProduct.getId();
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "admin/product/create-product";
+        }
+    }
+
 }

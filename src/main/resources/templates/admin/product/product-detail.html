@@ -1,6 +1,7 @@
-
 <!-- 전체 페이지 레이아웃 -->
-<div th:replace="~{layout/base :: admin_layout('상품 상세', '상품 상세', ~{::view_product_content}, ~{}, ~{::script})}">
+<!DOCTYPE html>
+<html th:replace="~{layout/base :: admin_layout('상품 상세', '상품 상세', ~{::view_product_content}, ~{}, ~{::scripts})}"
+     lang="ko" xmlns:th="http://www.w3.org/1999/html">
     <div th:fragment="view_product_content">
         <div class="max-w-4xl mx-auto">
             <div class="bg-white rounded-lg shadow-lg p-8">
@@ -12,7 +13,7 @@
                             <div class="flex justify-between items-center">
                                 <label class="text-sm font-medium text-gray-700">상품 ID</label>
                             </div>
-                            <p class="text-2xl font-bold text-gray-900 mt-1" th:text="${product.id}">1</p>
+                            <p id="prod-id" class="text-2xl font-bold text-gray-900 mt-1" th:text="${product.id}">1</p>
                         </div>
 
                         <!-- 상품명 -->
@@ -63,34 +64,40 @@
                         <div class="border-b border-gray-200 pb-4">
                             <div class="flex justify-between items-center">
                                 <label class="text-sm font-medium text-gray-700">소유자 ID</label>
+                            </div>
+                            <div id="prod-owner" class="mt-1">
+                                <p class="text-2xl font-bold text-gray-900" th:text="${product.ownerId}">소유자 ID</p>
+                            </div>
+                        </div>
+
+                        <!-- 이미지 URL -->
+                        <div class="border-b border-gray-200 pb-4">
+                            <div class="flex justify-between items-center">
+                                <label class="text-sm font-medium text-gray-700">이미지 URL</label>
                                 <button
                                         class="text-blue-600 hover:text-blue-800 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-300 rounded px-2 py-1 transition-colors"
-                                        onclick="enableEdit('prod-owner')"
+                                        onclick="enableEdit('prod-url')"
                                 >
                                     수정
                                 </button>
                             </div>
-                            <div id="prod-owner" class="mt-1">
-                                <p class="text-2xl font-bold text-gray-900" th:text="${product.ownerId}">소유자 ID</p>
+                            <div id="prod-url" class="mt-1">
+                                <p class="text-sm text-gray-900 overflow-hidden" th:text="${product.imageUrl}">이미지 URL</p>
                                 <input
                                         type="hidden"
-                                        id="prod-owner-input"
+                                        id="prod-url-input"
                                         class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                        th:value="${product.ownerId}"
+                                        th:value="${product.imageUrl}"
                                 />
                             </div>
                         </div>
                     </div>
-
-                    <!-- 상품 이미지 (선택사항) -->
                     <div class="flex items-center justify-center">
                         <div class="text-center">
                             <div class="w-64 h-64 bg-gray-100 rounded-lg flex items-center justify-center mb-4">
-                                <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                </svg>
+                                <img th:src="${product.imageUrl}" alt="상품 이미지" class="w-full h-full object-cover rounded-lg"/>
                             </div>
-                            <p class="text-sm text-gray-500">이미지 미등록</p>
+                            <p class="text-sm text-gray-500" th:if="${product.imageUrl == null}">이미지 미등록</p>
                         </div>
                     </div>
                 </div>
@@ -113,5 +120,8 @@
             </div>
         </div>
     </div>
-    <script th:src="@{/js/admin/product-edit.js}"></script>
-</div> 
+    <th:block th:fragment="scripts">
+        <script th:src="@{/js/admin/index.js}"></script>
+        <script th:src="@{/js/admin/product-edit.js}"></script>
+    </th:block>
+</html>
