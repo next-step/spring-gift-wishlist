@@ -6,6 +6,7 @@ import gift.member.dto.LoginResponseDto;
 import gift.member.dto.MemberCreateDto;
 import gift.member.dto.MemberResponseDto;
 import gift.member.service.MemberService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +28,7 @@ public class MemberController {
 
     @PostMapping("/register")
     public ResponseEntity<LoginResponseDto> registerMember(
-        @RequestBody MemberCreateDto memberCreateDto
+        @RequestBody @Valid MemberCreateDto memberCreateDto
     ) {
         MemberResponseDto createdMember = memberService.create(memberCreateDto);
 
@@ -44,7 +45,7 @@ public class MemberController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> loginMember(
-        @RequestBody LoginRequestDto loginRequestDto
+        @RequestBody @Valid LoginRequestDto loginRequestDto
     ) {
         MemberResponseDto loggedInMember = memberService.login(loginRequestDto);
 
