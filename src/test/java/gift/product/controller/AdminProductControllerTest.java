@@ -15,8 +15,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import gift.product.dto.ProductCreateRequestDto;
-import gift.product.dto.ProductUpdateRequestDto;
 import gift.product.dto.ProductGetResponseDto;
+import gift.product.dto.ProductUpdateRequestDto;
 import gift.product.service.ProductService;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +29,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-class ProductViewControllerTest {
+class AdminProductControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -54,7 +54,7 @@ class ProductViewControllerTest {
     void 단건상품등록_페이지접속() throws Exception {
         mockMvc.perform(get("/admin/products/create"))
             .andExpect(status().isOk())
-            .andExpect(view().name("create-product"));
+            .andExpect(view().name("product/create-product"));
     }
 
     @Test
@@ -78,7 +78,7 @@ class ProductViewControllerTest {
                 .param("imageUrl", "https://1.img")
                 .param("mdConfirmed", "false"))
             .andExpect(status().isOk())
-            .andExpect(view().name("create-product"))
+            .andExpect(view().name("product/create-product"))
             .andExpect(model().attributeExists("errors", "productCreateRequestDto"));
     }
 
@@ -92,7 +92,7 @@ class ProductViewControllerTest {
                 .param("imageUrl", "url.jpg")
                 .param("mdConfirmed", "true"))
             .andExpect(status().isOk())
-            .andExpect(view().name("create-product"))
+            .andExpect(view().name("product/create-product"))
             .andExpect(model().attributeExists("errorMessage"));
 
     }
@@ -103,7 +103,7 @@ class ProductViewControllerTest {
 
         mockMvc.perform(get("/admin/products"))
             .andExpect(status().isOk())
-            .andExpect(view().name("products"))
+            .andExpect(view().name("product/products"))
             .andExpect(model().attributeExists("products"));
     }
 
