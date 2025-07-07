@@ -1,6 +1,5 @@
 package gift.repository;
 
-import gift.dto.ProductRequestDto;
 import gift.entity.Product;
 import gift.exception.FailedGenerateKeyException;
 import gift.exception.ProductNotFoundException;
