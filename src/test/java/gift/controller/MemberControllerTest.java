@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import gift.dto.LoginRequestDTO;
 import gift.dto.RegisterRequestDTO;
 import gift.dto.TokenResponseDTO;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -104,5 +105,43 @@ class MemberControllerTest {
                 .toEntity(TokenResponseDTO.class)
         );
         assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    @DisplayName("토큰조회 - 성공")
+    void jwtInfo() {
+        final String email = "test@test.com";
+        final String password = "password123";
+        RegisterRequestDTO req = new RegisterRequestDTO();
+        req.setEmail(email);
+        req.setPassword(password);
+
+        // 1. 회원가입을 통해 토큰 발급
+        ResponseEntity<TokenResponseDTO> registerResponse = client.post()
+            .uri("/register")
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(req)
+            .retrieve()
+            .toEntity(TokenResponseDTO.class);
+
+        assertNotNull(registerResponse);
+        assertThat(registerResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(registerResponse.getBody()).isNotNull();
+        assertThat(registerResponse.getBody().token()).isNotBlank();
+
+        String token = registerResponse.getBody().token();
+
+        // 2. JWT 토큰을 사용하여 사용자 정보 조회
+        ResponseEntity<Map> jwtInfoResponse = client.get()
+            .uri("/jwt-info")
+            .header("Authorization", "Bearer " + token)
+            .retrieve()
+            .toEntity(Map.class);
+
+        // 3. 응답 검증
+        assertNotNull(jwtInfoResponse);
+        assertThat(jwtInfoResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(jwtInfoResponse.getBody()).isNotNull();
+        assertThat(jwtInfoResponse.getBody().get("email")).isEqualTo(email);
     }
 }
