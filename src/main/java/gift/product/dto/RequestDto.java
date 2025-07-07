@@ -13,6 +13,8 @@ public class RequestDto {
     @NoSpecialChar
     @BannedWord(words = {"카카오"})
     private String name;
+    @NotNull(message = "가격은 필수 입력값입니다.")
+    @PositiveOrZero
     private Integer price;
     private String imageUrl;
 
