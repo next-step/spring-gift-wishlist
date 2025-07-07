@@ -35,3 +35,11 @@ step 2. 회원 로그인
 1. 회원가입 api 구현
 2. 로그인 api 구현
 3. 토큰 구현
+
+
+step 2. 피드백
+1. 회원가입,로그인 테스트 코드 추가 
+2. print()제거
+3. 인증실패시 에러코드 : unauthorized 응답수정
+4. login 메소드명 existMember로 변경
+5. 토큰생성시 currentTimeMillis 값을 하나로 통합 하고 시간변경
