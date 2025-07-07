@@ -1,6 +1,5 @@
 package gift.controller;
 
-import gift.common.code.CustomResponseCode;
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
 import gift.service.ProductService;
@@ -42,8 +41,6 @@ public class AdminProductController {
     public String createProduct(@Valid @ModelAttribute("product") ProductRequest request,
         BindingResult result) {
 
-        validateForbiddenKeyword(request, result);
-
         if (result.hasErrors()) {
             return "admin/product-form";
         }
@@ -66,8 +63,6 @@ public class AdminProductController {
         BindingResult result,
         Model model) {
 
-        validateForbiddenKeyword(request, result);
-
         if (result.hasErrors()) {
             model.addAttribute("productId", id);
             return "admin/product-form";
@@ -81,12 +76,5 @@ public class AdminProductController {
     public String deleteProduct(@PathVariable Long id) {
         productService.delete(id);
         return "redirect:/admin/products";
-    }
-
-    private void validateForbiddenKeyword(ProductRequest request, BindingResult result) {
-        if (request.name() != null && request.name().contains("카카오")) {
-            result.rejectValue("name", "forbidden-keyword",
-                CustomResponseCode.FORBIDDEN_KEYWORD_KAKAO.getMessage());
-        }
     }
 }

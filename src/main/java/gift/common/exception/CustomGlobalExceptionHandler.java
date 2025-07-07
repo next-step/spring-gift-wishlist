@@ -38,7 +38,7 @@ public class CustomGlobalExceptionHandler {
 
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<CustomResponseBody<Void>> handleDBException(DataAccessException e) {
-        return ResponseEntity.status(CustomResponseCode.DB_ERROR.getCode())
+        return ResponseEntity.status(CustomResponseCode.DB_ERROR.getHttpStatus())
             .body(new CustomResponseBody<>(
                 CustomResponseCode.DB_ERROR.getCode(),
                 CustomResponseCode.DB_ERROR.getMessage(),

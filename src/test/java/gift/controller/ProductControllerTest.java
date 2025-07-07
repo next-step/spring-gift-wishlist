@@ -1,6 +1,7 @@
 package gift.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import gift.common.code.CustomResponseCode;
 import gift.common.dto.CustomResponseBody;
@@ -43,16 +44,18 @@ public class ProductControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .body(request)
             .retrieve()
-            .body(new ParameterizedTypeReference<CustomResponseBody<ProductResponse>>() {});
+            .body(new ParameterizedTypeReference<CustomResponseBody<ProductResponse>>() {
+            });
 
-        assertThat(response).isNotNull();
-        assertThat(response.status()).isEqualTo(CustomResponseCode.CREATED.getCode());
+        assertResponse(response, CustomResponseCode.CREATED);
 
         ProductResponse data = response.data();
-        assertThat(data).isNotNull();
-        assertThat(data.name()).isEqualTo("테스트 상품");
-        assertThat(data.price()).isEqualTo(4500);
-        assertThat(data.imageUrl()).isEqualTo("https://test.jpg");
+
+        assertAll("응답 데이터 필드 검증",
+            () -> assertThat(data.name()).isEqualTo("테스트 상품"),
+            () -> assertThat(data.price()).isEqualTo(4500),
+            () -> assertThat(data.imageUrl()).isEqualTo("https://test.jpg")
+        );
     }
 
     @Test
@@ -67,16 +70,19 @@ public class ProductControllerTest {
         CustomResponseBody<ProductResponse> response = client.get()
             .uri("/{id}", id)
             .retrieve()
-            .body(new ParameterizedTypeReference<CustomResponseBody<ProductResponse>>() {});
+            .body(new ParameterizedTypeReference<CustomResponseBody<ProductResponse>>() {
+            });
+
+        assertResponse(response, CustomResponseCode.RETRIEVED);
 
         ProductResponse data = response.data();
 
-        assertThat(response).isNotNull();
-        assertThat(response.status()).isEqualTo(CustomResponseCode.RETRIEVED.getCode());
-        assertThat(data.id()).isEqualTo(id);
-        assertThat(data.name()).isEqualTo(name);
-        assertThat(data.price()).isEqualTo(price);
-        assertThat(data.imageUrl()).isEqualTo(imageUrl);
+        assertAll("응답 데이터 필드 검증",
+            () -> assertThat(data.id()).isEqualTo(id),
+            () -> assertThat(data.name()).isEqualTo(name),
+            () -> assertThat(data.price()).isEqualTo(price),
+            () -> assertThat(data.imageUrl()).isEqualTo(imageUrl)
+        );
     }
 
     @Test
@@ -88,13 +94,17 @@ public class ProductControllerTest {
         CustomResponseBody<List<ProductResponse>> response = client.get()
             .uri("")
             .retrieve()
-            .body(new ParameterizedTypeReference<CustomResponseBody<List<ProductResponse>>>() {});
+            .body(new ParameterizedTypeReference<CustomResponseBody<List<ProductResponse>>>() {
+            });
 
-        assertThat(response).isNotNull();
-        assertThat(response.status()).isEqualTo(CustomResponseCode.LIST_RETRIEVED.getCode());
-        assertThat(response.data()).isNotNull();
-        assertThat(response.data()).anyMatch(p -> p.name().equals("테스트 상품1"));
-        assertThat(response.data()).anyMatch(p -> p.name().equals("테스트 상품2"));
+        assertResponse(response, CustomResponseCode.LIST_RETRIEVED);
+
+        List<ProductResponse> data = response.data();
+
+        assertAll("응답 데이터 필드 검증",
+            () -> assertThat(data).anyMatch(p -> p.name().equals("테스트 상품1")),
+            () -> assertThat(data).anyMatch(p -> p.name().equals("테스트 상품2"))
+        );
     }
 
     @Test
@@ -109,16 +119,19 @@ public class ProductControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .body(update)
             .retrieve()
-            .body(new ParameterizedTypeReference<CustomResponseBody<ProductResponse>>() {});
+            .body(new ParameterizedTypeReference<CustomResponseBody<ProductResponse>>() {
+            });
+
+        assertResponse(response, CustomResponseCode.UPDATED);
 
         ProductResponse data = response.data();
 
-        assertThat(response).isNotNull();
-        assertThat(response.status()).isEqualTo(CustomResponseCode.UPDATED.getCode());
-        assertThat(data.id()).isEqualTo(id);
-        assertThat(data.name()).isEqualTo("테스트 수정 상품");
-        assertThat(data.price()).isEqualTo(1500);
-        assertThat(data.imageUrl()).isEqualTo("https://new.jpg");
+        assertAll("응답 데이터 필드 검증",
+            () -> assertThat(data.id()).isEqualTo(id),
+            () -> assertThat(data.name()).isEqualTo("테스트 수정 상품"),
+            () -> assertThat(data.price()).isEqualTo(1500),
+            () -> assertThat(data.imageUrl()).isEqualTo("https://new.jpg")
+        );
     }
 
     @Test
@@ -126,13 +139,16 @@ public class ProductControllerTest {
     void testDeleteProduct() {
         Long id = createSampleProduct("테스트 삭제 상품", 2000, "https://test.jpg");
 
-        var response = client.delete()
+        ResponseEntity<Void> response = client.delete()
             .uri("/{id}", id)
             .retrieve()
             .toBodilessEntity();
 
-        assertThat(response.getStatusCode().value())
-            .isEqualTo(CustomResponseCode.DELETED.getHttpStatus().value());
+        assertAll("응답 객체 검증",
+            () -> assertThat(response).isNotNull(),
+            () -> assertThat(response.getStatusCode().value())
+                .isEqualTo(CustomResponseCode.DELETED.getHttpStatus().value())
+        );
     }
 
     @Test
@@ -145,30 +161,29 @@ public class ProductControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .body(invalidRequest)
             .retrieve()
-            .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {})
+            .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {
+            })
             .toEntity(String.class);
-
-        assertThat(response.getStatusCode().value())
-            .isEqualTo(CustomResponseCode.VALIDATION_FAILED.getHttpStatus().value());
-        assertThat(response.getBody()).contains("상품명은 필수입니다.");
+        
+        assertValidationError(response, "상품명은 필수입니다.");
     }
 
     @Test
     @DisplayName("상품명 최대 길이 유효성 검사")
     void testProductNameLengthValidation() {
-        ProductRequest invalidRequest = new ProductRequest("일이삼사오육칠팔구십123456", 1000, "https://test.jpg");
+        ProductRequest invalidRequest = new ProductRequest("일이삼사오육칠팔구십123456", 1000,
+            "https://test.jpg");
 
         ResponseEntity<String> response = client.post()
             .uri("")
             .contentType(MediaType.APPLICATION_JSON)
             .body(invalidRequest)
             .retrieve()
-            .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {})
+            .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {
+            })
             .toEntity(String.class);
 
-        assertThat(response.getStatusCode().value())
-            .isEqualTo(CustomResponseCode.VALIDATION_FAILED.getHttpStatus().value());
-        assertThat(response.getBody()).contains("상품명은 15자 까지만 입력 가능합니다.");
+        assertValidationError(response, "상품명은 15자 까지만 입력 가능합니다.");
     }
 
     @Test
@@ -181,17 +196,16 @@ public class ProductControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .body(invalidRequest)
             .retrieve()
-            .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {})
+            .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {
+            })
             .toEntity(String.class);
 
-        assertThat(response.getStatusCode().value())
-            .isEqualTo(CustomResponseCode.VALIDATION_FAILED.getHttpStatus().value());
-        assertThat(response.getBody()).contains("지원하지 않는 문자가 포함되어있습니다.");
+        assertValidationError(response, "지원하지 않는 문자가 포함되어있습니다.");
     }
 
     @Test
     @DisplayName("상품명에 카카오 포함 시 유효성 검사")
-    void testForbiddenKeywordInProductName() {
+    void testProductNameForbiddenKeywordValidation() {
         ProductRequest invalidRequest = new ProductRequest("카카오", 3000, "https://test.jpg");
 
         ResponseEntity<String> response = client.post()
@@ -199,14 +213,12 @@ public class ProductControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .body(invalidRequest)
             .retrieve()
-            .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {})
+            .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {
+            })
             .toEntity(String.class);
 
-        assertThat(response.getStatusCode().value())
-            .isEqualTo(CustomResponseCode.FORBIDDEN_KEYWORD_KAKAO.getHttpStatus().value());
-
-        assertThat(response.getBody())
-            .contains(CustomResponseCode.FORBIDDEN_KEYWORD_KAKAO.getMessage());
+        assertValidationError(response,
+            String.format(CustomResponseCode.FORBIDDEN_KEYWORD.getMessage(), "카카오"));
     }
 
     @Test
@@ -219,12 +231,11 @@ public class ProductControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .body(invalidRequest)
             .retrieve()
-            .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {})
+            .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {
+            })
             .toEntity(String.class);
 
-        assertThat(response.getStatusCode().value())
-            .isEqualTo(CustomResponseCode.VALIDATION_FAILED.getHttpStatus().value());
-        assertThat(response.getBody()).contains("가격은 필수입니다.");
+        assertValidationError(response, "가격은 필수입니다.");
     }
 
     @Test
@@ -237,12 +248,11 @@ public class ProductControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .body(invalidRequest)
             .retrieve()
-            .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {})
+            .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {
+            })
             .toEntity(String.class);
 
-        assertThat(response.getStatusCode().value())
-            .isEqualTo(CustomResponseCode.VALIDATION_FAILED.getHttpStatus().value());
-        assertThat(response.getBody()).contains("이미지 URL은 필수입니다.");
+        assertValidationError(response, "이미지 URL은 필수입니다.");
     }
 
     private Long createSampleProduct(String name, int price, String imageUrl) {
@@ -253,8 +263,27 @@ public class ProductControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .body(request)
             .retrieve()
-            .body(new ParameterizedTypeReference<CustomResponseBody<ProductResponse>>() {});
+            .body(new ParameterizedTypeReference<CustomResponseBody<ProductResponse>>() {
+            });
 
         return response.data().id();
+    }
+
+    private <T> void assertResponse(CustomResponseBody<T> response,
+        CustomResponseCode expectedCode) {
+        assertAll("응답 객체 검증",
+            () -> assertThat(response).isNotNull(),
+            () -> assertThat(response.status()).isEqualTo(expectedCode.getCode()),
+            () -> assertThat(response.data()).isNotNull()
+        );
+    }
+
+    private void assertValidationError(ResponseEntity<String> response, String expectedMessage) {
+        assertAll("응답 객체 검증",
+            () -> assertThat(response).isNotNull(),
+            () -> assertThat(response.getStatusCode().value())
+                .isEqualTo(CustomResponseCode.VALIDATION_FAILED.getHttpStatus().value()),
+            () -> assertThat(response.getBody()).contains(expectedMessage)
+        );
     }
 }

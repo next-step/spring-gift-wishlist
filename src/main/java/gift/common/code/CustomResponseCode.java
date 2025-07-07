@@ -10,9 +10,12 @@ public enum CustomResponseCode {
     DELETED(204, "삭제 성공", HttpStatus.NO_CONTENT),
     LIST_RETRIEVED(200, "목록 조회 성공", HttpStatus.OK),
 
+    LOGIN_SUCCESS(200, "로그인 성공¡", HttpStatus.OK),
     VALIDATION_FAILED(400, "요청 값이 유효하지 않습니다.", HttpStatus.BAD_REQUEST),
-    FORBIDDEN_KEYWORD_KAKAO(400, "카카오가 포함된 문구는 담당 MD와 협의한 경우에만 사용할 수 있습니다.", HttpStatus.BAD_REQUEST),
+    LOGIN_FAILED(403, "로그인에 실패!", HttpStatus.FORBIDDEN),
+    FORBIDDEN_KEYWORD(403, "%s - 해당 문구는 담당 MD와 협의한 경우에만 사용할 수 있습니다.", HttpStatus.FORBIDDEN),
     NOT_FOUND(404, "리소스를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    EMAIL_DUPLICATE(409, "중복된 이메일이 이미 존재합니다。", HttpStatus.CONFLICT),
     DB_ERROR(500, "데이터베이스 처리 중 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
     INTERNAL_ERROR(500, "서버 내부 오류입니다.", HttpStatus.INTERNAL_SERVER_ERROR);
 
