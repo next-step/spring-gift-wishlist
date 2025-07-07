@@ -34,4 +34,19 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
     }
+
+    @ExceptionHandler(MemberNotFoundException.class)
+    public ResponseEntity<Void> handleMemberNotFound(MemberNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    @ExceptionHandler(InvalidMemberException.class)
+    public ResponseEntity<ErrorResponseDto> handleInvalidMember(InvalidMemberException ex) {
+        ErrorResponseDto responseDto = new ErrorResponseDto(
+                HttpStatus.BAD_REQUEST.value(),
+                "Invalid Member",
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
+    }
 }
