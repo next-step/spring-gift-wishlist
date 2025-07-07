@@ -2,7 +2,10 @@ package gift.controller.api;
 
 import gift.dto.ItemRequest;
 import gift.dto.ItemResponse;
+import gift.entity.Member;
+import gift.login.Login;
 import gift.service.ItemService;
+import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
@@ -28,8 +31,8 @@ public class ItemController {
     }
 
     @PostMapping
-    public ResponseEntity<ItemResponse> createItem(@RequestBody ItemRequest request) {
-        ItemResponse newItem = itemService.createItem(request);
+    public ResponseEntity<ItemResponse> createItem(@Valid @RequestBody @Login Member loginMember, ItemRequest request) {
+        ItemResponse newItem = itemService.createItem(loginMember, request);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")
             .buildAndExpand(
@@ -57,8 +60,8 @@ public class ItemController {
 
     @PutMapping("/{productId}")
     public ResponseEntity<ItemResponse> updateItem(@PathVariable("productId") Long id,
-        @RequestBody ItemRequest request) {
-        ItemResponse updatedItem = itemService.updateItem(id, request);
+        @RequestBody ItemRequest request, @Login Member loginMember) {
+        ItemResponse updatedItem = itemService.updateItem(id, request, loginMember);
         return ResponseEntity.ok(updatedItem);
     }
 

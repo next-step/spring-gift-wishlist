@@ -31,6 +31,16 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 
+    @ExceptionHandler(AuthorizationException.class)
+    public Object handleAuthorizationException(AuthorizationException ex, HttpServletRequest request) {
+        if (isApiRequest(request)) {
+            return createErrorResponse(HttpStatus.FORBIDDEN, ex.getMessage());
+        }
+        ModelAndView modelAndView = new ModelAndView("error/403");
+        modelAndView.addObject("errorMessage", ex.getMessage());
+        return modelAndView;
+    }
+
     @ExceptionHandler(LoginException.class)
     public ResponseEntity<String> handleLoginException(LoginException ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
@@ -66,6 +76,20 @@ public class GlobalExceptionHandler {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
         }
         ModelAndView modelAndView = new ModelAndView("error/500");
+        modelAndView.addObject("errorMessage", message);
+        return modelAndView;
+    }
+
+    private boolean isApiRequest(HttpServletRequest request) {
+        return request.getRequestURI().startsWith("/api/");
+    }
+
+    private ResponseEntity<String> createErrorResponse(HttpStatus status, String message) {
+        return ResponseEntity.status(status).body(message);
+    }
+
+    private ModelAndView createErrorModelAndView(String viewName, String message) {
+        ModelAndView modelAndView = new ModelAndView(viewName);
         modelAndView.addObject("errorMessage", message);
         return modelAndView;
     }
