@@ -1,5 +1,7 @@
 package gift.global.interceptor;
 
+import gift.global.exception.ErrorCode;
+import gift.global.exception.InvalidTokenException;
 import gift.global.jwt.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,7 +25,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         String header = request.getHeader("Authorization");
 
         if(header==null || !header.startsWith(BEARER_PREFIX)){
-            throw new RuntimeException("인증 헤더의 형식이 잘못되었습니다.");
+            throw new InvalidTokenException(ErrorCode.INVALID_TOKEN_REQUEST);
         }
 
         String token = header.substring(BEARER_PREFIX.length());
