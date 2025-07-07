@@ -12,7 +12,7 @@ public class MemberRepository {
 
     private final JdbcClient jdbcClient;
 
-    MemberRepository(JdbcClient jdbcClient) {
+    public MemberRepository(JdbcClient jdbcClient) {
         this.jdbcClient = jdbcClient;
     }
 

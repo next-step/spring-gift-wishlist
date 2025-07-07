@@ -20,7 +20,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final String secretKey;
 
-    MemberService(MemberRepository memberRepository, @Value("${jwt.secretKey}") String secretKey) {
+    public MemberService(MemberRepository memberRepository, @Value("${jwt.secretKey}") String secretKey) {
         this.memberRepository = memberRepository;
         this.secretKey = secretKey;
     }
