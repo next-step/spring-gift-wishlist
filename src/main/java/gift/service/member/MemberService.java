@@ -27,7 +27,7 @@ public class MemberService {
             throw new RuntimeException("이메일, 비밀번호 조합이 잘못되었습니다.");
         }
 
-        String token = jwtUtil.generateToken(member.getEmail());
+        String token = jwtUtil.generateToken(member.getId());
         return new TokenResponse(token);
     }
 

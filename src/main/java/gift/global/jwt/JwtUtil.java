@@ -19,13 +19,13 @@ public class JwtUtil {
         return secretKey;
     }
 
-    public String generateToken(String subject) {
+    public String generateToken(Long memberId) {
         Date now = new Date();
 
         return Jwts.builder()
-            .setSubject(subject)
+            .setSubject(memberId.toString())
             .setIssuedAt(now)
-            .setExpiration(new Date(now.getTime()+3600*60))
+            .setExpiration(new Date(now.getTime()+3600*1000))
             .signWith(secretKey)
             .compact();
     }
