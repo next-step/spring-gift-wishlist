@@ -63,4 +63,21 @@ public class MemberRepositoryImpl implements MemberRepository {
             )).optional()
             .orElseThrow(WrongIdOrPasswordException::new);
     }
+    
+    @Override
+    public Member findMemberById(Long userId) {
+        var sql = """
+            select * from members where id = :id;
+            """;
+        
+        return members.sql(sql)
+            .param("id", userId)
+            .query((rs, rowNum) -> new Member(
+                rs.getLong("id"),
+                rs.getString("email"),
+                rs.getString("password"),
+                Role.valueOf(rs.getString("role"))
+            )).optional()
+            .orElseThrow(WrongIdOrPasswordException::new);
+    }
 }

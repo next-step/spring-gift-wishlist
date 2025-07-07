@@ -17,12 +17,12 @@ create table members
 create table wishlist
 (
     id bigint AUTO_INCREMENT PRIMARY KEY,
-    member_id bigint not null,
-    product_id bigint not null,
-    product_cnt bigint not null check ( product_cnt > 0 )
+    memberId bigint not null,
+    productId bigint not null,
+    productCnt bigint not null check ( productCnt > 0 ),
 
-    foreign key (member_id) references members(id) on delete cascade,
-    foreign key (product_id) references products(id) on delete cascade ,
+    foreign key (memberId) references members(id) on delete cascade,
+    foreign key (productId) references products(id) on delete cascade ,
 
-    unique(member_id, product_id)
+    unique(memberId, productId)
 );
