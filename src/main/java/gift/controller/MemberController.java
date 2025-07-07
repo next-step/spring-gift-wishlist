@@ -21,6 +21,7 @@ public class MemberController {
         this.memberService = memberService;
     }
 
+    // 회원가입
     @PostMapping("/register")
     public ResponseEntity<Void> registerMember(@Valid @RequestBody RegisterMemberRequestDto requestDto) {
         memberService.registerMember(requestDto);
@@ -28,6 +29,7 @@ public class MemberController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    // 로그인
     @PostMapping("/login")
     public ResponseEntity<TokenResponseDto> login(@Valid @RequestBody LoginRequestDto requestDto) {
         TokenResponseDto responseDto = memberService.login(requestDto);

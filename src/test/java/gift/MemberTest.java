@@ -3,7 +3,7 @@ package gift;
 import gift.component.BCryptEncryptor;
 import gift.dto.LoginRequestDto;
 import gift.dto.TokenResponseDto;
-import gift.entity.Member;
+import gift.domain.Member;
 import gift.enums.Role;
 import gift.repository.MemberRepository;
 import gift.service.MemberService;
@@ -47,11 +47,15 @@ public class MemberTest {
         LoginRequestDto request = new LoginRequestDto("email@test.com", "1234");
         Member member = new Member(1L, "email@test.com", "encoded123", Role.ROLE_USER);
 
+        // given
         given(memberRepository.existsByEmail(any())).willReturn(true);
         given(memberRepository.findMemberByEmailOrElseThrow(any())).willReturn(member);
         given(bCryptEncryptor.isMatch(any(), any())).willReturn(true);
 
+        // when
         TokenResponseDto response = memberService.login(request);
+
+        // then
         assertThat(response.token()).isNotBlank();
     }
 
@@ -68,4 +72,6 @@ public class MemberTest {
                 .isInstanceOf(ResponseStatusException.class)
                 .hasMessageContaining("401");
     }
+
+
 }

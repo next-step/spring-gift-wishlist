@@ -1,4 +1,4 @@
-package gift.entity;
+package gift.domain;
 
 import gift.enums.Role;
 

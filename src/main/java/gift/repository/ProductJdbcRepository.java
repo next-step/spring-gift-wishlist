@@ -1,6 +1,6 @@
 package gift.repository;
 
-import gift.entity.Product;
+import gift.domain.Product;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;

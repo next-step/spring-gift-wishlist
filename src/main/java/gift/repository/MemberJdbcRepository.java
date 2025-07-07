@@ -1,6 +1,6 @@
 package gift.repository;
 
-import gift.entity.Member;
+import gift.domain.Member;
 import gift.enums.Role;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;

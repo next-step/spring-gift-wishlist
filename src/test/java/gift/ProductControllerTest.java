@@ -2,7 +2,7 @@ package gift;
 
 import gift.dto.CreateProductRequestDto;
 import gift.dto.UpdateProductRequestDto;
-import gift.entity.Product;
+import gift.domain.Product;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;

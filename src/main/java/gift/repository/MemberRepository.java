@@ -1,6 +1,6 @@
 package gift.repository;
 
-import gift.entity.Member;
+import gift.domain.Member;
 
 public interface MemberRepository {
     void registerMember(String email, String password);

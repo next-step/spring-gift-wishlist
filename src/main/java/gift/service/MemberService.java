@@ -4,7 +4,7 @@ import gift.component.BCryptEncryptor;
 import gift.dto.LoginRequestDto;
 import gift.dto.RegisterMemberRequestDto;
 import gift.dto.TokenResponseDto;
-import gift.entity.Member;
+import gift.domain.Member;
 import gift.repository.MemberRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
