@@ -25,7 +25,7 @@ public class JwtTokenProvider {
     public String createToken(User user) {
         Date now = new Date();
         return Jwts.builder()
-                .subject("access")
+                .subject(ACCESS_SUBJECT)
                 .claims(createClaims(user))
                 .issuedAt(now)
                 .expiration(new Date(now.getTime() + (30 * 60 * 1000L)))
