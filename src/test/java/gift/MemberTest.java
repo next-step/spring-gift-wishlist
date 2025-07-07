@@ -43,10 +43,12 @@ public class MemberTest {
     }
 
     @Test
-    void 로그인이_성공하면_토큰이_반환된다() {
+    void 로그인이_성공하면_토큰이_반환된다() throws NoSuchFieldException, IllegalAccessException {
         LoginRequestDto request = new LoginRequestDto("email@test.com", "1234");
-        Member member = new Member(1L, "email@test.com", "encoded123", Role.ROLE_USER);
-
+        Member member = new Member("email@test.com", "encoded123", Role.ROLE_USER);
+        Field idField = Member.class.getDeclaredField("id");
+        idField.setAccessible(true);
+        idField.set(member, 1L);
         // given
         given(memberRepository.existsByEmail(any())).willReturn(true);
         given(memberRepository.findMemberByEmailOrElseThrow(any())).willReturn(member);
@@ -62,7 +64,7 @@ public class MemberTest {
     @Test
     void 비밀번호가_틀리면_401을_반환한다() {
         LoginRequestDto requestDto = new LoginRequestDto("email@test.com", "wrongPassword");
-        Member member = new Member(1L, "email@test.com", "realPassword", Role.ROLE_USER);
+        Member member = new Member("email@test.com", "realPassword", Role.ROLE_USER);
 
         given(memberRepository.existsByEmail(any())).willReturn(true);
         given(memberRepository.findMemberByEmailOrElseThrow(any())).willReturn(member);

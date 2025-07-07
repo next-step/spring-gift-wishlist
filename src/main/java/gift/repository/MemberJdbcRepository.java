@@ -22,9 +22,9 @@ public class MemberJdbcRepository implements MemberRepository {
     }
 
     @Override
-    public void registerMember(String email, String password) {
-        String sql = "INSERT INTO member (email, password) VALUES (?, ?)";
-        jdbcTemplate.update(sql, email, password);
+    public void registerMember(Member member) {
+        String sql = "INSERT INTO member (email, password, role) VALUES (?, ?, ?)";
+        jdbcTemplate.update(sql, member.getEmail(), member.getPassword(), member.getRole().name());
     }
 
     @Override

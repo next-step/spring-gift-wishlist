@@ -21,8 +21,7 @@ public class Member {
         this.updatedAt = updatedAt;
     }
 
-    public Member(Long id, String email, String password, Role role) {
-        this.id = id;
+    public Member(String email, String password, Role role) {
         this.email = email;
         this.password = password;
         this.role = role;

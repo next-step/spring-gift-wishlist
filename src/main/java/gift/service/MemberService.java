@@ -5,6 +5,7 @@ import gift.dto.LoginRequestDto;
 import gift.dto.RegisterMemberRequestDto;
 import gift.dto.TokenResponseDto;
 import gift.domain.Member;
+import gift.enums.Role;
 import gift.repository.MemberRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -32,7 +33,14 @@ public class MemberService {
         if (memberRepository.existsByEmail(requestDto.email())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 존재하는 이메일 입니다.");
         }
-        memberRepository.registerMember(requestDto.email(), bCryptEncryptor.encode(requestDto.password()));
+
+        memberRepository.registerMember(
+                new Member(
+                        requestDto.email(),
+                        bCryptEncryptor.encode(requestDto.password()),
+                        Role.ROLE_USER
+                )
+        );
     }
 
     @Transactional

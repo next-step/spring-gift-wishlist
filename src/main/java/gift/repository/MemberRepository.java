@@ -3,7 +3,7 @@ package gift.repository;
 import gift.domain.Member;
 
 public interface MemberRepository {
-    void registerMember(String email, String password);
+    void registerMember(Member member);
 
     boolean existsByEmail(String email);
 
