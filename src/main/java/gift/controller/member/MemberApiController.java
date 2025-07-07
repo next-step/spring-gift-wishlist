@@ -1,9 +1,11 @@
 package gift.controller.member;
 
 import gift.domain.Member;
+import gift.dto.member.LoginRequest;
 import gift.dto.member.MemberRequest;
 import gift.dto.member.MemberResponse;
 import gift.service.member.MemberService;
+import org.springframework.boot.autoconfigure.graphql.GraphQlProperties.Http;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +27,14 @@ public class MemberApiController {
     }
 
     // 로그인
+    @PostMapping("/login")
+    public ResponseEntity<?> login(
+        @RequestBody LoginRequest loginRequest
+    ){
+        String token = memberService.login(loginRequest);
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(token);
+    }
 
     // member 생성: 회원가입
     @PostMapping("/register")
