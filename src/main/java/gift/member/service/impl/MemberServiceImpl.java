@@ -8,6 +8,7 @@ import gift.member.dto.SignUpResponseDto;
 import gift.member.exception.AuthenticationException;
 import gift.member.exception.DuplicatedException;
 import gift.member.model.Member;
+import gift.member.model.Token;
 import gift.member.repository.MemberRepository;
 import gift.member.service.MemberService;
 import org.springframework.stereotype.Service;
@@ -33,30 +34,23 @@ public class MemberServiceImpl implements MemberService {
         Member savedMember = memberRepository.save(member);
 
         // JWT 토큰 생성
-        String accessToken = jwtService.createToken(
-                savedMember.getId(),
-                savedMember.getEmail(),
-                savedMember.getRole());
+        Token token = jwtService.generateToken(savedMember);
 
-        return new SignUpResponseDto(accessToken);
+        return new SignUpResponseDto(token.getAccessToken());
     }
 
     @Override
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
         Member member = memberRepository.findByEmail(loginRequestDto.email())
-                .orElseThrow(() -> new AuthenticationException("이메일 또는 비밀번호가 일치하지 않습니다."));
+                .orElseThrow(() -> new AuthenticationException("존재하지 않는 이메일 입니다."));
 
         if (!loginRequestDto.password().equals(member.getPassword())) {
-            throw new AuthenticationException("이메일 또는 비밀번호가 일치하지 않습니다.");
+            throw new AuthenticationException("비밀번호가 일치하지 않습니다.");
         }
 
         // JWT 토큰 생성
-        String accessToken = jwtService.createToken(
-                member.getId(),
-                member.getEmail(),
-                member.getRole()
-        );
+        Token token = jwtService.generateToken(member);
 
-        return new LoginResponseDto(accessToken);
+        return new LoginResponseDto(token.getAccessToken());
     }
 }
