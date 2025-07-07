@@ -15,10 +15,11 @@
 ### 1. 다건 상품 조회
 #### 요청
 
-페이지와 크기를 지정하여 상품 목록을 조회할 수 있습니다. 기본적으로 첫 페이지(0번 페이지)와 한 페이지에 5개의 상품을 조회합니다.
+페이지와 크기를 지정하여 상품 목록을 조회할 수 있습니다. 기본적으로 첫 페이지(0번 페이지)와 한 페이지에 5개의 상품을 조회합니다. **인증 헤더가 필요합니다.**
 
 ```http
 GET /api/products/ HTTP/1.1?page=0&size=5
+Authorization: Bearer {token}
 ```
 
 #### 요청 파라미터
@@ -90,10 +91,11 @@ contents 필드에는 상품 목록이 포함되며, 각 상품은 다음과 같
 
 #### 요청
 
-특정 상품의 정보를 조회합니다. 상품 ID를 URL 경로에 포함시켜 요청합니다.
+특정 상품의 정보를 조회합니다. 상품 ID를 URL 경로에 포함시켜 요청합니다. **인증 헤더가 필요합니다.**
 
 ```http
 GET /api/products/1 HTTP/1.1
+Authorization: Bearer {token}
 ```
 
 #### 응답
@@ -113,11 +115,12 @@ GET /api/products/1 HTTP/1.1
 ### 3. 단건 상품 생성
 
 #### 요청
-새로운 상품을 생성합니다. 상품의 이름과 가격을 요청 본문에 포함시켜 POST 요청을 보냅니다.
+새로운 상품을 생성합니다. 상품의 이름과 가격을 요청 본문에 포함시켜 POST 요청을 보냅니다. **인증 헤더가 필요합니다.**
 
 ```http
 POST /api/products/ HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer {token}
 
 {
   "name":"test1",
@@ -142,13 +145,14 @@ Content-Type: application/json
 ### 4. 단건 상품 수정
 
 #### 요청
-특정 상품의 정보를 수정합니다. 상품 ID를 URL 경로에 포함시키고, 수정할 정보를 요청 본문에 포함시켜 PUT 요청을 보냅니다.
+특정 상품의 정보를 수정합니다. 상품 ID를 URL 경로에 포함시키고, 수정할 정보를 요청 본문에 포함시켜 PUT 요청을 보냅니다. **인증 헤더가 필요합니다.**
 요청 본문에 누락된 필드는 수정되지 않습니다.
 
 
 ```http
 PUT /api/products/1 HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer {token}
 
 {
   "name": "Updated Product",
@@ -173,10 +177,11 @@ Content-Type: application/json
 ### 5. 단건 상품 삭제
 
 #### 요청
-특정 상품을 삭제합니다. 상품 ID를 URL 경로에 포함시켜 DELETE 요청을 보냅니다.
+특정 상품을 삭제합니다. 상품 ID를 URL 경로에 포함시켜 DELETE 요청을 보냅니다. **인증 헤더가 필요합니다.**
 
 ```http
 DELETE /api/products/1 HTTP/1.1
+Authorization: Bearer {token}
 ```
 
 #### 응답
