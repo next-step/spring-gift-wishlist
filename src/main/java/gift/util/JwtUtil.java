@@ -18,7 +18,8 @@ public class JwtUtil {
 
     public static final String BEARER_PREFIX = "Bearer ";
 
-    private static final long TOKEN_TIME = 30 * 60 * 1000L;
+    @Value("${jwt.token-validity}")
+    private long tokenTime;
 
     @Value("${jwt.secret}")
     private String secretKey;
@@ -33,7 +34,7 @@ public class JwtUtil {
 
     public String createToken(String email) {
         Date now = new Date();
-        Date expiredDate = new Date(now.getTime() + TOKEN_TIME);
+        Date expiredDate = new Date(now.getTime() + tokenTime);
 
         return Jwts.builder()
             .setSubject(email)
