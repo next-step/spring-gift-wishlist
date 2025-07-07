@@ -3,6 +3,7 @@ package gift.service;
 import gift.domain.Member;
 import gift.dto.MemberLoginRequest;
 import gift.dto.MemberRegisterRequest;
+import gift.exception.ForbiddenException;
 import gift.repository.MemberRepository;
 import gift.util.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,10 +34,10 @@ public class AuthService {
 
     public String login(MemberLoginRequest request) {
         Member member = memberRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("이메일 또는 비밀번호가 틀렸습니다."));
+                .orElseThrow(() -> new ForbiddenException("이메일 또는 비밀번호가 틀렸습니다."));
 
         if (!passwordEncoder.matches(request.getPassword(), member.getPassword())) {
-            throw new IllegalArgumentException("이메일 또는 비밀번호가 틀렸습니다.");
+            throw new ForbiddenException("이메일 또는 비밀번호가 틀렸습니다.");
         }
 
         return jwtUtil.createToken(member);
