@@ -10,7 +10,7 @@ class ProductPriceTest {
     @Test
     void validPrice() {
         ProductPrice price = new ProductPrice(1);
-        assertThat(price.value()).isEqualTo(1);
+        assertThat(price.price()).isEqualTo(1);
     }
 
     @Test

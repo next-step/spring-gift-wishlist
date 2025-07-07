@@ -10,7 +10,7 @@ class ProductIdTest {
     @Test
     void validId() {
         ProductId id = new ProductId(1L);
-        assertThat(id.value()).isEqualTo(1L);
+        assertThat(id.id()).isEqualTo(1L);
     }
 
     @Test

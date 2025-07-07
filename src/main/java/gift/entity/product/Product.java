@@ -75,7 +75,7 @@ public class Product {
     }
 
     public ProductResponse toResponse() {
-        return new ProductResponse(id.value(), name.value(), price.value(), imageUrl.value());
+        return new ProductResponse(id.id(), name.name(), price.price(), imageUrl.url());
     }
 
     public ProductId id() {

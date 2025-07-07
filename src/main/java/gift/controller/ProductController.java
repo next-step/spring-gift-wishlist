@@ -57,7 +57,7 @@ public class ProductController {
             @PathVariable Long id,
             @Valid @RequestBody ProductRequest req) {
         Product p = findUnHiddenProduct(id);
-        Product updated = productService.updateProduct(p.id().value(), req.name(), req.price(),
+        Product updated = productService.updateProduct(p.id().id(), req.name(), req.price(),
                 req.imageUrl());
         return ResponseEntity.ok(updated.toResponse());
     }
@@ -65,7 +65,7 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         Product p = findUnHiddenProduct(id);
-        productService.deleteProduct(p.id().value());
+        productService.deleteProduct(p.id().id());
         return ResponseEntity.noContent().build();
     }
 

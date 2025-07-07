@@ -39,7 +39,7 @@ class ProductE2ETest {
     @BeforeEach
     void clean() {
         productRepository.findAll()
-                .forEach(p -> productRepository.deleteById(p.id().value()));
+                .forEach(p -> productRepository.deleteById(p.id().id()));
     }
 
     @Nested
@@ -71,7 +71,7 @@ class ProductE2ETest {
         void getVisible() throws Exception {
             Product p = ProductFixture.save(productRepository, "P1", 5,
                     "http://example.com/p1.png");
-            mockMvc.perform(get("/api/products/{id}", p.id().value()))
+            mockMvc.perform(get("/api/products/{id}", p.id().id()))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.name").value("P1"));
         }
@@ -84,7 +84,7 @@ class ProductE2ETest {
                     .withHidden(true);
             productRepository.save(hidden);
 
-            mockMvc.perform(get("/api/products/{id}", hidden.id().value()))
+            mockMvc.perform(get("/api/products/{id}", hidden.id().id()))
                     .andExpect(status().isForbidden());
         }
 
@@ -147,7 +147,7 @@ class ProductE2ETest {
             Product p = ProductFixture.save(productRepository, "U1", 15,
                     "http://example.com/u1.png");
             ProductRequest req = new ProductRequest("UX", 20, "http://example.com/ux.png");
-            mockMvc.perform(put("/api/products/{id}", p.id().value())
+            mockMvc.perform(put("/api/products/{id}", p.id().id())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(req)))
                     .andExpect(status().isOk())
@@ -162,7 +162,7 @@ class ProductE2ETest {
                     .withHidden(true);
             productRepository.save(hidden);
             ProductRequest req = new ProductRequest("HX", 20, "http://example.com/hx.png");
-            mockMvc.perform(put("/api/products/{id}", hidden.id().value())
+            mockMvc.perform(put("/api/products/{id}", hidden.id().id())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(req)))
                     .andExpect(status().isForbidden());
@@ -184,7 +184,7 @@ class ProductE2ETest {
             Product p = ProductFixture.save(productRepository, "U2", 15,
                     "http://example.com/u2.png");
             ProductRequest req = new ProductRequest("", -1, "");
-            mockMvc.perform(put("/api/products/{id}", p.id().value())
+            mockMvc.perform(put("/api/products/{id}", p.id().id())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(req)))
                     .andExpect(status().isBadRequest());
@@ -200,7 +200,7 @@ class ProductE2ETest {
         void deleteValid() throws Exception {
             Product p = ProductFixture.save(productRepository, "D1", 5,
                     "http://example.com/d1.png");
-            mockMvc.perform(delete("/api/products/{id}", p.id().value()))
+            mockMvc.perform(delete("/api/products/{id}", p.id().id()))
                     .andExpect(status().isNoContent());
         }
 
@@ -211,7 +211,7 @@ class ProductE2ETest {
                             "http://example.com/hd1.png")
                     .withHidden(true);
             productRepository.save(hidden);
-            mockMvc.perform(delete("/api/products/{id}", hidden.id().value()))
+            mockMvc.perform(delete("/api/products/{id}", hidden.id().id()))
                     .andExpect(status().isForbidden());
         }
 

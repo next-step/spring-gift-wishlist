@@ -5,7 +5,7 @@ import java.net.URISyntaxException;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-public record ProductImageUrl(String value) {
+public record ProductImageUrl(String url) {
 
     private static final Pattern URL_PATTERN = Pattern.compile(
             "^(?:http|https)://[\\w.-]+(?:\\.[\\w.-]+)+(?:/\\S*)?$",
@@ -13,8 +13,8 @@ public record ProductImageUrl(String value) {
     );
 
     public ProductImageUrl {
-        Objects.requireNonNull(value, "이미지 URL은 필수 입력값입니다.");
-        String trimmed = value.trim();
+        Objects.requireNonNull(url, "이미지 URL은 필수 입력값입니다.");
+        String trimmed = url.trim();
         if (trimmed.isEmpty()) {
             throw new IllegalArgumentException("이미지 URL은 필수 입력값입니다.");
         }
@@ -30,6 +30,6 @@ public record ProductImageUrl(String value) {
         } catch (URISyntaxException e) {
             throw new IllegalArgumentException("올바른 이미지 URL이어야 합니다.", e);
         }
-        value = trimmed;
+        url = trimmed;
     }
 }

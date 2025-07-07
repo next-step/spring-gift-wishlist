@@ -34,7 +34,7 @@ class AdminProductE2ETest {
     @BeforeEach
     void clean() {
         productRepository.findAll()
-                .forEach(p -> productRepository.deleteById(p.id().value()));
+                .forEach(p -> productRepository.deleteById(p.id().id()));
     }
 
     @Nested
@@ -66,7 +66,7 @@ class AdminProductE2ETest {
         void editFormPage() throws Exception {
             Product p = ProductFixture.save(productRepository, "EProd", 20,
                     "http://example.com/e.png");
-            mockMvc.perform(get("/admin/products/{id}/edit", p.id().value()))
+            mockMvc.perform(get("/admin/products/{id}/edit", p.id().id()))
                     .andExpect(status().isOk())
                     .andExpect(content().string(containsString("상품 수정")))
                     .andExpect(content().string(containsString("value=\"EProd\"")));
@@ -152,7 +152,7 @@ class AdminProductE2ETest {
         void updateValid() throws Exception {
             Product p = ProductFixture.save(productRepository, "EProd", 20,
                     "http://example.com/e.png");
-            mockMvc.perform(post("/admin/products/{id}", p.id().value())
+            mockMvc.perform(post("/admin/products/{id}", p.id().id())
                             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                             .param("_method", "put")
                             .param("name", "EProdX")
@@ -178,7 +178,7 @@ class AdminProductE2ETest {
         void updateInvalidName() throws Exception {
             Product p = ProductFixture.save(productRepository, "EProd", 20,
                     "http://example.com/e.png");
-            mockMvc.perform(post("/admin/products/{id}", p.id().value())
+            mockMvc.perform(post("/admin/products/{id}", p.id().id())
                             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                             .param("_method", "put")
                             .param("name", "invalid!!")
@@ -192,7 +192,7 @@ class AdminProductE2ETest {
         void updateInvalidPrice() throws Exception {
             Product p = ProductFixture.save(productRepository, "EProd", 20,
                     "http://example.com/e.png");
-            mockMvc.perform(post("/admin/products/{id}", p.id().value())
+            mockMvc.perform(post("/admin/products/{id}", p.id().id())
                             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                             .param("_method", "put")
                             .param("name", "valid")
@@ -206,7 +206,7 @@ class AdminProductE2ETest {
         void updateInvalidUrl() throws Exception {
             Product p = ProductFixture.save(productRepository, "EProd", 20,
                     "http://example.com/e.png");
-            mockMvc.perform(post("/admin/products/{id}", p.id().value())
+            mockMvc.perform(post("/admin/products/{id}", p.id().id())
                             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                             .param("_method", "put")
                             .param("name", "valid")
@@ -220,7 +220,7 @@ class AdminProductE2ETest {
         void updateAdminPattern() throws Exception {
             Product p = ProductFixture.save(productRepository, "EProd", 20,
                     "http://example.com/e.png");
-            mockMvc.perform(post("/admin/products/{id}", p.id().value())
+            mockMvc.perform(post("/admin/products/{id}", p.id().id())
                             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                             .param("_method", "put")
                             .param("name", "카카오")
@@ -239,7 +239,7 @@ class AdminProductE2ETest {
         void deleteValid() throws Exception {
             Product p = ProductFixture.save(productRepository, "DelP", 50,
                     "http://example.com/del.png");
-            mockMvc.perform(post("/admin/products/{id}", p.id().value())
+            mockMvc.perform(post("/admin/products/{id}", p.id().id())
                             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                             .param("_method", "delete"))
                     .andExpect(status().is3xxRedirection());

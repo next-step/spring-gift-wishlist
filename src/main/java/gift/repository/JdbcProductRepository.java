@@ -51,7 +51,7 @@ public class JdbcProductRepository implements ProductRepository {
 
     @Override
     public Product save(Product product) {
-        if (product.id() == null || product.id().value() <= 0) {
+        if (product.id() == null || product.id().id() <= 0) {
             return insertProduct(product);
         } else {
             return updateProduct(product);
@@ -60,9 +60,9 @@ public class JdbcProductRepository implements ProductRepository {
 
     private Product insertProduct(Product product) {
         Map<String, Object> params = new HashMap<>();
-        params.put("name", product.name().value());
-        params.put("price", product.price().value());
-        params.put("image_url", product.imageUrl().value());
+        params.put("name", product.name().name());
+        params.put("price", product.price().price());
+        params.put("image_url", product.imageUrl().url());
         params.put("hidden", product.hidden());
         Number key = insert.executeAndReturnKey(params);
         return product.withId(key.longValue());
@@ -71,14 +71,14 @@ public class JdbcProductRepository implements ProductRepository {
     private Product updateProduct(Product product) {
         int updated = jdbc.update(
                 "UPDATE product SET name = ?, price = ?, image_url = ?, hidden = ? WHERE id = ?",
-                product.name().value(),
-                product.price().value(),
-                product.imageUrl().value(),
+                product.name().name(),
+                product.price().price(),
+                product.imageUrl().url(),
                 product.hidden(),
-                product.id().value()
+                product.id().id()
         );
         if (updated == 0) {
-            throw new ProductNotFoundExection(product.id().value());
+            throw new ProductNotFoundExection(product.id().id());
         }
         return product;
     }

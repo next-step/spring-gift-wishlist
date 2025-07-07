@@ -68,10 +68,10 @@ public class AdminProductController {
                 .orElseThrow(() -> new ProductNotFoundExection(id));
 
         ProductForm form = new ProductForm(
-                p.id().value(),
-                p.name().value(),
-                p.price().value(),
-                p.imageUrl().value()
+                p.id().id(),
+                p.name().name(),
+                p.price().price(),
+                p.imageUrl().url()
         );
         model.addAttribute("productForm", form);
         return "admin/product_form";

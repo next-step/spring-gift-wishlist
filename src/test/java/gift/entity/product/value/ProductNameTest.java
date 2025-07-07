@@ -10,7 +10,7 @@ class ProductNameTest {
     @Test
     void validName() {
         ProductName name = new ProductName("상품 A");
-        assertThat(name.value()).isEqualTo("상품 A");
+        assertThat(name.name()).isEqualTo("상품 A");
     }
 
     @Test

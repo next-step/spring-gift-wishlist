@@ -11,14 +11,14 @@ class ProductImageUrlTest {
     void validHttpUrl() {
         String urlStr = "http://example.com/image.png";
         ProductImageUrl url = new ProductImageUrl(urlStr);
-        assertThat(url.value()).isEqualTo(urlStr);
+        assertThat(url.url()).isEqualTo(urlStr);
     }
 
     @Test
     void validHttpsUrl() {
         String urlStr = "https://www.example.com/path/to/resource";
         ProductImageUrl url = new ProductImageUrl(urlStr);
-        assertThat(url.value()).isEqualTo(urlStr);
+        assertThat(url.url()).isEqualTo(urlStr);
     }
 
     @Test

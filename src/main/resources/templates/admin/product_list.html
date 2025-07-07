@@ -108,31 +108,33 @@
   </thead>
   <tbody>
   <tr th:each="product : ${products}">
-    <td th:text="${product.id.value()}">1</td>
-    <td th:text="${product.name.value()}">상품명</td>
-    <td th:text="${product.price.value()}">0</td>
+    <td th:text="${product.id.id()}">1</td>
+    <td th:text="${product.name.name()}">상품명</td>
+    <td th:text="${product.price.price()}">0</td>
     <td>
-      <img alt="이미지" th:src="${product.imageUrl.value()}"/>
+      <img alt="이미지" th:src="${product.imageUrl.url()}"/>
     </td>
     <td class="action-links">
       <a class="button"
-         th:href="@{/admin/products/{id}/edit(id=${product.id.value()})}">
+         th:href="@{/admin/products/{id}/edit(id=${product.id.id()})}">
         수정
       </a>
       <form class="inline"
             method="post"
-            th:action="@{/admin/products/{id}(id=${product.id.value()})}">
+            th:action="@{/admin/products/{id}(id=${product.id.id()})}">
         <input name="_method" type="hidden" value="delete"/>
         <button class="delete" type="submit">삭제</button>
       </form>
       <form method="post"
             style="display:inline"
-            th:action="@{/admin/products/{id}/hide(id=${product.id.value()})}" th:if="${!product.hidden()}">
+            th:action="@{/admin/products/{id}/hide(id=${product.id.id()})}"
+            th:if="${!product.hidden()}">
         <button type="submit">숨김 처리</button>
       </form>
       <form method="post"
             style="display:inline"
-            th:action="@{/admin/products/{id}/unhide(id=${product.id.value()})}" th:if="${product.hidden()}">
+            th:action="@{/admin/products/{id}/unhide(id=${product.id.id()})}"
+            th:if="${product.hidden()}">
         <button type="submit">숨김 해제</button>
       </form>
     </td>
