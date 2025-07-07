@@ -60,8 +60,8 @@ public class FrontExceptionHandler {
         ex.printStackTrace();
 
         ErrorResponseDto error = new ErrorResponseDto(
-                HttpStatus.UNAUTHORIZED.value(),
-                HttpStatus.UNAUTHORIZED.getReasonPhrase(),
+                HttpStatus.FORBIDDEN.value(),
+                HttpStatus.FORBIDDEN.getReasonPhrase(),
                 ex.getMessage(),
                 request.getRequestURI()
         );
