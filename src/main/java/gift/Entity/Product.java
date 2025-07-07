@@ -3,7 +3,6 @@ package gift.Entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
-@Entity
 public class Product {
 
     //MD와 협의 여부 파악

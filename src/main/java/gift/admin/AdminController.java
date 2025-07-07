@@ -1,6 +1,7 @@
 package gift.admin;
 
 import gift.Entity.Product;
+import gift.dto.ProductDto;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -14,16 +15,18 @@ import java.util.*;
 @RequestMapping("/admin/products")
 public class AdminController {
 
+    private final ProductDto productDto;
     private final ProductService productservice;
 
-    public AdminController( ProductService productservice) {
+    public AdminController( ProductService productservice, ProductDto productDto) {
         this.productservice = productservice;
+        this.productDto = productDto;
     }
 
     // 상품 목록 페이지
     @GetMapping
     public String list(Model model) {
-        List<Product> products = productservice.getAllProducts();
+        List<Product> products = productDto.showProducts();
         model.addAttribute("products", products);
         return "admin/list";
     }
@@ -48,7 +51,7 @@ public class AdminController {
             return "admin/form";
         }
 
-        productservice.insertProduct(product);
+        productDto.insertProduct(product);
         return "redirect:/admin/products";
     }
 
@@ -56,7 +59,7 @@ public class AdminController {
     // 메소드 이름 중 첫 글자는 소문자로 시작하도록 통일
     @GetMapping("/{id}/edit")
     public String editProduct(@PathVariable Long id, Model model) {
-        Product product = productservice.getProductById(id);
+        Product product = productDto.selectProduct(id);
         model.addAttribute("product", product);
         model.addAttribute("formType", "edit");
         return "admin/form";
@@ -72,7 +75,7 @@ public class AdminController {
             return "admin/form";
         }
 
-        productservice.updateProduct(id, product);
+        productDto.updateProduct(id, product);
         return "redirect:/admin/products";
     }
 
@@ -80,7 +83,7 @@ public class AdminController {
     // 메소드 이름 중 첫 글자는 소문자로 시작하도록 통일
     @PostMapping("/{id}/delete")
     public String deleteProduct(@PathVariable Long id) {
-        productservice.deleteProductById(id);
+        productDto.deleteProduct(id);
         return "redirect:/admin/products";
     }
 
