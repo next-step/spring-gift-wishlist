@@ -20,9 +20,8 @@ public class JwtService {
         this.secretKey = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }
     
-    /**
-     * 회원 ID를 기반으로 JWT 토큰을 생성합니다.
-     */
+    // 회원 ID를 기반으로 JWT 토큰을 생성
+    
     public String generateToken(Long memberId) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + EXPIRATION_TIME);
@@ -35,9 +34,7 @@ public class JwtService {
                 .compact();
     }
     
-    /**
-     * JWT 토큰에서 회원 ID를 추출합니다.
-     */
+    //JWT 토큰에서 회원 ID를 추출
     public Long extractMemberId(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(secretKey)
@@ -48,9 +45,7 @@ public class JwtService {
         return Long.parseLong(claims.getSubject());
     }
     
-    /**
-     * JWT 토큰의 유효성을 검증합니다.
-     */
+    //JWT 토큰의 유효성을 검증
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()
@@ -63,9 +58,7 @@ public class JwtService {
         }
     }
     
-    /**
-     * Bearer 토큰에서 실제 토큰을 추출합니다.
-     */
+    //Bearer 토큰에서 실제 토큰을 추출
     public String extractTokenFromBearer(String bearerToken) {
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
