@@ -1,4 +1,4 @@
-package gift.member.dto;
+package gift.member.dto.response;
 
 import gift.member.entity.Member;
 

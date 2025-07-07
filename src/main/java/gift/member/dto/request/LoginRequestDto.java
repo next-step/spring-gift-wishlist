@@ -1,4 +1,4 @@
-package gift.member.dto;
+package gift.member.dto.request;
 
 public record LoginRequestDto(
         String email,

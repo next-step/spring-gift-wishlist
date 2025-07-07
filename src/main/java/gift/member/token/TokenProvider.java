@@ -1,6 +1,6 @@
 package gift.member.token;
 
-import gift.member.dto.MemberResponseDto;
+import gift.member.dto.response.MemberResponseDto;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;

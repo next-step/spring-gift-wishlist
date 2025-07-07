@@ -1,7 +1,7 @@
 package gift.member.repository;
 
-import gift.member.dto.MemberResponseDto;
-import gift.member.dto.RegisterRequestDto;
+import gift.member.dto.response.MemberResponseDto;
+import gift.member.dto.request.RegisterRequestDto;
 import gift.member.entity.Member;
 import gift.member.service.MemberRepository;
 import org.springframework.stereotype.Service;

@@ -1,8 +1,8 @@
 package gift.member.repository;
 
-import gift.member.dto.LoginRequestDto;
-import gift.member.dto.MemberResponseDto;
-import gift.member.dto.RegisterRequestDto;
+import gift.member.dto.request.LoginRequestDto;
+import gift.member.dto.response.MemberResponseDto;
+import gift.member.dto.request.RegisterRequestDto;
 import gift.member.entity.Member;
 import gift.member.token.TokenProvider;
 import org.springframework.stereotype.Service;

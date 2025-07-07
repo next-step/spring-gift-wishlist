@@ -38,4 +38,5 @@
   - [x] 로그인 요청을 보낼 때 사용하는 LoginRequestDto 생성
   - [x] 회원 인증 JWT를 발급하는 TokenProvider 구현
   - [x] 발급된 토큰을 Controller에 전달하는 AuthService 구현
+  - [x] TokenResponseDto 구현 및 dto 계층 세분화
   
