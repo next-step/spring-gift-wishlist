@@ -2,6 +2,7 @@ package gift.repository.role;
 
 import gift.dao.role.UserRoleDao;
 import gift.entity.UserRole;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +36,7 @@ public class RoleRepositoryImpl implements RoleRepository {
     @Override
     public Boolean save(Long userId, UserRole role) {
         if (exists(userId, role)) {
-            throw new IllegalArgumentException("이미 존재하는 사용자 역할입니다.");
+            throw new DuplicateKeyException("이미 존재하는 사용자 역할입니다.");
         }
         return userRoleDao.save(userId, role) > 0;
     }

@@ -1,5 +1,6 @@
 package gift.service.product;
 
+import gift.common.exception.AccessDeniedException;
 import gift.common.model.CustomAuth;
 import gift.common.model.CustomPage;
 import gift.entity.Product;
@@ -41,7 +42,7 @@ public class ProductServiceImpl implements ProductService {
         if (!product.getOwnerId().equals(auth.userId())){
             log.error("상품 소유자 ID가 인증된 사용자 ID와 일치하지 않습니다. 소유자 ID: {}, 인증된 사용자 ID: {}",
                       product.getOwnerId(), auth.userId());
-            throw new IllegalArgumentException("상품 소유자 ID가 인증된 사용자 ID와 일치하지 않습니다.");
+            throw new AccessDeniedException("상품 소유자 ID가 인증된 사용자 ID와 일치하지 않습니다.");
         }
     }
 
@@ -100,6 +101,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public Product patch(Product product, CustomAuth auth) {
         Product updated = getById(product.getId());
         validateProduct(updated, auth);
@@ -116,12 +118,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public void deleteById(Long productId, CustomAuth auth) {
         Product deleted = getById(productId);
         validateProduct(deleted, auth);
 
         if (!productRepository.deleteById(productId)) {
-            throw new NoSuchElementException(
+            throw new IllegalStateException(
                     String.format("Id %d에 해당하는 상품을 삭제할 수 없습니다.", productId));
         }
     }

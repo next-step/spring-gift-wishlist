@@ -6,6 +6,7 @@ import gift.entity.UserRole;
 import gift.common.model.CustomPage;
 import gift.repository.role.RoleRepository;
 import gift.repository.user.UserRepository;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +36,7 @@ public class UserServiceImpl implements UserService {
         validateUser(user);
         Set<UserRole> roles = userRoleRepository.findByUserId(user.getId());
         if (roles == null || roles.isEmpty()) {
-            throw new IllegalArgumentException("사용자의 역할을 찾을 수 없습니다. 사용자 ID: " + user.getId());
+            throw new IllegalStateException("사용자의 역할을 찾을 수 없습니다. 사용자 ID: " + user.getId());
         }
         user.setRoles(roles);
         return user;
@@ -68,7 +69,7 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("사용자 정보가 유효하지 않습니다.");
         }
         if (userRepository.findByEmail(user.getEmail()).isPresent()){
-            throw new IllegalArgumentException("이미 존재하는 이메일입니다: " + user.getEmail());
+            throw new DuplicateKeyException("이미 존재하는 이메일입니다: " + user.getEmail());
         }
         user.setPassword(PasswordEncoder.encode(user.getPassword()));
         User savedUser = userRepository.save(user);
@@ -92,7 +93,7 @@ public class UserServiceImpl implements UserService {
 
         if (user.getEmail() != null) {
             if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-                throw new IllegalArgumentException("이미 존재하는 이메일입니다: " + user.getEmail());
+                throw new DuplicateKeyException("이미 존재하는 이메일입니다: " + user.getEmail());
             }
             existingUser.setEmail(user.getEmail());
         }
@@ -110,7 +111,7 @@ public class UserServiceImpl implements UserService {
     public void deleteById(Long userId) {
         getById(userId);
         if (!userRepository.deleteById(userId)) {
-            throw new IllegalArgumentException("사용자를 삭제하는데 실패했습니다. 사용자 ID: " + userId);
+            throw new IllegalStateException("사용자를 삭제하는데 실패했습니다. 사용자 ID: " + userId);
         }
     }
 }

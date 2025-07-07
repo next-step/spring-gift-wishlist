@@ -7,6 +7,7 @@ import gift.entity.User;
 import gift.entity.UserRole;
 import gift.repository.role.RoleRepository;
 import gift.repository.user.UserRepository;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,7 +57,7 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalArgumentException("사용자 역할은 최소 하나 이상이어야 합니다.");
         }
         if (userRepository.findByEmail(email).isPresent()) {
-            throw new IllegalArgumentException("이미 사용 중인 이메일입니다: " + email);
+            throw new DuplicateKeyException("이미 사용 중인 이메일입니다: " + email);
         }
 
         User user = new User(null, email,  PasswordEncoder.encode(password));

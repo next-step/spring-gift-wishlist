@@ -33,8 +33,6 @@ public class GlobalViewExceptionHandler {
         return modelAndView;
     }
 
-
-
     @ExceptionHandler(Exception.class)
     public ModelAndView handleException(Exception e) {
         ModelAndView modelAndView = new ModelAndView("error");

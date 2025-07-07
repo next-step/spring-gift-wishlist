@@ -1,5 +1,6 @@
 package gift.controller.view;
 
+import gift.common.exception.AccessDeniedException;
 import gift.common.model.CustomAuth;
 import gift.common.util.TokenProvider;
 import gift.dto.auth.LoginRequest;
@@ -52,7 +53,7 @@ public class DefaultViewController {
             throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
         }
         if (tokenProvider.getAuthentication(token).role() != UserRole.ROLE_ADMIN) {
-            throw new IllegalArgumentException("관리자 권한이 필요합니다.");
+            throw new AccessDeniedException("관리자 권한이 필요합니다.");
         }
     }
 
