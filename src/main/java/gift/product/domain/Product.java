@@ -1,4 +1,4 @@
-package gift.domain;
+package gift.product.domain;
 
 public class Product {
 

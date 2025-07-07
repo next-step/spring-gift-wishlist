@@ -1,11 +1,11 @@
-package gift.dto.request;
+package gift.product.dto.request;
 
 import gift.common.annotation.NameValidation;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 
-public record ProductSaveReqDTO(
+public record ProductSaveRequest(
     @NotBlank(
         message = "상품 이름을 입력해주세요."
     )

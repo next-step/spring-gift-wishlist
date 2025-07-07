@@ -1,9 +1,9 @@
-package gift.dto.request;
+package gift.product.dto.request;
 
 import gift.common.annotation.NameValidation;
 import jakarta.validation.constraints.PositiveOrZero;
 
-public record ProductUpdateReqDTO(
+public record ProductUpdateRequest(
     @NameValidation
     String name,
 

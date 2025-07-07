@@ -1,7 +1,6 @@
-package gift.controller;
+package gift.product.controller;
 
-import gift.service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
+import gift.product.service.ProductService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +11,6 @@ public class ProductViewController {
 
     private final ProductService productService;
 
-    @Autowired
     public ProductViewController(ProductService productService) {
         this.productService = productService;
     }
