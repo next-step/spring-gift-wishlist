@@ -9,6 +9,7 @@ import gift.exception.CustomException;
 import gift.exception.ErrorCode;
 import gift.repository.MemberRepository;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import javax.crypto.SecretKey;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,7 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
 
-    private final SecretKey key = Jwts.SIG.HS256.key().build();
+    private final String key = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E";
 
     public MemberServiceImpl(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
@@ -85,7 +86,7 @@ public class MemberServiceImpl implements MemberService {
                 .claim("email", member.getEmail())
                 .claim("password", member.getPassword())
                 .claim("role", member.getRole())
-                .signWith(key)
+                .signWith(Keys.hmacShaKeyFor(key.getBytes()))
                 .compact();
         return accessToken;
     }
