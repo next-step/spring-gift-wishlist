@@ -25,7 +25,7 @@ public class MemberRepository {
     }
 
     public List<Member> findAll() {
-        String sql = "SELECT * FROM `member`";
+         String sql = "SELECT * FROM member";
 
         return jdbcClient.sql(sql)
             .query(rowMapper)
@@ -33,7 +33,7 @@ public class MemberRepository {
     }
 
     public Optional<Member> findById(Long id) {
-        String sql = "SELECT id, email, password FROM `member` WHERE id = :id";
+        String sql = "SELECT id, email, password FROM member WHERE id = :id";
 
         return jdbcClient.sql(sql)
             .param("id", id)
@@ -42,7 +42,7 @@ public class MemberRepository {
     }
 
     public Optional<Member> findByEmail(String email) {
-        String sql = "SELECT id, email, password FROM `member` WHERE email = :email";
+        String sql = "SELECT id, email, password FROM member WHERE email = :email";
 
         return jdbcClient.sql(sql)
             .param("email", email)
@@ -51,7 +51,7 @@ public class MemberRepository {
     }
 
     public boolean existsById(Long id) {
-        String sql = "SELECT COUNT(*) FROM `member` WHERE id = :id";
+        String sql = "SELECT COUNT(*) FROM member WHERE id = :id";
 
         return jdbcClient.sql(sql)
             .param("id", id)
@@ -60,7 +60,7 @@ public class MemberRepository {
     }
 
     public boolean existsByEmail(String email) {
-        String sql = "SELECT COUNT(*) FROM `member` WHERE email = :email";
+        String sql = "SELECT COUNT(*) FROM member WHERE email = :email";
 
         return jdbcClient.sql(sql)
             .param("email", email)
@@ -69,7 +69,7 @@ public class MemberRepository {
     }
 
     public Long save(Member member) {
-        String sql = "INSERT INTO `member` (email, password) VALUES (:email, :password)";
+        String sql = "INSERT INTO member (email, password) VALUES (:email, :password)";
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcClient.sql(sql)
@@ -86,7 +86,7 @@ public class MemberRepository {
 
     public int update(Member member) {
         String sql = """
-            UPDATE `member`
+            UPDATE member
             SET email = :email
             WHERE id = :id
             """;
@@ -98,7 +98,7 @@ public class MemberRepository {
     }
 
     public int delete(Long id) {
-        String sql = "DELETE FROM `member` WHERE id = :id";
+        String sql = "DELETE FROM member WHERE id = :id";
 
         return jdbcClient.sql(sql)
             .param("id", id)
