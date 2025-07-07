@@ -27,7 +27,6 @@ public class MemberServiceImpl implements MemberService {
         Member newMember = new Member(null, requestDto.email(), requestDto.password());
         Member savedMember = memberRepository.createMember(newMember);
         String accessToken = createAccessToken(savedMember);
-        //todo 토큰 반환
         return new JWTResponseDto(accessToken);
     }
 
@@ -35,8 +34,8 @@ public class MemberServiceImpl implements MemberService {
     public JWTResponseDto loginMember(CreateMemberRequestDto requestDto) {
         Member find = findMemberByEmailOrElseThrow(requestDto.email());
 
-        if(!isCorrectPassword(find, requestDto.password())){
-            throw new CustomException(ErrorCode.Notfound);
+        if (!isCorrectPassword(find, requestDto.password())) {
+            throw new CustomException(ErrorCode.Unauthorized);
         }
         String accessToken = createAccessToken(find);
         return new JWTResponseDto(accessToken);
@@ -44,19 +43,21 @@ public class MemberServiceImpl implements MemberService {
 
     private Member findMemberByEmailOrElseThrow(String email) {
         return memberRepository.findMemberByEmail(email)
-                .orElseThrow(() -> new CustomException(ErrorCode.Notfound));
+                .orElseThrow(() -> new CustomException(ErrorCode.NotRegisterd));
     }
 
     private void throwIfMemberFindByEmail(String email) {
         memberRepository.findMemberByEmail(email)
-                .ifPresent(member -> {throw new CustomException(ErrorCode.Notfound);});
+                .ifPresent(member -> {
+                    throw new CustomException(ErrorCode.AlreadyRegistered);
+                });
     }
 
-    private Boolean isCorrectPassword(Member member, String password){
+    private Boolean isCorrectPassword(Member member, String password) {
         return member.getPassword().equals(password);
     }
 
-    private String createAccessToken(Member member){
+    private String createAccessToken(Member member) {
         String accessToken = Jwts.builder()
                 .setSubject(member.getId().toString())
                 .claim("email", member.getEmail())
