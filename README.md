@@ -43,5 +43,6 @@
   - [x] 회원가입, 로그인 API 기능을 수행하는 MemberAuthController 구현
 -[ ] 관리자 전용 API에 관리자만 접근할 수 있도록 구현
   - [x] TokenProvider에 토큰이 유효한지 검사하는 메서드 구현
+  - [x] 토큰을 복호화하여 claims에서 role의 값을 반환하는 메서드 구현
 
   

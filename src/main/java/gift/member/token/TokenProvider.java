@@ -1,6 +1,7 @@
 package gift.member.token;
 
 import gift.member.dto.response.MemberResponseDto;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
@@ -34,5 +35,15 @@ public class TokenProvider {
         }catch(Exception e){
             return false;
         }
+    }
+
+    public String getRoleFromToken(String token){
+        Claims claims = Jwts.parser()
+                .verifyWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+
+        return claims.get("role").toString();
     }
 }
