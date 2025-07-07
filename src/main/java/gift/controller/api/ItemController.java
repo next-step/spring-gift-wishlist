@@ -1,8 +1,12 @@
-package gift.controller;
+package gift.controller.api;
 
 import gift.dto.ItemRequest;
 import gift.dto.ItemResponse;
+import gift.entity.Member;
+import gift.login.Authenticated;
+import gift.login.Login;
 import gift.service.ItemService;
+import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
@@ -27,9 +31,10 @@ public class ItemController {
         this.itemService = itemService;
     }
 
+    @Authenticated
     @PostMapping
-    public ResponseEntity<ItemResponse> createItem(@RequestBody ItemRequest request) {
-        ItemResponse newItem = itemService.createItem(request);
+    public ResponseEntity<ItemResponse> createItem(@Valid @RequestBody ItemRequest request, @Login Member loginMember) {
+        ItemResponse newItem = itemService.createItem(request, loginMember);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")
             .buildAndExpand(
@@ -55,13 +60,15 @@ public class ItemController {
         return ResponseEntity.ok(items);
     }
 
+    @Authenticated
     @PutMapping("/{productId}")
     public ResponseEntity<ItemResponse> updateItem(@PathVariable("productId") Long id,
-        @RequestBody ItemRequest request) {
-        ItemResponse updatedItem = itemService.updateItem(id, request);
+        @RequestBody ItemRequest request, @Login Member loginMember) {
+        ItemResponse updatedItem = itemService.updateItem(id, request, loginMember);
         return ResponseEntity.ok(updatedItem);
     }
 
+    @Authenticated
     @DeleteMapping("/{productId}")
     public ResponseEntity<Void> deleteItem(@PathVariable("productId") Long id) {
         itemService.deleteItem(id);

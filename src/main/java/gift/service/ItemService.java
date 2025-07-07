@@ -3,13 +3,14 @@ package gift.service;
 import gift.dto.ItemRequest;
 import gift.dto.ItemResponse;
 import gift.entity.Item;
+import gift.entity.Member;
+import gift.entity.Role;
+import gift.exception.ItemNotFoundException;
 import gift.repository.ItemRepository;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-import gift.exception.ItemNotFoundException;
+import gift.exception.AuthorizationException;
 
 @Service
 public class ItemService {
@@ -20,42 +21,46 @@ public class ItemService {
         this.itemRepository = itemRepository;
     }
 
-    public ItemResponse createItem(ItemRequest request) {
+    public ItemResponse createItem(ItemRequest request, Member loginMember) {
+        validateAdminRoleForKakaoKeyword(request.name(), loginMember); // 권한 확인 로직 호출
+
         Item item = new Item(null, request.name(), request.price(), request.imageUrl());
         Item savedItem = itemRepository.save(item);
         return ItemResponse.from(savedItem);
     }
 
     public ItemResponse getItemById(Long id) {
-        Item item = itemRepository.findById(id)
+        return itemRepository.findById(id)
+            .map(ItemResponse::from)
             .orElseThrow(() -> new ItemNotFoundException("해당 ID의 상품을 찾을 수 없습니다: " + id));
-        return ItemResponse.from(item);
     }
 
-    public List<ItemResponse> getAllItems(int page, int size, String sortProperty,
-        String sortDirection) {
+    public List<ItemResponse> getAllItems(int page, int size, String sortProperty, String sortDirection) {
         List<Item> items = itemRepository.findAll(page, size, sortProperty, sortDirection);
         return items.stream()
             .map(ItemResponse::from)
             .collect(Collectors.toList());
     }
 
-    public ItemResponse updateItem(Long id, ItemRequest request) {
+    public ItemResponse updateItem(Long id, ItemRequest request, Member loginMember) {
+        validateAdminRoleForKakaoKeyword(request.name(), loginMember); // 권한 확인 로직 호출
+
         Item existingItem = itemRepository.findById(id)
-            .orElseThrow(
-                () -> new ItemNotFoundException("수정하려는 상품을 찾을 수 없습니다: " + id)
-            );
+            .orElseThrow(() -> new ItemNotFoundException("수정하려는 상품을 찾을 수 없습니다: " + id));
         existingItem.updateItemInfo(request.name(), request.price(), request.imageUrl());
         itemRepository.update(existingItem);
         return ItemResponse.from(existingItem);
     }
 
-
     public void deleteItem(Long id) {
         itemRepository.findById(id)
-            .orElseThrow(
-                () -> new ItemNotFoundException("삭제하려는 상품을 찾을 수 없습니다: " + id)
-            );
+            .orElseThrow(() -> new ItemNotFoundException("삭제하려는 상품을 찾을 수 없습니다: " + id));
         itemRepository.deleteById(id);
+    }
+
+    private void validateAdminRoleForKakaoKeyword(String productName, Member member) {
+        if (productName.contains("카카오") && member.getRole() != Role.ADMIN) {
+            throw new AuthorizationException("카카오 관련 상품은 ADMIN만 등록할 수 있습니다.");
+        }
     }
 }
