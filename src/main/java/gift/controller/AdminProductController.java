@@ -35,20 +35,22 @@ public class AdminProductController {
 
     @GetMapping("/new")
     public String showCreateForm(Model model) {
-        model.addAttribute("productRequestDto", new ProductRequestDto());
+        model.addAttribute("productRequestDto", new ProductRequestDto("", 1, ""));
         return "admin/new";
     }
 
     @PostMapping("")
     public String createProduct(@Valid @ModelAttribute ProductRequestDto requestDto,
-                                BindingResult bindingResult) {
+                                BindingResult bindingResult,
+                                Model model) {
         if (bindingResult.hasErrors()) {
-            return "admin/new"; // 유효성 실패 시 다시 등록 폼
+            model.addAttribute("productRequestDto", requestDto);
+            return "admin/new";
         }
-
         productService.addProduct(requestDto);
         return "redirect:/admin/products";
     }
+
 
     @GetMapping("/{id}/edit")
     public String showEditForm(@PathVariable Long id, Model model) {

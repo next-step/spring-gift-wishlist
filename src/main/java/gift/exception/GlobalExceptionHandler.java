@@ -1,10 +1,13 @@
 package gift.exception;
 
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -14,14 +17,21 @@ public class GlobalExceptionHandler {
         String errorMessage = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
-                .map(error -> error.getDefaultMessage())
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .findFirst()
                 .orElse("유효성 검사 실패");
-        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+        return ResponseEntity.badRequest().body(errorMessage);
     }
 
     @ExceptionHandler(InvalidProductNameException.class)
     public ResponseEntity<String> handleInvalidProductNameException(InvalidProductNameException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleUnexpectedException(Exception ex) {
+        ex.printStackTrace();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("예기치 못한 서버 오류가 발생했습니다.");
     }
 }
