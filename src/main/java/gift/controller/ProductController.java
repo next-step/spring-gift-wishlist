@@ -2,6 +2,7 @@ package gift.controller;
 
 import gift.model.Product;
 import gift.repository.ProductDao;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,12 +22,13 @@ public class ProductController {
     }
 
     @GetMapping("/products/{id}")
-    public Product getProductById(@PathVariable int id) {
-        return productDao.getProductById(id);
-    }
+    public Product getProductById(@PathVariable int id) {return productDao.getProductById(id);}
 
     @PostMapping("/products")
-    public void addProduct(@RequestBody Product product) {
+    public void addProduct(@Valid @RequestBody Product product) {
+        if(!product.getName().contains("카카오")){
+            product.setMdApproved(true);
+        }
         productDao.insertProduct(product);
     }
 
@@ -36,7 +38,12 @@ public class ProductController {
     }
 
     @PatchMapping("/products/{id}")
-    public void updateProduct(@PathVariable Long id, @RequestBody Product product) {
+    public void updateProduct(@Valid @PathVariable Long id, @RequestBody Product product) {
+        if(!product.getName().contains("카카오")){
+            product.setMdApproved(true);
+        }else{
+            product.setMdApproved(false);
+        }
         productDao.updateProduct(id, productDao.getProductById(id), product);
     }
 }
