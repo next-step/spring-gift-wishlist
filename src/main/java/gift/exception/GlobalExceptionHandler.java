@@ -1,5 +1,6 @@
 package gift.exception;
 
+import gift.exception.token.TokenTypeException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -22,6 +23,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = SignatureException.class)
     public ResponseEntity<?> handleException(SignatureException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+    }
+
+    @ExceptionHandler(value = TokenTypeException.class)
+    public ResponseEntity<?> handleException(TokenTypeException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
 }
