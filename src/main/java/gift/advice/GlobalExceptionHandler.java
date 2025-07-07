@@ -1,4 +1,4 @@
-package gift.product.advice;
+package gift.advice;
 
 import gift.product.exception.ProductNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -34,5 +34,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(errors);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, String>> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("error", ex.getMessage()));
     }
 }
