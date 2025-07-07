@@ -19,13 +19,17 @@ public class TokenService {
     @Value("${jwt-access-token-expire-time}")
     private Integer accessTokenTTL;
 
+    public boolean isTokenValid(String token, String email){
+        return extractEmail(token).equals(email);
+    }
+
     public boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
-    public String generateToken(String username) {
+    public String generateToken(String email) {
         return Jwts.builder()
-                .claim("name", username)
+                .claim("email", email)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + accessTokenTTL))
                 .signWith(getSigningKey())
@@ -39,6 +43,10 @@ public class TokenService {
 
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
+    }
+
+    public String extractEmail(String token){
+        return extractClaim(token, claims -> claims.get("email", String.class));
     }
 
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolver){
