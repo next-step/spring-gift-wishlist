@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.jwt.JWTUtil;
 import gift.jwt.filter.CustomLoginFilter;
 import gift.jwt.filter.ApiFilter;
+import gift.jwt.filter.CustomLogoutFilter;
 import gift.jwt.filter.ViewFilter;
 import gift.member.argumentresolver.MyAuthenticalResolver;
 import gift.member.service.MemberService;
@@ -57,6 +58,15 @@ public class SecurityConfig implements WebMvcConfigurer {
         filterRegistrationBean.addUrlPatterns("/*");
         filterRegistrationBean.setOrder(1);
 
+        return filterRegistrationBean;
+    }
+
+    @Bean
+    public FilterRegistrationBean customLogoutFilter() {
+        FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
+        filterRegistrationBean.setFilter(new CustomLogoutFilter(objectMapper));
+        filterRegistrationBean.addUrlPatterns("/api/members/logout");
+        filterRegistrationBean.setOrder(4);
         return filterRegistrationBean;
     }
 

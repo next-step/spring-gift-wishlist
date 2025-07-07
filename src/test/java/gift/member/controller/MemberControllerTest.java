@@ -20,6 +20,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -333,6 +334,24 @@ class MemberControllerTest {
                 .toEntity(Void.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    }
+
+    @Test
+    @DisplayName("로그아웃 성공")
+    void logoutSuccess() {
+        Member member = createMember(Role.REGULAR);
+        memberRepository.save(member);
+        String jwt = createJWT(member);
+
+        ResponseEntity<Map> response = restClient.post()
+                .uri("/logout")
+                .cookie("Authorization", jwt)
+                .retrieve()
+                .toEntity(Map.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getHeaders().get("Set-Cookie")).hasSize(1);
+        assertThat(response.getBody().get("message")).isEqualTo("로그아웃 완료");
     }
 
 
