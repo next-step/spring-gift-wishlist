@@ -35,7 +35,14 @@ public class UserServiceImpl implements UserService{
         return token;
     }
 
+    @Override
+    public String loginUser(UserLoginDto dto) {
+        String targetEmail = dto.email();
+        String targetPassword = dto.password();
+        User findUser = userRepository.findUserByEmailAndPassword(targetEmail, targetPassword);
 
+        return jwtUtil.generateToken(findUser);
+    }
 
     @Override
     public List<UserResponseDto> getUserList(String email) {

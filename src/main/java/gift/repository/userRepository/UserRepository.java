@@ -1,6 +1,7 @@
 package gift.repository.userRepository;
 
 import gift.entity.User;
+import jakarta.validation.constraints.NotNull;
 
 
 import java.util.List;
@@ -17,4 +18,6 @@ public interface UserRepository {
     User updateUser(User findUser, String email, String password);
 
     void deleteUser(User findUser);
+
+    User findUserByEmailAndPassword(String email,String password);
 }
