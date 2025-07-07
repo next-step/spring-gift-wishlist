@@ -46,7 +46,8 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<ProductResponseDto> createProduct(
-            @Valid @RequestBody ProductRequestDto productRequestDto) {
+            @Valid @RequestBody ProductRequestDto productRequestDto
+    ) {
         ProductResponseDto createdProduct = productService.createProduct(productRequestDto);
 
         URI location = URI.create("/admin/products/" + createdProduct.id());
