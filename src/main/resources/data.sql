@@ -6,3 +6,10 @@ VALUES ('Java Chip Frappuccino', 6200, 'https://image.istarbucks.co.kr/upload/st
 
 INSERT INTO product (name, price, image_url)
 VALUES ('Malcha Tiramisu Latte', 6300, 'https://image.istarbucks.co.kr/upload/store/skuimg/2023/11/[9200000004954]_20231127093740911.jpg');
+
+-- member 추가
+
+INSERT INTO member (email, password, role) VALUES
+('user1@example.com', 'password123', 'USER'),
+('admin@example.com', 'admin', 'ADMIN'),
+('user2@example.com', 'user2pass', 'USER');
