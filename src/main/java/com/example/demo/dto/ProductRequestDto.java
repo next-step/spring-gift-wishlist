@@ -36,9 +36,7 @@ public class ProductRequestDto {
   }
 
   public ProductRequestDto(String name, int price, String imageUrl){
-    this.name = name;
-    this.price = price;
-    this.imageUrl = imageUrl;
+    this(null, name, price, imageUrl);
   }
 
   public Long getId(){
@@ -48,6 +46,7 @@ public class ProductRequestDto {
   public void setId(Long id){
     this.id = id;
   }
+
   public String getName(){
     return name;
   }
@@ -60,15 +59,7 @@ public class ProductRequestDto {
     return imageUrl;
   }
 
-  public void setName(String name){
-    this.name = name;
-  }
-
-  public void setPrice(int price){
-    this.price = price;
-  }
-
-  public void setImageUrl(String imageUrl){
-    this.imageUrl = imageUrl;
-  }
+  public void setName(String name) {this.name = name;}
+  public void setPrice(int price) {this.price = price;}
+  public void setImageUrl(String imageUrl) {this.imageUrl = imageUrl;}
 }
