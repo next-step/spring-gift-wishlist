@@ -11,4 +11,4 @@ public record ProductResponseDto(
     public ProductResponseDto(Product product){
       this(product.getId(), product.getName(), product.getPrice(), product.getImageUrl());
     }
-  }
+}
