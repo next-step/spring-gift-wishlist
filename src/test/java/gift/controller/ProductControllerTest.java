@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -78,10 +80,28 @@ public class ProductControllerTest {
                 ))
                 .retrieve();
 
-        ResponseEntity<ProductResponseDto> response = responseSpec.toEntity(ProductResponseDto.class);
+        ResponseEntity<String> response = responseSpec.toEntity(String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().status()).isEqualTo(Product.Status.PENDING);
+        String responseMessage = response.getBody();
+        assertThat(responseMessage).isNotNull();
+
+        Pattern pattern = Pattern.compile("id: (\\d+)");
+        Matcher matcher = pattern.matcher(responseMessage);
+        Long id = -1L;
+        if (matcher.find()) {
+            String idStr = matcher.group(1);
+            id = Long.parseLong(idStr);
+        }
+
+        url = "http://localhost:" + port + "/api/products/" + id;
+        RestClient.ResponseSpec getResponseSpec = client.get()
+                .uri(url)
+                .retrieve();
+        ResponseEntity<ProductResponseDto> entity = getResponseSpec.toEntity(ProductResponseDto.class);
+
+        assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        ProductResponseDto productResponseDto = entity.getBody();
+        assertThat(productResponseDto.status()).isEqualTo(Product.Status.PENDING);
     }
 
     @Test
