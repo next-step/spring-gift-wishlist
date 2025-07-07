@@ -3,9 +3,7 @@ package gift.repository;
 import gift.model.Member;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -34,6 +32,11 @@ public class MemberRepository {
   public Optional<Member> findByEmail(String email){
     String sql = "select * from member where email = ?";
     return jdbcTemplate.query(sql, this::mapRow, email).stream().findFirst();
+  }
+
+  public List<Member> findAll(){
+    String sql = "select * from member";
+    return jdbcTemplate.query(sql, this::mapRow);
   }
 
   private Member mapRow(ResultSet rs, int rowNum) throws SQLException {

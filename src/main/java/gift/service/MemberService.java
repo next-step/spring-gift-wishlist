@@ -3,6 +3,7 @@ package gift.service;
 import gift.jwt.JwtUtil;
 import gift.model.Member;
 import gift.repository.MemberRepository;
+import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -33,5 +34,9 @@ public class MemberService {
       throw new IllegalArgumentException("비밀번호가 틀렸습니다");
     }
     return jwtUtil.createToken(email);
+  }
+
+  public List<Member> findAll(){
+    return memberRepository.findAll();
   }
 }
