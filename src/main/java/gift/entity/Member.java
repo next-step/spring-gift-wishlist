@@ -16,7 +16,6 @@ public class Member {
         this.password = password;
     }
 
-    // 등록 시 사용하는 생성자
     public Member(String email, String password) {
         this(null, email, password);
     }
