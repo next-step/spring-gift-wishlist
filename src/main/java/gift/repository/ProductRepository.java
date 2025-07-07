@@ -6,6 +6,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public class ProductRepository {
     }
 
     public Optional<Product> findById(Long id) {
-        var sql = "select * from product where id=:id;";
+        String sql = "select * from product where id=:id;";
         return client.sql(sql)
                 .param("id", id)
                 .query(getRowMapper())
@@ -40,15 +41,15 @@ public class ProductRepository {
     }
 
     public List<Product> findAll() {
-        var sql = "select * from product;";
+        String sql = "select * from product;";
         return client.sql(sql)
                 .query(getRowMapper())
                 .list();
     }
 
     public Optional<Product> save(Product product) {
-        var sql = "insert into product (name, price, image_url, state) values (:name, :price, :image_url, :state);";
-        var keyHolder = new GeneratedKeyHolder();
+        String sql = "insert into product (name, price, image_url, state) values (:name, :price, :image_url, :state);";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
         try {
             client.sql(sql)
                     .param("name", product.getName())
@@ -64,15 +65,15 @@ public class ProductRepository {
     }
 
     public void delete(Long id) {
-        var sql = "delete from product where id = :id;";
+        String sql = "delete from product where id = :id;";
         client.sql(sql)
                 .param("id", id)
                 .update();
     }
 
     public Optional<Product> update(Long id, Product product) {
-        var sql = "update product set name = :name, price = :price, image_url = :image_url, state = :state where id = :id;";
-        var affected = client.sql(sql)
+        String sql = "update product set name = :name, price = :price, image_url = :image_url, state = :state where id = :id;";
+        int affected = client.sql(sql)
                 .param("id", id)
                 .param("name", product.getName())
                 .param("price", product.getPrice())

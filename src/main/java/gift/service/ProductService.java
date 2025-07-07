@@ -1,7 +1,6 @@
 package gift.service;
 
-import gift.common.dto.request.CreateProductDto;
-import gift.common.dto.request.UpdateProductDto;
+import gift.common.dto.request.ProductRequestDto;
 import gift.common.dto.response.MessageResponseDto;
 import gift.common.dto.response.ProductDto;
 import gift.common.exception.CreationFailException;
@@ -23,11 +22,11 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public MessageResponseDto<ProductDto> createProduct(CreateProductDto body) {
+    public MessageResponseDto<ProductDto> createProduct(ProductRequestDto body) {
         Product instance = body.toEntity();
         if (instance.involveKakao()) {
             instance.waitApproval();
-            var created = productRepository.save(instance)
+            Product created = productRepository.save(instance)
                     .orElseThrow(() -> new CreationFailException("Fail to create Product"));
             return new MessageResponseDto<>(false, "카카오 관련 상품 승인 대기중", 202, ProductDto.from(created));
         }
@@ -53,16 +52,16 @@ public class ProductService {
                 .toList();
     }
 
-    public MessageResponseDto<ProductDto> updateProduct(Long id, UpdateProductDto body) {
+    public MessageResponseDto<ProductDto> updateProduct(Long id, ProductRequestDto body) {
         findProduct(id);
         Product instance = body.toEntity();
         if (instance.involveKakao()) {
             instance.waitApproval();
-            var updated = productRepository.update(id, instance).get();
+            Product updated = productRepository.update(id, instance).get();
             return new MessageResponseDto<>(false, "카카오 관련 상품 승인 대기중", 202, ProductDto.from(updated));
         }
         instance.onBoard();
-        var updated = productRepository.update(id, instance).get();
+        Product updated = productRepository.update(id, instance).get();
         return new MessageResponseDto<>(true, "상품 수정 완료", 200, ProductDto.from(updated));
     }
 
@@ -72,10 +71,7 @@ public class ProductService {
     }
 
     private Product findProduct(Long id) {
-        var result = productRepository.findById(id);
-        if (result.isEmpty()) {
-            throw new EntityNotFoundException("Product id {" + id + "} not found");
-        }
-        return result.get();
+        return productRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Product id {" + id + "} not found"));
     }
 }
