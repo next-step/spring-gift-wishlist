@@ -9,8 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import gift.product.controller.ProductApiController;
 import gift.product.dto.ProductRequestDto;
 import gift.product.dto.ProductResponseDto;
-import gift.product.exception.BusinessException;
-import gift.product.exception.ErrorCode;
+import gift.exception.BusinessException;
+import gift.exception.ErrorCode;
 import gift.product.service.ProductService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

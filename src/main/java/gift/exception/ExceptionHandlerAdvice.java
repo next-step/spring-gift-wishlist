@@ -1,4 +1,4 @@
-package gift.product.exception;
+package gift.exception;
 
 import java.util.List;
 import java.util.stream.Collectors;
