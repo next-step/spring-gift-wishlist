@@ -9,7 +9,7 @@ public class ResponseDto {
 
     public ResponseDto() {}
 
-    public ResponseDto(String name, int price, String imageUrl) {
+    public ResponseDto(String name, Integer price, String imageUrl) {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
@@ -23,7 +23,7 @@ public class ResponseDto {
 
     public String getName() { return name; }
 
-    public int getPrice() { return price; }
+    public Integer getPrice() { return price; }
 
     public String getImageUrl() { return imageUrl; }
 }

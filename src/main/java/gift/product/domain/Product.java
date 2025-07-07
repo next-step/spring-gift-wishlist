@@ -5,12 +5,12 @@ import java.util.UUID;
 public class Product {
     private UUID id;
     private String name;
-    private int price;
+    private Integer price;
     private String imageUrl;
 
     public Product() {}
 
-    public Product(UUID id, String name, int price, String imageUrl) {
+    public Product(UUID id, String name, Integer price, String imageUrl) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -25,7 +25,7 @@ public class Product {
         return name;
     }
 
-    public int getPrice() {
+    public Integer getPrice() {
         return price;
     }
 
@@ -41,7 +41,7 @@ public class Product {
         this.name = name;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(Integer price) {
         this.price = price;
     }
 

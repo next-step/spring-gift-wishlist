@@ -4,6 +4,7 @@ import gift.common.annotation.BannedWord;
 import gift.common.annotation.NoSpecialChar;
 import gift.product.domain.Product;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
 public class RequestDto {
@@ -12,7 +13,7 @@ public class RequestDto {
     @NoSpecialChar
     @BannedWord(words = {"카카오"})
     private String name;
-    private int price;
+    private Integer price;
     private String imageUrl;
 
     public RequestDto() {}
@@ -23,7 +24,7 @@ public class RequestDto {
         this.imageUrl = product.getImageUrl();
     }
 
-    public RequestDto(String name, int price, String imageUrl) {
+    public RequestDto(String name, Integer price, String imageUrl) {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
@@ -33,7 +34,7 @@ public class RequestDto {
         return name;
     }
 
-    public int getPrice() {
+    public Integer getPrice() {
         return price;
     }
     public String getImageUrl() {
@@ -44,7 +45,7 @@ public class RequestDto {
         this.name = name;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(Integer price) {
         this.price = price;
     }
 
