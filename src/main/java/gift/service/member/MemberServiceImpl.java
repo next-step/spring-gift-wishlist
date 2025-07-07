@@ -21,7 +21,7 @@ public class MemberServiceImpl implements MemberService {
     this.repository = repository;
     this.jwtProvider = jwtProvider;
   }
-  
+
   @Override
   public Token register(Member member) {
     if (repository.findByEmail(member.getEmail()).isPresent()) {
@@ -52,7 +52,8 @@ public class MemberServiceImpl implements MemberService {
 
   @Override
   public Member findMemberById(Long id) {
-    return repository.findById(id).orElseThrow(() -> new IllegalStateException("member가 없습니다"));
+    return repository.findById(id).
+        orElseThrow(() -> new IllegalStateException("member가 없습니다"));
   }
 
   @Override
