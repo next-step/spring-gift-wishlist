@@ -5,6 +5,8 @@ import gift.dto.jwt.TokenResponse;
 import gift.dto.member.LoginRequest;
 import gift.dto.member.MemberRequest;
 import gift.dto.member.MemberResponse;
+import gift.global.exception.ErrorCode;
+import gift.global.exception.InvalidMemberException;
 import gift.global.jwt.JwtUtil;
 import gift.repository.member.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -24,7 +26,7 @@ public class MemberService {
         Member member = memberRepository.findByEmail(request.email());
 
         if(member==null || !member.getPassword().equals(request.password())){
-            throw new RuntimeException("이메일, 비밀번호 조합이 잘못되었습니다.");
+            throw new InvalidMemberException(ErrorCode.INCORRECT_LOGIN_INFO);
         }
 
         String token = jwtUtil.generateToken(member.getId());
