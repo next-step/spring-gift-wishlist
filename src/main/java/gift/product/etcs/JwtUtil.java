@@ -1,4 +1,4 @@
-package gift.product.utils;
+package gift.product.etcs;
 
 
 import gift.product.entity.User;
