@@ -1,6 +1,7 @@
 package gift.service;
 
 import gift.common.exception.InvalidTokenException;
+import gift.domain.Role;
 import gift.domain.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -36,6 +37,11 @@ public class JwtTokenProvider {
     public void validAccessToken(String token) {
         Claims claims = extractAllClaims(token);
         validateAccessClaims(claims);
+    }
+
+    public Role getRoleFromToken(String token) {
+        Claims claims = extractAllClaims(token);
+        return Role.valueOf((String) claims.get("role"));
     }
 
     private void validateAccessClaims(Claims claims) {

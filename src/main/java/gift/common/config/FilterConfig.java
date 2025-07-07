@@ -13,7 +13,8 @@ public class FilterConfig {
 
     private static final String[] URL_PATTERNS = new String[]{
             "/admin/*",
-            "/api/users/password"
+            "/api/users/password",
+            "/api/users/admin"
     };
 
     @Bean

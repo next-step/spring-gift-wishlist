@@ -2,9 +2,11 @@ package gift.common.filter;
 
 import gift.common.exception.InvalidAccessTokenException;
 import gift.common.exception.InvalidTokenException;
+import gift.domain.Role;
 import gift.service.JwtTokenProvider;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -36,8 +38,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             final String jwt = authHeader.substring(7);
 
             jwtTokenProvider.validAccessToken(jwt);
+            Role role = jwtTokenProvider.getRoleFromToken(jwt);
+            request.setAttribute("role", role);
 
-        } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | InvalidAccessTokenException e) {
+        } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | InvalidAccessTokenException | SignatureException e) {
             throw new InvalidTokenException(e);
         }
 

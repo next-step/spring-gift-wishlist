@@ -6,4 +6,8 @@ public class InvalidUserException extends RuntimeException {
     public InvalidUserException() {
         super(DEFAULT_MESSAGE);
     }
+
+    public InvalidUserException(String message) {
+        super(message);
+    }
 }

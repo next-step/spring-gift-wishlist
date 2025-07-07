@@ -29,6 +29,10 @@ public class User {
         this.password = password;
     }
 
+    public void changeRole(String role) {
+        this.role = Role.valueOf(role);
+    }
+
     public Long getId() {
         return id;
     }

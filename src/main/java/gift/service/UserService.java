@@ -7,6 +7,7 @@ import gift.domain.Role;
 import gift.domain.User;
 import gift.dto.jwt.TokenResponse;
 import gift.dto.user.ChangePasswordRequest;
+import gift.dto.user.ChangeRoleRequest;
 import gift.dto.user.CreateUserRequest;
 import gift.dto.user.LoginRequest;
 import gift.repository.UserRepository;
@@ -52,6 +53,12 @@ public class UserService {
             throw new InvalidUserException();
         }
         user.changePassword(request.newPassword());
+        userRepository.update(user);
+    }
+
+    public void changeRole(ChangeRoleRequest request) {
+        User user = getUserByEmail(request.email());
+        user.changeRole(request.role());
         userRepository.update(user);
     }
 }
