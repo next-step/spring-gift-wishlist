@@ -1,6 +1,7 @@
 package gift.service.member;
 
 import gift.domain.Member;
+import gift.dto.jwt.TokenResponse;
 import gift.dto.member.LoginRequest;
 import gift.dto.member.MemberRequest;
 import gift.dto.member.MemberResponse;
@@ -19,7 +20,7 @@ public class MemberService {
         this.jwtUtil = jwtUtil;
     }
 
-    public String login(LoginRequest request){
+    public TokenResponse login(LoginRequest request){
         Member member = memberRepository.findByEmail(request.email());
 
         if(member==null || !member.getPassword().equals(request.password())){
@@ -27,7 +28,7 @@ public class MemberService {
         }
 
         String token = jwtUtil.generateToken(member.getEmail());
-        return token;
+        return new TokenResponse(token);
     }
 
     public Long insert(MemberRequest request){

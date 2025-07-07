@@ -1,6 +1,7 @@
 package gift.controller.member;
 
 import gift.domain.Member;
+import gift.dto.jwt.TokenResponse;
 import gift.dto.member.LoginRequest;
 import gift.dto.member.MemberRequest;
 import gift.dto.member.MemberResponse;
@@ -31,7 +32,7 @@ public class MemberApiController {
     public ResponseEntity<?> login(
         @RequestBody LoginRequest loginRequest
     ){
-        String token = memberService.login(loginRequest);
+        TokenResponse token = memberService.login(loginRequest);
         return ResponseEntity.status(HttpStatus.OK)
             .body(token);
     }
