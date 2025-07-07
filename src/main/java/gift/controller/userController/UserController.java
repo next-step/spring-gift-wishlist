@@ -1,6 +1,7 @@
 package gift.controller.userController;
 
 
+import gift.dto.userDto.UserLoginDto;
 import gift.dto.userDto.UserRegisterDto;
 import gift.dto.userDto.UserResponseDto;
 import gift.dto.userDto.UserUpdateDto;
@@ -35,6 +36,13 @@ public class UserController {
     ) {
         String token = userService.registerUser(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("token", token));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<Map<String, String>> loginUser(
+            @RequestBody @Valid UserLoginDto dto
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(Map.of("token", userService.loginUser(dto)));
     }
 
 

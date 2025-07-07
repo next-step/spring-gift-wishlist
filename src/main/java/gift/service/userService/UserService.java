@@ -1,5 +1,6 @@
 package gift.service.userService;
 
+import gift.dto.userDto.UserLoginDto;
 import gift.dto.userDto.UserRegisterDto;
 import gift.dto.userDto.UserResponseDto;
 import gift.dto.userDto.UserUpdateDto;
@@ -17,4 +18,6 @@ public interface UserService {
     UserResponseDto updateUser(Long id, @Valid UserUpdateDto dto);
 
     void deleteUserById(Long id);
+
+    String loginUser(@Valid UserLoginDto dto);
 }

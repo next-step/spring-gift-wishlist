@@ -1,6 +1,7 @@
 package gift.service.userService;
 
 import gift.Jwt.JwtUtil;
+import gift.dto.userDto.UserLoginDto;
 import gift.dto.userDto.UserRegisterDto;
 import gift.dto.userDto.UserResponseDto;
 import gift.dto.userDto.UserUpdateDto;
@@ -33,6 +34,8 @@ public class UserServiceImpl implements UserService{
 
         return token;
     }
+
+
 
     @Override
     public List<UserResponseDto> getUserList(String email) {
@@ -75,4 +78,6 @@ public class UserServiceImpl implements UserService{
         userRepository.deleteUser(findUser);
 
     }
+
+
 }
