@@ -87,4 +87,14 @@ public class MemberService {
         }
         memberRepository.deleteById(id);
     }
+
+    // 회원 수정
+    public MemberResponseDto updateMember(Long id, MemberRequestDto dto) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
+        member.setEmail(dto.getEmail());
+        member.setPassword(dto.getPassword());
+        memberRepository.update(id, member);
+        return new MemberResponseDto(member);
+    }
 } 

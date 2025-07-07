@@ -79,4 +79,10 @@ public class MemberRepositoryImpl implements MemberRepository {
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, email);
         return count != null && count > 0;
     }
+
+    @Override
+    public void update(Long id, Member member) {
+        String sql = "UPDATE member SET email = ?, password = ? WHERE id = ?";
+        jdbcTemplate.update(sql, member.getEmail(), member.getPassword(), id);
+    }
 } 
