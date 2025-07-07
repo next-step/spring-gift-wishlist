@@ -3,25 +3,29 @@ package gift.service;
 import gift.entity.Member;
 import gift.repository.MemberRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
 @Service
-public class MemberService {
+public class MemberService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public MemberService(MemberRepository memberRepository) {
+    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder) {
         this.memberRepository = memberRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    public Member createMember(String email, String password) {
-        if (memberRepository.checkEmailExists(email)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already exists");
-        }
-        Member member = new Member(email, password);
+    public Member createMember(String email, String rawPassword) {
+        String encodedPassword = passwordEncoder.encode(rawPassword);
+        Member member = new Member(email, encodedPassword);
         Optional<Long> optionalIdentifyNumber = memberRepository.createMember(member);
         if (optionalIdentifyNumber.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Member creation failed");
@@ -29,12 +33,9 @@ public class MemberService {
         return member.updateIdentifyNumber(optionalIdentifyNumber.get());
     }
 
-    public Long getMemberIdentifyNumber(String email, String password) {
-        Optional<Long> optionalIdentifyNumber = memberRepository.getMemberIdentifyNumber(email, password);
-        if (optionalIdentifyNumber.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid email or password");
-        }
-        return optionalIdentifyNumber.get();
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return memberRepository.findByEmail(email)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
     }
-
 }
