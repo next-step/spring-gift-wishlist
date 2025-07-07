@@ -1,7 +1,8 @@
-// src/main/java/gift/repository/JdbcProductRepository.java
 package gift.repository;
 
-import gift.entity.Product;
+import gift.entity.product.Product;
+import gift.exception.ProductNotFoundExection;
+import jakarta.transaction.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,11 +16,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class JdbcProductRepository implements ProductRepository {
 
+    private static final String SELECT_BASE = "SELECT id, name, price, image_url, hidden FROM product";
     private final JdbcTemplate jdbc;
     private final SimpleJdbcInsert insert;
     private final RowMapper<Product> productRowMapper;
 
-    // 생성자를 통해 ProductRowMapper를 주입받습니다.
     public JdbcProductRepository(JdbcTemplate jdbc, DataSource dataSource,
             ProductRowMapper productRowMapper) {
         this.jdbc = jdbc;
@@ -31,14 +32,13 @@ public class JdbcProductRepository implements ProductRepository {
 
     @Override
     public List<Product> findAll() {
-        return jdbc.query("SELECT id, name, price, image_url FROM product", productRowMapper);
+        return jdbc.query(SELECT_BASE, productRowMapper);
     }
 
     @Override
     public Optional<Product> findById(Long id) {
         List<Product> list = jdbc.query(
-                "SELECT id, name, price, image_url FROM product WHERE id = ?", productRowMapper,
-                id); // 사용
+                SELECT_BASE + " WHERE id = ?", productRowMapper, id);
         return list.stream().findFirst();
     }
 
@@ -51,7 +51,7 @@ public class JdbcProductRepository implements ProductRepository {
 
     @Override
     public Product save(Product product) {
-        if (product.id() == null || product.id() <= 0) {
+        if (product.id() == null || product.id().id() <= 0) {
             return insertProduct(product);
         } else {
             return updateProduct(product);
@@ -60,26 +60,38 @@ public class JdbcProductRepository implements ProductRepository {
 
     private Product insertProduct(Product product) {
         Map<String, Object> params = new HashMap<>();
-        params.put("name", product.name());
-        params.put("price", product.price());
-        params.put("image_url", product.imageUrl());
+        params.put("name", product.name().name());
+        params.put("price", product.price().price());
+        params.put("image_url", product.imageUrl().url());
+        params.put("hidden", product.hidden());
         Number key = insert.executeAndReturnKey(params);
         return product.withId(key.longValue());
     }
 
     private Product updateProduct(Product product) {
         int updated = jdbc.update(
-                "UPDATE product SET name = ?, price = ?, image_url = ? WHERE id = ?",
-                product.name(), product.price(), product.imageUrl(), product.id()
+                "UPDATE product SET name = ?, price = ?, image_url = ?, hidden = ? WHERE id = ?",
+                product.name().name(),
+                product.price().price(),
+                product.imageUrl().url(),
+                product.hidden(),
+                product.id().id()
         );
         if (updated == 0) {
-            throw new IllegalArgumentException("상품을 찾을 수 없습니다: " + product.id());
+            throw new ProductNotFoundExection(product.id().id());
         }
         return product;
     }
 
     @Override
+    @Transactional
     public void deleteById(Long id) {
-        jdbc.update("DELETE FROM product WHERE id = ?", id);
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("id는 null이거나 0 이하일 수 없습니다.");
+        }
+        int deleted = jdbc.update("DELETE FROM product WHERE id = ?", id);
+        if (deleted == 0) {
+            throw new ProductNotFoundExection(id);
+        }
     }
 }

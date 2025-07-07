@@ -1,7 +1,6 @@
-// src/main/java/gift/repository/ProductRepository.java
 package gift.repository;
 
-import gift.entity.Product;
+import gift.entity.product.Product;
 import java.util.List;
 import java.util.Optional;
 

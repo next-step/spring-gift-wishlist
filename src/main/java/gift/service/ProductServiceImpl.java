@@ -1,11 +1,11 @@
-// src/main/java/gift/service/ProductServiceImpl.java
 package gift.service;
 
-import gift.entity.Product;
-import gift.exception.ResourceNotFoundException;
+import gift.entity.product.Product;
+import gift.exception.ProductNotFoundExection;
 import gift.repository.ProductRepository;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class ProductServiceImpl implements ProductService {
 
+    private static final List<Pattern> FORBIDDEN_PATTERNS = List.of(
+            Pattern.compile("카카오")
+    );
     private final ProductRepository repo;
 
     public ProductServiceImpl(ProductRepository repo) {
@@ -20,39 +23,67 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Product> getAllProducts() {
         return repo.findAll();
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Optional<Product> getProductById(Long id) {
-        return repo.findById(id);
+        return Optional.ofNullable(repo.findById(id))
+                .orElseThrow(() -> new ProductNotFoundExection(id));
     }
 
     @Override
-    public Product createProduct(Product product) {
-        Product created = product.withId(null);
-        return repo.save(created);
+    public Product createProduct(String name, int price, String imageUrl) {
+        Product newProduct = Product.of(name, price, imageUrl);
+        if (isForbidden(name)) {
+            newProduct = newProduct.withHidden(true);
+        }
+
+        return repo.save(newProduct);
     }
 
     @Override
-    public Product updateProduct(Long id, Product product) {
+    public Product updateProduct(Long id, String name, int price, String imageUrl) {
         Product existing = repo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("상품을 찾을 수 없습니다: " + id));
+                .orElseThrow(() -> new ProductNotFoundExection(id));
 
-        Product updated = existing.withName(product.name())
-                .withPrice(product.price())
-                .withImageUrl(product.imageUrl());
-        return repo.save(updated);
+        Product updatedProduct = existing.withName(name)
+                .withPrice(price)
+                .withImageUrl(imageUrl);
+        if (isForbidden(name)) {
+            updatedProduct = updatedProduct.withHidden(true);
+        }
+
+        return repo.save(updatedProduct);
     }
 
     @Override
     public void deleteProduct(Long id) {
         if (!repo.existsById(id)) {
-            throw new ResourceNotFoundException("상품을 찾을 수 없습니다: " + id);
+            throw new ProductNotFoundExection(id);
         }
         repo.deleteById(id);
+    }
+
+    @Override
+    public void hideProduct(Long id) {
+        Product p = repo.findById(id)
+                .orElseThrow(() -> new ProductNotFoundExection(id));
+        p = p.withHidden(true);
+        repo.save(p);
+    }
+
+    @Override
+    public void unhideProduct(Long id) {
+        Product p = repo.findById(id)
+                .orElseThrow(() -> new ProductNotFoundExection(id));
+        p = p.withHidden(false);
+        repo.save(p);
+    }
+
+    private boolean isForbidden(String name) {
+        return FORBIDDEN_PATTERNS.stream()
+                .anyMatch(p -> p.matcher(name).find());
     }
 }

@@ -1,7 +1,6 @@
-// src/main/java/gift/repository/ProductRowMapper.java
 package gift.repository;
 
-import gift.entity.Product;
+import gift.entity.product.Product;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.jdbc.core.RowMapper;
@@ -12,11 +11,12 @@ public class ProductRowMapper implements RowMapper<Product> {
 
     @Override
     public Product mapRow(ResultSet rs, int rowNum) throws SQLException {
-        return Product.createProduct(
+        return Product.of(
                 rs.getLong("id"),
                 rs.getString("name"),
                 rs.getInt("price"),
-                rs.getString("image_url")
+                rs.getString("image_url"),
+                rs.getBoolean("hidden")
         );
     }
 }

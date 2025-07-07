@@ -1,121 +1,128 @@
 package gift.controller;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import gift.entity.Product;
-import gift.repository.ProductRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import gift.dto.ProductRequest;
+import gift.entity.product.Product;
+import gift.service.ProductService;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
+import java.util.Optional;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("dev")
-public class ProductControllerTest {
-
-    @LocalServerPort
-    private int port;
-    private String baseUrl;
+@WebMvcTest(ProductController.class)
+class ProductControllerTest {
 
     @Autowired
-    private TestRestTemplate restTemplate;
+    private MockMvc mockMvc;
 
     @Autowired
-    private ProductRepository productRepository;
+    private ObjectMapper objectMapper;
 
-    @BeforeEach
-    void setUp() {
-        // 인메모리 리포지토리 초기화
-        List<Product> all = productRepository.findAll();
-        all.forEach(p -> productRepository.deleteById(p.id()));
+    @MockitoBean
+    private ProductService productService;
 
-        baseUrl = "http://localhost:" + port + "/api/products";
+    @Test
+    @DisplayName("GET /api/products - 숨김 제외 리스트 반환")
+    void listProducts() throws Exception {
+        Product visible = Product.of(1L, "A", 10, "http://example.com/a.png", false);
+        Mockito.when(productService.getAllProducts())
+                .thenReturn(List.of(visible));
+
+        mockMvc.perform(get("/api/products"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name", is("A")));
     }
 
     @Test
-    void createProduct_Success_and_InvalidInput_Fail() {
-        // 성공 케이스
-        Product valid = new Product(null, "ValidName", 100, "http://example.com/img.png");
-        ResponseEntity<Product> success = restTemplate.postForEntity(baseUrl, valid, Product.class);
-        assertThat(success.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(success.getBody()).isNotNull();
-        assertThat(success.getBody().id()).isNotNull();
+    @DisplayName("GET /api/products/{id} - ID 조회 성공")
+    void getProductById() throws Exception {
+        Product p = Product.of(1L, "B", 20, "http://example.com/b.png", false);
+        Mockito.when(productService.getProductById(1L))
+                .thenReturn(Optional.of(p));
 
-        // 실패 케이스: 필수 필드 누락 (name)
-        Product invalid = new Product(null, "", 0, "");
-        ResponseEntity<String> fail = restTemplate.postForEntity(baseUrl, invalid, String.class);
-        assertThat(fail.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        mockMvc.perform(get("/api/products/{id}", 1L))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", is("B")));
     }
 
     @Test
-    void getAllProducts_and_GetById_NotFound() {
-        // 사전 데이터 생성
-        Product p1 = productRepository.save(new Product(null, "P1", 10, "u1"));
-        Product p2 = productRepository.save(new Product(null, "P2", 20, "u2"));
+    @DisplayName("GET /api/products/{id} - 숨김 상품은 Forbidden")
+    void getHiddenProduct() throws Exception {
+        Product hidden = Product.of(2L, "C", 30, "http://example.com/c.png", true);
+        Mockito.when(productService.getProductById(2L))
+                .thenReturn(Optional.of(hidden));
 
-        // 전체 조회
-        ResponseEntity<Product[]> all = restTemplate.getForEntity(baseUrl, Product[].class);
-        assertThat(all.getStatusCode()).isEqualTo(HttpStatus.OK);
-        Product[] list = all.getBody();
-        assertThat(list).hasSize(2);
-
-        // 단건 조회 실패
-        ResponseEntity<String> notFound = restTemplate.getForEntity(baseUrl + "/999", String.class);
-        assertThat(notFound.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        mockMvc.perform(get("/api/products/{id}", 2L))
+                .andExpect(status().isForbidden());
     }
 
     @Test
-    void updateProduct_Success_and_NotFound() {
-        // 사전 데이터 생성
-        Product orig = productRepository.save(new Product(null, "Orig", 50, "u0"));
-        Long id = orig.id();
+    @DisplayName("GET /api/products/{id} - 존재하지 않는 ID는 NotFound")
+    void getNotFound() throws Exception {
+        Mockito.when(productService.getProductById(999L))
+                .thenReturn(Optional.empty());
 
-        // 성공 업데이트
-        Product update = new Product(id, "Updated", 75, "u1");
-        HttpEntity<Product> entity = new HttpEntity<>(update, createJsonHeaders());
-        ResponseEntity<Product> updated = restTemplate.exchange(
-                baseUrl + "/" + id, HttpMethod.PUT, entity, Product.class);
-        assertThat(updated.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(updated.getBody().name()).isEqualTo("Updated");
-
-        // 실패 업데이트 (존재하지 않는 id)
-        Product dummy = new Product(999L, "X", 1, "u");
-        HttpEntity<Product> badEntity = new HttpEntity<>(dummy, createJsonHeaders());
-        ResponseEntity<String> notFound = restTemplate.exchange(
-                baseUrl + "/999", HttpMethod.PUT, badEntity, String.class);
-        assertThat(notFound.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        mockMvc.perform(get("/api/products/{id}", 999L))
+                .andExpect(status().isNotFound());
     }
 
     @Test
-    void deleteProduct_Success_and_NotFound() {
-        // 사전 데이터 생성
-        Product dp = productRepository.save(new Product(null, "Del", 30, "uD"));
-        Long id = dp.id();
+    @DisplayName("POST /api/products - 생성 성공")
+    void createProduct() throws Exception {
+        ProductRequest req = new ProductRequest("D", 40, "http://example.com/d.png");
+        Product created = Product.of(3L, "D", 40, "http://example.com/d.png", false);
+        Mockito.when(productService.createProduct(req.name(), req.price(), req.imageUrl()))
+                .thenReturn(created);
 
-        // 성공 삭제
-        ResponseEntity<Void> removed = restTemplate.exchange(
-                baseUrl + "/" + id, HttpMethod.DELETE, null, Void.class);
-        assertThat(removed.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-
-        // 실패 삭제 (이미 제거됨)
-        ResponseEntity<String> notFound = restTemplate.exchange(
-                baseUrl + "/" + id, HttpMethod.DELETE, null, String.class);
-        assertThat(notFound.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        mockMvc.perform(post("/api/products")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(req)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(3))
+                .andExpect(jsonPath("$.name").value("D"));
     }
 
-    private HttpHeaders createJsonHeaders() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        return headers;
+    @Test
+    @DisplayName("PUT /api/products/{id} - 수정 성공")
+    void updateProduct() throws Exception {
+        ProductRequest req = new ProductRequest("E", 50, "http://example.com/e.png");
+        Product updated = Product.of(4L, "E", 50, "http://example.com/e.png", false);
+
+        Mockito.when(productService.getProductById(4L))
+                .thenReturn(Optional.of(updated));
+        Mockito.when(productService.updateProduct(4L, req.name(), req.price(), req.imageUrl()))
+                .thenReturn(updated);
+
+        mockMvc.perform(put("/api/products/{id}", 4L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(req)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("E"));
+    }
+
+    @Test
+    @DisplayName("DELETE /api/products/{id} - 삭제 성공")
+    void deleteProduct() throws Exception {
+        Product existing = Product.of(5L, "D", 50, "http://example.com/d.png", false);
+        Mockito.when(productService.getProductById(5L))
+                .thenReturn(Optional.of(existing));
+        Mockito.doNothing().when(productService).deleteProduct(5L);
+
+        mockMvc.perform(delete("/api/products/{id}", 5L))
+                .andExpect(status().isNoContent());
     }
 }

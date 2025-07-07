@@ -1,4 +1,3 @@
-// src/main/java/gift/dto/ProductResponse.java
 package gift.dto;
 
 public record ProductResponse(
