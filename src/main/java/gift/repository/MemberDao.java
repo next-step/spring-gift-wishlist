@@ -41,11 +41,6 @@ public class MemberDao implements MemberRepository{
     }
 
     @Override
-    public Member loginMember(Member member) {
-        return null;
-    }
-
-    @Override
     public Optional<Member> findMemberByEmail(String email) {
         String sql = "select id, email, password, role from members where email = :email;";
         return client.sql(sql)
