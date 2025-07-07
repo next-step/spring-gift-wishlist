@@ -19,7 +19,7 @@ public class UserApiController {
         this.userService = userService;
     }
 
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<Void> register(@RequestBody @Valid CreateUserRequest request) {
         userService.saveUser(request);
         return ResponseEntity.noContent().build();
