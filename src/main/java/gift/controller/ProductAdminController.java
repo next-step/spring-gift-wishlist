@@ -20,11 +20,11 @@ import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/admin/products")
-public class AdminController {
+public class ProductAdminController {
 
     private final ProductService productService;
 
-    public AdminController(ProductService productService) {
+    public ProductAdminController(ProductService productService) {
         this.productService = productService;
     }
 
@@ -32,7 +32,7 @@ public class AdminController {
     public String adminPage(Model model) {
         List<ProductResponse> products = productService.getAllProducts();
         model.addAttribute("products", products);
-        return "admin";
+        return "products";
     }
 
     @GetMapping("/add")

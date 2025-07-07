@@ -12,8 +12,13 @@ import gift.exception.ApprovalRequiredException;
 import gift.exception.ProductCreateException;
 import gift.exception.ProductNotFoundException;
 import gift.exception.ProductUpdateException;
+import gift.exception.UserDeleteException;
+import gift.exception.UserNotFoundException;
+import gift.exception.UserUpdateException;
 
-@ControllerAdvice(assignableTypes = AdminController.class)
+@ControllerAdvice(
+    assignableTypes = {ProductAdminController.class, UserAdminController.class}
+)
 public class AdminExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -35,7 +40,10 @@ public class AdminExceptionHandler {
         ProductNotFoundException.class,
         ProductCreateException.class,
         ProductUpdateException.class,
-        ApprovalRequiredException.class
+        ApprovalRequiredException.class,
+        UserNotFoundException.class,
+        UserUpdateException.class,
+        UserDeleteException.class
     })
     public String handleProductExceptions(RuntimeException e, Model model) {
         model.addAttribute("errorMessage", e.getMessage());

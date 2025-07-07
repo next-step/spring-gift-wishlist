@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import gift.exception.ApprovalRequiredException;
 import gift.exception.ProductCreateException;
+import gift.exception.ProductDeleteException;
 import gift.exception.ProductNotFoundException;
 import gift.exception.ProductUpdateException;
 import gift.exception.SigninException;
@@ -60,6 +61,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ProductUpdateException.class)
     public ProblemDetail handleProductUpdateException(ProductUpdateException e) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+    }
+
+    @ExceptionHandler(ProductDeleteException.class)
+    public ProblemDetail handleProductDeleteException(ProductDeleteException e) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
 }

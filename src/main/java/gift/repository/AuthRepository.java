@@ -1,5 +1,6 @@
 package gift.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.jdbc.core.RowMapper;
@@ -23,13 +24,12 @@ public class AuthRepository {
         this.jdbcClient = jdbcClient;
     }
 
-    public boolean existsByEmail(String email) {
-        String sql = "SELECT COUNT(*) FROM `user` WHERE email = :email";
+    public List<User> findAll() {
+        String sql = "SELECT * FROM `user`";
 
         return jdbcClient.sql(sql)
-            .param("email", email)
-            .query(Long.class)
-            .single() > 0;
+            .query(rowMapper)
+            .list();
     }
 
     public Optional<User> findById(Long id) {
@@ -50,6 +50,24 @@ public class AuthRepository {
             .optional();
     }
 
+    public boolean existsById(Long id) {
+        String sql = "SELECT COUNT(*) FROM `user` WHERE id = :id";
+
+        return jdbcClient.sql(sql)
+            .param("id", id)
+            .query(Long.class)
+            .single() > 0;
+    }
+
+    public boolean existsByEmail(String email) {
+        String sql = "SELECT COUNT(*) FROM `user` WHERE email = :email";
+
+        return jdbcClient.sql(sql)
+            .param("email", email)
+            .query(Long.class)
+            .single() > 0;
+    }
+
     public Long save(User user) {
         String sql = "INSERT INTO `user` (email, password) VALUES (:email, :password)";
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
@@ -64,5 +82,26 @@ public class AuthRepository {
         }
 
         return keyHolder.getKey().longValue();
+    }
+
+    public int update(User user) {
+        String sql = """
+            UPDATE `user`
+            SET email = :email
+            WHERE id = :id
+            """;
+
+        return jdbcClient.sql(sql)
+            .param("email", user.getEmail())
+            .param("id", user.getId())
+            .update();
+    }
+
+    public int delete(Long id) {
+        String sql = "DELETE FROM `user` WHERE id = :id";
+
+        return jdbcClient.sql(sql)
+            .param("id", id)
+            .update();
     }
 }

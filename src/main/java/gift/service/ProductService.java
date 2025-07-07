@@ -57,7 +57,7 @@ public class ProductService {
 
     @Transactional
     public UpdateProductResponse updateProduct(Long id, UpdateProductRequest request) {
-        checkProductExistance(id);
+        checkProductExistence(id);
         validateProductName(request.name());
 
         Product newProduct = Product.of(id, request.name(), request.price(), request.imageUrl());
@@ -72,7 +72,7 @@ public class ProductService {
 
     @Transactional
     public void deleteProduct(Long id) {
-        checkProductExistance(id);
+        checkProductExistence(id);
 
         int count = productRepository.delete(id);
         if (count != 1) {
@@ -87,7 +87,7 @@ public class ProductService {
         }
     }
 
-    private void checkProductExistance(Long id) {
+    private void checkProductExistence(Long id) {
         if (!productRepository.existsById(id)) {
             throw new ProductNotFoundException("해당 상품이 존재하지 않습니다.");
         }
