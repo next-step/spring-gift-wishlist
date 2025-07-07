@@ -2,6 +2,7 @@ package gift.controller;
 
 import gift.entity.Member;
 import gift.service.member.MemberService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,7 +40,7 @@ public class AdminMemberController {
   }
 
   @PostMapping("/new")
-  public String createMember(@ModelAttribute Member member) {
+  public String createMember(@Valid @ModelAttribute Member member) {
     service.createMember(member);
     return "redirect:" + MEMBERS_LIST_PAGE_PATH;
   }
@@ -52,7 +53,7 @@ public class AdminMemberController {
   }
 
   @PutMapping("/{id}/update")
-  public String update(@PathVariable("id") Long id, @ModelAttribute Member member) {
+  public String update(@PathVariable("id") Long id, @Valid @ModelAttribute Member member) {
     service.updateMember(id, member);
     return "redirect:" + MEMBERS_LIST_PAGE_PATH;
   }
