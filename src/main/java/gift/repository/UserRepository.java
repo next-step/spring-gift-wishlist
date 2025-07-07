@@ -21,7 +21,7 @@ public class UserRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Product save(Product product) {
+    public User save(User user) {
 
         String sql = "insert into product (name, imageUrl) values (?, ?)";
 
@@ -29,18 +29,18 @@ public class UserRepository {
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, product.getName());
-            ps.setString(2, product.getImageUrl());
+            ps.setString(1, user.getEmail());
+            ps.setString(2, user.getPassword());
             return ps;
         }, keyHolder);
 
         Number key = keyHolder.getKey();
 
         if(key != null) {
-            product.setId(key.longValue());
+            user.setId(key.longValue());
         }
 
-        return product;
+        return user;
     }
 
     public Optional<User> findByEmail(String email) {
