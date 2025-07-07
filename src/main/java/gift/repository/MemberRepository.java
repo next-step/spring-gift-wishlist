@@ -11,7 +11,7 @@ public interface MemberRepository {
 
     //MemberRepository : 회원에 관한 CRUD...
     //회원 가입 -> 회원을 저장
-    void addMember(MemberRequestDto memberRequestDto);
+    void addMember(Member member);
 
     //회원 조회 -> 이메일과 비밀번호를 통해 회원 조회(로그인시 확인...)
     Optional<Member> findMemberByEmailAndPassword(String email, String password);
@@ -24,7 +24,7 @@ public interface MemberRepository {
 
     Optional<Member> findMemberById(Long id);
 
-    void modifyMember(Long id, MemberRequestDto memberRequestDto);
+    void modifyMember(Long id, Member member);
 
     void removeMemberById(Long id);
 

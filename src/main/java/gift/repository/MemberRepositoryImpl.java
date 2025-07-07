@@ -23,13 +23,13 @@ public class MemberRepositoryImpl implements MemberRepository{
     }
 
     @Override
-    public void addMember(MemberRequestDto memberRequestDto) {
+    public void addMember(Member member) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         simpleJdbcInsert.withTableName("members").usingGeneratedKeyColumns("id");
 
         Map<String, Object> params = new HashMap<>();
-        params.put("email", memberRequestDto.email());
-        params.put("password", memberRequestDto.password());
+        params.put("email", member.getEmail());
+        params.put("password", member.getPassword());
 
         simpleJdbcInsert.execute(params);
     }
@@ -59,9 +59,9 @@ public class MemberRepositoryImpl implements MemberRepository{
     }
 
     @Override
-    public void modifyMember(Long id, MemberRequestDto memberRequestDto) {
+    public void modifyMember(Long id, Member member) {
         String sql = "update members set email = ?, password = ? where id = ?";
-        jdbcTemplate.update(sql,memberRequestDto.email(), memberRequestDto.password(), id);
+        jdbcTemplate.update(sql, member.getEmail(), member.getPassword(), id);
     }
 
     @Override

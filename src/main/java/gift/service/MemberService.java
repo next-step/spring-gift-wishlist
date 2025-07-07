@@ -24,7 +24,8 @@ public class MemberService {
         if(checkDuplicateEmail(memberRequestDto.email())){
             return false;
         }
-        memberRepository.addMember(memberRequestDto);
+        Member member = new Member(memberRequestDto.email(), memberRequestDto.password());
+        memberRepository.addMember(member);
         return true;
     }
 
@@ -75,7 +76,8 @@ public class MemberService {
 
     //멤버의 정보를 수정하는 기능
     public void modifyMember(Long id, MemberRequestDto memberRequestDto){
-        memberRepository.modifyMember(id, memberRequestDto);
+        Member member = new Member(memberRequestDto.email(), memberRequestDto.password());
+        memberRepository.modifyMember(id, member);
     }
 
 
