@@ -5,7 +5,6 @@ import gift.dto.MemberRegisterRequest;
 import gift.dto.MemberLoginRequest;
 import gift.entity.Member;
 import gift.entity.Role;
-import gift.exception.DuplicateItemException;
 import gift.exception.LoginException;
 import gift.repository.MemberRepository;
 import gift.util.JwtUtil;
@@ -23,10 +22,6 @@ public class MemberService {
     }
 
     public LoginResponse register(MemberRegisterRequest request) {
-        memberRepository.findByEmail(request.email()).ifPresent(member -> {
-            throw new DuplicateItemException("이미 가입된 이메일입니다.");
-        });
-
         Member newMember = new Member(null, request.email(), request.password(), Role.USER);
         memberRepository.save(newMember);
 
