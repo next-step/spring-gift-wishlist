@@ -9,4 +9,6 @@ public interface MemberRepository {
     public int create(MemberRequestDto requestDto);
 
     public Optional<Member> findByEmail(String email);
+
+    void changePassword(Member member);
 }

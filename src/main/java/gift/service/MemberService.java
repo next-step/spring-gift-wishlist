@@ -8,4 +8,6 @@ public interface MemberService {
     public MemberResponseDto create(MemberRequestDto requestDto);
 
     public MemberResponseDto login(MemberRequestDto requestDto);
+
+    void changePassword(MemberRequestDto requestDto);
 }

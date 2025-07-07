@@ -5,12 +5,6 @@ import gift.dto.MemberResponseDto;
 import gift.entity.Member;
 import gift.repository.MemberRepository;
 import gift.util.JwtUtil;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.graphql.GraphQlProperties.Http;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -54,5 +48,13 @@ public class MemberServiceImpl implements MemberService {
         String accessToken = jwtUtil.createToken(member);
 
         return new MemberResponseDto(accessToken);
+    }
+
+    @Override
+    public void changePassword(MemberRequestDto requestDto) {
+        Member member = memberRepository.findByEmail(requestDto.getEmail())
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
+
+        memberRepository.changePassword(member);
     }
 }

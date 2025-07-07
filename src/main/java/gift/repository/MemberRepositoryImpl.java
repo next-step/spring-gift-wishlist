@@ -45,5 +45,13 @@ public class MemberRepositoryImpl implements MemberRepository {
             .optional();
     }
 
+    @Override
+    public void changePassword(Member member) {
+        String sql = "UPDATE member SET password = :password WHERE email = :email";
 
+        jdbcClient.sql(sql)
+            .param("password", member.getPassword())
+            .param("email", member.getEmail())
+            .update();
+    }
 }

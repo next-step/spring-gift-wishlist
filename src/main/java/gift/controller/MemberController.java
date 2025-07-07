@@ -6,6 +6,7 @@ import gift.service.MemberService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,5 +33,13 @@ public class MemberController {
     ) {
         return new ResponseEntity<>(memberService.login(requestDto),
             HttpStatus.OK);
+    }
+
+    @PutMapping("/password")
+    public ResponseEntity<Void> changePassword(
+        @RequestBody MemberRequestDto requestDto
+    ) {
+        memberService.changePassword(requestDto);
+        return ResponseEntity.ok().build();
     }
 }
