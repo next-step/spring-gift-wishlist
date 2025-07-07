@@ -1,10 +1,12 @@
 package gift;
 
 import gift.component.BCryptEncryptor;
+import gift.component.JwtUtil;
 import gift.dto.LoginRequestDto;
 import gift.dto.TokenResponseDto;
 import gift.domain.Member;
 import gift.enums.Role;
+import gift.exception.UnauthorizedException;
 import gift.repository.MemberRepository;
 import gift.service.MemberService;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +27,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-public class MemberTest {
+public class AuthTest {
     @Mock
     MemberRepository memberRepository;
 
@@ -35,11 +37,20 @@ public class MemberTest {
     @InjectMocks
     MemberService memberService;
 
+    private JwtUtil jwtUtil;
+
+    private final String secretKey = "mysecretkeymysecretkey1234567890";
+
     @BeforeEach
     void setUp() throws Exception {
         Field secretKeyField = MemberService.class.getDeclaredField("secretKey");
         secretKeyField.setAccessible(true);
-        secretKeyField.set(memberService, "testsecretkeytestsecretkey123456"); // 최소 32바이트 권장
+        secretKeyField.set(memberService, secretKey);
+
+        jwtUtil = new JwtUtil();
+        Field jwtSecretKeyField = JwtUtil.class.getDeclaredField("secretKey");
+        jwtSecretKeyField.setAccessible(true);
+        jwtSecretKeyField.set(jwtUtil, secretKey);
     }
 
     @Test
@@ -75,5 +86,12 @@ public class MemberTest {
                 .hasMessageContaining("401");
     }
 
+    @Test
+    void 유효하지_않은_토큰이면_예외가_발생한다() {
+        String header = "Bearer invalid.token.value";
 
+        assertThatThrownBy(() -> jwtUtil.validateAuthorizationHeader(header, "products-api"))
+                .isInstanceOf(UnauthorizedException.class)
+                .hasMessageContaining("유효하지 않은 토큰");
+    }
 }

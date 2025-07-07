@@ -1,5 +1,6 @@
 package gift.controller;
 
+import gift.component.JwtUtil;
 import gift.dto.CreateProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.dto.UpdateProductRequestDto;
@@ -16,14 +17,19 @@ import java.util.List;
 @RequestMapping("/admin/products")
 public class AdminController {
     private final ProductService productService;
+    private final JwtUtil jwtUtil;
 
-    public AdminController(ProductService productService) {
+    public AdminController(ProductService productService, JwtUtil jwtUtil) {
         this.productService = productService;
+        this.jwtUtil = jwtUtil;
     }
 
     // 상품 목록 조회
     @GetMapping
-    public String list(Model model) {
+    public String list(
+            @RequestHeader(value = "Authorization", required = false) String authHeader,
+            Model model) {
+        jwtUtil.validateAuthorizationHeader(authHeader, "admin-api");
         List<ProductResponseDto> products = productService.findAllProducts();
         model.addAttribute("products", products);
 
@@ -32,7 +38,11 @@ public class AdminController {
 
     // 상품 단건 조회
     @GetMapping("/{id}")
-    public String detail(@PathVariable Long id, Model model) {
+    public String detail(
+            @RequestHeader(value = "Authorization", required = false) String authHeader,
+            @PathVariable Long id,
+            Model model) {
+        jwtUtil.validateAuthorizationHeader(authHeader, "admin-api");
         ProductResponseDto findProduct = productService.findProductById(id);
         model.addAttribute("product", findProduct);
 
@@ -41,7 +51,10 @@ public class AdminController {
 
     // 상품 등록 페이지
     @GetMapping("/new")
-    public String createProduct(Model model) {
+    public String createProduct(
+            @RequestHeader(value = "Authorization", required = false) String authHeader,
+            Model model) {
+        jwtUtil.validateAuthorizationHeader(authHeader, "admin-api");
         model.addAttribute("product", new CreateProductRequestDto("", 0L, ""));
 
         return "admin/product/create";
@@ -49,7 +62,11 @@ public class AdminController {
 
     // 상품 등록
     @PostMapping("/new")
-    public String createProduct(@Valid @ModelAttribute("product") CreateProductRequestDto requestDto, BindingResult bindingResult) {
+    public String createProduct(
+            @RequestHeader(value = "Authorization", required = false) String authHeader,
+            @Valid @ModelAttribute("product") CreateProductRequestDto requestDto,
+            BindingResult bindingResult) {
+        jwtUtil.validateAuthorizationHeader(authHeader, "admin-api");
         if (bindingResult.hasErrors()) {
 
             return "admin/product/create";
@@ -61,7 +78,10 @@ public class AdminController {
 
     // 상품 삭제
     @DeleteMapping("/{id}")
-    public String deleteProduct(@PathVariable Long id) {
+    public String deleteProduct(
+            @RequestHeader(value = "Authorization", required = false) String authHeader,
+            @PathVariable Long id) {
+        jwtUtil.validateAuthorizationHeader(authHeader, "admin-api");
         productService.deleteProduct(id);
 
         return "redirect:/admin/products";
@@ -69,7 +89,10 @@ public class AdminController {
 
     // 상품 수정 페이지
     @GetMapping("/edit/{id}")
-    public String updateProduct(@PathVariable Long id, Model model) {
+    public String updateProduct(
+            @RequestHeader(value = "Authorization", required = false) String authHeader,
+            @PathVariable Long id, Model model) {
+        jwtUtil.validateAuthorizationHeader(authHeader, "admin-api");
         ProductResponseDto findProduct = productService.findProductById(id);
         model.addAttribute("product", new UpdateProductRequestDto(
                 findProduct.id(),
@@ -83,7 +106,12 @@ public class AdminController {
 
     // 상품 수정
     @PutMapping("/edit/{id}")
-    public String updateProduct(@PathVariable Long id, @Valid @ModelAttribute("product") UpdateProductRequestDto updatedProduct, BindingResult bindingResult) {
+    public String updateProduct(
+            @RequestHeader(value = "Authorization", required = false) String authHeader,
+            @PathVariable Long id,
+            @Valid @ModelAttribute("product") UpdateProductRequestDto updatedProduct,
+            BindingResult bindingResult) {
+        jwtUtil.validateAuthorizationHeader(authHeader, "admin-api");
         if (bindingResult.hasErrors()) {
 
             return "admin/product/update";
