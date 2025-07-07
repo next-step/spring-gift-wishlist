@@ -205,18 +205,30 @@ function saveChanges(row, id) {
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({name, price, imageUrl}),
   })
-  .then(res => {
+  .then(async (res) => {
     if (!res.ok) {
-      throw new Error("수정 실패");
+      const errorBody = await res.json();
+      const message = errorBody?.message || "상품 수정 중 오류가 발생했습니다.";
+      throw new Error(message);
     }
-    fetchProductList(currentPage, pageSize);
+    if(res.status === 204){
+      return null;
+    }
+    return res.json();
   })
-  .catch(err => {
-    console.error(err);
-    alert("수정에 실패했습니다.");
+  .then(() => {
+    alert("상품이 수정 되었습니다.");
+    window.location.href = getProductListUrl();
+  })
+  .catch((error) => {
+    console.error("서버 오류:", error);
+    alert(error.message || "상품 수정 중 오류가 발생했습니다.");
   });
 }
 
+function getProductListUrl() {
+  return '/admin/products';
+}
 /**
  * 수정 모드 취소 후 다시 렌더링
  */
