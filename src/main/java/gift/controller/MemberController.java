@@ -28,10 +28,9 @@ public class MemberController {
 
     @PostMapping("/login")
     public ResponseEntity<MemberResponseDto> login(
-        @RequestBody MemberRequestDto requestDto,
-        @RequestHeader("Authorization") String bearerAuthorizationHeader
+        @RequestBody MemberRequestDto requestDto
     ) {
-        return new ResponseEntity<>(memberService.login(requestDto, bearerAuthorizationHeader),
+        return new ResponseEntity<>(memberService.login(requestDto),
             HttpStatus.OK);
     }
 }

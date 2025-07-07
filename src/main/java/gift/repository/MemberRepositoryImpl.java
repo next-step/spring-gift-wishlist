@@ -4,6 +4,7 @@ import gift.dto.MemberRequestDto;
 import gift.entity.Member;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
@@ -11,6 +12,11 @@ import org.springframework.stereotype.Repository;
 public class MemberRepositoryImpl implements MemberRepository {
 
     private final JdbcClient jdbcClient;
+
+    private final static RowMapper<Member> MEMBER_ROW_MAPPER = ((rs, rowNum) -> new Member(
+        rs.getString("email"),
+        rs.getString("password")
+    ));
 
     @Autowired
     public MemberRepositoryImpl(JdbcClient jdbcClient) {
@@ -35,7 +41,7 @@ public class MemberRepositoryImpl implements MemberRepository {
 
         return jdbcClient.sql(sql)
             .param("email", email)
-            .query(Member.class)
+            .query(MEMBER_ROW_MAPPER)
             .optional();
     }
 

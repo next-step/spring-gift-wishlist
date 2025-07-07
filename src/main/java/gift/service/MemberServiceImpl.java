@@ -10,6 +10,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.graphql.GraphQlProperties.Http;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -42,7 +43,16 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public MemberResponseDto login(MemberRequestDto requestDto, String bearerAuthorizationHeader) {
-        return null;
+    public MemberResponseDto login(MemberRequestDto requestDto) {
+        Member member = memberRepository.findByEmail(requestDto.getEmail())
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
+
+        if (!requestDto.getPassword().equals(member.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+
+        String accessToken = jwtUtil.createToken(member);
+
+        return new MemberResponseDto(accessToken);
     }
 }
