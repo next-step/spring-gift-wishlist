@@ -1,8 +1,7 @@
 package gift.service;
 
-import gift.dto.AuthLogInRequestDto;
-import gift.dto.AuthResponseDto;
-import gift.dto.AuthSignUpRequestDto;
+import gift.dto.MemberLogInRequestDto;
+import gift.dto.MemberLogInResponseDto;
 import gift.entity.Member;
 import gift.exception.InvalidPasswordException;
 import gift.exception.MemberEmailAlreadyExistsException;
@@ -14,17 +13,17 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class AuthServiceImpl implements AuthService {
+public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final JwtProvider jwtProvider;
 
-    public AuthServiceImpl(MemberRepository memberRepository, JwtProvider jwtProvider) {
+    public MemberServiceImpl(MemberRepository memberRepository, JwtProvider jwtProvider) {
         this.memberRepository = memberRepository;
         this.jwtProvider = jwtProvider;
     }
 
     @Override
-    public AuthResponseDto registerMember(AuthSignUpRequestDto requestDto) {
+    public MemberLogInResponseDto registerMember(MemberLogInRequestDto requestDto) {
         if (memberRepository.findMemberByEmail(requestDto.email()).isPresent()) {
             throw new MemberEmailAlreadyExistsException();
         }
@@ -35,11 +34,11 @@ public class AuthServiceImpl implements AuthService {
             requestDto.password());
         member = memberRepository.registerMember(member);
 
-        return new AuthResponseDto(jwtProvider.createToken(member));
+        return new MemberLogInResponseDto(jwtProvider.createToken(member));
     }
 
     @Override
-    public AuthResponseDto findMemberToLogIn(AuthLogInRequestDto requestDto) {
+    public MemberLogInResponseDto findMemberToLogIn(MemberLogInRequestDto requestDto) {
         Optional<Member> memberOptional = memberRepository.findMemberByEmail(requestDto.email());
         Member member = memberOptional.orElseThrow(MemberEmailNotExistsException::new);
 
@@ -47,6 +46,6 @@ public class AuthServiceImpl implements AuthService {
             throw new InvalidPasswordException("비밀번호가 일치하지 않습니다.");
         }
 
-        return new AuthResponseDto(jwtProvider.createToken(member));
+        return new MemberLogInResponseDto(jwtProvider.createToken(member));
     }
 }
