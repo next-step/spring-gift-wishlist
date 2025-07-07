@@ -19,21 +19,23 @@ public class MemberDao implements MemberRepository{
         Long id = rs.getLong("id");
         String email = rs.getString("email");
         String password = rs.getString("password");
+        String role = rs.getString("role");
 
-        return new Member(id, email, password);
+        return new Member(id, email, password, role);
     };
 
     @Override
     public Member createMember(Member newMember) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        String sql = "insert into members(email, password) values (:email, :password);";
+        String sql = "insert into members(email, password, role) values (:email, :password, :role);";
         client.sql(sql)
                 .param("email", newMember.getEmail())
                 .param("password", newMember.getPassword())
+                .param("role", newMember.getRole())
                 .update(keyHolder);
 
         Member savedMember = new Member(keyHolder.getKey().longValue(), newMember.getEmail(),
-                newMember.getPassword());
+                newMember.getPassword(), newMember.getRole());
 
         return savedMember;
     }
@@ -45,7 +47,7 @@ public class MemberDao implements MemberRepository{
 
     @Override
     public Optional<Member> findMemberByEmail(String email) {
-        String sql = "select id, email, password from members where email = :email;";
+        String sql = "select id, email, password, role from members where email = :email;";
         return client.sql(sql)
                 .param("email", email)
                 .query(getMemberRowMapper)

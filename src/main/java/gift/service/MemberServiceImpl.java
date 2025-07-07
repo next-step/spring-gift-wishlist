@@ -24,7 +24,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public JWTResponseDto createMember(CreateMemberRequestDto requestDto) {
         throwIfMemberFindByEmail(requestDto.email());
-        Member newMember = new Member(null, requestDto.email(), requestDto.password());
+        Member newMember = new Member(null, requestDto.email(), requestDto.password(), "user");
         Member savedMember = memberRepository.createMember(newMember);
         String accessToken = createAccessToken(savedMember);
         return new JWTResponseDto(accessToken);
@@ -62,6 +62,7 @@ public class MemberServiceImpl implements MemberService {
                 .setSubject(member.getId().toString())
                 .claim("email", member.getEmail())
                 .claim("password", member.getPassword())
+                .claim("role", member.getRole())
                 .signWith(key)
                 .compact();
         return accessToken;
