@@ -6,24 +6,26 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Types;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
 public class AuthRepository {
     private JdbcTemplate jdbcTemplate;
+    private final AtomicLong id = new AtomicLong(0);
 
     public AuthRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public User save(User user) {
-        String sql = "INSERT INTO USERS(EMAIL, PASSWORD) VALUES(?, ?);";
+    public void save(User user) {
+        String sql = "INSERT INTO USERS(ID, EMAIL, PASSWORD) VALUES(?, ?, ?);";
         Object[] args = new Object[]{
+            id.getAndIncrement(),
             user.getEmail(),
             user.getPassword()
         };
-        int[] argTypes = {Types.VARCHAR, Types.VARCHAR};
+        int[] argTypes = {Types.BIGINT, Types.VARCHAR, Types.VARCHAR};
         jdbcTemplate.update(sql, args, argTypes);
-        return user;
     }
 
     public Optional<User> findByEmail(String email) {
