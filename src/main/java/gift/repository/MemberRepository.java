@@ -8,5 +8,5 @@ public interface MemberRepository {
     Member createMember(Member newMember);
     Member loginMember(Member member);
     Optional<Member> findMemberByEmail(String email);
-
+    void updateMemberPassword(Member member, String newPassword);
 }

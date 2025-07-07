@@ -2,6 +2,7 @@ package gift.service;
 
 import gift.dto.CreateMemberRequestDto;
 import gift.dto.JWTResponseDto;
+import gift.dto.UpdateMemberPasswordRequestDto;
 import gift.entity.Member;
 import gift.exception.CustomException;
 import gift.exception.ErrorCode;
@@ -39,6 +40,16 @@ public class MemberServiceImpl implements MemberService {
         }
         String accessToken = createAccessToken(find);
         return new JWTResponseDto(accessToken);
+    }
+
+    @Override
+    public void updateMemberPassword(UpdateMemberPasswordRequestDto requestDto) {
+        Member find = findMemberByEmailOrElseThrow(requestDto.email());
+
+        if (!isCorrectPassword(find, requestDto.oldPassword())) {
+            throw new CustomException(ErrorCode.Unauthorized);
+        }
+        memberRepository.updateMemberPassword(find, requestDto.newPassword());
     }
 
     private Member findMemberByEmailOrElseThrow(String email) {

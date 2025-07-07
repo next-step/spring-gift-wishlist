@@ -53,4 +53,13 @@ public class MemberDao implements MemberRepository{
                 .query(getMemberRowMapper)
                 .optional();
     }
+
+    @Override
+    public void updateMemberPassword(Member member, String newPassword) {
+        String sql = "update members set password = :newPassword where email = :email;";
+        client.sql(sql)
+                .param("newPassword", newPassword)
+                .param("email", member.getEmail())
+                .update();
+    }
 }
