@@ -38,7 +38,7 @@ public class MemberRepository {
 
     public Long insert(Member member){
         String sql = "insert into members(email, password) "
-            + "values(?,?,) ";
+            + "values(?,?) ";
 
         jdbcTemplate.update((Connection con) -> {
             PreparedStatement st = con.prepareStatement(sql,
