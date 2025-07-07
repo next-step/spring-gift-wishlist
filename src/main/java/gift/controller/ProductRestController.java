@@ -9,12 +9,13 @@ import gift.service.ProductService;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 
-//@RestController
+@RestController
 @RequestMapping("/api/products")
 public class ProductRestController {
 
@@ -25,7 +26,7 @@ public class ProductRestController {
     }
 
     @PostMapping
-    public HttpEntity<CreateProductResponse> createProduct(@RequestBody CreateProductRequest request) {
+    public HttpEntity<CreateProductResponse> createProduct(@Validated @RequestBody CreateProductRequest request) {
         CreateProductResponse createProductResponse = service.save(request);
 
         return new ResponseEntity<>(createProductResponse, HttpStatus.CREATED);
@@ -46,7 +47,7 @@ public class ProductRestController {
     }
 
     @PutMapping("/{id}")
-    public HttpEntity<UpdateProductResponse> updateProduct(@PathVariable Long id, @RequestBody UpdateProductRequest request) {
+    public HttpEntity<UpdateProductResponse> updateProduct(@PathVariable Long id, @Validated @RequestBody UpdateProductRequest request) {
         UpdateProductResponse updateProductResponse = service.update(id, request);
 
         return new ResponseEntity<>(updateProductResponse, HttpStatus.OK);
