@@ -82,10 +82,7 @@ public class DemoApplicationTests {
   void 존재하는_상품아이디로_이름을_수정하면_200이_반환된다(){
     String url = "http://localhost:" + port + "/products/1";
 
-    ProductRequestDto dto = new ProductRequestDto();
-    dto.setName("수정된상품이름");
-    dto.setPrice(1000);
-    dto.setImageUrl("http://image.com/1.jpg");
+    ProductRequestDto dto = new ProductRequestDto("수정된상품이름", 1000, "http://image.com/1.jpg");
 
     ResponseEntity<ProductResponseDto> response = client.patch()
         .uri(url)
