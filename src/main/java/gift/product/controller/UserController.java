@@ -2,6 +2,8 @@ package gift.product.controller;
 
 
 import gift.product.dto.CreateUserRequest;
+import gift.product.dto.LoginRequest;
+import gift.product.dto.LoginResponse;
 import gift.product.service.UserService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +24,11 @@ public class UserController {
 	@PostMapping("/register")
 	public Long register(@RequestBody CreateUserRequest req) {
 		return userService.register(req);
+	}
+
+	@PostMapping("/login")
+	public LoginResponse login(@RequestBody LoginRequest req) {
+		return userService.login(req);
 	}
 
 
