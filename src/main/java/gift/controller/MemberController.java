@@ -21,28 +21,29 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/members")
 public class MemberController {
+
     private final MemberService memberService;
 
-    public MemberController(MemberService memberService){
+    public MemberController(MemberService memberService) {
         this.memberService = memberService;
     }
 
     @PostMapping("/register")
     public ResponseEntity<JWTResponseDto> createMember(
-            @Valid @RequestBody CreateMemberRequestDto requestDto){
+            @Valid @RequestBody CreateMemberRequestDto requestDto) {
         return new ResponseEntity<>(memberService.createMember(requestDto), HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
     public ResponseEntity<JWTResponseDto> loginMember(
-            @Valid @RequestBody CreateMemberRequestDto requestDto){
+            @Valid @RequestBody CreateMemberRequestDto requestDto) {
         return new ResponseEntity<>(memberService.loginMember(requestDto), HttpStatus.OK);
     }
 
     @PatchMapping
     public ResponseEntity<Void> updateMemberPassword(
             @RequestBody UpdateMemberPasswordRequestDto requestDto
-    ){
+    ) {
         memberService.updateMemberPassword(requestDto);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -50,7 +51,7 @@ public class MemberController {
     @DeleteMapping
     public ResponseEntity<Void> deleteMember(
             @RequestBody DeleteMemberRequestDto requestDto
-    ){
+    ) {
         memberService.deleteMember(requestDto);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

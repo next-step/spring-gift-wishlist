@@ -1,5 +1,7 @@
 package gift.dto;
 
-public record JWTResponseDto (
+public record JWTResponseDto(
         String token
-){}
+) {
+
+}

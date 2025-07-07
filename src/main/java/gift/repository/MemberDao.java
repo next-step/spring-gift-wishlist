@@ -10,11 +10,9 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class MemberDao implements MemberRepository{
+public class MemberDao implements MemberRepository {
+
     private final JdbcClient client;
-    public MemberDao(JdbcClient client){
-        this.client = client;
-    }
     private final RowMapper<Member> getMemberRowMapper = (rs, rowNum) -> {
         Long id = rs.getLong("id");
         String email = rs.getString("email");
@@ -23,6 +21,10 @@ public class MemberDao implements MemberRepository{
 
         return new Member(id, email, password, role);
     };
+
+    public MemberDao(JdbcClient client) {
+        this.client = client;
+    }
 
     @Override
     public Member createMember(Member newMember) {
