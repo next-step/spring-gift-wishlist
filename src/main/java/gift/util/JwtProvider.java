@@ -22,7 +22,7 @@ public class JwtProvider {
     public String createToken(Member member) {
         return Jwts.builder()
             .subject(member.getId().toString())
-            .claim("role", member.getEmail())
+            .claim("email", member.getEmail())
             .signWith(key)
             .compact();
     }
