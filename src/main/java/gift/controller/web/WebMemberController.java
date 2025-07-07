@@ -1,0 +1,44 @@
+package gift.controller.web;
+
+import gift.dto.MemberLoginRequest;
+import gift.dto.MemberRegisterRequest;
+import gift.service.MemberService;
+import jakarta.validation.Valid;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping("/members")
+public class WebMemberController {
+
+    private final MemberService memberService;
+
+    public WebMemberController(MemberService memberService) {
+        this.memberService = memberService;
+    }
+
+    @GetMapping("/register")
+    public String registerForm() {
+        return "members/registerForm";
+    }
+
+    @GetMapping("/login")
+    public String loginForm() {
+        return "members/loginForm";
+    }
+
+    @PostMapping("/register")
+    public String handleRegister(@Valid @ModelAttribute MemberRegisterRequest request) {
+        memberService.register(request);
+        return "redirect:/members/login";
+    }
+
+    @PostMapping("/login")
+    public String handleLogin(@ModelAttribute MemberLoginRequest request) {
+        memberService.login(request);
+        return "redirect:/admin/items";
+    }
+}

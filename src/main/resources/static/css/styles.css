@@ -249,3 +249,30 @@ h1 {
 .detail-actions form {
   margin: 0;
 }
+
+/* styles.css 파일에 이 부분을 추가 */
+
+.form-group input[type="email"],
+.form-group input[type="password"] {
+  width: 100%; /* calc() 대신 100%로 통일하여 간소화 */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1em;
+  box-sizing: border-box; /* 패딩이 너비에 포함되도록 설정 */
+}
+
+.form-footer {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.9em;
+}
+
+.form-footer a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.form-footer a:hover {
+  text-decoration: underline;
+}

@@ -1,4 +1,4 @@
-package gift.controller;
+package gift.controller.web;
 
 import gift.dto.ItemRequest;
 import gift.dto.ItemResponse;
