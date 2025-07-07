@@ -2,13 +2,16 @@ package gift.repository.itemRepository;
 
 import gift.entity.Item;
 import gift.exception.ItemNotFoundException;
-import java.sql.*;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class ItemRepositoryJdbc {
-
 
 
     public Item saveItem(Item item) throws Exception {
@@ -94,13 +97,13 @@ public class ItemRepositoryJdbc {
 
     public static void createTable() throws Exception {
         String sql = """
-            CREATE TABLE IF NOT EXISTS ITEM (
-                id BIGINT,
-                name VARCHAR(255),
-                price INT,
-                imageurl VARCHAR(255)
-            );
-        """;
+                    CREATE TABLE IF NOT EXISTS ITEM (
+                        id BIGINT,
+                        name VARCHAR(255),
+                        price INT,
+                        imageurl VARCHAR(255)
+                    );
+                """;
 
         try (Connection connection = createConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {

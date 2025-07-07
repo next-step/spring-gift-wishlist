@@ -16,7 +16,8 @@ import java.lang.annotation.Target;
 public @interface ItemFieldValid {
     String message() default "이름이 유효하지 않습니다.";
 
-    Class<?>[] groups() default{}; //유효성 검사 그룹 지정
+    Class<?>[] groups() default {}; //유효성 검사 그룹 지정
+
     Class<? extends Payload>[] payload() default {}; // 메타데이터 전달용
 
 }

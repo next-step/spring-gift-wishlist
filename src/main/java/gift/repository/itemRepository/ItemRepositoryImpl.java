@@ -12,9 +12,8 @@ import java.util.concurrent.atomic.AtomicLong;
 //@Repository
 public class ItemRepositoryImpl implements ItemRepository {
 
-    private final Map<Long, Item> items = new ConcurrentHashMap<>();
     private static final AtomicLong sequence = new AtomicLong(1);
-
+    private final Map<Long, Item> items = new ConcurrentHashMap<>();
 
     @Override
     public Item saveItem(Item dto) {
@@ -50,8 +49,8 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public Item deleteItems(String name) {
-        for(Item item : items.values()){
-            if(item.getName().equals(name)){
+        for (Item item : items.values()) {
+            if (item.getName().equals(name)) {
                 return items.remove(item.getId());
             }
         }

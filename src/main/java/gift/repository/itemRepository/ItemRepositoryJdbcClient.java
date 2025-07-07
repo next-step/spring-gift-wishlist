@@ -6,10 +6,10 @@ import org.springframework.jdbc.core.simple.JdbcClient;
 import java.util.List;
 
 //@Repository
-public class ItemRepositoryJdbcClient implements ItemRepository{
+public class ItemRepositoryJdbcClient implements ItemRepository {
 
 
-    private JdbcClient client;
+    private final JdbcClient client;
 
     public ItemRepositoryJdbcClient(JdbcClient client) {
         this.client = client;

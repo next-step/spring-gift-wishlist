@@ -27,7 +27,7 @@ public class Item {
 
     public Item(String name, @Min(0) Integer price, @NotNull @Size(max = 255) String imageUrl) {
         this.name = name;
-        this.price= price;
+        this.price = price;
         this.imageUrl = imageUrl;
     }
 
@@ -39,21 +39,20 @@ public class Item {
         return name;
     }
 
-    public Integer getPrice() {
-        return price;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-
     public void setName(String name) {
         this.name = name;
     }
 
+    public Integer getPrice() {
+        return price;
+    }
+
     public void setPrice(Integer price) {
         this.price = price;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
     }
 
     public void setImageUrl(String imageUrl) {

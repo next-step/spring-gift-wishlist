@@ -12,7 +12,7 @@ public class ItemDto {
     private Long id;
 
     @NotNull
-    @Size(max=15,message = "최대 15자입니다.")
+    @Size(max = 15, message = "최대 15자입니다.")
     @Pattern(regexp = "^[a-zA-Z0-9()\\[\\]+\\-\\&/_]*$", message = "( ), [ ], +, -, &, /, _ 외에는 특수문자는 허용되지 않습니다.")
     private String name;
 
@@ -21,7 +21,7 @@ public class ItemDto {
     private Integer price;
 
     @NotNull
-    @Size(max=255)
+    @Size(max = 255)
     private String imageUrl;
 
     public ItemDto() {
@@ -40,28 +40,28 @@ public class ItemDto {
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public Integer getPrice() {
-        return price;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
+    public Integer getPrice() {
+        return price;
+    }
+
     public void setPrice(Integer price) {
         this.price = price;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
     }
 
     public void setImageUrl(String imageUrl) {

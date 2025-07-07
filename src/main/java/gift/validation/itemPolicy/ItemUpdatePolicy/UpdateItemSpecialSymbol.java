@@ -23,7 +23,7 @@ public class UpdateItemSpecialSymbol implements ItemPolicy<ItemUpdateDto> {
     public boolean isValid(ItemUpdateDto dto, ConstraintValidatorContext context) {
         if (!pattern.matcher(dto.name()).matches()) {
             System.out.println("특수문자 오류");
-            violationHandler.addViolation(context,"( ), [ ], +, -, &, /, _\" 외에는 특수 문자가 허용되지 않습니다.");
+            violationHandler.addViolation(context, "( ), [ ], +, -, &, /, _\" 외에는 특수 문자가 허용되지 않습니다.");
             return false;
         }
         return true;

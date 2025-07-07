@@ -53,6 +53,6 @@ public class ItemController {
             @RequestBody @Valid ItemUpdateDto dto
     ) {
         ItemUpdateDto item = itemService.updateItem(id, dto);
-        return  ResponseEntity.ok(item);
+        return ResponseEntity.ok(item);
     }
 }

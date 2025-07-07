@@ -15,9 +15,20 @@ import java.util.List;
 
 
 @Repository
-public class ItemRepositoryJdbcTemplate implements ItemRepository{
+public class ItemRepositoryJdbcTemplate implements ItemRepository {
 
     private final JdbcTemplate jdbcTemplate;
+    private final RowMapper<Item> itemRowMapper = new RowMapper<>() {
+        @Override
+        public Item mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new Item(
+                    rs.getLong("id"),
+                    rs.getString("name"),
+                    rs.getInt("price"),
+                    rs.getString("image_url")
+            );
+        }
+    };
 
     public ItemRepositoryJdbcTemplate(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -28,7 +39,7 @@ public class ItemRepositoryJdbcTemplate implements ItemRepository{
         var sql = "insert into items (name, price, image_url) values (?, ?, ?)";
         KeyHolder keyholder = new GeneratedKeyHolder();
 
-        jdbcTemplate.update(connection ->{
+        jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(
                     sql,
                     Statement.RETURN_GENERATED_KEYS);
@@ -36,10 +47,10 @@ public class ItemRepositoryJdbcTemplate implements ItemRepository{
             ps.setInt(2, item.getPrice());
             ps.setString(3, item.getImageUrl());
             return ps;
-        },keyholder);
+        }, keyholder);
 
         Long id = keyholder.getKey().longValue();
-        return new Item(id,item.getName(),item.getPrice(),item.getImageUrl());
+        return new Item(id, item.getName(), item.getPrice(), item.getImageUrl());
 
     }
 
@@ -60,7 +71,6 @@ public class ItemRepositoryJdbcTemplate implements ItemRepository{
         Item item = jdbcTemplate.queryForObject(sql, new Object[]{name}, itemRowMapper);
 
 
-
         String DeleteSql = "DELETE FROM items WHERE id = ?";
         jdbcTemplate.update(DeleteSql, item.getId());
 
@@ -77,14 +87,13 @@ public class ItemRepositoryJdbcTemplate implements ItemRepository{
     public List<Item> getAllItems() {
         var sql = "select id, name, price, image_url from items";
 
-        return  jdbcTemplate.query(sql, itemRowMapper);
+        return jdbcTemplate.query(sql, itemRowMapper);
     }
 
     @Override
     public Item deleteById(Long id) {
         var sql = "SELECT id, name, price, image_url FROM items WHERE id = ?";
         Item item = jdbcTemplate.queryForObject(sql, new Object[]{id}, itemRowMapper);
-
 
 
         var deleteSql = "DELETE FROM items WHERE id = ?";
@@ -100,15 +109,4 @@ public class ItemRepositoryJdbcTemplate implements ItemRepository{
 
         return findById(id);
     }
-    private final RowMapper<Item> itemRowMapper = new RowMapper<>() {
-        @Override
-        public Item mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new Item(
-                    rs.getLong("id"),
-                    rs.getString("name"),
-                    rs.getInt("price"),
-                    rs.getString("image_url")
-            );
-        }
-    };
 }

@@ -35,7 +35,7 @@ public class AdminItemController {
     }
 
     private List<ItemResponseDto> findItems(String name, Integer price) {
-        if(name==null && price ==null){
+        if (name == null && price == null) {
             return itemService.getAllItems();
         }
         return itemService.getItems(name, price);

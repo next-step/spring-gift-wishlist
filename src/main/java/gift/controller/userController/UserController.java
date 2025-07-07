@@ -31,46 +31,33 @@ public class UserController {
      *
      */
     @PostMapping("/register")
-    public ResponseEntity<Map<String, String>> registerUser(
-            @RequestBody @Valid UserRegisterDto dto
-    ) {
+    public ResponseEntity<Map<String, String>> registerUser(@RequestBody @Valid UserRegisterDto dto) {
         String token = userService.registerUser(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("token", token));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> loginUser(
-            @RequestBody @Valid UserLoginDto dto
-    ) {
+    public ResponseEntity<Map<String, String>> loginUser(@RequestBody @Valid UserLoginDto dto) {
         return ResponseEntity.status(HttpStatus.OK).body(Map.of("token", userService.loginUser(dto)));
     }
 
 
     @GetMapping()
-    public ResponseEntity<List<UserResponseDto>> getUserList(
-            @RequestParam(required = false) String email,
-            Model model
-    ) {
+    public ResponseEntity<List<UserResponseDto>> getUserList(@RequestParam(required = false) String email, Model model) {
         List<UserResponseDto> users = userService.getUserList(email);
 
         return new ResponseEntity<List<UserResponseDto>>(users, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteUser(
-            @RequestParam Long id,
-            Model model
-    ) {
+    public ResponseEntity<Void> deleteUser(@RequestParam Long id, Model model) {
         userService.deleteUserById(id);
 
         return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/{id}/edit")
-    public ResponseEntity<UserResponseDto> updateUser(
-            @PathVariable Long id,
-            @RequestBody @Valid UserUpdateDto dto
-    ) {
+    public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long id, @RequestBody @Valid UserUpdateDto dto) {
         UserResponseDto updatedUser = userService.updateUser(id, dto);
 
         return ResponseEntity.ok(updatedUser);

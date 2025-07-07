@@ -13,21 +13,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
-public class UserRepositoryImpl implements UserRepository{
+public class UserRepositoryImpl implements UserRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
     private final RowMapper<User> userRowMapper = new RowMapper<User>() {
         @Override
         public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new User(
-                    rs.getLong("id"),
-                    rs.getString("email"),
-                    rs.getString("password")
-            );
+            return new User(rs.getLong("id"), rs.getString("email"), rs.getString("password"));
         }
     };
 
@@ -41,10 +36,7 @@ public class UserRepositoryImpl implements UserRepository{
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(
-                    sql,
-                    PreparedStatement.RETURN_GENERATED_KEYS
-            );
+            PreparedStatement ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
             ps.setString(1, user.email());
             ps.setString(2, user.password());
             return ps;
@@ -59,7 +51,7 @@ public class UserRepositoryImpl implements UserRepository{
     public List<User> getAllUsers() {
         var sql = "SELECT ID, EMAIL, PASSWORD FROM users";
 
-        return jdbcTemplate.query(sql,userRowMapper);
+        return jdbcTemplate.query(sql, userRowMapper);
     }
 
     @Override

@@ -18,7 +18,7 @@ public class CreateItemLength implements ItemPolicy<ItemCreateDto> {
     @Override
     public boolean isValid(ItemCreateDto dto, ConstraintValidatorContext context) {
         if (dto.name().length() > 15) {
-            violationHandler.addViolation(context,"상품 이름은 최대 15자까지 입니다.");
+            violationHandler.addViolation(context, "상품 이름은 최대 15자까지 입니다.");
             return false;
         }
         return true;

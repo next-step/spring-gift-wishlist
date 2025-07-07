@@ -18,7 +18,7 @@ public class UpdateItemLength implements ItemPolicy<ItemUpdateDto> {
     public boolean isValid(ItemUpdateDto dto, ConstraintValidatorContext context) {
         if (dto.name().length() > 15) {
             System.out.println("글자길이 오류");
-            violationHandler.addViolation(context,"상품 이름은 최대 15자까지 입니다.");
+            violationHandler.addViolation(context, "상품 이름은 최대 15자까지 입니다.");
             return false;
         }
         return true;

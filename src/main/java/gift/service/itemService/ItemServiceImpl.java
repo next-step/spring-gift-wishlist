@@ -32,12 +32,13 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemResponseDto> getItems(String name, Integer price) {
         List<Item> items;
-        List<ItemResponseDto> result = new  ArrayList<>();
+        List<ItemResponseDto> result = new ArrayList<>();
         if (name == null && price == null) {
             items = itemRepository.getAllItems();
-        }else
+        } else {
             items = itemRepository.getItems(name, price);
-        if(items.isEmpty()){
+        }
+        if (items.isEmpty()) {
             System.out.println("예외 처리 실행");
             throw new ItemNotFoundException();
         }
@@ -51,8 +52,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public void delete(String name) {
-        Item item =itemRepository.deleteItems(name);
-        if(item == null){
+        Item item = itemRepository.deleteItems(name);
+        if (item == null) {
             throw new ItemNotFoundException(name);
         }
     }
@@ -64,7 +65,7 @@ public class ItemServiceImpl implements ItemService {
             if (dto.id().equals(item.getId())) {
                 Item updatedItem = itemRepository.updateItem(id, dto.name(), dto.price(), dto.imageUrl());
                 return new ItemUpdateDto(updatedItem);
-            }else
+            } else
                 throw new ItemNotFoundException();
         } else
             throw new ItemNotFoundException();
@@ -74,8 +75,8 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto findById(Long id) {
         List<Item> items = itemRepository.getAllItems();
 
-        for(Item item : items){
-            if(item.getId().equals(id)){
+        for (Item item : items) {
+            if (item.getId().equals(id)) {
                 return new ItemDto(item);
             }
         }
@@ -85,7 +86,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public void deleteById(Long id) {
         Item item = itemRepository.deleteById(id);
-        if(item == null){
+        if (item == null) {
             throw new ItemNotFoundException();
         }
     }
