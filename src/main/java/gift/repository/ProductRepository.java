@@ -48,7 +48,7 @@ public class ProductRepository {
                 .list();
     }
 
-    public Product findProductById(Long id) {
+    public Optional<Product> findProductById(Long id) {
         String sql = """
                 SELECT id, name, price, image_url FROM PRODUCTS WHERE id = :id
                 """;
@@ -56,8 +56,7 @@ public class ProductRepository {
         return jdbcClient.sql(sql)
                 .param("id", id)
                 .query(productRowMapper())
-                .optional()
-                .orElseThrow(() -> new NoSuchElementException("Invalid id = " + id));
+                .optional();
     }
 
     public Product updateProduct(Product product) {

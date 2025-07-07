@@ -3,10 +3,14 @@ package gift.service;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.dto.UpdateProductRequestDto;
+import gift.entity.Member;
 import gift.entity.Product;
+import gift.exception.EmailAlreadyExistsException;
+import gift.exception.ResourceNotFoundException;
 import gift.repository.ProductRepository;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
@@ -41,10 +45,9 @@ public class ProductService {
     }
 
     public ProductResponseDto findProductById(Long id) {
-        Product product = productRepository.findProductById(id);
-        if (product == null) {
-            throw new NoSuchElementException("Invalid id = " + id);
-        }
+        Product product = productRepository.findProductById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 id 입니다."));
+
         return new ProductResponseDto(
             product.getId(),
             product.getName(),
@@ -54,10 +57,9 @@ public class ProductService {
     }
 
     public ProductResponseDto updateProduct(UpdateProductRequestDto productRequestDto) {
-        Product product = productRepository.findProductById(productRequestDto.id());
-        if (product == null) {
-            throw new NoSuchElementException("Invalid id = " + productRequestDto.id());
-        }
+        Product product = productRepository.findProductById(productRequestDto.id())
+                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 id 입니다."));
+
         product.updateProduct(productRequestDto.name(), productRequestDto.price(), productRequestDto.imageUrl());
         Product updateProduct = productRepository.updateProduct(product);
 
@@ -71,10 +73,9 @@ public class ProductService {
 
 
     public void deleteProduct(Long id) {
-        Product product = productRepository.findProductById(id);
-        if (product == null) {
-            throw new NoSuchElementException("Invalid id = " + id);
-        }
+        Product product = productRepository.findProductById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 id 입니다."));
+
         productRepository.deleteProduct(id);
     }
 }

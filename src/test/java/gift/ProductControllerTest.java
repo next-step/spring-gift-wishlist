@@ -2,7 +2,10 @@ package gift;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
+import gift.dto.MemberRequestDto;
+import gift.dto.MemberResponseDto;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.dto.UpdateProductRequestDto;
@@ -12,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
@@ -25,7 +29,7 @@ public class ProductControllerTest {
 
     @BeforeEach
     void setUp() {
-        url = "http://localhost:" + port + "/api/products";
+        url = "http://localhost:" + port + "/api";
     }
 
     @Test
@@ -38,14 +42,16 @@ public class ProductControllerTest {
         );
 
         var response = client.post()
-                .uri(url)
+                .uri(url + "/products")
                 .body(productRequestDto)
                 .retrieve()
                 .toEntity(ProductResponseDto.class);
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().name()).isEqualTo("치킨");
+        assertAll(
+                () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED),
+                () -> assertThat(response.getBody()).isNotNull(),
+                () -> assertThat(response.getBody().name()).isEqualTo("치킨")
+        );
     }
 
     @Test
@@ -59,7 +65,7 @@ public class ProductControllerTest {
 
         assertThatThrownBy(() ->
                 client.post()
-                        .uri(url)
+                        .uri(url + "/products")
                         .body(productRequestDto)
                         .retrieve()
                         .toBodilessEntity()
@@ -76,14 +82,16 @@ public class ProductControllerTest {
         );
 
         var response = client.post()
-                .uri(url)
+                .uri(url + "/products")
                 .body(productRequestDto)
                 .retrieve()
                 .toEntity(ProductResponseDto.class);
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().name()).isEqualTo("카카오치킨");
+        assertAll(
+                () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED),
+                () -> assertThat(response.getBody()).isNotNull(),
+                () -> assertThat(response.getBody().name()).isEqualTo("카카오치킨")
+        );
     }
 
     @Test
@@ -96,7 +104,7 @@ public class ProductControllerTest {
         );
 
         var response = client.post()
-                .uri(url)
+                .uri(url + "/products")
                 .body(productRequestDto)
                 .retrieve()
                 .toEntity(ProductResponseDto.class);
@@ -114,11 +122,51 @@ public class ProductControllerTest {
 
         assertThatThrownBy(() ->
                 client.put()
-                        .uri(url + "/" + productId)
+                        .uri(url + "/products/" + productId)
                         .body(updateProductRequestDto)
                         .retrieve()
                         .toBodilessEntity()
         ).isInstanceOf(HttpClientErrorException.BadRequest.class);
     }
 
+    @Test
+    void 정상_회원가입() {
+        var memberRequestDto = new MemberRequestDto(
+                "test@example.com",
+                "test123");
+        var response = client.post()
+                .uri(url + "/members/register")
+                .body(memberRequestDto)
+                .retrieve()
+                .toEntity(MemberResponseDto.class);
+        assertAll(
+                () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED),
+                () -> assertThat(response.getBody()).isNotNull(),
+                () -> assertThat(response.getBody().token()).isNotBlank()
+        );
+    }
+
+    @Test
+    void 비밀번호_잘못된_로그인() {
+        var registerRequestDto = new MemberRequestDto(
+                "test@example.com",
+                "test123");
+        var response = client.post()
+                .uri(url + "/members/register")
+                .body(registerRequestDto)
+                .retrieve()
+                .toEntity(MemberResponseDto.class);
+
+        var loginRequestDto = new MemberRequestDto(
+                "test@example.com",
+                "wrong_password");
+
+        assertThatThrownBy(() ->
+                client.post()
+                        .uri(url+ "/members/login")
+                        .body(loginRequestDto)
+                        .retrieve()
+                        .toBodilessEntity()
+        ).isInstanceOf(HttpClientErrorException.Forbidden.class);
+    }
 }
