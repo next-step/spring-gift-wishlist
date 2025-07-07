@@ -5,3 +5,10 @@ CREATE TABLE product (
         image_url VARCHAR(1000),
         md_approved BOOLEAN NOT NULL DEFAULT FALSE COMMENT '담당 MD 협의 여부'
 );
+
+CREATE TABLE IF NOT EXISTS members (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role VARCHAR(50) NOT NULL DEFAULT 'USER'
+    );
