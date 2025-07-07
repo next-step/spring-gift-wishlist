@@ -28,7 +28,6 @@ public class JwtUtil {
         .signWith(KEY)
         .compact();
   }
-
   // ✅ JWT 유효성 검사
   public boolean isValidToken(String token) {
     try {
@@ -41,5 +40,15 @@ public class JwtUtil {
     } catch (Exception e) {
       return false;
     }
+  }
+
+  // ✅ JWT 이메일 추출
+  public String getEmailFromToken(String token) {
+    JwtParser parser = Jwts.parser()
+        .verifyWith((SecretKey) KEY)
+        .build();
+    return parser.parseSignedClaims(token)
+        .getPayload()
+        .getSubject();
   }
 }

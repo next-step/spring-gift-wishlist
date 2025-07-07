@@ -21,5 +21,11 @@ public class GlobalExceptionHandler {
     model.addAttribute("method", "post");
     return "admin/product-form";
   }
+
+  @ExceptionHandler(SecurityException.class)
+  @ResponseStatus(HttpStatus.FORBIDDEN)
+  public ResponseEntity<String> handleSecurity(SecurityException ex) {
+    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
+  }
 }
 

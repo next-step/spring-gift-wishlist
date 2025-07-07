@@ -4,6 +4,7 @@ import gift.jwt.JwtUtil;
 import gift.model.Member;
 import gift.repository.MemberRepository;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -29,9 +30,9 @@ public class MemberService {
 
   public String login(String email, String password){
     Member member = memberRepository.findByEmail(email)
-        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다"));
+        .orElseThrow(() -> new SecurityException("존재하지 않는 이메일입니다"));
     if(!passwordEncoder.matches(password, member.getPassword())){
-      throw new IllegalArgumentException("비밀번호가 틀렸습니다");
+      throw new SecurityException("비밀번호가 틀렸습니다");
     }
     return jwtUtil.createToken(email);
   }
@@ -39,4 +40,8 @@ public class MemberService {
   public List<Member> findAll(){
     return memberRepository.findAll();
   }
+  public Optional<Member> findByEmail(String email) {
+    return memberRepository.findByEmail(email);
+  }
+
 }
