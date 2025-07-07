@@ -13,8 +13,10 @@ CREATE TABLE Gift(
 DROP TABLE IF EXISTS Users;
 
 CREATE TABLE Users(
+    id BIGINT NOT NULL,
     email VARCHAR(255) UNIQUE,
-    password VARCHAR(255)
+    password VARCHAR(255),
+    primary key(id)
 );
 
 commit;
