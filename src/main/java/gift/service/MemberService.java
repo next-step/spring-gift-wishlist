@@ -46,4 +46,9 @@ public class MemberService {
                 .map(MemberInfoResponse::from)
                 .toList();
     }
+
+    public void saveMember(MemberRequest request) {
+        Member member = new Member(request.email(), request.password());
+        memberRepository.save(member);
+    }
 }
