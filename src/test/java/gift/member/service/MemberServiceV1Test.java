@@ -138,7 +138,7 @@ class MemberServiceV1Test {
                 .willReturn(Optional.of(joinMember));
 
         // when
-        memberService.deleteMember(joinMember.getEmail());
+        memberService.deleteByEmail(joinMember.getEmail());
 
         // then
         verify(memberRepository).deleteById(joinMember.getId());
@@ -155,7 +155,7 @@ class MemberServiceV1Test {
                 .willReturn(Optional.empty());
 
         // when
-        assertThatThrownBy(()->memberService.deleteMember(anyString()))
+        assertThatThrownBy(()->memberService.deleteByEmail(anyString()))
                 .isInstanceOf(NotFoundEntityException.class);
 
         // then

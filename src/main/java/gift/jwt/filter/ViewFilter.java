@@ -39,7 +39,7 @@ public class ViewFilter implements Filter {
             return;
         };
 
-        String redirectUrl = "login?redirect=" + URLEncoder.encode(requestURI, StandardCharsets.UTF_8);
+        String redirectUrl = "/login?redirect=" + URLEncoder.encode(requestURI, StandardCharsets.UTF_8);
 
         Cookie[] cookies = request.getCookies();
         if(cookies == null) {

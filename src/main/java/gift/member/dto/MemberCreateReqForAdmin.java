@@ -1,11 +1,13 @@
 package gift.member.dto;
 
+import gift.domain.Role;
+import gift.global.annotation.EnumConstraint;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-public class MemberCreateRequest implements MemberCreateDto{
+public class MemberCreateReqForAdmin implements MemberCreateDto{
 
     @Email
     private String email;
@@ -26,13 +28,19 @@ public class MemberCreateRequest implements MemberCreateDto{
     @NotBlank(message = "확인 비밀번호를 입력해주세요")
     private String confirmPassword;
 
-    public MemberCreateRequest(String email, String password, String confirmPassword) {
+
+    @EnumConstraint(enumClass = Role.class)
+    private String role;
+
+    public MemberCreateReqForAdmin(String email, String password, String confirmPassword, String role) {
         this.email = email;
         this.password = password;
         this.confirmPassword = confirmPassword;
+        this.role = role;
     }
 
-    protected MemberCreateRequest(){}
+    protected MemberCreateReqForAdmin() {
+    }
 
     public String getEmail() {
         return email;
@@ -47,6 +55,6 @@ public class MemberCreateRequest implements MemberCreateDto{
     }
 
     public String getRole() {
-        return "REGULAR";
+        return role;
     }
 }

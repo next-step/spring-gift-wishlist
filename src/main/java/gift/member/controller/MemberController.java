@@ -1,5 +1,7 @@
 package gift.member.controller;
 
+import gift.domain.Role;
+import gift.global.annotation.Admin;
 import gift.member.annotation.MyAuthenticalPrincipal;
 import gift.member.dto.*;
 import gift.member.service.MemberService;
@@ -9,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -31,18 +34,59 @@ public class MemberController {
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> deleteMember(@MyAuthenticalPrincipal AuthMember authMember) {
+    public ResponseEntity<Void> withDraw(@MyAuthenticalPrincipal AuthMember authMember) {
 
-        memberService.deleteMember(authMember.getEmail());
+        memberService.deleteByEmail(authMember.getEmail());
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PatchMapping
-    public ResponseEntity<Void> updateMember(@MyAuthenticalPrincipal AuthMember authMember, @Valid @RequestBody MemberUpdateRequest memberUpdateRequest) {
+    public ResponseEntity<Void> changePassword(@MyAuthenticalPrincipal AuthMember authMember, @Valid @RequestBody MemberUpdateRequest memberUpdateRequest) {
 
         memberService.changePassword(authMember.getEmail(),memberUpdateRequest);
 
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @Admin
+    @GetMapping()
+    public ResponseEntity<List<MemberResponse>> getMembers() {
+
+        List<MemberResponse> response = memberService.findAll();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @Admin
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteMember(@PathVariable UUID id) {
+
+        memberService.deleteById(id);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @Admin
+    @PostMapping("/admin")
+    public ResponseEntity<Void> addMemberForAdmin(@Valid @RequestBody MemberCreateReqForAdmin memberCreateReqForAdmin) {
+        UUID id = memberService.save(memberCreateReqForAdmin);
+
+        return ResponseEntity.status(HttpStatus.CREATED).
+                location(LocationGenerator.generate(id)).build();
+    }
+
+    @Admin
+    @GetMapping("/{id}")
+    public ResponseEntity<MemberResponse> getMemberById(@PathVariable UUID id) {
+        MemberResponse memberResponse = memberService.findById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(memberResponse);
+    }
+
+    @Admin
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> editMemberForAdmin(@PathVariable UUID id, @Valid @RequestBody MemberUpdateReqForAdmin memberUpdateReqForAdmin) {
+        memberService.updateMemberForAdmin(id, memberUpdateReqForAdmin);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

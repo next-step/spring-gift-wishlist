@@ -1,23 +1,26 @@
 package gift.member.service;
 
-import gift.member.dto.MemberCreateRequest;
-import gift.member.dto.MemberResponse;
-import gift.member.dto.MemberUpdateRequest;
+import gift.domain.Role;
+import gift.member.dto.*;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface MemberService {
 
-    UUID save(MemberCreateRequest memberCreateRequest);
+    UUID save(MemberCreateDto memberCreateDto);
 
     void changePassword(String email, MemberUpdateRequest memberUpdateRequest);
+
+    void updateMemberForAdmin(UUID id, MemberUpdateReqForAdmin memberUpdateReqForAdmin);
 
     MemberResponse findById(UUID id);
 
     List<MemberResponse> findAll();
 
-    void deleteMember(String email);
+    void deleteByEmail(String email);
+
+    void deleteById(UUID id);
 
     void tokenValidate(String email, String role);
 

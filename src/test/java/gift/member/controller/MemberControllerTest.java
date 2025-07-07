@@ -3,12 +3,8 @@ package gift.member.controller;
 import gift.domain.Member;
 import gift.domain.Role;
 import gift.jwt.JWTUtil;
-import gift.member.dto.MemberCreateRequest;
-import gift.member.dto.MemberLoginRequest;
-import gift.member.dto.MemberResponse;
-import gift.member.dto.MemberUpdateRequest;
+import gift.member.dto.*;
 import gift.member.repository.MemberRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -110,7 +108,7 @@ class MemberControllerTest {
     @DisplayName("로그인 성공")
     void loginSuccess() {
 
-        memberRepository.save(createMember());
+        memberRepository.save(createMember(Role.REGULAR));
 
         ResponseEntity<Void> response = loginRestClient.post()
                 .body(new MemberLoginRequest("ljw2109@naver.com", "Qwer1234!!"))
@@ -123,7 +121,7 @@ class MemberControllerTest {
     @Test
     @DisplayName("로그인 실패 - 비밀번호 틀림")
     void loginFail() {
-        memberRepository.save(createMember());
+        memberRepository.save(createMember(Role.REGULAR));
 
         assertThatThrownBy(()->loginRestClient.post()
                 .body(new MemberLoginRequest("ljw2109@naver.com", "Qwer1235!!"))
@@ -136,7 +134,7 @@ class MemberControllerTest {
     @Test
     @DisplayName("로그인 실패 - 아이디 틀림")
     void loginFail2() {
-        memberRepository.save(createMember());
+        memberRepository.save(createMember(Role.REGULAR));
 
         assertThatThrownBy(()->loginRestClient.post()
                 .body(new MemberLoginRequest("ljw2108@naver.com", "Qwer1234!!"))
@@ -149,7 +147,7 @@ class MemberControllerTest {
     @Test
     @DisplayName("회원 탈퇴 성공")
     void withDrawSuccess() {
-        Member member = createMember();
+        Member member = createMember(Role.REGULAR);
         Member savedMember = memberRepository.save(member);
 
         ResponseEntity<Void> response = restClient.delete()
@@ -175,7 +173,7 @@ class MemberControllerTest {
     @Test
     @DisplayName("회원 비밀번호 변경 성공")
     void changePasswordSuccess() {
-        Member member = createMember();
+        Member member = createMember(Role.REGULAR);
         Member savedMember = memberRepository.save(member);
         MemberUpdateRequest updateRequest =
                 new MemberUpdateRequest(savedMember.getPassword(), "Qwer12345!!", "Qwer12345!!");
@@ -206,12 +204,145 @@ class MemberControllerTest {
         ).isInstanceOf(HttpClientErrorException.Unauthorized.class);
     }
 
+    @Test
+    @DisplayName("관리자 권한 회원 조회 성공")
+    void getMembersSuccessForAdmin() {
+        Member member = createMember(Role.ADMIN);
+        memberRepository.save(member);
+
+        String jwt = createJWT(member);
+
+        ResponseEntity<List> response = restClient.get()
+                .cookie("Authorization", jwt)
+                .retrieve().toEntity(List.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    @DisplayName("권한 부족으로 회원 조회 실패")
+    void getMembersFailForAdmin() {
+        Member member = createMember(Role.REGULAR);
+        memberRepository.save(member);
+
+        String jwt = createJWT(member);
+
+        assertThatThrownBy(()->restClient.get()
+                .cookie("Authorization", jwt)
+                .retrieve().toEntity(List.class))
+                .isInstanceOf(HttpClientErrorException.Forbidden.class);
+    }
+
+    @Test
+    @DisplayName("관리자 권한 회원 삭제 성공")
+    void deleteMemberSuccessForAdmin() {
+        Member member = createMember(Role.ADMIN);
+        memberRepository.save(member);
+
+        String jwt = createJWT(member);
+
+        ResponseEntity<Void> response = restClient.delete()
+                .uri("/{id}",member.getId().toString())
+                .cookie("Authorization", jwt)
+                .retrieve().toEntity(Void.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    }
+
+    @Test
+    @DisplayName("권한 부족으로 회원 삭제 실패")
+    void deleteMemberFailForAdmin() {
+        Member member = createMember(Role.REGULAR);
+        memberRepository.save(member);
+
+        String jwt = createJWT(member);
+
+        assertThatThrownBy(()->restClient.delete()
+                .uri("/{id}",member.getId().toString())
+                .cookie("Authorization", jwt)
+                .retrieve().toEntity(Void.class))
+                .isInstanceOf(HttpClientErrorException.Forbidden.class);
+    }
+
+    @Test
+    @DisplayName("관리자 권한으로 회원 추가 성공")
+    void addMemberSuccessForAdmin() {
+        Member member = createMember(Role.ADMIN);
+        memberRepository.save(member);
+        String jwt = createJWT(member);
+
+
+        ResponseEntity<Void> response = restClient.post()
+                .uri("/admin")
+                .cookie("Authorization", jwt)
+                .body(new MemberCreateReqForAdmin("temp@naver.com", "Qwer1234!!", "Qwer1234!!", "REGULAR"))
+                .retrieve()
+                .toEntity(Void.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    }
+
+    @Test
+    @DisplayName("관리자 권한으로 회원 추가 실패 - 권한 부족")
+    void addMemberFailForAdmin() {
+        Member member = createMember(Role.REGULAR);
+        memberRepository.save(member);
+        String jwt = createJWT(member);
+
+
+        assertThatThrownBy(()->restClient.post()
+                .uri("/admin")
+                .cookie("Authorization", jwt)
+                .body(new MemberCreateReqForAdmin("temp@naver.com", "Qwer1234!!", "Qwer1234!!", "REGULAR"))
+                .retrieve()
+                .toEntity(Void.class)
+        ).isInstanceOf(HttpClientErrorException.Forbidden.class);
+    }
+
+
+    @Test
+    @DisplayName("관리자 권한으로 회원 수정 실패 - 권한 부족")
+    void editMemberFailForAdmin() {
+        Member member = createMember(Role.REGULAR);
+        memberRepository.save(member);
+        String jwt = createJWT(member);
+
+
+        assertThatThrownBy(()->restClient.put()
+                .uri("/{id}", member.getId().toString())
+                .cookie("Authorization", jwt)
+                .body(new MemberUpdateReqForAdmin(member.getPassword(), "Qwer12345!!", "Qwer12345!!",member.getId().toString() ))
+                .retrieve()
+                .toEntity(Void.class)
+        ).isInstanceOf(HttpClientErrorException.Forbidden.class);
+    }
+
+    @Test
+    @DisplayName("관리자 권한으로 회원 수정 성공")
+    void editMemberSuccessForAdmin() {
+        Member member = createMember(Role.ADMIN);
+        memberRepository.save(member);
+        String jwt = createJWT(member);
+
+
+        ResponseEntity<Void> response = restClient.put()
+                .uri("/{id}", member.getId().toString())
+                .cookie("Authorization", jwt)
+                .body(new MemberUpdateReqForAdmin(member.getPassword(), "Qwer12345!!", "Qwer12345!!", member.getRole().toString()))
+                .retrieve()
+                .toEntity(Void.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    }
+
+
+
     private String createJWT(Member member) {
         return jwtUtil.createJWT(member.getEmail(), member.getRole().toString(), 1000 * 60L);
     }
 
-    private Member createMember() {
-        return new Member("ljw2109@naver.com", "Qwer1234!!", Role.REGULAR);
+    private Member createMember(Role role) {
+        return new Member("ljw2109@naver.com", "Qwer1234!!", role);
     }
 
     private MemberCreateRequest memberCreateRequest() {

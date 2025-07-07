@@ -91,10 +91,11 @@ public class MemberRepositoryV1 implements MemberRepository {
 
     @Override
     public void update(Member member) {
-        String sql = "update member set password = :password where id = :id";
+        String sql = "update member set password = :password, role = :role where id = :id";
 
         int update = jdbcClient.sql(sql)
                 .param("password", member.getPassword())
+                .param("role", member.getRole().toString())
                 .param("id", uuidToBytes(member.getId()))
                 .update();
 

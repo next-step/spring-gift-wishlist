@@ -17,17 +17,38 @@ public class ViewController {
     }
 
     @Admin
-    @GetMapping("/admin")
-    public String admin(){
-        return "adminpage";
+    @GetMapping("/admin/products")
+    public String adminProducts(){
+        return "admin-product";
     }
 
     @Admin
-    @GetMapping("/edit/{id}")
-    public String edit(@PathVariable UUID id, Model model){
+    @GetMapping("/admin/members")
+    public String adminMembers(){
+        return "admin-member";
+    }
+
+    @Admin
+    @GetMapping("/admin/products/{id}")
+    public String editProduct(@PathVariable UUID id, Model model){
 
         model.addAttribute("productId", id);
 
-        return "edit";
+        return "edit-product";
     }
+
+    @Admin
+    @GetMapping("/admin/members/add")
+    public String addMember(){
+        return "add-member";
+    }
+
+    @Admin
+    @GetMapping("/admin/members/{id}")
+    public String editMember(@PathVariable UUID id, Model model){
+        model.addAttribute("memberId", id);
+
+        return  "edit-member";
+    }
+
 }
