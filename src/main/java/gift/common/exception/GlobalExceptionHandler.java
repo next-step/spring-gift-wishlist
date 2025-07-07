@@ -1,6 +1,7 @@
 package gift.common.exception;
 
 import gift.item.exception.ItemNotFoundException;
+import gift.member.exception.DuplicateEmailException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.net.URI;
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponseDto> handleMethodArgumentNotValidException(
+    public ResponseEntity<ErrorResponseDto> handleDuplicateEmailException(
         MethodArgumentNotValidException e,
         HttpServletRequest request
     ) {
@@ -37,6 +38,20 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler(DuplicateEmailException.class)
+    public ResponseEntity<ErrorResponseDto> handleDuplicateEmailException(
+        DuplicateEmailException e,
+        HttpServletRequest request
+    ) {
+        ErrorResponseDto errorResponse = new ErrorResponseDto(
+            HttpStatus.CONFLICT,
+            e.getMessage(),
+            URI.create(request.getRequestURI())
+        );
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
 
 }
