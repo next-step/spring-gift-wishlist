@@ -1,4 +1,5 @@
 package gift.jwt;
 
-public record JwtResponse() {
+public record JwtResponse(String accessToken, Long id) {
+
 }
