@@ -40,9 +40,9 @@
 ### 2단계 - 회원 로그인
 
 - [x] Member 도메인 구현, 스키마 추가
-- [ ] MemberRepository 구현
-- [ ] JWT 토큰 생성, 토근 정보 추출 구현
-- [ ] MemberService 구현
+- [x] MemberRepository 구현
+- [x] JWT 토큰 생성, 토근 정보 추출 구현
+- [x] MemberService 구현
 - [ ] MemberController, 회원 관련 페이지 구현
 - [ ] Member 예외 처리 구현
 
