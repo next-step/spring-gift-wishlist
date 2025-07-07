@@ -5,6 +5,7 @@ import gift.member.dto.request.RegisterRequestDto;
 import gift.member.dto.request.UpdateRequestDto;
 import gift.member.dto.response.MemberResponseDto;
 import gift.member.service.MemberService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity<MemberResponseDto> addMember(@RequestBody RegisterRequestDto registerRequestDto) {
+    public ResponseEntity<MemberResponseDto> addMember(@Valid @RequestBody RegisterRequestDto registerRequestDto) {
         MemberResponseDto memberResponseDto = memberService.register(registerRequestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(memberResponseDto);
@@ -44,7 +45,7 @@ public class MemberController {
     @PutMapping("/{id}")
     public ResponseEntity<MemberResponseDto> updateMember(
             @PathVariable Long id,
-            @RequestBody UpdateRequestDto updateRequestDto) {
+            @Valid @RequestBody UpdateRequestDto updateRequestDto) {
 
         MemberResponseDto memberResponseDto = memberService.updateMember(id, updateRequestDto);
 

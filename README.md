@@ -50,5 +50,6 @@
 - [x] 관리자 등록을 위해 data.sql에 INSERT 문 생성
 - [ ] 예외 처리 및 유효성 검사
   - [x] Member의 요청 DTO에 Validation 어노테이션을 사용해 유효성 검사
+  - [x] Controller에 @Valid 추가
 
   
