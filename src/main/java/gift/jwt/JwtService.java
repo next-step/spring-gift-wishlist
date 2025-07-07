@@ -7,7 +7,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import javax.crypto.SecretKey;
+import org.springframework.stereotype.Service;
 
+@Service
 public class JwtService {
 
     private final long accessTokenExpirationDayToMills;
