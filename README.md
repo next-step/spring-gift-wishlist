@@ -17,4 +17,9 @@
 | 관리자 메인 페이지 | GET         | `/admin`               | `admin/index.html`            |
 | 상품 등록 페이지   | GET         | `/admin/create`        | `admin/createProduct.html`    |
 | 상품 수정 페이지   | GET         | `/admin/update/{id}`   | `admin/updateProduct.html`    |
- 
+
+
+## 
+- [x] 상품 이름 15자 제한
+- [x] 특수문자 ( ), [ ], +, -, &, /, _ 만 허용
+- [x] "카카오" 예외처리
