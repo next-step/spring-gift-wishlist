@@ -27,7 +27,6 @@ public class ProductService {
                 .map(String::trim)
                 .filter(s -> !s.isEmpty())
                 .toList();
-        System.out.print("디버그" + forbiddenWords);
     }
 
     public ProductResponseDto findProductById(Long id){

@@ -1,5 +1,6 @@
 package gift.controller;
 
+import gift.dto.TokenResponseDto;
 import gift.dto.UserRequestDto;
 import gift.dto.UserResponseDto;
 import gift.service.AuthService;
@@ -29,13 +30,12 @@ public class AuthController {
     }
 
     /**
-     * 로그인
+     * 회원정보 체크 후 토큰 반환
      * @param userRequestDto JSON형식 이메일, 비밀번호
      * @return Void OK 상태코드
      */
     @PostMapping("/login")
-    public ResponseEntity<Void> userLogin(@Valid @RequestBody UserRequestDto userRequestDto) {
-        authService.userLogin(userRequestDto);
-        return new ResponseEntity<>(HttpStatus.OK);         // 성공했을 경우에만 OK 반환
+    public ResponseEntity<TokenResponseDto> userLogin(@Valid @RequestBody UserRequestDto userRequestDto) {
+        return new ResponseEntity<>(authService.userLogin(userRequestDto), HttpStatus.OK);         // 성공했을 경우에만 OK 반환
     }
 }

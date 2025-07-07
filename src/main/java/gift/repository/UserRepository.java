@@ -44,7 +44,7 @@ public class UserRepository {
 
     public void checkUser(User user) {
         //못 찾거나 2개 이상 찾을 경우 예외 발생
-        jdbcTemplate.queryForObject("SELECT email FROM users WHERE email=?, password=?", userRowMapper(), user.email(), user.password());
+        jdbcTemplate.queryForObject("SELECT email, password, created_at FROM users WHERE email=? AND password=?", userRowMapper(), user.email(), user.password());
     }
 
     // users 전체 조회용 RowMapper

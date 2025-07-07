@@ -1,10 +1,9 @@
 package gift.entity;
 
-import gift.dto.UserRequestDto;
 import java.time.LocalDateTime;
 
 public record User(String email, String password, LocalDateTime createdDate) {
-    public User(UserRequestDto userRequestDto) {
-        this(userRequestDto.email(), userRequestDto.password(), null);
+    public User(String email, String password) {
+        this(email, password, null);
     }
 }

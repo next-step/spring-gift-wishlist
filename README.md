@@ -17,3 +17,4 @@ Service 레이어에 하드 코딩돼있던 금지 단어를 application.propert
 1. Dto, Entity 구현 및 Controller, Service 정의
 2. Dto, Entity 수정 및 AuthController 구현
 3. ResponseDto 생성자 추가, Entity의 권한 필드 삭제, Service 및 Repository 레이어 구현, users TABLE 구조 선언
+4. /login 기능 JWT 토큰 반환 추가, 이메일과 비밀번호 Base64 인코딩하여 데이터베이스에 저장하도록 수정, 이에 따른 User Entity 생성자 수정
