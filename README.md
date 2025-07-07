@@ -59,3 +59,12 @@ DELETE /api/products/{productId}
 5. UPDATE 기능 구현(JdbcClient)
 
 6. DELETE 기능 구현(JdbcClient)
+
+# spring-gift-wishlist
+
+## 1단계
+
+1. 유효성 검사 및 에러처리
+   - 상품 이름은 공백을 포함하여 최대 15자까지 입력할 수 있다.
+   - 특수 문자 가능: ( ), [ ], +, -, &, /, _(그 외에는 불가)
+   - "카카오"가 포함된 문구는 담당 MD와 협의한 경우에만 사용할 수 있다.
