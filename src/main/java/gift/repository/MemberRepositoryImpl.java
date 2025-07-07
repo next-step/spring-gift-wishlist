@@ -28,8 +28,8 @@ public class MemberRepositoryImpl implements MemberRepository {
         String sql = "INSERT INTO member VALUES(:email, :password)";
 
         int createRow = jdbcClient.sql(sql)
-            .param("email", requestDto.getEmail())
-            .param("password", requestDto.getPassword())
+            .param("email", requestDto.email())
+            .param("password", requestDto.password())
             .update();
 
         return createRow;

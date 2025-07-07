@@ -28,7 +28,7 @@ public class MemberServiceImpl implements MemberService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
-        Member member = memberRepository.findByEmail(requestDto.getEmail())
+        Member member = memberRepository.findByEmail(requestDto.email())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
 
         String accessToken = jwtUtil.createToken(member);
@@ -38,10 +38,10 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberResponseDto login(MemberRequestDto requestDto) {
-        Member member = memberRepository.findByEmail(requestDto.getEmail())
+        Member member = memberRepository.findByEmail(requestDto.email())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
 
-        if (!requestDto.getPassword().equals(member.getPassword())) {
+        if (!requestDto.password().equals(member.getPassword())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
 
@@ -52,9 +52,19 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public void changePassword(MemberRequestDto requestDto) {
-        Member member = memberRepository.findByEmail(requestDto.getEmail())
+        Member member = memberRepository.findByEmail(requestDto.email())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
 
-        memberRepository.changePassword(member);
+        memberRepository.changePassword(new Member(requestDto.email(), requestDto.password()));
+    }
+
+    @Override
+    public void resetPassword(MemberRequestDto requestDto) {
+        Member member = memberRepository.findByEmail(requestDto.email())
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
+
+        // TODO: 주어진 이메일에 대해 전송 후, 사용자에게 인증받는 절차는 거쳤다고 가정
+
+        memberRepository.changePassword(new Member(requestDto.email(), requestDto.password()));
     }
 }

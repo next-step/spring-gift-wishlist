@@ -10,5 +10,5 @@ public interface MemberRepository {
 
     public Optional<Member> findByEmail(String email);
 
-    void changePassword(Member member);
+    public void changePassword(Member member);
 }

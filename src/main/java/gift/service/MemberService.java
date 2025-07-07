@@ -10,4 +10,6 @@ public interface MemberService {
     public MemberResponseDto login(MemberRequestDto requestDto);
 
     void changePassword(MemberRequestDto requestDto);
+
+    void resetPassword(MemberRequestDto requestDto);
 }
