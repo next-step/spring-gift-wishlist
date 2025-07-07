@@ -36,6 +36,7 @@ public class ProductAdminController {
     public String createForm(Model model) {
         model.addAttribute("productRequestDto", new ProductRequestDto("", 0L, ""));
 
+        return "";
     }
 
     // 상품 추가
