@@ -3,12 +3,17 @@ package gift.security;
 import gift.entity.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class JwtProvider {
 
-    private final String secretKey = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";
+    private final String secretKey;
+
+    public JwtProvider(@Value("${jwt.secret.key}") String secretKey) {
+        this.secretKey = secretKey;
+    }
 
     public String generateToken(User user) {
         return Jwts.builder()
