@@ -3,8 +3,10 @@ package gift.controller;
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,19 +22,28 @@ public class AdminController {
     }
 
     @GetMapping
-    public String showProductList(Model model, @ModelAttribute ProductRequest productRequest) {
+    public String showProductList(Model model) {
         List<ProductResponse> products = productService.findAllProducts();
         model.addAttribute("products", products);
+        model.addAttribute("productRequest", new ProductRequest("", 0, ""));
         return "admin/product-list";
     }
 
     @GetMapping("/add")
-    public String showAddForm(@ModelAttribute ProductRequest productRequest) {
+    public String showAddForm(Model model) {
+        model.addAttribute("productRequest", new ProductRequest("", 0, ""));
         return "admin/product-form";
     }
 
     @PostMapping("/add")
-    public String addProduct(@ModelAttribute ProductRequest productRequest) {
+    public String addProduct(@Valid @ModelAttribute("productRequest") ProductRequest productRequest,
+                             BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            // 유효성 검사 실패 시, 오류 정보와 함께 목록 페이지를 다시 보여줍니다.
+            List<ProductResponse> products = productService.findAllProducts();
+            model.addAttribute("products", products);
+            return "admin/product-list";
+        }
         productService.addProduct(productRequest);
         return "redirect:/admin/products";
     }
@@ -46,7 +57,13 @@ public class AdminController {
     }
 
     @PostMapping("/edit/{id}")
-    public String editProduct(@PathVariable("id") Long id, @ModelAttribute ProductRequest productRequest) {
+    public String editProduct(@PathVariable("id") Long id,
+                              @Valid @ModelAttribute("productRequest") ProductRequest productRequest,
+                              BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("productId", id);
+            return "admin/product-edit-form";
+        }
         productService.updateProduct(id, productRequest);
         return "redirect:/admin/products";
     }
