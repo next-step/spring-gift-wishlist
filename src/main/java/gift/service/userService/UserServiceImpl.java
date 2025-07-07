@@ -57,18 +57,29 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserResponseDto> getUserList(String email) {
-        List<User> users;
-        List<UserResponseDto> result = new ArrayList<>();
-        if (email == null) {
-            users = userRepository.getAllUsers();
-        } else {
-            users = userRepository.findUsersByEmail(email);
-        }
+        List<User> users = getUsersByEmail(email);
+        return addResponseDto(users);
+    }
 
+    private List<UserResponseDto> addResponseDto(List<User> users) {
+        List<UserResponseDto> result = new ArrayList<>();
         for (User user : users) {
             result.add(new UserResponseDto(user.email(), user.password()));
         }
         return result;
+    }
+
+    private List<User> getUsersByEmail(String email) {
+        if (email == null) {
+            return userRepository.getAllUsers();
+        } else {
+            User findUser = userRepository.findUserByEmail(email);
+            if (findUser == null) {
+                throw new UserNotFoundException();
+            } else {
+                return List.of(findUser);
+            }
+        }
     }
 
     @Override
