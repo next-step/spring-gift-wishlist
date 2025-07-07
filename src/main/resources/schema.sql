@@ -9,8 +9,9 @@ create table product
 
 create table member
 (
+   id bigint auto_increment,
    email varchar(100),
    password varchar(255),
-   primary key (email)
+   primary key (id)
 );
 

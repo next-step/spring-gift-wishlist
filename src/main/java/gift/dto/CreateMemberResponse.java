@@ -1,5 +1,5 @@
 package gift.dto;
 
-public record CreateMemberResponse(String email) {
+public record CreateMemberResponse(Long id, String email) {
 
 }

@@ -3,9 +3,7 @@ package gift.service;
 import gift.config.NotMatchPasswordException;
 import gift.domain.Member;
 import gift.domain.Product;
-import gift.dto.CreateMemberRequest;
-import gift.dto.CreateMemberResponse;
-import gift.dto.LoginMemberRequest;
+import gift.dto.*;
 import gift.repository.MemberRepository;
 import gift.repository.ProductRepository;
 import org.springframework.dao.DuplicateKeyException;
@@ -27,11 +25,9 @@ public class MemberService {
     }
 
     public CreateMemberResponse register(CreateMemberRequest request) {
-        if (memberRepository.findByEmail(request.email()).isPresent()) {
-            throw new DuplicateKeyException("이미 존재하는 email입니다.");
-        }
+        duplicateEmailCheck(request.email());
         Member member = memberRepository.save(request);
-        return new CreateMemberResponse(member.getEmail());
+        return new CreateMemberResponse(member.getId(), member.getEmail());
     }
 
     public void login(LoginMemberRequest request) {
@@ -47,5 +43,38 @@ public class MemberService {
 
     public List<Product> productList() {
         return productRepository.findAll();
+    }
+
+    public List<Member> memberList() {
+        return memberRepository.findAll();
+    }
+
+    public Member findById(Long id) {
+        findByIdOrThrow(id);
+        return memberRepository.findById(id).get();
+    }
+
+    public UpdateMemberResponse update(Long id, UpdateMemberRequest request) {
+        findByIdOrThrow(id);
+        duplicateEmailCheck(request.email());
+        Member updateMember = memberRepository.update(id, request);
+        return new UpdateMemberResponse(id, updateMember.getEmail(), updateMember.getPassword());
+    }
+
+    private void findByIdOrThrow(Long id) {
+        Optional<Member> byEmail = memberRepository.findById(id);
+        if (byEmail.isEmpty()) {
+            throw new NoSuchElementException("존재하지 않는 멤버입니다.");
+        }
+    }
+
+    private void duplicateEmailCheck(String email) {
+        if (memberRepository.findByEmail(email).isPresent()) {
+            throw new DuplicateKeyException("이미 존재하는 email입니다.");
+        }
+    }
+
+    public void delete(Long id) {
+        memberRepository.delete(id);
     }
 }
