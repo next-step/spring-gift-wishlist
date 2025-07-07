@@ -1,0 +1,24 @@
+package gift.controller;
+
+import gift.dto.MemberRequestDto;
+import gift.service.MemberService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/members")
+public class MemberController {
+
+    private final MemberService memberService;
+
+    public MemberController(MemberService memberService) {
+        this.memberService = memberService;
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@RequestBody MemberRequestDto dto) {
+        memberService.register(dto);
+        return new ResponseEntity<>("회원가입 성공", HttpStatus.CREATED);
+    }
+}

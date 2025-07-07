@@ -1,0 +1,36 @@
+package gift.repository;
+
+import gift.entity.Member;
+import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public class MemberRepository {
+
+    private final JdbcClient jdbcClient;
+
+    public MemberRepository(JdbcClient jdbcClient) {
+        this.jdbcClient = jdbcClient;
+    }
+
+    public Optional<Member> findByEmail(String email) {
+        return jdbcClient.sql("SELECT id, email, password FROM member WHERE email = ?")
+                .param(email)
+                .query((rs, rowNum) ->
+                        new Member(
+                                rs.getLong("id"),
+                                rs.getString("email"),
+                                rs.getString("password")
+                        )
+                )
+                .optional();
+    }
+
+    public void save(Member member) {
+        jdbcClient.sql("INSERT INTO member (email, password) VALUES (?, ?)")
+                .params(member.getEmail(), member.getPassword())
+                .update();
+    }
+}
