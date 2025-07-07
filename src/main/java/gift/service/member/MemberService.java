@@ -9,6 +9,7 @@ import gift.global.exception.ErrorCode;
 import gift.global.exception.InvalidMemberException;
 import gift.global.jwt.JwtUtil;
 import gift.repository.member.MemberRepository;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,7 +24,13 @@ public class MemberService {
     }
 
     public TokenResponse login(LoginRequest request){
-        Member member = memberRepository.findByEmail(request.email());
+        Member member;
+        try {
+            member = memberRepository.findByEmail(request.email());
+        } catch(DataAccessException e){
+            // member를 찾지 못한 경우: 해당 이메일로 가입한 계정이 없는 경우
+            throw new InvalidMemberException(ErrorCode.INCORRECT_LOGIN_INFO);
+        }
 
         if(member==null || !member.getPassword().equals(request.password())){
             throw new InvalidMemberException(ErrorCode.INCORRECT_LOGIN_INFO);
