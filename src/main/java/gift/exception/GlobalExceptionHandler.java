@@ -26,4 +26,16 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleForbiddenWord(ForbiddenWordException ex) {
         return new ErrorResponse(400, ex.getMessage());
     }
+
+    @ExceptionHandler(LoginFailedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)  // 403 Forbidden
+    public ErrorResponse handleLoginFailed(LoginFailedException ex) {
+        return new ErrorResponse(403, ex.getMessage());
+    }
+
+    @ExceptionHandler(DuplicateEmailException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleDuplicateEmail(DuplicateEmailException ex) {
+        return new ErrorResponse(409, ex.getMessage());
+    }
 }
