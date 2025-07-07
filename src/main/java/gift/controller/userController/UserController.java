@@ -49,7 +49,7 @@ public class UserController {
         return new ResponseEntity<List<UserResponseDto>>(users, HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping()
     public ResponseEntity<Void> deleteUser(@RequestParam Long id, Model model) {
         userService.deleteUserById(id);
 
