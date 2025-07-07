@@ -4,6 +4,7 @@ import gift.dto.request.ProductRequestDto;
 import gift.dto.request.ProductUpdateRequestDto;
 import gift.dto.response.ProductResponseDto;
 import gift.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,45 +20,38 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/api")
 class ProductController {
 
-
     private final ProductService productService;
 
     public ProductController(ProductService productService) {
         this.productService = productService;
     }
 
-    //상품 조회
     @GetMapping("/products/{productId}")
     public ResponseEntity<ProductResponseDto> getProduct(@PathVariable long productId) {
-        return new ResponseEntity<>(productService.getProduct(productId).toResponseDto(),
+        return new ResponseEntity<>(
+            productService.productToResponseDto(productService.getProduct(productId)),
             HttpStatus.OK);
     }
 
-    //상품 추가
     @PostMapping("/products")
     public ResponseEntity<ProductResponseDto> createProduct(
-        @RequestBody ProductRequestDto productRequestDto) {
+        @RequestBody @Valid ProductRequestDto productRequestDto) {
         return new ResponseEntity<>(productService.createProduct(productRequestDto),
             HttpStatus.CREATED);
     }
 
-    //상품 수정
     @PatchMapping("/products/{productId}")
-    public ResponseEntity<ProductResponseDto> updateProduct(@PathVariable long productId,
-        @RequestBody ProductUpdateRequestDto productUpdateRequestDto) {
-        if (!productService.containsProduct(productId)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<ProductResponseDto> updateProduct(
+        @PathVariable long productId,
+        @RequestBody @Valid ProductUpdateRequestDto productUpdateRequestDto) {
+
         return new ResponseEntity<>(
             productService.updateProduct(productId, productUpdateRequestDto), HttpStatus.OK);
     }
-
-    //상품 삭제
+    
     @DeleteMapping("/products/{productId}")
     public ResponseEntity<Void> deleteProduct(@PathVariable long productId) {
-        if (!productService.containsProduct(productId)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+
         productService.deleteProduct(productId);
         return new ResponseEntity<>(HttpStatus.OK);
     }

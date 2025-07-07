@@ -244,7 +244,7 @@
   <!-- 헤더 -->
   <div class="header">
     <h1>상품 상세 정보</h1>
-    <a href="/home" class="back-btn">← 목록으로</a>
+    <a href="/managerHome" class="back-btn">← 목록으로</a>
   </div>
 
   <!-- 에러 메시지 -->
@@ -304,7 +304,8 @@
     <!-- 액션 버튼 -->
     <div class="action-buttons">
       <button type="button" class="btn btn-edit" onclick="toggleEditForm()">수정하기</button>
-      <form style="display: inline;" th:action="@{/home/delete(productId=${product.productId})}"
+      <form style="display: inline;"
+            th:action="@{/managerHome/delete(productId=${product.productId})}"
             method="post"
             onsubmit="return confirm('정말로 이 상품을 삭제하시겠습니까?');">
         <input type="hidden" name="productId" th:value="${product.productId}"/>
@@ -315,7 +316,7 @@
     <!-- 수정 폼 -->
     <div id="editForm" class="edit-form">
       <h3>상품 정보 수정</h3>
-      <form th:action="@{/home/{productId}(productId=${product.productId})}" method="post">
+      <form th:action="@{/managerHome/{productId}(productId=${product.productId})}" method="post">
         <input type="hidden" name="productId" th:value="${product.productId}"/>
 
         <div class="form-group">
@@ -354,7 +355,7 @@
     <div style="text-align: center; padding: 50px; color: #6c757d;">
       <h3>상품을 찾을 수 없습니다</h3>
       <p>요청하신 상품이 존재하지 않거나 삭제되었습니다.</p>
-      <a href="/home" class="btn btn-edit" style="margin-top: 20px;">목록으로 돌아가기</a>
+      <a href="/managerHome" class="btn btn-edit" style="margin-top: 20px;">목록으로 돌아가기</a>
     </div>
   </div>
 </div>
