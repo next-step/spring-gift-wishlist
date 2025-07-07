@@ -21,14 +21,12 @@ public class ProductController {
         this.productService = productService;
     }
 
-    // For Admin
     @DeleteMapping("/{productId}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long productId) {
         productService.deleteProductById(productId);
         return ResponseEntity.ok().build();
     }
 
-    // For Admin
     @PostMapping("")
     public ResponseEntity<String> createProduct(
             @Validated @RequestBody ProductRequestDto productRequestDto) {
@@ -36,7 +34,6 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body("Successfully created id: " + productId);
     }
 
-    // For Admin
     @PutMapping("/{productId}")
     public ResponseEntity<String> updateProduct(
             @PathVariable Long productId,
@@ -46,19 +43,16 @@ public class ProductController {
         return ResponseEntity.ok().build();
     }
 
-    // For User
     @GetMapping("")
     public ResponseEntity<List<ProductResponseDto>> getApprovedProducts() {
         return ResponseEntity.ok(productService.findApprovedProducts());
     }
 
-    // For User
     @GetMapping("/{productId}")
     public ResponseEntity<ProductResponseDto> getProduct(@PathVariable Long productId) {
         return ResponseEntity.ok(productService.findProductById(productId));
     }
-
-    // TODO - md 만 접근할 수 있도록 제한 할 것
+    
     @PatchMapping("/{productId}/status")
     public ResponseEntity<String> patchProductStatus(
             @PathVariable Long productId,

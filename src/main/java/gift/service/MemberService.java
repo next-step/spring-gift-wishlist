@@ -48,7 +48,7 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public AuthResponseDto authenticateMember(MemberRequestDto memberRequestDto) throws AuthenticationException {
+    public AuthResponseDto login(MemberRequestDto memberRequestDto) throws AuthenticationException {
         Member member = memberRepository.findMemberByEmail(memberRequestDto.email())
                 .orElseThrow(() -> new AuthenticationException("존재하지 않는 멤버입니다."));
         if (!BCrypt.checkpw(
