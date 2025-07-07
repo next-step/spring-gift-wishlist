@@ -1,7 +1,7 @@
 -- users 데이터
 INSERT INTO users (email, password, nickname) VALUES
-('s@s', '1', '이시웅'),
-('t@t', '1', '카카오');
+('s@s', '$2a$10$I8HkGQtGiBcz8PR.xahV.uj96YCqL1pJhZk6t9cR70G.v.TdKp/vC', '이시웅'),
+('t@t', '$2a$10$I8HkGQtGiBcz8PR.xahV.uj96YCqL1pJhZk6t9cR70G.v.TdKp/vC', '카카오');
 
 -- item 데이터 (user_id 포함)
 INSERT INTO item (name, price, image_url, user_id) VALUES
