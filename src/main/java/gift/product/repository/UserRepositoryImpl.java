@@ -42,19 +42,81 @@ public class UserRepositoryImpl implements UserRepository {
 
 	@Override
 	public Optional<User> findById(Long id) {
-		return Optional.empty();
+		final String sql = "SELECT * FROM users WHERE id = ?";
+
+		try {
+			User user = jdbcTemplate.queryForObject(sql, (rs, rowNum) ->
+				new User(
+					rs.getLong("id"),
+					rs.getString("email"),
+					rs.getString("password"),
+					rs.getString("nick_name")
+				), id
+			);
+			return Optional.of(user);
+		} catch (Exception e) {
+			return Optional.empty();
+		}
 	}
 
 
 	@Override
 	public Optional<User> findByEmail(String email) {
-		return Optional.empty();
+		final String sql = "SELECT * FROM users WHERE email = ?";
+
+		try {
+			User user = jdbcTemplate.queryForObject(sql, (rs, rowNum) ->
+				new User(
+					rs.getLong("id"),
+					rs.getString("email"),
+					rs.getString("password"),
+					rs.getString("nick_name")
+				), email
+			);
+			return Optional.of(user);
+		} catch (Exception e) {
+			return Optional.empty();
+		}
 	}
 
 
 	@Override
 	public Optional<User> findByNickname(String nickName) {
-		return Optional.empty();
+		final String sql = "SELECT * FROM users WHERE nickname = ?";
+
+		try {
+			User user = jdbcTemplate.queryForObject(sql, (rs, rowNum) ->
+				new User(
+					rs.getLong("id"),
+					rs.getString("email"),
+					rs.getString("password"),
+					rs.getString("nick_name")
+				), nickName
+			);
+			return Optional.of(user);
+		} catch (Exception e) {
+			return Optional.empty();
+		}
+	}
+
+
+	@Override
+	public Optional<User> findByLoginRequest(String email, String password) {
+		final String sql = "SELECT * FROM users WHERE email = ? AND password = ?";
+
+		try {
+			User user = jdbcTemplate.queryForObject(sql, (rs, rowNum) ->
+				new User(
+					rs.getLong("id"),
+					rs.getString("email"),
+					rs.getString("password"),
+					rs.getString("nickname")
+				), email, password
+			);
+			return Optional.of(user);
+		} catch (Exception e) {
+			return Optional.empty();
+		}
 	}
 
 }

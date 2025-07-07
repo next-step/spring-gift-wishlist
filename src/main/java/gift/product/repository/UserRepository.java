@@ -20,5 +20,6 @@ public interface UserRepository {
 	// 유저 조회 by nickname
 	Optional<User> findByNickname(String nickName);
 
-	// 유저
+	// 유저 이메일 + 비밀번호 존재여부
+	Optional<User> findByLoginRequest(String email, String password);
 }
