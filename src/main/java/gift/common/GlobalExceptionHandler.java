@@ -1,5 +1,9 @@
-package gift.product.exception;
+package gift.common;
 
+import gift.member.exception.AuthenticationException;
+import gift.member.exception.DuplicatedException;
+import gift.product.exception.ProductNotFoundException;
+import gift.product.exception.ProductValidationException;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
@@ -52,6 +56,23 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
 
-    public record ErrorResponse(String errorCode, String message) {}
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorResponse> handleAuthentication(AuthenticationException e) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                "권한 오류",
+                e.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+    }
 
+    @ExceptionHandler(DuplicatedException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateEmail(DuplicatedException e) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                "중복 이메일",
+                e.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+    }
+
+    public record ErrorResponse(String errorCode, String message) {}
 }
