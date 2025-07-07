@@ -23,7 +23,7 @@ public class MemberRepositoryImpl implements MemberRepository{
     }
 
     @Override
-    public void addMember(Member member) {
+    public Member addMember(Member member) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         simpleJdbcInsert.withTableName("members").usingGeneratedKeyColumns("id");
 
@@ -31,7 +31,8 @@ public class MemberRepositoryImpl implements MemberRepository{
         params.put("email", member.getEmail());
         params.put("password", member.getPassword());
 
-        simpleJdbcInsert.execute(params);
+        Long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
+        return new Member(member.getMemberId(), member.getEmail(), member.getPassword());
     }
 
     @Override

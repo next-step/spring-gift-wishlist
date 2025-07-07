@@ -2,9 +2,11 @@ package gift.controller;
 
 import gift.dto.JwtResponseDto;
 import gift.dto.MemberRequestDto;
+import gift.entity.Member;
 import gift.service.JwtAuthService;
 import gift.service.MemberService;
 import jakarta.validation.Valid;
+import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,11 +30,9 @@ public class MemberController {
     //TODO: 회원가입 기능 -> 토큰을 반환
     @PostMapping("/register")
     public ResponseEntity<Object> register(@RequestBody @Valid MemberRequestDto memberRequestDto){
-        if(memberService.register(memberRequestDto)){
-            String token = jwtAuthService.createJwt(memberRequestDto);
-            return new ResponseEntity<>(new JwtResponseDto(token), HttpStatus.CREATED);
-        }
-        return ResponseEntity.badRequest().body("이미 회원으로 등록된 이메일 입니다.");
+        Member member = memberService.register(memberRequestDto);
+        String token = jwtAuthService.createJwt(memberRequestDto);
+        return new ResponseEntity<>(new JwtResponseDto(token), HttpStatus.CREATED);
     }
 
     //TODO: 로그인 기능 -> 토큰을 반환

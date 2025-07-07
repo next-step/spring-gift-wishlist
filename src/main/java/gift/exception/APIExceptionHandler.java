@@ -7,6 +7,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestControllerAdvice
 public class APIExceptionHandler {
@@ -18,4 +19,10 @@ public class APIExceptionHandler {
                 .forEach(o -> errors.put(((FieldError) o).getField(), o.getDefaultMessage()));
         return ResponseEntity.badRequest().body(errors);
     }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<String> reponseStatusExceptionHandler(ResponseStatusException e){
+        return ResponseEntity.badRequest().body(e.getReason());
+    }
+
 }

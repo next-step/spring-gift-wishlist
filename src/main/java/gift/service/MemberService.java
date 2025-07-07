@@ -7,7 +7,10 @@ import gift.repository.MemberRepositoryImpl;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class MemberService {
@@ -19,14 +22,18 @@ public class MemberService {
     }
 
     //TODO:멤버 회원 가입 -> 리포지토리에 저장
-    public boolean register(MemberRequestDto memberRequestDto){
-        //중복을 확인하고
-        if(checkDuplicateEmail(memberRequestDto.email())){
-            return false;
+    @Transactional
+    public Member register(MemberRequestDto memberRequestDto){
+
+        //중복을 확인 - memberService내에서 이미 등록된 메일이라면 예외를 던져서 예외처리로 HttpRepsonse를 내는 방식이 좋을것 같아요
+        if(getMemberByEmail(memberRequestDto.email()).isPresent()){ //중복이라면,,,
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 사용중인 이메일 입니다.");
         }
+
+        //중복된 이메일이 아니라면 회원가입을 진행
         Member member = new Member(memberRequestDto.email(), memberRequestDto.password());
-        memberRepository.addMember(member);
-        return true;
+        Member createdMemeber = memberRepository.addMember(member);
+        return createdMemeber;
     }
 
     //TODO:로그인 기능 -> 이메일과 비밀번호가 일치하는지 확인하는 로직
@@ -36,15 +43,6 @@ public class MemberService {
             return false;
         }
         return true;
-    }
-
-    //TODO:중복 이메일 불가 -> 회원 가입시, 해당 이메일로 가입된 정보가 있는지 확인하기
-    private boolean checkDuplicateEmail(String email){
-        Optional<Member> member = memberRepository.findMemberByEmail(email);
-        if(member.isPresent()){
-            return true;
-        }
-        return false;
     }
 
     //특정 멤버를 조회하는 기능
@@ -92,3 +90,5 @@ public class MemberService {
     }
 
 }
+
+
