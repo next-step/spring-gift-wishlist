@@ -32,13 +32,35 @@
 - 토큰을 생성하는 방법에는 여러 가지가 있다. 방법 중 하나를 선택한다.
 - (선택) 회원을 조회, 추가, 수정, 삭제할 수 있는 관리자 화면을 구현한다.
 
-# 구현 기능
+## 구현 기능
 
 - [x] 사용자 정보를 저장할 Member table을 생성한다.
 - [x] 이메일과 비밀번호 정보를 받아 저장한다.(회원가입)
 - [x] 이메일과 비밀번호 정보를 받아 로그인 한다.
 - [x] 토큰을 전달한다.
+- [x] 회원가입과 로그인을 화면을 구현
+- [x] Bearer 인증 방식을 사용하여 JWT 를 전달해 관리자와 일반 유저를 구분한다.
 
+## Member Table
+
+```sql
+CREATE TABLE Member (
+    id BIGINT AUTO_INCREMENT,
+    email VARCHAR(50),
+    password VARCHAR(255),
+    role VARCHAR(10),
+    PRIMARY KEY (id)
+);
+```
+
+### 📑 컬럼 설명
+
+| 컬럼명     | 타입           | 설명                                |
+| ---------- | -------------- | ----------------------------------- |
+| `id`       | `BIGINT`       | 회원의 고유 ID (자동 증가, 기본 키) |
+| `email`    | `VARCHAR(50)`  | 회원 이메일 (로그인 ID로 사용)      |
+| `password` | `VARCHAR(255)` | 비밀번호 저장용                     |
+| `role`     | `VARCHAR(10)`  | 사용자 역할 (`USER`, `ADMIN` 등)    |
 
 ## API 명세
 
@@ -50,43 +72,42 @@
 `Host: localhost:8080`
 
 ```json
-        {
-          "email": "admin@email.com",
-          "password": "password"
-        }
- ```
+{
+  "email": "admin@email.com",
+  "password": "password"
+}
+```
 
 **Response**<br>
-        `HTTP/1.1 201 Created`<br>
-        `Content-Type: application/json`
+`HTTP/1.1 201 Created`<br>
+`Content-Type: application/json`
 
 ```json
-        {
-          "token": "..."
-        }
- ```
-
+{
+  "token": "..."
+}
+```
 
 ### 로그인
 
 **Request**<br>
-        `POST /api/members/login HTTP/1.1`<br>
-        `Content-Type: application/json`<br>
-        `Host: localhost:8080`
+`POST /api/members/login HTTP/1.1`<br>
+`Content-Type: application/json`<br>
+`Host: localhost:8080`
 
 ```json
-        {
-          "email": "admin@email.com",
-          "password": "password"
-        }
-  ```
+{
+  "email": "admin@email.com",
+  "password": "password"
+}
+```
 
 **Response**<br>
-        `HTTP/1.1 200 OK`<br>
-        `Content-Type: application/json`<br>
+`HTTP/1.1 200 OK`<br>
+`Content-Type: application/json`<br>
 
 ```json
-        {
-          "token": "..."
-        }
- ```
+{
+  "token": "..."
+}
+```
