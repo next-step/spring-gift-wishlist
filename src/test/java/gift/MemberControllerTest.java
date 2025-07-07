@@ -53,4 +53,52 @@ public class MemberControllerTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     }
+
+    @Test
+    void 로그인_없는_이메일_시도_테스트(){
+        System.out.println("Member Login Not register Email test");
+        MemberRequestDto requestDto = new MemberRequestDto("abcde@pusan.ac.kr", "1234");
+        var url = "http://localhost:" + port + "/api/members/login";
+        assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
+                .isThrownBy(
+                        () ->
+                            client.post()
+                                    .uri(url)
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .body(requestDto)
+                                    .retrieve()
+                                    .toEntity(MemberResponseDto.class)
+                        );
+    }
+
+    @Test
+    void 로그인_틀린_비밀번호_테스트(){
+        System.out.println("Member Login Invalid password test");
+        MemberRequestDto requestDto = new MemberRequestDto("abc@pusan.ac.kr", "12345");
+        var url = "http://localhost:" + port + "/api/members/login";
+        assertThatExceptionOfType(HttpClientErrorException.Forbidden.class)
+                .isThrownBy(
+                        () -> client.post()
+                                .uri(url)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .body(requestDto)
+                                .retrieve()
+                                .toEntity(MemberResponseDto.class)
+                );
+    }
+
+    @Test
+    void 로그인_정상_테스트(){
+        System.out.println("Member Login success test");
+        MemberRequestDto requestDto = new MemberRequestDto("abc@pusan.ac.kr", "1234");
+        var url = "http://localhost:" + port + "/api/members/login";
+        var response = client.post()
+                .uri(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(requestDto)
+                .retrieve()
+                .toEntity(MemberResponseDto.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
 }
