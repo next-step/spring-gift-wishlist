@@ -3,6 +3,9 @@ package gift.service;
 import gift.dto.MemberRequestDto;
 import gift.dto.MemberResponseDto;
 import gift.entity.Member;
+import gift.exception.EmailAlreadyExistsException;
+import gift.exception.InvalidCredentialsException;
+import gift.exception.ResourceNotFoundException;
 import gift.repository.MemberRepository;
 import gift.security.JwtTokenProvider;
 import java.util.Optional;
@@ -22,7 +25,7 @@ public class MemberService {
         Optional<Member> optionalMember = memberRepository.findMemberByEmail(memberRequestDto.email());
 
         if (optionalMember.isPresent()) {
-            throw new IllegalStateException("이미 등록된 이메일입니다.");
+            throw new EmailAlreadyExistsException("이미 등록된 이메일입니다.");
         }
 
         Member member = new Member(memberRequestDto);
@@ -32,16 +35,13 @@ public class MemberService {
     }
 
     public MemberResponseDto loginMember(MemberRequestDto memberRequestDto) {
-        Optional<Member> optionalMember = memberRepository.findMemberByEmail(memberRequestDto.email());
+        Member member = memberRepository.findMemberByEmail(memberRequestDto.email())
+                .orElseThrow(() -> new ResourceNotFoundException("등록된 사용자가 아닙니다."));
 
-        if (optionalMember.isEmpty()) {
-            throw new IllegalStateException("존재하지 않는 회원입니다.");
+        if (!member.getPassword().equals(memberRequestDto.password())) {
+            throw new InvalidCredentialsException("비밀번호가 일치하지 않습니다.");
         }
 
-        if (optionalMember.get().getPassword().equals(memberRequestDto.password())) {
-            throw new IllegalStateException("비밀번호가 일치하지 않습니다.");
-        }
-
-        return new MemberResponseDto(jwtTokenProvider.generateToken(optionalMember.get()));
+        return new MemberResponseDto(jwtTokenProvider.generateToken(member));
     }
 }
