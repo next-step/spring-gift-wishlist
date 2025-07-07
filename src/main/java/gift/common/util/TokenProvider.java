@@ -107,13 +107,13 @@ public class TokenProvider implements InitializingBean {
                 .parse(token);
             return true;
         } catch (SecurityException e) {
-            log.info("잘못된 JWT 서명입니다.");
+            log.warn("잘못된 JWT 서명입니다.");
         } catch (MalformedJwtException e) {
-            log.info("잘못된 JWT 토큰입니다.");
+            log.warn("잘못된 JWT 토큰입니다.");
         } catch (ExpiredJwtException e) {
-            log.info("만료된 JWT 토큰입니다.");
+            log.warn("만료된 JWT 토큰입니다.");
         } catch (Exception e) {
-            log.info("유효하지 않은 JWT 토큰입니다.");
+            log.warn("유효하지 않은 JWT 토큰입니다.");
         }
         return false;
     }
