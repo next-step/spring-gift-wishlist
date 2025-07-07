@@ -1,6 +1,7 @@
 package gift.product.exception;
 
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -36,6 +37,12 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ErrorResponse> handleNoSuchElementExceptionForNPE(NoSuchElementException e) {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND)
 			.body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage()));
+	}
+
+	@ExceptionHandler(DataIntegrityViolationException.class)
+	public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
+		return ResponseEntity.status(HttpStatus.CONFLICT)
+			.body(new ErrorResponse(HttpStatus.CONFLICT.value(), e.getMessage()));
 	}
 
 
