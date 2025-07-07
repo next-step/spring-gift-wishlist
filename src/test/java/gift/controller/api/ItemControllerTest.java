@@ -135,4 +135,36 @@ class ItemControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.name").value("수정된 상품"));
     }
+
+    @Test
+    @DisplayName("USER 권한으로 '카카오' 포함 상품 등록 시 403 에러 발생")
+    void createKakaoItem_With_UserRole_Fails() throws Exception {
+        LoginResponse loginResponse = memberService.login(new MemberLoginRequest("user@example.com", "user1234"));
+        String userToken = loginResponse.token();
+        ItemRequest request = new ItemRequest("카카오프렌즈 인형", 30000, "kakao_doll.jpg");
+        String requestBody = objectMapper.writeValueAsString(request);
+
+        mockMvc.perform(post("/api/products")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + userToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DisplayName("ADMIN 권한으로 '카카오' 포함 상품 등록 성공")
+    void createKakaoItem_With_AdminRole_Succeeds() throws Exception {
+        // given: ADMIN 권한으로 로그인하여 토큰 발급
+        LoginResponse loginResponse = memberService.login(new MemberLoginRequest("admin@example.com", "admin1234"));
+        String adminToken = loginResponse.token();
+        ItemRequest request = new ItemRequest("카카오프렌즈 인형", 30000, "kakao_doll.jpg");
+        String requestBody = objectMapper.writeValueAsString(request);
+
+        // when & then
+        mockMvc.perform(post("/api/products")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+            .andExpect(status().isCreated()); // 201 Created 상태를 기대
+    }
 }

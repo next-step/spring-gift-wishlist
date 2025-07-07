@@ -3,6 +3,8 @@ package gift.controller.web;
 import gift.dto.ItemRequest;
 import gift.dto.ItemResponse;
 import gift.service.ItemService;
+import gift.entity.Member;
+import gift.login.Login;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.stereotype.Controller;
@@ -50,12 +52,14 @@ public class AdminItemController {
     public String createItem(
         @Valid @ModelAttribute("item") ItemRequest itemRequest,
         BindingResult bindingResult,
+        @Login Member loginMember,
         RedirectAttributes redirectAttributes
     ) {
         if (bindingResult.hasErrors()) {
             return "admin/items/form";
         }
-        itemService.createItem(itemRequest);
+
+        itemService.createItem(itemRequest, loginMember);
         redirectAttributes.addFlashAttribute("message", "상품이 성공적으로 등록되었습니다!");
         return "redirect:/admin/items";
     }
@@ -66,7 +70,6 @@ public class AdminItemController {
         model.addAttribute("item", item);
         return "admin/items/detail";
     }
-
     @GetMapping("/{id}/edit")
     public String editItemForm(@PathVariable("id") Long id, Model model) {
         ItemResponse item = itemService.getItemById(id);
@@ -81,12 +84,13 @@ public class AdminItemController {
         @PathVariable("id") Long id,
         @Valid @ModelAttribute("item") ItemRequest itemRequest,
         BindingResult bindingResult,
+        @Login Member loginMember,
         RedirectAttributes redirectAttributes
     ) {
         if (bindingResult.hasErrors()) {
             return "admin/items/form";
         }
-        itemService.updateItem(id, itemRequest);
+        itemService.updateItem(id, itemRequest, loginMember);
         redirectAttributes.addFlashAttribute("message", "상품이 성공적으로 수정되었습니다!");
         return "redirect:/admin/items/" + id;
     }
