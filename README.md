@@ -35,6 +35,16 @@
 
 - [x] 유효성 검사 실패시 모든 실패 항목 메시지에 포함하기
 - [x] README.md 에 체크박스 사용해보기
+- [x] 400 에러 테스트 코드 추가하기
+
+### 2단계 - 회원 로그인
+
+- [ ] Member 도메인 구현, 스키마 추가
+- [ ] MemberRepository
+- [ ] MemberService 구현
+- [ ] MemberController, 회원 관련 페이지 구현
+- [ ] JWT 토큰 생성, 검증 로직 구현
+- [ ] Member 예외 처리 구현
 
 ### 1단계 - 코드 리뷰 반영
 

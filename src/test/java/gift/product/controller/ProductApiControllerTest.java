@@ -131,4 +131,18 @@ public class ProductApiControllerTest {
         mockMvc.perform(get("/api/products/" + productId))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    @DisplayName("상품 등록 실패 - 유효하지 않은 상품명(카카오) - 400")
+    void addProduct_fail() throws Exception {
+        ProductRequestDto invalidProduct = new ProductRequestDto("카카오 인형", 15000, "a.jpg");
+        String content = objectMapper.writeValueAsString(invalidProduct);
+
+        mockMvc.perform(post("/api/products")
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.name").exists())
+                .andDo(print());
+    }
 }
