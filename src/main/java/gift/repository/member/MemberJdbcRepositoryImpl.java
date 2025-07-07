@@ -2,6 +2,7 @@ package gift.repository.member;
 
 import gift.entity.Member;
 import java.sql.PreparedStatement;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -20,6 +21,17 @@ public class MemberJdbcRepositoryImpl implements MemberRepository {
   }
 
   @Override
+  public List<Member> findAllMembers() {
+    String sql = "select * from members";
+    return jdbcTemplate.query(sql, (rs, rowNum) -> new Member(
+            rs.getLong("id"),
+            rs.getString("email"),
+            rs.getString("password")
+        )
+    );
+  }
+
+  @Override
   public Optional<Member> findByEmail(String email) {
     String sql = "select * from members where email=?";
     try {
@@ -30,6 +42,23 @@ public class MemberJdbcRepositoryImpl implements MemberRepository {
               rs.getString("password")
           )
           , email);
+      return Optional.of(result);
+    } catch (EmptyResultDataAccessException e) {
+      return Optional.empty();
+    }
+  }
+
+  @Override
+  public Optional<Member> findById(Long id) {
+    String sql = "select * from members where id=?";
+    try {
+      Member result = jdbcTemplate.queryForObject(sql,
+          (rs, rowNum) -> new Member(
+              rs.getLong("id"),
+              rs.getString("email"),
+              rs.getString("password")
+          )
+          , id);
       return Optional.of(result);
     } catch (EmptyResultDataAccessException e) {
       return Optional.empty();
@@ -55,6 +84,27 @@ public class MemberJdbcRepositoryImpl implements MemberRepository {
     Long generatedId = key.longValue();
     member.setId(generatedId);
     return member;
+  }
+
+  @Override
+  public Optional<Member> updateMember(Long id, Member member) {
+    String sql = "update members set email=?,password=? where id=?";
+    int update = jdbcTemplate.update(sql, member.getEmail(), member.getPassword(), id);
+    if (update == 0) {
+      return Optional.empty();
+    }
+    member.setId(id);
+    return Optional.of(member);
+  }
+
+  @Override
+  public int deleteMember(Long id) {
+    String sql = "delete from members where id=?";
+    int deletedMember = jdbcTemplate.update(sql, id);
+    if (deletedMember != 1) {
+      throw new IllegalStateException("no delete members");
+    }
+    return deletedMember;
   }
 
 }
