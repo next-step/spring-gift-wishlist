@@ -53,8 +53,8 @@
         const result = await response.json();
         localStorage.setItem('accessToken', result.token); // 받은 토큰을 로컬 스토리지에 저장
 
-        alert('로그인 성공! 관리자 페이지로 이동합니다.');
-        window.location.href = '/admin/products'; // 페이지 이동
+        alert('로그인 성공!');
+        window.location.href = '/members/products'; // 페이지 이동
       } else {
         const error = await response.json();
         alert(error.message);

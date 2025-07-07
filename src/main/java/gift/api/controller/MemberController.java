@@ -27,11 +27,14 @@ public class MemberController {
 
     @PostMapping("/register")
     public ResponseEntity<TokenResponseDto> registerMember(
-            @Valid @RequestBody MemberRequestDto memberRequestDto
+            @Valid @RequestBody MemberRequestDto memberRequestDto,
+            HttpServletResponse response
     ) {
-        TokenResponseDto response = memberService.registerMember(memberRequestDto);
+        TokenResponseDto tokenResponse = memberService.registerMember(memberRequestDto);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        jwtUtil.addJwtToCookie(tokenResponse.token(), response);
+        
+        return ResponseEntity.status(HttpStatus.CREATED).body(tokenResponse);
     }
 
     @PostMapping("/login")
