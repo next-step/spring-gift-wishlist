@@ -58,12 +58,14 @@ public class ProductControllerTest {
         String url = "http://localhost:" + port + "/api/products";
 
         ProductRequest request = createProductRequest(
-                " 0123456789abc",
+                " 0123456789abcdef",
                 1000,
                 "http://image.jpg"
         );
 
+        ResponseEntity<String> response = postProduct(request);
         assertBadRequest(request);
+        assertThat(response.getBody()).contains("상품명은 공백 포함 최대 15자까지 입력할 수 있습니다.");
     }
 
     @Test
@@ -76,7 +78,9 @@ public class ProductControllerTest {
                 "http://"
         );
 
+        ResponseEntity<String> response = postProduct(request);
         assertBadRequest(request);
+        assertThat(response.getBody()).contains("상품명에는 특수문자 (),[],+,-,&,/,_ 만 포함될 수 있습니다.");
     }
 
     @Test
@@ -89,6 +93,8 @@ public class ProductControllerTest {
                 "http://"
         );
 
+        ResponseEntity<String> response = postProduct(request);
         assertBadRequest(request);
+        assertThat(response.getBody()).contains("상품명에 '카카오'를 포함할 수 없습니다. 담당자에게 문의하세요.");
     }
 }
