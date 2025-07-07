@@ -29,9 +29,14 @@ public class ProductPageController {
 
     @PostMapping
     public String create(@Valid @ModelAttribute Product product, BindingResult result) {
+        if (product.getName().contains("카카오")) {
+            result.rejectValue("name", "invalid_kakao_in_name", "상품명에 '카카오'가 포함되어 있습니다. 담당자 확인이 필요합니다.");
+        }
+
         if (result.hasErrors()) {
             return "Productform";
         }
+
         products.save(product);
         return "redirect:/products";
     }
@@ -45,7 +50,7 @@ public class ProductPageController {
     }
 
     @PostMapping("/{id}")
-    public String edit(@Valid @PathVariable Long id, @ModelAttribute Product updated, BindingResult result) {
+    public String edit(@PathVariable Long id, @Valid @ModelAttribute Product updated, BindingResult result, Model model) {
         if (result.hasErrors()) {
             return "Productform";
         }
