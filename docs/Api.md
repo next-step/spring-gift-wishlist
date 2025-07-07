@@ -117,3 +117,55 @@
   "data": null
 }
 ```
+
+# 인증 API 명세
+
+### 회원가입
+
+`POST /api/auth/register`
+
+**Request**
+
+```json
+{
+  "email": "ascd050@naver.com",
+  "password": "ascd050"
+}
+```
+
+**Response**
+
+```json
+{
+  "status": 201,
+  "message": "생성 성공",
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhc2NkMDUwQG5hdmVyLmNvbSIsImlhdCI6MTc1MTg3NjM1MSwiZXhwIjoxNzUxODc5OTUxfQ.3EKGin4w9f8fKnLxXX3Q7L5Xeubev3I8EMRNylAVEOA"
+  }
+}
+```
+
+### 로그인
+
+`POST /api/auth/register`
+
+**Request**
+
+```json
+{
+  "email": "ascd050@naver.com",
+  "password": "ascd050"
+}
+```
+
+**Response**
+
+```json
+{
+  "status": 200,
+  "message": "로그인 성공¡",
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhc2NkMDUwQG5hdmVyLmNvbSIsImlhdCI6MTc1MTg3ODg0NywiZXhwIjoxNzUxODgyNDQ3fQ.e7gbjAUCXFwJBI8k_zrFvEQXe7N51mSACPB-64TrwL0"
+  }
+}
+```
