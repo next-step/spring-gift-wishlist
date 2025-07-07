@@ -11,11 +11,11 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public class MemberRespository {
+public class MemberRepository {
 
     private final JdbcClient client;
 
-    public MemberRespository(JdbcClient client) {
+    public MemberRepository(JdbcClient client) {
         this.client = client;
     }
 
