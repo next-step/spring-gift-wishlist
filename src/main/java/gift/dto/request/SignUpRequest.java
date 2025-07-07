@@ -9,9 +9,6 @@ public record SignUpRequest(
         String password
 ) {
         public static User toEntity(SignUpRequest signUpRequest) {
-                return new User(
-                        signUpRequest.email,
-                        signUpRequest.password
-                );
+                return new User(signUpRequest.email(), signUpRequest.password());
         }
 }
