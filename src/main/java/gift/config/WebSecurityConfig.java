@@ -7,6 +7,7 @@ import gift.util.JwtUtil;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -18,12 +19,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-public class WebbSecurityConfig {
+public class WebSecurityConfig {
 
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
 
-    public WebbSecurityConfig(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService) {
+    public WebSecurityConfig(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
     }
@@ -46,15 +47,19 @@ public class WebbSecurityConfig {
                 sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         );
 
-        http.authorizeHttpRequests((authorizehttpRequests) ->
-                authorizehttpRequests // resource 요청에 대한 권한 설정
+        http.authorizeHttpRequests((authorizeHttpRequests) ->
+                authorizeHttpRequests
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
                         .permitAll()
-                        .requestMatchers("/api/members/**").permitAll() // 'api/members'로 시작하는 요청 허가
-                        .requestMatchers("/admin/**")
-                        .hasRole(MemberRole.ADMIN.name()) // 'admin'으로 시작하는 요청은 ADMIN 권한 필요
-                        .anyRequest().authenticated() // 나머지 요청은 인증 필요
+                        .requestMatchers("/h2-console/**").permitAll()
+                        .requestMatchers("/api/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/members/**")
+                        .permitAll() // 상품 조회는 누구나 가능
+                        .requestMatchers("/admin/**").hasRole(MemberRole.ADMIN.name())
+                        .anyRequest().authenticated()
         );
+
+        http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()));
 
         http.addFilterBefore(jwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
 

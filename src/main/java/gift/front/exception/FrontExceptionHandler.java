@@ -1,6 +1,7 @@
 package gift.front.exception;
 
 import gift.api.dto.ErrorResponseDto;
+import gift.exception.LoginFailedException;
 import gift.exception.ProductNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -43,6 +44,25 @@ public class FrontExceptionHandler {
                 HttpStatus.BAD_REQUEST.value(),
                 HttpStatus.BAD_REQUEST.getReasonPhrase(),
                 ex.getBindingResult().getFieldError().getDefaultMessage(),
+                request.getRequestURI()
+        );
+        model.addAttribute("errorInfo", error);
+
+        return "error";
+    }
+
+    @ExceptionHandler(LoginFailedException.class)
+    public String handleLoginFailedException(
+            LoginFailedException ex,
+            Model model,
+            HttpServletRequest request) {
+
+        ex.printStackTrace();
+
+        ErrorResponseDto error = new ErrorResponseDto(
+                HttpStatus.UNAUTHORIZED.value(),
+                HttpStatus.UNAUTHORIZED.getReasonPhrase(),
+                ex.getMessage(),
                 request.getRequestURI()
         );
         model.addAttribute("errorInfo", error);

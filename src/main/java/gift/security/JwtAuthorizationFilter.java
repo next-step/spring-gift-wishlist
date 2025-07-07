@@ -27,25 +27,26 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
-        String token = jwtUtil.getJwtFromHeader(request);
+        String tokenValue = jwtUtil.getTokenFromRequest(request);
 
-        if (token != null) {
-            if (!jwtUtil.validateToken(token)) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                return;
+        if (tokenValue != null) {
+            // 쿠키에서 가져온 값에 Bearer 접두사가 포함되어 있으므로 제거
+            if (tokenValue.startsWith(JwtUtil.BEARER_PREFIX)) {
+                String token = tokenValue.substring(7);
+
+                if (jwtUtil.validateToken(token)) {
+                    Claims info = jwtUtil.getUserInfoFromToken(token);
+                    try {
+                        setAuthentication(info.getSubject());
+                    } catch (Exception e) {
+                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        return;
+                    }
+                }
             }
-
-            Claims info = jwtUtil.getUserInfoFromToken(token);
-
-            try {
-                setAuthentication(info.getSubject());
-            } catch (Exception e) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                return;
-            }
-
-            filterChain.doFilter(request, response);
         }
+
+        filterChain.doFilter(request, response);
     }
 
     public void setAuthentication(String email) {

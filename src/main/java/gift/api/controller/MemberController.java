@@ -3,6 +3,8 @@ package gift.api.controller;
 import gift.api.dto.MemberRequestDto;
 import gift.api.dto.TokenResponseDto;
 import gift.api.service.MemberService;
+import gift.util.JwtUtil;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
 
     private final MemberService memberService;
+    private final JwtUtil jwtUtil;
 
-    public MemberController(MemberService memberService) {
+    public MemberController(MemberService memberService, JwtUtil jwtUtil) {
         this.memberService = memberService;
+        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping("/register")
@@ -32,10 +36,13 @@ public class MemberController {
 
     @PostMapping("/login")
     public ResponseEntity<TokenResponseDto> loginMember(
-            @Valid @RequestBody MemberRequestDto memberRequestDto
+            @Valid @RequestBody MemberRequestDto memberRequestDto,
+            HttpServletResponse response
     ) {
-        TokenResponseDto response = memberService.loginMember(memberRequestDto);
+        TokenResponseDto tokenResponse = memberService.loginMember(memberRequestDto);
 
-        return ResponseEntity.ok(response);
+        jwtUtil.addJwtToCookie(tokenResponse.token(), response);
+
+        return ResponseEntity.ok(tokenResponse);
     }
 }

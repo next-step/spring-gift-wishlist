@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class UserDetailsImpl implements UserDetails {
 
     private final Member member;
+    public static final String ROLE_PREFIX = "ROLE_";
 
     public UserDetailsImpl(Member member) {
         this.member = member;
@@ -33,7 +34,7 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         MemberRole role = member.getRole();
-        String authority = role.toString();
+        String authority = ROLE_PREFIX + role.toString();
 
         SimpleGrantedAuthority grantedAuthority = new SimpleGrantedAuthority(authority);
         Collection<GrantedAuthority> authorities = new ArrayList<>();

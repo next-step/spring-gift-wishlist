@@ -5,6 +5,7 @@ import gift.api.domain.MemberRole;
 import gift.api.dto.MemberRequestDto;
 import gift.api.dto.TokenResponseDto;
 import gift.api.repository.MemberRepository;
+import gift.exception.LoginFailedException;
 import gift.util.JwtUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -46,10 +47,10 @@ public class MemberService {
 
     public TokenResponseDto loginMember(MemberRequestDto memberRequestDto) {
         Member member = memberRepository.findByEmail(memberRequestDto.email())
-                .orElseThrow(() -> new IllegalArgumentException("이메일 또는 비밀번호가 일치하지 않습니다."));
+                .orElseThrow(() -> new LoginFailedException("이메일 또는 비밀번호가 일치하지 않습니다."));
 
         if (!passwordEncoder.matches(memberRequestDto.password(), member.getPassword())) {
-            throw new IllegalArgumentException("이메일 또는 비밀번호가 일치하지 않습니다.");
+            throw new LoginFailedException("이메일 또는 비밀번호가 일치하지 않습니다.");
         }
 
         String token = jwtUtil.createToken(member.getEmail(), member.getRole());
