@@ -1,4 +1,4 @@
-package gift.exception;
+package gift.exception.gift;
 
 public class InValidSpecialCharException extends RuntimeException {
     public InValidSpecialCharException(String message) {

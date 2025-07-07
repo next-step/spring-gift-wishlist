@@ -1,14 +1,120 @@
 package gift.repository;
 
 import gift.entity.Gift;
+import gift.exception.gift.NeedAcceptException;
+import gift.exception.gift.NoValueException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
+import java.sql.Types;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 
-public interface GiftRepository {
-    Gift save(Gift gift);
-    Optional<Gift> findById(Long id);
-    List<Gift> findAll();
-    Gift modify(Long id, Gift gift);
-    void deleteById(Long id);
+import static gift.status.GiftErrorStatus.*;
+
+@Repository
+public class GiftRepository {
+    private final JdbcTemplate jdbcTemplate;
+    private final AtomicLong id = new AtomicLong(0);
+
+    public GiftRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    public Gift save(Gift gift) {
+        gift.setId(id.getAndIncrement());
+        String sql = "INSERT INTO Gift(id, giftId, giftName, giftPrice, giftPhotoUrl, isKakaoMDAccepted) VALUES (?, ?, ?, ?, ?, ?)";
+        Object[] args = new Object[]{
+                gift.getId(),
+                gift.getGiftId(),
+                gift.getGiftName(),
+                gift.getGiftPrice(),
+                gift.getGiftPhotoUrl(),
+                gift.getIsKakaoMDAccepted()
+        };
+        int[] argTypes = {Types.BIGINT, Types.BIGINT, Types.VARCHAR, Types.INTEGER, Types.VARCHAR, Types.BOOLEAN};
+        jdbcTemplate.update(sql, args, argTypes);
+
+        if(!gift.getIsKakaoMDAccepted()){
+            throw new NeedAcceptException(NOT_ACCEPTED.getErrorMessage());
+        }
+
+        return gift;
+    }
+
+    public Optional<Gift> findById(Long id) {
+        String sql = "SELECT * FROM Gift WHERE id = ?";
+        Object[] args = {id};
+        int[] argTypes = {Types.BIGINT};
+        return jdbcTemplate.query(sql, args, argTypes, rs -> {
+                if (rs.next()) {
+                    Gift gift = new Gift();
+                    gift.setId(rs.getLong("id"));
+                    gift.setGiftId(rs.getLong("giftId"));
+                    gift.setGiftName(rs.getString("giftName"));
+                    gift.setGiftPrice(rs.getInt("giftPrice"));
+                    gift.setGiftPhotoUrl(rs.getString("giftPhotoUrl"));
+                    gift.setKakaoMDAccepted(rs.getBoolean("isKakaoMDAccepted"));
+                    return Optional.of(gift);
+                }
+                return Optional.empty();
+            }
+        );
+    }
+
+    public List<Gift> findAll() {
+        String sql = "SELECT * FROM Gift WHERE isKakaoMDAccepted = ?";
+        Object[] args = {true};
+        int[] argTypes = {Types.BOOLEAN};
+        return jdbcTemplate.query(sql, args, argTypes, (rs, rowNum) -> {
+            Gift gift = new Gift();
+            gift.setId(rs.getLong("id"));
+            gift.setGiftId(rs.getLong("giftId"));
+            gift.setGiftName(rs.getString("giftName"));
+            gift.setGiftPrice(rs.getInt("giftPrice"));
+            gift.setGiftPhotoUrl(rs.getString("giftPhotoUrl"));
+            gift.setKakaoMDAccepted(rs.getBoolean("isKakaoMDAccepted"));
+            return gift;
+        });
+    }
+
+    public Gift modify(Long id, Gift gift) {
+        StringBuilder sql = new StringBuilder("UPDATE Gift SET ");
+        List<Object> params = new ArrayList<>();
+        if(gift.getGiftId() != null){
+            sql.append("giftId = ?, ");
+            params.add(gift.getGiftId());
+        }
+        if(gift.getGiftName() != null){
+            sql.append("giftName = ?, ");
+            params.add(gift.getGiftName());
+        }
+        if(gift.getGiftPrice() != null){
+            sql.append("giftPrice = ?, ");
+            params.add(gift.getGiftPrice());
+        }
+        if(gift.getGiftPhotoUrl() != null){
+            sql.append("giftPhotoUrl = ?, ");
+            params.add(gift.getGiftPhotoUrl());
+        }
+        if(params.isEmpty()){
+            throw new NoValueException(NO_GIFT.getErrorMessage());
+        }
+        sql.deleteCharAt((sql.length()-2));
+        sql.append(" WHERE id = ?");
+
+        params.add(id);
+        jdbcTemplate.update(sql.toString(), params.toArray());
+
+        gift.setId(id);
+        gift.isKakaoMessageInclude();
+        return gift;
+    }
+
+    public void deleteById(Long id) {
+        String sql = "DELETE FROM Gift WHERE id = ?";
+        jdbcTemplate.update(sql, id);
+    }
 }
