@@ -1,6 +1,7 @@
 package gift.controller;
 
 import gift.dto.CreateMemberRequestDto;
+import gift.dto.DeleteMemberRequestDto;
 import gift.dto.JWTResponseDto;
 import gift.dto.UpdateMemberPasswordRequestDto;
 import gift.service.MemberService;
@@ -9,6 +10,7 @@ import jakarta.validation.Valid;
 import org.springframework.boot.autoconfigure.graphql.GraphQlProperties.Http;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,6 +44,14 @@ public class MemberController {
             @RequestBody UpdateMemberPasswordRequestDto requestDto
     ){
         memberService.updateMemberPassword(requestDto);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteMember(
+            @RequestBody DeleteMemberRequestDto requestDto
+    ){
+        memberService.deleteMember(requestDto);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

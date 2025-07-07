@@ -1,6 +1,7 @@
 package gift.service;
 
 import gift.dto.CreateMemberRequestDto;
+import gift.dto.DeleteMemberRequestDto;
 import gift.dto.JWTResponseDto;
 import gift.dto.UpdateMemberPasswordRequestDto;
 import gift.entity.Member;
@@ -50,6 +51,16 @@ public class MemberServiceImpl implements MemberService {
             throw new CustomException(ErrorCode.Unauthorized);
         }
         memberRepository.updateMemberPassword(find, requestDto.newPassword());
+    }
+
+    @Override
+    public void deleteMember(DeleteMemberRequestDto requestDto) {
+        Member find = findMemberByEmailOrElseThrow(requestDto.email());
+
+        if (!isCorrectPassword(find, requestDto.password())) {
+            throw new CustomException(ErrorCode.Unauthorized);
+        }
+        memberRepository.deleteMember(find);
     }
 
     private Member findMemberByEmailOrElseThrow(String email) {

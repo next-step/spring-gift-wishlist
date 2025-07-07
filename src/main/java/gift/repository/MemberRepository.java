@@ -9,4 +9,5 @@ public interface MemberRepository {
     Member loginMember(Member member);
     Optional<Member> findMemberByEmail(String email);
     void updateMemberPassword(Member member, String newPassword);
+    void deleteMember(Member member);
 }

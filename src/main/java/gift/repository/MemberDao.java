@@ -62,4 +62,12 @@ public class MemberDao implements MemberRepository{
                 .param("email", member.getEmail())
                 .update();
     }
+
+    @Override
+    public void deleteMember(Member member) {
+        String sql = "delete from members where email = :email;";
+        client.sql(sql)
+                .param("email", member.getEmail())
+                .update();
+    }
 }
