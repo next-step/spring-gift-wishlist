@@ -24,7 +24,7 @@ public class UserService {
         return new UserDto(saved);
     }
 
-    public String login(String email, String password) {
+    public String login(String email, String password) throws IllegalAccessException {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(()->new IllegalArgumentException("가입되지 않은 이메일입니다."));
 
