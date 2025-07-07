@@ -43,8 +43,9 @@
 - [x] MemberRepository 구현
 - [x] JWT 토큰 생성, 토근 정보 추출 구현
 - [x] MemberService 구현
-- [ ] MemberController, 회원 관련 페이지 구현
-- [ ] Member 예외 처리 구현
+- [x] MemberController 구현
+- [x] Member 예외 처리 구현
+- [ ] 회원 관련 페이지 구현
 
 # spring-gift-product (이전 구현)
 
