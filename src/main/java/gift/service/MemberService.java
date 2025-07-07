@@ -1,11 +1,13 @@
 package gift.service;
 
 import gift.auth.JwtTokenProvider;
+import gift.dto.MemberInfoResponse;
 import gift.dto.MemberRequest;
 import gift.dto.MemberResponse;
 import gift.entity.Member;
 import gift.exception.LoginException;
 import gift.repository.MemberRepository;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -37,5 +39,11 @@ public class MemberService {
 
         String token = jwtTokenProvider.createToken(member.getEmail());
         return new MemberResponse(token);
+    }
+
+    public List<MemberInfoResponse> getAllMembers() {
+        return memberRepository.findAll().stream()
+                .map(MemberInfoResponse::from)
+                .toList();
     }
 }

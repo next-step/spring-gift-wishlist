@@ -3,6 +3,7 @@ package gift.repository;
 import gift.entity.Member;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -62,5 +63,17 @@ public class JdbcMemberRepository implements MemberRepository {
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public List<Member> findAll() {
+        String sql = "SELECT id, email, password FROM members";
+        return jdbcTemplate.query(sql, memberRowMapper);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        String sql = "DELETE FROM members WHERE id = ?";
+        jdbcTemplate.update(sql, id);
     }
 }
