@@ -1,4 +1,4 @@
-package gift.global.config;
+package gift.product.config;
 
 import gift.product.repository.InMemoryProductRepository;
 import gift.product.repository.JdbcProductRepository;
