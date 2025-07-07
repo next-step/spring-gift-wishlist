@@ -90,7 +90,7 @@ public class ProductJdbcRepositoryImpl implements ProductRepository {
   public int deleteProduct(Long id) {
     String sql = "delete from products where id=?";
     int deletedProduct = jdbcTemplate.update(sql, id);
-    if (deletedProduct != 1) {
+    if (deletedProduct < 1) {
       throw new ProductNotFoundException("삭제할 것이 없습니다");
     }
     return deletedProduct;
