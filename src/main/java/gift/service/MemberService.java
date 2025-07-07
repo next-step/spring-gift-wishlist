@@ -1,5 +1,6 @@
 package gift.service;
 
+import gift.auth.JwtUtil;
 import gift.dto.LoginRequestDTO;
 import gift.dto.RegisterRequestDTO;
 import gift.dto.TokenResponseDTO;
@@ -13,9 +14,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final JwtUtil jwtUtil;
 
-    public MemberService(MemberRepository memberRepository) {
+    public MemberService(MemberRepository memberRepository, JwtUtil jwtUtil) {
         this.memberRepository = memberRepository;
+        this.jwtUtil = jwtUtil;
     }
 
     public TokenResponseDTO register(RegisterRequestDTO req) {
@@ -26,9 +29,9 @@ public class MemberService {
         Member member = new Member();
         member.setEmail(req.getEmail());
         member.setPassword(req.getPassword());
-
         memberRepository.save(member);
-        return new TokenResponseDTO("token");
+
+        return new TokenResponseDTO(jwtUtil.createToken(member.getEmail()));
     }
     public TokenResponseDTO login(LoginRequestDTO req) {
         Member member = memberRepository.findByEmail(req.getEmail())
@@ -37,6 +40,6 @@ public class MemberService {
         if (!req.getPassword().equals(member.getPassword())) {
             throw new InvalidCredentialsException("비밀번호가 일치하지 않습니다.", ErrorType.PASSWORD_MISMATCH);
         }
-        return new TokenResponseDTO("token");
+        return new TokenResponseDTO(jwtUtil.createToken(member.getEmail()));
     }
 }
