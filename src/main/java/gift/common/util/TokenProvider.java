@@ -1,5 +1,6 @@
 package gift.common.util;
 
+import gift.common.exception.CriticalServerException;
 import gift.entity.UserRole;
 import gift.common.model.CustomAuth;
 import io.jsonwebtoken.Claims;
@@ -41,12 +42,16 @@ public class TokenProvider implements InitializingBean {
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() throws CriticalServerException {
         if (secret == null || secret.isEmpty()) {
-            throw new Exception(("설정을 통해 JWT 비밀 키를 제공해야 합니다.\njwt.secret=your_secret_key"));
+            throw new CriticalServerException(
+                "설정을 통해 올바른 JWT 비밀 키를 제공해야 합니다.: jwt.secret=???"
+            );
         }
         if (expiration == null || expiration <= 0) {
-            throw new Exception("설정을 통해 JWT 만료 기간을 제공해야 합니다.\njwt.expiration=your_expiration_time_in_seconds");
+            throw new CriticalServerException(
+                "설정을 통해 올바른 JWT 만료 기간을 제공해야 합니다.: jwt.expiration=???"
+            );
         }
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
     }

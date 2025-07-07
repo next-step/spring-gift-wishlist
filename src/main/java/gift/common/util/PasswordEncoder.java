@@ -1,5 +1,7 @@
 package gift.common.util;
 
+import gift.common.exception.CriticalServerException;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -26,7 +28,7 @@ public class PasswordEncoder {
             }
             return hexString.toString();
         } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("비밀번호 인코딩에 실패했습니다. SHA-256 알고리즘을 사용할 수 없습니다.", e);
+            throw new CriticalServerException("비밀번호 인코딩에 실패했습니다. SHA-256 알고리즘을 사용할 수 없습니다.", e.getCause());
         }
     }
 
@@ -34,11 +36,7 @@ public class PasswordEncoder {
         if (rawPassword == null || encodedPassword == null) {
             throw new IllegalArgumentException("비밀번호와 인코딩된 비밀번호는 null일 수 없습니다.");
         }
-        try {
-            String hashedRawPassword = encode(rawPassword);
-            return hashedRawPassword.equals(encodedPassword);
-        } catch (Exception e) {
-            throw new RuntimeException("비밀번호 비교 중 오류가 발생했습니다.", e);
-        }
+        String hashedRawPassword = encode(rawPassword);
+        return hashedRawPassword.equals(encodedPassword);
     }
 }

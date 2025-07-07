@@ -1,8 +1,11 @@
 package gift.common.aop;
 
+import gift.common.exception.CriticalServerException;
 import gift.dto.error.ErrorMessageResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -20,6 +23,7 @@ import java.util.NoSuchElementException;
 
 @RestControllerAdvice(basePackages = "gift.controller.api")
 public class GlobalExceptionHandler {
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ProblemDetail> handleAuthenticationException(
@@ -116,6 +120,16 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorDetail, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(CriticalServerException.class)
+    public ResponseEntity<ProblemDetail> handleCriticalServerException(
+            CriticalServerException e, HttpServletRequest request
+    ) {
+        var errorMessage = new ErrorMessageResponse.Builder(request, e, HttpStatus.INTERNAL_SERVER_ERROR)
+                .build();
+        log.error("치명적인 서버 오류가 발생했습니다: {}", e.getMessage(), e);
+        return new ResponseEntity<>(errorMessage.toProblemDetail(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ProblemDetail> handleDefaultException(
@@ -123,6 +137,7 @@ public class GlobalExceptionHandler {
     ) {
         var errorMessage = new ErrorMessageResponse.Builder(request, e, HttpStatus.INTERNAL_SERVER_ERROR)
                 .build();
+        log.error("예상치 못한 오류가 발생했습니다: {}", e.getMessage(), e);
         return new ResponseEntity<>(errorMessage.toProblemDetail(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
