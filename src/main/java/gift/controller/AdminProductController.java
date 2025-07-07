@@ -42,7 +42,7 @@ public class AdminProductController {
         Product product = new Product(null, dto.getName(), dto.getPrice(), dto.getImgUrl());
         repository.create(product);
         return "redirect:/admin/products";
-
+    }
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
@@ -70,7 +70,7 @@ public class AdminProductController {
         Product updated = new Product(id, dto.getName(), dto.getPrice(), dto.getImgUrl());
         repository.update(updated);
         return "redirect:/admin/products";
-    }}
+    }
 
     @PostMapping("/{id}")
     public String delete(@PathVariable Long id) {
