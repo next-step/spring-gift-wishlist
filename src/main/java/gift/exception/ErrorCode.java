@@ -13,7 +13,8 @@ public enum ErrorCode {
   KAKAO_APPROVAL_REQUIRED("KAKAO_APPROVAL_REQUIRED","카카오 관련 상품명은 MD승인이 필요합니다.",HttpStatus.BAD_REQUEST),
 
   INVALID_LOGIN("INVALID_LOGIN", "이메일 또는 비밀번호가 일치하지 않습니다.",HttpStatus.FORBIDDEN),
-  USER_NOT_FOUND("USER_NOT_FOUND","존재하지 않는 사용자입니다.",HttpStatus.NOT_FOUND);
+  USER_NOT_FOUND("USER_NOT_FOUND","존재하지 않는 사용자입니다.",HttpStatus.NOT_FOUND),
+  PRODUCT_NOT_FOUND("PRODUCT_NOT_FOUND","존재하지 않는 상품입니다.",HttpStatus.NOT_FOUND);
 
   private final String code;
   private final String message;
