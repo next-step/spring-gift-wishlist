@@ -1,4 +1,4 @@
-package gift.product.exception;
+package gift.exception;
 
 public class KakaoApprovalException extends BusinessException{
   public KakaoApprovalException() {
