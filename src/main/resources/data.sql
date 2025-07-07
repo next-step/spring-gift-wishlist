@@ -14,3 +14,7 @@ INSERT INTO item (name, price, image_url) VALUES
 ('item13', 13000, 'url13'),
 ('item14', 14000, 'url14'),
 ('item15', 15000, 'url15');
+
+INSERT INTO users (email, password, nickname) VALUES
+('s@s', '1533', '이시웅'),
+('t@t', '1533', '트랄라렐로 트랄랄라');
