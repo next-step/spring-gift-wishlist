@@ -1,0 +1,25 @@
+<html layout:decorate="~{members/layout}">
+<div layout:fragment="content">
+  <div id="productForm">
+    <form th:action="@{/admin/members/add}" th:object="${memberRequestDto}" method="post">
+      <p>
+        <h3>회원 등록하기</h3>
+      </p>
+      <p style="display: flex; align-items: center; gap: 10px;">
+        <strong>이메일</strong>
+        <input type="email" name="email" placeholder="이메일 입력" th:value="${memberDto.email()}">
+        <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" style="color: crimson;">Email Error</span>
+      </p>
+      <p style="display: flex; align-items: center; gap: 10px;">
+        <strong>비밀번호</strong>
+        <input type="text" name="password" placeholder="비밀번호 입력" th:value="${memberDto.password()}">
+        <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" style="color: crimson;">Password Error</span>
+      </p>
+      <p>
+        <input type="submit" value="회원 등록하기">
+      </p>
+    </form>
+  </div>
+
+</div>
+</html>
