@@ -6,8 +6,8 @@ import gift.user.dto.LoginResponseDto;
 import gift.user.dto.RegisterRequestDto;
 import gift.user.dto.RegisterResponseDto;
 import gift.user.entity.User;
-import gift.user.exception.InvalidLoginException;
-import gift.user.exception.UserNotFoundException;
+import gift.exception.InvalidLoginException;
+import gift.exception.UserNotFoundException;
 import gift.user.repository.UserRepository;
 
 public class UserService {
@@ -31,12 +31,10 @@ public class UserService {
   public LoginResponseDto loginUser(LoginRequestDto loginRequestDto) {
     User user = userRepository.findByEmail(loginRequestDto.email());
 
-    //TODO : exceptionHandler 구현하기 UserNotFound
     if (user == null) {
       throw new UserNotFoundException();
     }
 
-    //TODO : exceptionHandler 구현하기 InvalidLogin
     if (!user.isEqualPassword(loginRequestDto.password())) {
       throw new InvalidLoginException();
     }
@@ -45,3 +43,4 @@ public class UserService {
 
     return new LoginResponseDto(token);
   }
+}
