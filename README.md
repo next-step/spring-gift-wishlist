@@ -31,5 +31,5 @@
 - `POST /api/users/login`를 통한 로그인 수행
   - email, password 필요. email & password 쌍에 대해 정보가 존재하는지 확인
 ### 토큰기법을 추가한 기능 구현
-- `POST /api/users`를 통한 유저 등록 시, 해당 유저에 대한 로그인 토큰 반환
-- `POST /api/users/login`를 통한 로그인 수행 시, 해당 유저에 대한 토큰 반환
+- 위 기능의 반환값으로 토큰 반환받도록 구현, admin page 접근제한 추가
+- 테스트코드 작성
