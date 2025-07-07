@@ -19,9 +19,6 @@ public class ProductService {
 
     @Transactional
     public Product saveProduct(RequestDto requestDto) {
-        if(requestDto.getPrice() < 0) {
-            throw new IllegalArgumentException("Price should be positive");
-        }
         UUID id = UUID.randomUUID();
         Product product = new Product(id, requestDto.getName(), requestDto.getPrice(), requestDto.getImageUrl());
         return productdao.save(product);
@@ -39,12 +36,8 @@ public class ProductService {
 
     @Transactional
     public Product updateProduct(UUID id, RequestDto requestDto) {
-        if(requestDto.getPrice() < 0) {
-            throw new IllegalArgumentException("Price should be positive");
-        }
         productdao.findById(id);
         return productdao.update(id, requestDto);
-
     }
 
     @Transactional
