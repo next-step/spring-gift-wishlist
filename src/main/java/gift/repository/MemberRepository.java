@@ -1,7 +1,6 @@
 package gift.repository;
 
 import gift.entity.Member;
-import gift.entity.Product;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -30,7 +29,8 @@ public class MemberRepository implements MemberRepositoryInterface {
 
     @Override
     public void save(Member member) {
-
+        String sql = "INSERT INTO member (email, password) VALUES (?, ?)";
+        jdbcTemplate.update(sql, member.getEmail(), member.getPassword());
     }
 
     private Member mapRowToMember(ResultSet rs, int rowNum) throws SQLException {

@@ -15,15 +15,15 @@ public class Member {
         this(null, email, password);
     }
 
-    Long getId() {
+    public Long getId() {
         return id;
     }
 
-    String getEmail() {
+    public String getEmail() {
         return email;
     }
 
-    String getPassword() {
+    public String getPassword() {
         return password;
     }
 }
