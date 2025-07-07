@@ -12,7 +12,7 @@ public class Member {
         this.id = id;
         this.email = email;
         this.password = password;
-        this.role = "user";
+        this.role = role;
 
     }
     //부 생성자

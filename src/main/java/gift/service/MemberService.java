@@ -46,7 +46,6 @@ public class MemberService {
         if (!saved.getPassword().equals(dto.getPassword())) {
             throw new ForbiddenException("비밀번호가 올바르지 않습니다.");
         }
-
         String token = jwtProvider.generateToken(saved);
         return new TokenResponseDto(token);
     }
