@@ -17,8 +17,8 @@ public class ProductDao {
     public ProductDao(JdbcTemplate jdbcTemplate) { this.jdbcTemplate = jdbcTemplate; }
 
     public void insertProduct(Product product) {
-        final var sql = "insert into product(name, price, image) values(?, ?, ?)";
-        jdbcTemplate.update(sql, product.getName(), product.getPrice(), product.getImage());
+        final var sql = "insert into product(name, price, image, mdApproved) values(?, ?, ?,?)";
+        jdbcTemplate.update(sql, product.getName(), product.getPrice(), product.getImage(),product.getMdApproved());
     }
     public List<Product> getAllProducts() {
         final var sql = "select * from product";
@@ -33,9 +33,9 @@ public class ProductDao {
         jdbcTemplate.update(sql, id);
     }
     public void updateProduct(Long id, Product product, Product product_changed) {
-        final var sql = "UPDATE product SET name = ?, price = ?, image = ? WHERE id = ?";
+        final var sql = "UPDATE product SET name = ?, price = ?, image = ?, mdApproved = ? WHERE id = ?";
         product.updateFields(product_changed);
-        jdbcTemplate.update(sql, product.getName(), product.getPrice(), product.getImage(),id);
+        jdbcTemplate.update(sql, product.getName(), product.getPrice(), product.getImage(),product.getMdApproved(),id);
     }
     public static class ProductRowMapper implements RowMapper<Product> {
         @Override
@@ -44,7 +44,8 @@ public class ProductDao {
                     rs.getLong("id"),
                     rs.getString("name"),
                     rs.getInt("price"),
-                    rs.getString("image")
+                    rs.getString("image"),
+                    rs.getBoolean("mdApproved")
             );
         }
     }

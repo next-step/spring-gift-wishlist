@@ -1,5 +1,7 @@
 package gift;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -14,13 +16,16 @@ import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, List<String>>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, List<String>> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach(error -> {
-            System.out.println("  처리 중인 오류: " + error.getDefaultMessage() +
-                    " (필드: " + (error instanceof FieldError ? ((FieldError) error).getField() : "전역 오류") +
-                    ", 코드: " + error.getCode() + ")");
+            log.info("처리 중인 오류: {}, (필드: {}, 코드: {})",
+                    error.getDefaultMessage(),
+                    (error instanceof FieldError ? ((FieldError) error).getField() : "N/A"),
+                    error.getCode());
             if (error instanceof FieldError) {
                 String fieldName = ((FieldError) error).getField();
                 String errorMessage = error.getDefaultMessage();

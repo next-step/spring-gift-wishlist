@@ -22,12 +22,13 @@ public class ProductController {
     }
 
     @GetMapping("/products/{id}")
-    public Product getProductById(@PathVariable int id) {
-        return productDao.getProductById(id);
-    }
+    public Product getProductById(@PathVariable int id) {return productDao.getProductById(id);}
 
     @PostMapping("/products")
     public void addProduct(@Valid @RequestBody Product product) {
+        if(!product.getName().contains("카카오")){
+            product.setMdApproved(true);
+        }
         productDao.insertProduct(product);
     }
 
@@ -38,6 +39,11 @@ public class ProductController {
 
     @PatchMapping("/products/{id}")
     public void updateProduct(@Valid @PathVariable Long id, @RequestBody Product product) {
+        if(!product.getName().contains("카카오")){
+            product.setMdApproved(true);
+        }else{
+            product.setMdApproved(false);
+        }
         productDao.updateProduct(id, productDao.getProductById(id), product);
     }
 }
