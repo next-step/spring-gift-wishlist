@@ -1,4 +1,7 @@
 package gift.member.dto;
 
-public record MemberResponse() {
+import gift.member.domain.enums.UserRole;
+
+public record MemberResponse(Long id, String email, UserRole userRole) {
+
 }
