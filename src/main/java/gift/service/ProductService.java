@@ -43,7 +43,7 @@ public class ProductService {
             throw new NoSuchElementException("Product not found with id: " + id);
         }
 
-        Product updatedProduct = new Product(id, requestDto.getName(), requestDto.getPrice(), requestDto.getImageUrl());
+        Product updatedProduct = new Product(id, requestDto.name(), requestDto.price(), requestDto.imageUrl());
         productRepository.update(id, updatedProduct);
     }
 
