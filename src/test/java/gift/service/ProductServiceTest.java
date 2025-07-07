@@ -1,57 +1,70 @@
 package gift.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.entity.Product;
 import gift.repository.ProductRepository;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
+@SpringBootTest
 class ProductServiceTest {
 
+    @Autowired
     private ProductService productService;
+
+    @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @BeforeEach
     void setUp() {
-        productRepository = mock(ProductRepository.class);
-        productService = new ProductService(productRepository);
+        jdbcTemplate.execute("TRUNCATE TABLE products");
     }
 
     @Test
     @DisplayName("카카오 포함")
-    void saveProduct_withKakaoInName_shouldThrowException() {
+    void saveProduct_Kakao() {
         ProductRequestDto requestDto = new ProductRequestDto("카카오", 12000,
                 "http://img.com/img.jpg");
 
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            productService.save(requestDto);
-        });
+        assertThatThrownBy(() -> productService.save(requestDto))
+                .isInstanceOf(ResponseStatusException.class)
+                .hasMessageContaining("\"카카오\"가 포함된 문구는 담당 MD와 협의한 경우에만 사용 가능합니다.");
 
-        assertEquals("\"카카오\"가 포함된 상품명 사용 불가", exception.getReason());
+        List<Product> products = productRepository.findAll();
+        assertThat(products).isEmpty();
     }
 
     @Test
     @DisplayName("정상 상품 등록")
     void saveProduct_success() {
-        ProductRequestDto requestDto = new ProductRequestDto("딸기케이크", 15000,
-                "http://img.com/img.jpg");
-        Product savedProduct = new Product(1L, "딸기케이크", 15000, "http://img.com/img.jpg");
-
-        when(productRepository.save(any(Product.class))).thenReturn(savedProduct);
-
+        ProductRequestDto requestDto = new ProductRequestDto("초코케이크", 10000,
+                "http://img.com/cake.jpg");
         ProductResponseDto result = productService.save(requestDto);
 
-        assertEquals("딸기케이크", result.name());
-        assertEquals(15000, result.price());
-        assertEquals("http://img.com/img.jpg", result.imageUrl());
+        assertAll(
+                () -> assertThat(result.id()).isNotNull(),
+                () -> assertThat(result.name()).isEqualTo("초코케이크"),
+                () -> assertThat(result.price()).isEqualTo(10000),
+                () -> assertThat(result.imageUrl()).isEqualTo("http://img.com/cake.jpg")
+        );
+
+        Optional<Product> savedInDb = productRepository.findById(result.id());
+        assertThat(savedInDb).isPresent();
+        assertThat(savedInDb.get().getName()).isEqualTo("초코케이크");
     }
 }
