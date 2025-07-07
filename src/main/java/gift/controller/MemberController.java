@@ -30,6 +30,6 @@ public class MemberController {
   @PostMapping("/login")
   public ResponseEntity<Token> login(@Valid @RequestBody Member member) {
     Token token = service.login(member);
-    return new ResponseEntity<>(token, HttpStatus.CREATED);
+    return new ResponseEntity<>(token, HttpStatus.OK);
   }
 }
