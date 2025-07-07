@@ -6,16 +6,19 @@ import gift.service.ProductService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(AdminPageController.class)
+@WithMockUser(authorities = "ROLE_ADMIN")
 class AdminPageControllerTest {
 
     @Autowired
@@ -36,7 +39,6 @@ class AdminPageControllerTest {
         mockMvc.perform(get("/admin/products/new"))
             .andExpect(view().name("admin/product-form"))
             .andExpect(model().attributeExists("product"));
-        // productId도 null로써 값 자체는 제공되나, attributeExists 내부에서 nullable 검사 수행하므로 배제
     }
 
     @Test
@@ -51,6 +53,7 @@ class AdminPageControllerTest {
 
         mockMvc.perform(
             post("/admin/products")
+                .with(csrf())
                 .param("name", mockProduct.getName())
                 .param("price", String.valueOf(mockProduct.getPrice()))
                 .param("imageUrl", mockProduct.getImageUrl())
@@ -70,6 +73,7 @@ class AdminPageControllerTest {
 
         mockMvc.perform(
             post("/admin/products")
+                .with(csrf())
                 .param("name", mockProduct.getName())
                 .param("price", String.valueOf(mockProduct.getPrice()))
                 .param("imageUrl", mockProduct.getImageUrl())
@@ -82,6 +86,7 @@ class AdminPageControllerTest {
     void 상품_벨리데이션_수정_시_리다이렉션() throws Exception {
         mockMvc.perform(
             patch("/admin/products/1")
+                .with(csrf())
                 .queryParam("validated", "true")
             )
             .andExpect(redirectedUrl("/admin/products/1"));
@@ -106,12 +111,12 @@ class AdminPageControllerTest {
 
         mockMvc.perform(
             put("/admin/products/1")
+                .with(csrf())
                 .param("name", "각하오 커피")
                 .param("price", "7800")
                 .param("imageUrl", "https://...")
             )
             .andExpect(redirectedUrl("/admin/products/1"));
-
     }
 
     @Test
@@ -121,6 +126,7 @@ class AdminPageControllerTest {
 
         mockMvc.perform(
             put("/admin/products/1")
+                .with(csrf())
                 .param("name", "%&각하오커피&%")
                 .param("price", "-5800")
                 .param("imageUrl", "")
@@ -131,7 +137,10 @@ class AdminPageControllerTest {
 
     @Test
     void 유효한_상품_삭제_시_리다이렉션() throws Exception {
-        mockMvc.perform(delete("/admin/products/1"))
+        mockMvc.perform(
+            delete("/admin/products/1")
+                .with(csrf())
+            )
             .andExpect(redirectedUrl("/admin/products"));
     }
 }
