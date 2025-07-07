@@ -4,3 +4,8 @@ create table product (
   price int,
   imageUrl varchar(255)
 );
+
+create table member (
+  email varchar(255) primary key,
+  password varchar(255)
+)
