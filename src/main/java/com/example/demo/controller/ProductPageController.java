@@ -76,7 +76,16 @@ public class ProductPageController {
   }
 
   @PostMapping("/{id}/edit")
-  public String updateProduct(@PathVariable Long id, @ModelAttribute ProductUpdateDto dto) {
+  public String updateProduct(@PathVariable Long id,
+      @Valid @ModelAttribute("product") ProductUpdateDto dto,
+      BindingResult bindingResult,
+      Model model) {
+
+    if (bindingResult.hasErrors()) {
+      model.addAttribute("formAction", "/product-page/" + id + "/edit");
+      return "product/form";
+    }
+
     productService.productUpdateById(id, dto);
     return "redirect:/product-page";
   }
