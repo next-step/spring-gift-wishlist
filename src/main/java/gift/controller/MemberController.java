@@ -34,14 +34,14 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
-    @GetMapping
+    @GetMapping("/myInfo")
     public ResponseEntity<MemberResponseDto> getMyInfo(HttpServletRequest request){
         Long id = Long.parseLong(request.getAttribute("memberId").toString());
         MemberResponseDto responseDto = memberService.find(id);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
-    @PutMapping
+    @PutMapping("/myInfo")
     public ResponseEntity<MemberResponseDto> updateMyInfo(
             @Valid @RequestBody MemberRequestDto requestDto,
             HttpServletRequest request){
@@ -50,7 +50,7 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/myInfo")
     public ResponseEntity<MemberResponseDto> deleteMyInfo(HttpServletRequest request){
         Long id = Long.parseLong(request.getAttribute("memberId").toString());
         memberService.delete(id);
