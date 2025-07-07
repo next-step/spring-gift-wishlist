@@ -32,7 +32,6 @@ public class MemberController {
     public ResponseEntity<?> registerMember(@Valid @RequestBody MemberRequestDto memberRequestDto) {
         memberService.saveMember(memberRequestDto);
         String token = jwtUtil.generateToken(memberRequestDto);
-        System.out.println(token);
 
         return ResponseEntity.ok(new TokenResponseDto(token));
     }
