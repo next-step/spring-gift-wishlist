@@ -9,3 +9,8 @@ INSERT INTO product (name, price, image_url) VALUES
     ('4K 전문가용 모니터', 450000, 'https://placehold.co/600x400/BBE1FA/000000?text=4K+Monitor'),
     ('리액트 로고 폰케이스', 21000, 'https://placehold.co/600x400/3282B8/FFFFFF?text=React+Case'),
     ('손목 보호대', 12000, 'https://placehold.co/600x400/0F4C75/FFFFFF?text=Wrist+Guard');
+
+
+INSERT INTO user (email, password) VALUES
+    ('admin', 'admin'),
+    ('abcd@gmail.com', '1234');
