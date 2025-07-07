@@ -34,7 +34,7 @@ public class MemberControllerTest {
     void register_success() throws Exception {
         MemberRegisterRequestDto req = new MemberRegisterRequestDto("newuser@example.com", "password123");
 
-        mockMvc.perform(post("/api/members/register")
+        mockMvc.perform(post("/api/members")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(req)))
             .andExpect(status().isCreated())
@@ -49,13 +49,13 @@ public class MemberControllerTest {
         // 먼저 한 번 가입시켜 둠
         MemberRegisterRequestDto req = new MemberRegisterRequestDto("dup@example.com", "password123");
 
-        mockMvc.perform(post("/api/members/register")
+        mockMvc.perform(post("/api/members")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(req)))
             .andExpect(status().isCreated());
 
         // 같은 이메일로 다시 시도
-        mockMvc.perform(post("/api/members/register")
+        mockMvc.perform(post("/api/members")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(req)))
             .andExpect(status().isConflict())
@@ -69,7 +69,7 @@ public class MemberControllerTest {
     void register_fail_emailMissing() throws Exception {
         MemberRegisterRequestDto req = new MemberRegisterRequestDto("", "1234567890");
 
-        mockMvc.perform(post("/api/members/register")
+        mockMvc.perform(post("/api/members")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(req)))
             .andExpect(status().isBadRequest())
@@ -83,7 +83,7 @@ public class MemberControllerTest {
     void register_fail_invalidEmailFormat() throws Exception {
         MemberRegisterRequestDto req = new MemberRegisterRequestDto("email", "1234567890");
 
-        mockMvc.perform(post("/api/members/register")
+        mockMvc.perform(post("/api/members")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(req)))
             .andExpect(status().isBadRequest())
@@ -97,7 +97,7 @@ public class MemberControllerTest {
     void register_fail_passwordTooShort() throws Exception {
         MemberRegisterRequestDto req = new MemberRegisterRequestDto("newuser@example.com", "123");
 
-        mockMvc.perform(post("/api/members/register")
+        mockMvc.perform(post("/api/members")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(req)))
             .andExpect(status().isBadRequest())
@@ -109,7 +109,7 @@ public class MemberControllerTest {
     private void register(String email, String password) throws Exception {
         var req = new MemberRegisterRequestDto(email, password);
 
-        mockMvc.perform(post("/api/members/register")
+        mockMvc.perform(post("/api/members")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(req)))
             .andExpect(status().isCreated());
