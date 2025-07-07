@@ -7,6 +7,14 @@ public enum ErrorCode {
     // 400 BadRequest
     ITEM_KEYWORD_INVALID(40000, HttpStatus.BAD_REQUEST, "'카카오' 단어는 MD와 협의 후 사용 가능합니다."),
 
+    // 401 Unauthorized
+    WRONG_HEADER_TOKEN(40100, HttpStatus.UNAUTHORIZED, "잘못된 토큰입니다."),
+
+    // 403 Forbidden
+    EMAIL_DUPLICATE(40301, HttpStatus.FORBIDDEN, "이미 존재하는 이메일입니다."),
+    EMAIL_NOT_FOUND(40302, HttpStatus.FORBIDDEN, "존재하지 않는 이메일입니다."),
+    WRONG_PASSWORD(40303, HttpStatus.FORBIDDEN, "비밀번호가 일치하지 않습니다."),
+
     // 404 NOT FOUND
     ITEM_NOT_FOUND(40400, HttpStatus.NOT_FOUND, "상품이 존재하지 않습니다.");
 
