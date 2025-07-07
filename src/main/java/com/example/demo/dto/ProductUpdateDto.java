@@ -23,9 +23,6 @@ public class ProductUpdateDto {
   @Size(max = 255, message = "이미지 URL은 255자 이하로 입력해주세요.")
   private String imageUrl;
 
-  public ProductUpdateDto() {
-  }
-
   public ProductUpdateDto(Long id, String name, int price, String imageUrl) {
     this.id = id;
     this.name = name;
@@ -47,21 +44,5 @@ public class ProductUpdateDto {
 
   public String getImageUrl() {
     return imageUrl;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public void setPrice(int price) {
-    this.price = price;
-  }
-
-  public void setImageUrl(String imageUrl) {
-    this.imageUrl = imageUrl;
   }
 }
