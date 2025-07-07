@@ -1,3 +1,5 @@
+<!-- 전체 페이지 레이아웃 -->
+<html th:replace="~{layout/base :: admin_layout('상품 등록', '상품 등록', ~{::create_product_content}, ~{}, ~{::script})}" lang="ko">
 <!-- 상품 등록 콘텐츠 fragment -->
 <div th:fragment="create_product_content">
     <!-- 상품 등록 폼 -->
@@ -73,9 +75,6 @@
         </div>
     </div>
 </div>
-
-<!-- 전체 페이지 레이아웃 -->
-<div th:replace="~{layout/base :: admin_layout('상품 등록', '상품 등록', ~{::create_product_content}, ~{}, ~{::script})}">
     <!-- 스크립트 -->
     <script th:src="@{/js/admin/product-create.js}"></script>
-</div> 
+</html>

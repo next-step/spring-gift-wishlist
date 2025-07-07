@@ -14,12 +14,12 @@ public class GlobalViewExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException.class)
     public String handleAccessDeniedException(AccessDeniedException e) {
-        return "redirect:/admin/login?error=true";
+        return "redirect:/admin/login";
     }
 
     @ExceptionHandler(AuthenticationException.class)
     public String handleAuthenticationException(AuthenticationException e) {
-        return "redirect:/admin/login?error=true";
+        return "redirect:/admin/login";
     }
 
     @ExceptionHandler(NoSuchElementException.class)

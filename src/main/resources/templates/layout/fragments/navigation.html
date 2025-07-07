@@ -3,17 +3,17 @@
 <body>
 
     <!-- 로그인 전 네비게이션 -->
-    <nav th:fragment="guest-navigation" class="bg-gray-100 border-b p-4">
+    <nav th:fragment="guest-navigation" class="bg-gray-800 text-white p-4">
         <div class="container mx-auto flex justify-between items-center">
-            <div class="text-xl font-bold text-gray-800">
-                <a th:href="@{/}" class="hover:text-gray-600">관리자 시스템</a>
+            <div class="text-xl font-bold">
+                <a th:href="@{/admin}" class="hover:text-gray-300">관리자 대시보드</a>
             </div>
             <ul class="flex space-x-6">
-                <li><a th:href="@{/api/docs}" class="text-gray-600 hover:text-gray-800">API 문서</a></li>
-                <li><a th:href="@{/admin/login}" class="text-gray-600 hover:text-gray-800">로그인</a></li>
+                <li><a th:href="@{/admin/login}" class="hover:text-gray-300">로그인</a></li>
             </ul>
         </div>
     </nav>
+
     <!-- 관리자 네비게이션 (로그인 후) -->
     <nav th:fragment="admin-navigation" class="bg-gray-800 text-white p-4">
         <div class="container mx-auto flex justify-between items-center">

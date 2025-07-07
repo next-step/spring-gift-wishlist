@@ -9,8 +9,10 @@
     <link rel="stylesheet" type="text/css" media="all" th:href="@{/main.css}">
     
     <!-- 추가 CSS 링크 -->
-    <th:block th:if="${additionalLinks != null}">
-        <th:block th:utext="${additionalLinks}"></th:block>
+    <th:block th:if="${additionalLinks != null and #lists.size(additionalLinks) > 0}">
+        <th:block th:each="tag : ${additionalLinks}">
+            <th:block th:replace="${tag}"></th:block>
+        </th:block>
     </th:block>
     
     <!-- 메타 태그 -->

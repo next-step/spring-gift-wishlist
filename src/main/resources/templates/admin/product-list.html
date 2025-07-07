@@ -1,3 +1,6 @@
+<!-- 전체 페이지 레이아웃 -->
+<!DOCTYPE html>
+<html th:replace="~{layout/base :: admin_layout('상품 목록', '상품 목록', ~{::product_list_content}, ~{}, ~{::script})}" lang="ko">
 <!-- 상품 목록 콘텐츠 fragment -->
 <div th:fragment="product_list_content">
     <!-- 상품 등록 버튼 -->
@@ -104,9 +107,7 @@
     </div>
 </div>
 
-<!-- 전체 페이지 레이아웃 -->
-<!DOCTYPE html>
-<html th:replace="~{layout/base :: admin_layout('상품 목록', '상품 목록', ~{::product_list_content}, ~{}, ~{::script})}">
+
     <!-- 스크립트 -->
     <script th:src="@{/js/admin/product-delete.js}"></script>
 </html>

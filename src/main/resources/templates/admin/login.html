@@ -1,15 +1,13 @@
 <!-- 전체 페이지 레이아웃 -->
 <!DOCTYPE html>
-<html th:replace="~{layout/base :: admin_layout('관리자 로그인', true, ~{::login_content}, '', '')}" lang="ko">
+<html th:replace="~{layout/base :: admin_layout('관리자 로그인', false, ~{::login_content}, ~{::additional_link}, ~{::additional_script})}" lang="ko">
 <!-- 로그인 콘텐츠 fragment -->
 <div th:fragment="login_content">
     <div class="max-w-md w-full mx-auto">
         <div class="bg-white rounded-lg shadow-lg p-8">
             <div class="text-center mb-8">
-                <h2 class="text-3xl font-bold text-gray-900">관리자 로그인</h2>
-                <p class="mt-2 text-sm text-gray-600">관리자 계정으로 로그인하세요</p>
+                <h2 class="text-xl font-bold text-gray-600">관리자 계정으로 로그인하세요</h2>
             </div>
-
             <!-- 에러 메시지 -->
             <div th:if="${error}" class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
                 <p th:text="${error}">에러 메시지</p>
@@ -63,11 +61,14 @@
             <div class="mt-6 p-4 bg-gray-100 rounded-lg">
                 <p class="text-sm text-gray-600">
                     <strong>테스트 계정:</strong><br>
-                    이메일: admin@example.com<br>
-                    비밀번호: password
+                    이메일: test@test.com<br>
+                    비밀번호: qwerty1234!
                 </p>
             </div>
         </div>
     </div>
 </div>
+
+<th:block th:fragment="additional_link"></th:block>
+<th:block th:fragment="additional_script"></th:block>
 </html>

@@ -1,36 +1,26 @@
-<!-- 관리자 대시보드 콘텐츠 fragment -->
-<div th:fragment="admin_dashboard">
-    <div class="bg-white rounded-lg shadow-lg p-8">
-        <div class="text-center">
-            <h2 class="text-2xl font-bold text-gray-900 mb-4">관리자 대시보드</h2>
-            <p class="text-gray-600">로그인에 성공했습니다!</p>
-            <p class="text-sm text-gray-500 mt-2">여기에 관리자 기능들을 추가할 수 있습니다.</p>
-        </div>
-        
-        <!-- 관리자 메뉴 -->
-        <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div class="bg-blue-50 p-6 rounded-lg border border-blue-200">
-                <h3 class="text-lg font-semibold text-blue-900 mb-2">상품 관리</h3>
-                <p class="text-blue-700 text-sm mb-4">상품을 추가, 수정, 삭제할 수 있습니다.</p>
-                <a href="/admin/products" class="text-blue-600 hover:text-blue-800 text-sm font-medium">상품 목록 보기 →</a>
+<!-- 전체 페이지 레이아웃 -->
+<!DOCTYPE html>
+<html th:replace="~{layout/base :: admin_layout('관리자 대시보드', false, ~{::admin_dashboard}, ~{}, ~{})}">
+    <!-- 위의 admin_dashboard fragment가 여기에 들어갑니다 -->
+    <div th:fragment="admin_dashboard">
+        <div class="bg-white rounded-lg shadow-lg p-8">
+            <div class="text-center">
+                <h2 class="text-xl font-bold text-gray-600 mb-4">여기에 관리자 기능들을 추가할 수 있습니다.</h2>
             </div>
-            
-            <div class="bg-green-50 p-6 rounded-lg border border-green-200">
-                <h3 class="text-lg font-semibold text-green-900 mb-2">사용자 관리</h3>
-                <p class="text-green-700 text-sm mb-4">사용자 정보를 관리할 수 있습니다.</p>
-                <a href="/admin/users" class="text-green-600 hover:text-green-800 text-sm font-medium">사용자 목록 보기 →</a>
-            </div>
-            
-            <div class="bg-purple-50 p-6 rounded-lg border border-purple-200">
-                <h3 class="text-lg font-semibold text-purple-900 mb-2">시스템 설정</h3>
-                <p class="text-purple-700 text-sm mb-4">시스템 설정을 변경할 수 있습니다.</p>
-                <a href="/api/docs" class="text-purple-600 hover:text-purple-800 text-sm font-medium">API 문서 보기 →</a>
+            <!-- 관리자 메뉴 -->
+            <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-blue-50 p-6 rounded-lg border border-blue-200">
+                    <h3 class="text-lg font-semibold text-blue-900 mb-2">상품 관리</h3>
+                    <p class="text-blue-700 text-sm mb-4">상품을 추가, 수정, 삭제할 수 있습니다.</p>
+                    <a href="/admin/products" class="text-blue-600 hover:text-blue-800 text-sm font-medium">상품 목록 보기 →</a>
+                </div>
+
+                <div class="bg-green-50 p-6 rounded-lg border border-green-200">
+                    <h3 class="text-lg font-semibold text-green-900 mb-2">사용자 관리</h3>
+                    <p class="text-green-700 text-sm mb-4">사용자 정보를 관리할 수 있습니다.</p>
+                    <a href="/admin/users" class="text-green-600 hover:text-green-800 text-sm font-medium">사용자 목록 보기 →</a>
+                </div>
             </div>
         </div>
     </div>
-</div>
-
-<!-- 전체 페이지 레이아웃 -->
-<div th:replace="~{layout/base :: admin_layout('관리자 대시보드', '관리자 대시보드', ~{::admin_dashboard}, ~{}, ~{})}">
-    <!-- 위의 admin_dashboard fragment가 여기에 들어갑니다 -->
-</div> 
+</html>
