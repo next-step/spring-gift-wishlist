@@ -49,21 +49,21 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public List<User> getAllUsers() {
-        var sql = "SELECT ID, EMAIL, PASSWORD FROM users";
+        var sql = "SELECT id, email, password FROM users";
 
         return jdbcTemplate.query(sql, userRowMapper);
     }
 
     @Override
     public List<User> findUsersByEmail(String email) {
-        var sql = "SELECT ID, EMAIL, PASSWORD FROM users WHERE EMAIL = ?";
+        var sql = "SELECT id, email, password FROM users WHERE EMAIL = ?";
         return jdbcTemplate.query(sql, new Object[]{email}, userRowMapper);
 
     }
 
     @Override
     public User findUserById(Long id) {
-        var sql = "SELECT ID, EMAIL, PASSWORD FROM users WHERE ID = ?";
+        var sql = "SELECT id, email, password FROM users WHERE ID = ?";
         return jdbcTemplate.queryForObject(sql, new Object[]{id}, userRowMapper);
     }
 
@@ -83,7 +83,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User findUserByEmail(String email) {
-        var sql = "SELECT ID, EMAIL, PASSWORD FROM users WHERE email = ?";
+        var sql = "SELECT id, email, password FROM users WHERE email = ?";
         try {
             return jdbcTemplate.queryForObject(sql, userRowMapper, email);
         } catch (EmptyResultDataAccessException e) {
