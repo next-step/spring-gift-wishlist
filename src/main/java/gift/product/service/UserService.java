@@ -7,6 +7,7 @@ import gift.product.dto.LoginResponse;
 import gift.product.entity.User;
 import gift.product.repository.UserRepository;
 import gift.product.utils.JwtUtil;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,11 +20,13 @@ public class UserService {
 
 	private final UserRepository userRepository;
 	private final JwtUtil jwtUtil;
+	private final PasswordEncoder passwordEncoder;
 
 
-	public UserService(UserRepository userRepository, JwtUtil jwtUtil) {
+	public UserService(UserRepository userRepository, JwtUtil jwtUtil, PasswordEncoder passwordEncoder) {
 		this.userRepository = userRepository;
 		this.jwtUtil = jwtUtil;
+		this.passwordEncoder = passwordEncoder;
 	}
 
 	public Long register(CreateUserRequest req) {
@@ -33,7 +36,9 @@ public class UserService {
 		if(userRepository.findByNickname(req.nickName()).isPresent())
 			throw new IllegalArgumentException("이미 사용중인 닉네임입니다.");
 
-		User user = new User(req.email(), req.password(), req.nickName());
+		String encodedPassword = passwordEncoder.encode(req.password());
+
+		User user = new User(req.email(), encodedPassword, req.nickName());
 		return userRepository.save(user);
 
 	}
@@ -42,7 +47,7 @@ public class UserService {
 	public LoginResponse login(LoginRequest req) {
 		Optional<User> user = userRepository.findByEmail(req.email());
 
-		if(user.isEmpty() || !user.get().getPassword().equals(req.password()))
+		if(user.isEmpty() || !passwordEncoder.matches(req.password(), user.get().getPassword()))
 			throw new IllegalArgumentException("이메일 또는 비밀번호가 잘못됐습니다.");
 
 		User foundUser = user.get();
