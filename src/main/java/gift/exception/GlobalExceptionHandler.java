@@ -1,7 +1,6 @@
 package gift.exception;
 
 import gift.dto.ErrorResponse;
-import jakarta.validation.Valid;
 import org.springframework.http.*;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
