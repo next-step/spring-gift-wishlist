@@ -71,4 +71,4 @@
 - member 테이블, 도메인, 저장소 구현
 - 회원가입 로직 추가
 - JWT 인증 로그인 추가
-- 테스트 코드??
+- JwtInterceptor, WebConfig 추가

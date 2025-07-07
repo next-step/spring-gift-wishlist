@@ -1,7 +1,7 @@
 package gift.controller;
 
-import gift.common.dto.request.CreateMemberDto;
-import gift.common.dto.response.TokenResponseDto;
+import gift.common.dto.request.MemberRequestDto;
+import gift.common.dto.response.TokenDto;
 import gift.service.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,12 +20,22 @@ public class MemberController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<TokenResponseDto> register(@RequestHeader Map<String, String> header,
-                                                     @RequestBody CreateMemberDto request) {
+    public ResponseEntity<TokenDto> register(@RequestHeader Map<String, String> header,
+                                             @RequestBody MemberRequestDto request) {
         if (!header.containsKey("host") || !header.get("host").equals("localhost:8080")) {
             throw new SecurityException("Invalid Host!");
         }
-        TokenResponseDto response = memberService.handleRegisterRequest(request);
+        TokenDto response = memberService.handleRegisterRequest(request);
         return ResponseEntity.created(URI.create("")).body(response);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<TokenDto> login(@RequestHeader Map<String, String> header,
+                                          @RequestBody MemberRequestDto request) {
+        if (!header.containsKey("host") || !header.get("host").equals("localhost:8080")) {
+            throw new SecurityException("Invalid Host!");
+        }
+        TokenDto response = memberService.handleLoginRequest(request);
+        return ResponseEntity.ok(response);
     }
 }

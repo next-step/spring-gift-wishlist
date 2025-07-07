@@ -61,6 +61,7 @@ public class ProductService {
             var updated = productRepository.update(id, instance).get();
             return new MessageResponseDto<>(false, "카카오 관련 상품 승인 대기중", 202, ProductDto.from(updated));
         }
+        instance.onBoard();
         var updated = productRepository.update(id, instance).get();
         return new MessageResponseDto<>(true, "상품 수정 완료", 200, ProductDto.from(updated));
     }
