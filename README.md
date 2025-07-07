@@ -6,6 +6,10 @@
 
 ### 1. 상품 이름 validation 추가
 
+### Step2
+
+### 1. 회원가입 및 로그인
+
 # spring-gift-product
 
 ## 구현 기능 목록
