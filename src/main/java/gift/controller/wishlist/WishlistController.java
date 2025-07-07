@@ -27,7 +27,7 @@ public class WishlistController {
         this.authService = authService;
         this.wishlistService = wishlistService;
     }
-    /*
+    
     @GetMapping
     public ResponseEntity<List<WishlistResponseDto>> findMyWishlist(
         @RequestHeader("Authorization") String token
@@ -36,7 +36,7 @@ public class WishlistController {
         List<WishlistResponseDto> myWishlist = wishlistService.findMyWishlistByUserId(userId);
         return new ResponseEntity<>(myWishlist, HttpStatus.OK);
     }
-    */
+    
     @PostMapping
     public ResponseEntity<WishlistResponseDto> addToMyWishlist(
         @RequestHeader("Authorization") String token,

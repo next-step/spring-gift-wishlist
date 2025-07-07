@@ -8,6 +8,8 @@ import gift.entity.WishlistInfo;
 import gift.repository.member.MemberRepository;
 import gift.repository.product.ProductRepository;
 import gift.repository.wishlist.WishlistRepository;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -35,5 +37,23 @@ public class WishlistServiceImpl implements WishlistService {
         Product addedProduct = productRepository.findProductWithId(wishlistInfo.getProductId());
         
         return new WishlistResponseDto(addedProduct.getName(), requestDto.getProductCnt());
+    }
+    
+    @Override
+    public List<WishlistResponseDto> findMyWishlistByUserId(Long userId) {
+        Member member = memberRepository.findMemberById(userId);
+        List<WishlistInfo> myWishlist = wishlistRepository.findMyWishlistByUserId(member.getId());
+        
+        List<WishlistResponseDto> responseDtoList = new ArrayList<>();
+        for (WishlistInfo info : myWishlist) {
+            Product myProduct = productRepository.findProductWithId(info.getProductId());
+            WishlistResponseDto dto = new WishlistResponseDto(
+                myProduct.getName(),
+                info.getProductCnt()
+            );
+            responseDtoList.add(dto);
+        }
+        
+        return responseDtoList;
     }
 }

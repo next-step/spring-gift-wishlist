@@ -1,6 +1,8 @@
 package gift.repository.wishlist;
 
+import gift.dto.api.product.ProductResponseDto;
 import gift.entity.WishlistInfo;
+import java.util.List;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
@@ -26,5 +28,21 @@ public class WishlistRepositoryImpl implements WishlistRepository {
             .update();
         
         return new WishlistInfo(memberId, productId, productCnt);
+    }
+    
+    @Override
+    public List<WishlistInfo> findMyWishlistByUserId(Long id) {
+        var sql = """
+            select memberId, productId, productCnt from wishlist
+            where memberId = :memberId;
+            """;
+        
+        return wishlist.sql(sql)
+            .param("memberId", id)
+            .query((rs, rowNum) -> new WishlistInfo(
+                rs.getLong("memberId"),
+                rs.getLong("productId"),
+                rs.getLong("productCnt")
+            )).list();
     }
 }
