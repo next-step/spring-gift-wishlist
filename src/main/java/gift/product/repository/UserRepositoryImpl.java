@@ -50,7 +50,7 @@ public class UserRepositoryImpl implements UserRepository {
 					rs.getLong("id"),
 					rs.getString("email"),
 					rs.getString("password"),
-					rs.getString("nick_name")
+					rs.getString("nickname")
 				), id
 			);
 			return Optional.of(user);
@@ -70,7 +70,7 @@ public class UserRepositoryImpl implements UserRepository {
 					rs.getLong("id"),
 					rs.getString("email"),
 					rs.getString("password"),
-					rs.getString("nick_name")
+					rs.getString("nickname")
 				), email
 			);
 			return Optional.of(user);
@@ -90,28 +90,8 @@ public class UserRepositoryImpl implements UserRepository {
 					rs.getLong("id"),
 					rs.getString("email"),
 					rs.getString("password"),
-					rs.getString("nick_name")
-				), nickName
-			);
-			return Optional.of(user);
-		} catch (Exception e) {
-			return Optional.empty();
-		}
-	}
-
-
-	@Override
-	public Optional<User> findByLoginRequest(String email, String password) {
-		final String sql = "SELECT * FROM users WHERE email = ? AND password = ?";
-
-		try {
-			User user = jdbcTemplate.queryForObject(sql, (rs, rowNum) ->
-				new User(
-					rs.getLong("id"),
-					rs.getString("email"),
-					rs.getString("password"),
 					rs.getString("nickname")
-				), email, password
+				), nickName
 			);
 			return Optional.of(user);
 		} catch (Exception e) {

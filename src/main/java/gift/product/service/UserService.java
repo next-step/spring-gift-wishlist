@@ -40,9 +40,9 @@ public class UserService {
 
 
 	public LoginResponse login(LoginRequest req) {
-		Optional<User> user = userRepository.findByLoginRequest(req.email(), req.password());
+		Optional<User> user = userRepository.findByEmail(req.email());
 
-		if(user.isEmpty())
+		if(user.isEmpty() || !user.get().getPassword().equals(req.password()))
 			throw new IllegalArgumentException("이메일 또는 비밀번호가 잘못됐습니다.");
 
 		User foundUser = user.get();
