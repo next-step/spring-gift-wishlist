@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/admin/products")
-public class ProductWebController {
+public class ProductAdminController {
     private final ProductService productService;
 
-    public ProductWebController(ProductService productService) {
+    public ProductAdminController(ProductService productService) {
         this.productService = productService;
     }
 
