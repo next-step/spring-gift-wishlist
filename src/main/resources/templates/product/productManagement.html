@@ -20,8 +20,8 @@
 
 <form id="productForm">
     <input type="hidden" id="productId">
-    <input type="text" id="productName" placeholder="상품명" required>
-    <input type="number" id="productPrice" placeholder="가격" required>
+    <input type="text" id="productName" placeholder="상품명">
+    <input type="number" id="productPrice" placeholder="가격">
     <input type="text" id="productImageUrl" placeholder="이미지 URL">
     <button type="submit">상품 등록</button>
 </form>
@@ -67,7 +67,24 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         })
-            .then(res => res.json())
+            .then(res => {
+                if(!res.ok){
+                    return res.json().then(error=>{
+                        if (error && error.data) {
+                            const errorMessages = Object.entries(error.data)
+                                .map(([field, message]) => `${field}: ${message}`)
+                                .join('\n');
+                            alert("입력 형식이 잘못됐습니다:\n" + errorMessages);
+                        } else if (error && error.message) {
+                            alert("오류: " + error.message);
+                        } else {
+                            alert("알 수 없는 오류가 발생했습니다.");
+                        }
+                       throw new Error("Validation error");
+                    });
+                }
+                return res.json();
+            })
             .then(() => {
                 fetchProducts();
                 document.getElementById('productForm').reset();
@@ -105,27 +122,40 @@
     }
 
     // 상품 수정
-    function updateProduct() {
-        const id = document.getElementById('productId').value;
+    function updateProduct(id) {
         const name = document.getElementById('productName').value;
         const price = document.getElementById('productPrice').value;
         const imageUrl = document.getElementById('productImageUrl').value;
 
-        const payload = { name, price, imageUrl };
+        const payload = { id ,name, price, imageUrl };
 
         fetch(`/api/products/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         })
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) {
+                    return res.json().then(error => {
+                        if (error && error.data) {
+                            const errorMessages = Object.entries(error.data)
+                                .map(([field, message]) => `${field}: ${message}`)
+                                .join('\n');
+                            alert("입력 형식이 잘못됐습니다:\n" + errorMessages);
+                        } else if (error && error.message) {
+                            alert("오류: " + error.message);
+                        } else {
+                            alert("알 수 없는 오류가 발생했습니다.");
+                        }
+                    });
+                }
+                return res.json();
+            })
             .then(() => {
                 fetchProducts();
                 document.getElementById('productForm').reset();
-                document.getElementById('productId').value = '';
-                document.querySelector('button[type="submit"]').textContent = '상품 등록';
+            });
 
-            })
     }
 
     function fillForm(id, name, price, imageUrl) {

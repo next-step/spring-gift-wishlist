@@ -1,10 +1,12 @@
 package gift.product.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import gift.product.dto.ProductRequestDto;
 import gift.product.dto.ProductResponseDto;
 import gift.product.service.ProductService;
+import gift.exception.GlobalExceptionHandler.ApiResponse;
 
 import java.util.List;
 
@@ -34,17 +36,21 @@ public class ProductController {
 
     //특정 상품 추가
     @PostMapping
-    public ResponseEntity<ProductResponseDto> addProduct(@RequestBody ProductRequestDto productRequestDto) {
+    public ResponseEntity<ApiResponse<ProductResponseDto>> addProduct(@Valid @RequestBody ProductRequestDto productRequestDto) {
+
+        productService.validateProduct(productRequestDto);
         ProductResponseDto productResponseDto = productService.addProduct(productRequestDto);
-        return  ResponseEntity.ok(productResponseDto);
+        return  ResponseEntity.ok(new ApiResponse<>(200,"추가 완료" , productResponseDto));
     }
 
     //특정 상품 수정
     @PutMapping("{id}")
-    public ResponseEntity<ProductResponseDto> updateProduct(@RequestBody ProductRequestDto productRequestDto,
+    public ResponseEntity<ApiResponse<ProductResponseDto>> updateProduct(@Valid @RequestBody ProductRequestDto productRequestDto,
                                                             @PathVariable Long id) {
+
+        productService.validateProduct(productRequestDto);
         ProductResponseDto productResponseDto = productService.updateProduct(id,productRequestDto);
-        return  ResponseEntity.ok(productResponseDto);
+        return  ResponseEntity.ok(new ApiResponse<>(200,"수정 완료" , productResponseDto));
     }
 
     //삭제

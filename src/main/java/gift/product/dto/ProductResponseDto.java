@@ -8,6 +8,7 @@ public class ProductResponseDto {
     private Integer price;
     private String imageUrl;
 
+    private ProductResponseDto() {};
     private ProductResponseDto(Product product) {
         this.id = product.getId();
         this.name = product.getName();
