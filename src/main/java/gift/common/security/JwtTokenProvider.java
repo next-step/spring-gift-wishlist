@@ -1,6 +1,5 @@
 package gift.common.security;
 
-import gift.member.Member;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -28,14 +27,16 @@ public class JwtTokenProvider {
     /**
      * 토큰 생성 메서드
      *
-     * @param member 멤버 도메인 객체
-     * @return JWT 문자열
+     * @param userId
+     * @param username
+     * @param userEmail
+     * @return 생성된 토큰
      */
-    public String generateToken(Member member) {
+    public String generateToken(Long userId, String username, String userEmail) {
         return Jwts.builder()
-            .claim("id", member.getId().toString())
-            .claim("name", member.getName())
-            .claim("email", member.getEmail())
+            .claim("id", userId.toString())
+            .claim("name", username)
+            .claim("email", userEmail)
             .expiration(Date.from(Instant.now().plusSeconds(accessTokenValidityTime)))
             .signWith(secretKey)
             .compact();
