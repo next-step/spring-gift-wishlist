@@ -12,40 +12,40 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import gift.dto.AdminUserResponse;
-import gift.dto.SignupRequest;
-import gift.dto.UpdateUserRequest;
-import gift.service.AuthService;
+import gift.dto.AdminMemberResponse;
+import gift.dto.RegisterRequest;
+import gift.dto.UpdateMemberRequest;
+import gift.service.MemberService;
 import jakarta.validation.Valid;
 
 @Controller
-@RequestMapping("/admin/users")
-public class UserAdminController {
+@RequestMapping("/admin/members")
+public class MemberAdminController {
 
-    private final AuthService authService;
+    private final MemberService memberService;
 
-    public UserAdminController(AuthService authService) {
-        this.authService = authService;
+    public MemberAdminController(MemberService memberService) {
+        this.memberService = memberService;
     }
 
     @GetMapping
     public String adminPage(Model model) {
-        List<AdminUserResponse> users = authService.findAll();
-        model.addAttribute("users", users);
-        return "users";
+        List<AdminMemberResponse> members = memberService.findAll();
+        model.addAttribute("members", members);
+        return "members";
     }
 
     @GetMapping("/add")
     public String addPage() {
-        return "addUser";
+        return "addMember";
     }
 
     @PostMapping
     public String addUser(
-        @Valid @ModelAttribute SignupRequest request
+        @Valid @ModelAttribute RegisterRequest request
     ) {
-        authService.signup(request);
-        return "redirect:/admin/users";
+        memberService.signup(request);
+        return "redirect:/admin/members";
     }
 
     @GetMapping("/{id}/edit")
@@ -53,25 +53,25 @@ public class UserAdminController {
         @PathVariable Long id,
         Model model
     ) {
-        AdminUserResponse user = authService.findById(id);
-        model.addAttribute("user", user);
-        return "editUser";
+        AdminMemberResponse member = memberService.findById(id);
+        model.addAttribute("member", member);
+        return "editMember";
     }
 
     @PutMapping("/{id}")
     public String updateUser(
         @PathVariable Long id,
-        @Valid @ModelAttribute UpdateUserRequest request
+        @Valid @ModelAttribute UpdateMemberRequest request
     ) {
-        authService.update(id, request);
-        return "redirect:/admin/users";
+        memberService.update(id, request);
+        return "redirect:/admin/members";
     }
 
     @DeleteMapping("/{id}")
     public String deleteUser(
         @PathVariable Long id
     ) {
-        authService.delete(id);
-        return "redirect:/admin/users";
+        memberService.delete(id);
+        return "redirect:/admin/members";
     }
 }

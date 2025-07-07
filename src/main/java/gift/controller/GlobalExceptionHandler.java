@@ -14,8 +14,8 @@ import gift.exception.ProductCreateException;
 import gift.exception.ProductDeleteException;
 import gift.exception.ProductNotFoundException;
 import gift.exception.ProductUpdateException;
-import gift.exception.SigninException;
-import gift.exception.SignupException;
+import gift.exception.LoginException;
+import gift.exception.RegisterException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -34,13 +34,13 @@ public class GlobalExceptionHandler {
         return error;
     }
 
-    @ExceptionHandler(SignupException.class)
-    public ProblemDetail handleSignupException(SignupException e) {
+    @ExceptionHandler(RegisterException.class)
+    public ProblemDetail handleSignupException(RegisterException e) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
     }
 
-    @ExceptionHandler(SigninException.class)
-    public ProblemDetail handleSigninException(SigninException e) {
+    @ExceptionHandler(LoginException.class)
+    public ProblemDetail handleSigninException(LoginException e) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, e.getMessage());
     }
 

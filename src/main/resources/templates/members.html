@@ -42,18 +42,18 @@
         <th>유저 이메일</th>
         <th>유저 관리</th>
     </tr>
-    <tr th:each="user : ${users}">
-        <td th:text="${user.id}">유저 id</td>
-        <td th:text="${user.email}">유저 이메일</td>
+    <tr th:each="member : ${members}">
+        <td th:text="${member.id}">유저 id</td>
+        <td th:text="${member.email}">유저 이메일</td>
         <td>
-            <a th:href="@{/admin/users/{id}/edit(id=${user.id})}">유저 수정</a>
-            <form th:action="@{/admin/users/{id}(id=${user.id})}" th:method="delete">
+            <a th:href="@{/admin/members/{id}/edit(id=${member.id})}">유저 수정</a>
+            <form th:action="@{/admin/members/{id}(id=${member.id})}" th:method="delete">
                 <button type="submit">유저 삭제</button>
             </form>
         </td>
     </tr>
 </table>
 <br>
-<a th:href="@{/admin/users/add}" style="display: flex; justify-content: center; align-items: center">유저 추가</a>
+<a th:href="@{/admin/members/add}" style="display: flex; justify-content: center; align-items: center">유저 추가</a>
 </body>
 </html>

@@ -8,32 +8,32 @@ import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
-import gift.domain.User;
+import gift.domain.Member;
 
 @Repository
-public class AuthRepository {
+public class MemberRepository {
 
     private final JdbcClient jdbcClient;
-    private static final RowMapper<User> rowMapper = (rs, rowNum) -> User.of(
+    private static final RowMapper<Member> rowMapper = (rs, rowNum) -> Member.of(
         rs.getLong("id"),
         rs.getString("email"),
         rs.getString("password")
     );
 
-    public AuthRepository(JdbcClient jdbcClient) {
+    public MemberRepository(JdbcClient jdbcClient) {
         this.jdbcClient = jdbcClient;
     }
 
-    public List<User> findAll() {
-        String sql = "SELECT * FROM `user`";
+    public List<Member> findAll() {
+        String sql = "SELECT * FROM `member`";
 
         return jdbcClient.sql(sql)
             .query(rowMapper)
             .list();
     }
 
-    public Optional<User> findById(Long id) {
-        String sql = "SELECT id, email, password FROM `user` WHERE id = :id";
+    public Optional<Member> findById(Long id) {
+        String sql = "SELECT id, email, password FROM `member` WHERE id = :id";
 
         return jdbcClient.sql(sql)
             .param("id", id)
@@ -41,8 +41,8 @@ public class AuthRepository {
             .optional();
     }
 
-    public Optional<User> findByEmail(String email) {
-        String sql = "SELECT id, email, password FROM `user` WHERE email = :email";
+    public Optional<Member> findByEmail(String email) {
+        String sql = "SELECT id, email, password FROM `member` WHERE email = :email";
 
         return jdbcClient.sql(sql)
             .param("email", email)
@@ -51,7 +51,7 @@ public class AuthRepository {
     }
 
     public boolean existsById(Long id) {
-        String sql = "SELECT COUNT(*) FROM `user` WHERE id = :id";
+        String sql = "SELECT COUNT(*) FROM `member` WHERE id = :id";
 
         return jdbcClient.sql(sql)
             .param("id", id)
@@ -60,7 +60,7 @@ public class AuthRepository {
     }
 
     public boolean existsByEmail(String email) {
-        String sql = "SELECT COUNT(*) FROM `user` WHERE email = :email";
+        String sql = "SELECT COUNT(*) FROM `member` WHERE email = :email";
 
         return jdbcClient.sql(sql)
             .param("email", email)
@@ -68,13 +68,13 @@ public class AuthRepository {
             .single() > 0;
     }
 
-    public Long save(User user) {
-        String sql = "INSERT INTO `user` (email, password) VALUES (:email, :password)";
+    public Long save(Member member) {
+        String sql = "INSERT INTO `member` (email, password) VALUES (:email, :password)";
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcClient.sql(sql)
-            .param("email", user.getEmail())
-            .param("password", user.getPassword())
+            .param("email", member.getEmail())
+            .param("password", member.getPassword())
             .update(keyHolder);
 
         if (keyHolder.getKey() == null) {
@@ -84,21 +84,21 @@ public class AuthRepository {
         return keyHolder.getKey().longValue();
     }
 
-    public int update(User user) {
+    public int update(Member member) {
         String sql = """
-            UPDATE `user`
+            UPDATE `member`
             SET email = :email
             WHERE id = :id
             """;
 
         return jdbcClient.sql(sql)
-            .param("email", user.getEmail())
-            .param("id", user.getId())
+            .param("email", member.getEmail())
+            .param("id", member.getId())
             .update();
     }
 
     public int delete(Long id) {
-        String sql = "DELETE FROM `user` WHERE id = :id";
+        String sql = "DELETE FROM `member` WHERE id = :id";
 
         return jdbcClient.sql(sql)
             .param("id", id)

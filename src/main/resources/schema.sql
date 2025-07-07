@@ -7,7 +7,7 @@ CREATE TABLE product
     PRIMARY KEY (id)
 );
 
-CREATE TABLE `user`
+CREATE TABLE `member`
 (
     id      BIGINT AUTO_INCREMENT,
     email    VARCHAR(100),

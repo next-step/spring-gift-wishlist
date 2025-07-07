@@ -21,9 +21,9 @@ public class JwtProvider implements TokenProvider {
         );
     }
 
-    public String createToken(Long userId) {
+    public String createToken(Long memberId) {
         return Jwts.builder()
-            .claim("userId", userId)
+            .claim("memberId", memberId)
             .signWith(secretKey)
             .compact();
     }
@@ -35,7 +35,7 @@ public class JwtProvider implements TokenProvider {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload()
-                .get("userId", String.class)
+                .get("memberId", String.class)
         );
     }
 }

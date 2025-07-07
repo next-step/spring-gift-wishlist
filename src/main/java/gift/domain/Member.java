@@ -1,23 +1,23 @@
 package gift.domain;
 
-public class User {
+public class Member {
 
     private final Long id;
     private final String email;
     private final String password;
 
-    private User(Long id, String email, String password) {
+    private Member(Long id, String email, String password) {
         this.id = id;
         this.email = email;
         this.password = password;
     }
 
-    public static User of(Long id, String email, String password) {
-        return new User(id, email, password);
+    public static Member of(Long id, String email, String password) {
+        return new Member(id, email, password);
     }
 
-    public static User of(String email, String password) {
-        return new User(null, email, password);
+    public static Member of(String email, String password) {
+        return new Member(null, email, password);
     }
 
     public Long getId() {

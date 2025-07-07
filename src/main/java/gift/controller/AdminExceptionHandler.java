@@ -12,12 +12,12 @@ import gift.exception.ApprovalRequiredException;
 import gift.exception.ProductCreateException;
 import gift.exception.ProductNotFoundException;
 import gift.exception.ProductUpdateException;
-import gift.exception.UserDeleteException;
-import gift.exception.UserNotFoundException;
-import gift.exception.UserUpdateException;
+import gift.exception.MemberDeleteException;
+import gift.exception.MemberNotFoundException;
+import gift.exception.MemberUpdateException;
 
 @ControllerAdvice(
-    assignableTypes = {ProductAdminController.class, UserAdminController.class}
+    assignableTypes = {ProductAdminController.class, MemberAdminController.class}
 )
 public class AdminExceptionHandler {
 
@@ -41,9 +41,9 @@ public class AdminExceptionHandler {
         ProductCreateException.class,
         ProductUpdateException.class,
         ApprovalRequiredException.class,
-        UserNotFoundException.class,
-        UserUpdateException.class,
-        UserDeleteException.class
+        MemberNotFoundException.class,
+        MemberUpdateException.class,
+        MemberDeleteException.class
     })
     public String handleProductExceptions(RuntimeException e, Model model) {
         model.addAttribute("errorMessage", e.getMessage());

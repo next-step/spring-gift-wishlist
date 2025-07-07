@@ -6,7 +6,7 @@
 </head>
 <body>
 <h2 style="text-align: center">유저 수정</h2>
-<form th:object="${user}" th:action="@{/admin/users/{id}(id=${user.id})}" th:method="put" style="display: flex; justify-content: center; align-items: center">
+<form th:object="${member}" th:action="@{/admin/members/{id}(id=${member.id})}" th:method="put" style="display: flex; justify-content: center; align-items: center">
     <ul>
         <li>
             <label for="email">유저 이메일:</label>
