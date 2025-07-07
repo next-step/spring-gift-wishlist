@@ -28,31 +28,35 @@ public class UserRepository {
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(
                     sql,
-                    new String[] { "created_at" }  // 반환받고 싶은 컬럼 지정
+                    new String[] { "id", "created_at" , "role"}  // 반환받고 싶은 컬럼 지정
             );
             ps.setString(1, user.email());
             ps.setString(2, user.password());
             return ps;
         }, keyHolder);
 
+        Long id = (Long) keyHolder.getKeys().get("id");
         Timestamp ts = (Timestamp) keyHolder.getKeys().get("created_at");
         LocalDateTime createdAt = ts.toLocalDateTime();
+        String role = (String) keyHolder.getKeys().get("role");
 
-        // 6) createdAt 값을 포함해 User 반환
-        return new User(user.email(), user.password(), createdAt);
+        // 생성된 id, createdAt, role 값을 포함해 User 반환
+        return new User(id, user.email(), user.password(), createdAt, role);
     }
 
     public void checkUser(User user) {
         //못 찾거나 2개 이상 찾을 경우 예외 발생
-        jdbcTemplate.queryForObject("SELECT email, password, created_at FROM users WHERE email=? AND password=?", userRowMapper(), user.email(), user.password());
+        jdbcTemplate.queryForObject("SELECT id, email, password, created_at, role FROM users WHERE email=? AND password=?", userRowMapper(), user.email(), user.password());
     }
 
     // users 전체 조회용 RowMapper
     private RowMapper<User> userRowMapper() {
         return (rs, rowNum) -> new User(
+                rs.getLong("id"),
                 rs.getString("email"),
                 rs.getString("password"),
-                rs.getTimestamp("created_at").toLocalDateTime()
+                rs.getTimestamp("created_at").toLocalDateTime(),
+                rs.getString("role")
         );
     }
 }

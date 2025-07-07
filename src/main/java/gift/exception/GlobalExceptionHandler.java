@@ -1,5 +1,6 @@
 package gift.exception;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -30,4 +31,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleBadRequest(MethodArgumentNotValidException e) { return e.getBindingResult().getAllErrors().getFirst().getDefaultMessage(); }
+
+    // CONFLICT 응답하는 예외처리 핸들러
+    @ExceptionHandler(DuplicateKeyException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public String handleConflict(DuplicateKeyException e) { return e.getMessage(); }
 }
