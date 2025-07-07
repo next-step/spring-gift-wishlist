@@ -11,3 +11,5 @@
 - 로그인 인증을 위한 filter 생성
 - 토큰을 발급하는 jwtTokenProvider 생성
 - 토큰을 매 요청마다 검증하는 jwtAuthenticationFilter 생성
+- 최초 관리자를 생성하고 관리자 권한 부여하는 API 생성
+- 상품 생성 dto에 "카카오"라는 단어가 들어오면 Role이 관리자일 경우에만 가능 
