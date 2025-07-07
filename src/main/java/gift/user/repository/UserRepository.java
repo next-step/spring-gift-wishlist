@@ -4,7 +4,9 @@ import gift.product.entity.Product;
 import gift.user.entity.Role;
 import gift.user.entity.User;
 import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class UserRepository {
 
   private final JdbcClient jdbcClient;

@@ -9,7 +9,9 @@ import gift.user.entity.User;
 import gift.exception.InvalidLoginException;
 import gift.exception.UserNotFoundException;
 import gift.user.repository.UserRepository;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserService {
 
   private final UserRepository userRepository;
