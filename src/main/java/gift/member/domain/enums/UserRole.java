@@ -1,4 +1,4 @@
-package gift.domain.enums;
+package gift.member.domain.enums;
 
 public enum UserRole {
     NORMAL,

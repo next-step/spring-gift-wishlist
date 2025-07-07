@@ -1,6 +1,6 @@
-package gift.domain;
+package gift.member.domain;
 
-import gift.domain.enums.UserRole;
+import gift.member.domain.enums.UserRole;
 
 public class Member {
 
@@ -10,6 +10,13 @@ public class Member {
     private UserRole userRole;
 
     public Member(String email, String password, UserRole userRole) {
+        this.email = email;
+        this.password = password;
+        this.userRole = userRole;
+    }
+
+    public Member(Long id, String email, String password, UserRole userRole) {
+        this.id = id;
         this.email = email;
         this.password = password;
         this.userRole = userRole;
@@ -29,5 +36,9 @@ public class Member {
 
     public UserRole getUserRole() {
         return userRole;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }
