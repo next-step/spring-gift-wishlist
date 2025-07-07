@@ -2,6 +2,7 @@ package gift.repository;
 
 import gift.entity.Member;
 import gift.entity.Product;
+import gift.exception.ForbiddenException;
 import gift.exception.MemberNotFoundException;
 import gift.exception.ProductNotFoundException;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -49,6 +50,15 @@ public class MemberRepositoryImpl implements MemberRepository {
                 .query(Member.class)
                 .optional();
         return member.orElse(null);
+    }
+
+    @Override
+    public Member findMemberByEmailOrElseThrow(String email) {
+        Optional<Member> member = jdbcClient.sql("select id, email, password, name, role from member where email = :email")
+                .param("email", email)
+                .query(Member.class)
+                .optional();
+        return member.orElseThrow(() -> new ForbiddenException("존재하지 않는 이메일입니다."));
     }
 
     @Override

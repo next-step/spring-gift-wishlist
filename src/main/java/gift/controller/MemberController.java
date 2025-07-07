@@ -30,6 +30,29 @@ public class MemberController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @PostMapping("/register")
+    public ResponseEntity<TokenResponseDto> RegisterMember(
+            @Valid @RequestBody MemberRegisterRequestDto requestDto, BindingResult bindingResult
+    ) {
+        if (bindingResult.hasErrors()) {
+            throw new InvalidMemberException(bindingResult.getFieldError().getDefaultMessage());
+        }
+        TokenResponseDto responseDto = memberService.registerMember(requestDto);
+        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/login")
+    public ResponseEntity<TokenResponseDto> LoginMember(
+            @Valid @RequestBody MemberLoginRequestDto requestDto, BindingResult bindingResult
+    ) {
+        if (bindingResult.hasErrors()) {
+            throw new InvalidMemberException(bindingResult.getFieldError().getDefaultMessage());
+        }
+        TokenResponseDto responseDto = memberService.loginMember(requestDto);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+
     @GetMapping("/{id}")
     public ResponseEntity<MemberResponseDto> findMemberById(
             @PathVariable Long id

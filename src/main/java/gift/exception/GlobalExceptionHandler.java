@@ -49,4 +49,24 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
     }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ErrorResponseDto> handleUnauthorized(UnauthorizedException ex) {
+        ErrorResponseDto responseDto = new ErrorResponseDto(
+                HttpStatus.UNAUTHORIZED.value(),
+                "UnAuthorized",
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseDto);
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ErrorResponseDto> handleForbidden(ForbiddenException ex) {
+        ErrorResponseDto responseDto = new ErrorResponseDto(
+                HttpStatus.FORBIDDEN.value(),
+                "Forbidden",
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(responseDto);
+    }
 }
