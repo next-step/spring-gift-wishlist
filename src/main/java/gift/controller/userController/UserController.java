@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/api/users")
@@ -28,14 +29,14 @@ public class UserController {
      * Todo. 관리자 User 관리 페이지를 위한 model 생성
      *
      */
-    @PostMapping()
-    public ResponseEntity<UserResponseDto> registerUser(
-            @RequestBody @Valid UserRegisterDto dto,
-            Model model
+    @PostMapping("/register")
+    public ResponseEntity<Map<String, String>> registerUser(
+            @RequestBody @Valid UserRegisterDto dto
     ) {
-        UserResponseDto user =userService.registerUser(dto);
-        return new ResponseEntity<UserResponseDto>(user, HttpStatus.CREATED);
+        String token = userService.registerUser(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("token", token));
     }
+
 
     @GetMapping()
     public ResponseEntity<List<UserResponseDto>> getUserList(

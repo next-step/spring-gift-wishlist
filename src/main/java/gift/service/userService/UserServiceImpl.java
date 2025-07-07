@@ -1,5 +1,6 @@
 package gift.service.userService;
 
+import gift.Jwt.JwtUtil;
 import gift.dto.userDto.UserRegisterDto;
 import gift.dto.userDto.UserResponseDto;
 import gift.dto.userDto.UserUpdateDto;
@@ -14,20 +15,23 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
+    private final JwtUtil jwtUtil;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
+        this.jwtUtil = jwtUtil;
     }
 
 
 
     @Override
-    public UserResponseDto registerUser(UserRegisterDto dto) {
+    public String registerUser(UserRegisterDto dto) {
         User user = new User(null,dto.email(), dto.password());
 
         User savedUser = userRepository.save(user);
+        String token = jwtUtil.generateToken(savedUser);
 
-        return new UserResponseDto(savedUser.email(),savedUser.password());
+        return token;
     }
 
     @Override

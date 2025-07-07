@@ -8,7 +8,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 public interface UserService {
-    UserResponseDto registerUser(UserRegisterDto dto);
+    String registerUser(UserRegisterDto dto);
 
     List<UserResponseDto> getUserList(String email);
 
