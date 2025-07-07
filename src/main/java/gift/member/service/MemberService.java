@@ -2,9 +2,11 @@ package gift.member.service;
 
 import gift.common.security.PasswordEncoder;
 import gift.member.Member;
+import gift.member.dto.LoginRequestDto;
 import gift.member.dto.MemberCreateDto;
 import gift.member.dto.MemberResponseDto;
 import gift.member.exception.DuplicateEmailException;
+import gift.member.exception.InvalidLoginException;
 import gift.member.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +44,21 @@ public class MemberService {
             savedMember.getId(),
             savedMember.getName(),
             savedMember.getEmail()
+        );
+    }
+
+    public MemberResponseDto login(LoginRequestDto loginRequestDto) {
+        // 요청 받은 이메일에 해당하는 비밀번호와 요청받은 비밀번호 비교
+        Member member = memberRepository.findByEmail(loginRequestDto.email())
+            .filter(m -> m.getPassword().equals(
+                passwordEncoder.encode(loginRequestDto.password())
+            ))
+            .orElseThrow(InvalidLoginException::new);
+
+        return new MemberResponseDto(
+            member.getId(),
+            member.getName(),
+            member.getEmail()
         );
     }
 }

@@ -1,6 +1,7 @@
 package gift.member.controller;
 
 import gift.common.security.JwtTokenProvider;
+import gift.member.dto.LoginRequestDto;
 import gift.member.dto.LoginResponseDto;
 import gift.member.dto.MemberCreateDto;
 import gift.member.dto.MemberResponseDto;
@@ -40,5 +41,22 @@ public class MemberController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(loginResponseDto);
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDto> loginMember(
+        @RequestBody LoginRequestDto loginRequestDto
+    ) {
+        MemberResponseDto loggedInMember = memberService.login(loginRequestDto);
+
+        LoginResponseDto loginResponseDto = new LoginResponseDto(
+            jwtTokenProvider.generateToken(
+                loggedInMember.id(),
+                loggedInMember.name(),
+                loggedInMember.email()
+            )
+        );
+        return ResponseEntity.status(HttpStatus.OK).body(loginResponseDto);
+    }
+
 
 }
