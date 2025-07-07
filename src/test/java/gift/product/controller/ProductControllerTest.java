@@ -47,7 +47,7 @@ class ProductControllerTest {
 
     @BeforeEach
     void setUp() {
-        Member saved = memberRepository.save(new Member("ljw2109@naver.com", "Qwer1234", Role.REGULAR));
+        Member saved = memberRepository.save(new Member("ljw2109@naver.com", "Qwer1234!!", Role.REGULAR));
 
         String token = jwtUtil
                 .createJWT(saved.getEmail(), saved.getRole().toString(), 1000 * 60L);
@@ -60,6 +60,7 @@ class ProductControllerTest {
     @AfterEach
     void clear() {
         productRepository.deleteAll();
+        memberRepository.deleteAll();
     }
 
 

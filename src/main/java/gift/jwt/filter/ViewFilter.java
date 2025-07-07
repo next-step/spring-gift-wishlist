@@ -2,8 +2,10 @@ package gift.jwt.filter;
 
 import gift.domain.Role;
 import gift.global.MySecurityContextHolder;
+import gift.global.exception.NotFoundEntityException;
 import gift.jwt.JWTUtil;
 import gift.member.dto.AuthMember;
+import gift.member.service.MemberService;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.*;
 import jakarta.servlet.http.Cookie;
@@ -17,11 +19,13 @@ import java.util.Arrays;
 
 public class ViewFilter implements Filter {
 
-    public ViewFilter(JWTUtil jwtUtil) {
-        this.jwtUtil = jwtUtil;
-    }
-
     private final JWTUtil jwtUtil;
+    private final MemberService memberService;
+
+    public ViewFilter(JWTUtil jwtUtil, MemberService memberService) {
+        this.jwtUtil = jwtUtil;
+        this.memberService = memberService;
+    }
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse rep, FilterChain chain) throws IOException, ServletException {
@@ -68,9 +72,10 @@ public class ViewFilter implements Filter {
         try {
             String email = jwtUtil.getEmail(accessToken);
             String role = jwtUtil.getRole(accessToken);
+            memberService.tokenValidate(email, role);
             MySecurityContextHolder.set(new AuthMember(email, Role.valueOf(role)));
             chain.doFilter(request, response);
-        } catch (IllegalArgumentException e) {
+        } catch (NotFoundEntityException e) {
             response.sendRedirect(redirectUrl);
         }
         finally {

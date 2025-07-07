@@ -83,6 +83,16 @@ public class MemberServiceV1 implements MemberService{
     }
 
     @Override
+    public void tokenValidate(String email, String role) {
+        Member findMember = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundEntityException("존재하는 회원이 아닙니다."));
+
+        if (!findMember.getRole().toString().equals(role)) {
+            throw new NotFoundEntityException("존재하는 회원이 아닙니다.");
+        }
+    }
+
+    @Override
     public MemberResponse validate(String email, String password) {
 
         Member findMember = memberRepository.findByEmail(email)

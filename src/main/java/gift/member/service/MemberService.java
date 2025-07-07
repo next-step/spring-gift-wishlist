@@ -19,5 +19,7 @@ public interface MemberService {
 
     void deleteMember(String email);
 
+    void tokenValidate(String email, String role);
+
     MemberResponse validate(String email, String password);
 }

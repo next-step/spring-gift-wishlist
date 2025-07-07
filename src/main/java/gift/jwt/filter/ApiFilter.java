@@ -3,8 +3,10 @@ package gift.jwt.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.domain.Role;
 import gift.global.MySecurityContextHolder;
+import gift.global.exception.NotFoundEntityException;
 import gift.jwt.JWTUtil;
 import gift.member.dto.AuthMember;
+import gift.member.service.MemberService;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.*;
 import jakarta.servlet.http.Cookie;
@@ -19,10 +21,12 @@ public class ApiFilter implements Filter {
 
     private final JWTUtil jwtUtil;
     private final ObjectMapper objectMapper;
+    private final MemberService memberService;
 
-    public ApiFilter(JWTUtil jwtUtil, ObjectMapper objectMapper) {
+    public ApiFilter(JWTUtil jwtUtil, ObjectMapper objectMapper, MemberService memberService) {
         this.jwtUtil = jwtUtil;
         this.objectMapper = objectMapper;
+        this.memberService = memberService;
     }
 
     @Override
@@ -36,7 +40,7 @@ public class ApiFilter implements Filter {
         if(passRequestURI(method, requestURI)) {
             chain.doFilter(request, response);
             return;
-        };
+        }
 
         Cookie[] cookies = request.getCookies();
         if(cookies == null) {
@@ -67,10 +71,11 @@ public class ApiFilter implements Filter {
         try {
             String email = jwtUtil.getEmail(accessToken);
             String role = jwtUtil.getRole(accessToken);
+            memberService.tokenValidate(email, role);
             MySecurityContextHolder.set(new AuthMember(email, Role.valueOf(role)));
             chain.doFilter(request, response);
-        } catch (IllegalArgumentException e) {
-            writeUnauthorizedResponse(response, "잘못된 토큰 형식입니다.");
+        } catch (NotFoundEntityException e) {
+            writeUnauthorizedResponse(response, e.getMessage());
         }
         finally {
             MySecurityContextHolder.clear();

@@ -43,7 +43,7 @@ public class SecurityConfig implements WebMvcConfigurer {
     @Bean
     public FilterRegistrationBean jwtFilter() {
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
-        filterRegistrationBean.setFilter(new ApiFilter(jwtUtil, objectMapper));
+        filterRegistrationBean.setFilter(new ApiFilter(jwtUtil, objectMapper, memberService));
 
         filterRegistrationBean.addUrlPatterns("/api/*");
         filterRegistrationBean.setOrder(2);
@@ -53,7 +53,7 @@ public class SecurityConfig implements WebMvcConfigurer {
     @Bean
     public FilterRegistrationBean viewFilter() {
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
-        filterRegistrationBean.setFilter(new ViewFilter(jwtUtil));
+        filterRegistrationBean.setFilter(new ViewFilter(jwtUtil, memberService));
         filterRegistrationBean.addUrlPatterns("/*");
         filterRegistrationBean.setOrder(1);
 

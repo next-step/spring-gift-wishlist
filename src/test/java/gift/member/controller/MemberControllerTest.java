@@ -169,7 +169,7 @@ class MemberControllerTest {
                 .cookie("Authorization", jwt)
                 .retrieve()
                 .toEntity(Void.class)
-        ).isInstanceOf(HttpClientErrorException.NotFound.class);
+        ).isInstanceOf(HttpClientErrorException.Unauthorized.class);
     }
 
     @Test
@@ -203,7 +203,7 @@ class MemberControllerTest {
                 .body(updateRequest)
                 .retrieve()
                 .toEntity(Void.class)
-        ).isInstanceOf(HttpClientErrorException.NotFound.class);
+        ).isInstanceOf(HttpClientErrorException.Unauthorized.class);
     }
 
     private String createJWT(Member member) {

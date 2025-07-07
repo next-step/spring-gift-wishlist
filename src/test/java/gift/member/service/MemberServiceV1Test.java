@@ -275,6 +275,55 @@ class MemberServiceV1Test {
         verifyNoMoreInteractions(memberRepository);
     }
 
+    @Test
+    @DisplayName("토큰 검증 성공")
+    void tokenValidateSuccess() {
+        // given
+        Member member = createMember();
+
+        given(memberRepository.findByEmail(member.getEmail()))
+                .willReturn(Optional.of(member));
+
+        // when
+        memberService.tokenValidate(member.getEmail(), member.getRole().toString());
+
+        // then
+        verify(memberRepository).findByEmail(member.getEmail());
+        verifyNoMoreInteractions(memberRepository);
+    }
+
+    @Test
+    @DisplayName("토큰 검증 실패 - 존재하는 회원 없음")
+    void tokenValidateFail() {
+        // given
+
+        Member member = createMember();
+
+        given(memberRepository.findByEmail(member.getEmail()))
+                .willReturn(Optional.of(member));
+
+        // when & then
+        assertThatThrownBy(()->memberService.tokenValidate(member.getEmail(), "ADMIN"))
+                .isInstanceOf(NotFoundEntityException.class);
+        verify(memberRepository).findByEmail(member.getEmail());
+        verifyNoMoreInteractions(memberRepository);
+    }
+
+    @Test
+    @DisplayName("토큰 검증 실패 - 역할이 다름")
+    void tokenValidateFail2() {
+        // given
+
+        given(memberRepository.findByEmail(anyString()))
+                .willReturn(Optional.empty());
+
+        // when & then
+        assertThatThrownBy(()->memberService.tokenValidate(anyString(), "REGULAR"))
+                .isInstanceOf(NotFoundEntityException.class);
+        verify(memberRepository).findByEmail(anyString());
+        verifyNoMoreInteractions(memberRepository);
+    }
+
     MemberCreateRequest createRequest() {
         return new MemberCreateRequest("ljw2109@naver.com", "curPassword", "curPassword");
     }
