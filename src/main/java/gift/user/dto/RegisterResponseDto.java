@@ -5,8 +5,8 @@ import gift.user.entity.User;
 public record RegisterResponseDto(
     String token
 ) {
-//TODO : token 로직 추가 시 수정
-  public static RegisterResponseDto from(User user) {
+
+  public static RegisterResponseDto from(String token) {
     return new RegisterResponseDto(
         token
     );
