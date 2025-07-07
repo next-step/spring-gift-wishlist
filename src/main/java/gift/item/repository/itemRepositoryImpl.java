@@ -21,7 +21,7 @@ public class itemRepositoryImpl implements ItemRepository {
 
     @Override
     public Item saveItem(Item item) {
-        String sql = "INSERT INTO item (name, price, image_url) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO items (name, price, image_url) VALUES (?, ?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -40,7 +40,7 @@ public class itemRepositoryImpl implements ItemRepository {
 
     @Override
     public List<Item> findAllItems() {
-        String sql = "SELECT * FROM item";
+        String sql = "SELECT * FROM items";
         return jdbcTemplate.query(sql, (rs, rowNum) ->
                 new Item(
                         rs.getLong("id"),
@@ -53,26 +53,26 @@ public class itemRepositoryImpl implements ItemRepository {
 
     @Override
     public Item findItem(Long id) {
-        String sql = "SELECT * FROM item WHERE id = ?";
-        List<Item> result = jdbcTemplate.query(sql, new Object[]{id}, (rs, rowNum) ->
+        String sql = "SELECT * FROM items WHERE id = ?";
+        List<Item> result = jdbcTemplate.query(sql, (rs, rowNum) ->
                 new Item(
                         rs.getLong("id"),
                         rs.getString("name"),
                         rs.getInt("price"),
                         rs.getString("image_url")
-                ));
+                ), id);
         return result.isEmpty() ? null : result.get(0);
     }
 
     @Override
     public void updateItem(Long id, UpdateItemDto dto) {
-        String sql = "UPDATE item SET name = ?, price = ?, image_url = ? WHERE id = ?";
+        String sql = "UPDATE items SET name = ?, price = ?, image_url = ? WHERE id = ?";
         jdbcTemplate.update(sql, dto.getName(), dto.getPrice(), dto.getImageUrl(), id);
     }
 
     @Override
     public void deleteItem(Long id) {
-        String sql = "DELETE FROM item WHERE id = ?";
+        String sql = "DELETE FROM items WHERE id = ?";
         jdbcTemplate.update(sql, id);
     }
 }
