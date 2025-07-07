@@ -45,6 +45,8 @@
 - [x] MemberService 구현
 - [x] MemberController 구현
 - [x] Member 예외 처리 구현
+- [ ] JWT 인증 필터(인터셉터) 적용
+- [ ] 인증 예외 처리 구현
 - [ ] 회원 관련 페이지 구현
 
 # spring-gift-product (이전 구현)

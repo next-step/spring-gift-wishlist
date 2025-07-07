@@ -35,6 +35,20 @@ public class JwtUtil {
                 .compact();
     }
 
+    public String getEmail(String token) {
+        return getClaims(token).getSubject();
+    }
+
+    public boolean validateToken(String token) {
+        try {
+            Claims claims = getClaims(token);
+            return !claims.getExpiration().before(new Date());
+        }
+        catch (Exception e){
+            return false;
+        }
+    }
+
     public Claims getClaims(String token) {
         return Jwts.parser()
                 .setSigningKey(secretKey)
