@@ -4,6 +4,7 @@ import gift.auth.JwtTokenProvider;
 import gift.dto.MemberRequest;
 import gift.dto.MemberResponse;
 import gift.entity.Member;
+import gift.exception.LoginException;
 import gift.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 
@@ -27,8 +28,14 @@ public class MemberService {
     }
 
     public MemberResponse login(MemberRequest request) {
-        // TODO: 사용자 조회 및 비밀번호 확인 로직 구현
-        // TODO: 토큰 발급 로직 구현
-        return null;
+        Member member = memberRepository.findByEmail(request.email())
+                .orElseThrow(() -> new LoginException("이메일 또는 비밀번호가 일치하지 않습니다."));
+
+        if (!member.getPassword().equals(request.password())) {
+            throw new LoginException("이메일 또는 비밀번호가 일치하지 않습니다.");
+        }
+
+        String token = jwtTokenProvider.createToken(member.getEmail());
+        return new MemberResponse(token);
     }
 }
