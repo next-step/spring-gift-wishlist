@@ -2,6 +2,7 @@ package gift.common.aop;
 
 import gift.dto.error.ErrorMessageResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -27,16 +28,20 @@ public class GlobalExceptionHandler {
     ) {
         var errorMessage = new ErrorMessageResponse.Builder(request, e, HttpStatus.UNAUTHORIZED)
                 .build();
-        return new ResponseEntity<>(errorMessage.toProblemDetail(), HttpStatus.UNAUTHORIZED);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .header("WWW-Authenticate", "Bearer")
+                .body(errorMessage.toProblemDetail());
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ProblemDetail> handleAccessDeniedException(
-            AccessDeniedException e, HttpServletRequest request
+            AccessDeniedException e,
+            HttpServletRequest request
     ) {
-        var errorMessage = new ErrorMessageResponse.Builder(request, e, HttpStatus.FORBIDDEN)
+        var errorMessage = new ErrorMessageResponse.Builder(request, e, HttpStatus.UNAUTHORIZED)
                 .build();
-        return new ResponseEntity<>(errorMessage.toProblemDetail(), HttpStatus.FORBIDDEN);
+
+        return new ResponseEntity<>(errorMessage.toProblemDetail(), HttpStatus.UNAUTHORIZED);
     }
 
 

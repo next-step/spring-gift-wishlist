@@ -34,10 +34,10 @@ public class PreAuthorizeAspect {
         this.request = request;
         this.validator = validator;
     }
-    private UserRole extractUserRoleFromAnnotation(MethodSignature signature) {
+    private UserRole extractUserRoleFromAnnotation(MethodSignature signature) throws AuthenticationException {
         PreAuthorize preAuthorize = signature.getMethod().getAnnotation(PreAuthorize.class);
         if (preAuthorize == null || preAuthorize.value() == null) {
-            throw new IllegalArgumentException("PreAuthorize에 제대로된 UserRole이 설정되어 있지 않습니다:"
+            throw new AuthenticationException("PreAuthorize에 제대로된 UserRole이 설정되어 있지 않습니다:"
                     + signature.getMethod().getName());
         }
         return preAuthorize.value();

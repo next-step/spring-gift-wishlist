@@ -1,5 +1,6 @@
 package gift.service.auth;
 
+import gift.common.exception.AccessDeniedException;
 import gift.common.util.PasswordEncoder;
 import gift.common.util.TokenProvider;
 import gift.entity.User;
@@ -41,7 +42,7 @@ public class AuthServiceImpl implements AuthService {
                 () -> new IllegalArgumentException("해당 이메일의 사용자를 찾을 수 없습니다. : " + email)
         );
         if (!PasswordEncoder.matches(password, user.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new AccessDeniedException("이메일 또는 비밀번호가 일치하지 않습니다.");
         }
         Set<UserRole> roles = roleRepository.findByUserId(user.getId());
         return tokenProvider.generateToken(user.getId(), roles);
