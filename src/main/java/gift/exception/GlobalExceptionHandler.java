@@ -30,6 +30,22 @@ public class GlobalExceptionHandler {
                         exception.getMessage()));
     }
 
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<ErrorResponseDto> handleInvalidCredentials(
+            InvalidCredentialsException exception) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorResponseDto(ErrorStatus.INVALID_CREDENTIALS.getCode(),
+                        exception.getMessage()));
+    }
+
+    @ExceptionHandler(EntityAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponseDto> handleEntityAlreadyExists(
+            EntityAlreadyExistsException exception) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ErrorResponseDto(ErrorStatus.ENTITY_ALREADY_EXISTS.getCode(),
+                        exception.getMessage()));
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponseDto> handleValidationError(
             MethodArgumentNotValidException exception) {
