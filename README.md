@@ -18,3 +18,4 @@
         - [x] 미포함 시 status를 APPROVED로 설정 및 저장
     - [x] 관리자(MD) 기능 구현
         - [x] AdminController로 관리자만 접근할 수 있는 상품 상태 변경 기능
+- [x] 테스트 코드 작성
