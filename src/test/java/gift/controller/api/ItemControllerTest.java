@@ -1,4 +1,4 @@
-package gift.controller;
+package gift.controller.api;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
