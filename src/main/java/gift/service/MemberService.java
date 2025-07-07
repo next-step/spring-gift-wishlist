@@ -1,5 +1,6 @@
 package gift.service;
 
+import gift.auth.JwtProvider;
 import gift.dto.MemberRequestDto;
 import gift.entity.Member;
 import gift.repository.MemberRepository;
@@ -11,10 +12,12 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtProvider jwtProvider;
 
-    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder) {
+    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, JwtProvider jwtProvider) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtProvider = jwtProvider;
     }
 
     public void register(MemberRequestDto dto) {
@@ -25,5 +28,16 @@ public class MemberService {
         String encodedPassword = passwordEncoder.encode(dto.getPassword());
         Member member = new Member(null, dto.getEmail(), encodedPassword);
         memberRepository.save(member);
+    }
+
+    public String login(MemberRequestDto dto) {
+        Member member = memberRepository.findByEmail(dto.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다."));
+
+        if (!passwordEncoder.matches(dto.getPassword(), member.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
+        return jwtProvider.createToken(member);
     }
 }
