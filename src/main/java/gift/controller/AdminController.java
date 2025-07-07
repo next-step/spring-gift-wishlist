@@ -29,7 +29,7 @@ public class AdminController {
     public String list(
             @RequestHeader(value = "Authorization", required = false) String authHeader,
             Model model) {
-        jwtUtil.validateAuthorizationHeader(authHeader, "admin-api");
+        jwtUtil.validateAuthorizationAdminHeader(authHeader, "admin-api");
         List<ProductResponseDto> products = productService.findAllProducts();
         model.addAttribute("products", products);
 
@@ -42,7 +42,7 @@ public class AdminController {
             @RequestHeader(value = "Authorization", required = false) String authHeader,
             @PathVariable Long id,
             Model model) {
-        jwtUtil.validateAuthorizationHeader(authHeader, "admin-api");
+        jwtUtil.validateAuthorizationAdminHeader(authHeader, "admin-api");
         ProductResponseDto findProduct = productService.findProductById(id);
         model.addAttribute("product", findProduct);
 
@@ -54,7 +54,7 @@ public class AdminController {
     public String createProduct(
             @RequestHeader(value = "Authorization", required = false) String authHeader,
             Model model) {
-        jwtUtil.validateAuthorizationHeader(authHeader, "admin-api");
+        jwtUtil.validateAuthorizationAdminHeader(authHeader, "admin-api");
         model.addAttribute("product", new CreateProductRequestDto("", 0L, ""));
 
         return "admin/product/create";
@@ -66,7 +66,7 @@ public class AdminController {
             @RequestHeader(value = "Authorization", required = false) String authHeader,
             @Valid @ModelAttribute("product") CreateProductRequestDto requestDto,
             BindingResult bindingResult) {
-        jwtUtil.validateAuthorizationHeader(authHeader, "admin-api");
+        jwtUtil.validateAuthorizationAdminHeader(authHeader, "admin-api");
         if (bindingResult.hasErrors()) {
 
             return "admin/product/create";
@@ -81,7 +81,7 @@ public class AdminController {
     public String deleteProduct(
             @RequestHeader(value = "Authorization", required = false) String authHeader,
             @PathVariable Long id) {
-        jwtUtil.validateAuthorizationHeader(authHeader, "admin-api");
+        jwtUtil.validateAuthorizationAdminHeader(authHeader, "admin-api");
         productService.deleteProduct(id);
 
         return "redirect:/admin/products";
@@ -92,7 +92,7 @@ public class AdminController {
     public String updateProduct(
             @RequestHeader(value = "Authorization", required = false) String authHeader,
             @PathVariable Long id, Model model) {
-        jwtUtil.validateAuthorizationHeader(authHeader, "admin-api");
+        jwtUtil.validateAuthorizationAdminHeader(authHeader, "admin-api");
         ProductResponseDto findProduct = productService.findProductById(id);
         model.addAttribute("product", new UpdateProductRequestDto(
                 findProduct.id(),
@@ -111,7 +111,7 @@ public class AdminController {
             @PathVariable Long id,
             @Valid @ModelAttribute("product") UpdateProductRequestDto updatedProduct,
             BindingResult bindingResult) {
-        jwtUtil.validateAuthorizationHeader(authHeader, "admin-api");
+        jwtUtil.validateAuthorizationAdminHeader(authHeader, "admin-api");
         if (bindingResult.hasErrors()) {
 
             return "admin/product/update";

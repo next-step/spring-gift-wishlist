@@ -9,6 +9,8 @@ import gift.enums.Role;
 import gift.exception.UnauthorizedException;
 import gift.repository.MemberRepository;
 import gift.service.MemberService;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -87,11 +89,25 @@ public class AuthTest {
     }
 
     @Test
-    void 유효하지_않은_토큰이면_예외가_발생한다() {
+    void 유효하지_않은_토큰이면_401을_반환한다() {
         String header = "Bearer invalid.token.value";
 
         assertThatThrownBy(() -> jwtUtil.validateAuthorizationHeader(header, "products-api"))
                 .isInstanceOf(UnauthorizedException.class)
                 .hasMessageContaining("유효하지 않은 토큰");
+    }
+
+    @Test
+    void 권한이_없는_토큰이면_403을_반환한다() {
+        String token = Jwts.builder()
+                .claim("role", Role.ROLE_USER.name())
+                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                .compact();
+
+        String header = "Bearer " + token;
+
+        assertThatThrownBy(() -> jwtUtil.validateAuthorizationAdminHeader(header, "admin-api"))
+                .isInstanceOf(ResponseStatusException.class)
+                .hasMessageContaining("접근 권한이 없습니다");
     }
 }
