@@ -17,8 +17,6 @@ public record CreateProductRequestDto(
         @Size(max = 15, message = "최대 15자 까지 입력 가능합니다")
         @Pattern(regexp = "^[a-zA-Z0-9가-힣()\\[\\]+\\-&/_ ]*$",
                 message = "( ), [ ], +, -, &, /, _ 외의 특수 문자는 사용 불가능 합니다")
-        @Pattern(regexp = "^(?!.*(카카오)).*$",
-                message = "'카카오'가 포함된 문구는 담당 MD와 협의한 경우에만 사용할 수 있습니다")
         String name,
 
         @NotNull(message = "가격을 입력해주세요")
