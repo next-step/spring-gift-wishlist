@@ -1,8 +1,9 @@
 package gift.service;
 
 import gift.dto.MemberRequestDto;
+import gift.dto.MemberResponseDto;
 
 public interface MemberServiceInterface {
 
-    String register(MemberRequestDto requestDto);
+    MemberResponseDto register(MemberRequestDto requestDto);
 }

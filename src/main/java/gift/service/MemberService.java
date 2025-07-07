@@ -2,6 +2,7 @@ package gift.service;
 
 import gift.auth.JwtAuth;
 import gift.dto.MemberRequestDto;
+import gift.dto.MemberResponseDto;
 import gift.entity.Member;
 import gift.exception.MemberExceptions;
 import gift.repository.MemberRepositoryInterface;
@@ -19,13 +20,14 @@ public class MemberService implements MemberServiceInterface {
     }
 
     @Override
-    public String register(MemberRequestDto requestDto) {
+    public MemberResponseDto register(MemberRequestDto requestDto) {
         if (memberRepository.findByEmail(requestDto.getEmail()).isPresent()) {
             throw new MemberExceptions.EmailAlreadyExistsException(requestDto.getEmail());
         }
 
         Member member = new Member(requestDto.getEmail(), requestDto.getPassword());
         memberRepository.save(member);
-        return jwtAuth.createJwtToken(member);
+        String token = jwtAuth.createJwtToken(member);
+        return new MemberResponseDto(token);
     }
 }

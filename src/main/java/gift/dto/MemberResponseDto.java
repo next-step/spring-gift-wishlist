@@ -6,4 +6,8 @@ public class MemberResponseDto {
     public MemberResponseDto(String token) {
         this.token = token;
     }
+
+    public String getToken() {
+        return token;
+    }
 }
