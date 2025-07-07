@@ -1,7 +1,9 @@
 package gift.controller.view;
 
+import gift.common.aop.annotation.PreAuthorize;
 import gift.common.model.CustomPage;
 import gift.entity.Product;
+import gift.entity.UserRole;
 import gift.service.product.ProductService;
 import jakarta.validation.constraints.Min;
 import org.springframework.stereotype.Controller;
@@ -20,6 +22,7 @@ public class ProductViewController {
         this.productService = productService;
     }
 
+    @PreAuthorize(UserRole.ROLE_ADMIN)
     @GetMapping
     public String showProductList(
         Model model,
@@ -29,12 +32,17 @@ public class ProductViewController {
         @Min(value = 1, message = "페이지 크기는 양수여야 합니다.") Integer size
     ) {
         CustomPage<Product> currentPage = productService.getBy(page, size);
+        int start = Math.max(0, currentPage.page() - 2);
+        int end = Math.min(currentPage.totalPages() - 1, currentPage.page() + 2);
+
         model.addAttribute("title", "관리자 상품 목록");
         model.addAttribute("pageInfo", currentPage);
-
+        model.addAttribute("pageStart", start);
+        model.addAttribute("pageEnd", end);
         return "admin/product-list";
     }
 
+    @PreAuthorize(UserRole.ROLE_ADMIN)
     @GetMapping("/{id}")
     public String showProductDetails(
             @PathVariable @Min(value = 0, message = "상품 ID는 0 이상이어야 합니다.") Long id,
@@ -47,6 +55,7 @@ public class ProductViewController {
         return "admin/view-product";
     }
 
+    @PreAuthorize(UserRole.ROLE_ADMIN)
     @GetMapping("/create")
     public String createProductForm(Model model) {
         model.addAttribute("title", "상품 등록");
