@@ -16,12 +16,11 @@ public class JwtUtil {
     // 토큰 생성
     public String createToken(Member member) {
         return Jwts.builder()
-                .setSubject(member.getId())  // 사용자 ID (String)
-                .claim("email", member.getEmail())
+                .setSubject(member.getId())
+                .claim("id", member.getId())
                 .claim("role", member.getRole())
                 .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
                 .compact();
     }
-
 }
 

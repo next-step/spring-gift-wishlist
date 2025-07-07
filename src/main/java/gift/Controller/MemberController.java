@@ -2,7 +2,6 @@ package gift.Controller;
 
 import gift.Entity.Member;
 import gift.dto.MemberRequest;
-import gift.dto.MemberRequest;
 import gift.dto.TokenResponse;
 import gift.service.MemberService;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +19,9 @@ public class MemberController {
 
     // 회원가입 하기
     @PostMapping("/register")
-    public ResponseEntity<TokenResponse> register(@RequestBody Member member) {
-        String token = memberService.register(member);
-        return ResponseEntity.status(201).body(new TokenResponse(token));
+    public ResponseEntity<Member> register(@RequestBody Member member) {
+        memberService.register(member);
+        return ResponseEntity.ok(member);
     }
 
     // 로그인 하기

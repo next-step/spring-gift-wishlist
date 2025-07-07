@@ -17,7 +17,7 @@ public class MemberService {
     }
 
     // 회원가입
-    public String register(Member member) {
+    public void register(Member member) {
         // 아이디 중복 체크
         if (memberDto.selectId(member.getId()) != null) {
             throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
@@ -29,8 +29,6 @@ public class MemberService {
         }
 
         memberDto.insertMember(member);
-
-        return jwtUtil.createToken(member);
     }
 
     // 로그인
