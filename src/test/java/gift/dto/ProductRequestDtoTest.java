@@ -170,9 +170,11 @@ class ProductRequestDtoTest {
     @Test
     @DisplayName("Product 수정 시, 수정할 내용에 대한 input을 넣으면 200(OK)을 반환한다. ")
     void updateProduct_withValidInput_returns200() {
-        ProductResponseDto created = client.post()
+        ProductRequestDto productRequestDto = createProductRequestDto("하리보 젤리(오리지널)", 1500, "http://img.url/original.png");
+
+        var created = client.post()
                 .uri(url)
-                .body(createProductRequestDto("하리보 젤리(오리지널)", 1500, "http://img.url/original.png"))
+                .body(productRequestDto)
                 .retrieve()
                 .toEntity(ProductResponseDto.class)
                 .getBody();
@@ -198,16 +200,17 @@ class ProductRequestDtoTest {
     @Test
     @DisplayName("Product 삭제 시, 존재하는 ID면 204(No Content)를 반환한다. ")
     void deleteProduct_withExistingId_returns204() {
-        var productResponseDto = client.post()
+        ProductRequestDto productRequestDto = createProductRequestDto("하리보 젤리", 1500, null);
+
+        var created = client.post()
                 .uri(url)
-                .body(createProductRequestDto("하리보 젤리", 1500, null))
+                .body(productRequestDto)
                 .retrieve()
                 .toEntity(ProductResponseDto.class)
                 .getBody();
-        Long id = productResponseDto.id();
 
         var deleteResponse = client.delete()
-                .uri(url + "/" + id)
+                .uri(url + "/" + created.id())
                 .retrieve()
                 .toBodilessEntity();
 
