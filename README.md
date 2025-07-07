@@ -17,7 +17,7 @@
 
 ## 🚀 구현할 기능 목록 (2단계 - 회원 로그인)
 
-- [ ] `build.gradle`에 JWT 라이브러리 의존성 추가
+- [x] `build.gradle`에 JWT 라이브러리 의존성 추가
 - [ ] Member(회원) 엔티티 및 리포지토리 구현
 - [ ] 회원 가입 기능 구현
   - [ ] `/api/members/register` 엔드포인트 생성
