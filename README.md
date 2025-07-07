@@ -15,3 +15,5 @@ Service 레이어에 하드 코딩돼있던 금지 단어를 application.propert
 
 # 회원 로그인
 1. Dto, Entity 구현 및 Controller, Service 정의
+2. Dto, Entity 수정 및 AuthController 구현
+3. ResponseDto 생성자 추가, Entity의 권한 필드 삭제, Service 및 Repository 레이어 구현, users TABLE 구조 선언

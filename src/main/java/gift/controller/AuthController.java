@@ -25,7 +25,7 @@ public class AuthController {
      */
     @PostMapping("/signup")
     public ResponseEntity<UserResponseDto> userSignUp(@Valid @RequestBody UserRequestDto userRequestDto) {
-        return new ResponseEntity<>(authService.normalSignUp(userRequestDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(authService.userSignUp(userRequestDto), HttpStatus.CREATED);
     }
 
     /**
@@ -35,7 +35,7 @@ public class AuthController {
      */
     @PostMapping("/login")
     public ResponseEntity<Void> userLogin(@Valid @RequestBody UserRequestDto userRequestDto) {
-        authService.userSignUp(userRequestDto);
+        authService.userLogin(userRequestDto);
         return new ResponseEntity<>(HttpStatus.OK);         // 성공했을 경우에만 OK 반환
     }
 }
