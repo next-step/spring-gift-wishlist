@@ -1,5 +1,6 @@
 package gift.repository;
 
+import gift.entity.MdApprovalStatus;
 import gift.entity.Product;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -25,7 +26,7 @@ public class ProductRepositoryImpl implements ProductRepository {
                 rs.getString("name"),
                 rs.getLong("price"),
                 rs.getString("image_url"),
-                rs.getBoolean("md_approved")
+                rs.getBoolean("md_approved") ? MdApprovalStatus.approved() : MdApprovalStatus.notApproved()
         ));
     }
 
@@ -51,12 +52,13 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public Product findProductById(Long id) {
-        String sql = "SELECT id, name, price, image_url FROM product WHERE id = ?";
+        String sql = "SELECT id, name, price, image_url, md_approved FROM product WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, new Object[]{id}, (rs, rowNum) -> new Product(
                 rs.getLong("id"),
                 rs.getString("name"),
                 rs.getLong("price"),
-                rs.getString("image_url")
+                rs.getString("image_url"),
+                rs.getBoolean("md_approved") ? MdApprovalStatus.approved() : MdApprovalStatus.notApproved()
         ));
     }
 
