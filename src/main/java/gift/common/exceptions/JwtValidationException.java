@@ -1,4 +1,8 @@
 package gift.common.exceptions;
 
-public record JwtValidationException() {
+public class JwtValidationException extends RuntimeException {
+
+    public JwtValidationException(String message) {
+        super(message);
+    }
 }
