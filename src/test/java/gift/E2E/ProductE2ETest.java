@@ -1,5 +1,5 @@
 // src/test/java/gift/controller/ProductControllerTest.java
-package gift;
+package gift.E2E;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -9,9 +9,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gift.E2E.fixture.ProductFixture;
 import gift.dto.ProductRequest;
 import gift.entity.product.Product;
-import gift.fixture.ProductFixture;
 import gift.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
