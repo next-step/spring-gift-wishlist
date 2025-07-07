@@ -1,9 +1,9 @@
 package gift.service;
 
-import gift.dto.TokenResponseDto;
-import gift.dto.UserRequestDto;
-import gift.dto.UserResponseDto;
+import gift.dto.*;
 import gift.entity.User;
+import gift.exception.ProductNotFoundException;
+import gift.exception.UserNotFoundException;
 import gift.repository.UserRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AuthService {
@@ -46,5 +48,33 @@ public class AuthService {
                 .setSubject(user.email())
                 .signWith(Keys.hmacShaKeyFor(jwtKey.getBytes()))
                 .compact());
+    }
+
+    public List<UserResponseDto> findAllUsers(){
+        return userRepository.findAllUsers().stream().map(UserResponseDto::new).collect(Collectors.toList());
+    }
+
+    public UserResponseDto findUserById(Long id) {
+        User user = userRepository.findUserById(id);
+        return new UserResponseDto(user);
+    }
+
+    public void deleteUser(Long id){
+        boolean flag = userRepository.deleteUser(id);
+        if(!flag) {
+            throw new ProductNotFoundException(id);
+        }
+    }
+
+    public UserResponseDto updateUser(Long id, UserRequestDto requestDto){
+        boolean flag = userRepository.updateUser(id, new User(requestDto.email(), requestDto.password()));
+
+        // 수정됐는지 검증
+        if(!flag) {
+            throw new UserNotFoundException(id);
+        }
+
+        User user = userRepository.findUserById(id);
+        return new UserResponseDto(user);
     }
 }

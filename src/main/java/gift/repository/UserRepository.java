@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 public class UserRepository {
@@ -47,6 +48,22 @@ public class UserRepository {
     public void checkUser(User user) {
         //못 찾거나 2개 이상 찾을 경우 예외 발생
         jdbcTemplate.queryForObject("SELECT id, email, password, created_at, role FROM users WHERE email=? AND password=?", userRowMapper(), user.email(), user.password());
+    }
+
+    public List<User> findAllUsers() {
+        return jdbcTemplate.query("SELECT id, email, password, created_at, role FROM users", userRowMapper());
+    }
+
+    public User findUserById(Long id) {
+        return jdbcTemplate.queryForObject("SELECT id, email, password, created_at, role FROM users WHERE id=?", userRowMapper(), id);
+    }
+
+    public boolean deleteUser(Long id) {
+        return jdbcTemplate.update("DELETE FROM users WHERE id = ?", id) != 0;
+    }
+
+    public boolean updateUser(Long id, User user) {
+        return jdbcTemplate.update("UPDATE users SET email = ?, password = ? WHERE id = ?", user.email(), user.password(), id) != 0;
     }
 
     // users 전체 조회용 RowMapper

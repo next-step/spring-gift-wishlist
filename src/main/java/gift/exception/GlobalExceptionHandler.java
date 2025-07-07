@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     // NOT_FOUND 응답하는 예외처리 핸들러
-    @ExceptionHandler({ProductNotFoundException.class, EmptyResultDataAccessException.class})
+    @ExceptionHandler({ProductNotFoundException.class, EmptyResultDataAccessException.class, UserNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleNotFound(RuntimeException e) {
         return e.getMessage();
