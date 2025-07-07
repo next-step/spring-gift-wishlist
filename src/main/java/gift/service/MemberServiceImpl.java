@@ -37,4 +37,18 @@ public class MemberServiceImpl implements MemberService {
         String token = jwtUtil.generateToken(savedMember.getEmail(), savedMember.getId(), savedMember.getRole());
         return new LoginResponseDto(token);
     }
+
+    @Override
+    @Transactional
+    public LoginResponseDto loginMember(MemberRequestDto dto) {
+        Member member = memberRepository.findByEmail(dto.email())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "잘못된 이메일입니다."));
+
+        if (!passwordEncoder.matches(dto.password(), member.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "잘못된 비밀번호입니다.");
+        }
+
+        String token = jwtUtil.generateToken(member.getEmail(), member.getId(), member.getRole());
+        return new LoginResponseDto(token);
+    }
 }

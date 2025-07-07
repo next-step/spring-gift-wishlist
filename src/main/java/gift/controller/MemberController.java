@@ -23,4 +23,10 @@ public class MemberController {
         LoginResponseDto response = memberService.saveMember(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody MemberRequestDto dto) {
+        LoginResponseDto response = memberService.loginMember(dto);
+        return ResponseEntity.ok(response);
+    }
 }

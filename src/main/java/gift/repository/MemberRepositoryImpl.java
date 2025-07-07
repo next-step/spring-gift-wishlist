@@ -1,13 +1,18 @@
 package gift.repository;
 
 import gift.entity.Member;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Optional;
 
 @Repository
 public class MemberRepositoryImpl implements MemberRepository {
@@ -41,4 +46,27 @@ public class MemberRepositoryImpl implements MemberRepository {
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, email);
         return count != null && count > 0;
     }
+
+    @Override
+    public Optional<Member> findByEmail(String email) {
+        String sql = "SELECT * FROM members WHERE email = ?";
+        try {
+            Member member = jdbcTemplate.queryForObject(sql, memberRowMapper, email);
+            return Optional.of(member);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    private final RowMapper<Member> memberRowMapper = new RowMapper<Member>() {
+        @Override
+        public Member mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new Member(
+                    rs.getLong("id"),
+                    rs.getString("email"),
+                    rs.getString("password"),
+                    rs.getString("role")
+            );
+        }
+    };
 }
