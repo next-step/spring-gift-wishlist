@@ -18,12 +18,12 @@ public class GlobalExceptionHandler {
         ItemNotFoundException e,
         HttpServletRequest request
     ) {
-        ErrorResponseDto dto = new ErrorResponseDto(
+        ErrorResponseDto errorResponse = new ErrorResponseDto(
             HttpStatus.NOT_FOUND,
             e.getMessage(),
             URI.create(request.getRequestURI())
         );
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(dto);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
