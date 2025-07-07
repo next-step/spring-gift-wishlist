@@ -7,6 +7,7 @@ import gift.exception.AlreadyRegisterException;
 import gift.exception.InvalidPasswordException;
 import gift.exception.NotRegisterException;
 import gift.repository.member.MemberRepository;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 
@@ -43,5 +44,31 @@ public class MemberServiceImpl implements MemberService {
     }
     Token token = jwtProvider.generateToken(memberByEmail);
     return token;
+  }
+
+  @Override
+  public List<Member> findAllMember() {
+    return repository.findAllMembers();
+  }
+
+  @Override
+  public Member findMemberById(Long id) {
+    return repository.findById(id).orElseThrow(() -> new IllegalStateException("member가 없습니다"));
+  }
+
+  @Override
+  public Member createMember(Member member) {
+    return repository.createMember(member);
+  }
+
+  @Override
+  public Member updateMember(Long id, Member member) {
+    return repository.updateMember(id, member)
+        .orElseThrow(() -> new IllegalStateException("member가 없습니다"));
+  }
+
+  @Override
+  public void deleteMember(Long id) {
+    repository.deleteMember(id);
   }
 }
