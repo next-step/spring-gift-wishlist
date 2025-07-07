@@ -25,7 +25,7 @@ public class MemberRespository {
         client.sql("insert into member (email, password, role) values (:email, :password, :role)")
                 .param("email", email)
                 .param("password", password)
-                .param("role", role)
+                .param("role", role.toString())
                 .update(keyHolder);
 
         return new Member(keyHolder.getKey().longValue(), email, password, role);
