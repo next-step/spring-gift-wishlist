@@ -1,6 +1,6 @@
 package gift.member.dto;
 
-public record MemberLoginResponse(
+public record MemberTokenResponse(
         String token
 ) {
 }

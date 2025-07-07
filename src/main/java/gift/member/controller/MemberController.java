@@ -2,7 +2,7 @@ package gift.member.controller;
 
 import gift.member.domain.Member;
 import gift.member.dto.MemberLoginRequest;
-import gift.member.dto.MemberLoginResponse;
+import gift.member.dto.MemberTokenResponse;
 import gift.member.dto.MemberRegisterRequest;
 import gift.member.service.MemberService;
 import jakarta.validation.Valid;
@@ -23,14 +23,15 @@ public class MemberController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Member> register(@Valid @RequestBody MemberRegisterRequest request) {
-        Member member = memberService.register(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(member);
+    public ResponseEntity<MemberTokenResponse> register(@Valid @RequestBody MemberRegisterRequest request) {
+        MemberTokenResponse response = memberService.register(request);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<MemberLoginResponse> login(@RequestBody MemberLoginRequest request) {
-        MemberLoginResponse response = memberService.login(request);
+    public ResponseEntity<MemberTokenResponse> login(@RequestBody MemberLoginRequest request) {
+        MemberTokenResponse response = memberService.login(request);
 
         return ResponseEntity.ok(response);
     }
