@@ -27,7 +27,8 @@ public class ProductService {
 
     public Long insert(ProductRequest request) {
         if (request.name().contains("카카오")) {
-            throw new InvalidProductException(ErrorCode.INVALID_KAKAO_NAME);
+            throw new InvalidProductException(ErrorCode.INVALID_KAKAO_NAME,
+                ErrorCode.INVALID_KAKAO_NAME.getErrorMessage());
         }
 
         Long id = productRepository.insert(ProductMapper.toEntity(request));
@@ -38,7 +39,8 @@ public class ProductService {
         productRepository.findById(request.id());
 
         if (request.name().contains("카카오")) {
-            throw new InvalidProductException(ErrorCode.INVALID_KAKAO_NAME);
+            throw new InvalidProductException(ErrorCode.INVALID_KAKAO_NAME,
+                ErrorCode.INVALID_KAKAO_NAME.getErrorMessage());
         }
 
         productRepository.update(request);

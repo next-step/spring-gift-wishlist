@@ -23,13 +23,14 @@ public class MemberService {
         this.jwtUtil = jwtUtil;
     }
 
-    public TokenResponse login(LoginRequest request){
+    public TokenResponse login(LoginRequest request) {
         Member member;
         try {
             member = memberRepository.findByEmail(request.email());
-        } catch(DataAccessException e){
+        } catch (DataAccessException e) {
             // member를 찾지 못한 경우: 해당 이메일로 가입한 계정이 없는 경우
-            throw new InvalidMemberException(ErrorCode.INCORRECT_LOGIN_INFO);
+            throw new InvalidMemberException(ErrorCode.INCORRECT_LOGIN_INFO,
+                ErrorCode.INCORRECT_LOGIN_INFO.getErrorMessage());
         }
 
         if(member==null || !member.getPassword().equals(request.password())){
@@ -45,7 +46,7 @@ public class MemberService {
         return memberRepository.insert(new Member(null, request.email(), request.password()));
     }
 
-    public MemberResponse findById(Long memberId){
+    public MemberResponse findById(Long memberId) {
         Member member = memberRepository.findById(memberId);
         return new MemberResponse(member.getEmail(), member.getPassword());
     }
@@ -56,7 +57,7 @@ public class MemberService {
         memberRepository.update(memberId, request);
     }
 
-    public void deleteById(Long memberId){
+    public void deleteById(Long memberId) {
         memberRepository.findById(memberId);
 
         memberRepository.deleteById(memberId);

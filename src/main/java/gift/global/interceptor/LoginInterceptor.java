@@ -25,8 +25,9 @@ public class LoginInterceptor implements HandlerInterceptor {
 
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if(header==null || !header.startsWith(BEARER_PREFIX)){
-            throw new InvalidTokenException(ErrorCode.INVALID_TOKEN_REQUEST);
+        if (header == null || !header.startsWith(BEARER_PREFIX)) {
+            throw new InvalidTokenException(ErrorCode.INVALID_TOKEN_REQUEST,
+                ErrorCode.INVALID_TOKEN_REQUEST.getErrorMessage());
         }
 
         String token = header.substring(BEARER_PREFIX.length());
