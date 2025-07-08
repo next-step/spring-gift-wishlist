@@ -5,6 +5,7 @@ import gift.dto.MemberLoginRequestDTO;
 import gift.dto.MemberRegisterRequestDTO;
 import gift.entity.Member;
 import gift.entity.Role;
+import gift.exception.LoginFailedException;
 import gift.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,10 +41,10 @@ public class MemberService {
 
     public AuthTokenResponseDTO login(MemberLoginRequestDTO request) {
         Member member = memberRepository.findByEmail(request.email())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다."));
+                .orElseThrow(() -> new LoginFailedException("존재하지 않는 이메일입니다."));
 
         if (!passwordEncoder.matches(request.password(), member.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new LoginFailedException("비밀번호가 일치하지 않습니다.");
         }
 
         String token = jwtTokenService.generateJwtToken(member);

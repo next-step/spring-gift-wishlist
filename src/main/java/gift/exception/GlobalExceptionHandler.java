@@ -17,6 +17,13 @@ public class GlobalExceptionHandler {
                 .body(e.getMessage());
     }
 
+    @ExceptionHandler(LoginFailedException.class)
+    public ResponseEntity<String> loginFailedException(LoginFailedException e) {
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(e.getMessage());
+    }
+
     @ExceptionHandler(EmptyResultDataAccessException.class)
     public ResponseEntity<String> emptyResultDataAccessException(EmptyResultDataAccessException e) {
         return ResponseEntity
