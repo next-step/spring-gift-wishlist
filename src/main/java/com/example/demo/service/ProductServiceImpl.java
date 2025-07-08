@@ -60,7 +60,6 @@ public class ProductServiceImpl implements ProductService{
   @Override
   public void productDeleteById(Long id) {
     productJdbcClientRepository.deleteProductById(id);
-
   }
 
   private ProductResponseDto toDto(Product product){
