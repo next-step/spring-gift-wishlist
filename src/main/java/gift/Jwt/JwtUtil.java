@@ -1,6 +1,7 @@
 package gift.Jwt;
 
 import gift.entity.User;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
@@ -24,7 +25,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .subject(user.id().toString())
                 .claim("email", user.email())
-                .claim("role", "USER")
+                .claim("role", user.role().name())
                 .issuedAt(now)
                 .expiration(expiry)
                 .signWith(key)
@@ -40,4 +41,11 @@ public class JwtUtil {
         }
     }
 
+    public Claims getClaims(String token) {
+        return Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+    }
 }

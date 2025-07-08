@@ -11,7 +11,7 @@ import java.util.List;
 public interface UserService {
     String registerUser(UserRegisterDto dto);
 
-    List<UserResponseDto> getUserList(String email);
+    List<UserResponseDto> getUserList(String email,boolean isAdmin);
 
     UserResponseDto finUserById(Long id);
 

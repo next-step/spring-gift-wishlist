@@ -7,6 +7,7 @@ import gift.dto.userDto.UserResponseDto;
 import gift.dto.userDto.UserUpdateDto;
 import gift.entity.User;
 import gift.entity.UserRole;
+import gift.exception.UserAuthorizationException;
 import gift.exception.UserDuplicatedException;
 import gift.exception.UserNotFoundException;
 import gift.exception.UserPasswordException;
@@ -58,7 +59,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserResponseDto> getUserList(String email) {
+    public List<UserResponseDto> getUserList(String email,boolean isAdmin) {
+
+        if (!isAdmin) {
+            System.out.println("권한이 없습니다.");
+            throw new UserAuthorizationException();
+        }
         List<User> users = getUsersByEmail(email);
         return addResponseDto(users);
     }
