@@ -3,6 +3,7 @@ package gift.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -14,14 +15,11 @@ import gift.domain.Member;
 public class MemberRepository {
 
     private final JdbcClient jdbcClient;
-    private static final RowMapper<Member> rowMapper = (rs, rowNum) -> Member.of(
-        rs.getLong("id"),
-        rs.getString("email"),
-        rs.getString("password")
-    );
+    private final RowMapper<Member> rowMapper;
 
     public MemberRepository(JdbcClient jdbcClient) {
         this.jdbcClient = jdbcClient;
+        this.rowMapper = new BeanPropertyRowMapper<>(Member.class);
     }
 
     public List<Member> findAll() {

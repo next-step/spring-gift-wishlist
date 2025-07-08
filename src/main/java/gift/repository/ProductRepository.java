@@ -3,6 +3,7 @@ package gift.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -14,15 +15,11 @@ import gift.domain.Product;
 public class ProductRepository {
 
     private final JdbcClient jdbcClient;
-    private static final RowMapper<Product> rowMapper = (rs, rowNum) -> Product.of(
-        rs.getLong("id"),
-        rs.getString("name"),
-        rs.getInt("price"),
-        rs.getString("imageUrl")
-    );
+    private final RowMapper<Product> rowMapper;
 
     public ProductRepository(JdbcClient jdbcClient) {
         this.jdbcClient = jdbcClient;
+        this.rowMapper = new BeanPropertyRowMapper<>(Product.class);
     }
 
     public List<Product> findAll() {
