@@ -1,6 +1,65 @@
-# 📦 상품 API
+# 👥 회원 API
 
-모든 HTTP 요청과 응답은 **JSON 형식**을 따릅니다.
+---
+
+<details>
+<summary>🎫 회원 가입</summary>
+
+### Request
+
+```json
+POST /api/members/register HTTP/1.1
+Content-Type: application/json
+host: localhost:8080
+
+{
+    "email": "admin@email.com",
+    "password": "password"
+}
+```
+
+### Response
+
+```json
+HTTP/1.1 201 Created
+Content-Type: application/json
+
+{
+    "token": ""
+}
+```
+    
+</details>
+<details>
+<summary>🔑 로그인</summary>
+
+### Request
+
+```json
+POST /api/members/login HTTP/1.1
+Content-Type: application/json
+host: localhost:8080
+
+{
+    "email": "abc@gmail.com",
+    "password": "123qwe"
+}
+```
+
+### Response
+
+```json
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "token": ""
+}
+```
+
+</details>
+
+# 📦 상품 API
 
 ---
 
@@ -16,7 +75,7 @@ GET /api/products HTTP/1.1
 ### Response
 
 ```json
-HTTP/1.1 200
+HTTP/1.1 200 OK
 Content-Type: application/json
 
 [
@@ -48,7 +107,7 @@ GET /api/products/{productId} HTTP/1.1
 ### Response
 
 ```json
-HTTP/1.1 200
+HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
@@ -137,6 +196,37 @@ DELETE /api/products/{productId} HTTP/1.1
 HTTP/1.1 204 No Content
 ```
 
+</details>
+
+# 👤 유저 화면
+
+---
+
+<details>
+<summary>✅ 로그인 및 회원가입</summary>
+
+### 로그인
+
+[GET] http://localhost:8080/members/login  
+→ 로그인 화면으로 이동합니다.
+
+### 특정 상품 조회
+
+[GET] http://localhost:8080/members/register  
+→ 회원 가입 화면으로 이동합니다.
+</details>
+<details>
+<summary>🔎 상품 조회</summary>
+
+### 전체 상품 목록
+
+[GET] http://localhost:8080/members/products  
+→ 등록된 모든 상품을 목록으로 확인할 수 있는 화면입니다.
+
+### 특정 상품 조회
+
+[GET] http://localhost:8080/members/products/{productId}  
+→ 선택한 상품의 상세 정보를 확인할 수 있는 화면입니다.
 </details>
 
 # 🧑‍💻 관리자 화면
@@ -286,3 +376,14 @@ create table product
 - 상품 이름 (특수 문자 실패)
 - 상품 이름 (MD 승인 글자)
 - 상품 가격 (0원 이상 실패)
+</details>
+
+# 🔐 JWT 인증
+
+---
+
+<details>
+<summary>참고 자료</summary>
+
+- [JWT 로그인 흐름 이해하기](https://lincoding.tistory.com/55)
+</details>

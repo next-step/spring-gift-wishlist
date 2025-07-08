@@ -5,7 +5,7 @@
   <title>상품 상세</title>
   <link rel="stylesheet" th:href="@{/css/kakao-style.css}"/>
 </head>
-<body class="admin-page">
+<body>
 
 <h1>상품 상세 정보</h1>
 
@@ -16,8 +16,7 @@
 </div>
 
 <div class="buttons">
-  <a th:href="@{/admin/products/edit/{id}(id=${product.id})}" class="button">수정하기</a>
-  <a href="/admin/products" class="button">목록으로</a>
+  <a href="/members/products" class="button">목록으로</a>
 </div>
 
 </body>

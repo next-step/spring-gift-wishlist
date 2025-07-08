@@ -1,8 +1,12 @@
 package gift.front.exception;
 
 import gift.api.dto.ErrorResponseDto;
+import gift.exception.AuthenticationException;
+import gift.exception.AuthorizationException;
+import gift.exception.LoginFailedException;
 import gift.exception.ProductNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.Objects;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -17,8 +21,6 @@ public class FrontExceptionHandler {
             ProductNotFoundException ex,
             Model model,
             HttpServletRequest request) {
-
-        ex.printStackTrace();
 
         ErrorResponseDto error = new ErrorResponseDto(
                 HttpStatus.NOT_FOUND.value(),
@@ -37,12 +39,61 @@ public class FrontExceptionHandler {
             Model model,
             HttpServletRequest request) {
 
-        ex.printStackTrace();
-
         ErrorResponseDto error = new ErrorResponseDto(
                 HttpStatus.BAD_REQUEST.value(),
                 HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                ex.getBindingResult().getFieldError().getDefaultMessage(),
+                Objects.requireNonNull(ex.getBindingResult().getFieldError()).getDefaultMessage(),
+                request.getRequestURI()
+        );
+        model.addAttribute("errorInfo", error);
+
+        return "error";
+    }
+
+    @ExceptionHandler(LoginFailedException.class)
+    public String handleLoginFailedException(
+            LoginFailedException ex,
+            Model model,
+            HttpServletRequest request) {
+
+        ErrorResponseDto error = new ErrorResponseDto(
+                HttpStatus.FORBIDDEN.value(),
+                HttpStatus.FORBIDDEN.getReasonPhrase(),
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        model.addAttribute("errorInfo", error);
+
+        return "error";
+    }
+
+    @ExceptionHandler(AuthorizationException.class)
+    public String handleAuthorizationException(
+            AuthorizationException ex,
+            Model model,
+            HttpServletRequest request) {
+
+        ErrorResponseDto error = new ErrorResponseDto(
+                HttpStatus.FORBIDDEN.value(),
+                HttpStatus.FORBIDDEN.getReasonPhrase(),
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        model.addAttribute("errorInfo", error);
+
+        return "error";
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public String handleAuthenticationException(
+            AuthenticationException ex,
+            Model model,
+            HttpServletRequest request) {
+
+        ErrorResponseDto error = new ErrorResponseDto(
+                HttpStatus.UNAUTHORIZED.value(),
+                HttpStatus.UNAUTHORIZED.getReasonPhrase(),
+                ex.getMessage(),
                 request.getRequestURI()
         );
         model.addAttribute("errorInfo", error);
@@ -55,8 +106,6 @@ public class FrontExceptionHandler {
             Exception ex,
             Model model,
             HttpServletRequest request) {
-
-        ex.printStackTrace();
 
         ErrorResponseDto error = new ErrorResponseDto(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
