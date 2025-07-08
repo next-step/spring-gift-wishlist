@@ -71,7 +71,7 @@ public class GlobalExceptionHandler {
                 "중복 이메일",
                 e.getMessage()
         );
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
 
     public record ErrorResponse(String errorCode, String message) {}
