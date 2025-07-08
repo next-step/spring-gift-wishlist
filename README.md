@@ -16,4 +16,14 @@
     Bean Validation 이용하여
     도메인 검증 + DTO 검증 (이중 검증)
 
-## 
+## 비밀번호 암호화 진행
+    PasswordConfig 생성 
+    BCryptPasswordEncoder 사용
+
+## MemberRepository 
+    SimpleJdbcInsert 이용하여 ID 자동 생성
+    회원저장 save() 메소드
+    이메일로 회원 찾기 findByEmail() 메소드
+    ID로 회원 찾기 findById() 메소드 
+
+
