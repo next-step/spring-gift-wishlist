@@ -3,6 +3,7 @@ package gift.user;
 import gift.user.entity.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import java.util.Date;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,7 +16,12 @@ public class JwtTokenProvider {
         .setSubject(user.getId().toString())
         .claim("email", user.getEmail())
         .claim("role", user.getRole().toString())
+        .expiration(createExpirationDate())
         .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
         .compact();
+  }
+  private Date createExpirationDate() {
+    long EXPIRATION_MINUTES = 30;
+    return new Date(System.currentTimeMillis() + EXPIRATION_MINUTES * 60 * 1000);
   }
 }
