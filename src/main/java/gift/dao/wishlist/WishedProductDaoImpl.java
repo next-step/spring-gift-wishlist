@@ -3,12 +3,14 @@ package gift.dao.wishlist;
 import gift.entity.WishedProduct;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public class WishedProductDaoImpl implements WishedProductDao {
     private final JdbcClient jdbcClient;
 

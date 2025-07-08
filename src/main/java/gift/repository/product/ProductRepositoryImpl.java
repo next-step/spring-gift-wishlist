@@ -27,7 +27,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     public CustomPage<Product> findAll(int page, int size) {
-        var builder = new CustomPage.Builder<>(
+        var builder = CustomPage.builder(
             productDao.findAll(page, size),
             productDao.count())
             .page(page)
