@@ -19,7 +19,7 @@ public class JwtAuthService {
                 .compact();
     }
 
-    //TODO: 토큰을 검증 -> 로그인 이후의 동작,,,
+    //TODO: 토큰을 검증 -> 로그인 이후의 동작 (wishList -> 사용자별 wishList 존재)
     public void checkValidation(String token) {
         //헤더가 유효하지 않거나 토큰이 유효하지 않은 경우 : 401
     }
