@@ -1,163 +1,166 @@
 package gift.product;
 
-import gift.AbstractControllerTest;
-import gift.dto.ProductCreateRequest;
-import gift.entity.Product;
-import org.junit.jupiter.api.Assertions;
+import gift.dto.product.ProductUpdateRequest;
+import io.restassured.RestAssured;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.restdocs.payload.FieldDescriptor;
+import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.restdocs.request.ParameterDescriptor;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import java.util.List;
 
-public class ProductUpdateTest extends AbstractControllerTest {
+import static org.hamcrest.Matchers.notNullValue;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
+
+public class ProductUpdateTest extends AbstractProductTest {
+
+    private static final ParameterDescriptor[] PRODUCT_UPDATE_PATH_PARAMETERS = {
+            parameterWithName("id").description("수정할 제품 ID")
+    };
+
+    private static final FieldDescriptor[] PRODUCT_UPDATE_REQUEST = {
+            fieldWithPath("name").description("수정된 제품 이름").type(JsonFieldType.STRING).optional(),
+            fieldWithPath("price").description("수정된 제품 가격").type(JsonFieldType.NUMBER).optional(),
+            fieldWithPath("imageUrl").description("수정된 제품 이미지 URL").type(JsonFieldType.STRING).optional()
+    };
+
+    private static final FieldDescriptor[] PRODUCT_UPDATE_RESPONSE = {
+            fieldWithPath("id").description("제품 ID").type(JsonFieldType.NUMBER),
+            fieldWithPath("name").description("제품 이름").type(JsonFieldType.STRING),
+            fieldWithPath("price").description("제품 가격").type(JsonFieldType.NUMBER),
+            fieldWithPath("imageUrl").description("제품 이미지 URL").type(JsonFieldType.STRING)
+    };
 
     @Test
-    @DisplayName("제품 수정 시 200 반환")
-    public void 제품_수정_시_200_반환() {
-        String url = getBaseUrl() + "/api/products/1"; // 존재하는 제품 ID로 변경
-        ProductCreateRequest request = new ProductCreateRequest("수정된 제품", 1500L, "수정된 이미지 URL", null);
-        ResponseEntity<Product> response = restClient.put()
-                .uri(url)
+    @DisplayName("제품 수정 성공 테스트")
+    public void Product_Update_Success() {
+        String url = getBaseUrl() + "/api/products/{id}";
+        ProductUpdateRequest request = new ProductUpdateRequest("수정된 제품", 1500L, "수정된 이미지 URL");
+        RestAssured.given(this.spec)
+                .filter(document("상품 수정 성공",
+                        pathParameters(PRODUCT_UPDATE_PATH_PARAMETERS),
+                        requestHeaders(AUTHENTICATE_HEADERS),
+                        requestFields(PRODUCT_UPDATE_REQUEST),
+                        responseFields(PRODUCT_UPDATE_RESPONSE)))
+                .contentType("application/json")
+                .header(AUTH_HEADER_KEY, this.adminToken) // 관리자 권한으로 요청
                 .body(request)
-                .retrieve()
-                .toEntity(new ParameterizedTypeReference<Product>() {});
-
-        assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-        assertThat(response.getBody()).isNotNull();
+                .when()
+                .put(url, 1) // 존재하는 제품 ID로 변경
+                .then()
+                .statusCode(200)
+                .body("id", notNullValue())
+                .body("name", notNullValue())
+                .body("price", notNullValue())
+                .body("imageUrl", notNullValue());
     }
 
     @Test
-    @DisplayName("제품 수정 특정 필드 누락 시 200 반환")
-    public void 제품_수정_특정_필드_누락_시_200_반환() {
-        String url = getBaseUrl() + "/api/products/1"; // 존재하는 제품 ID로 변경
-        ProductCreateRequest request = new ProductCreateRequest("수정된 제품", null, "수정된 이미지 URL", null); // 가격 필드 누락
-        ResponseEntity<Product> response = restClient.put()
-                .uri(url)
+    @DisplayName("제품 수정 성공 테스트: 특정 필드 누락 가능")
+    public void update_Product_Success_With_Partial_Request() {
+        String url = getBaseUrl() + "/api/products/{id}"; // 존재하는 제품 ID로 변경
+        ProductUpdateRequest request = new ProductUpdateRequest("수정된 제품", null, "수정된 이미지 URL"); // 가격 필드 누락
+
+        RestAssured.given(this.spec)
+                .filter(document("상품 수정 성공 - 특정 필드 누락",
+                        pathParameters(PRODUCT_UPDATE_PATH_PARAMETERS),
+                        requestHeaders(AUTHENTICATE_HEADERS),
+                        requestFields(PRODUCT_UPDATE_REQUEST),
+                        responseFields(PRODUCT_UPDATE_RESPONSE)))
+                .contentType("application/json")
+                .header(AUTH_HEADER_KEY, this.adminToken) // 관리자 권한으로 요청
                 .body(request)
-                .retrieve()
-                .toEntity(new ParameterizedTypeReference<Product>() {});
-        assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-        assertThat(response.getBody()).isNotNull();
+                .when()
+                .put(url, 1) // 존재하는 제품 ID로 변경
+                .then()
+                .statusCode(200)
+                .body("id", notNullValue())
+                .body("name", notNullValue())
+                .body("price", notNullValue())
+                .body("imageUrl", notNullValue());
     }
 
-    @Test
-    @DisplayName("제품 수정 카카오 MD 권한 시 200 반환")
-    public void 제품_수정_카카오_md_권한_시_200_반환() {
-        String url = getBaseUrl() + "/api/products/1"; // 존재하는 제품 ID로 변경
-        ProductCreateRequest request = new ProductCreateRequest("MD 권한 카카오 수정 제품", 2000L, "수정된 이미지 URL", null);
-        ResponseEntity<Product> response = restClient.put()
-                .uri(url)
-                .header("X-User-Role", "ROLE_MD") // MD 권한으로 요청
-                .body(request)
-                .retrieve()
-                .toEntity(new ParameterizedTypeReference<Product>() {});
-
-        assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-        assertThat(response.getBody()).isNotNull();
-    }
 
     @Test
-    @DisplayName("제품 수정 유효성 검사 실패 시 400 반환")
-    public void 제품_수정_유효성_검사_실패_시_400_반환() {
-        String url = getBaseUrl() + "/api/products/1"; // 존재하는 제품 ID로 변경
-        ProductCreateRequest request = new ProductCreateRequest("<><><><><><><><><><><><><>",
-                1000L, "이미지 URL", null); // 유효하지 않은 데이터
-        try {
-            ResponseEntity<Product> response = restClient.put()
-                    .uri(url)
+    @DisplayName("제품 수정 실패 테스트 : 유효성 검사 실패 시 400 반환")
+    public void update_Product_Validation_Failure_Returns_400() {
+        String url = getBaseUrl() + "/api/products/{id}";
+        Long validId = this.testProductIds.getFirst().id(); // 테스트용 제품 ID 가져오기
+
+        List<ProductUpdateRequest> invalidRequests = List.of(
+                new ProductUpdateRequest("", 1000L, "이미지 URL"), // 이름 필드 비어있음
+                new ProductUpdateRequest("유효한 이름", -100L, "이미지 URL"), // 가격 필드 음수
+                new ProductUpdateRequest("유효하지않은 이름<>", 1000L, "") // 이름 필드 유효하지 않음
+        );
+
+        for (ProductUpdateRequest request : invalidRequests) {
+            RestAssured.given(this.spec)
+                    .filter(document("상품 수정 실패 - 유효성 검사 실패",
+                            pathParameters(PRODUCT_UPDATE_PATH_PARAMETERS),
+                            requestHeaders(AUTHENTICATE_HEADERS),
+                            requestFields(PRODUCT_UPDATE_REQUEST),
+                            responseFields(ERROR_MESSAGE_FIELDS)))
+                    .contentType("application/json")
+                    .header(AUTH_HEADER_KEY, this.adminToken) // 관리자 권한으로 요청
                     .body(request)
-                    .retrieve()
-                    .toEntity(new ParameterizedTypeReference<Product>() {
-                    });
-            Assertions.fail("예외가 발생해야 합니다.");
-        } catch (HttpClientErrorException e) {
-            checkErrorResponse(e, 400);
+                    .when()
+                    .put(url, validId) // 존재하는 제품 ID로 변경
+                    .then()
+                    .statusCode(400);
         }
     }
 
     @Test
-    @DisplayName("제품 수정 카카오 유효성 검사 실패 시 400 반환")
-    public void 제품_수정_카카오_유효성_검사_실패_시_400_반환() {
-        String url = getBaseUrl() + "/api/products/1"; // 존재하는 제품 ID로 변경
-        ProductCreateRequest request = new ProductCreateRequest("카카오 수정 제품", 1000L, "이미지 URL", false); // 유효하지 않은 카카오 데이터
-        try {
-            ResponseEntity<Product> response = restClient.put()
-                    .uri(url)
-                    .body(request)
-                    .retrieve()
-                    .toEntity(new ParameterizedTypeReference<Product>() {});
-            Assertions.fail("예외가 발생해야 합니다.");
-        } catch (HttpClientErrorException e) {
-            checkErrorResponse(e, 400);
-        }
-    }
+    @DisplayName("제품 패치 성공 테스트")
+    public void Product_Patch_Success() {
+        String url = getBaseUrl() + "/api/products/{id}";
+        ProductUpdateRequest request =
+                new ProductUpdateRequest("패치된 제품", 1500L, "패치된 이미지 URL");
 
-    @Test
-    @DisplayName("제품 패치 시 200 반환")
-    public void 제품_패치_특정_필드_누락_시_200_반환() {
-        String url = getBaseUrl() + "/api/products/1"; // 존재하는 제품 ID로 변경
-        ProductCreateRequest request = new ProductCreateRequest("수정된 제품", null, "www.modified.com", null); // 가격 필드 누락
-        ResponseEntity<Product> response = restClient.patch()
-                .uri(url)
+        RestAssured.given(this.spec)
+                .filter(document("상품 패치 성공",
+                        pathParameters(PRODUCT_UPDATE_PATH_PARAMETERS),
+                        requestHeaders(AUTHENTICATE_HEADERS),
+                        requestFields(PRODUCT_UPDATE_REQUEST),
+                        responseFields(PRODUCT_UPDATE_RESPONSE)))
+                .contentType("application/json")
+                .header(AUTH_HEADER_KEY, this.adminToken) // 관리자 권한으로 요청
                 .body(request)
-                .retrieve()
-                .toEntity(new ParameterizedTypeReference<Product>() {});
-        assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-        assertThat(response.getBody()).isNotNull();
+                .when()
+                .patch(url, 1) // 존재하는 제품 ID로 변경
+                .then()
+                .statusCode(200)
+                .body("id", notNullValue())
+                .body("name", notNullValue())
+                .body("price", notNullValue())
+                .body("imageUrl", notNullValue());
     }
 
     @Test
-    @DisplayName("제품 패치 카카오 MD 권한 시 200 반환")
-    public void 제품_패치_카카오_md_권한_시_200_반환() {
-        String url = getBaseUrl() + "/api/products/1"; // 존재하는 제품 ID로 변경
-        ProductCreateRequest request = new ProductCreateRequest("MD 권한 카카오 수정 제품", 2000L, "www.modified.com", true);
-        ResponseEntity<Product> response = restClient.patch()
-                .uri(url)
-                .header("X-User-Role", "ROLE_MD") // MD 권한으로 요청
+    @DisplayName("제품 패치 실패 테스트 : 이름 필드 유효성 검사 실패 시 400 반환")
+    public void Product_Patch_Validation_Failure_Returns_400() {
+        String url = getBaseUrl() + "/api/products/{id}";
+        ProductUpdateRequest request =
+                new ProductUpdateRequest("<><><><><><><><><><><><><>",
+                1000L, "이미지 URL"); // 유효하지 않은 데이터
+
+        RestAssured.given(this.spec)
+                .filter(document("상품 패치 실패 - 유효성 검사 실패",
+                        pathParameters(PRODUCT_UPDATE_PATH_PARAMETERS),
+                        requestHeaders(AUTHENTICATE_HEADERS),
+                        requestFields(PRODUCT_UPDATE_REQUEST),
+                        responseFields(ERROR_MESSAGE_FIELDS)))
+                .contentType("application/json")
+                .header(AUTH_HEADER_KEY, this.adminToken) // 관리자 권한으로 요청
                 .body(request)
-                .retrieve()
-                .toEntity(new ParameterizedTypeReference<Product>() {});
-
-        assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-        assertThat(response.getBody()).isNotNull();
-    }
-
-    @Test
-    @DisplayName("제품 패치 유효성 검사 실패 시 400 반환")
-    public void 제품_패치_유효성_검사_실패_시_400_반환() {
-        String url = getBaseUrl() + "/api/products/1"; // 존재하는 제품 ID로 변경
-        ProductCreateRequest request = new ProductCreateRequest("<><><><><><><><><><><><><>",
-                1000L, "이미지 URL", null); // 유효하지 않은 데이터
-        try {
-            ResponseEntity<Product> response = restClient.patch()
-                    .uri(url)
-                    .body(request)
-                    .retrieve()
-                    .toEntity(new ParameterizedTypeReference<Product>() {
-                    });
-            Assertions.fail("예외가 발생해야 합니다.");
-        } catch (HttpClientErrorException e) {
-            checkErrorResponse(e, 400);
-        }
-    }
-
-    @Test
-    @DisplayName("제품 패치 카카오 유효성 검사 실패 시 400 반환")
-    public void 제품_패치_카카오_유효성_검사_실패_시_400_반환() {
-        String url = getBaseUrl() + "/api/products/1"; // 존재하는 제품 ID로 변경
-        ProductCreateRequest request = new ProductCreateRequest("카카오 수정 제품", 1000L, "이미지 URL", false); // 유효하지 않은 카카오 데이터
-        try {
-            ResponseEntity<Product> response = restClient.patch()
-                    .uri(url)
-                    .body(request)
-                    .retrieve()
-                    .toEntity(new ParameterizedTypeReference<Product>() {});
-            Assertions.fail("예외가 발생해야 합니다.");
-        } catch (HttpClientErrorException e) {
-            checkErrorResponse(e, 400);
-        }
+                .when()
+                .patch(url, 1) // 존재하는 제품 ID로 변경
+                .then()
+                .statusCode(400);
     }
 }

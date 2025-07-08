@@ -1,5 +1,6 @@
 async function requestDeleteProduct(element) {
     const id = element.parentNode.querySelector("input").value;
+
     const res = await fetch(`/api/products/${id}`, {
         "method": "DELETE",
         "headers": {
