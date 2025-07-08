@@ -25,7 +25,7 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @PostMapping("/register")
+    @PostMapping
     public ResponseEntity<MemberInfo> register(
             @Valid @RequestBody MemberRegisterRequestDto requestDto) {
         var createdMember = memberService.register(requestDto);
