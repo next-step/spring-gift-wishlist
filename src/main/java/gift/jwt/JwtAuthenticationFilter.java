@@ -26,6 +26,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         jwtUtil.validateToken(token);
 
+        request.setAttribute("resolvedToken", token);
+
         filterChain.doFilter(request, response);
     }
 

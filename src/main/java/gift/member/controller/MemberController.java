@@ -46,7 +46,7 @@ public class MemberController {
 
     @GetMapping
     public ResponseEntity<MemberResponse> getCurrentUser(HttpServletRequest request) {
-        String token = request.getHeader("Authorization");
+        String token = (String) request.getAttribute("resolvedToken");
 
         return ResponseEntity.ok(memberService.getCurrentUser(token));
     }

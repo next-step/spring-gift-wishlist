@@ -16,10 +16,17 @@ public class FilterConfig {
     }
 
     @Bean
-    public FilterRegistrationBean<JwtAuthenticationFilter> jwtAuthenticationFilter() {
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter(jwtUtil);
+    }
+
+    @Bean
+    public FilterRegistrationBean<JwtAuthenticationFilter> jwtAuthenticationFilterRegistration(
+        JwtAuthenticationFilter jwtAuthenticationFilter
+    ) {
         FilterRegistrationBean<JwtAuthenticationFilter> registrationBean
             = new FilterRegistrationBean<>();
-        registrationBean.setFilter(new JwtAuthenticationFilter(jwtUtil));
+        registrationBean.setFilter(jwtAuthenticationFilter);
         registrationBean.addUrlPatterns("/api/members");
         registrationBean.setOrder(1);
         return registrationBean;

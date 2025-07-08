@@ -13,13 +13,13 @@ import java.util.Date;
 import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 @Component
 public class JwtUtil {
 
     private static final String AUTHORIZATION_KEY = "auth";
-    private static final Long ACCESS_TOKEN_EXPIRE = 1000 * 60 * 20L; // 20분
+    private static final String ID_KEY = "id";
+    private static final Long ACCESS_TOKEN_EXPIRE = 1000 * 60 * 10L; // 10분
 
     private final SecretKey secretKey;
 
@@ -30,7 +30,7 @@ public class JwtUtil {
 
     public String createAccessToken(Member member) {
         return Jwts.builder()
-            .claim("id", member.getId())
+            .claim(ID_KEY, member.getId())
             .claim(AUTHORIZATION_KEY, member.getUserRole().name())
             .issuedAt(new Date(System.currentTimeMillis()))
             .expiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRE))
@@ -53,7 +53,6 @@ public class JwtUtil {
     }
 
     private Claims parseClaims(String token) {
-        token = resolveToken(token);
         try {
             return Jwts.parser()
                 .verifyWith(secretKey)
@@ -67,14 +66,6 @@ public class JwtUtil {
 
     public Long getIdFromToken(String token) {
         Claims claims = parseClaims(token);
-        return claims.get("id", Long.class);
-    }
-
-    private String resolveToken(String token) {
-        if (StringUtils.hasText(token) && token.startsWith("Bearer")) {
-            return token.substring(7);
-        }
-
-        return null;
+        return claims.get(ID_KEY, Long.class);
     }
 }
