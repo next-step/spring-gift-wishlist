@@ -1,7 +1,6 @@
 package gift.repository;
 
 import gift.entity.Member;
-import gift.entity.Product;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;

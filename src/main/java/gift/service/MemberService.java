@@ -5,4 +5,6 @@ import gift.dto.AuthRequest;
 
 public interface MemberService {
     AuthToken register(AuthRequest request);
+
+    AuthToken login(AuthRequest request);
 }

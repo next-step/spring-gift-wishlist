@@ -25,4 +25,10 @@ public class MemberController {
         AuthToken token = memberService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(token);
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthToken> login(@Valid @RequestBody AuthRequest request) {
+        AuthToken token = memberService.login(request);
+        return ResponseEntity.status(HttpStatus.OK).body(token);
+    }
 }
