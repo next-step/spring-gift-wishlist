@@ -8,9 +8,6 @@ import gift.entity.Member;
 import gift.exception.CustomException;
 import gift.exception.ErrorCode;
 import gift.repository.MemberRepository;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-import javax.crypto.SecretKey;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,10 +15,11 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
 
-    private final String key = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E";
+    private final TokenService tokenService;
 
-    public MemberServiceImpl(MemberRepository memberRepository) {
+    public MemberServiceImpl(MemberRepository memberRepository, TokenService tokenService) {
         this.memberRepository = memberRepository;
+        this.tokenService = tokenService;
     }
 
     @Override
@@ -29,7 +27,7 @@ public class MemberServiceImpl implements MemberService {
         throwIfMemberFindByEmail(requestDto.email());
         Member newMember = new Member(null, requestDto.email(), requestDto.password(), "user");
         Member savedMember = memberRepository.createMember(newMember);
-        String accessToken = createAccessToken(savedMember);
+        String accessToken = tokenService.createAccessToken(savedMember);
         return new JWTResponseDto(accessToken);
     }
 
@@ -40,7 +38,7 @@ public class MemberServiceImpl implements MemberService {
         if (!isCorrectPassword(find, requestDto.password())) {
             throw new CustomException(ErrorCode.Unauthorized);
         }
-        String accessToken = createAccessToken(find);
+        String accessToken = tokenService.createAccessToken(find);
         return new JWTResponseDto(accessToken);
     }
 
@@ -78,15 +76,5 @@ public class MemberServiceImpl implements MemberService {
 
     private Boolean isCorrectPassword(Member member, String password) {
         return member.getPassword().equals(password);
-    }
-
-    private String createAccessToken(Member member) {
-        String accessToken = Jwts.builder()
-                .setSubject(member.getId().toString())
-                .claim("email", member.getEmail())
-                .claim("role", member.getRole())
-                .signWith(Keys.hmacShaKeyFor(key.getBytes()))
-                .compact();
-        return accessToken;
     }
 }

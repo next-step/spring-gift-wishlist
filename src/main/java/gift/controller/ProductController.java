@@ -6,20 +6,14 @@ import gift.entity.Member;
 import gift.exception.CustomException;
 import gift.exception.ErrorCode;
 import gift.service.ProductService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
+import gift.service.TokenService;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
-import javax.crypto.SecretKey;
-import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.Mapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -34,17 +28,18 @@ public class ProductController {
 
     private final ProductService productService;
 
-    private final String key = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E";
+    private final TokenService tokenService;
 
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, TokenService tokenService) {
         this.productService = productService;
+        this.tokenService = tokenService;
     }
 
     @PostMapping
     public ResponseEntity<ProductResponseDto> createProduct(
             @Valid @RequestBody CreateProductRequestDto requestDto,
             @RequestHeader(value = "Authorization") String token) {
-        Optional<Member> optionalMember = isValidateToken(token);
+        Optional<Member> optionalMember = tokenService.isValidateToken(token);
         if (optionalMember.isEmpty()) {
             throw new CustomException(ErrorCode.NotLogin);
         }
@@ -69,7 +64,7 @@ public class ProductController {
             @PathVariable Long id,
             @Valid @RequestBody CreateProductRequestDto requestDto,
             @RequestHeader(value = "Authorization") String token) {
-        Optional<Member> optionalMember = isValidateToken(token);
+        Optional<Member> optionalMember = tokenService.isValidateToken(token);
         if (optionalMember.isEmpty()) {
             throw new CustomException(ErrorCode.NotLogin);
         }
@@ -82,27 +77,11 @@ public class ProductController {
     public ResponseEntity<Void> deleteProductById(
             @PathVariable Long id,
             @RequestHeader(value = "Authorization") String token) {
-        Optional<Member> optionalMember = isValidateToken(token);
+        Optional<Member> optionalMember = tokenService.isValidateToken(token);
         if (optionalMember.isEmpty()) {
             throw new CustomException(ErrorCode.NotLogin);
         }
         productService.deleteProductById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    private Optional<Member> isValidateToken(String token) {
-        try {
-            Claims claims = Jwts.parser()
-                    .verifyWith(Keys.hmacShaKeyFor(key.getBytes()))
-                    .build()
-                    .parseSignedClaims(token)
-                    .getPayload();
-            Member find = new Member(null, claims.get("email", String.class), null,
-                    claims.get("role", String.class));
-            return Optional.of(find);
-
-        } catch (Exception e) {
-            return Optional.empty();
-        }
     }
 }
