@@ -7,15 +7,14 @@ public class Member {
     private String email;
     private String password;
 
-    public Member(MemberRequestDto memberRequestDto) {
-        email = memberRequestDto.email();
-        password = memberRequestDto.password();
-    }
-
     public Member(Long id, String email, String password) {
         this.id = id;
         this.email = email;
         this.password = password;
+    }
+
+    public Member(MemberRequestDto memberRequestDto) {
+        this(null, memberRequestDto.email(), memberRequestDto.password());
     }
 
     public Long getId() {
