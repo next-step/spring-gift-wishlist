@@ -72,7 +72,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     private void throwIfPasswordIncorrect(Member member, String password) {
-        if (member.getPassword().equals(password)) {
+        if (!member.getPassword().equals(password)) {
             throw new CustomException(ErrorCode.Unauthorized);
         }
     }
