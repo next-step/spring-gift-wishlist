@@ -11,3 +11,9 @@
     -> of() 는 DB 조회한 데이터로 객체 생성
     -> create() 는 새로운 회원가입을 위한 객체 생성
 
+## DTO
+    MemberRequest 와 AuthResponse 
+    Bean Validation 이용하여
+    도메인 검증 + DTO 검증 (이중 검증)
+
+## 
