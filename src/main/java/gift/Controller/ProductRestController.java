@@ -2,18 +2,17 @@ package gift.Controller;
 
 import gift.Entity.Product;
 import gift.dto.ProductDto;
-import gift.service.ProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-public class ProductDBController {
+public class ProductRestController {
 
     private final ProductDto productDto;
 
-    public ProductDBController(ProductDto productDto) {
+    public ProductRestController(ProductDto productDto) {
         this.productDto = productDto;
     }
 

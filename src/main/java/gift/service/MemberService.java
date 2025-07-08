@@ -16,14 +16,11 @@ public class MemberService {
         this.jwtUtil = jwtUtil;
     }
 
-    // 회원가입
     public void register(Member member) {
-        // 아이디 중복 체크
         if (memberDto.selectId(member.getId()) != null) {
             throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
         }
 
-        // 유저의 권한을 설정
         if (member.getRole() == null) {
             member.setRole("USER");
         }
@@ -31,7 +28,6 @@ public class MemberService {
         memberDto.insertMember(member);
     }
 
-    // 로그인
     public String login(String id, String rawPassword) {
         Member member = memberDto.selectId(id);
 

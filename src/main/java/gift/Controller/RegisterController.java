@@ -22,11 +22,12 @@ public class RegisterController {
         return "register";
     }
 
-    @PostMapping
-    public String createProduct(@ModelAttribute @Valid Member member,
+    @PostMapping("/register")
+    public String userRegister(@ModelAttribute @Valid Member member,
                                 BindingResult bindingResult,
                                 Model model) {
-        if (!bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("member", member);
             return "register";
         }
 

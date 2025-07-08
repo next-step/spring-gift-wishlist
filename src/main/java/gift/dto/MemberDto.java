@@ -1,6 +1,7 @@
 package gift.dto;
 
 import gift.Entity.Member;
+import gift.Entity.Product;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
@@ -40,7 +41,8 @@ public class MemberDto {
         return client.sql(sql)
                 .param("email", email)
                 .query(memberRowMapper())
-                .single();
+                .optional()
+                .orElse(null);
     }
 
     public Member selectId(String id) {
@@ -52,7 +54,33 @@ public class MemberDto {
         return client.sql(sql)
                 .param("id", id)
                 .query(memberRowMapper())
-                .single();
+                .optional()
+                .orElse(null);
+    }
+
+    public void updateMember(String id, Member member) {
+        var sql = """
+        UPDATE members
+        SET email = :email, password = :password, name = :name, address = :address, role = :role
+        WHERE id = :id
+    """;
+        client.sql(sql)
+                .param("id", id)
+                .param("email", member.getEmail())
+                .param("password", member.getPassword())
+                .param("name", member.getName())
+                .param("address", member.getAddress())
+                .param("role", member.getRole())
+                .update();
+    }
+
+    public void deleteMember(String id) {
+        var sql = """
+                DELETE FROM members WHERE id = :id
+        """;
+        client.sql(sql)
+                .param("id", id)
+                .update();
     }
 
     public List<Member> showallMembers() {

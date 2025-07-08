@@ -17,18 +17,24 @@
   </label><br>
 
   <label>
-    email:
+    Name:
+    <input type="text" th:field="*{name}" />
+    <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+  </label><br>
+
+  <label>
+    Email:
     <input type="text" th:field="*{email}" />
     <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
   </label><br>
 
   <label>
-    address:
+    Address:
     <input type="text" th:field="*{address}" />
     <span th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></span>
   </label><br>
 
-  <button type="submit">회원 가입 완료하기</button>
+  <button type="submit">회원 가입</button>
 </form>
 
 <a th:href="@{/login}">로그인</a>
