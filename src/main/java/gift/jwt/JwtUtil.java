@@ -16,6 +16,7 @@ public class JwtUtil {
 
   private static final String SECRET = "KAKAOTECHCAMPUS_0707_LONG_SECRET_KEY_2025";
   private static final Key KEY = Keys.hmacShaKeyFor(SECRET.getBytes());
+  private static final long EXPIRATION_TIME = 3600; // 1시간 후 만료
 
   // ✅ JWT 생성
   public String createToken(String email) {
@@ -24,7 +25,7 @@ public class JwtUtil {
     return Jwts.builder()
         .subject(String.valueOf(email))
         .issuedAt(Date.from(now))
-        .expiration(Date.from(now.plusSeconds(3600))) // 1시간 후 만료
+        .expiration(Date.from(now.plusSeconds(EXPIRATION_TIME)))
         .signWith(KEY)
         .compact();
   }
