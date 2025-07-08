@@ -28,15 +28,15 @@ public class WishlistServiceImpl implements WishlistService {
     @Override
     public WishlistResponseDto addToMyWishlist(Long userId, WishlistRequestDto requestDto) {
         Member member = memberRepository.findMemberById(userId);
-        Product product = productRepository.findProductWithId(requestDto.getProductId());
+        Product product = productRepository.findProductWithId(requestDto.productId());
         
         WishlistInfo wishlistInfo = wishlistRepository.addToMyWishlist(
-            member.getId(), product.getId(), requestDto.getProductCnt()
+            member.getId(), product.getId(), requestDto.productCnt()
         );
         
         Product addedProduct = productRepository.findProductWithId(wishlistInfo.getProductId());
         
-        return new WishlistResponseDto(addedProduct.getName(), requestDto.getProductCnt());
+        return new WishlistResponseDto(addedProduct.getId(), addedProduct.getName(), requestDto.productCnt());
     }
     
     @Override
@@ -48,6 +48,7 @@ public class WishlistServiceImpl implements WishlistService {
         for (WishlistInfo info : myWishlist) {
             Product myProduct = productRepository.findProductWithId(info.getProductId());
             WishlistResponseDto dto = new WishlistResponseDto(
+                myProduct.getId(),
                 myProduct.getName(),
                 info.getProductCnt()
             );
@@ -71,14 +72,14 @@ public class WishlistServiceImpl implements WishlistService {
     public WishlistResponseDto modifyProductCntFromMyWishlist(Long userId,
         WishlistRequestDto requestDto) {
         Member member = memberRepository.findMemberById(userId);
-        Product product = productRepository.findProductWithId(requestDto.getProductId());
+        Product product = productRepository.findProductWithId(requestDto.productId());
         
         WishlistInfo wishlistInfo = wishlistRepository.checkMyWishlist(member.getId(), product.getId());
         
         WishlistInfo modifiedWishlistInfo = wishlistRepository.modifyProductCntFromMyWishlist(
-            wishlistInfo.getUserId(), wishlistInfo.getProductId(), requestDto.getProductCnt()
+            wishlistInfo.getUserId(), wishlistInfo.getProductId(), requestDto.productCnt()
         );
         
-        return new WishlistResponseDto(product.getName(), modifiedWishlistInfo.getProductCnt());
+        return new WishlistResponseDto(product.getId(), product.getName(), modifiedWishlistInfo.getProductCnt());
     }
 }

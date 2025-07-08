@@ -44,9 +44,13 @@
 4. wishlist 상품 삭제 구현
 4. wishlist 상품 개수 수정 구현 (0으로 입력할 경우 삭제)
 
-| api           | method | 기능                                 | 완료여부 |
-|---------------|--------|------------------------------------|------|
-| /api/wishlist | GET    | 본인의 wishlist 목록 불러오기 (header 필수)   | 미완료  |
-| /api/wishlist | POST   | wishlist에 물건 추가 (header, body 필수)  | 미완료  |
-| /api/wishlist | DELETE | wishlist에 담겨 있는 물품 삭제 (header, body 필수) | 미완료  |
-| /api/wishlist | PATCH | wishlist에 담겨 있는 물품 개수 수정 (header, body 필수) | 미완료  |
+| api                       | method | 기능                                         | 완료여부 |
+|---------------------------|--------|--------------------------------------------|----|
+| /api/wishlist             | GET    | 본인의 wishlist 목록 불러오기 (header 필수)           | 완료 |
+| /api/wishlist             | POST   | wishlist에 물건 추가 (header, body 필수)          | 완료 |
+| /api/wishlist/{productId} | DELETE | wishlist에 담겨 있는 물품 삭제 (header 필수)          | 완료 |
+| /api/wishlist             | PATCH | wishlist에 담겨 있는 물품 개수 수정 (header, body 필수) | 완료 |
+
+### 구현간 특이사항 정리
+1. wishlist table은 member와 product table의 id에 의존하는 table로 구성(foreign key 활용)
+2. 

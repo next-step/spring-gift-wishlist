@@ -1,7 +1,6 @@
 package gift.controller.wishlist;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import gift.auth.JwtProvider;
 import gift.dto.api.wishlist.WishlistRequestDto;
