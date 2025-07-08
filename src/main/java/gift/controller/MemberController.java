@@ -1,5 +1,7 @@
 package gift.controller;
 
+import gift.dto.MemberRequestDto;
+import gift.dto.MemberResponseDto;
 import gift.service.MemberService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -16,16 +18,23 @@ public class MemberController {
     public final MemberService memberService;
 
     public MemberController(MemberService memberService) {
-
         this.memberService = memberService;
     }
-}
-@PostMapping("/register")
-public ResponseEntity<MemberResponseDto> registerMember(
-        @RequestBody @Valid MemberRequestDto requestDto) {
 
-    String token = memberService.register(requestDto); // 토큰 생성
-    MemberResponseDto responseDto = new MemberResponseDto(token);
-    return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+
+    @PostMapping("/register")
+    public ResponseEntity<MemberResponseDto> registerMember(
+            @RequestBody @Valid MemberRequestDto requestDto) {
+
+
+        String token = memberService.register(requestDto);
+        MemberResponseDto responseDto = new MemberResponseDto(token);
+        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+
+    }
+
+
+
+
 
 }

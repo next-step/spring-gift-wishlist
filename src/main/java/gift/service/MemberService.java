@@ -30,7 +30,7 @@ public class MemberService {
         Member member = new Member(requestDto.getEmail(), requestDto.getPassword());
         memberRepository.save(member);
 
-        
+
         Member saved = memberRepository.findByEmail(member.getEmail())
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.INTERNAL_SERVER_ERROR, "회원 저장 후 조회 실패"));
