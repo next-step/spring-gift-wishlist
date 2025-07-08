@@ -64,7 +64,34 @@ git으로 불러오려 했으나 여러 차례 실패하여 직접 복사하여 
 # [step2] 회원 로그인
 
 ## 구현 기능 목록
-- [ ] 회원가입
+- [x] 회원가입
 - [ ] 로그인
 - [ ] JWT 토큰 발급 및 검증 기능
 - [ ] 인증 필터 구현(인증 실패 시 401, 로그인 실패 403)
+
+## 구현 기능 
+1. 회원가입 api 구현(`POST /api/members/register`)
+
+### Request
+```http
+POST /api/members/register HTTP/1.1
+Content-Type: application/json
+Host: localhost:8080
+```
+```json
+{
+  "email": "test@email.com",
+  "pwd": "abc1234"
+}
+```
+### Response
+```http
+HTTP/1.1 201 Created
+Location: /api/members/register/test@email.com
+Content-Type: application/json
+```
+```json
+{
+   "message": "회원가입이 완료되었습니다."
+}
+```
