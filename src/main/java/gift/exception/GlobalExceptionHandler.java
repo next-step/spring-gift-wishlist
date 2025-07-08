@@ -1,5 +1,6 @@
 package gift.exception;
 
+import gift.dto.ErrorResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponse;
@@ -15,17 +16,57 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(OperationFailedException.class)
-    public ResponseEntity<String> handleOperationFailed(OperationFailedException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    public ResponseEntity<ErrorResponseDto> handleOperationFailed(OperationFailedException ex) {
+        ErrorResponseDto responseDto = new ErrorResponseDto(
+                HttpStatus.NOT_FOUND.value(),
+                "Operation Failed",
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
     }
 
     @ExceptionHandler(InvalidProductException.class)
-    public ResponseEntity<String> handleInvalidProduct(InvalidProductException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    public ResponseEntity<ErrorResponseDto> handleInvalidProduct(InvalidProductException ex) {
+        ErrorResponseDto responseDto = new ErrorResponseDto(
+                HttpStatus.BAD_REQUEST.value(),
+                "Invalid Product",
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    @ExceptionHandler(MemberNotFoundException.class)
+    public ResponseEntity<Void> handleMemberNotFound(MemberNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    @ExceptionHandler(InvalidMemberException.class)
+    public ResponseEntity<ErrorResponseDto> handleInvalidMember(InvalidMemberException ex) {
+        ErrorResponseDto responseDto = new ErrorResponseDto(
+                HttpStatus.BAD_REQUEST.value(),
+                "Invalid Member",
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ErrorResponseDto> handleUnauthorized(UnauthorizedException ex) {
+        ErrorResponseDto responseDto = new ErrorResponseDto(
+                HttpStatus.UNAUTHORIZED.value(),
+                "UnAuthorized",
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseDto);
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ErrorResponseDto> handleForbidden(ForbiddenException ex) {
+        ErrorResponseDto responseDto = new ErrorResponseDto(
+                HttpStatus.FORBIDDEN.value(),
+                "Forbidden",
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(responseDto);
     }
 }

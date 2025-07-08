@@ -24,7 +24,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void addProduct(ProductAddRequestDto requestDto) {
-        validateProductName(requestDto.name());
+        validateProductName(requestDto.name(), "admin/add");
         Product product = new Product(null, requestDto.name(), requestDto.price(), requestDto.url());
         int result = productRepository.addProduct(product);
         if (result == 0) {
@@ -48,7 +48,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void updateProductById(Long id, ProductUpdateRequestDto requestDto) {
         Product product = productRepository.findProductByIdOrElseThrow(id);
-        validateProductName(requestDto.name());
+        validateProductName(requestDto.name(), "admin/edit");
         Product newProduct = new Product(id, requestDto);
         int result = productRepository.updateProductById(newProduct);
         if (result == 0) {
@@ -66,13 +66,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void validateProductName(String name) {
+    public void validateProductName(String name, String viewName) {
         if (!name.matches("^[a-zA-Z0-9ㄱ-ㅎ가-힣 ()\\[\\]+\\-&/_]*$")) {
-            throw new InvalidProductException("상품명에 허용되지 않는 특수 문자가 포함되어 있습니다.");
+            throw new InvalidProductException("상품명에 허용되지 않는 특수 문자가 포함되어 있습니다.",viewName);
         }
 
         if (name.contains("카카오")) {
-            throw new InvalidProductException("\"카카오\"가 포함된 상품명은 MD 협의 후 사용할 수 있습니다.");
+            throw new InvalidProductException("\"카카오\"가 포함된 상품명은 MD 협의 후 사용할 수 있습니다.",viewName);
         }
     }
 }
