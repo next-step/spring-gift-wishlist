@@ -1,6 +1,7 @@
 package gift.repository;
 
 import gift.entity.Member;
+import gift.entity.Role;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -28,7 +29,8 @@ public class MemberRepository {
                     rs.getLong("id"),
                     rs.getString("name"),
                     rs.getString("email"),
-                    rs.getString("password")
+                    rs.getString("password"),
+                    Role.valueOf(rs.getString("role"))
             );
         }
     }
@@ -54,7 +56,7 @@ public class MemberRepository {
 
         Number key = keyHolder.getKey();
         if (key != null) {
-            return new Member(key.longValue(), member.getName(), member.getEmail(), member.getPassword());
+            return new Member(key.longValue(), member.getName(), member.getEmail(), member.getPassword(),  member.getRole());
         }
         return member;
     }

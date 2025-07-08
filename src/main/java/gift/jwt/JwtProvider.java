@@ -26,6 +26,7 @@ public class JwtProvider {
     public String generateToken(Member member) {
         return Jwts.builder()
                 .subject(member.getId().toString())
+                .claim("role", member.getRole().toString())
                 .signWith(key)
                 .compact();
     }
