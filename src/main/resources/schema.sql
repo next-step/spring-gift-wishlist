@@ -1,3 +1,6 @@
+DROP TABLE IF EXISTS product;
+DROP TABLE IF EXISTS "user";
+
 CREATE TABLE product
 (
     productId BIGINT PRIMARY KEY,
@@ -7,7 +10,7 @@ CREATE TABLE product
 
 );
 
-CREATE TABLE user
+CREATE TABLE users
 (
     user_id  BIGINT PRIMARY KEY AUTO_INCREMENT,
     email    VARCHAR(255) NOT NULL UNIQUE,
