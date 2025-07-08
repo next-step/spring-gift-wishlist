@@ -6,8 +6,10 @@ import gift.entity.Product;
 import gift.exception.InvalidProductNameException;
 import gift.exception.ProductNotFoundException;
 import gift.repository.ProductRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,15 +18,18 @@ public class ProductService {
     
     // 의존성 고정
     private final ProductRepository productRepository;
+    private final List<String> forbiddenWords; // MD 협의 단어 목록
 
     // 의존성 주입
-    public ProductService(ProductRepository productRepository) {this.productRepository = productRepository;}
-
-    // MD와 협의하여 사용해야 하는 단어
-    private static final List<String> forbiddenWords= List.of("카카오");
+    public ProductService(ProductRepository productRepository, @Value("${forbidden_words}") String forbiddenWordsProp) {
+        this.productRepository = productRepository;
+        this.forbiddenWords = Arrays.stream(forbiddenWordsProp.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .toList();
+    }
 
     public ProductResponseDto findProductById(Long id){
-        // null 검사 후 반환
         Product product = productRepository.findProductById(id);
         return new ProductResponseDto(product);
     }
@@ -42,6 +47,10 @@ public class ProductService {
     }
 
     public ProductResponseDto updateProduct(Long id, ProductRequestDto requestDto){
+        List<String> matched = forbiddenWords.stream().filter(requestDto.name()::contains).toList();
+        if(!matched.isEmpty()){ // 금지 단어 포함돼있을 경우 예외 던지기
+            throw new InvalidProductNameException(matched);
+        }
         boolean flag = productRepository.updateProduct(id, new Product(requestDto));
         
         // 수정됐는지 검증
@@ -49,7 +58,6 @@ public class ProductService {
             throw new ProductNotFoundException(id);
         }
 
-        // null 검사 후 반환
         Product product = productRepository.findProductById(id);
         return new ProductResponseDto(product);
     }
