@@ -10,6 +10,6 @@ create table user
 (
     id bigint AUTO_INCREMENT,
     email varchar(255),
-    password varchar(255),
+    password varchar(100),
     primary key (id)
 )
