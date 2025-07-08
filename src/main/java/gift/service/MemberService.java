@@ -5,6 +5,7 @@ import gift.dto.MemberRequestDto;
 import gift.dto.TokenResponseDto;
 import gift.entity.Member;
 import gift.entity.MemberRole;
+import gift.exception.EmailAlreadyExistsException;
 import gift.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,10 @@ public class MemberService {
 
     @Transactional
     public TokenResponseDto registerMember(MemberRequestDto memberRequestDto) {
+        if (memberRepository.findMemberByEmail(memberRequestDto.email()).isPresent()) {
+            throw new EmailAlreadyExistsException(memberRequestDto.email());
+        }
+
         Member member = new Member(memberRequestDto.email(),
                 memberRequestDto.password(), MemberRole.ROLE_USER);
 

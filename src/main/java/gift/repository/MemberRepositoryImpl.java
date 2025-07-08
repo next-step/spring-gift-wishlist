@@ -1,6 +1,7 @@
 package gift.repository;
 
 import gift.entity.Member;
+import java.util.Optional;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -28,5 +29,15 @@ public class MemberRepositoryImpl implements MemberRepository {
               .update(keyHolder);
 
         return keyHolder.getKey().longValue();
+    }
+
+    @Override
+    public Optional<Member> findMemberByEmail(String email) {
+        var sql = "SELECT * FROM member WHERE email = :email";
+
+        return client.sql(sql)
+                     .param("email", email)
+                     .query(Member.class)
+                     .optional();
     }
 }
