@@ -2,10 +2,6 @@ package gift.product.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-<<<<<<< HEAD
-=======
-
->>>>>>> 8db4ff8 (feat(product): Aggregate all product name validation errors)
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
