@@ -50,9 +50,7 @@ public class ItemService {
 
 	public GetItemResponse updateItem(Long itemId, Long userId, ItemRequest req) {
 		Item item = itemRepository.findById(itemId).orElseThrow(() -> new RuntimeException("존재하지 않는 아이템입니다."));
-		if(item.getUserId() != userId)
-			throw new IllegalArgumentException("작성자만 수정,삭제 가능합니다.");
-
+		isItemAuthor(item.getUserId(), userId);
 		Item updatedItem = new Item(itemId, userId, req.name(), req.price(), req.imageUrl());
 		itemRepository.update(updatedItem);
 
@@ -62,11 +60,14 @@ public class ItemService {
 
 	public void deleteItem(Long itemId, Long userId) {
 		Item item = itemRepository.findById(itemId).orElseThrow(() -> new RuntimeException("존재하지 않는 아이템입니다."));
-		if(item.getUserId() != userId)
-			throw new IllegalArgumentException("작성자만 수정,삭제 가능합니다.");
-
+		isItemAuthor(item.getUserId(), userId);
 		itemRepository.deleteById(itemId);
+	}
 
+	private void isItemAuthor(Long itemAuthorId, Long userId) {
+		if(itemAuthorId != userId){
+			throw new IllegalArgumentException("작성자만 수정,삭제 가능합니다.");
+		}
 	}
 
 }
