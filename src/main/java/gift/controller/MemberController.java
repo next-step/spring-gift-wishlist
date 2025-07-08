@@ -2,6 +2,7 @@ package gift.controller;
 
 import gift.dto.request.MemberRequest;
 import gift.service.MemberService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,8 +24,8 @@ public class MemberController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Map<String,String>> register(@RequestBody MemberRequest request) {
-        memberService.register(request.email(), request.password());
+    public ResponseEntity<Map<String,String>> register(@RequestBody @Valid MemberRequest request) {
+        memberService.register(request.email(), request.pwd());
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{email}")

@@ -7,5 +7,5 @@ public record MemberRequest (
         String email,
 
         @NotBlank(message = "비밀번호를 입력하세요.")
-        String password
+        String pwd
 ){}

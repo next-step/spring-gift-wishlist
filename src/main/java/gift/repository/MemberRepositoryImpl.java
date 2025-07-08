@@ -17,9 +17,9 @@ public class MemberRepositoryImpl implements MemberRepository {
 
     @Override
     public void register(Member member){
-        jdbcClient.sql("insert into members (email, password) values (:email, :password)")
-                .params("email", member.email())
-                .param("password", member.password())
+        jdbcClient.sql("insert into members (email, pwd) values (:email, :pwd)")
+                .param("email", member.email())
+                .param("pwd", member.pwd())
                 .update();
     }
 

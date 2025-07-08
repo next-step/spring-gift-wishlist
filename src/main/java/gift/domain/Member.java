@@ -3,15 +3,15 @@ package gift.domain;
 public class Member {
     private Long id;
     private String email;
-    private String password;
+    private String pwd;
 
-    public Member(Long id, String email, String pssword){
+    public Member(Long id, String email, String pwd){
         this.id = id;
         this.email = email;
-        this.password = password;
+        this.pwd = pwd;
     }
 
     public Long id() { return id; }
     public String email() { return email; }
-    public String password() { return password; }
+    public String pwd() { return pwd; }
 }

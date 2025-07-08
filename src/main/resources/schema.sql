@@ -8,5 +8,5 @@ create table product(
 create table members(
     id bigint auto_increment primary key,
     email varchar(255) not null unique,
-    password varchar(255) not null
+    pwd varchar(255) not null
 );

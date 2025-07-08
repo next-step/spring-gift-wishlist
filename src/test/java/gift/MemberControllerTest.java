@@ -34,7 +34,7 @@ public class MemberControllerTest {
                         .content("""
                             {
                                 "email": "test@email.com",
-                                "password": "abc1234"
+                                "pwd": "abc1234"
                             }
                         """)
             ).andReturn().getResponse();
@@ -54,7 +54,7 @@ public class MemberControllerTest {
                 .content("""
                      {
                         "email": "dup@email.com",
-                        "password": "abc1234"
+                        "pwd": "abc1234"
                      }
                 """))
             .andReturn().getResponse();
