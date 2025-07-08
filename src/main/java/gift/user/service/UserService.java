@@ -27,7 +27,7 @@ public class UserService {
 
     String token = jwtTokenProvider.generateToken(user);
 
-    return RegisterResponseDto.from(token);
+    return new RegisterResponseDto(token);
   }
 
   public LoginResponseDto loginUser(LoginRequestDto loginRequestDto) {
