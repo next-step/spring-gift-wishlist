@@ -53,4 +53,5 @@
 
 ### 구현간 특이사항 정리
 1. wishlist table은 member와 product table의 id에 의존하는 table로 구성(foreign key 활용)
-2. 
+2. 구현 간 request body는 {"productId": Long, "productCnt": Long}을 요구함, 본인이 담고자 하는 상품의 id와 수량을 요구
+3. 응답으로 돌려주는건 { 상품 아이디, 상품 이름, 상품 수량 }
