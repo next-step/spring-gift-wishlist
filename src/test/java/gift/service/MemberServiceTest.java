@@ -9,11 +9,16 @@ import static org.mockito.Mockito.when;
 
 import gift.config.JwtUtil;
 import gift.dto.MemberRequest;
+import gift.dto.MemberResponse;
 import gift.dto.TokenResponse;
 import gift.entity.Member;
+import gift.exception.DuplicateEmailException;
+import gift.exception.InvalidPasswordException;
+import gift.exception.MemberNotFoundException;
 import gift.repository.MemberRepository;
-import java.util.Collections;
+import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -49,7 +54,7 @@ public class MemberServiceTest {
             "password123",
             "USER"
         );
-        when(memberRepository.findAll()).thenReturn(Collections.emptyList());
+        when(memberRepository.findByEmail("test@test.com")).thenReturn(Optional.empty());
         when(memberRepository.save(any(Member.class))).thenReturn(savedMember);
         when(jwtUtil.generateToken(savedMember)).thenReturn("mocked-token");
 
@@ -73,10 +78,10 @@ public class MemberServiceTest {
             "password123",
             "USER"
         );
-        when(memberRepository.findAll()).thenReturn(List.of(existingMember));
+        when(memberRepository.findByEmail("test@test.com")).thenReturn(Optional.of(existingMember));
 
         assertThatThrownBy(() -> memberService.register(request))
-            .isInstanceOf(IllegalArgumentException.class)
+            .isInstanceOf(DuplicateEmailException.class)
             .hasMessage("이미 존재하는 이메일입니다.");
         verify(memberRepository, never()).save(any(Member.class));
     }
@@ -88,13 +93,14 @@ public class MemberServiceTest {
             "password123",
             "USER"
         );
+        String encodedPassword = Base64.getEncoder().encodeToString("password123".getBytes());
         Member member = new Member(
             1L,
             "test@test.com",
-            "password123",
+            encodedPassword,
             "USER"
         );
-        when(memberRepository.findAll()).thenReturn(List.of(member));
+        when(memberRepository.findByEmail("test@test.com")).thenReturn(Optional.of(member));
         when(jwtUtil.generateToken(member)).thenReturn("mocked-token");
 
         TokenResponse response = memberService.login(request);
@@ -110,10 +116,10 @@ public class MemberServiceTest {
             "password123",
             "USER"
         );
-        when(memberRepository.findAll()).thenReturn(Collections.emptyList());
+        when(memberRepository.findByEmail("notexisting@test.com")).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> memberService.login(request))
-            .isInstanceOf(IllegalArgumentException.class)
+            .isInstanceOf(MemberNotFoundException.class)
             .hasMessage("이메일이 올바르지 않습니다.");
     }
 
@@ -130,11 +136,134 @@ public class MemberServiceTest {
             "password123",
             "USER"
         );
-        when(memberRepository.findAll()).thenReturn(List.of(member));
+        when(memberRepository.findByEmail("test@test.com")).thenReturn(Optional.of(member));
 
         assertThatThrownBy(() -> memberService.login(request))
-            .isInstanceOf(IllegalArgumentException.class)
+            .isInstanceOf(InvalidPasswordException.class)
             .hasMessage("비밀번호가 올바르지 않습니다.");
+    }
+
+    @Test
+    void updateMemberNormalCaseTokenResponse() {
+        MemberRequest request = new MemberRequest(
+            "test@test.com",
+            "password123",
+            "USER"
+        );
+        Member existingMember = new Member(
+            1L,
+            "test@test.com",
+            "password123",
+            "USER"
+        );
+        Member updatedMember = new Member(
+            1L,
+            "test@test.com",
+            "newpassword123",
+            "USER"
+        );
+        when(memberRepository.findByEmail("test@test.com")).thenReturn(Optional.of(existingMember));
+        when(memberRepository.update(any(Member.class))).thenReturn(updatedMember);
+        when(jwtUtil.generateToken(updatedMember)).thenReturn("mocked-token");
+
+        TokenResponse response = memberService.updateMember(request);
+
+        assertThat(response.token()).isEqualTo("mocked-token");
+        verify(memberRepository).update(any(Member.class));
+        verify(jwtUtil).generateToken(updatedMember);
+    }
+
+    @Test
+    void updateMemberNotFoundException() {
+        MemberRequest request = new MemberRequest(
+            "notexisting@test.com",
+            "password123",
+            "USER"
+        );
+        when(memberRepository.findByEmail("notexisting@test.com")).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> memberService.updateMember(request))
+            .isInstanceOf(MemberNotFoundException.class)
+            .hasMessage("Member(email: notexisting@test.com ) not found");
+    }
+
+    @Test
+    void deleteMemberNormalCase() {
+        String email = "test@test.com";
+        Member member = new Member(
+            1L,
+            email,
+            "password123",
+            "USER"
+        );
+        when(memberRepository.findByEmail(email)).thenReturn(Optional.of(member));
+
+        memberService.deleteMember(email);
+
+        verify(memberRepository).delete(email);
+    }
+
+    @Test
+    void deleteMemberNotFoundException() {
+        String email = "notexisting@test.com";
+        when(memberRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> memberService.deleteMember(email))
+            .isInstanceOf(MemberNotFoundException.class)
+            .hasMessage("Member(email: notexisting@test.com ) not found");
+    }
+
+    @Test
+    void getMemberNormalCase() {
+        String email = "test@test.com";
+        Member member = new Member(
+            1L,
+            email,
+            "password123",
+            "USER"
+        );
+        MemberResponse expectedResponse = new MemberResponse(
+            1L,
+            "test@test.com",
+            "password123",
+            "USER"
+        );
+        when(memberRepository.findByEmail(email)).thenReturn(Optional.of(member));
+
+        MemberResponse response = memberService.getMember(email);
+
+        assertThat(response).isEqualTo(expectedResponse);
+    }
+
+    @Test
+    void getMemberNotFoundException() {
+        String email = "notexisting@test.com";
+        when(memberRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> memberService.getMember(email))
+            .isInstanceOf(MemberNotFoundException.class)
+            .hasMessage("Member(email: notexisting@test.com ) not found");
+    }
+
+    @Test
+    void getAllMembersNormalCase() {
+        Member member = new Member(
+            1L,
+            "test@test.com",
+            "password123",
+            "USER"
+        );
+        MemberResponse expectedResponse = new MemberResponse(
+            1L,
+            "test@test.com",
+            "password123",
+            "USER"
+        );
+        when(memberRepository.findAll()).thenReturn(List.of(member));
+
+        List<MemberResponse> responses = memberService.getAllMembers();
+
+        assertThat(responses).containsExactly(expectedResponse);
     }
 
 }
