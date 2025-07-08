@@ -5,6 +5,7 @@ package gift.product.etcs;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -21,19 +22,27 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-		String token = jwtUtil.extractJwtTokenFromHeader(request);
-
-		if(token == null || !jwtUtil.validateJwtToken(token)) {
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
-			return false;
+		if(!(handler instanceof HandlerMethod)) { // 정적 리소스는 곧바로 통과
+			return true;
 		}
 
-		String userId = jwtUtil.getSubject(token);
-		if(userId == null) {
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-		}
+		HandlerMethod handlerMethod = (HandlerMethod) handler;
+		if(handlerMethod.hasMethodAnnotation(Authenticated.class)){
+			String token = jwtUtil.extractJwtTokenFromHeader(request);
 
-		request.setAttribute("userId", userId);
+			if(token == null || !jwtUtil.validateJwtToken(token)) {
+				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
+				return false;
+			}
+
+			String userId = jwtUtil.getSubject(token);
+			if(userId == null) {
+				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			}
+
+			request.setAttribute("userId", userId);
+			return true;
+		}
 		return true;
 	}
 
