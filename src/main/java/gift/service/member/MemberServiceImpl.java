@@ -5,6 +5,7 @@ import gift.entity.Member;
 import gift.entity.Token;
 import gift.exception.AlreadyRegisterException;
 import gift.exception.InvalidPasswordException;
+import gift.exception.MemberNotFoundException;
 import gift.exception.NotRegisterException;
 import gift.repository.member.MemberRepository;
 import java.util.List;
@@ -53,7 +54,7 @@ public class MemberServiceImpl implements MemberService {
   @Override
   public Member findMemberById(Long id) {
     return repository.findById(id).
-        orElseThrow(() -> new IllegalStateException("member가 없습니다"));
+        orElseThrow(() -> new MemberNotFoundException("member가 없습니다"));
   }
 
   @Override
@@ -64,7 +65,7 @@ public class MemberServiceImpl implements MemberService {
   @Override
   public Member updateMember(Long id, Member member) {
     return repository.updateMember(id, member)
-        .orElseThrow(() -> new IllegalStateException("member가 없습니다"));
+        .orElseThrow(() -> new MemberNotFoundException("member가 없습니다"));
   }
 
   @Override

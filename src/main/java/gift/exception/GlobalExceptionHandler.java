@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
   }
 
-  @ExceptionHandler(value = ProductNotFoundException.class)
+  @ExceptionHandler(value = {ProductNotFoundException.class, MemberNotFoundException.class})
   public ResponseEntity<CustomErrorResponse> handleProductNotFoundException(
       ProductNotFoundException exception) {
     CustomErrorResponse errorResponse = new CustomErrorResponse(HttpStatus.NOT_FOUND,
