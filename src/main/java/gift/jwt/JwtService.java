@@ -22,4 +22,16 @@ public class JwtService {
         Token token = new Token(accessToken);
         return token;
     }
+
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parser()
+                    .verifyWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                    .build()
+                    .parseSignedClaims(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }
