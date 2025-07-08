@@ -46,7 +46,7 @@ public class WishlistController {
         WishlistResponseDto responseDto = wishlistService.addToMyWishlist(userId, requestDto);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
-    /*
+    
     @DeleteMapping
     public ResponseEntity<Void> deleteToMyWishlist(
         @RequestHeader("Authorization") String token,
@@ -56,7 +56,7 @@ public class WishlistController {
         wishlistService.deleteFromMyWishlist(userId, requestDto);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-    */
+    
     /*
     @PatchMapping
     public ResponseEntity<WishlistReponseDto> modifyProductCntFromMyWishlist(

@@ -32,7 +32,6 @@ public class ProductController {
         this.authService = authService;
     }
     
-    //상품 추가 api
     @PostMapping
     public ResponseEntity<ProductResponseDto> addProduct(
         @RequestBody @Valid AddProductRequestDto requestDto,
@@ -43,14 +42,12 @@ public class ProductController {
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
     
-    //상품 전체 조회 api
     @GetMapping
     public ResponseEntity<List<ProductResponseDto>> findAllProducts() {
         List<ProductResponseDto> responseDtoList = productService.findAllProducts();
         return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
     }
     
-    //상품 단건 조회 api
     @GetMapping("/{productId}")
     public ResponseEntity<ProductResponseDto> findProductWithId(
         @PathVariable(name="productId") Long id
@@ -59,7 +56,6 @@ public class ProductController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
     
-    //상품 전체 수정 api
     @PutMapping("/{productId}")
     public ResponseEntity<ProductResponseDto> modifyProductWithId(
         @PathVariable(name="productId") Long id,
@@ -71,7 +67,6 @@ public class ProductController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
     
-    //상품 일부 수정 api
     @PatchMapping("/{productId}")
     public ResponseEntity<ProductResponseDto> modifyProductInfoWithId(
         @PathVariable(name="productId") Long id,
@@ -84,7 +79,6 @@ public class ProductController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
     
-    //상품 단건 삭제 api
     @DeleteMapping("/{productId}")
     public ResponseEntity<Void> deleteProductWithId(
         @PathVariable(name="productId") Long id,
