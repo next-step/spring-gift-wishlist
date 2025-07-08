@@ -25,6 +25,9 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // 비밀번호 암호화를 위한 의존성 추가
+    implementation 'org.springframework.security:spring-security-crypto'
 }
 
 tasks.named('test') {
