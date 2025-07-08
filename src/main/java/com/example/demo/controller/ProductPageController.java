@@ -4,8 +4,11 @@ import com.example.demo.dto.ProductRequestDto;
 import com.example.demo.dto.ProductResponseDto;
 import com.example.demo.dto.ProductUpdateDto;
 import com.example.demo.service.ProductService;
+import jakarta.validation.Valid;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,7 +39,22 @@ public class ProductPageController {
   }
 
   @PostMapping
-  public String createProduct(@ModelAttribute ProductRequestDto dto) {
+  public String createProduct(
+      @ModelAttribute @Valid ProductRequestDto dto,
+      BindingResult bindingResult,
+      Model model
+  ) {
+      if(bindingResult.hasErrors()){
+        model.addAttribute("product", dto);
+        model.addAttribute("formAction", "/product-page");
+
+
+        String errorMessage = bindingResult.getAllErrors().stream()
+                                           .map(error -> error.getDefaultMessage())
+                                           .collect(Collectors.joining("\n"));
+        model.addAttribute("errorMessage", errorMessage);
+        return "product/form";
+      }
     productService.addProduct(dto);
     return "redirect:/product-page";
   }
@@ -45,6 +63,7 @@ public class ProductPageController {
   public String showEditForm(@PathVariable Long id, Model model) {
     ProductResponseDto productToEdit = productService.productFindById(id);
     ProductUpdateDto updateDto = new ProductUpdateDto(
+        productToEdit.id(),
         productToEdit.name(),
         productToEdit.price(),
         productToEdit.imageUrl()
@@ -57,7 +76,16 @@ public class ProductPageController {
   }
 
   @PostMapping("/{id}/edit")
-  public String updateProduct(@PathVariable Long id, @ModelAttribute ProductUpdateDto dto) {
+  public String updateProduct(@PathVariable Long id,
+      @Valid @ModelAttribute("product") ProductUpdateDto dto,
+      BindingResult bindingResult,
+      Model model) {
+
+    if (bindingResult.hasErrors()) {
+      model.addAttribute("formAction", "/product-page/" + id + "/edit");
+      return "product/form";
+    }
+
     productService.productUpdateById(id, dto);
     return "redirect:/product-page";
   }

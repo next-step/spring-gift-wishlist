@@ -18,6 +18,7 @@
 - Role을 현재 추가만 해놓은 상태인데, 후에 역할별로 들어가는 페이지를 다르게 설정하게끔 유도(인터셉터 이용).
 - 회원가입 기능 구현(현재는 H2 DB에 default로 넣어놓은 사람만 로그인 가능)
 
+---
 
 ## 구현 기능
 
@@ -49,6 +50,37 @@
 - **설명**: 지정한 ID의 상품을 삭제합니다.
 
 ---
+
+## 관리자 페이지(Thymeleaf 기반)
+
+### 상품 목록 (홈 화면)
+
+- **URL**: GET /product-page
+- **설명**: 관리자용 상품 리스트 페이지(HTML 기반)
+
+---
+
+### 상품 등록 폼
+
+- **URL**: GET /product-page/new   
+- **설명**: 새로운 상품을 등록하는 폼 페이지  
+
+---
+
+### 상품 수정 폼
+
+- **URL**: GET /product-page/{id}  
+- **설명**: 기존 상품 정보를 수정하는 폼 페이지
+
+---
+
+### 상품 삭제 요청
+
+
+- **URL**: POST /product-page/{id}/delete   
+- **설명**: HTML 페이지에서 상품 삭제 요청을 전송합니다
+
+
 ### 기술 스택
 Java 21
 
@@ -65,3 +97,4 @@ H2 Database (in-memory)
 JUnit5 (E2E 테스트 코드 작성)
 
 Jwt(Spring Security 사용 X): refreshToken accessToken을 이용한 회원 로그인
+

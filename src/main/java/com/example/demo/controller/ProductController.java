@@ -4,6 +4,7 @@ import com.example.demo.dto.ProductRequestDto;
 import com.example.demo.dto.ProductResponseDto;
 import com.example.demo.dto.ProductUpdateDto;
 import com.example.demo.service.ProductService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,8 @@ public class ProductController {
   }
 
   @PostMapping
-  public ResponseEntity<ProductResponseDto> addProduct(@RequestBody ProductRequestDto dto){
+  public ResponseEntity<ProductResponseDto> addProduct(
+      @Valid @RequestBody ProductRequestDto dto){
     return new ResponseEntity<>(productService.addProduct(dto), HttpStatus.CREATED);
   }
 
@@ -42,7 +44,8 @@ public class ProductController {
 
   @PatchMapping("/{id}")
   public ResponseEntity<ProductResponseDto> productUpdateById(
-      @PathVariable Long id, @RequestBody ProductUpdateDto dto
+      @PathVariable Long id,
+      @Valid @RequestBody ProductUpdateDto dto
   ){
     return new ResponseEntity<>(productService.productUpdateById(id, dto), HttpStatus.OK);
   }

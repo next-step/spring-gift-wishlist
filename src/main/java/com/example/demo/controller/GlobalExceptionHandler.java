@@ -59,7 +59,7 @@ public class GlobalExceptionHandler {
         .status(HttpStatus.NOT_FOUND)
         .body(errorResponseDto);
     }
-
+  
   @ExceptionHandler(InvalidLoginException.class)
   public ResponseEntity<ErrorResponseDto> handleInvalidLogin(
       InvalidLoginException ex,
@@ -97,5 +97,4 @@ public class GlobalExceptionHandler {
         .status(HttpStatus.NOT_FOUND)
         .body(errorResponseDto);
   }
-
 }
