@@ -4,6 +4,7 @@ import gift.auth.filter.JwtValidationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -45,7 +46,10 @@ public class SecurityConfig {
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/api/auth/register", "/api/auth/login", "/api/auth/refresh","/h2-console/**").permitAll()
-            .anyRequest().authenticated()
+            .requestMatchers(HttpMethod.POST,"/api/products/**").authenticated()
+            .requestMatchers(HttpMethod.PUT,"/api/products/**").authenticated()
+            .requestMatchers(HttpMethod.DELETE,"/api/products/**").authenticated()
+            .anyRequest().permitAll()
         )
         .addFilterBefore(jwtValidationFilter, UsernamePasswordAuthenticationFilter.class)
         .exceptionHandling(exceptions -> exceptions
