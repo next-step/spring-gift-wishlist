@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Optional;
+
 @Service
 public class MemberService {
     private final MemberRepository memberRepository;
@@ -45,16 +47,17 @@ public class MemberService {
 
     @Transactional
     public TokenResponseDto login(LoginRequestDto requestDto) {
-        if (!memberRepository.existsByEmail(requestDto.email())) {
+        Optional<Member> findMember = memberRepository.findMemberByEmail(requestDto.email());
+        if (findMember.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일 또는 비밀번호가 불일치 합니다.");
         }
 
-        Member findMember = memberRepository.findMemberByEmailOrElseThrow(requestDto.email());
-        if (!bCryptEncryptor.isMatch(requestDto.password(), findMember.getPassword())) {
+        Member member = findMember.get();
+        if (!bCryptEncryptor.isMatch(requestDto.password(), member.getPassword())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일 또는 비밀번호가 불일치 합니다.");
         }
 
-        return new TokenResponseDto(getToken(findMember));
+        return new TokenResponseDto(getToken(member));
     }
 
     private String getToken(Member member) {

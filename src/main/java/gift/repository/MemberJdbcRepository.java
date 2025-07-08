@@ -2,16 +2,15 @@ package gift.repository;
 
 import gift.domain.Member;
 import gift.enums.Role;
-import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class MemberJdbcRepository implements MemberRepository {
@@ -40,7 +39,7 @@ public class MemberJdbcRepository implements MemberRepository {
     }
 
     @Override
-    public Member findMemberByEmailOrElseThrow(String email) {
+    public Optional<Member> findMemberByEmail(String email) {
         String sql = """
                 SELECT *
                 FROM member
@@ -48,7 +47,7 @@ public class MemberJdbcRepository implements MemberRepository {
                 """;
         List<Member> result = jdbcTemplate.query(sql, memberRowMapper(), email);
 
-        return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 이메일을 찾을 수 없습니다."));
+        return result.stream().findAny();
     }
 
     private RowMapper<Member> memberRowMapper() {

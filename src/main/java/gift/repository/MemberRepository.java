@@ -2,10 +2,12 @@ package gift.repository;
 
 import gift.domain.Member;
 
+import java.util.Optional;
+
 public interface MemberRepository {
     void registerMember(Member member);
 
     boolean existsByEmail(String email);
 
-    Member findMemberByEmailOrElseThrow(String email);
+    Optional<Member> findMemberByEmail(String email);
 }

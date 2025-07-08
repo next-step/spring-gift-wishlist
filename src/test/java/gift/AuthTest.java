@@ -22,6 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.lang.reflect.Field;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -63,8 +64,7 @@ public class AuthTest {
         idField.setAccessible(true);
         idField.set(member, 1L);
         // given
-        given(memberRepository.existsByEmail(any())).willReturn(true);
-        given(memberRepository.findMemberByEmailOrElseThrow(any())).willReturn(member);
+        given(memberRepository.findMemberByEmail(any())).willReturn(Optional.of(member));
         given(bCryptEncryptor.isMatch(any(), any())).willReturn(true);
 
         // when
@@ -79,8 +79,7 @@ public class AuthTest {
         LoginRequestDto requestDto = new LoginRequestDto("email@test.com", "wrongPassword");
         Member member = new Member("email@test.com", "realPassword", Role.ROLE_USER);
 
-        given(memberRepository.existsByEmail(any())).willReturn(true);
-        given(memberRepository.findMemberByEmailOrElseThrow(any())).willReturn(member);
+        given(memberRepository.findMemberByEmail(any())).willReturn(Optional.of(member));
         given(bCryptEncryptor.isMatch(any(), any())).willReturn(false);
 
         assertThatThrownBy(() -> memberService.login(requestDto))
