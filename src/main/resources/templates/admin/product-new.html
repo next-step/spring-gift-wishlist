@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <title>상품 등록</title>
-  <link rel="stylesheet" th:href="@{/css/kakao-style.css}" />
+  <link rel="stylesheet" th:href="@{/css/kakao-style.css}"/>
 </head>
-<body>
+<body class="admin-page">
 
 <h1>상품 등록</h1>
 
@@ -13,19 +13,19 @@
   <form th:action="@{/admin/products}" th:object="${product}" method="post">
     <div class="form-group">
       <label for="name">상품명</label>
-      <input type="text" id="name" th:field="*{name}" required />
+      <input type="text" id="name" th:field="*{name}" required/>
       <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error"></div>
     </div>
 
     <div class="form-group">
       <label for="price">가격</label>
-      <input type="number" id="price" th:field="*{price}" min="0" required />
+      <input type="number" id="price" th:field="*{price}" min="0" required/>
       <div th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="error"></div>
     </div>
 
     <div class="form-group">
       <label for="imageUrl">이미지 URL</label>
-      <input type="text" id="imageUrl" th:field="*{imageUrl}" required />
+      <input type="text" id="imageUrl" th:field="*{imageUrl}" required/>
       <div th:if="${#fields.hasErrors('imageUrl')}" th:errors="*{imageUrl}" class="error"></div>
     </div>
 

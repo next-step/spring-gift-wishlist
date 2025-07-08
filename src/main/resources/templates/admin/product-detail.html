@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <title>상품 상세</title>
-  <link rel="stylesheet" th:href="@{/css/kakao-style.css}" />
+  <link rel="stylesheet" th:href="@{/css/kakao-style.css}"/>
 </head>
-<body>
+<body class="admin-page">
 
 <h1>상품 상세 정보</h1>
 
 <div class="product-detail">
-  <img th:src="${product.imageUrl}" alt="상품 이미지" width="200" />
+  <img th:src="${product.imageUrl}" alt="상품 이미지" width="200"/>
   <p><strong>상품명:</strong> <span th:text="${product.name}"></span></p>
   <p><strong>가격:</strong> <span th:text="${product.price}"></span>원</p>
 </div>
