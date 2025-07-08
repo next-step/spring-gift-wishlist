@@ -1,14 +1,18 @@
 package gift.Controller;
 
+import gift.dto.MemberRequestDto;
+import gift.dto.MemberResponseDto;
+import gift.model.Member;
 import gift.jwt.JwtUtil;
 import gift.service.MemberService;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,33 +28,25 @@ public class MemberController {
   }
 
   @PostMapping("/register")
-  public ResponseEntity<Map<String, String>> register(@RequestBody Map<String, String> req) {
-    memberService.register(req.get("email"), req.get("password"));
-    return ResponseEntity.ok().body(Map.of("message", "정상 회원가입 되었습니다"));
+  public ResponseEntity<MemberResponseDto> register(@RequestBody MemberRequestDto req) {
+    memberService.register(req.getEmail(), req.getPassword());
+    MemberResponseDto response = new MemberResponseDto();
+    response.setEmail(req.getEmail());
+    return ResponseEntity.status(HttpStatus.CREATED).body(response);
   }
 
   @PostMapping("/login")
-  public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, String> req) {
-    String token = memberService.login(req.get("email"), req.get("password"));
-    return ResponseEntity.ok().body(Map.of("token", token));
+  public ResponseEntity<Map<String, String>> login(@RequestBody MemberRequestDto req) {
+    String token = memberService.login(req.getEmail(), req.getPassword());
+    return ResponseEntity.ok(Map.of("token", token));
   }
 
   @GetMapping("/me")
-  public ResponseEntity<?> getMyInfo(@RequestHeader("Authorization") String authHeader) {
-    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authorization 헤더가 유효하지 않습니다.");
+  public ResponseEntity<MemberResponseDto> getMyInfo(HttpServletRequest request) {
+    Member member = (Member) request.getAttribute("member");
+    if(member == null) {
+      return ResponseEntity.status(401).build();
     }
-
-    String token = authHeader.substring(7); // "Bearer " 제거
-
-    if (!jwtUtil.isValidToken(token)) {
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않은 토큰입니다.");
-    }
-
-    String email = jwtUtil.getEmailFromToken(token);
-
-    return memberService.findByEmail(email)
-        .<ResponseEntity<?>>map(member -> ResponseEntity.ok(Map.of("id", member.getId())))
-        .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("회원 정보를 찾을 수 없습니다."));
+    return ResponseEntity.ok(MemberResponseDto.from(member));
   }
 }
