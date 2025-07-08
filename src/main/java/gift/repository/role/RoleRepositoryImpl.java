@@ -2,6 +2,7 @@ package gift.repository.role;
 
 import gift.dao.role.UserRoleDao;
 import gift.entity.UserRole;
+import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -68,7 +69,7 @@ public class RoleRepositoryImpl implements RoleRepository {
 
         Set<UserRole> updatedRoles = findByUserId(userId);
         if (!updatedRoles.equals(roles)) {
-            throw new IllegalStateException("역할을 업데이트 하는데 실패했습니다.");
+            throw new DataRetrievalFailureException("역할을 업데이트 하는데 실패했습니다.");
         }
         return updatedRoles;
     }

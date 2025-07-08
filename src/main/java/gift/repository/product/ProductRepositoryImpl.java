@@ -70,7 +70,7 @@ public class ProductRepositoryImpl implements ProductRepository {
         }
 
         if (productDao.updateFieldById(productId, fieldName, value) <= 0) {
-            throw new DataIntegrityViolationException("제품 필드를 업데이트하는데 실패했습니다.");
+            throw new DataRetrievalFailureException("제품 필드를 업데이트하는데 실패했습니다.");
         }
 
         return productDao.findById(productId).orElseThrow(() ->
@@ -83,7 +83,7 @@ public class ProductRepositoryImpl implements ProductRepository {
             throw new EmptyResultDataAccessException("삭제할 제품이 존재하지 않습니다.", 1);
         }
         if (productDao.deleteById(productId) <= 0) {
-            throw new DataIntegrityViolationException("제품 삭제에 실패했습니다.");
+            throw new DataRetrievalFailureException("제품 삭제에 실패했습니다.");
         }
         return true;
     }
