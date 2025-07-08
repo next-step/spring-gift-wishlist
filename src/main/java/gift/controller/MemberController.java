@@ -1,9 +1,6 @@
 package gift.controller;
 
-import gift.dto.MemberLoginRequestDto;
-import gift.dto.MemberRegisterRequestDto;
-import gift.dto.MemberResponseDto;
-import gift.dto.TokenResponseDto;
+import gift.dto.*;
 import gift.entity.Member;
 import gift.service.MemberService;
 import org.springframework.http.ResponseEntity;
@@ -53,8 +50,8 @@ public class MemberController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody MemberRegisterRequestDto memberRegisterRequestDto) {
-        memberService.updateMember(id, memberRegisterRequestDto);
+    public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody MemberUpdateRequestDto memberUpdateRequestDto) {
+        memberService.updateMember(id, memberUpdateRequestDto);
         return ResponseEntity.noContent().build();
     }
 

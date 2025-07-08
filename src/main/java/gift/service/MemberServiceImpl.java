@@ -2,6 +2,7 @@ package gift.service;
 
 import gift.dto.MemberLoginRequestDto;
 import gift.dto.MemberRegisterRequestDto;
+import gift.dto.MemberUpdateRequestDto;
 import gift.entity.Member;
 import gift.entity.Role;
 import gift.exception.EmailAlreadyExistsException;
@@ -68,9 +69,9 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void updateMember(Long id, MemberRegisterRequestDto memberRegisterRequestDto) {
+    public void updateMember(Long id, MemberUpdateRequestDto memberUpdateRequestDto) {
         Member member = findMemberById(id);
-        member.update(memberRegisterRequestDto.name(), memberRegisterRequestDto.email(), memberRegisterRequestDto.password());
+        member.update(memberUpdateRequestDto.name(), memberUpdateRequestDto.email(), memberUpdateRequestDto.password());
         memberRepository.updateMember(member);
     }
 
