@@ -2,12 +2,11 @@ package gift.front.controller;
 
 import gift.api.service.ProductService;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,10 +49,12 @@ public class MemberFrontController {
             @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
             @RequestParam(required = false) Long categoryId,
             Model model,
-            @AuthenticationPrincipal UserDetails userDetails
+            HttpServletRequest request
     ) {
-        if (userDetails != null) {
-            model.addAttribute("username", userDetails.getUsername());
+        String userEmail = (String) request.getAttribute("userEmail");
+
+        if (userEmail != null) {
+            model.addAttribute("userEmail", userEmail);
         }
 
         model.addAttribute("products", productService.findAllProducts(pageable, categoryId));

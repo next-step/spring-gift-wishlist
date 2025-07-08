@@ -1,6 +1,8 @@
 package gift.front.exception;
 
 import gift.api.dto.ErrorResponseDto;
+import gift.exception.AuthenticationException;
+import gift.exception.AuthorizationException;
 import gift.exception.LoginFailedException;
 import gift.exception.ProductNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -62,6 +64,44 @@ public class FrontExceptionHandler {
         ErrorResponseDto error = new ErrorResponseDto(
                 HttpStatus.FORBIDDEN.value(),
                 HttpStatus.FORBIDDEN.getReasonPhrase(),
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        model.addAttribute("errorInfo", error);
+
+        return "error";
+    }
+
+    @ExceptionHandler(AuthorizationException.class)
+    public String handleAuthorizationException(
+            AuthorizationException ex,
+            Model model,
+            HttpServletRequest request) {
+
+        ex.printStackTrace();
+
+        ErrorResponseDto error = new ErrorResponseDto(
+                HttpStatus.FORBIDDEN.value(),
+                HttpStatus.FORBIDDEN.getReasonPhrase(),
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        model.addAttribute("errorInfo", error);
+
+        return "error";
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public String handleAuthenticationException(
+            AuthenticationException ex,
+            Model model,
+            HttpServletRequest request) {
+
+        ex.printStackTrace();
+
+        ErrorResponseDto error = new ErrorResponseDto(
+                HttpStatus.UNAUTHORIZED.value(),
+                HttpStatus.UNAUTHORIZED.getReasonPhrase(),
                 ex.getMessage(),
                 request.getRequestURI()
         );

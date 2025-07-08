@@ -1,13 +1,13 @@
 package gift.front.controller;
 
+import gift.api.domain.MemberRole;
 import gift.api.dto.ProductRequestDto;
 import gift.api.service.ProductService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -35,12 +35,19 @@ public class AdminController {
             @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
             @RequestParam(required = false) Long categoryId,
             Model model,
-            @AuthenticationPrincipal UserDetails userDetails
+            HttpServletRequest request
     ) {
-        if (userDetails != null) {
-            model.addAttribute("username", userDetails.getUsername());
+        String userEmail = (String) request.getAttribute("userEmail");
+        String userRole = (String) request.getAttribute("userRole");
+
+        if (userRole == null || !userRole.equals(MemberRole.ADMIN.name())) {
+            return "redirect:/members/login";
         }
-        
+
+        if (userEmail != null) {
+            model.addAttribute("userEmail", userEmail);
+        }
+
         model.addAttribute("products", productService.findAllProducts(pageable, categoryId));
         model.addAttribute("page", pageable.getPageNumber());
 
