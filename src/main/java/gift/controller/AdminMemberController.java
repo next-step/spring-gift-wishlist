@@ -20,8 +20,7 @@ public class AdminMemberController {
 
   MemberService service;
   private static final String MEMBERS_LIST_PAGE_PATH = "/admin/members";
-
-
+  
   public AdminMemberController(MemberService service) {
     this.service = service;
   }
