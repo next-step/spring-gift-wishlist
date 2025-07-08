@@ -11,4 +11,6 @@ public interface WishlistService {
     List<WishlistResponseDto> findMyWishlistByUserId(Long userId);
     
     void deleteFromMyWishlist(Long userId, WishlistRequestDto requestDto);
+    
+    WishlistResponseDto modifyProductCntFromMyWishlist(Long userId, WishlistRequestDto requestDto);
 }

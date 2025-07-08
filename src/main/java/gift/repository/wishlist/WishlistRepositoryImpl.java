@@ -1,6 +1,7 @@
 package gift.repository.wishlist;
 
 import gift.dto.api.product.ProductResponseDto;
+import gift.dto.api.wishlist.WishlistResponseDto;
 import gift.entity.WishlistInfo;
 import gift.exception.notfound.NotInWishlistException;
 import java.util.List;
@@ -63,6 +64,22 @@ public class WishlistRepositoryImpl implements WishlistRepository {
                 rs.getLong("productCnt")
             )).optional()
             .orElseThrow(NotInWishlistException::new);
+    }
+    
+    @Override
+    public WishlistInfo modifyProductCntFromMyWishlist(Long userId, Long productId,
+        Long productCnt) {
+        var sql = """
+            update wishlist set productCnt = :productCnt where memberId = :memberId and productId = :productId;
+            """;
+        
+        wishlist.sql(sql)
+            .param("memberId", userId)
+            .param("productId", productId)
+            .param("productCnt", productCnt)
+            .update();
+        
+        return new WishlistInfo(userId, productId, productCnt);
     }
     
     @Override

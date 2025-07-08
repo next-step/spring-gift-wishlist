@@ -48,7 +48,7 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
     
     @Override
-    public Member findMember(String email) {
+    public Member findMemberByEmail(String email) {
         var sql = """
             select * from members where email = :email;
             """;

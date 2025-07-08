@@ -66,4 +66,19 @@ public class WishlistServiceImpl implements WishlistService {
         
         wishlistRepository.deleteFromMyWishlist(wishlistInfo.getUserId(), wishlistInfo.getProductId());
     }
+    
+    @Override
+    public WishlistResponseDto modifyProductCntFromMyWishlist(Long userId,
+        WishlistRequestDto requestDto) {
+        Member member = memberRepository.findMemberById(userId);
+        Product product = productRepository.findProductWithId(requestDto.getProductId());
+        
+        WishlistInfo wishlistInfo = wishlistRepository.checkMyWishlist(member.getId(), product.getId());
+        
+        WishlistInfo modifiedWishlistInfo = wishlistRepository.modifyProductCntFromMyWishlist(
+            wishlistInfo.getUserId(), wishlistInfo.getProductId(), requestDto.getProductCnt()
+        );
+        
+        return new WishlistResponseDto(product.getName(), modifiedWishlistInfo.getProductCnt());
+    }
 }

@@ -1,5 +1,6 @@
 package gift.repository.wishlist;
 
+import gift.dto.api.wishlist.WishlistResponseDto;
 import gift.entity.WishlistInfo;
 import java.util.List;
 
@@ -12,4 +13,6 @@ public interface WishlistRepository {
     void deleteFromMyWishlist(Long id, Long productId);
     
     WishlistInfo checkMyWishlist(Long id, Long id1);
+    
+    WishlistInfo modifyProductCntFromMyWishlist(Long userId, Long productId, Long productCnt);
 }

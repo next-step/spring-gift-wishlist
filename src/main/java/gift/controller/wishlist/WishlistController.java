@@ -57,15 +57,14 @@ public class WishlistController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
     
-    /*
+    
     @PatchMapping
-    public ResponseEntity<WishlistReponseDto> modifyProductCntFromMyWishlist(
+    public ResponseEntity<WishlistResponseDto> modifyProductCntFromMyWishlist(
         @RequestHeader("Authorization") String token,
         @RequestBody WishlistRequestDto requestDto
     ) {
         Long userId = authService.checkPermissonForUser(token);
-        WishlistReponseDto reponseDto = wishlistService.modifyProductCntFromMyWishlist(userId, requestDto);
-        return new ResponseEntity<WishlistReponseDto>(reponseDto, HttpStatus.OK);
+        WishlistResponseDto responseDto = wishlistService.modifyProductCntFromMyWishlist(userId, requestDto);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
-    */
 }

@@ -26,7 +26,7 @@ public class AuthServiceImpl implements AuthService {
     
     @Override
     public MemberResponseDto login(LoginRequestDto requestDto) {
-        Member member = memberRepository.findMember(requestDto.email());
+        Member member = memberRepository.findMemberByEmail(requestDto.email());
         
         if(!member.getPassword().equals(requestDto.password())) {
             throw new WrongIdOrPasswordException();
@@ -47,7 +47,7 @@ public class AuthServiceImpl implements AuthService {
         Claims claims = jwtProvider.parseToken(token);
         
         String email = claims.get("email", String.class);
-        Member member = memberRepository.findMember(email);
+        Member member = memberRepository.findMemberByEmail(email);
         
         Role role = Role.valueOf(claims.get("role", String.class));
         
@@ -66,7 +66,7 @@ public class AuthServiceImpl implements AuthService {
         Claims claims = jwtProvider.parseToken(token);
         
         String email = claims.get("email", String.class);
-        Member member = memberRepository.findMember(email);
+        Member member = memberRepository.findMemberByEmail(email);
         
         return member.getId();
     }
