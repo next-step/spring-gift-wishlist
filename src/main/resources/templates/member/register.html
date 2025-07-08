@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입</title>
+</head>
+<body>
+<h2>회원가입</h2>
+<form th:action="@{/members/membership}" th:object="${memberRequestDto}" method="post">
+    <label for="email">이메일:</label>
+    <input type="email" id="email" th:field="*{email}" required/><br/>
+    <div th:if="${#fields.hasErrors('email')}" style="color:red;">
+        <span th:errors="*{email}"></span>
+    </div>
+
+    <label for="password">비밀번호:</label>
+    <input type="password" id="password" th:field="*{password}" required/><br/>
+    <div th:if="${#fields.hasErrors('password')}" style="color:red;">
+        <span th:errors="*{password}"></span>
+    </div>
+
+    <button type="submit">가입</button>
+</form>
+
+<button type="button" onclick="location.href='/members/login'">로그인</button>
+
+<div th:if="${successMessage}" style="color:green; margin-top:10px;" th:text="${successMessage}"></div>
+<div th:if="${jwtToken}">
+    <p>발급된 JWT 토큰: <span th:text="${jwtToken}"></span></p>
+</div>
+</body>
+</html>
