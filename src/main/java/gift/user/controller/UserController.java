@@ -35,8 +35,9 @@ public class UserController {
     // HACK : Controller에서 Getter을 사용하고 있다.
     passwordValidator.validate(registerRequestDto.password(), bindingResult);
 
-    return new ResponseEntity<RegisterResponseDto>(userService.registerUser(registerRequestDto),
-        HttpStatus.CREATED);
+    var registerResponse = userService.registerUser(registerRequestDto);
+
+    return new ResponseEntity<RegisterResponseDto>(registerResponse, HttpStatus.CREATED);
 
   }
 
