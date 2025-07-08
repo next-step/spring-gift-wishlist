@@ -12,4 +12,8 @@ public class InvalidMemberException extends RuntimeException{
     public ErrorCode getErrorCode(){
         return this.errorCode;
     }
+
+    public String getMessage(){
+        return this.message;
+    }
 }
