@@ -6,6 +6,7 @@ import gift.exception.AuthorizationException;
 import gift.exception.LoginFailedException;
 import gift.exception.ProductNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.Objects;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -41,7 +42,7 @@ public class FrontExceptionHandler {
         ErrorResponseDto error = new ErrorResponseDto(
                 HttpStatus.BAD_REQUEST.value(),
                 HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                ex.getBindingResult().getFieldError().getDefaultMessage(),
+                Objects.requireNonNull(ex.getBindingResult().getFieldError()).getDefaultMessage(),
                 request.getRequestURI()
         );
         model.addAttribute("errorInfo", error);
