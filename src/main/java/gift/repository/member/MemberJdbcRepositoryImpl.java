@@ -44,13 +44,7 @@ public class MemberJdbcRepositoryImpl implements MemberRepository {
   public Optional<Member> findById(Long id) {
     String sql = "select * from members where id=?";
     try {
-      Member result = jdbcTemplate.queryForObject(sql,
-          (rs, rowNum) -> new Member(
-              rs.getLong("id"),
-              rs.getString("email"),
-              rs.getString("password")
-          )
-          , id);
+      Member result = jdbcTemplate.queryForObject(sql, memberRowMapper(), id);
       return Optional.of(result);
     } catch (EmptyResultDataAccessException e) {
       return Optional.empty();
