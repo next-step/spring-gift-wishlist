@@ -24,21 +24,21 @@ public class MemberController {
     @PostMapping("/register")
     public ResponseEntity<MemberResponseDto> createMember(@Valid @RequestBody MemberRequestDto requestDto){
         MemberResponseDto responseDto = memberService.create(requestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+        return ResponseEntity.ok(responseDto);
     }
 
     @PostMapping("/login")
     public ResponseEntity<MemberLoginResponseDto> login(@Valid @RequestBody MemberLoginRequestDto requestDto){
         String token = memberService.login(requestDto);
         MemberLoginResponseDto responseDto = new MemberLoginResponseDto(token);
-        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+        return ResponseEntity.ok(responseDto);
     }
 
     @GetMapping("/myInfo")
     public ResponseEntity<MemberResponseDto> getMyInfo(HttpServletRequest request){
         Long id = Long.parseLong(request.getAttribute("memberId").toString());
         MemberResponseDto responseDto = memberService.find(id);
-        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+        return ResponseEntity.ok(responseDto);
     }
 
     @PutMapping("/myInfo")
@@ -47,14 +47,14 @@ public class MemberController {
             HttpServletRequest request){
         Long id = Long.parseLong(request.getAttribute("memberId").toString());
         MemberResponseDto responseDto = memberService.update(id, requestDto);
-        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+        return ResponseEntity.ok(responseDto);
     }
 
     @DeleteMapping("/myInfo")
     public ResponseEntity<MemberResponseDto> deleteMyInfo(HttpServletRequest request){
         Long id = Long.parseLong(request.getAttribute("memberId").toString());
         memberService.delete(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+        return ResponseEntity.noContent().build();
     }
 
 }
