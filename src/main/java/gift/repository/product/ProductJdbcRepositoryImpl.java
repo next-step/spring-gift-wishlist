@@ -26,14 +26,14 @@ public class ProductJdbcRepositoryImpl implements ProductRepository {
   @Override
   public List<Product> findAllProduct() {
     String sql = "select * from products";
-    return jdbcTemplate.query(sql, ProductRowMapper());
+    return jdbcTemplate.query(sql, productRowMapper());
   }
 
   @Override
   public Optional<Product> findProductById(Long id) {
     String sql = "select * from products where id=?";
     try {
-      Product result = jdbcTemplate.queryForObject(sql, ProductRowMapper(), id);
+      Product result = jdbcTemplate.queryForObject(sql, productRowMapper(), id);
       return Optional.of(result);
     } catch (EmptyResultDataAccessException e) {
       return Optional.empty();
@@ -86,7 +86,7 @@ public class ProductJdbcRepositoryImpl implements ProductRepository {
     return deletedProduct;
   }
 
-  private RowMapper<Product> ProductRowMapper() {
+  private RowMapper<Product> productRowMapper() {
     return new RowMapper<Product>() {
       @Override
       public Product mapRow(ResultSet rs, int rowNum) throws SQLException {

@@ -26,14 +26,14 @@ public class MemberJdbcRepositoryImpl implements MemberRepository {
   @Override
   public List<Member> findAllMembers() {
     String sql = "select * from members";
-    return jdbcTemplate.query(sql, MemberRowMapper());
+    return jdbcTemplate.query(sql, memberRowMapper());
   }
 
   @Override
   public Optional<Member> findByEmail(String email) {
     String sql = "select * from members where email=?";
     try {
-      Member result = jdbcTemplate.queryForObject(sql, MemberRowMapper(), email);
+      Member result = jdbcTemplate.queryForObject(sql, memberRowMapper(), email);
       return Optional.of(result);
     } catch (EmptyResultDataAccessException e) {
       return Optional.empty();
@@ -99,7 +99,7 @@ public class MemberJdbcRepositoryImpl implements MemberRepository {
     return deletedMember;
   }
 
-  private RowMapper<Member> MemberRowMapper() {
+  private RowMapper<Member> memberRowMapper() {
     return new RowMapper<Member>() {
       @Override
       public Member mapRow(ResultSet rs, int rowNum) throws SQLException {
