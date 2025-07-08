@@ -40,6 +40,42 @@ public class GlobalExceptionHandler {
     }
 
     @ResponseBody
+    @ExceptionHandler(EmailDuplicationException.class)
+    public ResponseEntity<ExceptionResponseDto> handleEmailDuplicationException(
+        EmailDuplicationException e) {
+        List<String> errors = new ArrayList<>();
+        errors.add(e.getMessage());
+        ExceptionResponseDto exception = new ExceptionResponseDto(errors, 409,
+            LocalDateTime.now());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception);
+    }
+
+    @ResponseBody
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ExceptionResponseDto> handleUserNotFoundException(
+        EmailDuplicationException e) {
+        List<String> errors = new ArrayList<>();
+        errors.add(e.getMessage());
+        ExceptionResponseDto exception = new ExceptionResponseDto(errors, 401,
+            LocalDateTime.now());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception);
+    }
+
+    @ResponseBody
+    @ExceptionHandler(InvalidPasswordException.class)
+    public ResponseEntity<ExceptionResponseDto> handleInvalidPasswordException(
+        InvalidPasswordException e) {
+        List<String> errors = new ArrayList<>();
+        errors.add(e.getMessage());
+        ExceptionResponseDto exception = new ExceptionResponseDto(errors, 401,
+            LocalDateTime.now());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception);
+    }
+
+    @ResponseBody
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ExceptionResponseDto> handleMethodArgumentNotValidException(
         MethodArgumentNotValidException e) {
@@ -57,11 +93,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception);
     }
 
+
     @ExceptionHandler(KakaoApproveException.class)
     public String handleKakaoApproveException(
         KakaoApproveException e,
         RedirectAttributes redirectAttributes) {
-
         redirectAttributes.addFlashAttribute("errorMessage",
             e.getMessage());
         return "redirect:/managerHome";

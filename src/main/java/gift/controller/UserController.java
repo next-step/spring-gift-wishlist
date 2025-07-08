@@ -1,8 +1,7 @@
 package gift.controller;
 
 
-import gift.dto.request.LoginRequestDto;
-import gift.dto.request.UserCreateRequestDto;
+import gift.dto.request.UserAuthRequestDto;
 import gift.dto.response.TokenResponseDto;
 import gift.service.UserService;
 import jakarta.validation.Valid;
@@ -25,14 +24,14 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<TokenResponseDto> createUser(
-        @RequestBody @Valid UserCreateRequestDto userCreateRequestDto) {
-        TokenResponseDto token = userService.registerAndReturnToken(userCreateRequestDto);
+        @RequestBody @Valid UserAuthRequestDto userAuthRequestDto) {
+        TokenResponseDto token = userService.registerAndReturnToken(userAuthRequestDto);
         return new ResponseEntity<>(token, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
     public ResponseEntity<TokenResponseDto> login(
-        @RequestBody @Valid LoginRequestDto loginRequestDto
+        @RequestBody @Valid UserAuthRequestDto loginRequestDto
     ) {
         TokenResponseDto token = userService.login(loginRequestDto);
         return new ResponseEntity<>(token, HttpStatus.OK);
