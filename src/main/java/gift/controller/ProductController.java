@@ -68,6 +68,9 @@ public class ProductController {
         if (optionalMember.isEmpty()) {
             throw new CustomException(ErrorCode.NotLogin);
         }
+        if (requestDto.name().contains("카카오") && !optionalMember.get().getRole().equals("admin")) {
+            throw new CustomException(ErrorCode.NamingForbidden);
+        }
 
         return new ResponseEntity<>(productService.updateProductById(id, requestDto),
                 HttpStatus.OK);
