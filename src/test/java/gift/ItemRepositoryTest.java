@@ -27,7 +27,7 @@ public class ItemRepositoryTest {
 	@Test
 	void 저장_후_단건조회() {
 		// given
-		Item item = new Item("테스트 상품", 1234, "url");
+		Item item = new Item(1L, "테스트 상품", 1234, "url");
 		// when -> 테스트할 기능을 실행하는 부분
 		Long savedId = itemRepository.save(item);
 		Optional<Item> getItem = itemRepository.findById(savedId);
@@ -56,7 +56,7 @@ public class ItemRepositoryTest {
 		assertThat(item).isPresent();
 		assertThat(item.get().getId()).isEqualTo(1L);
 		//when
-		itemRepository.update(new Item(1L, "수정된이름", 99, "http://www.naver.com"));
+		itemRepository.update(new Item(1L, 1L,"수정된이름", 99, "http://www.naver.com"));
 		//then
 		assertThat(itemRepository.findById(1L).get().getName()).isEqualTo("수정된이름");
 	}
