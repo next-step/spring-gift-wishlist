@@ -46,11 +46,6 @@ public class AdminProductController {
             BindingResult bindingResult,
             HttpServletResponse response
     ) {
-        if (bindingResult.hasErrors()) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            System.out.println(bindingResult.getAllErrors());
-            return "admin/product_form";
-        }
         productService.createProduct(
                 productForm.getName(),
                 productForm.getPrice(),
@@ -84,10 +79,6 @@ public class AdminProductController {
             BindingResult bindingResult,
             HttpServletResponse response
     ) {
-        if (bindingResult.hasErrors()) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return "admin/product_form";
-        }
         productService.updateProduct(
                 id,
                 productForm.getName(),
@@ -113,5 +104,15 @@ public class AdminProductController {
     public String hide(@PathVariable Long id) {
         productService.unhideProduct(id);
         return "redirect:/admin/products";
+    }
+
+    private String checkErrors(BindingResult bindingResult,
+            HttpServletResponse response,
+            String viewName) {
+        if (bindingResult.hasErrors()) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return viewName;
+        }
+        return null;
     }
 }

@@ -1,14 +1,19 @@
 package gift.entity.product.value;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
 public record ProductName(String name) {
 
+    public static final int MAX_LENGTH = 15;
+    
     public static final String ALLOWED_CHAR =
             "^[\\p{IsHangul}\\p{IsHan}\\p{IsAlphabetic}\\d\\s()\\[\\]+\\-&/_]+$";
 
-    public static final int MAX_LENGTH = 15;
+    public static final List<Pattern> FORBIDDEN_PATTERNS = List.of(
+            Pattern.compile("카카오")
+    );
 
     public ProductName {
         Objects.requireNonNull(name, "상품 이름은 필수 입력값입니다.");

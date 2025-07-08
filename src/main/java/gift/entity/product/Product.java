@@ -35,13 +35,7 @@ public class Product {
     }
 
     public static Product of(Long id, String name, int price, String imageUrl) {
-        return new Product(
-                new ProductId(id),
-                new ProductName(name),
-                new ProductPrice(price),
-                new ProductImageUrl(imageUrl),
-                false
-        );
+        return of(id, name, price, imageUrl, false);
     }
 
     public static Product of(String name, int price, String imageUrl) {

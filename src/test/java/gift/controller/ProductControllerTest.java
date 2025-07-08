@@ -60,14 +60,14 @@ class ProductControllerTest {
     }
 
     @Test
-    @DisplayName("GET /api/products/{id} - 숨김 상품은 Forbidden")
+    @DisplayName("GET /api/products/{id} - 숨김 상품은 Not Found")
     void getHiddenProduct() throws Exception {
         Product hidden = Product.of(2L, "C", 30, "http://example.com/c.png", true);
         Mockito.when(productService.getProductById(2L))
                 .thenReturn(Optional.of(hidden));
 
         mockMvc.perform(get("/api/products/{id}", 2L))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isNotFound());
     }
 
     @Test

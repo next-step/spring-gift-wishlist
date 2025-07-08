@@ -1,11 +1,12 @@
 package gift.service;
 
+import static gift.entity.product.value.ProductName.FORBIDDEN_PATTERNS;
+
 import gift.entity.product.Product;
 import gift.exception.ProductNotFoundExection;
 import gift.repository.ProductRepository;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Pattern;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,9 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class ProductServiceImpl implements ProductService {
 
-    private static final List<Pattern> FORBIDDEN_PATTERNS = List.of(
-            Pattern.compile("카카오")
-    );
     private final ProductRepository repo;
 
     public ProductServiceImpl(ProductRepository repo) {

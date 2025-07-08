@@ -3,7 +3,6 @@ package gift.controller;
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
 import gift.entity.product.Product;
-import gift.exception.ProductHiddenException;
 import gift.exception.ProductNotFoundExection;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
@@ -73,7 +72,7 @@ public class ProductController {
         Product p = productService.getProductById(id)
                 .orElseThrow(() -> new ProductNotFoundExection(id));
         if (p.hidden()) {
-            throw new ProductHiddenException(id);
+            throw new ProductNotFoundExection(id);
         }
         return p;
     }

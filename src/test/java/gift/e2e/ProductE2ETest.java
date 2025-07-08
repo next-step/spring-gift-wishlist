@@ -80,7 +80,7 @@ class ProductE2ETest {
                     .withHidden(true);
             productRepository.save(hidden);
             mockMvc.perform(get("/api/products/{id}", hidden.id().id()))
-                    .andExpect(status().isForbidden());
+                    .andExpect(status().isNotFound());
         }
 
         @Test
@@ -152,7 +152,7 @@ class ProductE2ETest {
             mockMvc.perform(put("/api/products/{id}", hidden.id().id())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(req)))
-                    .andExpect(status().isForbidden());
+                    .andExpect(status().isNotFound());
         }
 
         @Test
@@ -195,7 +195,7 @@ class ProductE2ETest {
                     .withHidden(true);
             productRepository.save(hidden);
             mockMvc.perform(delete("/api/products/{id}", hidden.id().id()))
-                    .andExpect(status().isForbidden());
+                    .andExpect(status().isNotFound());
         }
 
         @Test
