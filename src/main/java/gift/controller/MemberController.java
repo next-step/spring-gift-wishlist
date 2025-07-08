@@ -26,15 +26,21 @@ public class MemberController {
     public ResponseEntity<MemberResponseDto> registerMember(
             @RequestBody @Valid MemberRequestDto requestDto) {
 
-
         String token = memberService.register(requestDto);
         MemberResponseDto responseDto = new MemberResponseDto(token);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
 
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<MemberResponseDto> loginMember(
+            @RequestBody @Valid MemberRequestDto requestDto) {
 
+        String token = memberService.login(requestDto);
+        MemberResponseDto responseDto = new MemberResponseDto(token);
 
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
 
 
 }
