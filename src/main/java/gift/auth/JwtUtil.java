@@ -15,22 +15,23 @@ import java.util.Date;
 public class JwtUtil {
 
     private final SecretKey secretKey;
-    private final long timeout_ms;
+    private final long timeoutMs;
 
     public JwtUtil(@Value("${jwt.secret}") String secretKey,
-                   @Value("${jwt.token_timeout_s}") long timeOut_s) {
+                   @Value("${jwt.tokenTimeoutSec}") long timeOut_s) {
         this.secretKey = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
-        this.timeout_ms = timeOut_s * 1000;
+        this.timeoutMs = timeOut_s * 1000;
     }
 
     public String generateToken(Member member) {
         Date now = new Date();
-        Date validity = new Date(now.getTime() + timeout_ms);
+        Date validity = new Date(now.getTime() + timeoutMs);
 
         return Jwts.builder()
                 .setSubject(member.getEmail())
                 .claim("role", member.getRole().name())
                 .setIssuedAt(now)
+                .setExpiration(validity)
                 .signWith(secretKey)
                 .compact();
     }
@@ -49,7 +50,7 @@ public class JwtUtil {
         }
     }
 
-    public Claims getClaims(String token) {
+    private Claims getClaims(String token) {
         return Jwts.parser()
                 .setSigningKey(secretKey)
                 .build()

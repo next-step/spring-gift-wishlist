@@ -49,10 +49,13 @@
 - [ ] 인증 예외 처리 구현
 - [ ] 회원 관련 페이지 구현
 
-### 1단계 - 코드 리뷰 반영
+### 2단계 - 코드 리뷰 반영
 
-- [x] 유효성 검사 실패시 모든 실패 항목 메시지에 포함하기
-- [x] README.md 에 체크박스 사용해보기
+- [x] 헬퍼 메서드 접근 지정자 수정
+- [x] 표기법 통일(properties)
+- [x] JWT expiration 적용
+- [ ] JWT 관련 deprecated 메소드 사용 제거
+- [ ] Interceptor: authHeader 토큰 문제 수정
 
 # spring-gift-product (이전 구현)
 
