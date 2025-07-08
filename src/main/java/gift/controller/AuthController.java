@@ -1,7 +1,9 @@
 package gift.controller;
 
 import gift.domain.Member;
-import gift.dto.*;
+import gift.dto.AuthResponse;
+import gift.dto.MemberLoginRequest;
+import gift.dto.MemberRegisterRequest;
 import gift.service.MemberService;
 import gift.util.JwtUtil;
 import org.springframework.http.*;
