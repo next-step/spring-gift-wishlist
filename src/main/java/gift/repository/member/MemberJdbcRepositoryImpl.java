@@ -17,7 +17,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class MemberJdbcRepositoryImpl implements MemberRepository {
 
-  private JdbcTemplate jdbcTemplate;
+  private final JdbcTemplate jdbcTemplate;
 
   public MemberJdbcRepositoryImpl(JdbcTemplate jdbcTemplate) {
     this.jdbcTemplate = jdbcTemplate;
