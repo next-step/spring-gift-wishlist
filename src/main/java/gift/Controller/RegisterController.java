@@ -1,3 +1,4 @@
+
 package gift.Controller;
 
 import gift.Entity.Member;
@@ -24,8 +25,8 @@ public class RegisterController {
 
     @PostMapping("/register")
     public String userRegister(@ModelAttribute @Valid Member member,
-                                BindingResult bindingResult,
-                                Model model) {
+                               BindingResult bindingResult,
+                               Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("member", member);
             return "register";

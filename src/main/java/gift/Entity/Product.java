@@ -50,7 +50,3 @@ public class Product {
     public boolean getMDapproved() { return MDapproved; }
     public void setMDapproved(boolean MDapproved) { this.MDapproved = MDapproved; }
 }
-
-
-
-

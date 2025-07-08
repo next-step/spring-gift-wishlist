@@ -31,4 +31,3 @@ public class MemberController {
         return ResponseEntity.ok(new TokenResponse(token));
     }
 }
-

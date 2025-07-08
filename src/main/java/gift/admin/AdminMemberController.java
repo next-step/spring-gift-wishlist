@@ -40,8 +40,8 @@ public class AdminMemberController {
 
     @PostMapping
     public String createMember(@ModelAttribute @Valid Member member,
-                                BindingResult bindingResult,
-                                Model model) {
+                               BindingResult bindingResult,
+                               Model model) {
         try {
             memberService.register(member);
         } catch (Exception e) {
@@ -67,8 +67,8 @@ public class AdminMemberController {
     // 상품 수정 처리
     @PostMapping("/{id}")
     public String updateMember(@PathVariable String id, @ModelAttribute @Valid Member member,
-                                BindingResult bindingResult,
-                                Model model) {
+                               BindingResult bindingResult,
+                               Model model) {
         try {
             memberDto.updateMember(id, member); // 따로 구현 필요
         } catch (Exception e) {
@@ -89,4 +89,3 @@ public class AdminMemberController {
     }
 
 }
-
