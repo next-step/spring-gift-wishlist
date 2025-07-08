@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -42,12 +43,12 @@ public class WishlistController {
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
     
-    @DeleteMapping
+    @DeleteMapping("/{productId}")
     public ResponseEntity<Void> deleteToMyWishlist(
         @CurrentUser Long userId,
-        @RequestBody WishlistRequestDto requestDto
+        @RequestParam(name = "productId") Long id
     ) {
-        wishlistService.deleteFromMyWishlist(userId, requestDto);
+        wishlistService.deleteFromMyWishlist(userId, id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
     

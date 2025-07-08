@@ -10,7 +10,7 @@ public interface WishlistService {
     
     List<WishlistResponseDto> findMyWishlistByUserId(Long userId);
     
-    void deleteFromMyWishlist(Long userId, WishlistRequestDto requestDto);
+    void deleteFromMyWishlist(Long userId, Long productId);
     
     WishlistResponseDto modifyProductCntFromMyWishlist(Long userId, WishlistRequestDto requestDto);
 }
