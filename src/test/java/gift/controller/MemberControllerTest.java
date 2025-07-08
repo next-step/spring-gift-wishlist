@@ -1,13 +1,12 @@
 package gift.controller;
 
 import gift.dto.MemberRequestDto;
-import gift.dto.ProductRequestDto;
-import gift.dto.ProductResponseDto;
 import gift.dto.TokenResponseDto;
 import gift.service.MemberService;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -19,6 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class MemberControllerTest {
 
     @Autowired
@@ -30,7 +30,7 @@ public class MemberControllerTest {
     private RestClient client;
     private String url;
 
-    @BeforeEach
+    @BeforeAll
     void setUp() {
         client = RestClient.builder().build();
         url = "http://localhost:" + port + "/api/members";
