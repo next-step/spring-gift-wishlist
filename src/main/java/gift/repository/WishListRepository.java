@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -43,12 +44,16 @@ public class WishListRepository {
     //TODO: WishList에 대한 CRUD
     //조회
     public List<WishResponseDto> getWishList(Long id){
-        String sql = "select p.name, p.image_url, w.quantity, p.price from Products p, WishList w, Member m "
+        String sql = "select p.name, p.image_url, w.quantity, p.price from Products p, WishList w, Members m "
                 + "where w.memberid = m.id and w.productid = p.id and m.id = ?";
         List<WishResponseDto> mywishList = jdbcTemplate.query(sql, wishResponseDtoRowMapper(), id);
         return mywishList;
     }
 
+    public void remove(Long wishListId){
+        String sql = "delete from wishList where id = ?";
+        jdbcTemplate.update(sql, wishListId);
+    }
 
     private RowMapper<WishResponseDto> wishResponseDtoRowMapper(){
         return new RowMapper<WishResponseDto>() {

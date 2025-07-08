@@ -7,6 +7,7 @@ import gift.entity.WishList;
 import gift.exception.ProductNotFoundException;
 import gift.repository.ProductRepository;
 import gift.repository.WishListRepository;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,14 @@ public class WishListService {
         }
         WishList wishList = new WishList(memberId, requestDto.productId(), requestDto.quantity());
         return wishListRepository.add(wishList, productOptional.get());
+    }
+
+    public List<WishResponseDto> getList(Long memeberId){
+        return wishListRepository.getWishList(memeberId);
+    }
+
+    public void removeFromWishList(Long wishListId){
+       wishListRepository.remove(wishListId);
     }
 
 

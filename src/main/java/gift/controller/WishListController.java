@@ -5,9 +5,11 @@ import gift.dto.wish.WishResponseDto;
 import gift.entity.WishList;
 import gift.service.JwtAuthService;
 import gift.service.WishListService;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,10 +32,13 @@ public class WishListController {
     }
 
     //TODO: WishList에 담긴 상품 목록을 조회
-    @GetMapping("/wishList")
-    public ResponseEntity<WishList> getWishList(){
+    @GetMapping("/wishList/{memberId}")
+    public ResponseEntity<List<WishResponseDto>> getWishList(
+            @PathVariable Long memberId
+    ){
         //jwtAuthService.checkValidation();
-        return null;
+        List<WishResponseDto> myWishList = wishListService.getList(memberId);
+        return ResponseEntity.ok(myWishList);
     }
 
     //TODO: 위시리스트에 상품을 추가
@@ -48,5 +53,13 @@ public class WishListController {
     }
 
     //TODO: 위시 리스트에 담긴 상품을 삭제
+    @DeleteMapping("/wishList/{wishListId}")
+    public ResponseEntity<Void> removeWishList(
+        @PathVariable Long wishListId
+    ){
+        //jwtAuthService.checkValidation();
+        wishListService.removeFromWishList(wishListId);
+        return ResponseEntity.noContent().build();
+    }
 
 }
