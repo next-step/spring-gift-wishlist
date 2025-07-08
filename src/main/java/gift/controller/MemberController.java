@@ -1,6 +1,7 @@
 package gift.controller;
 
 import gift.dto.request.MemberRequest;
+import gift.dto.response.MemberResponse;
 import gift.service.MemberService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -34,5 +35,11 @@ public class MemberController {
 
         return ResponseEntity.created(location)
                 .body(Map.of("message", "회원가입이 완료되었습니다."));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<MemberResponse> login(@RequestBody @Valid MemberRequest request){
+        String token = memberService.login(request.email(), request.pwd());
+        return ResponseEntity.ok(new MemberResponse(token));
     }
 }
