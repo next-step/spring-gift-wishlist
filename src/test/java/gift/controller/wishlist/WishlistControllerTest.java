@@ -74,6 +74,23 @@ class WishlistControllerTest {
     
     @Test
     @Order(3)
+    void 위시리스트에서_물품_개수를_수정한다() throws IOException {
+        var request = new WishlistRequestDto(1L, 2L);
+        var token = jwtProvider.createToken(new Member(2L, "user@user.com", "userpw", Role.USER));
+        
+        var response = restClient.patch()
+            .uri("/api/wishlist")
+            .header("Authorization", "Bearer " + token)
+            .body(request)
+            .retrieve()
+            .body(WishlistResponseDto.class);
+        
+        assertThat(response.getProductName()).isEqualTo("아메리카노");
+        assertThat(response.getProductCnt()).isEqualTo(2L);
+    }
+    
+    @Test
+    @Order(4)
     void 위시리스트에서_물품을_삭제한다() throws IOException {
         var token = jwtProvider.createToken(new Member(2L, "user@user.com", "userpw", Role.USER));
         
