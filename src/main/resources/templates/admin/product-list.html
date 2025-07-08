@@ -22,6 +22,16 @@
         .product-image { max-width: 100px; max-height: 100px; }
         .empty-list { padding: 20px; text-align: center; color: #888; }
         .action-bar { margin: 1em 0; }
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            margin: -1px;
+            padding: 0;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
     </style>
 </head>
 <body>
@@ -61,7 +71,10 @@
         <table>
             <thead>
             <tr>
-                <th><input type="checkbox" id="selectAll"></th>
+                <th>
+                    <label for="selectAll" class="visually-hidden">전체 선택</label>
+                    <input type="checkbox" id="selectAll">
+                </th>
                 <th>ID</th>
                 <th>상품명</th>
                 <th>가격</th>
@@ -71,7 +84,12 @@
             </thead>
             <tbody>
             <tr th:each="product : ${products}">
-                <td><input type="checkbox" name="productIds" th:value="${product.id()}"></td>
+                <td>
+                    <label th:for="'product-' + ${product.id()}" class="visually-hidden" th:text="${product.name()}"></label>
+                    <label>
+                        <input type="checkbox" name="productIds" th:value="${product.id()}" th:id="'product-' + ${product.id()}">
+                    </label>
+                </td>
                 <td th:text="${product.id()}">1</td>
                 <td th:text="${product.name()}">상품 이름 예시</td>
                 <td th:text="${product.price()}">10000</td>
@@ -79,7 +97,7 @@
                 <td>
                     <div class="management-buttons">
                         <a th:href="@{/admin/products/edit/{id}(id=${product.id()})}" class="button button-warning">수정</a>
-                        <button type="button" class="button button-danger" th:onclick="deleteSingleProduct([[${product.id()}]])">삭제</button>
+                        <button type="button" class="button button-danger" th:onclick="'deleteSingleProduct(' + ${product.id()} + ')'">삭제</button>
                     </div>
                 </td>
             </tr>
@@ -94,8 +112,8 @@
 
 <script>
     document.getElementById('selectAll').addEventListener('click', function(event) {
-        var checkboxes = document.querySelectorAll('input[name="productIds"]');
-        for (var checkbox of checkboxes) {
+        const checkboxes = document.querySelectorAll('input[name="productIds"]');
+        for (const checkbox of checkboxes) {
             checkbox.checked = event.target.checked;
         }
     });
