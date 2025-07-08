@@ -23,7 +23,7 @@ public class MemberController {
     @PostMapping("/register")
     public ResponseEntity<AuthResponseDto> registerMember(
             @Validated @RequestBody MemberRequestDto memberRequestDto
-    ) throws BadRequestException {
+    ) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 memberService.creatMember(memberRequestDto)
         );

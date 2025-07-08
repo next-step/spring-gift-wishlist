@@ -1,8 +1,8 @@
 package gift.util;
 
 import gift.entity.Member;
-import gift.repository.MemberRepository;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -33,6 +33,14 @@ public class JwtTokenProvider {
                 .build();
         Claims claims = (Claims) parser.parse(jwtToken).getPayload();
 
-        return new Member(Long.parseLong(claims.get("sub", String.class)), claims.get("email", String.class), "");
+        String idString = claims.get("sub", String.class);
+        String email = claims.get("email", String.class);
+
+        if (idString.isEmpty() || email.isEmpty()) {
+            throw new JwtException("NOT valid Token");
+        }
+
+        Long id = Long.parseLong(idString);
+        return new Member(id, email, "");
     }
 }

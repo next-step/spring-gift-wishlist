@@ -1,7 +1,7 @@
 package gift.exception;
 
 import gift.util.BindingResultUtil;
-import org.apache.coyote.BadRequestException;
+import io.jsonwebtoken.JwtException;
 import org.apache.tomcat.websocket.AuthenticationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +16,25 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<String> handleJwtException(JwtException e) {
+        String message = e.getMessage();
+        log.trace(message);
+        return ResponseEntity.status(
+                HttpStatus.UNAUTHORIZED)
+                .body("Unauthenticated");
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<String> handleAuthenticationException(AuthenticationException e) {
+        String message = e.getMessage();
+        log.trace(message);
+        return ResponseEntity.status(
+                        HttpStatus.UNAUTHORIZED)
+                .body("Unauthenticated");
+    }
+
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<String> handleValidationException(MethodArgumentNotValidException e) {

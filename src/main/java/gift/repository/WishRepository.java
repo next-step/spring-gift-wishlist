@@ -46,10 +46,13 @@ public class WishRepository {
     }
 
     public void updateWishCount(long memberId, long productId, int count) {
-        jdbcClient.sql(UPDATE_WISH_COUNT)
+        int numOfUpdatedRows = jdbcClient.sql(UPDATE_WISH_COUNT)
                 .param("memberId", memberId)
                 .param("productId", productId)
-                .param("count", count);
+                .param("count", count)
+                .update();
+        if (numOfUpdatedRows == 0)
+            throw new IllegalArgumentException("not found wish");
     }
 
     public int getWishCount(long memberId, long productId) {
@@ -61,11 +64,13 @@ public class WishRepository {
     }
 
     public void saveWish(long memberId, long productId, int count) {
-        jdbcClient.sql(CREATE_WISH)
+        int numOfUpdatedRows = jdbcClient.sql(CREATE_WISH)
                 .param("memberId", memberId)
                 .param("productId", productId)
                 .param("count", count)
                 .update();
+        if (numOfUpdatedRows == 0)
+            throw new IllegalArgumentException("not created");
     }
 
     public void deleteWish(long memberId, long productId) {
