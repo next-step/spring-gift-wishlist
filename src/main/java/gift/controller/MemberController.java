@@ -33,7 +33,7 @@ public class MemberController {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<CreateMemberResponse> createMember (
             @Valid @RequestBody CreateMemberRequest createMemberRequest
     ) {
