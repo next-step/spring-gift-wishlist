@@ -54,7 +54,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ExceptionResponseDto> handleUserNotFoundException(
-        EmailDuplicationException e) {
+        UserNotFoundException e) {
         List<String> errors = new ArrayList<>();
         errors.add(e.getMessage());
         ExceptionResponseDto exception = new ExceptionResponseDto(errors, 401,

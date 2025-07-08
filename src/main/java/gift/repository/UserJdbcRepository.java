@@ -26,6 +26,7 @@ public class UserJdbcRepository implements UserRepository {
             @Override
             public User mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return new User(
+                    rs.getString("user_role"),
                     rs.getString("email"),
                     rs.getString("password")
                 );
@@ -37,19 +38,15 @@ public class UserJdbcRepository implements UserRepository {
     public void createUser(User user) {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(this.jdbcTemplate)
             .withTableName("users")
-            .usingColumns("email", "password");
+            .usingColumns("user_role", "email", "password");
 
         Map<String, Object> parameters = new HashMap<>();
 
+        parameters.put("user_role", user.userRole());
         parameters.put("email", user.email());
         parameters.put("password", user.password());
 
         jdbcInsert.withTableName("users").execute(parameters);
-    }
-
-    @Override
-    public void loginUser(User user) {
-
     }
 
     @Override

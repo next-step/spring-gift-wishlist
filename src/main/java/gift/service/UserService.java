@@ -27,7 +27,11 @@ public class UserService implements UserServiceInterface {
 
     public User userWithEncodedPassword(UserAuthRequestDto userAuthRequestDto) {
         String encodedPassword = BCrypt.hashpw(userAuthRequestDto.password(), BCrypt.gensalt());
-        return new User(userAuthRequestDto.email(), encodedPassword);
+        String userRole = "user";
+        if (userAuthRequestDto.email().contains("kakao.com")) {
+            userRole = "manager";
+        }
+        return new User(userRole, userAuthRequestDto.email(), encodedPassword);
     }
 
     @Override

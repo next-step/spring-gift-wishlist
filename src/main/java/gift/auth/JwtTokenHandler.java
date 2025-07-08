@@ -22,6 +22,7 @@ public class JwtTokenHandler {
             .header()
             .add("typ", "JWT")
             .and()
+            .claim("userRole", user.userRole())
             .claim("email", user.email())
             .issuedAt(new Date(System.currentTimeMillis()))
             .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30)) //30분
@@ -47,6 +48,17 @@ public class JwtTokenHandler {
             .build()
             .parseSignedClaims(token)
             .getPayload();
-        return claims.getSubject();
+        return claims.get("email", String.class);
     }
+
+    public String getUserRoleFromToken(String token) {
+        Claims claims = Jwts.parser()
+            .verifyWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
+            .build()
+            .parseSignedClaims(token)
+            .getPayload();
+        return claims.get("userRole", String.class);
+    }
+
+
 }
