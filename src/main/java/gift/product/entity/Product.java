@@ -16,7 +16,6 @@ public class Product {
     @NotBlank
     @Length(max = 15)
     @Pattern(regexp = "[0-9a-zA-Zㄱ-ㅎ가-힣 ()\\[\\]+\\-&/_]+")
-
     private String name;
 
     @NotNull
