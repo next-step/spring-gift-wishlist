@@ -1,5 +1,6 @@
 package gift.controller.product;
 
+import gift.config.annotation.AdminCheck;
 import gift.dto.api.product.AddProductRequestDto;
 import gift.dto.api.product.ModifyProductRequestDto;
 import gift.dto.api.product.ProductResponseDto;
@@ -25,19 +26,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProductController {
     
     private final ProductService productService;
-    private final AuthService authService;
     
-    public ProductController(ProductService productService, AuthService authService) {
+    public ProductController(ProductService productService) {
         this.productService = productService;
-        this.authService = authService;
     }
     
     @PostMapping
+    @AdminCheck
     public ResponseEntity<ProductResponseDto> addProduct(
-        @RequestBody @Valid AddProductRequestDto requestDto,
-        @RequestHeader("Authorization") String authorizationHeader
+        @RequestBody @Valid AddProductRequestDto requestDto
     ) {
-        authService.checkPermissonForAdmin(authorizationHeader);
         ProductResponseDto responseDto = productService.addProduct(requestDto);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
@@ -57,34 +55,31 @@ public class ProductController {
     }
     
     @PutMapping("/{productId}")
+    @AdminCheck
     public ResponseEntity<ProductResponseDto> modifyProductWithId(
         @PathVariable(name="productId") Long id,
-        @RequestBody @Valid ModifyProductRequestDto requestDto,
-        @RequestHeader("Authorization") String authorizationHeader
+        @RequestBody @Valid ModifyProductRequestDto requestDto
     ) {
-        authService.checkPermissonForAdmin(authorizationHeader);
         ProductResponseDto responseDto = productService.modifyProductWithId(id, requestDto);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
     
     @PatchMapping("/{productId}")
+    @AdminCheck
     public ResponseEntity<ProductResponseDto> modifyProductInfoWithId(
         @PathVariable(name="productId") Long id,
-        @RequestBody @Valid ModifyProductRequestDto requestDto,
-        @RequestHeader("Authorization") String authorizationHeader
+        @RequestBody @Valid ModifyProductRequestDto requestDto
     ) {
-        authService.checkPermissonForAdmin(authorizationHeader);
         ProductResponseDto responseDto = productService.modifyProductInfoWithId(id,
             requestDto);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
     
     @DeleteMapping("/{productId}")
+    @AdminCheck
     public ResponseEntity<Void> deleteProductWithId(
-        @PathVariable(name="productId") Long id,
-        @RequestHeader("Authorization") String authorizationHeader
+        @PathVariable(name="productId") Long id
     ) {
-        authService.checkPermissonForAdmin(authorizationHeader);
         productService.deleteProductWithId(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
