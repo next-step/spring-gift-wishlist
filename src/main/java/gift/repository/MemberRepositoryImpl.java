@@ -32,7 +32,7 @@ public class MemberRepositoryImpl implements MemberRepository{
         params.put("password", member.getPassword());
 
         Long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
-        return new Member(member.getMemberId(), member.getEmail(), member.getPassword());
+        return new Member(id, member.getEmail(), member.getPassword());
     }
 
     @Override

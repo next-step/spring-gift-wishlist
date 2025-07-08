@@ -2,13 +2,11 @@ package gift.controller;
 
 import gift.dto.wish.WishRequestDto;
 import gift.dto.wish.WishResponseDto;
-import gift.entity.WishList;
 import gift.service.JwtAuthService;
 import gift.service.WishListService;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,24 +31,25 @@ public class WishListController {
     }
 
     //TODO: WishList에 담긴 상품 목록을 조회
-    @GetMapping("/wishList/{memberId}")
+    @GetMapping("/wishList")
     public ResponseEntity<List<WishResponseDto>> getWishList(
-            @PathVariable Long memberId,
             @RequestHeader(value = "Authorization") String token
     ){
         jwtAuthService.checkValidation(token);
+        Long memberId = jwtAuthService.getMemberId(token);
         List<WishResponseDto> myWishList = wishListService.getList(memberId);
         return ResponseEntity.ok(myWishList);
     }
 
     //TODO: 위시리스트에 상품을 추가
-    @PostMapping("/wishList/{memberId}")
+    @PostMapping("/wishList")
     public ResponseEntity<WishResponseDto> addToWishList(
-            @RequestBody WishRequestDto wishRequestDto,
-            @PathVariable Long memberId,
+            @RequestBody WishRequestDto wishRequestDto, //상품ID, 수량
             @RequestHeader(value = "Authorization") String token
     ){
         jwtAuthService.checkValidation(token); // 검증로직 확인
+        Long memberId = jwtAuthService.getMemberId(token);
+
         WishResponseDto wishResponseDto = wishListService.addToWishList(memberId, wishRequestDto);
         return new ResponseEntity<>(wishResponseDto, HttpStatus.CREATED);
     }

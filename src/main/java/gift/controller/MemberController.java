@@ -31,7 +31,7 @@ public class MemberController {
     @PostMapping("/register")
     public ResponseEntity<Object> register(@RequestBody @Valid MemberRequestDto memberRequestDto){
         Member member = memberService.register(memberRequestDto);
-        String token = jwtAuthService.createJwt(memberRequestDto);
+        String token = jwtAuthService.createJwt(member.getEmail(), member.getMemberId());
         return new ResponseEntity<>(new JwtResponseDto("Bearer " + token), HttpStatus.CREATED);
     }
 
@@ -46,7 +46,8 @@ public class MemberController {
             return new ResponseEntity<>("아이디 또는 비밀번호가 잘못되었습니다.", HttpStatus.FORBIDDEN);
         }
         //서버에 저장된 id-pw 쌍과 일치한다면 토큰을 발급
-        String token = jwtAuthService.createJwt(memberRequestDto);
+        Member member = memberService.getMemberByEmail(memberRequestDto.email()).get();
+        String token = jwtAuthService.createJwt(member.getEmail(), member.getMemberId());
         return ResponseEntity.ok().body(new JwtResponseDto("Bearer " + token));
     }
 
