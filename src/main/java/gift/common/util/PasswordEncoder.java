@@ -1,22 +1,18 @@
 package gift.common.util;
 
 import gift.common.exception.CriticalServerException;
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class PasswordEncoder {
-
-    private PasswordEncoder() {
-        // 객체 생성을 방지하기 위한 private 생성자
-    }
+    private static final String ALGORITHM = "SHA-256";
 
     public static String encode(String password) {
         if (password == null || password.isEmpty()) {
             throw new IllegalArgumentException("비밀번호는 null이거나 비어있을 수 없습니다.");
         }
         try {
-            MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+            MessageDigest messageDigest = MessageDigest.getInstance(ALGORITHM);
             byte[] hashedBytes = messageDigest.digest(password.getBytes());
             StringBuilder hexString = new StringBuilder();
             for (byte b : hashedBytes) {
