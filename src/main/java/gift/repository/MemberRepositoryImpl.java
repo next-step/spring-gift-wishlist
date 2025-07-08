@@ -14,6 +14,7 @@ public class MemberRepositoryImpl implements MemberRepository {
     private final JdbcClient jdbcClient;
 
     private final static RowMapper<Member> MEMBER_ROW_MAPPER = ((rs, rowNum) -> new Member(
+        rs.getLong("id"),
         rs.getString("email"),
         rs.getString("password")
     ));
@@ -25,7 +26,7 @@ public class MemberRepositoryImpl implements MemberRepository {
 
     @Override
     public Member create(Member member) {
-        String sql = "INSERT INTO member VALUES(:email, :password)";
+        String sql = "INSERT INTO member(email, password) VALUES(:email, :password)";
 
         jdbcClient.sql(sql)
             .param("email", member.getEmail())
