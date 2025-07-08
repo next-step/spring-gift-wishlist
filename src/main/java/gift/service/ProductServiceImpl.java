@@ -39,7 +39,7 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public ProductResponseDto updateProduct(Long id, ProductRequestDto requestDto) {
         Product product = new Product(id, requestDto);
-        productRepository.updateProduct(id, product);
+        productRepository.updateProduct(product);
         return ProductResponseDto.from(id, product);
     }
 

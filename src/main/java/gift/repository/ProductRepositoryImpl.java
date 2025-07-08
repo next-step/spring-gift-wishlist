@@ -56,16 +56,20 @@ public class ProductRepositoryImpl implements ProductRepository {
         } catch (EmptyResultDataAccessException e) {
             throw new ProductNotFoundException(id);
         }
-
     }
 
     @Override
-    public void updateProduct(Long id, Product product) {
+    public void updateProduct(Product product) {
         final String sql = "UPDATE products SET name = ?, price = ?, image_url = ? WHERE id = ?";
 
-        int updated = jdbcTemplate.update(sql, product.getName(), product.getPrice(), product.getImageUrl(), id);
+        int updated = jdbcTemplate.update(
+            sql,
+            product.getName(),
+            product.getPrice(),
+            product.getImageUrl(),
+            product.getId());
         if (updated == 0) {
-            throw new ProductNotFoundException(id);
+            throw new ProductNotFoundException(product.getId());
         }
     }
 

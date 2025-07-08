@@ -2,6 +2,7 @@ package gift.service;
 
 import gift.dto.MemberLogInRequestDto;
 import gift.dto.MemberLogInResponseDto;
+import gift.dto.MemberResponseDto;
 import gift.entity.Member;
 import gift.exception.InvalidPasswordException;
 import gift.exception.MemberEmailAlreadyExistsException;
@@ -10,6 +11,7 @@ import gift.repository.MemberRepository;
 import gift.util.JwtProvider;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -47,5 +49,36 @@ public class MemberServiceImpl implements MemberService {
         }
 
         return new MemberLogInResponseDto(jwtProvider.createToken(member));
+    }
+
+    @Override
+    public List<MemberResponseDto> findAllMembers() {
+        return memberRepository
+            .findAllMembers()
+            .stream()
+            .map(MemberResponseDto::from)
+            .toList();
+    }
+
+    @Override
+    public MemberResponseDto findMemberById(Long id) {
+        return MemberResponseDto.from(memberRepository.findMemberById(id));
+    }
+
+    @Override
+    public MemberResponseDto updateMember(Long id, MemberLogInRequestDto requestDto) {
+        Member member = new Member(
+            id,
+            requestDto.email(),
+            requestDto.password()
+        );
+        memberRepository.updateMember(member);
+
+        return MemberResponseDto.from(member);
+    }
+
+    @Override
+    public void deleteMember(Long id) {
+        memberRepository.deleteMember(id);
     }
 }
