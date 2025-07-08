@@ -130,4 +130,102 @@ class ProductRequestDtoTest {
                     assertThat(msg).contains("'카카오'가 포함된 문구는 담당 MD와 협의한 경우에만 사용할 수 있습니다.");
                 });
     }
+
+    // 조회 테스트
+    @Test
+    @DisplayName("Product 조회 시, 존재하는 ID로 조회하면 200(OK)을 반환한다. ")
+    void findProduct_withExistingId_returns200() {
+        var productRequestDto = createProductRequestDto("하리보 젤리(지렁이)", 3000, null);
+
+        var created = client.post()
+                .uri(url)
+                .body(productRequestDto)
+                .retrieve()
+                .toEntity(ProductResponseDto.class)
+                .getBody();
+        Long id = created.id();
+
+        var response = client.get()
+                .uri(url + "/" + id)
+                .retrieve()
+                .toEntity(ProductResponseDto.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().name()).isEqualTo("하리보 젤리(지렁이)");
+    }
+
+    @Test
+    @DisplayName("Product 조회 시, 존재하지 않는 ID로 조회하면 404(Not Found)를 반환한다. ")
+    void findProduct_withNonExistingId_returns404() {
+        assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
+                .isThrownBy(() ->
+                        client.get()
+                                .uri(url + "/9999")
+                                .retrieve()
+                                .toEntity(Void.class)
+                );
+    }
+
+    // 수정 테스트
+    @Test
+    @DisplayName("Product 수정 시, 수정할 내용에 대한 input을 넣으면 200(OK)을 반환한다. ")
+    void updateProduct_withValidInput_returns200() {
+        ProductRequestDto productRequestDto = createProductRequestDto("하리보 젤리(오리지널)", 1500, "http://img.url/original.png");
+
+        var created = client.post()
+                .uri(url)
+                .body(productRequestDto)
+                .retrieve()
+                .toEntity(ProductResponseDto.class)
+                .getBody();
+        assertThat(created).isNotNull();
+
+        ProductRequestDto updateDto = createProductRequestDto("하리보 젤리(리뉴얼)", 2000, "http://img.url/new.png");
+
+        var response = client.put()
+                .uri(url + "/" + created.id())
+                .body(updateDto)
+                .retrieve()
+                .toEntity(ProductResponseDto.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        ProductResponseDto updated = response.getBody();
+        assertThat(updated).isNotNull();
+        assertThat(updated.name()).isEqualTo("하리보 젤리(리뉴얼)");
+        assertThat(updated.price()).isEqualTo(2000);
+        assertThat(updated.imageUrl()).isEqualTo("http://img.url/new.png");
+    }
+
+    // 삭제 테스트
+    @Test
+    @DisplayName("Product 삭제 시, 존재하는 ID면 204(No Content)를 반환한다. ")
+    void deleteProduct_withExistingId_returns204() {
+        ProductRequestDto productRequestDto = createProductRequestDto("하리보 젤리", 1500, null);
+
+        var created = client.post()
+                .uri(url)
+                .body(productRequestDto)
+                .retrieve()
+                .toEntity(ProductResponseDto.class)
+                .getBody();
+
+        var deleteResponse = client.delete()
+                .uri(url + "/" + created.id())
+                .retrieve()
+                .toBodilessEntity();
+
+        assertThat(deleteResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    }
+
+    @Test
+    @DisplayName("Product 삭제 시, 존재하지 않는 ID면 404(Not Found)를 반환한다")
+    void deleteProduct_withNonExistingId_returns404() {
+        assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
+                .isThrownBy(() ->
+                        client.delete()
+                                .uri(url + "/9999")
+                                .retrieve()
+                                .toBodilessEntity()
+                );
+    }
 }
