@@ -9,11 +9,11 @@ import gift.exception.EmailAlreadyRegisteredException;
 import gift.exception.MemberNotFoundException;
 import gift.exception.PasswordMismatchException;
 import gift.repository.MemberRepository;
+import gift.security.BcryptPasswordEncoder;
 import gift.security.JwtProvider;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,9 +21,9 @@ public class MemberServiceImpl implements MemberService {
 
   private final MemberRepository memberRepository;
   private final JwtProvider jwtProvider;
-  private final PasswordEncoder passwordEncoder;
+  private final BcryptPasswordEncoder passwordEncoder;
 
-  public MemberServiceImpl(MemberRepository memberRepository, JwtProvider jwtProvider, PasswordEncoder passwordEncoder) {
+  public MemberServiceImpl(MemberRepository memberRepository, JwtProvider jwtProvider, BcryptPasswordEncoder passwordEncoder) {
     this.memberRepository = memberRepository;
     this.jwtProvider = jwtProvider;
     this.passwordEncoder = passwordEncoder;
