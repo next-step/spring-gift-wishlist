@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS products;
 DROP TABLE IF EXISTS roles;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS user_roles;
+DROP TABLE IF EXISTS wishlists;
 
 CREATE TABLE  roles (
     name VARCHAR(20) NOT NULL,
@@ -33,4 +34,12 @@ CREATE TABLE products (
     FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+CREATE TABLE wished_products (
+     user_id BIGINT NOT NULL,
+     product_id BIGINT NOT NULL,
+     quantity INT NOT NULL DEFAULT 1,
+     PRIMARY KEY (user_id, product_id),
+     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+);
 
