@@ -38,11 +38,8 @@ public class ProductController {
     // 상품 단건 조회
     @GetMapping("/{productId}")
     public ResponseEntity<ProductResponseDto> findProduct(@PathVariable Long productId) {
-        try {
-            return ResponseEntity.ok(productService.findProduct(productId));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+
+        return ResponseEntity.ok(productService.findProduct(productId));
     }
 
     // 상품 수정
@@ -51,24 +48,15 @@ public class ProductController {
             @PathVariable Long productId,
             @Valid @RequestBody ProductRequestDto productRequestDto) {
 
-        try {
-            return ResponseEntity.ok(productService.updateProduct(productId, productRequestDto));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        return ResponseEntity.ok(productService.updateProduct(productId, productRequestDto));
     }
 
     // 상품 삭제
     @DeleteMapping("/{productId}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long productId) {
 
-        try {
-            productService.deleteProduct(productId);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-
+        productService.deleteProduct(productId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     // 상품 목록 조회

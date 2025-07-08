@@ -23,6 +23,7 @@
       <th class="text-center">상품명</th>
       <th class="text-center">가격</th>
       <th class="text-center">이미지</th>
+      <th class="text-center">상태</th>
       <th class="text-center">-</th>
     </tr>
     </thead>
@@ -31,6 +32,25 @@
       <td class="align-middle text-center" th:text="${product.name}"></td>
       <td class="align-middle text-center" th:text="${product.price}"></td>
       <td class="align-middle" th:text="${product.imageUrl}"></td>
+
+      <td class="align-middle text-center">
+        <form th:action="@{/admin/products/{id}/status(id=${product.id})}" method="post"
+              class="d-flex justify-content-center align-items-center gap-2">
+          <!-- PatchMapping -->
+          <input type="hidden" name="_method" value="patch"/>
+          <select name="status" class="form-select form-select-sm" style="width: auto;">
+            <option th:each="status : ${allStatuses}"
+                    th:value="${status.name()}"
+                    th:text="${status.name()}"
+                    th:selected="${status == product.status}">
+          </select>
+          <button type="submit" class="btn btn-outline-primary btn-sm flex-shrink-0"
+                  onclick="return confirm('정말 변경하시겠습니까?');">
+            변경
+          </button>
+        </form>
+      </td>
+
       <td class="align-middle text-center">
         <div class="d-flex justify-content-center align-items-center gap-2">
 

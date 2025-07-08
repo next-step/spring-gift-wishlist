@@ -1,6 +1,7 @@
 package gift.repository;
 
 import gift.entity.Product;
+import gift.entity.ProductStatus;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,4 +17,5 @@ public interface ProductRepository {
 
     List<Product> findAllProducts();
 
+    void updateProductStatus(Long productId, ProductStatus newStatus);
 }

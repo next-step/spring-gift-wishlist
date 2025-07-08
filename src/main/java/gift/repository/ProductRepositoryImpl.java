@@ -1,6 +1,7 @@
 package gift.repository;
 
 import gift.entity.Product;
+import gift.entity.ProductStatus;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -22,15 +23,16 @@ public class ProductRepositoryImpl implements ProductRepository {
     public Product saveProduct(Product product) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        var sql = "INSERT INTO product (name, price, image_url) VALUES (:name, :price, :image_url)";
+        var sql = "INSERT INTO product (name, price, image_url, status) VALUES (:name, :price, :image_url, :status)";
         client.sql(sql)
               .param("name", product.getName())
               .param("price", product.getPrice())
               .param("image_url", product.getImageUrl())
+              .param("status", product.getStatus().name())
               .update(keyHolder);
 
         return new Product(keyHolder.getKey().longValue(), product.getName(), product.getPrice(),
-                product.getImageUrl());
+                product.getImageUrl(), product.getStatus());
     }
 
     @Override
@@ -45,12 +47,13 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public void updateProduct(Product product) {
-        var sql = "UPDATE product SET name = :name, price = :price, image_url = :image_url  WHERE id = :id";
+        var sql = "UPDATE product SET name = :name, price = :price, image_url = :image_url, status = :status  WHERE id = :id";
 
         client.sql(sql)
               .param("name", product.getName())
               .param("price", product.getPrice())
               .param("image_url", product.getImageUrl())
+              .param("status", product.getStatus().name())
               .param("id", product.getId())
               .update();
     }
@@ -71,5 +74,15 @@ public class ProductRepositoryImpl implements ProductRepository {
         return client.sql(sql)
                      .query(Product.class)
                      .list();
+    }
+
+    @Override
+    public void updateProductStatus(Long productId, ProductStatus newStatus) {
+        var sql = "UPDATE product SET status = :status  WHERE id = :id";
+
+        client.sql(sql)
+              .param("status", newStatus.name())
+              .param("id", productId)
+              .update();
     }
 }

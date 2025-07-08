@@ -36,4 +36,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity.of(pd).build();
     }
 
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<ProblemDetail> handleProductNotFoundException(
+            ProductNotFoundException ex) {
+
+        ProblemDetail pd = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
+
+        pd.setType(URI.create("/errors/product-not-found"));
+        pd.setTitle("상품을 찾을 수 없습니다.");
+        pd.setDetail(ex.getMessage());
+
+        return ResponseEntity.of(pd).build();
+    }
+
 }
