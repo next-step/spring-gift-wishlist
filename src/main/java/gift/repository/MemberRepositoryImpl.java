@@ -24,15 +24,15 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
-    public Member create(MemberRequestDto requestDto) {
+    public Member create(Member member) {
         String sql = "INSERT INTO member VALUES(:email, :password)";
 
         jdbcClient.sql(sql)
-            .param("email", requestDto.email())
-            .param("password", requestDto.password())
+            .param("email", member.getEmail())
+            .param("password", member.getPassword())
             .update();
 
-        return new Member(requestDto.email(), requestDto.password());
+        return member;
     }
 
     @Override
