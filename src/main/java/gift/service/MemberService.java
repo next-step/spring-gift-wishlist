@@ -8,7 +8,7 @@ import gift.model.Member;
 import gift.repository.MemberRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import java.util.Optional;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,13 +22,13 @@ public class MemberService {
     }
 
     public TokenResponse save(RegisterRequest request) {
-        if (memberRepository.findByEmail(request.email()).isPresent()) {
-            throw new IllegalArgumentException("이미 가입된 이메일입니다: " + request.email());
+        if (memberRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("이미 가입된 이메일입니다: " + request.getEmail());
         }
 
-        String encryptedPassword = PasswordUtil.encode(request.password());
+        String encryptedPassword = PasswordUtil.encode(request.getPassword());
 
-        Member member = new Member(request.email(), encryptedPassword);
+        Member member = new Member(request.getEmail(), encryptedPassword);
         Member savedMember = memberRepository.save(member);
 
         String secretKey = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";
@@ -59,4 +59,9 @@ public class MemberService {
 
         return new TokenResponse(accessToken);
     }
+
+    public List<Member> getAllMembers() {
+        return memberRepository.findAll();
+    }
+
 }

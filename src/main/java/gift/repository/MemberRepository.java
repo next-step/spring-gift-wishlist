@@ -1,6 +1,7 @@
 package gift.repository;
 
 import gift.model.Member;
+import java.util.List;
 import java.util.Optional;
 import javax.sql.DataSource;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -31,6 +32,11 @@ public class MemberRepository {
         Long newId = jdbcInsert.executeAndReturnKey(parameters).longValue();
 
         return new Member(newId, member.getEmail(), member.getPassword());
+    }
+
+    public List<Member> findAll(){
+        String sql = "SELECT id, email, password FROM MEMBER";
+        return jdbcTemplate.query(sql, memberRowMapper());
     }
 
     // 멤버 조회
