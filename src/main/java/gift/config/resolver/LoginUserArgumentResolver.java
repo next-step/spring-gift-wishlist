@@ -1,5 +1,32 @@
 package gift.config.resolver;
 
-public class LoginUserArgumentResolver {
+import gift.config.annotation.CurrentUser;
+import gift.exception.common.HttpException;
+import gift.service.auth.AuthService;
+import org.springframework.core.MethodParameter;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.support.WebDataBinderFactory;
+import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.method.support.ModelAndViewContainer;
 
+@Component
+public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver {
+    private final AuthService authService;
+    
+    public LoginUserArgumentResolver(AuthService authService) {
+        this.authService = authService;
+    }
+    
+    @Override
+    public boolean supportsParameter(MethodParameter parameter) {
+        return parameter.hasParameterAnnotation(CurrentUser.class);
+    }
+    
+    @Override
+    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+        NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws HttpException {
+        String token = webRequest.getHeader("Authorization");
+        return authService.checkPermissonForUser(token);
+    }
 }
