@@ -1,8 +1,8 @@
 package gift.member.service;
 
 import gift.common.PasswordEncoder;
+import gift.common.exceptions.LogInFailedException;
 import gift.common.exceptions.MemberAlreadyExistsException;
-import gift.common.exceptions.PasswordMismatchException;
 import gift.jwt.JwtResponse;
 import gift.jwt.JwtUtil;
 import gift.member.domain.Member;
@@ -12,7 +12,6 @@ import gift.member.dto.MemberResponse;
 import gift.member.dto.RegisterRequest;
 import gift.member.repository.MemberRepository;
 import java.util.Optional;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,10 +71,10 @@ public class MemberService {
         String encryptedPassword = passwordEncoder.encrypt(email, loginRequest.password());
 
         Member member = memberRepository.findByEmail(email)
-            .orElseThrow(() -> new EmptyResultDataAccessException("사용자가 존재하지 않습니다.", 1));
+            .orElseThrow(LogInFailedException::new);
 
         if (!member.getPassword().equals(encryptedPassword)) {
-            throw new PasswordMismatchException("비밀번호가 일치하지 않습니다.");
+            throw new LogInFailedException();
         }
 
         String accessToken = jwtUtil.createAccessToken(member);

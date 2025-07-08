@@ -1,8 +1,8 @@
 package gift.common;
 
 import gift.common.exceptions.JwtValidationException;
+import gift.common.exceptions.LogInFailedException;
 import gift.common.exceptions.MemberAlreadyExistsException;
-import gift.common.exceptions.PasswordMismatchException;
 import java.util.stream.Collectors;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -49,11 +49,13 @@ public class GlobalExceptionHandler {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(value = EmptyResultDataAccessException.class)
-    public ResponseEntity<ErrorResult> handleEmptyResultDataAccessException() {
+    public ResponseEntity<ErrorResult> handleEmptyResultDataAccessException(
+        EmptyResultDataAccessException ex
+    ) {
         return new ResponseEntity<>(
             new ErrorResult(
                 HttpStatus.NOT_FOUND,
-                "존재하지 않는 객체입니다."
+                ex.getMessage()
             ),
             HttpStatus.NOT_FOUND
         );
@@ -73,17 +75,17 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    @ExceptionHandler(value = PasswordMismatchException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(value = LogInFailedException.class)
     public ResponseEntity<ErrorResult> handlePasswordMismatchException(
-        PasswordMismatchException ex
+        LogInFailedException ex
     ) {
         return new ResponseEntity<>(
             new ErrorResult(
-                HttpStatus.FORBIDDEN,
+                HttpStatus.UNAUTHORIZED,
                 ex.getMessage()
             ),
-            HttpStatus.FORBIDDEN
+            HttpStatus.UNAUTHORIZED
         );
     }
 
