@@ -6,11 +6,13 @@ import gift.member.entity.Member;
 import gift.member.repository.MemberRepository;
 import gift.token.entity.RefreshToken;
 import gift.token.repository.RefreshTokenRepository;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.crypto.SecretKey;
@@ -77,14 +79,25 @@ public class TokenProvider {
         return null;
     }
 
-    public boolean validateAccessToken(String token) {
-        Date expirationDate = Jwts.parser()
+    public UUID getMemberUuidFromToken(String token) {
+        if (isTokenExpired(token)) {
+            throw new InvalidCredentialsException("Invalid access token");
+        }
+
+        return UUID.fromString(getClaimsFromToken(token).getSubject());
+    }
+
+    private boolean isTokenExpired(String token) {
+        Date expirationDate = getClaimsFromToken(token).getExpiration();
+        return expirationDate.before(new Date());
+    }
+
+    private Claims getClaimsFromToken(String token) {
+        return Jwts.parser()
                 .verifyWith(getSigningKey())
                 .build()
                 .parseSignedClaims(token)
-                .getPayload()
-                .getExpiration();
-        return !expirationDate.before(new Date());
+                .getPayload();
     }
 
     private SecretKey getSigningKey() {
