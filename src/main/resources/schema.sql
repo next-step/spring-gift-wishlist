@@ -12,3 +12,11 @@ create table members(
     primary key (id),
     unique (email)
 );
+
+create table wishList(
+    id bigint auto_increment,
+    memberid varchar(255) not null,
+    productid bigint not null,
+    quantity int not null,
+    primary key (id)
+);

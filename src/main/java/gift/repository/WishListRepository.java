@@ -2,19 +2,42 @@ package gift.repository;
 
 import gift.dto.wish.WishRequestDto;
 import gift.dto.wish.WishResponseDto;
+import gift.entity.Product;
 import gift.entity.WishList;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class WishListRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
     public WishListRepository(JdbcTemplate jdbcTemplate){
         this.jdbcTemplate = jdbcTemplate;
+    }
+
+    public WishResponseDto add(WishList wishList, Product product){
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        simpleJdbcInsert.withTableName("wishlist").usingGeneratedKeyColumns("id");
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("memberid", wishList.getMemberId());
+        params.put("productid", wishList.getProductId());
+        params.put("quantity", wishList.getQuantity());
+
+        Long wishListId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
+
+        Integer totalPrice = product.getPrice() * wishList.getQuantity();
+        WishResponseDto wishResponseDto = new WishResponseDto(product.getName(), product.getImageUrl(), wishList.getQuantity(), totalPrice);
+
+        return wishResponseDto;
     }
 
     //TODO: WishList에 대한 CRUD
@@ -39,6 +62,5 @@ public class WishListRepository {
             }
         };
     }
-
 
 }
