@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -164,10 +165,15 @@ public class MemberServiceImpl implements MemberService {
 
         String secretKey = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";
 
+        Date now = new Date(System.currentTimeMillis());
+        Date expiry = new Date(System.currentTimeMillis() + 1000 * 60 * 30);
+
         return Jwts.builder()
             .subject(member.getId().toString())
             .claim("email", member.getEmail())
             .claim("role", member.getRole().name())
+            .issuedAt(now)
+            .expiration(expiry)
             .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
             .compact();
     }
