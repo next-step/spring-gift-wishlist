@@ -1,7 +1,7 @@
 package gift.product.controller;
 
 
-import gift.product.etcs.Authenticated;
+import gift.product.commons.annotations.Authenticated;
 import gift.product.service.ItemService;
 import gift.product.dto.GetItemResponse;
 import gift.product.dto.ItemRequest;

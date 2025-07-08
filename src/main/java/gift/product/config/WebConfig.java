@@ -1,6 +1,7 @@
-package gift.product.etcs;
+package gift.product.config;
 
 
+import gift.product.commons.interceptors.AuthenticationInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

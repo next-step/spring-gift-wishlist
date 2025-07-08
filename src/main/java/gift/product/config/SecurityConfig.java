@@ -1,4 +1,4 @@
-package gift.product.etcs;
+package gift.product.config;
 
 
 import org.springframework.context.annotation.Bean;

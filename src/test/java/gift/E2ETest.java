@@ -1,7 +1,7 @@
 package gift;
 
 import gift.product.dto.*;
-import gift.product.etcs.JwtUtil;
+import gift.product.commons.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,7 +1,9 @@
-package gift.product.etcs;
+package gift.product.commons.interceptors;
 
 
 
+import gift.product.commons.annotations.Authenticated;
+import gift.product.commons.utils.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;

@@ -1,4 +1,4 @@
-package gift.product.etcs;
+package gift.product.commons.annotations;
 
 
 import java.lang.annotation.ElementType;
