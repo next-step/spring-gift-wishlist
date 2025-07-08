@@ -38,7 +38,7 @@ class JdbcMemberAuthRepositoryTest {
   @Test
   @DisplayName("memberAuth를 저장하면 memberId가 반환된다")
   void save_success() {
-    MemberAuth memberAuth = new MemberAuth(null, "test@example.com", "password", "token");
+    MemberAuth memberAuth = MemberAuth.withId(null,"test@example.com", "password", "token");
     Long expectedId = 1L;
 
     when(jdbcInsert.executeAndReturnKey(any(SqlParameterSource.class)))
@@ -65,7 +65,7 @@ class JdbcMemberAuthRepositoryTest {
   @DisplayName("ID로 memberAuth 조회 성공")
   void findById_success() {
     Long memberId = 1L;
-    MemberAuth expected = new MemberAuth(memberId, "test@example.com", "pass", "token");
+    MemberAuth expected = MemberAuth.withId(null,"test@example.com", "password", "token");
     String sql = "SELECT * FROM member_auth WHERE member_id = :memberId";
 
     when(jdbcTemplate.queryForObject(eq(sql), any(Map.class), any(RowMapper.class)))
@@ -110,7 +110,7 @@ class JdbcMemberAuthRepositoryTest {
   @DisplayName("memberAuth를 수정할 수 있다")
   void update_success() {
     Long memberId = 1L;
-    MemberAuth updated = new MemberAuth(memberId, "new@example.com", "newpass", "newtoken");
+    MemberAuth updated = MemberAuth.withId(memberId, "new@example.com", "newpass", "newtoken");
     String sql = "UPDATE member_auth SET member_id = :memberId, email = :email, password = :password, refresh_token = :refreshToken WHERE member_id = :memberId";
 
     when(jdbcTemplate.update(eq(sql), any(SqlParameterSource.class))).thenReturn(1);
@@ -125,7 +125,7 @@ class JdbcMemberAuthRepositoryTest {
   @DisplayName("업데이트 시 영향받은 행이 없으면 예외 발생")
   void update_fail() {
     Long memberId = 999L;
-    MemberAuth updated = new MemberAuth(memberId, "nope", "nope", "nope");
+    MemberAuth updated = MemberAuth.withId(memberId, "nope", "nope", "nope");
     String sql = "UPDATE member_auth SET member_id = :memberId, email = :email, password = :password, refresh_token = :refreshToken WHERE member_id = :memberId";
 
     when(jdbcTemplate.update(eq(sql), any(SqlParameterSource.class))).thenReturn(0);
@@ -142,7 +142,7 @@ class JdbcMemberAuthRepositoryTest {
   @Test
   @DisplayName("업데이트 시 ID가 null이면 예외 발생")
   void update_null_id() {
-    MemberAuth updated = new MemberAuth(1L, "a@a.com", "a", "b");
+    MemberAuth updated = MemberAuth.withId(1L, "a@a.com", "a", "b");
 
     assertAll(
         () -> assertThrows(NullPointerException.class, () -> repository.update(null, updated)),
