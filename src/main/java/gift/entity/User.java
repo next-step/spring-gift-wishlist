@@ -12,8 +12,15 @@ public class User {
         this.password = password;
     }
 
-    public String getEmail() {return email;}
-    public String getPassword() {return password;}
+    public String getEmail() {
+        return email;
+    }
 
-    public void setId(Long id) {this.id = id;}
+    public String getPassword() {
+        return password;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }
