@@ -2,6 +2,7 @@ package gift.controller.view;
 
 import gift.dto.MemberRequestDto;
 import gift.service.MemberService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -12,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/members")
+@RequestMapping("/admin/members")
 public class MemberViewController {
 
     private final MemberService memberService;
@@ -21,7 +22,7 @@ public class MemberViewController {
     }
 
     @GetMapping
-    public ModelAndView list() {
+    public ModelAndView list(HttpServletRequest request) {
         Map<String, Object> model = new HashMap<>();
         model.put("members", memberService.findAll());
         return new ModelAndView("member/list", model);
@@ -46,7 +47,7 @@ public class MemberViewController {
         }
 
         memberService.create(requestDto);
-        return new ModelAndView("redirect:/members");
+        return new ModelAndView("redirect:/admin/members");
     }
 
     @GetMapping("/{id}")
@@ -73,13 +74,13 @@ public class MemberViewController {
             return mav;
         }
         memberService.update(id, requestDto);
-        return new ModelAndView("redirect:/members");
+        return new ModelAndView("redirect:/admin/members");
     }
 
     @PostMapping("/{id}/delete")
     public ModelAndView delete(@PathVariable Long id) {
         memberService.delete(id);
-        return new ModelAndView("redirect:/members");
+        return new ModelAndView("redirect:/admin/members");
     }
 
 }

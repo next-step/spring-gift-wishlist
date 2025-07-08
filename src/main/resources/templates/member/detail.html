@@ -14,14 +14,14 @@
   <p><strong>비밀번호:</strong> <span th:text="${member.password}">비밀번호</span></p>
 
   <div style="margin-top: 1.5rem;">
-    <a th:href="@{/members/edit/{id}(id=${member.id})}">수정</a>
-    <form th:action="@{/members/{id}/delete(id=${member.id})}" method="post" style="display:inline">
+    <a th:href="@{/admin/members/edit/{id}(id=${member.id})}">수정</a>
+    <form th:action="@{/admin/members/{id}/delete(id=${member.id})}" method="post" style="display:inline">
       <button type="submit" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
     </form>
   </div>
 
   <div class="back-link">
-    <a th:href="@{/members}">← 목록으로</a>
+    <a th:href="@{/admin/members}">← 목록으로</a>
   </div>
 </div>
 </body>

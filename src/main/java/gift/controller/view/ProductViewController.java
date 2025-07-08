@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/products")
+@RequestMapping("/admin/products")
 public class ProductViewController {
 
     private final ProductService productService;
@@ -47,7 +47,7 @@ public class ProductViewController {
         }
 
         productService.create(requestDto);
-        return new ModelAndView("redirect:/products");
+        return new ModelAndView("redirect:/admin/products");
     }
 
     @GetMapping("/{id}")
@@ -74,12 +74,12 @@ public class ProductViewController {
             return mav;
         }
         productService.update(id, requestDto);
-        return new ModelAndView("redirect:/products");
+        return new ModelAndView("redirect:/admin/products");
     }
 
     @PostMapping("/{id}/delete")
     public ModelAndView delete(@PathVariable Long id) {
         productService.delete(id);
-        return new ModelAndView("redirect:/products");
+        return new ModelAndView("redirect:/admin/products");
     }
 }

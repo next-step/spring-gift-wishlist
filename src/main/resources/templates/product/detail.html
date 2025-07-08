@@ -14,14 +14,14 @@
   <p><strong>이미지 URL:</strong> <span th:text="${product.imageUrl}">이미지</span></p>
 
   <div style="margin-top: 1.5rem;">
-    <a th:href="@{/products/edit/{id}(id=${product.id})}">수정</a>
-    <form th:action="@{/products/{id}/delete(id=${product.id})}" method="post" style="display:inline">
+    <a th:href="@{/admin/products/edit/{id}(id=${product.id})}">수정</a>
+    <form th:action="@{/admin/products/{id}/delete(id=${product.id})}" method="post" style="display:inline">
       <button type="submit" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
     </form>
   </div>
 
   <div class="back-link">
-    <a th:href="@{/products}">← 목록으로</a>
+    <a th:href="@{/admin/products}">← 목록으로</a>
   </div>
 </div>
 </body>
