@@ -21,8 +21,6 @@ public class FrontExceptionHandler {
             Model model,
             HttpServletRequest request) {
 
-        ex.printStackTrace();
-
         ErrorResponseDto error = new ErrorResponseDto(
                 HttpStatus.NOT_FOUND.value(),
                 HttpStatus.NOT_FOUND.getReasonPhrase(),
@@ -39,8 +37,6 @@ public class FrontExceptionHandler {
             MethodArgumentNotValidException ex,
             Model model,
             HttpServletRequest request) {
-
-        ex.printStackTrace();
 
         ErrorResponseDto error = new ErrorResponseDto(
                 HttpStatus.BAD_REQUEST.value(),
@@ -59,8 +55,6 @@ public class FrontExceptionHandler {
             Model model,
             HttpServletRequest request) {
 
-        ex.printStackTrace();
-
         ErrorResponseDto error = new ErrorResponseDto(
                 HttpStatus.FORBIDDEN.value(),
                 HttpStatus.FORBIDDEN.getReasonPhrase(),
@@ -77,8 +71,6 @@ public class FrontExceptionHandler {
             AuthorizationException ex,
             Model model,
             HttpServletRequest request) {
-
-        ex.printStackTrace();
 
         ErrorResponseDto error = new ErrorResponseDto(
                 HttpStatus.FORBIDDEN.value(),
@@ -97,8 +89,6 @@ public class FrontExceptionHandler {
             Model model,
             HttpServletRequest request) {
 
-        ex.printStackTrace();
-
         ErrorResponseDto error = new ErrorResponseDto(
                 HttpStatus.UNAUTHORIZED.value(),
                 HttpStatus.UNAUTHORIZED.getReasonPhrase(),
@@ -115,8 +105,6 @@ public class FrontExceptionHandler {
             Exception ex,
             Model model,
             HttpServletRequest request) {
-
-        ex.printStackTrace();
 
         ErrorResponseDto error = new ErrorResponseDto(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
