@@ -28,10 +28,10 @@ public class JwtUtil {
         Date validity = new Date(now.getTime() + timeoutMs);
 
         return Jwts.builder()
-                .setSubject(member.getEmail())
+                .subject(member.getEmail())
                 .claim("role", member.getRole().name())
-                .setIssuedAt(now)
-                .setExpiration(validity)
+                .issuedAt(now)
+                .expiration(validity)
                 .signWith(secretKey)
                 .compact();
     }
@@ -52,9 +52,9 @@ public class JwtUtil {
 
     private Claims getClaims(String token) {
         return Jwts.parser()
-                .setSigningKey(secretKey)
+                .verifyWith(secretKey)
                 .build()
-                .parseClaimsJws(token)
-                .getBody();
+                .parseSignedClaims(token)
+                .getPayload();
     }
 }
