@@ -33,15 +33,12 @@ public class MemberRepository {
     }
 
     public boolean existByEmail(String email) {
-        String sql = "SELECT COUNT(*) FROM members WHERE email = ?";
-        Integer count = jdbcClient
-            .sql(sql)
-            .param(email)
-            .query(Integer.class)
-            .optional()
-            .orElse(0);
-
-        return count > 0;
+        String sql = "SELECT EXISTS (SELECT 1 FROM members WHERE email = ?)";
+        return jdbcClient
+                .sql(sql)
+                .param(email)
+                .query(Boolean.class)
+                .single();
     }
 
     private Member mapRowToMember(ResultSet rs, int rowNum) throws SQLException {
