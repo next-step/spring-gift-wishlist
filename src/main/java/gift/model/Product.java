@@ -1,6 +1,6 @@
 package gift.model;
 
-public class product {
+public class Product {
     private Long id;
     private String name;
     private int price;
