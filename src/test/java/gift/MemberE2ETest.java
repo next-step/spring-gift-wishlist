@@ -134,7 +134,7 @@ public class MemberE2ETest {
 
         // when
         var deleteResponse = restClient.delete()
-                .uri("/api/members/myInfo")
+                .uri("/api/members/withdraw")
                 .header("Authorization", "Bearer " + token)
                 .retrieve()
                 .toBodilessEntity();
