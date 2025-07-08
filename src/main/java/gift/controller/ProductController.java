@@ -1,5 +1,6 @@
 package gift.controller;
 
+import gift.annotation.LoginMember;
 import gift.dto.CreateProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.entity.Member;
@@ -38,12 +39,8 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<ProductResponseDto> createProduct(
             @Valid @RequestBody CreateProductRequestDto requestDto,
-            @RequestHeader(value = "Authorization") String token) {
-        Optional<Member> optionalMember = tokenService.isValidateToken(token);
-        if (optionalMember.isEmpty()) {
-            throw new CustomException(ErrorCode.NotLogin);
-        }
-        if (requestDto.name().contains("카카오") && !optionalMember.get().isAdmin()) {
+            @LoginMember Member member) {
+        if (requestDto.name().contains("카카오") && !member.isAdmin()) {
             throw new CustomException(ErrorCode.NamingForbidden);
         }
         return new ResponseEntity<>(productService.createProduct(requestDto), HttpStatus.CREATED);
@@ -63,12 +60,8 @@ public class ProductController {
     public ResponseEntity<ProductResponseDto> updateProductById(
             @PathVariable Long id,
             @Valid @RequestBody CreateProductRequestDto requestDto,
-            @RequestHeader(value = "Authorization") String token) {
-        Optional<Member> optionalMember = tokenService.isValidateToken(token);
-        if (optionalMember.isEmpty()) {
-            throw new CustomException(ErrorCode.NotLogin);
-        }
-        if (requestDto.name().contains("카카오") && !optionalMember.get().isAdmin()) {
+            @LoginMember Member member) {
+        if (requestDto.name().contains("카카오") && !member.isAdmin()) {
             throw new CustomException(ErrorCode.NamingForbidden);
         }
 
@@ -79,11 +72,7 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProductById(
             @PathVariable Long id,
-            @RequestHeader(value = "Authorization") String token) {
-        Optional<Member> optionalMember = tokenService.isValidateToken(token);
-        if (optionalMember.isEmpty()) {
-            throw new CustomException(ErrorCode.NotLogin);
-        }
+            @LoginMember Member member) {
         productService.deleteProductById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
