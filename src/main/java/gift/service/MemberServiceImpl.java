@@ -35,9 +35,8 @@ public class MemberServiceImpl implements MemberService {
     public JWTResponseDto loginMember(CreateMemberRequestDto requestDto) {
         Member find = findMemberByEmailOrElseThrow(requestDto.email());
 
-        if (!isCorrectPassword(find, requestDto.password())) {
-            throw new CustomException(ErrorCode.Unauthorized);
-        }
+        throwIfPasswordIncorrect(find, requestDto.password());
+
         String accessToken = tokenService.createAccessToken(find);
         return new JWTResponseDto(accessToken);
     }
@@ -46,9 +45,8 @@ public class MemberServiceImpl implements MemberService {
     public void updateMemberPassword(UpdateMemberPasswordRequestDto requestDto) {
         Member find = findMemberByEmailOrElseThrow(requestDto.email());
 
-        if (!isCorrectPassword(find, requestDto.oldPassword())) {
-            throw new CustomException(ErrorCode.Unauthorized);
-        }
+        throwIfPasswordIncorrect(find, requestDto.oldPassword());
+
         memberRepository.updateMemberPassword(find, requestDto.newPassword());
     }
 
@@ -56,9 +54,8 @@ public class MemberServiceImpl implements MemberService {
     public void deleteMember(DeleteMemberRequestDto requestDto) {
         Member find = findMemberByEmailOrElseThrow(requestDto.email());
 
-        if (!isCorrectPassword(find, requestDto.password())) {
-            throw new CustomException(ErrorCode.Unauthorized);
-        }
+        throwIfPasswordIncorrect(find, requestDto.password());
+
         memberRepository.deleteMember(find);
     }
 
@@ -74,7 +71,9 @@ public class MemberServiceImpl implements MemberService {
                 });
     }
 
-    private Boolean isCorrectPassword(Member member, String password) {
-        return member.getPassword().equals(password);
+    private void throwIfPasswordIncorrect(Member member, String password) {
+        if (member.getPassword().equals(password)) {
+            throw new CustomException(ErrorCode.Unauthorized);
+        }
     }
 }
