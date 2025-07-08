@@ -17,22 +17,6 @@ public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<String> handleAuthenticationException(AuthenticationException e) {
-        log.trace(e.getMessage());
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(e.getMessage());
-    }
-
-    @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<String> handleBadRequestException(BadRequestException e) {
-        String message = e.getMessage();
-        log.trace(message);
-        return ResponseEntity.badRequest()
-                .body(message);
-    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<String> handleValidationException(MethodArgumentNotValidException e) {
         String message = BindingResultUtil.getErrorMessage(e.getBindingResult());
@@ -41,11 +25,11 @@ public class GlobalExceptionHandler {
                 .body(message);
     }
 
-    @ExceptionHandler(NotFoundByIdException.class)
-    public ResponseEntity<String> handleNotFoundByIdException(NotFoundByIdException e) {
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
         log.trace(e.getMessage());
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
-                .body("Not Found by ID");
+                .body(e.getMessage());
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)

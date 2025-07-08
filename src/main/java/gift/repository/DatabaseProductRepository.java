@@ -1,7 +1,6 @@
 package gift.repository;
 
 import gift.entity.Product;
-import gift.exception.NotFoundByIdException;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
@@ -55,7 +54,7 @@ public class DatabaseProductRepository implements ProductRepository {
                 .update();
 
         if (numOfUpdatedRows == 0)
-            throw new NotFoundByIdException("Not Found id: " + id);
+            throw new IllegalArgumentException("Not Found id: " + id);
     }
 
     @Override
@@ -99,7 +98,7 @@ public class DatabaseProductRepository implements ProductRepository {
                 .param("status", product.status().name())
                 .update();
         if (numOfUpdatedRows == 0)
-            throw new NotFoundByIdException("Not Found id: " + product.id());
+            throw new IllegalArgumentException("Not Found id: " + product.id());
     }
 
     @Override
