@@ -8,7 +8,7 @@ import gift.member.dto.TokenResponseDto;
 import gift.member.entity.Member;
 import gift.member.exception.MemberNotFoundException;
 import gift.member.repository.MemberRepository;
-import gift.member.security.JwtProvider;
+import gift.member.security.JwtTokenProvider;
 import java.util.List;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -31,7 +31,7 @@ public class MemberServiceImpl implements MemberService {
         Member savedMember = memberRepository.findMemberByEmail(registerRequestDto.email());
         System.out.println(savedMember);
 
-        String token = new JwtProvider().generateToken(savedMember.getMemberId(),
+        String token = new JwtTokenProvider().generateToken(savedMember.getMemberId(),
             savedMember.getName(),
             savedMember.getRole());
 

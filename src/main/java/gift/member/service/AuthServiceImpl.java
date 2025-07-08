@@ -5,7 +5,7 @@ import gift.member.dto.TokenResponseDto;
 import gift.member.entity.Member;
 import gift.member.exception.LoginFailedException;
 import gift.member.repository.MemberRepository;
-import gift.member.security.JwtProvider;
+import gift.member.security.JwtTokenProvider;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +37,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         // 성공 시 Token 생성 후 반환
-        String token = new JwtProvider().generateToken(foundMember.getMemberId(),
+        String token = new JwtTokenProvider().generateToken(foundMember.getMemberId(),
             foundMember.getName(),
             foundMember.getRole());
 

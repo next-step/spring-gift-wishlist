@@ -2,14 +2,16 @@ package gift.member.security;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import java.security.Key;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JwtProvider {
+public class JwtTokenProvider {
 
     String secretKey = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";
+    Key key = Keys.hmacShaKeyFor(secretKey.getBytes());
 
-    public JwtProvider() {
+    public JwtTokenProvider() {
 
     }
 
@@ -19,7 +21,7 @@ public class JwtProvider {
             .setSubject(memberId.toString())
             .claim("email", email)
             .claim("role", role)
-            .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
+            .signWith(key)
             .compact();
     }
 }
