@@ -1,6 +1,9 @@
 package gift.token.service;
 
+import gift.exception.EntityNotFoundException;
+import gift.exception.InvalidCredentialsException;
 import gift.member.entity.Member;
+import gift.member.repository.MemberRepository;
 import gift.token.entity.RefreshToken;
 import gift.token.repository.RefreshTokenRepository;
 import io.jsonwebtoken.Jwts;
@@ -24,9 +27,12 @@ public class TokenProvider {
 
     private static final Duration ACCESS_TOKEN_TTL = Duration.ofMinutes(15);
 
+    private final MemberRepository memberRepository;
     private final RefreshTokenRepository refreshTokenRepository;
 
-    public TokenProvider(RefreshTokenRepository refreshTokenRepository) {
+    public TokenProvider(MemberRepository memberRepository,
+            RefreshTokenRepository refreshTokenRepository) {
+        this.memberRepository = memberRepository;
         this.refreshTokenRepository = refreshTokenRepository;
     }
 
@@ -41,6 +47,15 @@ public class TokenProvider {
                 .expiration(expiry)
                 .signWith(key)
                 .compact();
+    }
+
+    public String generateAccessToken(String refreshTokenString) throws IllegalArgumentException {
+        RefreshToken refreshToken = refreshTokenRepository.findByToken(refreshTokenString)
+                .orElseThrow(() -> new InvalidCredentialsException("Invalid refresh token"));
+        Member member = memberRepository.findByUuid(refreshToken.getMemberUuid())
+                .orElseThrow(() -> new EntityNotFoundException("Member not found"));
+
+        return generateAccessToken(member);
     }
 
     @Transactional
@@ -58,7 +73,7 @@ public class TokenProvider {
         return null;
     }
 
-    public boolean validateToken(String token) {
+    public boolean validateAccessToken(String token) {
         Date expirationDate = Jwts.parser()
                 .verifyWith(getSigningKey())
                 .build()
@@ -73,5 +88,3 @@ public class TokenProvider {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }
-
-

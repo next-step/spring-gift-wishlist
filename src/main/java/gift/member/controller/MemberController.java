@@ -1,5 +1,7 @@
 package gift.member.controller;
 
+import gift.member.dto.AccessTokenRefreshRequestDto;
+import gift.member.dto.AccessTokenRefreshResponseDto;
 import gift.member.dto.MemberInfo;
 import gift.member.dto.MemberLoginRequestDto;
 import gift.member.dto.MemberLoginResponseDto;
@@ -35,6 +37,13 @@ public class MemberController {
             @Valid @RequestBody MemberLoginRequestDto requestDto) {
         var loginResponse = memberService.login(requestDto);
         return ResponseEntity.status(HttpStatus.OK).body(loginResponse);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<AccessTokenRefreshResponseDto> refreshAccessToken(
+            @Valid @RequestBody AccessTokenRefreshRequestDto requestDto) {
+        var memberTokenInfo = memberService.refreshAccessToken(requestDto);
+        return ResponseEntity.status(HttpStatus.OK).body(memberTokenInfo);
     }
 
 }

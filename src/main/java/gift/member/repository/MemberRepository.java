@@ -2,6 +2,7 @@ package gift.member.repository;
 
 import gift.member.entity.Member;
 import java.util.Optional;
+import java.util.UUID;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
@@ -39,5 +40,12 @@ public class MemberRepository {
                 .param(email)
                 .query(Boolean.class)
                 .single();
+    }
+
+    public Optional<Member> findByUuid(UUID uuid) {
+        return jdbcClient.sql("SELECT * FROM member WHERE uuid = ?")
+                .param(uuid.toString())
+                .query(Member.class)
+                .optional();
     }
 }

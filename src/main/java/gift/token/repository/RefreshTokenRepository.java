@@ -1,6 +1,7 @@
 package gift.token.repository;
 
 import gift.token.entity.RefreshToken;
+import java.util.Optional;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
@@ -22,5 +23,12 @@ public class RefreshTokenRepository {
                 .param(refreshToken.getCreatedAt())
                 .param(refreshToken.getExpirationDate())
                 .update();
+    }
+
+    public Optional<RefreshToken> findByToken(String token) {
+        return jdbcClient.sql("SELECT * FROM refresh_token WHERE token = ?")
+                .param(token)
+                .query(RefreshToken.class)
+                .optional();
     }
 }

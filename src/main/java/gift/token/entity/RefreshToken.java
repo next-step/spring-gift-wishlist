@@ -11,16 +11,27 @@ public class RefreshToken {
     public static final Duration TTL = Duration.ofDays(365);
 
     @NotBlank
-    private final String token;
-    
+    private String token;
+
     @NotNull
-    private final UUID memberUuid;
-    
+    private UUID memberUuid;
+
     @NotNull
-    private final LocalDateTime createdAt;
-    
+    private LocalDateTime createdAt;
+
     @NotNull
-    private final LocalDateTime expirationDate;
+    private LocalDateTime expirationDate;
+
+    public RefreshToken() {
+    }
+
+    public RefreshToken(String token, UUID memberUuid, LocalDateTime createdAt,
+            LocalDateTime expirationDate) {
+        this.token = token;
+        this.memberUuid = memberUuid;
+        this.createdAt = createdAt;
+        this.expirationDate = expirationDate;
+    }
 
     public RefreshToken(UUID memberUuid) {
         this.token = UUID.randomUUID().toString().replace("-", "");

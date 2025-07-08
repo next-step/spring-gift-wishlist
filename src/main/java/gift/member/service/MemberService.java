@@ -2,11 +2,13 @@ package gift.member.service;
 
 import gift.exception.EntityAlreadyExistsException;
 import gift.exception.InvalidCredentialsException;
+import gift.member.dto.AccessTokenRefreshResponseDto;
 import gift.member.dto.MemberInfo;
 import gift.member.dto.MemberLoginRequestDto;
 import gift.member.dto.MemberLoginResponseDto;
 import gift.member.dto.MemberRegisterRequestDto;
 import gift.member.dto.MemberTokenInfo;
+import gift.member.dto.AccessTokenRefreshRequestDto;
 import gift.member.entity.Member;
 import gift.member.repository.MemberRepository;
 import gift.token.service.TokenProvider;
@@ -26,7 +28,7 @@ public class MemberService {
 
     @Transactional
     public MemberInfo register(MemberRegisterRequestDto requestDto) {
-        if(memberRepository.existsByEmail(requestDto.email())) {
+        if (memberRepository.existsByEmail(requestDto.email())) {
             throw new EntityAlreadyExistsException("이미 가입된 계정입니다.");
         }
 
@@ -50,4 +52,9 @@ public class MemberService {
         return new MemberLoginResponseDto(new MemberInfo(member), memberTokenInfo);
     }
 
+    public AccessTokenRefreshResponseDto refreshAccessToken(
+            AccessTokenRefreshRequestDto requestDto) {
+        return new AccessTokenRefreshResponseDto(
+                tokenProvider.generateAccessToken(requestDto.refreshToken()));
+    }
 }
