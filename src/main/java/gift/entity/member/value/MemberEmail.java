@@ -5,12 +5,12 @@ import java.util.regex.Pattern;
 
 public record MemberEmail(String email) {
 
-    private static final Pattern EMAIL_REGEX =
-            Pattern.compile("^[\\w-.]+@[\\w-]+\\.[a-zA-Z]{2,}$");
+    public static final String EMAIL_REGEX =
+            "^[\\w-.]+@[\\w-]+\\.[a-zA-Z]{2,}$";
 
     public MemberEmail {
         Objects.requireNonNull(email, "이메일은 필수 입력값입니다.");
-        if (!EMAIL_REGEX.matcher(email).matches()) {
+        if (!Pattern.compile(EMAIL_REGEX).matcher(email).matches()) {
             throw new IllegalArgumentException("유효한 이메일 형식이 아닙니다.");
         }
     }

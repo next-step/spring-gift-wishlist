@@ -1,26 +1,17 @@
+// src/main/java/gift/util/BearerAuthUtil.java
 package gift.util;
 
-public final class BearerAuthUtil {
+import gift.exception.InvalidBearerAuthExeption;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 
-    private BearerAuthUtil() {
-    }
+public class BearerAuthUtil {
 
-    /**
-     * 토큰 문자열을 받아 Bearer 인증 헤더 형태로 반환합니다. 예) "Bearer abc.def.ghi"
-     */
-    public static String createHeader(String token) {
-        return "Bearer " + token;
-    }
-
-    /**
-     * Authorization 헤더로부터 Bearer 토큰만 추출합니다.
-     *
-     * @throws IllegalArgumentException 형식이 올바르지 않을 때
-     */
-    public static String extractToken(String authorizationHeader) {
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            throw new IllegalArgumentException("Invalid Bearer authorization header");
+    public static Jws<Claims> parse(String header) {
+        if (header == null || !header.startsWith("Bearer ")) {
+            throw new InvalidBearerAuthExeption();
         }
-        return authorizationHeader.substring(7).trim();
+        String token = header.substring(7);
+        return JwtUtil.validate(token);
     }
 }

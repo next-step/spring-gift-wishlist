@@ -2,7 +2,7 @@ package gift.entity.member;
 
 import gift.entity.member.value.MemberEmail;
 import gift.entity.member.value.MemberId;
-import gift.entity.member.value.MemberPasswordHash;
+import gift.entity.member.value.MemberPassword;
 import gift.entity.member.value.MemberRole;
 import gift.entity.member.value.Role;
 import java.time.LocalDateTime;
@@ -12,14 +12,14 @@ public class Member {
 
     private final MemberId id;
     private final MemberEmail email;
-    private final MemberPasswordHash passwordHash;
+    private final MemberPassword passwordHash;
     private final Role role;
     private final LocalDateTime createdAt;
 
     private Member(
             MemberId id,
             MemberEmail email,
-            MemberPasswordHash passwordHash,
+            MemberPassword passwordHash,
             Role role,
             LocalDateTime createdAt) {
         this.id = id;
@@ -33,7 +33,7 @@ public class Member {
         return new Member(
                 null,
                 new MemberEmail(email),
-                new MemberPasswordHash(rawPasswordHash),
+                new MemberPassword(rawPasswordHash),
                 Role.USER,
                 LocalDateTime.now()
         );
@@ -51,7 +51,7 @@ public class Member {
         return new Member(
                 id != null ? new MemberId(id) : null,
                 new MemberEmail(email),
-                new MemberPasswordHash(passwordHash),
+                new MemberPassword(passwordHash),
                 new MemberRole(roleInput).role(),
                 createdAt
         );
@@ -77,7 +77,7 @@ public class Member {
         return new Member(
                 this.id,
                 this.email,
-                new MemberPasswordHash(newPasswordHash),
+                new MemberPassword(newPasswordHash),
                 this.role,
                 this.createdAt
         );
@@ -104,7 +104,7 @@ public class Member {
         return email;
     }
 
-    public MemberPasswordHash getPasswordHash() {
+    public MemberPassword getPasswordHash() {
         return passwordHash;
     }
 
