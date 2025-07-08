@@ -6,20 +6,20 @@ import gift.user.dto.LoginRequestDto;
 import gift.user.dto.LoginResponseDto;
 import gift.user.dto.RegisterRequestDto;
 import gift.user.dto.RegisterResponseDto;
-import gift.user.entity.User;
+import gift.user.domain.User;
 import gift.exception.InvalidLoginException;
 import gift.exception.UserNotFoundException;
-import gift.user.repository.UserRepository;
+import gift.user.dao.UserDao;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
 
-  private final UserRepository userRepository;
+  private final UserDao userDao;
   private final JwtTokenProvider jwtTokenProvider;
   private final PasswordEncoder passwordEncoder;
-  public UserService(UserRepository userRepository, JwtTokenProvider jwtTokenProvider, PasswordEncoder passwordEncoder) {
-    this.userRepository = userRepository;
+  public UserService(UserDao userDao, JwtTokenProvider jwtTokenProvider, PasswordEncoder passwordEncoder) {
+    this.userDao = userDao;
     this.jwtTokenProvider = jwtTokenProvider;
     this.passwordEncoder = passwordEncoder;
   }
@@ -27,7 +27,7 @@ public class UserService {
   public RegisterResponseDto registerUser(RegisterRequestDto registerRequestDto) {
     String encryptedPassword = passwordEncoder.encrypt(registerRequestDto.email(), registerRequestDto.password());
 
-    User user = userRepository.saveUser(registerRequestDto.email(), encryptedPassword);
+    User user = userDao.saveUser(registerRequestDto.email(), encryptedPassword);
 
     String token = jwtTokenProvider.generateToken(user);
 
@@ -35,7 +35,7 @@ public class UserService {
   }
 
   public LoginResponseDto loginUser(LoginRequestDto loginRequestDto) {
-    User user = userRepository.findByEmail(loginRequestDto.email());
+    User user = userDao.findByEmail(loginRequestDto.email());
 
     if (user == null) {
       throw new UserNotFoundException();

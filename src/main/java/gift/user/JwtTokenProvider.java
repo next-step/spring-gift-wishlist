@@ -1,6 +1,6 @@
 package gift.user;
 
-import gift.user.entity.User;
+import gift.user.domain.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import java.util.Date;

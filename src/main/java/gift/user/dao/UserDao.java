@@ -1,17 +1,16 @@
-package gift.user.repository;
+package gift.user.dao;
 
-import gift.product.entity.Product;
-import gift.user.entity.Role;
-import gift.user.entity.User;
+import gift.user.domain.Role;
+import gift.user.domain.User;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class UserRepository {
+public class UserDao {
 
   private final JdbcClient jdbcClient;
 
-  public UserRepository(JdbcClient jdbcClient) {
+  public UserDao(JdbcClient jdbcClient) {
     this.jdbcClient = jdbcClient;
   }
 

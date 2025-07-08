@@ -1,4 +1,4 @@
-package gift.user.entity;
+package gift.user.domain;
 
 import gift.security.PasswordEncoder;
 
