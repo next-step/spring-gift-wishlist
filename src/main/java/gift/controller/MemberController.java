@@ -23,7 +23,7 @@ public class MemberController {
 
     // 회원가입
     @PostMapping("/register")
-    public ResponseEntity<TokenResponseDto> registerMember (
+    public ResponseEntity<TokenResponseDto> register (
             @Valid @RequestBody MemberRequestDto dto) {
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -31,11 +31,10 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenResponseDto> logInMember (
+    public ResponseEntity<TokenResponseDto> logIn (
             @Valid @RequestBody MemberRequestDto dto) {
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(memberService.logInMember(dto));
+        return ResponseEntity.ok(memberService.logInMember(dto));
     }
 
     @GetMapping
@@ -48,7 +47,7 @@ public class MemberController {
     @GetMapping("{id}")
     public ResponseEntity<MemberResponseDto> findMember(@PathVariable Long id) {
 
-        MemberResponseDto dto = memberService.findMemberById(id);
+        MemberResponseDto dto = memberService.findMemberByIdElseThrow(id);
 
         return ResponseEntity.ok(dto);
     }
@@ -63,7 +62,7 @@ public class MemberController {
 
     @PutMapping("{id}")
     public ResponseEntity<MemberResponseDto> updateMember(
-            @Valid @RequestBody RoleRequestDto dto,
+            @Valid @RequestBody MemberRoleRequestDto dto,
             @PathVariable Long id) {
 
         return ResponseEntity.ok(memberService.updateMember(id, dto));

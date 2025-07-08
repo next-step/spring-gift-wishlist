@@ -2,7 +2,7 @@ package gift.service;
 
 import gift.dto.MemberRequestDto;
 import gift.dto.MemberResponseDto;
-import gift.dto.RoleRequestDto;
+import gift.dto.MemberRoleRequestDto;
 import gift.dto.TokenResponseDto;
 
 import java.util.List;
@@ -17,6 +17,6 @@ public interface MemberService {
     Optional<MemberResponseDto> findMemberById(Long id);
     MemberResponseDto findMemberByIdElseThrow(Long id);
     MemberResponseDto saveMember(MemberRequestDto dto);
-    MemberResponseDto updateMember(Long id, RoleRequestDto dto);
+    MemberResponseDto updateMember(Long id, MemberRoleRequestDto dto);
     void deleteMember(Long id);
 }

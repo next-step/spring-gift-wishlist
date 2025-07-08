@@ -2,7 +2,7 @@ package gift.controller;
 
 import gift.dto.MemberRequestDto;
 import gift.dto.MemberResponseDto;
-import gift.dto.RoleRequestDto;
+import gift.dto.MemberRoleRequestDto;
 import gift.service.MemberService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -73,7 +73,7 @@ public class AdminMemberController {
     @PutMapping("{id}")
     public String updateMember(
             @PathVariable Long id,
-            @Valid @ModelAttribute RoleRequestDto dto) {
+            @Valid @ModelAttribute MemberRoleRequestDto dto) {
 
         memberService.updateMember(id, dto);
         return "redirect:/admin/members";

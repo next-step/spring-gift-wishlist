@@ -2,7 +2,7 @@ package gift.service;
 
 import gift.dto.MemberRequestDto;
 import gift.dto.MemberResponseDto;
-import gift.dto.RoleRequestDto;
+import gift.dto.MemberRoleRequestDto;
 import gift.dto.TokenResponseDto;
 import gift.entity.Member;
 import gift.entity.RoleType;
@@ -133,7 +133,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public MemberResponseDto updateMember(Long id, RoleRequestDto dto) {
+    public MemberResponseDto updateMember(Long id, MemberRoleRequestDto dto) {
 
         int updatedNum = memberRepository.updateMember(
                 id,
