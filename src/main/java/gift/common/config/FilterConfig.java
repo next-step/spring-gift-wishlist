@@ -12,7 +12,8 @@ import org.springframework.context.annotation.Configuration;
 public class FilterConfig {
 
     private static final String[] URL_PATTERNS = new String[]{
-            "/admin/*",
+            "/admin/products/*",
+            "/admin/users/*",
             "/api/users/password",
             "/api/users/admin"
     };

@@ -8,5 +8,11 @@ public record LoginRequest(
         String email,
 
         @NotBlank
-        String password) {
+        String password
+) {
+
+    private static final LoginRequest EMPTY = new LoginRequest(null, null);
+    public static LoginRequest empty() {
+        return EMPTY;
+    }
 }
