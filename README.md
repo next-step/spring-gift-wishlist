@@ -26,4 +26,33 @@
     이메일로 회원 찾기 findByEmail() 메소드
     ID로 회원 찾기 findById() 메소드 
 
+## MemberService
+    회원가입 register() 메소드 
+    -> 비밀번호 암호화 진행
+    -> 이메일 중복 체크
+    -> Member 객체 생성 및 저장
+    -> 토큰 생성 및 반환
 
+    로그인 login() 메소드
+    -> 이메일로 회원 찾기
+    -> 비밀번호 검증
+    -> 토큰 생성 및 반환
+
+    ID로 회원 찾기 findById() 메소드 
+
+
+## JWT 
+    JWT 토큰 활용을 위한 의존성 추가 및 설정 추가
+    
+    JwtTokenProvider 클래스 생성 
+    -> 토큰 생성 createToken() 메소드
+    -> 토큰에서 회원 ID 추출 getMemberId() 메소드
+    -> 토큰 유효성 검증 validateToken() 메소드 
+    
+
+## MemberController 
+    회원가입 [POST] /api/members/register
+    로그인 [POST] /api/members/login
+    -> 로그인은 토큰을 생성하기도 하고 
+    -> GET 요청은 파라미터에 비밀번호 노출 위험이 있기 때문에
+    -> POST 요청 사용
