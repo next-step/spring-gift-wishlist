@@ -12,7 +12,7 @@ public record ProductUpdateRequestDto(
         String name,
         @PositiveOrZero(message = "상품 가격은 0 이상이어야 합니다.")
         Long price,
-        @URL(message = "유효한 URL 형식이어야 합니다")
+        @URL(message = "유효한 URL 형식이어야 합니다.")
         String imageUrl
 ) {
 

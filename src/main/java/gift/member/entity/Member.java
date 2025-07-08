@@ -12,20 +12,20 @@ public class Member {
 
     @NotNull
     private UUID uuid;
-    
+
     @NotBlank
     @Email
     private String email;
-    
+
     @NotBlank
     private String password;
-    
+
     @NotBlank
     private String name;
-    
+
     @NotNull
     private LocalDateTime createdAt;
-    
+
     @NotNull
     private LocalDateTime updatedAt;
 
