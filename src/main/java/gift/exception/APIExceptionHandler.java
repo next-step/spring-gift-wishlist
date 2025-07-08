@@ -2,6 +2,8 @@ package gift.exception;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -22,7 +24,8 @@ public class APIExceptionHandler {
 
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<String> reponseStatusExceptionHandler(ResponseStatusException e){
-        return ResponseEntity.badRequest().body(e.getReason());
+        HttpStatusCode httpStatusCode = e.getStatusCode();
+        return ResponseEntity.status(httpStatusCode).body(e.getReason());
     }
 
 }

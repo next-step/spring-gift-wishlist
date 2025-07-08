@@ -32,7 +32,7 @@ public class MemberController {
     public ResponseEntity<Object> register(@RequestBody @Valid MemberRequestDto memberRequestDto){
         Member member = memberService.register(memberRequestDto);
         String token = jwtAuthService.createJwt(memberRequestDto);
-        return new ResponseEntity<>(new JwtResponseDto(token), HttpStatus.CREATED);
+        return new ResponseEntity<>(new JwtResponseDto("Bearer " + token), HttpStatus.CREATED);
     }
 
     //TODO: 로그인 기능 -> 토큰을 반환
@@ -47,7 +47,7 @@ public class MemberController {
         }
         //서버에 저장된 id-pw 쌍과 일치한다면 토큰을 발급
         String token = jwtAuthService.createJwt(memberRequestDto);
-        return ResponseEntity.ok().body(new JwtResponseDto(token));
+        return ResponseEntity.ok().body(new JwtResponseDto("Bearer " + token));
     }
 
 }

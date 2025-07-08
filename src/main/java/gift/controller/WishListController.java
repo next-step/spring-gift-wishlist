@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,9 +35,10 @@ public class WishListController {
     //TODO: WishList에 담긴 상품 목록을 조회
     @GetMapping("/wishList/{memberId}")
     public ResponseEntity<List<WishResponseDto>> getWishList(
-            @PathVariable Long memberId
+            @PathVariable Long memberId,
+            @RequestHeader(value = "Authorization") String token
     ){
-        //jwtAuthService.checkValidation();
+        jwtAuthService.checkValidation(token);
         List<WishResponseDto> myWishList = wishListService.getList(memberId);
         return ResponseEntity.ok(myWishList);
     }
@@ -45,9 +47,10 @@ public class WishListController {
     @PostMapping("/wishList/{memberId}")
     public ResponseEntity<WishResponseDto> addToWishList(
             @RequestBody WishRequestDto wishRequestDto,
-            @PathVariable Long memberId
+            @PathVariable Long memberId,
+            @RequestHeader(value = "Authorization") String token
     ){
-        //jwtAuthService.checkValidation(); // 검증로직 확인
+        jwtAuthService.checkValidation(token); // 검증로직 확인
         WishResponseDto wishResponseDto = wishListService.addToWishList(memberId, wishRequestDto);
         return new ResponseEntity<>(wishResponseDto, HttpStatus.CREATED);
     }
@@ -55,9 +58,10 @@ public class WishListController {
     //TODO: 위시 리스트에 담긴 상품을 삭제
     @DeleteMapping("/wishList/{wishListId}")
     public ResponseEntity<Void> removeWishList(
-        @PathVariable Long wishListId
+            @PathVariable Long wishListId,
+            @RequestHeader(value = "Authorization") String token
     ){
-        //jwtAuthService.checkValidation();
+        jwtAuthService.checkValidation(token);
         wishListService.removeFromWishList(wishListId);
         return ResponseEntity.noContent().build();
     }

@@ -3,13 +3,17 @@ package gift.service;
 import gift.dto.MemberRequestDto;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 //JWT와 관련된 서비스 :
 @Service
 public class JwtAuthService {
 
-    private String secretKey = "ComeOnYouGunnersNorthLondonisRedNorthLondonFOREVER";
+    private final String secretKey = "ComeOnYouGunnersNorthLondonisRedNorthLondonFOREVER";
+
+    Keys keys;
 
     //TODO: 토큰 생성
     public String createJwt(MemberRequestDto memberRequestDto){
@@ -20,8 +24,20 @@ public class JwtAuthService {
     }
 
     //TODO: 토큰을 검증 -> 로그인 이후의 동작 (wishList -> 사용자별 wishList 존재)
-    public void checkValidation(String token) {
-        //헤더가 유효하지 않거나 토큰이 유효하지 않은 경우 : 401
+    public void checkValidation(String bearerToken) {
+
+        if(!bearerToken.startsWith("Bearer ")){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다.");
+        }
+
+        try{
+            String token = bearerToken.split(" ")[1]; //Bearer 접두사 제거
+            Jwts.parser().verifyWith(Keys.hmacShaKeyFor(secretKey.getBytes())).build().parseSignedClaims(token);
+        }
+        catch (Exception e){
+            //Authorization 헤더가 유효하지 않거나 토큰이 유효하지 않은 경우 401 Unauthorized 반환
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다.");
+        }
     }
 
 }
