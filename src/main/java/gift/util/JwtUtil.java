@@ -17,6 +17,8 @@ public class JwtUtil {
 
     private JwtParser jwtParser;
 
+    private final long oneHour = 60 * 60 * 1000;
+
     @PostConstruct
     public void init() {
         jwtParser = Jwts.parser().setSigningKey(secret).build();
@@ -37,11 +39,12 @@ public class JwtUtil {
     }
 
     public String generateToken(MemberRequestDto memberRequestDto) {
+        long currentTimeMillis = System.currentTimeMillis();
         return Jwts.builder()
                 .setSubject(memberRequestDto.getEmail())
                 .claim("role", memberRequestDto.getRole())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 36000))
+                .setIssuedAt(new Date(currentTimeMillis))
+                .setExpiration(new Date(currentTimeMillis + oneHour))
                 .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
     }
