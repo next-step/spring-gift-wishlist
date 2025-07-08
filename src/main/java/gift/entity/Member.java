@@ -1,4 +1,4 @@
 package gift.entity;
 
-public record Member(long id, String email, String password) {
+public record Member(Long id, String email, String password) {
 }
