@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>내 정보</title>
+</head>
+<body>
+<h2>내 정보</h2>
+<div id="myInfo"></div>
+<script>
+    const jwtToken = localStorage.getItem('jwtToken');
+
+    async function loadMyInfo() {
+        const response = await fetch('/members/info', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + jwtToken
+            }
+        });
+        if (response.status === 200) {
+            const data = await response.json();
+            document.getElementById('myInfo').innerHTML =
+                `<p><strong>JWT 토큰:</strong> ${data.token}</p>`;
+        } else {
+            document.getElementById('myInfo').innerText = '정보를 불러오지 못했습니다.';
+        }
+    }
+    loadMyInfo();
+</script>
+</body>
+</html>
