@@ -2,15 +2,20 @@ package gift;
 
 import gift.dto.CreateProductRequest;
 import gift.dto.UpdateProductRequest;
+import gift.entity.Member;
 import gift.entity.Product;
+import gift.entity.Role;
+import gift.repository.MemberRepository;
+import gift.token.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
@@ -22,7 +27,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOf
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Sql({"/clear_product_table.sql", "/insert_product_table.sql"})
+@Sql({"/clear_product_table.sql", "/insert_product_table.sql", "/clear_member_table.sql"})
 public class ProductControllerTest {
 
     private final String baseUrl = "http://localhost:";
@@ -30,11 +35,29 @@ public class ProductControllerTest {
     @LocalServerPort
     private int port;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    private MemberRepository memberRepository;
+
     private RestClient restClient;
+    private String mdToken;
 
     @BeforeEach
     void setUp() {
         restClient = RestClient.create();
+
+        // MD 계정 생성
+        String userPassword = passwordEncoder.encode("userpassword123456789");
+        Member user = new Member(2L, "user@example.com", userPassword, Role.ROLE_MD);
+        memberRepository.createMember(user);
+
+        // MD 토큰 생성
+        mdToken = jwtTokenProvider.createToken("user@example.com");
     }
 
     @Test
@@ -47,6 +70,7 @@ public class ProductControllerTest {
         );
         ResponseEntity<Product> response = restClient.post()
                 .uri(url)
+                .header("Authorization", "Bearer " + mdToken)
                 .body(requestDto)
                 .retrieve()
                 .toEntity(Product.class);
@@ -65,6 +89,7 @@ public class ProductControllerTest {
                         () ->
                                 restClient.post()
                                         .uri(url)
+                                        .header("Authorization", "Bearer " + mdToken)
                                         .body(requestDto)
                                         .retrieve()
                                         .toEntity(Void.class)
@@ -76,6 +101,7 @@ public class ProductControllerTest {
         String url = baseUrl + port + "/api/products/1";
         ResponseEntity<Product> response = restClient.get()
                 .uri(url)
+                .header("Authorization", "Bearer " + mdToken)
                 .retrieve()
                 .toEntity(Product.class);
         assertAll(
@@ -92,6 +118,7 @@ public class ProductControllerTest {
                         () ->
                                 restClient.get()
                                         .uri(url)
+                                        .header("Authorization", "Bearer " + mdToken)
                                         .retrieve()
                                         .toEntity(Void.class)
                 );
@@ -107,6 +134,7 @@ public class ProductControllerTest {
         );
         ResponseEntity<Product> response = restClient.patch()
                 .uri(url)
+                .header("Authorization", "Bearer " + mdToken)
                 .body(patchDto)
                 .retrieve()
                 .toEntity(Product.class);
@@ -126,6 +154,7 @@ public class ProductControllerTest {
                         () ->
                                 restClient.patch()
                                         .uri(url)
+                                        .header("Authorization", "Bearer " + mdToken)
                                         .body(patchDto)
                                         .retrieve()
                                         .toEntity(Product.class)
@@ -137,6 +166,7 @@ public class ProductControllerTest {
         String url = baseUrl + port + "/api/products";
         ResponseEntity<List<Product>> response = restClient.get()
                 .uri(url)
+                .header("Authorization", "Bearer " + mdToken)
                 .retrieve()
                 .toEntity(new ParameterizedTypeReference<List<Product>>() {});
 
@@ -151,6 +181,7 @@ public class ProductControllerTest {
         String url = baseUrl + port + "/api/products/1";
         ResponseEntity<Void> response = restClient.delete()
                 .uri(url)
+                .header("Authorization", "Bearer " + mdToken)
                 .retrieve()
                 .toEntity(Void.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
@@ -164,6 +195,7 @@ public class ProductControllerTest {
                         () ->
                                 restClient.delete()
                                         .uri(url)
+                                        .header("Authorization", "Bearer " + mdToken)
                                         .retrieve()
                                         .toEntity(Void.class)
                 );

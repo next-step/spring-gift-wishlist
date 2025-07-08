@@ -35,7 +35,7 @@ class MemberControllerTest {
 
     @Test
     void 회원가입_성공() throws Exception {
-        String url = baseUrl + port + "/api/members";
+        String url = baseUrl + port + "/api/members/register";
         CreateMemberRequest request = new CreateMemberRequest("test@example.com", "password123456789");
 
         ResponseEntity<CreateMemberResponse> response = restClient.post()
@@ -50,7 +50,7 @@ class MemberControllerTest {
 
     @Test
     void 회원가입_실패_이메일_중복() throws Exception {
-        String url = baseUrl + port + "/api/members";
+        String url = baseUrl + port + "/api/members/register";
 
         // 먼저 회원가입을 수행
         CreateMemberRequest request = new CreateMemberRequest("existing@example.com", "password123456789");
@@ -72,7 +72,7 @@ class MemberControllerTest {
 
     @Test
     void 로그인_성공() throws Exception {
-        String memberUrl = baseUrl + port + "/api/members";
+        String memberUrl = baseUrl + port + "/api/members/register";
         String loginUrl = baseUrl + port + "/api/members/login";
 
         // 먼저 회원가입을 수행
@@ -97,7 +97,7 @@ class MemberControllerTest {
 
     @Test
     void 로그인_실패_잘못된_비밀번호() throws Exception {
-        String memberUrl = baseUrl + port + "/api/members";
+        String memberUrl = baseUrl + port + "/api/members/register";
         String loginUrl = baseUrl + port + "/api/members/login";
 
         // 먼저 회원가입을 수행
@@ -122,7 +122,7 @@ class MemberControllerTest {
 
     @Test
     void 회원가입_실패_짧은_비밀번호() throws Exception {
-        String url = baseUrl + port + "/api/members";
+        String url = baseUrl + port + "/api/members/register";
         CreateMemberRequest request = new CreateMemberRequest("test@example.com", "short");
 
         assertThatExceptionOfType(HttpClientErrorException.class)
@@ -136,7 +136,7 @@ class MemberControllerTest {
 
     @Test
     void 회원가입_실패_잘못된_이메일_형식() throws Exception {
-        String url = baseUrl + port + "/api/members";
+        String url = baseUrl + port + "/api/members/register";
         CreateMemberRequest request = new CreateMemberRequest("invalid-email", "password123456789");
 
         assertThatExceptionOfType(HttpClientErrorException.class)

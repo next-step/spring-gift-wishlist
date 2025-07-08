@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(AdminPageController.class)
-@WithMockUser(authorities = "ROLE_ADMIN")
+@WithMockUser(authorities = "ROLE_MD")
 class AdminPageControllerTest {
 
     @Autowired

@@ -1,6 +1,7 @@
 package gift;
 
 import gift.entity.Member;
+import gift.entity.Role;
 import gift.repository.MemberRepository;
 import gift.token.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,7 +47,7 @@ class AdminPageTokenTest {
 
         // 관리자 계정을 데이터베이스에 직접 생성
         String encodedPassword = passwordEncoder.encode("adminpassword123456789");
-        Member admin = new Member(1L, "admin@example.com", encodedPassword, "ROLE_ADMIN");
+        Member admin = new Member(1L, "admin@example.com", encodedPassword, Role.ROLE_MD);
         memberRepository.createMember(admin);
 
         // 관리자용 JWT 토큰 생성
@@ -83,7 +84,7 @@ class AdminPageTokenTest {
     void 일반_사용자_권한으로_관리자_페이지_접근_시_403() throws Exception {
         // 일반 사용자 계정 생성
         String userPassword = passwordEncoder.encode("userpassword123456789");
-        Member user = new Member(2L, "user@example.com", userPassword, "ROLE_USER");
+        Member user = new Member(2L, "user@example.com", userPassword, Role.ROLE_USER);
         memberRepository.createMember(user);
 
         // 일반 사용자 토큰 생성

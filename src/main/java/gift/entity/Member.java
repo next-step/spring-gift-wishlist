@@ -12,11 +12,11 @@ public class Member implements UserDetails {
     private Long identifyNumber;
     private String email;
     private String password;
-    private String authority;
+    private Role authority;
 
     public Member() {}
 
-    public Member(Long identifyNumber, String email, String password, String authority) {
+    public Member(Long identifyNumber, String email, String password, Role authority) {
         this.identifyNumber = identifyNumber;
         this.email = email;
         this.password = password;
@@ -26,7 +26,7 @@ public class Member implements UserDetails {
     public Member(String email, String password) {
         this.email = email;
         this.password = password;
-        this.authority = "ROLE_USER";
+        this.authority = Role.ROLE_USER;
     }
 
     public Member updateIdentifyNumber(Long identifyNumber) {
@@ -47,7 +47,7 @@ public class Member implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(authority));
+        return List.of(new SimpleGrantedAuthority(authority.name()));
     }
 
     public Member updatePassword(String password) {

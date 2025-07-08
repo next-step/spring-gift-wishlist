@@ -1,6 +1,7 @@
 package gift.repository;
 
 import gift.entity.Member;
+import gift.entity.Role;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -17,7 +18,7 @@ public class MemberRepository {
         rs.getLong("identify_number"),
         rs.getString("email"),
         rs.getString("password"),
-        rs.getString("authority")
+        Role.valueOf(rs.getString("authority"))
     );
 
     public MemberRepository(JdbcClient jdbcClient) {
