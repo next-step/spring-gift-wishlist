@@ -21,13 +21,13 @@ public class MemberController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody MemberRequest request) {
+    public ResponseEntity<TokenResponse> register(@RequestBody MemberRequest request) {
         TokenResponse response = memberService.register(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody MemberRequest request) {
+    public ResponseEntity<TokenResponse> login(@RequestBody MemberRequest request) {
         TokenResponse response = memberService.login(request);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
