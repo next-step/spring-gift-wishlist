@@ -35,14 +35,14 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public Long create(ProductRequestDto requestDto) {
+    public Long create(Product product) {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         jdbcInsert.withTableName("product").usingGeneratedKeyColumns("id");
 
         Map<String, Object> params = new HashMap<>();
-        params.put("name", requestDto.name());
-        params.put("price", requestDto.price());
-        params.put("imageUrl", requestDto.imageUrl());
+        params.put("name", product.getName());
+        params.put("price", product.getPrice());
+        params.put("imageUrl", product.getImageUrl());
 
         Long id = (Long) jdbcInsert.executeAndReturnKey(params);
         return id;

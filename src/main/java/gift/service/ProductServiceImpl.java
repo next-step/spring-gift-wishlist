@@ -39,7 +39,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponseDto create(ProductRequestDto requestDto) {
-        Long id = productRepository.create(requestDto);
+        Long id = productRepository.create(new Product(requestDto.name(), requestDto.price(), requestDto.imageUrl()));
 
         return new ProductResponseDto(id, requestDto.name(), requestDto.price(),
             requestDto.imageUrl());
