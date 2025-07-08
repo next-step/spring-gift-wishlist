@@ -65,7 +65,7 @@ git으로 불러오려 했으나 여러 차례 실패하여 직접 복사하여 
 
 ## 구현 기능 목록
 - [x] 회원가입
-- [ ] 로그인
+- [x] 로그인
 - [ ] JWT 토큰 발급 및 검증 기능
 - [ ] 인증 필터 구현(인증 실패 시 401, 로그인 실패 403)
 
@@ -93,5 +93,39 @@ Content-Type: application/json
 ```json
 {
    "message": "회원가입이 완료되었습니다."
+}
+```
+2. 로그인 api 구현(`POST /api/members/login`)
+
+### Request
+```http
+POST /api/members/register HTTP/1.1
+Content-Type: application/json
+Host: localhost:8080
+```
+```json
+{
+  "email": "test@email.com",
+  "pwd": "abc1234"
+}
+```
+### Response(성공 시)
+```http
+HTTP/1.1 200 Ok
+Content-Type: application/json
+```
+```json
+{
+   "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJ0ZXN0QGVtYWlsLmNvbSJ9.7eR29_0Aj0oPzBZ7K7MPa1FwW79CtWZKHlDZXVB8izw"
+}
+```
+### Response(실패 시: 잘못된 비밀번호 or 없는 계정)
+```http
+HTTP/1.1 403 Forbidden
+Content-Type: application/json
+```
+```json
+{
+   "message": "회원이 존재하지 않습니다." // or "비밀번호가 일치하지 않습니다."
 }
 ```
