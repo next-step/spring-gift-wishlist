@@ -2,7 +2,6 @@ package gift.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.dto.ProductRequest;
-import gift.handler.GlobalExceptionHandler;
 import gift.service.ProductService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

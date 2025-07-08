@@ -1,4 +1,4 @@
-package gift.handler;
+package gift.exception.handler;
 
 import java.util.List;
 
