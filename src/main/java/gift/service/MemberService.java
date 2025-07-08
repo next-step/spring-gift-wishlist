@@ -9,5 +9,5 @@ public interface MemberService {
 
     void saveMember(MemberRequestDto memberRequestDto);
 
-    void login(MemberRequestDto memberRequestDto);
+    void existMember(MemberRequestDto memberRequestDto);
 }

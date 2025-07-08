@@ -40,7 +40,7 @@ public class MemberController {
     public ResponseEntity<?> loginMember(@Valid @RequestBody MemberRequestDto memberRequestDto) {
         String token;
         try{
-            memberService.login(memberRequestDto);
+            memberService.existMember(memberRequestDto);
             token = jwtUtil.generateToken(memberRequestDto);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
