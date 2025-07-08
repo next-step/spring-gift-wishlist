@@ -99,7 +99,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDto updateUser(Long id, UserUpdateDto dto) {
+    public UserResponseDto updateUser(Long id, UserUpdateDto dto, boolean isAdmin) {
+        if (!isAdmin) {
+            System.out.println("권한이 없습니다.");
+            throw new UserAuthorizationException();
+        }
+
         User findUser = userRepository.findUserById(id);
         if (findUser == null) {
             throw new UserNotFoundException();

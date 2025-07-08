@@ -15,7 +15,7 @@ public interface UserService {
 
     UserResponseDto finUserById(Long id);
 
-    UserResponseDto updateUser(Long id, @Valid UserUpdateDto dto);
+    UserResponseDto updateUser(Long id, @Valid UserUpdateDto dto,boolean isAdmin);
 
     void deleteUserById(Long id,boolean isAdmin);
 
