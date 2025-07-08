@@ -1,7 +1,9 @@
 package gift.dto;
 
 import jakarta.validation.constraints.*;
+
 public class ProductRequestDto {
+
     @NotBlank(message = "상품 이름은 필수 입력 사항입니다.")
     @Size(max = 15, message = "상품 이름은 공백 포함 최대 15자까지 가능합니다.")
     @Pattern(
@@ -21,20 +23,21 @@ public class ProductRequestDto {
     }
 
 
-
-
-    public ProductRequestDto(String name, int price, String imageUrl){
+    public ProductRequestDto(String name, int price, String imageUrl) {
         this.name = name;
         this.price = price;
-        this.imageUrl=imageUrl;
+        this.imageUrl = imageUrl;
     }
-    public String getName(){
+
+    public String getName() {
         return name;
     }
-    public int getPrice(){
+
+    public int getPrice() {
         return price;
     }
-    public String getImageUrl(){
+
+    public String getImageUrl() {
         return imageUrl;
     }
 

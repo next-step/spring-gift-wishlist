@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
+
     private final ProductService productService;
 
     public ProductController(ProductService productService) {
@@ -33,29 +34,31 @@ public class ProductController {
 
 
     @GetMapping("/{id}")//
-    public ResponseEntity<ProductResponseDto> findProduct(@PathVariable Long id){
-        return new ResponseEntity<>(productService.findProduct(id),HttpStatus.OK);
+    public ResponseEntity<ProductResponseDto> findProduct(@PathVariable Long id) {
+        return new ResponseEntity<>(productService.findProduct(id), HttpStatus.OK);
     }
 
 
     @PostMapping
     public ResponseEntity<ProductResponseDto> addProduct(
             @RequestBody @Valid ProductRequestDto productRequestDto) {
-        return new ResponseEntity<>(productService.addProduct(productRequestDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(productService.addProduct(productRequestDto),
+                HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponseDto> updateProduct(
             @PathVariable Long id,
             @RequestBody @Valid ProductRequestDto productRequestDto) {
-        return new ResponseEntity<>(productService.updateProduct(id, productRequestDto), HttpStatus.OK);
+        return new ResponseEntity<>(productService.updateProduct(id, productRequestDto),
+                HttpStatus.OK);
     }
 
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
-        return new 	ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 

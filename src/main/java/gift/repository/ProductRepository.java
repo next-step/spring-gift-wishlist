@@ -10,6 +10,7 @@ import java.util.Map;
 import org.springframework.stereotype.Repository;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.core.RowMapper;
+
 @Repository
 public class ProductRepository {
 
@@ -35,11 +36,12 @@ public class ProductRepository {
                 })
                 .list();
     }
+
     public Product save(Product product) {
         jdbcClient.sql("""
-        INSERT INTO product (name, price, image_url)
-        VALUES (:name, :price, :imageUrl)
-    """)
+                            INSERT INTO product (name, price, image_url)
+                            VALUES (:name, :price, :imageUrl)
+                        """)
                 .param("name", product.getName())
                 .param("price", product.getPrice())
                 .param("imageUrl", product.getImageUrl())
@@ -47,12 +49,13 @@ public class ProductRepository {
 
         return product;
     }
+
     public Product update(Long id, Product product) {
         jdbcClient.sql("""
-            UPDATE product
-            SET name = :name, price = :price, image_url = :imageUrl
-            WHERE id = :id
-        """)
+                            UPDATE product
+                            SET name = :name, price = :price, image_url = :imageUrl
+                            WHERE id = :id
+                        """)
                 .param("name", product.getName())
                 .param("price", product.getPrice())
                 .param("imageUrl", product.getImageUrl())
