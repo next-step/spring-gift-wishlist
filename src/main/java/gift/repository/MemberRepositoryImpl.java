@@ -33,7 +33,7 @@ public class MemberRepositoryImpl implements MemberRepository {
     @Override
     public Member saveMember(Member member) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcClient.sql("INSERT INTO member(email, password, role) VALUES (:email, :password, :role)")
+        jdbcClient.sql("INSERT INTO member(name, email, password, role) VALUES (:name, :email, :password, :role)")
                 .param("name", member.getName())
                 .param("email", member.getEmail())
                 .param("password", member.getPassword())

@@ -4,6 +4,9 @@ import gift.dto.MemberLoginRequestDto;
 import gift.dto.MemberRegisterRequestDto;
 import gift.entity.Member;
 import gift.entity.Role;
+import gift.exception.EmailAlreadyExistsException;
+import gift.exception.InvalidPasswordException;
+import gift.exception.MemberNotFoundException;
 import gift.repository.MemberRepository;
 import gift.config.JwtProvider;
 import org.springframework.stereotype.Service;
@@ -23,6 +26,11 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public String register(MemberRegisterRequestDto memberRegisterRequestDto) {
+        String email = memberRegisterRequestDto.email();
+        if (memberRepository.findMemberByEmail(email).isPresent()) {
+            throw new EmailAlreadyExistsException(email);
+        }
+
         String rawPassword = memberRegisterRequestDto.password();
         Member member = new Member(
                 null,
@@ -32,6 +40,7 @@ public class MemberServiceImpl implements MemberService {
                 Role.USER
         );
         Member saved = memberRepository.saveMember(member);
+
         return jwtProvider.generateToken(saved.getId(), saved.getEmail(), saved.getRole().name());
     }
 
@@ -41,7 +50,7 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
         if (!memberLoginRequestDto.password().equals(member.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new InvalidPasswordException();
         }
 
         return jwtProvider.generateToken(member.getId(), member.getEmail(), member.getRole().name());
@@ -55,7 +64,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Member findMemberById(Long id) {
         return memberRepository.findMemberById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+                .orElseThrow(() -> new MemberNotFoundException(id));
     }
 
     @Override
@@ -67,6 +76,8 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public void deleteMember(Long id) {
+        memberRepository.findMemberById(id)
+                .orElseThrow(() -> new MemberNotFoundException(id));
         memberRepository.deleteMember(id);
     }
 }
