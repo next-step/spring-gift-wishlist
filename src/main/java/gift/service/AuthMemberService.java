@@ -6,7 +6,7 @@ import gift.entity.Member;
 import gift.exception.DuplicateEmailException;
 import gift.exception.LoginFailedException;
 import gift.repository.MemberRepository;
-import gift.util.JwtUtil;
+import gift.security.JwtUtil;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthMemberService implements MemberService {
 
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
     private final JwtUtil jwtUtil;
 
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
