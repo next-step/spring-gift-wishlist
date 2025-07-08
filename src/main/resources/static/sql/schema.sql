@@ -11,3 +11,11 @@ CREATE TABLE members (
     email VARCHAR(30) NOT NULL UNIQUE,
     password CHAR(60) NOT NULL
 );
+
+CREATE TABLE wishes (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  memberId BIGINT REFERENCES members(id),
+  productId BIGINT REFERENCES products(id),
+  count INT,
+  UNIQUE (memberId, productId)
+);
