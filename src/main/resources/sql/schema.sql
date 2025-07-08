@@ -5,3 +5,4 @@ CREATE TABLE product (
     image_url VARCHAR(500) NOT NULL,
     category_id BIGINT
 );
+
