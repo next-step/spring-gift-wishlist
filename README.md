@@ -17,3 +17,20 @@
 
 ### 1단계 피드백 반영 사항
 -[x] 사용자 API에서 MD 승인 여부 조작 방지, 관지라 API에 대해서만 접근 가능토록 변경
+
+### 2단계 구현사항
+-[x] [개발 전 환경 세팅] 위시리스트 - 2단계 수행을 위한 build.gradle, application.properties 수정
+-[x] [Domain] 회원 도메인 설계 (Member Class) 및 역할에 대한 설계(Role Enum Class)
+-[x] [SQL] 회원에 대한 table 정의하는 sql 추가 (schema.sql)
+-[x] [Dto] 로그인 요청 및 응답에 대한 DTO 설계 (MemberLoginRequestDto, MemberLoginResponseDto)
+-[x] [Dto] 회원의 정보를 반환하는 DTO 설계 (MemberInfoResponseDto)
+-[x] [Repository] 회원 Domain에 대한 DB CRUD 수행하는 인터페이스 및 구현체 작성 (MemberRepository, JdbcTemplateMemberRepository)
+-[x] [Service] 회원에 대한 가입, 로그인 및 관리자 화면에 사용되는 기능을 포함한 인터페이스 및 구현체 작성 (MemberService, MemberServiceImpl)
+-[x] [Security] JWT 이용한 Token 생성 클래스 설계 (JwtProvider)
+-[x] [Security] 원활한 테스트를 위한 CSRF disable 위한 Config 클래스 설계(SecurityConfig)
+-[x] [Controller] 회원 가입, 로그인을 요청 처리하는 컨트롤러 설계(MemberController)
+-[x] [Controller] 회원 조회, 추가, 수정, 삭제할 수 있는 관리자 화면 요청 처리하는 컨트롤러 설계 (MemberAdminController)
+-[x] [Templates] 회원 조회, 추가, 수정, 삭제를 위한 thymeleaf 기반 관리자 페이지 3개 (member-create-form, member-list, member-update)
+-[x] [Exception] 이메일이 이미 사용되는 경우, 해당 이메일이 존재하지 않는 경우, 비밀번호 불일치의 경우에 대한 커스텀 예외 작성 (EmailAlreadyRegisteredException, MemberNotFoundException, PasswordMismatchException)
+-[x] [Exception] 그에 대한 GlobalExceptionHandler 수정
+-[x] [Test] 테스트 코드 도메인 별 디렉토리 분리
