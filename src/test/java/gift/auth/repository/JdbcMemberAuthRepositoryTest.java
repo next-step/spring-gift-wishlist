@@ -25,30 +25,27 @@ class JdbcMemberAuthRepositoryTest {
   @Mock
   private NamedParameterJdbcTemplate jdbcTemplate;
 
-  @Mock
-  private SimpleJdbcInsert jdbcInsert;
-
   private JdbcMemberAuthRepository repository;
 
   @BeforeEach
   void setUp() {
-    repository = new JdbcMemberAuthRepository(jdbcTemplate, jdbcInsert);
+    repository = new JdbcMemberAuthRepository(jdbcTemplate);
   }
 
   @Test
   @DisplayName("memberAuth를 저장하면 memberId가 반환된다")
   void save_success() {
-    MemberAuth memberAuth = MemberAuth.of("test@example.com", "password", "token");
+    MemberAuth memberAuth = MemberAuth.withId(1L,"test@example.com", "password", "token");
     Long expectedId = 1L;
 
-    when(jdbcInsert.executeAndReturnKey(any(SqlParameterSource.class)))
-        .thenReturn(expectedId);
+    when(jdbcTemplate.update(anyString(), any(SqlParameterSource.class)))
+        .thenReturn(1);
 
     Long result = repository.save(memberAuth);
 
     assertAll(
         () -> assertEquals(expectedId, result),
-        () -> verify(jdbcInsert).executeAndReturnKey(any(SqlParameterSource.class))
+        () -> verify(jdbcTemplate).update(anyString(), any(SqlParameterSource.class))
     );
   }
 
@@ -57,7 +54,7 @@ class JdbcMemberAuthRepositoryTest {
   void save_null_throws() {
     assertAll(
         () -> assertThrows(NullPointerException.class, () -> repository.save(null)),
-        () -> verify(jdbcInsert, never()).executeAndReturnKey(any(SqlParameterSource.class))
+        () -> verify(jdbcTemplate, never()).update(anyString(), any(SqlParameterSource.class))
     );
   }
 
