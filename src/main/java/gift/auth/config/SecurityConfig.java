@@ -13,7 +13,9 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -22,9 +24,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Profile({"default","dev"})
 public class SecurityConfig {
   private final JwtValidationFilter jwtValidationFilter;
+  private final AuthenticationEntryPoint authenticationEntryPoint;
+  private final AccessDeniedHandler accessDeniedHandler;
 
-  public SecurityConfig(JwtValidationFilter jwtValidationFilter) {
+  public SecurityConfig(JwtValidationFilter jwtValidationFilter,
+      AuthenticationEntryPoint authenticationEntryPoint, AccessDeniedHandler accessDeniedHandler) {
     this.jwtValidationFilter = jwtValidationFilter;
+    this.authenticationEntryPoint = authenticationEntryPoint;
+    this.accessDeniedHandler = accessDeniedHandler;
   }
 
   @Bean
@@ -40,7 +47,11 @@ public class SecurityConfig {
             .requestMatchers("/api/auth/register", "/api/auth/login", "/api/auth/refresh","/h2-console/**").permitAll()
             .anyRequest().authenticated()
         )
-        .addFilterBefore(jwtValidationFilter, UsernamePasswordAuthenticationFilter.class);
+        .addFilterBefore(jwtValidationFilter, UsernamePasswordAuthenticationFilter.class)
+        .exceptionHandling(exceptions -> exceptions
+            .authenticationEntryPoint(authenticationEntryPoint)
+            .accessDeniedHandler(accessDeniedHandler)
+        );
 
     return http.build();
   }
