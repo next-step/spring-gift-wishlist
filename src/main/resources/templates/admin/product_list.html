@@ -14,14 +14,14 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="productDto : ${products}">
-        <td th:text="${productDto.id}"></td>
-        <td th:text="${productDto.name}"></td>
-        <td th:text="${productDto.price}"></td>
-        <td><img th:src="${productDto.imageUrl}" width="100"/></td>
+    <tr th:each="productRequestDto : ${products}">
+        <td th:text="${productRequestDto.id}"></td>
+        <td th:text="${productRequestDto.name}"></td>
+        <td th:text="${productRequestDto.price}"></td>
+        <td><img th:src="${productRequestDto.imageUrl}" width="100"/></td>
         <td>
-            <a th:href="@{/admin/products/{id}/edit(id=${productDto.id})}">수정</a>
-            <form th:action="@{/admin/products/{id}/delete(id=${productDto.id})}" method="post" style="display:inline;">
+            <a th:href="@{/admin/products/{id}/edit(id=${productRequestDto.id})}">수정</a>
+            <form th:action="@{/admin/products/{id}/delete(id=${productRequestDto.id})}" method="post" style="display:inline;">
                 <button type="submit">삭제</button>
             </form>
         </td>

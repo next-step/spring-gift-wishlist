@@ -1,9 +1,9 @@
-package gift.dto;
+package gift.dto.product;
 
 import jakarta.validation.constraints.*;
 
 
-public class ProductDto {
+public class ProductRequestDto {
     private Long id;
     private boolean usableKakao;
 
@@ -27,8 +27,8 @@ public class ProductDto {
         return usableKakao;
     }
 
-    public ProductDto() {}
-    public ProductDto(Long id, String name, int price, String imageUrl) {
+    public ProductRequestDto() {}
+    public ProductRequestDto(Long id, String name, int price, String imageUrl) {
         this.id = id;
         this.name = name;
         this.price = price;

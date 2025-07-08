@@ -23,14 +23,45 @@
   - 카카오 이름이 들어간 상품이 있을 때에 시스템에서 보류사항으로 처리 
   - 관리자가 보류사항 페이지에서 해당 상품을 처리한 후 리스트에 체크
 
-- *문제 상황 2.*:
+- ~~문제 상황 2.~~: (✅*해결완료*)
   - 유효성 검사 후 통과하지 못하면 단순히 입력 칸 옆에 오류 상황 표시
 - *해결 방법*:
   - 알림 창으로 표시하면 좀 더 사용자 입장에서 편하지 않을까?라는 생각
 
-- *문제 상황 3.*:
+- ~~문제 상황 3.~~: (✅*해결완료*)
   - @AssertTrue에 대한 메세지('카카오'가 포함된 상품명은 담당 MD와 협의가 필요합니다.)가 사용자 입장에서 보이지 않음
   - 전역 오류로 표시하면 해결 가능한 줄 알았는데 해결되지 않았음
 - *해결 방법*:
   - 알아봐야합니다...!
   - STEP2에서는 해결할 수 있도록!
+
+## STEP-02 회원 로그인
+
+### 요구사항 구현 방식
+1. 회원가입
+  - api/members/register
+  - POST
+  - 사용자 이메일과 비밀번호를 전달
+  - 토큰 응답
+2. 로그인
+  - api/members/login
+  - POST
+  - 사용자 이메일과 비밀번호 전달
+  - 토큰 응답
+
+### 폴더 구조 변경 사항
+- controller / dto / repository 기능 별로 폴더 분리
+---
+- controller
+  - ProductController
+  - UserController
+- dto
+  - product
+    - ProductRequestDto
+    - ProductResponseDto
+  - user
+    - UserRequestDto
+    - UserResponseDto
+- repository
+  - ProductRepository
+  - UserRepository

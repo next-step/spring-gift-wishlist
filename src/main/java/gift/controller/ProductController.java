@@ -1,6 +1,6 @@
 package gift.controller;
 
-import gift.dto.ProductDto;
+import gift.dto.product.ProductRequestDto;
 import gift.repository.ProductRepository;
 
 import jakarta.validation.Valid;
@@ -35,13 +35,13 @@ public class ProductController {
 
     @GetMapping("/new")
     public String createForm(Model model) {
-        model.addAttribute("productDto",new ProductDto());
+        model.addAttribute("productDto",new ProductRequestDto());
         model.addAttribute("editMode",false);
         return "admin/product_form";
     }
 
     @PostMapping
-    public String createProduct(@Valid @ModelAttribute ProductDto productdto, BindingResult bindingResult, Model  model) {
+    public String createProduct(@Valid @ModelAttribute ProductRequestDto productdto, BindingResult bindingResult, Model  model) {
         if(bindingResult.hasErrors()) {
             if (productdto.getName() != null && productdto.getName().contains("카카오") && !productdto.getUsableKakao()) {
                 model.addAttribute("showKakaoPopup", true);
@@ -58,15 +58,15 @@ public class ProductController {
 
     @GetMapping("/{id}/edit")
     public String editProduct(@PathVariable Long id, Model model) {
-        ProductDto productDto = repository.findById(id).orElseThrow();
-        model.addAttribute("productDto", productDto);
+        ProductRequestDto productRequestDto = repository.findById(id).orElseThrow();
+        model.addAttribute("productDto", productRequestDto);
         model.addAttribute("editMode", true);
         return "/admin/product_form";
     }
 
     @PostMapping("/{id}")
-    public String updateProduct(@ModelAttribute ProductDto productDto) {
-        repository.update(productDto);
+    public String updateProduct(@ModelAttribute ProductRequestDto productRequestDto) {
+        repository.update(productRequestDto);
         return "redirect:/admin/products";
     }
 
