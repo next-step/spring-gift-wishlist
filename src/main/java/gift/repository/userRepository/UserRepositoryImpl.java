@@ -2,6 +2,7 @@ package gift.repository.userRepository;
 
 
 import gift.entity.User;
+import gift.entity.UserRole;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -22,7 +23,7 @@ public class UserRepositoryImpl implements UserRepository {
     private final RowMapper<User> userRowMapper = new RowMapper<User>() {
         @Override
         public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new User(rs.getLong("id"), rs.getString("email"), rs.getString("password"));
+            return new User(rs.getLong("id"), rs.getString("email"), rs.getString("password"), UserRole.valueOf(rs.getString("role")));
         }
     };
 
@@ -31,39 +32,40 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User save(User user) {
-        var sql = "INSERT INTO users (email,password) VALUES (?,?)";
+    public User save(String email, String password, UserRole role) {
+        var sql = "INSERT INTO users (email,password,role) VALUES (?,?,?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-            ps.setString(1, user.email());
-            ps.setString(2, user.password());
+            ps.setString(1, email);
+            ps.setString(2, password);
+            ps.setString(3, role.name());
             return ps;
         }, keyHolder);
 
         Long id = keyHolder.getKey().longValue();
-        return new User(id, user.email(), user.password());
+        return new User(id, email, password, role);
 
     }
 
     @Override
     public List<User> getAllUsers() {
-        var sql = "SELECT id, email, password FROM users";
+        var sql = "SELECT id, email, password, role FROM users";
 
         return jdbcTemplate.query(sql, userRowMapper);
     }
 
     @Override
     public List<User> findUsersByEmail(String email) {
-        var sql = "SELECT id, email, password FROM users WHERE EMAIL = ?";
+        var sql = "SELECT id, email, password, role FROM users WHERE EMAIL = ?";
         return jdbcTemplate.query(sql, new Object[]{email}, userRowMapper);
 
     }
 
     @Override
     public User findUserById(Long id) {
-        var sql = "SELECT id, email, password FROM users WHERE ID = ?";
+        var sql = "SELECT id, email, password, role FROM users WHERE ID = ?";
         return jdbcTemplate.queryForObject(sql, new Object[]{id}, userRowMapper);
     }
 
@@ -71,7 +73,7 @@ public class UserRepositoryImpl implements UserRepository {
     public User updateUser(User findUser, String email, String password) {
         var sql = "UPDATE users SET email = ?, password = ? WHERE id = ?";
         jdbcTemplate.update(sql, email, password, findUser.id());
-        return new User(findUser.id(), email, password);
+        return new User(findUser.id(), email, password,findUser.role());
     }
 
     @Override
@@ -83,7 +85,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User findUserByEmail(String email) {
-        var sql = "SELECT id, email, password FROM users WHERE email = ?";
+        var sql = "SELECT id, email, password, role FROM users WHERE email = ?";
         try {
             return jdbcTemplate.queryForObject(sql, userRowMapper, email);
         } catch (EmptyResultDataAccessException e) {

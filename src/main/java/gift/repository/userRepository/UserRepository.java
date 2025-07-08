@@ -1,11 +1,12 @@
 package gift.repository.userRepository;
 
 import gift.entity.User;
+import gift.entity.UserRole;
 
 import java.util.List;
 
 public interface UserRepository {
-    User save(User user);
+    User save(String email, String password, UserRole role);
 
     List<User> getAllUsers();
 

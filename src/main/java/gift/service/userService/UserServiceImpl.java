@@ -6,6 +6,7 @@ import gift.dto.userDto.UserRegisterDto;
 import gift.dto.userDto.UserResponseDto;
 import gift.dto.userDto.UserUpdateDto;
 import gift.entity.User;
+import gift.entity.UserRole;
 import gift.exception.UserDuplicatedException;
 import gift.exception.UserNotFoundException;
 import gift.exception.UserPasswordException;
@@ -29,11 +30,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public String registerUser(UserRegisterDto dto) {
         String email = dto.email();
+        String password = dto.password();
+        UserRole role = dto.role();
         if (userRepository.findUserByEmail(email) != null) {
             throw new UserDuplicatedException();
         }
-        User user = new User(null, dto.email(), dto.password());
-        User savedUser = userRepository.save(user);
+        User savedUser = userRepository.save(email,password,role);
         String token = jwtUtil.generateToken(savedUser);
 
         return token;

@@ -12,7 +12,7 @@ public class RegisterNullCheck implements UserPolicy<UserRegisterDto> {
 
     private final ViolationHandler violationHandler;
 
-    public RegisterNullCheck(@Qualifier("userEmailValidationHandler") ViolationHandler violationHandler) {
+    public RegisterNullCheck(@Qualifier("userPasswordValidationHandler") ViolationHandler violationHandler) {
         this.violationHandler = violationHandler;
     }
 
