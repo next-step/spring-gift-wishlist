@@ -10,6 +10,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.crypto.SecretKey;
@@ -52,9 +53,12 @@ public class TokenProvider {
     public String generateAccessToken(String refreshTokenString) throws IllegalArgumentException {
         RefreshToken refreshToken = refreshTokenRepository.findByToken(refreshTokenString)
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid refresh token"));
+        if (refreshToken.getExpirationDate().isBefore(LocalDateTime.now())) {
+            throw new InvalidCredentialsException("Refresh token has expired");
+        }
+
         Member member = memberRepository.findByUuid(refreshToken.getMemberUuid())
                 .orElseThrow(() -> new EntityNotFoundException("Member not found"));
-
         return generateAccessToken(member);
     }
 
