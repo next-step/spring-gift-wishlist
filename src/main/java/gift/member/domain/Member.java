@@ -38,7 +38,7 @@ public class Member {
         return userRole;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Member setId(Long id) {
+        return new Member(id, email, password, userRole);
     }
 }

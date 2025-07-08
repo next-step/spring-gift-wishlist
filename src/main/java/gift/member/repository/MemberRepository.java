@@ -33,9 +33,8 @@ public class MemberRepository {
             .update(keyHolder);
 
         Long id = keyHolder.getKey().longValue();
-        member.setId(id);
 
-        return member;
+        return member.setId(id);
     }
 
     public Optional<Member> findByEmail(String email) {
