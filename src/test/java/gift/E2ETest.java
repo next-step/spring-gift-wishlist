@@ -1,13 +1,14 @@
 package gift;
 
-
-import gift.product.dto.GetItemResponse;
-import gift.product.dto.ItemRequest;
-import gift.product.entity.Item;
+import gift.product.dto.*;
+import gift.product.etcs.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
@@ -24,6 +25,9 @@ public class E2ETest {
 	private int port;
 
 	private RestClient restClient;
+	@Autowired
+	private JwtUtil jwtUtil;
+
 
 	@BeforeEach
 	void setUp() {
@@ -33,79 +37,108 @@ public class E2ETest {
 	}
 
 	@Test
-	void 상품CRUD전체플로우() {
-		ItemRequest request = new ItemRequest("콜라", 1500, "url");
-
-		// 1. 상품생성
-		Long createdId = restClient.post()
-			.uri("/products")
-			.body(request)
+	@DisplayName("인증인가 적용된 상품 e2e 테스트")
+	void userAndItemE2ETest() {
+		// 회원가입
+		CreateUserRequest createUserRequest = new CreateUserRequest("test@t", "1", "testUser");
+		Long userId = restClient.post()
+			.uri("/users/register")
+			.body(createUserRequest)
 			.retrieve()
 			.body(Long.class);
 
-		assertThat(createdId).isNotNull();
+		assertThat(userId).isEqualTo(3L);
+
+		// 로그인
+		LoginRequest loginRequest = new LoginRequest("test@t", "1");
+		LoginResponse loginResponse = restClient.post()
+			.uri("/users/login")
+			.body(loginRequest)
+			.retrieve()
+			.body(LoginResponse.class);
+
+		String accessToken = loginResponse.token();
+		assertThat(accessToken).isNotNull();
+
+		// 상품 생성
+		ItemRequest createItemRequest = new ItemRequest("테스트콜라", 1500, "url");
+		Long createdId = restClient.post()
+			.uri("/products")
+			.header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+			.body(createItemRequest)
+			.retrieve()
+			.body(Long.class);
+
 		assertThat(createdId).isEqualTo(16L); // 초기화된 목업 데이터 15개
 
-		// 2. 단건 조회
+		// 단건 조회
 		GetItemResponse getItemResponse = restClient.get()
 			.uri("/products/" + createdId)
 			.retrieve()
 			.body(GetItemResponse.class);
 
-		assertThat(getItemResponse).isNotNull();
+		assertThat(getItemResponse.name()).isEqualTo("테스트콜라");
 
-		assertThat(getItemResponse.name()).isEqualTo("콜라");
-		assertThat(getItemResponse.price()).isEqualTo(1500);
-		assertThat(getItemResponse.imageUrl()).isEqualTo("url");
-
-		// 3. 수정
-		Item updateItem = new Item( 16L,"사이다", 1500, "url");
-
-		restClient.put()
+		// 수정
+		ItemRequest updateItemRequest = new ItemRequest("테스트사이다", 2000, "url2");
+		GetItemResponse updatedItemResponse = restClient.put()
 			.uri("/products/" + createdId)
-			.body(updateItem)
-			.retrieve()
-			.toBodilessEntity();
-
-		GetItemResponse getUpdatedItem = restClient.get()
-			.uri("/products/" + createdId)
+			.header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+			.body(updateItemRequest)
 			.retrieve()
 			.body(GetItemResponse.class);
 
-		assertThat(getUpdatedItem).isNotNull();
-		assertThat(getUpdatedItem.name()).isEqualTo("사이다");
+		assertThat(updatedItemResponse.name()).isEqualTo("테스트사이다");
+		assertThat(updatedItemResponse.price()).isEqualTo(2000);
 
-
-		// 4. 삭제 후 전체목록 조회해 개수체크
+		// 삭제
 		restClient.delete()
 			.uri("/products/" + createdId)
+			.header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
 			.retrieve()
 			.toBodilessEntity();
 
+		// 삭제 후 전체 목록 조회
 		List items = restClient.get()
 			.uri("/products")
 			.retrieve()
 			.body(List.class);
 
-		assertThat(items).isNotNull();
 		assertThat(items.size()).isEqualTo(15);
-
 	}
-
 
 	@Test
-	void 상품생성_검증() {
+	@DisplayName("비인가 유저 에러테스트")
+	void userBadRequestTest() {
 
-		ItemRequest kakaoNameItem = new ItemRequest("카카오테크캠퍼스", 1500, "url");
-
-		assertThatThrownBy(() ->
-			restClient.post()
-			.uri("/products")
-			.body(kakaoNameItem)
+		LoginRequest loginRequest = new LoginRequest("s@s", "1");
+		LoginResponse loginResponse = restClient.post()
+			.uri("/users/login")
+			.body(loginRequest)
 			.retrieve()
-			.body(Long.class)
+			.body(LoginResponse.class);
+
+		String accessToken = loginResponse.token();
+		assertThat(accessToken).isNotNull();
+
+		// 상품 수정 실패
+		ItemRequest updateRequest = new ItemRequest("사이다", 2000, "url");
+		assertThatThrownBy(() ->
+			restClient.put()
+				.uri("/products/14")
+				.header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+				.body(updateRequest)
+				.retrieve()
+				.toBodilessEntity()
 		).isInstanceOf(HttpClientErrorException.BadRequest.class);
 
+		// 상품 삭제 실패
+		assertThatThrownBy(() ->
+			restClient.delete()
+				.uri("/products/14")
+				.header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+				.retrieve()
+				.toBodilessEntity()
+		).isInstanceOf(HttpClientErrorException.BadRequest.class);
 	}
-
 }
