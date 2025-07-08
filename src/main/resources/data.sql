@@ -11,6 +11,6 @@ INSERT INTO product (name, price, image_url) VALUES
     ('손목 보호대', 12000, 'https://placehold.co/600x400/0F4C75/FFFFFF?text=Wrist+Guard');
 
 
-INSERT INTO user (email, password) VALUES
-    ('admin', 'admin'),
-    ('abcd@gmail.com', '1234');
+INSERT INTO member (email, password, name, role) VALUES
+    ('admin', 'admin', '김철수', '관리자'),
+    ('abcd@gmail.com', '1234', '이천수', '축구선수');
