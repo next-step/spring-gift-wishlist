@@ -56,3 +56,11 @@
     -> 로그인은 토큰을 생성하기도 하고 
     -> GET 요청은 파라미터에 비밀번호 노출 위험이 있기 때문에
     -> POST 요청 사용
+
+## JwtAuthenticationFilter JWT 인증 필터 구현
+    클라이언트 요청 → 필터 → Controller → Service →
+    1. 요청으로부터 토큰 추출
+    2. 토큰 유효성 검증
+    3. 사용자 ID 추출
+    4. Request에 회원 ID 저장
+    5. 다음 필터(or 컨트롤러)로 진행

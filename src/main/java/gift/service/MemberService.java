@@ -2,11 +2,9 @@ package gift.service;
 
 import gift.domain.Member;
 import gift.repository.MemberRepository;
-import gift.util.JwtTokenProvider;
+import gift.auth.JwtTokenProvider;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class MemberService {
