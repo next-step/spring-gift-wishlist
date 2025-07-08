@@ -21,8 +21,7 @@ public class Member {
   }
 
   public Member(String email, String password) {
-    this.email = email;
-    this.password = password;
+    this(null, email, password);
   }
 
   public Member() {
@@ -53,10 +52,6 @@ public class Member {
   }
 
   public boolean isPasswordMatch(String password) {
-    if (this.password.equals(password)) {
-      return true;
-    } else {
-      return false;
-    }
+    return this.password.equals(password);
   }
 }

@@ -10,7 +10,7 @@ import org.hibernate.validator.constraints.URL;
 public class Product {
 
   private Long id;
-  
+
   @NotBlank(message = "이름은 필수입니다.")
   @Size(max = 15, message = "이름은 최대 15글자입니다")
   @Pattern(regexp = "^[가-힣a-zA-Z0-9\\(\\)\\[\\]\\+\\-\\&\\/\\_ ]+$", message = "한글, 영문자, 숫자, ( ), [ ], +, -, &, /, _ 만 입력 가능(공백포함)")
@@ -33,9 +33,7 @@ public class Product {
   }
 
   public Product(String name, Long price, String imageUrl) {
-    this.name = name;
-    this.price = price;
-    this.imageUrl = imageUrl;
+    this(null, name, price, imageUrl);
   }
 
   public Product() {
