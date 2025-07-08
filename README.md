@@ -26,9 +26,9 @@
 
 ## 2단계 코드리뷰 요청 (구현내용 명세)
 ### 토큰기법을 제외한 기능구현
-- `POST /api/users`를 통한 유저 등록
+- `POST /api/members`를 통한 유저 등록
   - email, password 필요. email과 password 각 유효성검사 수행
-- `POST /api/users/login`를 통한 로그인 수행
+- `POST /api/members/login`를 통한 로그인 수행
   - email, password 필요. email & password 쌍에 대해 정보가 존재하는지 확인
 ### 토큰기법을 추가한 기능 구현
 - 위 기능의 반환값으로 토큰 반환받도록 구현, admin page 접근제한 추가
