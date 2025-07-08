@@ -86,7 +86,19 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public MemberResponseDto findMemberById(Long id) {
+    public Optional<MemberResponseDto> findMemberById(Long id) {
+
+        return memberRepository.findMemberById(id)
+                .map(member -> new MemberResponseDto(
+                        member.getId(),
+                        member.getEmail(),
+                        member.getPassword(),
+                        member.getRole()
+                ));
+    }
+
+    @Override
+    public MemberResponseDto findMemberByIdElseThrow(Long id) {
 
         return memberRepository.findMemberById(id)
                 .map(member -> new MemberResponseDto(
@@ -95,7 +107,12 @@ public class MemberServiceImpl implements MemberService {
                         member.getPassword(),
                         member.getRole()
                 ))
-                .orElse(null);
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "해당 ID의 멤버은 존재하지 않습니다."
+                        )
+                );
     }
 
     @Override
@@ -130,7 +147,7 @@ public class MemberServiceImpl implements MemberService {
             );
         }
 
-        return findMemberById(id);
+        return findMemberByIdElseThrow(id);
     }
 
     @Override

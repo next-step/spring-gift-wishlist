@@ -6,6 +6,7 @@ import gift.dto.RoleRequestDto;
 import gift.dto.TokenResponseDto;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface MemberService {
 
@@ -13,7 +14,8 @@ public interface MemberService {
     TokenResponseDto logInMember(MemberRequestDto dto);
 
     List<MemberResponseDto> findAllMembers();
-    MemberResponseDto findMemberById(Long id);
+    Optional<MemberResponseDto> findMemberById(Long id);
+    MemberResponseDto findMemberByIdElseThrow(Long id);
     MemberResponseDto saveMember(MemberRequestDto dto);
     MemberResponseDto updateMember(Long id, RoleRequestDto dto);
     void deleteMember(Long id);

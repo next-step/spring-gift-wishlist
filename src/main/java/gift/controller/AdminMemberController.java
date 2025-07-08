@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin/members")
@@ -31,7 +32,7 @@ public class AdminMemberController {
     @GetMapping("/{id}/edit")
     public String editMemberForm(@PathVariable Long id, Model model) {
 
-        MemberResponseDto member = memberService.findMemberById(id);
+        MemberResponseDto member = memberService.findMemberByIdElseThrow(id);
         model.addAttribute("member", member);
 
         return "admin/editMemberForm";
@@ -50,9 +51,9 @@ public class AdminMemberController {
             return "admin/members";
         }
 
-        MemberResponseDto dto = memberService.findMemberById(id);
+        Optional<MemberResponseDto> dto = memberService.findMemberById(id);
 
-        if (dto != null)
+        if (dto.isPresent())
             model.addAttribute("members", List.of(dto));
         else
             model.addAttribute("members", Collections.emptyList());
