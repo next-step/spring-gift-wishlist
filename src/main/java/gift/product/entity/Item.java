@@ -3,7 +3,9 @@ package gift.product.entity;
 
 public class Item {
 
-	private Long id;
+	private final Long id;
+
+	private final Long userId;
 
 	private String name;
 
@@ -11,17 +13,18 @@ public class Item {
 
 	private String imageUrl;
 
-	public Item(Long id, String name, Integer price, String imageUrl) {
+	public Item(Long id, Long userId, String name, Integer price, String imageUrl) {
 		validateKakaoKeyword(name);
 
 		this.id = id;
+		this.userId = userId;
 		this.name = name;
 		this.price = price;
 		this.imageUrl = imageUrl;
 	}
 
-	public Item(String name, Integer price, String imageUrl) {
-		this(null, name, price, imageUrl);
+	public Item(Long userId, String name, Integer price, String imageUrl) {
+		this(null, userId, name, price, imageUrl);
 	}
 
 	public static void validateKakaoKeyword(String name){
@@ -40,6 +43,11 @@ public class Item {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+
+	public Long getUserId() {
+		return userId;
 	}
 
 
