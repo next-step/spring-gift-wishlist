@@ -1,37 +1,37 @@
-package gift.domain.product.repository;
+package gift.product.adapter.persistence;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
-
+import gift.common.annotation.Adapter;
 import gift.common.pagination.Page;
-import gift.common.pagination.Pageable;
 import gift.common.pagination.PageImpl;
+import gift.common.pagination.Pageable;
+import gift.product.application.port.out.ProductPersistencePort;
+import gift.product.domain.model.Product;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
 
-import gift.domain.product.model.Product;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
-@Repository
-public class ProductRepositoryImpl implements ProductRepository {
+@Adapter
+public class ProductPersistenceAdapter implements ProductPersistencePort {
 
-    private final JdbcClient jdbcClient;
-
-    public ProductRepositoryImpl(JdbcClient jdbcClient) {
-        this.jdbcClient = jdbcClient;
-    }
-
-    private static final RowMapper<Product> PRODUCT_MAPPER = (rs, rowNum) -> new Product(
+    private static final RowMapper<Product> PRODUCT_MAPPER = (rs, rowNum) -> Product.of(
             rs.getLong("id"),
             rs.getString("name"),
             rs.getInt("price"),
             rs.getString("image_url")
     );
+    private final JdbcClient jdbcClient;
 
-    public Page<Product> find(Pageable pageable) {
+    public ProductPersistenceAdapter(JdbcClient jdbcClient) {
+        this.jdbcClient = jdbcClient;
+    }
+
+    public Page<Product> findPage(Pageable pageable) {
 
         int totalRow = jdbcClient.sql("""
                         SELECT COUNT(*)
@@ -54,7 +54,7 @@ public class ProductRepositoryImpl implements ProductRepository {
                 .list();
 
         return new PageImpl<>(content, pageable, totalRow);
-    }
+    }//TODO : 추후 id 기준 방식으로 구현해보는 것도 고려 가능
 
     public Optional<Product> findById(Long id) {
 
@@ -101,7 +101,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 
         }
 
-        return new Product(id,
+        return Product.of(id,
                 product.getName(),
                 product.getPrice(),
                 product.getImageUrl());
@@ -125,5 +125,4 @@ public class ProductRepositoryImpl implements ProductRepository {
                 .optional()
                 .isPresent();
     }
-
-}
+} 

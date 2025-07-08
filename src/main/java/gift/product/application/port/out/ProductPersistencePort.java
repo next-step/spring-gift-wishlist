@@ -1,14 +1,14 @@
-package gift.domain.product.repository;
+package gift.product.application.port.out;
 
 import gift.common.pagination.Page;
 import gift.common.pagination.Pageable;
-import gift.domain.product.model.Product;
+import gift.product.domain.model.Product;
 
 import java.util.Optional;
 
-public interface ProductRepository {
+public interface ProductPersistencePort {
 
-    Page<Product> find(Pageable pageable);
+    Page<Product> findPage(Pageable pageable);
 
     Optional<Product> findById(Long id);
 
@@ -17,5 +17,4 @@ public interface ProductRepository {
     void deleteById(Long id);
 
     boolean existsById(Long id);
-
-}
+} 

@@ -1,8 +1,8 @@
-package gift.domain.product.model;
+package gift.product.domain.model;
 
 public class Product {
 
-    private Long id;
+    private final Long id;
     private String name;
     private int price;
     private String imageUrl;
@@ -12,6 +12,10 @@ public class Product {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
+    }
+
+    public static Product of(Long id, String name, int price, String imageUrl) {
+        return new Product(id, name, price, imageUrl);
     }
 
     public Long getId() {
@@ -29,4 +33,4 @@ public class Product {
     public String getImageUrl() {
         return imageUrl;
     }
-}
+} 
