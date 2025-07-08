@@ -30,6 +30,7 @@ public class AuthService {
     this.passwordEncoder = passwordEncoder;
   }
 
+  @Transactional
   public TokenResponseDto registerMember(MemberRegisterRequestDto dto){
     String email = dto.email();
     if(memberAuthRepository.findByEmail(email).isPresent()){
@@ -46,6 +47,7 @@ public class AuthService {
     return generateToken(memberId,email);
   }
 
+  @Transactional
   public TokenResponseDto login(LoginRequestDto dto){
     String email = dto.email();
     MemberAuth memberAuth = memberAuthRepository.findByEmail(email)
@@ -60,7 +62,7 @@ public class AuthService {
 
     return generateToken(member.id(),email);
   }
-
+  @Transactional
   public TokenResponseDto refreshToken(RefreshTokenRequestDto dto){
     String refreshToken = dto.refreshToken();
     if(!jwtProvider.validateToken(refreshToken)){
@@ -76,11 +78,10 @@ public class AuthService {
       throw new IllegalArgumentException("리프레시 토큰이 일치하지 않습니다.");
     }
 
-    String accessToken = jwtProvider.createToken(memberId, email, List.of());
-    String newRefreshToken = jwtProvider.createRefreshToken(memberId);
-    return new TokenResponseDto(accessToken,newRefreshToken);
+    return generateToken(memberId,email);
   }
 
+  @Transactional
   public void logout(String email){
     MemberAuth memberAuth = memberAuthRepository.findByEmail(email)
         .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
