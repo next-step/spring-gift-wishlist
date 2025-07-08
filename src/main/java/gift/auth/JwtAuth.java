@@ -4,13 +4,18 @@ import gift.entity.Member;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 
 @Component
+@PropertySource("classpath:secure.properties")
 public class JwtAuth {
-    private String secretKey = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";
+
+    @Value("${jwt.secret}")
+    private String secretKey;
 
     public String createJwtToken(Member member){
         String accessToken = Jwts.builder()
