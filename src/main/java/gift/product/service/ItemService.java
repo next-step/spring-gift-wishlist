@@ -29,7 +29,14 @@ public class ItemService {
 
 
 	public Long createItem(ItemRequest req, Long userId) {
-		Item item = new Item(userId, req.name(), req.price(), req.imageUrl());
+		//Item item = new Item(userId, req.name(), req.price(), req.imageUrl());
+		Item item = Item.builder()
+			.userId(userId)
+			.name(req.name())
+			.price(req.price())
+			.imageUrl(req.imageUrl())
+			.build();
+
 		return itemRepository.save(item);
 	}
 
@@ -49,11 +56,18 @@ public class ItemService {
 
 
 	public GetItemResponse updateItem(Long itemId, Long userId, ItemRequest req) {
-		Item item = itemRepository.findById(itemId).orElseThrow(() -> new RuntimeException("존재하지 않는 아이템입니다."));
+		Item item = itemRepository.findById(itemId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 아이템입니다."));
 		isItemAuthor(item.getUserId(), userId);
-		Item updatedItem = new Item(itemId, userId, req.name(), req.price(), req.imageUrl());
-		itemRepository.update(updatedItem);
 
+		Item updatedItem = Item.builder()
+				.id(itemId)
+				.userId(userId)
+				.name(req.name())
+				.price(req.price())
+				.imageUrl(req.imageUrl())
+				.build();
+
+		itemRepository.update(updatedItem);
 		return getItem(itemId);
 	}
 
