@@ -11,19 +11,19 @@
   - [ ] OAuth가 뭔데? 리프레시 토큰은 또 뭔데?
 - - -
 1. 세션은 서버에서 세션 정보를 기억하고 있어야 한다. 즉, stateful하다
-  - 서버를 horizontal scaling(scale out)할 때, 세션 정보를 모든 서버가 공유해야함. session storage 필요
-  - -> 성능 이슈 뿐만 아니라, 구조가 복잡해짐(error-prone!)
+   - 서버를 horizontal scaling(scale out)할 때, 세션 정보를 모든 서버가 공유해야함. session storage 필요
+   - -> 성능 이슈 뿐만 아니라, 구조가 복잡해짐(error-prone!)
 2. JWT를 사용하면 stateless한 서버 아키텍쳐를 구성할 수 있다.
-  - 분산 서버 환경이나 MSA 구조에 어울린다고 함
+   - 분산 서버 환경이나 MSA 구조에 어울린다고 함
 3. 왜 JWT? 다른 토큰도 있는데?
-  - JSON 기반이라 웹 프론트엔드나 모바일 클라이언트와의 연동이 쉬움
-  - `Base64(Header).Base64(Payload).Base64(Signature)`
-  - stateless 구조의 이점은 다른 토큰들과 동일하지만, 이미 JWT가 광범위한 생태계를 구축해뒀을 뿐. 즉, 일종의 선점효과
+   - JSON 기반이라 웹 프론트엔드나 모바일 클라이언트와의 연동이 쉬움
+   - `Base64(Header).Base64(Payload).Base64(Signature)`
+   - stateless 구조의 이점은 다른 토큰들과 동일하지만, 이미 JWT가 광범위한 생태계를 구축해뒀을 뿐. 즉, 일종의 선점효과
 4. 주의사항
-  - **절대로** 페이로드에 민감한 정보를 담지 말아야 한다. 페이로드는 암호화가 아니라 그냥 Base64 인코딩된다
-  - 헤더의 알고리즘을 none으로 두지 말아야 한다!!
-  - 모놀리틱 서버라면 HS256같은 대칭키 알고리즘을 사용해도 되지만, MSA 구조라면 RS256같은 비대칭키 알고리즘을 사용해야 한다고 함
-  - 엑세스 토큰의 유효기간은 가급적 짧게 설정하고, 리프레시 토큰을 통해 엑세스 토큰을 재발급받도록 하는 구조가 좋다고 함. OAuth랑 같이 공부해보기
+   - **절대로** 페이로드에 민감한 정보를 담지 말아야 한다. 페이로드는 암호화가 아니라 그냥 Base64 인코딩된다
+   - 헤더의 알고리즘을 none으로 두지 말아야 한다!!
+   - 모놀리틱 서버라면 HS256같은 대칭키 알고리즘을 사용해도 되지만, MSA 구조라면 RS256같은 비대칭키 알고리즘을 사용해야 한다고 함
+   - 엑세스 토큰의 유효기간은 가급적 짧게 설정하고, 리프레시 토큰을 통해 엑세스 토큰을 재발급받도록 하는 구조가 좋다고 함. OAuth랑 같이 공부해보기
 - [ ] TODO: 토큰을 통해 Auto Increment인 ID를 유추할 수 없도록 UUID 적용해보기
 
 ## 테스트 코드 작성하기
@@ -34,11 +34,21 @@
   - [ ] 단위 테스트
 
 ## 커스텀 어노테이션으로 상품명 검증 수행하기
-- [ ] 어노테이션 인터페이스 사용법, 커스텀 어노테이션 만드는 방법 찾아보기
-- [ ] `@Valid` 어노테이션의 검증 프로세스 알아보기
-- [ ] 커스텀 어노테이션을 `@Valid`의 검증 프로세스에 적용하는 방법 알아보기
+- [x] 어노테이션 인터페이스 사용법, 커스텀 어노테이션 만드는 방법 찾아보기
+- [x] `@Valid` 어노테이션의 검증 프로세스 알아보기
+- [x] 커스텀 어노테이션을 `@Valid`의 검증 프로세스에 적용하는 방법 알아보기
 - [ ] 커스텀 어노테이션 활용시 파일명, 코드 구조의 Best Practice 알아보기
 - [ ] 적용
+- - -
+1. `public @interface "커스텀 어노테이션명"` 인터페이스를 작성
+    - 필드에 대한 검증을 수행할것이므로 `@Target(ElementType.FIELD)` 어노테이션 추가
+    - 검증은 런타임에 수행됨. 따라서 런타임까지 어노테이션이 유지되어야 하므로 `@Retention(RetentionPolicy.RUNTIME)` 어노테이션 추가
+    - 검증 로직을 수행할 validator 클래스를 지정해주기 위해 `@Constraint(validatedBy = {"validator 클래스명".class})` 어노테이션 추가 
+2. `public interface ConstraintValidator<A extends Annotation, T>` 인터페이스를 구현하는 validator 클래스를 작성
+   - `default void initialize(A constraintAnnotation)`는 어노테이션의 속성값 처리를 위한 메서드로, 기본값은 no-op이며 구현하지 않아도 됨
+   - `boolean isValid(T value, ConstraintValidatorContext context)` 메서드에 원하는 검증 로직을 작성. true면 통과, false면 검증 실패
+3. 검증을 원하는 필드 위에 커스텀 어노테이션을 붙여주면 됨. 커스텀 어노테이션을 통한 검증도 실패시 `MethodArgumentNotValidException`을 던져줌!!
+4. 파일명이나 패키지 구조를 어떻게 가져가는게 Best Practice인지는 아직 모르겠다... 일단 `jakarta.validation` 처럼 `validation` 패키지에 모아둠
 
 ## RFC 문서 읽어보기
 - [ ] HTTP 프로토콜 관련 문서들 원문으로 읽어보기
