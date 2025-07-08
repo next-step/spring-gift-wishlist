@@ -51,7 +51,7 @@ public class AuthService {
     MemberAuth memberAuth = memberAuthRepository.findByEmail(email)
         .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
-    if(passwordEncoder.matches(dto.password(), memberAuth.password())){
+    if(!passwordEncoder.matches(dto.password(), memberAuth.password())){
       throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
     }
 

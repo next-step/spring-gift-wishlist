@@ -8,11 +8,9 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -98,7 +96,6 @@ public class JdbcMemberAuthRepository implements MemberAuthRepository {
   @Override
   public void updateRefreshToken(Long memberId, String newRefreshToken) {
     Objects.requireNonNull(memberId, "ID는 null일 수 없습니다");
-    Objects.requireNonNull(newRefreshToken, "리프레시 토큰값은 null일 수 없습니다");
 
     String sql =
         "UPDATE member_auth SET refresh_token = :refreshToken "
