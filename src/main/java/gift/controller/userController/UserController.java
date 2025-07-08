@@ -55,7 +55,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않은 토큰입니다.");
         }
 
-        if (!isAdmin(token)) {
+        if (!checkRole(token)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("권한이 없습니다.");
         }
 
@@ -67,15 +67,28 @@ public class UserController {
         return authHeader.replace("Bearer ", "").trim();
     }
 
-    private boolean isAdmin(String token) {
+    private boolean checkRole(String token) {
         Claims claims = jwtUtil.getClaims(token);
         String role = claims.get("role", String.class);
         return "ADMIN".equals(role);
     }
 
     @DeleteMapping()
-    public ResponseEntity<Void> deleteUser(@RequestParam Long id, Model model) {
-        userService.deleteUserById(id);
+    public ResponseEntity<?> deleteUser(@RequestHeader("Authorization") String authHeader, @RequestParam Long id, Model model) {
+
+        String token = extractToken(authHeader);
+
+        if (!jwtUtil.validate(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않은 토큰입니다.");
+        }
+
+        boolean isAdmin = checkRole(token);
+
+        if (!isAdmin) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("권한이 없습니다.");
+        }
+
+        userService.deleteUserById(id,isAdmin);
 
         return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }

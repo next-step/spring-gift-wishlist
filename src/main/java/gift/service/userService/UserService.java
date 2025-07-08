@@ -17,7 +17,7 @@ public interface UserService {
 
     UserResponseDto updateUser(Long id, @Valid UserUpdateDto dto);
 
-    void deleteUserById(Long id);
+    void deleteUserById(Long id,boolean isAdmin);
 
     String loginUser(@Valid UserLoginDto dto);
 }

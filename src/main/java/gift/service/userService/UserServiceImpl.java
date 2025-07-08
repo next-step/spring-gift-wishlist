@@ -114,7 +114,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUserById(Long id) {
+    public void deleteUserById(Long id,boolean isAdmin) {
+        if (!isAdmin) {
+            System.out.println("권한이 없습니다.");
+            throw new UserAuthorizationException();
+        }
+
         User findUser = userRepository.findUserById(id);
         userRepository.deleteUser(findUser);
     }
