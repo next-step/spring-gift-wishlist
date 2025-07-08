@@ -22,11 +22,11 @@ public class WishedProductDaoImpl implements WishedProductDao {
         @Override
         public WishedProduct mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new WishedProduct(
-                    rs.getLong("w.product_id"),
-                    rs.getString("p.name"),
-                    rs.getLong("p.price"),
-                    rs.getString("p.image_url"),
-                    rs.getInt("w.quantity")
+                    rs.getLong("product_id"),
+                    rs.getString("name"),
+                    rs.getLong("price"),
+                    rs.getString("image_url"),
+                    rs.getInt("quantity")
             );
         }
     }
@@ -114,11 +114,11 @@ public class WishedProductDaoImpl implements WishedProductDao {
 
     @Override
     public Integer decreaseProductQuantity(Long userId, Long productId, Integer quantity) {
-        String sql = "UPDATE wished_products SET quantity = GREATEST(quantity - ?, 0) WHERE user_id = ? AND product_id = ?";
+        String sql = "UPDATE wished_products SET quantity = quantity - ? WHERE user_id = ? AND product_id = ?";
         return jdbcClient.sql(sql)
+                .param(quantity)
                 .param(userId)
                 .param(productId)
-                .param(quantity)
                 .update();
     }
 
