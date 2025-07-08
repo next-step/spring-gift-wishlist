@@ -3,6 +3,7 @@ package gift.jwt;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.lang.NonNull;
@@ -29,16 +30,39 @@ public class JwtAuthInterceptor implements HandlerInterceptor {
 
         String authHeader = request.getHeader("Authorization");
 
+        if (authHeader == null) {
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if ("jwt".equals(cookie.getName())) {
+                        authHeader = BEARER_PREFIX + cookie.getValue();
+                        break;
+                    }
+                }
+            }
+        }
+
         if (authHeader == null || !authHeader.startsWith(BEARER_PREFIX)) {
-            handleUnauthorized(response, "인증 헤더가 없거나 형식이 올바르지 않습니다.");
+            handleUnauthorized(response, "인증 토큰이 없습니다.");
             return false;
         }
 
         try {
             String token = authHeader.substring(BEARER_PREFIX.length());
             Claims claims = jwtProvider.parseClaims(token);
+
+            if (request.getRequestURI().startsWith("/admin")) {
+                String role = claims.get("role", String.class);
+                if (!"ADMIN".equals(role)) {
+                    System.out.println(role);
+                    handleUnauthorized(response, "관리자 권한이 필요합니다.");
+                    return false;
+                }
+            }
+
             request.setAttribute("memberId", claims.getSubject());
             return true;
+
         } catch (ExpiredJwtException e) {
             handleUnauthorized(response, "만료된 토큰입니다.");
             return false;
