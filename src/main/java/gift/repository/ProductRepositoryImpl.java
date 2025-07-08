@@ -1,12 +1,12 @@
 package gift.repository;
 
-import gift.dto.ProductRequestDto;
 import gift.entity.Product;
 import gift.exception.FailedGenerateKeyException;
 import gift.exception.ProductNotFoundException;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -51,20 +51,25 @@ public class ProductRepositoryImpl implements ProductRepository {
     public Product findProductById(Long id) {
         final String sql = "SELECT * FROM products WHERE id = ?";
 
-        Product product = jdbcTemplate.queryForObject(sql, productRowMapper(), id);
-        if (product == null) {
+        try {
+            return jdbcTemplate.queryForObject(sql, productRowMapper(), id);
+        } catch (EmptyResultDataAccessException e) {
             throw new ProductNotFoundException(id);
         }
-        return product;
     }
 
     @Override
-    public void updateProduct(Long id, Product product) {
+    public void updateProduct(Product product) {
         final String sql = "UPDATE products SET name = ?, price = ?, image_url = ? WHERE id = ?";
 
-        int updated = jdbcTemplate.update(sql, product.getName(), product.getPrice(), product.getImageUrl(), id);
+        int updated = jdbcTemplate.update(
+            sql,
+            product.getName(),
+            product.getPrice(),
+            product.getImageUrl(),
+            product.getId());
         if (updated == 0) {
-            throw new ProductNotFoundException(id);
+            throw new ProductNotFoundException(product.getId());
         }
     }
 

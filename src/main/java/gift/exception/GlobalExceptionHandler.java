@@ -1,6 +1,8 @@
 package gift.exception;
 
 import java.util.List;
+
+import io.jsonwebtoken.JwtException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,24 @@ public class GlobalExceptionHandler {
             .body(ex.getMessage());
     }
 
+    @ExceptionHandler(MemberEmailNotExistsException.class)
+    public ResponseEntity<String> handleMemberEmailNotExistsException(MemberEmailNotExistsException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(MemberNotFoundException.class)
+    public ResponseEntity<String> handleMemberNotFoundException(MemberNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(MemberEmailAlreadyExistsException.class)
+    public ResponseEntity<String> handleMemberEmailAlreadyExists(MemberEmailAlreadyExistsException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(ex.getMessage());
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<List<String>> handleValidationError(MethodArgumentNotValidException ex) {
         List<String> errors = ex.getBindingResult()
@@ -27,9 +47,9 @@ public class GlobalExceptionHandler {
             .body(errors);
     }
 
-    @ExceptionHandler(KakaoNameNotAllowedException.class)
-    public ResponseEntity<String> kakaoNamedException(KakaoNameNotAllowedException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<String> handleJwtException(JwtException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
             .body(ex.getMessage());
     }
 
@@ -37,11 +57,5 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleFailedGenerateKey(FailedGenerateKeyException ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body(ex.getMessage());
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleGeneralError(Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body("서버 에러가 발생했습니다.");
     }
 }
