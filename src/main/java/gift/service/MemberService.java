@@ -4,12 +4,9 @@ import gift.dto.AuthResponseDto;
 import gift.dto.MemberRequestDto;
 import gift.entity.Member;
 import gift.repository.MemberRepository;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-import org.apache.coyote.BadRequestException;
+import gift.util.JwtTokenProvider;
 import org.apache.tomcat.websocket.AuthenticationException;
 import org.mindrot.jbcrypt.BCrypt;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,11 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-    private final String secretKey;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public MemberService(MemberRepository memberRepository, @Value("${jwt.secretKey}") String secretKey) {
+    public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
-        this.secretKey = secretKey;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     public AuthResponseDto creatMember(MemberRequestDto memberRequestDto) {
@@ -41,7 +38,7 @@ public class MemberService {
                 .longValue();
 
         return new AuthResponseDto(
-                makeJwtToken(new Member(
+                jwtTokenProvider.makeJwtToken(new Member(
                         id,
                         memberRequestDto.email(),
                         passwordHash)));
@@ -58,14 +55,6 @@ public class MemberService {
         }
 
         return new AuthResponseDto(
-                makeJwtToken(member));
-    }
-
-    private String makeJwtToken(Member member) {
-        return Jwts.builder()
-                .subject(Long.toString(member.id()))
-                .claim("email", member.email())
-                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
-                .compact();
+                jwtTokenProvider.makeJwtToken(member));
     }
 }
