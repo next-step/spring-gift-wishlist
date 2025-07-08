@@ -12,7 +12,9 @@ public interface MemberRepository {
 
     Optional<Member> findById(Long id);
 
-    void delete(Long id);
+    Optional<Member> findByEmail(String email);
+
+    void delete(String email);
 
     List<Member> findAll();
 
