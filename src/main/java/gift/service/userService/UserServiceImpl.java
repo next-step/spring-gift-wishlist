@@ -50,10 +50,9 @@ public class UserServiceImpl implements UserService {
         if (findUser == null) {
             throw new UserNotFoundException(targetEmail);
         }
-        if (!findUser.password().equals(targetPassword)) {
+        if (!findUser.checkPassword(dto.password())) {
             throw new UserPasswordException();
         }
-
         return jwtUtil.generateToken(findUser);
 
     }

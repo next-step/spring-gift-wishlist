@@ -52,7 +52,7 @@ public class UserController {
         String token = extractToken(authHeader);
 
         if (!jwtUtil.validate(token)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않은 토큰입니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않은 토큰입니다."); // 지금보니까, 코드 중복이랑 컨트롤러 치고 책임이 너무 몰려있는거 같은데, token 검증하는 클래스로 따로 빼야하나?
         }
 
         if (!checkRole(token)) {
@@ -88,7 +88,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("권한이 없습니다.");
         }
 
-        userService.deleteUserById(id,isAdmin);
+        userService.deleteUserById(id, isAdmin);
 
         return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
