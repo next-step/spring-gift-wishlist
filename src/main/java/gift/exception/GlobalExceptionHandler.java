@@ -42,8 +42,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 
+    // 4. 올바르지 않은 이메일, 비밀번호 등 권한이 없어서 재인증해도 안 되는 상태인 경우
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<String> handleForbiddenException(ForbiddenException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+    }
 
-    // 4. 위 세 예외를 제외하고 다른 예외가 터지면 여기서 잡는다.
+
+    // 5. 위 네 예외를 제외하고 다른 예외가 터지면 여기서 잡는다.
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleGeneralException(Exception e) {
         Map<String, String> error = new HashMap<>();

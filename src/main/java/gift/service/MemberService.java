@@ -1,6 +1,7 @@
 package gift.service;
 
 import gift.domain.Member;
+import gift.exception.ForbiddenException;
 import gift.repository.MemberRepository;
 import gift.auth.JwtTokenProvider;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -43,11 +44,11 @@ public class MemberService {
     public String login(String email, String password) {
         // 1. 이메일로 회원 찾기
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("이메일 또는 비밀번호가 올바르지 않습니다."));
+                .orElseThrow(() -> new ForbiddenException("이메일 또는 비밀번호가 올바르지 않습니다."));
 
         // 2. 비밀번호 검증
         if (!passwordEncoder.matches(password, member.getPassword())) {
-            throw new IllegalArgumentException("이메일 또는 비밀번호가 올바르지 않습니다.");
+            throw new ForbiddenException("이메일 또는 비밀번호가 올바르지 않습니다.");
         }
 
         // 3. JWT 토큰 생성 및 반환
