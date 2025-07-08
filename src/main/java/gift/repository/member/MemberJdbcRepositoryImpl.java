@@ -101,7 +101,7 @@ public class MemberJdbcRepositoryImpl implements MemberRepository {
   public int deleteMember(Long id) {
     String sql = "delete from members where id=?";
     int deletedMember = jdbcTemplate.update(sql, id);
-    if (deletedMember != 1) {
+    if (deletedMember < 1) {
       throw new IllegalStateException("no delete members");
     }
     return deletedMember;
