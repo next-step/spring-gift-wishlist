@@ -89,3 +89,69 @@
 ### 수정 사항
 
 - [x] JdbcTemplate 기반 Repository 코드를 JdbcClient로 수정
+
+
+
+---
+
+## Step 2 - 회원 로그인
+
+### 기능 목록
+
+- 회원가입 (이메일/비밀번호)
+- 로그인 (Basic 인증 → JWT 발급)
+- Spring Security + JWT 필터 적용  
+
+### API 명세
+
+- 회원가입
+  - `POST /api/members/register`
+    - Request
+    ```json
+    {
+      "email": "admin@email.com",
+      "password": "password"
+    }
+    ```
+    - Response (201 Created)
+    ```json
+    {
+      "token": "<발급된 JWT 토큰>"
+    }
+    ```
+    - 에러
+      - 400 Bad Request : 입력 검증 실패
+      - 409 Conflict : 이메일 중복
+
+- 로그인
+  - `POST /api/members/login`
+    - Headers
+    ```text
+    Authorization: Basic base64({email}:{password})
+    ```
+    - Response (200 OK)
+    ```json
+    {
+      "token": "<발급된 JWT 토큰>"
+    }
+    ```
+    - 에러
+      - 401 Unauthorized : 토큰이 없거나 형식이 잘못된 경우
+      - 403 Forbidden : 로그인 시 아이디·비밀번호 불일치 / 비밀번호 찾기·변경 요청
+
+### 테스트
+
+- MockMvc를 이용한 단위·통합 테스트
+- 회원가입 / 로그인 성공·실패 시나리오 커버
+
+### 완료 체크리스트
+
+- [x] 회원가입 API 구현 (POST /api/members/register)
+- [x] 로그인 API 구현 (POST /api/members/login)
+- [x] 회원가입/로그인 시나리오 테스트 작성
+- [x] README에 API 명세 추가
+
+### 선택 구현
+
+- [ ] Spring Security 및 JWT 필터 설정
+- [ ] 보호된 API 구현 및 테스트

@@ -15,13 +15,12 @@ public class ApprovedProductRepository {
 
     // 승인 여부 확인
     public boolean isApproved(String name) {
-        String sql = "SELECT COUNT(*) FROM approved_products WHERE name = ?";
-        Integer count = jdbcClient
+        String sql = "SELECT EXISTS (SELECT 1 FROM approved_products WHERE name = ?)";
+        return jdbcClient
                 .sql(sql)
                 .param(name)
-                .query(Integer.class)
+                .query(Boolean.class)
                 .single();
-        return count > 0;
     }
 
     // 승인 상품 등록

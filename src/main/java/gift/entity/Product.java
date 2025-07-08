@@ -28,7 +28,6 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
-    // 등록 시 사용하는 생성자
     public Product(String name, int price, String imageUrl) {
         this(null, name, price, imageUrl);  // 위 생성자 재사용
     }

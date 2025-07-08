@@ -13,6 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.dao.DuplicateKeyException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -77,6 +78,38 @@ public class GlobalExceptionHandler {
         e.getBindingResult().getFieldErrors()
             .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    // 중복 이메일 예외를 처리할 핸들러
+    @ExceptionHandler(DuplicateKeyException.class)
+    public ResponseEntity<Map<String, String>> handleDuplicateEmail(DuplicateKeyException e) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", e.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
+
+    // 이메일, 비밀번호 불일치 예외를 처리할 핸들러
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<Map<String, String>> handleInvalidCredentials(InvalidCredentialsException e) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", e.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+    }
+
+    // 헤더 누락 예외를 처리할 핸들러
+    @ExceptionHandler(MissingAuthorizationHeaderException.class)
+    public ResponseEntity<Map<String, String>> handleMissingHeader(MissingAuthorizationHeaderException e) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", e.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+    }
+
+    // 헤더 형식 오류 예외를 처리할 핸들러
+    @ExceptionHandler(InvalidAuthorizationHeaderException.class)
+    public ResponseEntity<Map<String, String>> handleMissingHeader(InvalidAuthorizationHeaderException e) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", e.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
 
 }
