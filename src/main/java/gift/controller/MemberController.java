@@ -30,8 +30,7 @@ public class MemberController {
 
     @PostMapping("/register")
     public ResponseEntity<TokenResponseDto> registerMember(@Valid @RequestBody MemberRequestDto memberRequestDto) {
-        memberService.saveMember(memberRequestDto);
-        String token = jwtUtil.generateToken(memberRequestDto);
+        String token = memberService.saveMember(memberRequestDto);
 
         return ResponseEntity.ok(new TokenResponseDto(token));
     }
@@ -40,8 +39,7 @@ public class MemberController {
     public ResponseEntity<?> loginMember(@Valid @RequestBody MemberRequestDto memberRequestDto) {
         String token;
         try{
-            memberService.existMember(memberRequestDto);
-            token = jwtUtil.generateToken(memberRequestDto);
+            token = memberService.existMember(memberRequestDto);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }

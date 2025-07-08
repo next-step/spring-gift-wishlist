@@ -43,3 +43,5 @@ step 2. 피드백
 3. 인증실패시 에러코드 : unauthorized 응답수정
 4. login 메소드명 existMember로 변경
 5. 토큰생성시 currentTimeMillis 값을 하나로 통합 하고 시간변경
+6. ResponseEntity<?>로 받던걸 ResponseEntity<Dto>로 받게 변경
+7. MemberService내에서 JWT토큰이 반환되도록 변경

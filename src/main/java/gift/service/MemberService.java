@@ -7,7 +7,7 @@ import java.lang.reflect.Member;
 
 public interface MemberService {
 
-    void saveMember(MemberRequestDto memberRequestDto);
+    String saveMember(MemberRequestDto memberRequestDto);
 
-    void existMember(MemberRequestDto memberRequestDto);
+    String existMember(MemberRequestDto memberRequestDto);
 }
