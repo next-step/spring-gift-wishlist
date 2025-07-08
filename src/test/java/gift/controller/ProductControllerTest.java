@@ -9,9 +9,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gift.dto.ProductRequest;
+import gift.controller.product.ProductController;
+import gift.dto.product.ProductRequest;
 import gift.entity.product.Product;
-import gift.service.ProductService;
+import gift.service.product.ProductService;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;

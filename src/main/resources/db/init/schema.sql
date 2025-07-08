@@ -11,7 +11,7 @@ CREATE TABLE members
 (
     id            BIGINT AUTO_INCREMENT PRIMARY KEY,
     email         VARCHAR(255) NOT NULL UNIQUE,
-    password_hash VARCHAR(60)  NOT NULL,
+    password_hash VARCHAR(64)  NOT NULL,
     role          VARCHAR(50)  NOT NULL,
     created_at    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

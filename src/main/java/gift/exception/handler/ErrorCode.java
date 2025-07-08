@@ -8,6 +8,7 @@ public enum ErrorCode {
     FORBIDDEN,
     NOT_FOUND,
     BAD_REQUEST,
+    UNAUTHORIZED,
     DATABASE_ERROR,
     INTERNAL_ERROR
 }

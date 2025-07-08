@@ -1,9 +1,9 @@
-package gift.controller;
+package gift.controller.product;
 
-import gift.dto.ProductForm;
+import gift.dto.product.ProductForm;
 import gift.entity.product.Product;
 import gift.exception.ProductNotFoundExection;
-import gift.service.ProductService;
+import gift.service.product.ProductService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

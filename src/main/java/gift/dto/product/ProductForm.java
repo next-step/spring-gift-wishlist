@@ -1,4 +1,4 @@
-package gift.dto;
+package gift.dto.product;
 
 import gift.entity.product.Product;
 import gift.entity.product.value.ProductName;

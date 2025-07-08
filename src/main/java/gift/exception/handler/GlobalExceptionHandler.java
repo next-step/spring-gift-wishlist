@@ -1,5 +1,7 @@
 package gift.exception.handler;
 
+import gift.exception.InvalidAuthExeption;
+import gift.exception.InvalidBearerAuthExeption;
 import gift.exception.ProductHiddenException;
 import gift.exception.ProductNotFoundExection;
 import jakarta.servlet.http.HttpServletRequest;
@@ -103,6 +105,28 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleProductHiddenExeption(ProductHiddenException ex) {
         return new ErrorResponse(
                 ErrorCode.FORBIDDEN,
+                ex.getMessage(),
+                List.of(),
+                LocalDateTime.now()
+        );
+    }
+
+    @ExceptionHandler(InvalidAuthExeption.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorResponse handleInvalidAuthExeption(InvalidAuthExeption ex) {
+        return new ErrorResponse(
+                ErrorCode.UNAUTHORIZED,
+                ex.getMessage(),
+                List.of(),
+                LocalDateTime.now()
+        );
+    }
+
+    @ExceptionHandler(InvalidBearerAuthExeption.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorResponse handleInvalidAuthExeption(InvalidBearerAuthExeption ex) {
+        return new ErrorResponse(
+                ErrorCode.UNAUTHORIZED,
                 ex.getMessage(),
                 List.of(),
                 LocalDateTime.now()

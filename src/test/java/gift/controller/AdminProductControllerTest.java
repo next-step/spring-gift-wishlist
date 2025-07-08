@@ -8,8 +8,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import gift.controller.product.AdminProductController;
 import gift.entity.product.Product;
-import gift.service.ProductService;
+import gift.service.product.ProductService;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;

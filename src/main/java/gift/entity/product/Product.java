@@ -1,6 +1,6 @@
 package gift.entity.product;
 
-import gift.dto.ProductResponse;
+import gift.dto.product.ProductResponse;
 import gift.entity.product.value.ProductId;
 import gift.entity.product.value.ProductImageUrl;
 import gift.entity.product.value.ProductName;

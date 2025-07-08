@@ -1,5 +1,5 @@
 // src/main/java/gift/service/ProductService.java
-package gift.service;
+package gift.service.product;
 
 import gift.entity.product.Product;
 import java.util.List;

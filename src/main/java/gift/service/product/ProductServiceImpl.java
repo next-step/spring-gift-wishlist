@@ -1,4 +1,4 @@
-package gift.service;
+package gift.service.product;
 
 import static gift.entity.product.value.ProductName.FORBIDDEN_PATTERNS;
 

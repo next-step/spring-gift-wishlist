@@ -1,10 +1,10 @@
-package gift.controller;
+package gift.controller.product;
 
-import gift.dto.ProductRequest;
-import gift.dto.ProductResponse;
+import gift.dto.product.ProductRequest;
+import gift.dto.product.ProductResponse;
 import gift.entity.product.Product;
 import gift.exception.ProductNotFoundExection;
-import gift.service.ProductService;
+import gift.service.product.ProductService;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
-
 
     private final ProductService productService;
 
