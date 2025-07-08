@@ -29,7 +29,7 @@ public class MemberController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerMember(@Valid @RequestBody MemberRequestDto memberRequestDto) {
+    public ResponseEntity<TokenResponseDto> registerMember(@Valid @RequestBody MemberRequestDto memberRequestDto) {
         memberService.saveMember(memberRequestDto);
         String token = jwtUtil.generateToken(memberRequestDto);
 
