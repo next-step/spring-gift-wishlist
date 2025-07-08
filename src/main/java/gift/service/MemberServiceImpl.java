@@ -50,14 +50,12 @@ public class MemberServiceImpl implements MemberService {
         String email = dto.getEmail();
         String password = dto.getPassword();
 
-        Optional<Member> memberOptional = memberRepository.findMemberByEmail(email);
-        Member member;
-
-        if (memberOptional.isEmpty()) {
-            throw new InvalidCredentialsException("아이디 또는 비밀번호가 잘못 되었습니다. 아이디와 비밀번호를 정확히 입력해 주세요.");
-        }
-
-        member = memberOptional.get();
+        Member member = memberRepository.findMemberByEmail(email)
+                .orElseThrow(() ->
+                        new InvalidCredentialsException(
+                                "아이디 또는 비밀번호가 잘못 되었습니다. 아이디와 비밀번호를 정확히 입력해 주세요."
+                        )
+                );
 
         if (!password.equals(member.getPassword())) {
             throw new InvalidCredentialsException("아이디 또는 비밀번호가 잘못 되었습니다. 아이디와 비밀번호를 정확히 입력해 주세요.");
