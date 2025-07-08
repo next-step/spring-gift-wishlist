@@ -30,10 +30,24 @@ public class MemberControllerTest {
     @Autowired
     private MemberRepository memberRepository;
 
+    private RegisterRequest mockRegisterRequest;
+    private LogInRequest mockLogInRequest;
+
     @BeforeEach
     void setUp() {
         baseURL = "http://localhost:" + port + "/api/members";
         restClient = RestClient.builder().baseUrl(baseURL).build();
+
+        mockRegisterRequest = new RegisterRequest(
+            "test@gmail.com",
+            "test1234",
+            UserRole.NORMAL
+        );
+
+        mockLogInRequest = new LogInRequest(
+            "test@gmail.com",
+            "test1234"
+        );
     }
 
     @AfterEach
@@ -44,16 +58,11 @@ public class MemberControllerTest {
     @Test
     void 회원가입_테스트() {
         // given
-        RegisterRequest registerReqDTO = new RegisterRequest(
-            "asdf@gmail.com",
-            "test1234",
-            UserRole.NORMAL
-        );
 
         // when
         var response = restClient.post()
             .uri("/register")
-            .body(registerReqDTO)
+            .body(mockRegisterRequest)
             .retrieve()
             .toEntity(JwtResponse.class);
 
@@ -66,18 +75,17 @@ public class MemberControllerTest {
 
     @Test
     void 로그인_테스트() {
-        회원가입_테스트();
-
         // given
-        LogInRequest logInReqDTO = new LogInRequest(
-            "asdf@gmail.com",
-            "test1234"
-        );
+        restClient.post()
+            .uri("/register")
+            .body(mockRegisterRequest)
+            .retrieve()
+            .toEntity(JwtResponse.class);
 
         // when
         var response = restClient.post()
             .uri("/login")
-            .body(logInReqDTO)
+            .body(mockLogInRequest)
             .retrieve()
             .toEntity(JwtResponse.class);
 
@@ -91,10 +99,18 @@ public class MemberControllerTest {
     @Test
     void 회원정보_조회_테스트() {
         // given
-        String email = "asdf@gmail.com";
-        String password = "test1234";
-        회원가입(email, password, UserRole.NORMAL);
-        String accessToken = 토큰_발급(email, password);
+        restClient.post()
+            .uri("/register")
+            .body(mockRegisterRequest)
+            .retrieve()
+            .toEntity(JwtResponse.class);
+        var accessToken = restClient.post()
+            .uri("/login")
+            .body(mockLogInRequest)
+            .retrieve()
+            .toEntity(JwtResponse.class)
+            .getBody()
+            .accessToken();
 
         // when
         var response = restClient.get()
@@ -107,33 +123,7 @@ public class MemberControllerTest {
         MemberResponse memberResponse = response.getBody();
         assertThat(memberResponse).isNotNull();
         assertThat(memberResponse.id()).isEqualTo(1L);
-        assertThat(memberResponse.email()).isEqualTo(email);
+        assertThat(memberResponse.email()).isEqualTo("test@gmail.com");
+        assertThat(memberResponse.userRole()).isEqualTo(UserRole.NORMAL);
     }
-
-    private void 회원가입(String email, String password, UserRole role) {
-        RegisterRequest registerReqDTO = new RegisterRequest(
-            email,
-            password,
-            role
-        );
-
-        restClient.post()
-            .uri("/register")
-            .body(registerReqDTO)
-            .retrieve()
-            .toEntity(JwtResponse.class);
-    }
-
-    private String 토큰_발급(String email, String password) {
-        LogInRequest logInReqDTO = new LogInRequest(email, password);
-
-        var response = restClient.post()
-            .uri("/login")
-            .body(logInReqDTO)
-            .retrieve()
-            .toEntity(JwtResponse.class);
-
-        return response.getBody().accessToken();
-    }
-
 }
