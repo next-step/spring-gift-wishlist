@@ -29,11 +29,8 @@ public class ProductController {
 
     private final ProductService productService;
 
-    private final TokenService tokenService;
-
-    public ProductController(ProductService productService, TokenService tokenService) {
+    public ProductController(ProductService productService) {
         this.productService = productService;
-        this.tokenService = tokenService;
     }
 
     @PostMapping
