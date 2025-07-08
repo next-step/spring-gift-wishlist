@@ -1,12 +1,10 @@
 package gift.controller;
 
-import gift.common.exception.InvalidUserException;
-import gift.domain.Role;
+import gift.common.interceptor.AdminOnly;
 import gift.dto.product.CreateProductRequest;
 import gift.dto.product.ProductManageResponse;
 import gift.dto.product.UpdateProductRequest;
 import gift.service.ProductManageService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +15,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/admin/products")
+@AdminOnly
 public class ProductManageController {
 
     private final ProductManageService productManageService;
@@ -40,8 +39,7 @@ public class ProductManageController {
 
 
     @PostMapping
-    public String createProduct(@ModelAttribute(name = "request") @Valid CreateProductRequest request, BindingResult bindingResult, HttpServletRequest httpServletRequest) {
-        validRoleAndName(httpServletRequest, request.name());
+    public String createProduct(@ModelAttribute(name = "request") @Valid CreateProductRequest request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "/admin/productCreate";
         }
@@ -58,8 +56,7 @@ public class ProductManageController {
     }
 
     @PostMapping("/{id}")
-    public String updateProduct(@PathVariable Long id, @ModelAttribute(name = "request") @Valid UpdateProductRequest request, BindingResult bindingResult, HttpServletRequest httpServletRequest) {
-        validRoleAndName(httpServletRequest, request.name());
+    public String updateProduct(@PathVariable Long id, @ModelAttribute(name = "request") @Valid UpdateProductRequest request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "/admin/productUpdate";
         }
@@ -73,11 +70,4 @@ public class ProductManageController {
         return "redirect:/admin/products";
     }
 
-    private void validRoleAndName(HttpServletRequest request, String name) {
-        if (request.getAttribute("role") != Role.ADMIN) {
-            if (name.contains("카카오")) {
-                throw new InvalidUserException("이름에 [카카오]가 들어간 상품은 관리자만 생성 가능합니다.");
-            }
-        }
-    }
 }
