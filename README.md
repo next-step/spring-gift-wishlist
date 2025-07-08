@@ -50,11 +50,14 @@
   - 토큰 응답
 
 ### 폴더 구조 변경 사항
-- controller / dto / repository 기능 별로 폴더 분리
+- controller / model / dto / repository 기능 별로 폴더 분리
 ---
 - controller
   - ProductController
   - UserController
+- model
+  - user
+  - product
 - dto
   - product
     - ProductRequestDto
