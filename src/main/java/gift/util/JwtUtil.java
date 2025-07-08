@@ -10,16 +10,19 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
-@Component
-public class JwtUtil {
 
-    private final String secret = "D23kjibddFAWerws2AFlL8WXmohJMCvigQggaEypa5E=";
+public final class JwtUtil {
 
-    private final Key key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    private static final String secret = "D23kjibddFAWerws2AFlL8WXmohJMCvigQggaEypa5E=";
+
+    private static final Key key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
 
     private static final long EXPIRATION_TIME = 1000 * 60 * 60;
 
-    public String createToken(Member member) {
+    private JwtUtil() {
+    }
+
+    public static String createToken(Member member) {
         return Jwts.builder()
                 .setSubject(member.getId().toString())
                 .claim("email", member.getEmail())
@@ -30,7 +33,7 @@ public class JwtUtil {
                 .compact();
     }
 
-    public boolean isValidToken(String token) {
+    public static boolean isValidToken(String token) {
         try {
             Jwts.parser()
                     .verifyWith((SecretKey) key)
@@ -42,7 +45,7 @@ public class JwtUtil {
         }
     }
 
-    public Long getMemberIdFromToken(String token) {
+    public static Long getMemberIdFromToken(String token) {
         Claims claims = Jwts.parser()
                 .verifyWith((SecretKey) key)
                 .build()
