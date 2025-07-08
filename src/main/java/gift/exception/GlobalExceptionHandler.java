@@ -62,4 +62,40 @@ public class GlobalExceptionHandler {
 
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problem);
   }
+
+  @ExceptionHandler(EmailAlreadyRegisteredException.class)
+  public ResponseEntity<ProblemDetail> handleEmailAlreadyRegistered(EmailAlreadyRegisteredException ex,
+      HttpServletRequest request) {
+    ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.CONFLICT);
+    problem.setType(URI.create("localhost:8080/api/members/email-already-registered"));
+    problem.setTitle("Email already registered");
+    problem.setDetail(ex.getMessage());
+    problem.setInstance(URI.create(request.getRequestURI()));
+
+    return ResponseEntity.status(HttpStatus.CONFLICT).body(problem);
+  }
+
+  @ExceptionHandler(MemberNotFoundException.class)
+  public ResponseEntity<ProblemDetail> handleMemberNotFound(MemberNotFoundException ex,
+      HttpServletRequest request) {
+    ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
+    problem.setType(URI.create("localhost:8080/api/members/member-not-found"));
+    problem.setTitle("Member Not Found");
+    problem.setDetail(ex.getMessage());
+    problem.setInstance(URI.create(request.getRequestURI()));
+
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problem);
+  }
+
+  @ExceptionHandler(PasswordMismatchException.class)
+  public ResponseEntity<ProblemDetail> handlePasswordMismatch(PasswordMismatchException ex,
+      HttpServletRequest request) {
+    ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.UNAUTHORIZED);
+    problem.setType(URI.create("localhost:8080/api/members/password-mismatch"));
+    problem.setTitle("Password Mismatch");
+    problem.setDetail(ex.getMessage());
+    problem.setInstance(URI.create(request.getRequestURI()));
+
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(problem);
+  }
 }
