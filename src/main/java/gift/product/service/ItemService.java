@@ -53,7 +53,7 @@ public class ItemService {
 		if(item.getUserId() != userId)
 			throw new IllegalArgumentException("작성자만 수정,삭제 가능합니다.");
 
-		Item updatedItem = new Item(itemId, req.name(), req.price(), req.imageUrl());
+		Item updatedItem = new Item(itemId, userId, req.name(), req.price(), req.imageUrl());
 		itemRepository.update(updatedItem);
 
 		return getItem(itemId);
