@@ -18,6 +18,7 @@ public class MemberController {
         this.service = service;
     }
 
+
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody Member member) {
         service.register(member);

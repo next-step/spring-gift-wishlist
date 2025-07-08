@@ -82,6 +82,8 @@ delete : 상품 삭제
 1. Controller
 2. Service
 3. Repository
+4. domain : member, product class
+5. exception : error 구성
 
 ## 2단계 구현
 
@@ -93,3 +95,7 @@ delete : 상품 삭제
 4. Authorization 헤더가 유효하지 않거나 토큰이 유효하지 않은 경우 401 Unauthorized를 반환한다.
 5. 잘못된 로그인, 비밀번호 찾기, 비밀번호 변경 요청은 403 Forbidden을 반환한다.
 6. Base64로 인코딩된 사용자 ID, 비밀번호 쌍을 인증 정보(credentials) 값으로 사용한다.
+
+### 추가된 파일
+- Member, MemberController, MemberRepository, MemberService : 기본 회원가입 및 로그인 구현
+- MemberPageController, login.html, register.html : 로그인 화면 구성
