@@ -1,4 +1,4 @@
-package gift;
+package domain;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;

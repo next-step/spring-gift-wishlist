@@ -1,5 +1,7 @@
-package gift;
+package controller;
 
+import domain.Product;
+import repository.ProductStorage;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

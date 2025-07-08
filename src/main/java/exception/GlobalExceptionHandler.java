@@ -1,4 +1,4 @@
-package gift;
+package exception;
 
 
 import org.springframework.ui.Model;

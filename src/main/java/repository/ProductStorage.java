@@ -1,5 +1,6 @@
-package gift;
+package repository;
 
+import domain.Product;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
