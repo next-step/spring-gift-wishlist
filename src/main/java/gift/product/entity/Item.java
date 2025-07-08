@@ -28,8 +28,9 @@ public class Item {
 	}
 
 	private static void validateKakaoKeyword(String name){
-		if (name.contains("카카오"))
+		if (name.contains("카카오")){
 			throw new IllegalArgumentException("'카카오'는 담당자와 협의 후 사용가능한 키워드입니다.");
+		}
 	}
 
 	public Long getId() {

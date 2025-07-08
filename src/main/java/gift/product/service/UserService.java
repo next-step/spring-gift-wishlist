@@ -31,11 +31,13 @@ public class UserService {
 	}
 
 	public Long register(CreateUserRequest req) {
-		if(userRepository.findByEmail(req.email()).isPresent())
+		if(userRepository.findByEmail(req.email()).isPresent()){
 			throw new DataIntegrityViolationException("이미 사용중인 이메일입니다.");
+		}
 
-		if(userRepository.findByNickname(req.nickName()).isPresent())
+		if(userRepository.findByNickname(req.nickName()).isPresent()){
 			throw new DataIntegrityViolationException("이미 사용중인 닉네임입니다.");
+		}
 
 		String encodedPassword = passwordEncoder.encode(req.password());
 
@@ -48,8 +50,9 @@ public class UserService {
 	public LoginResponse login(LoginRequest req) {
 		Optional<User> user = userRepository.findByEmail(req.email());
 
-		if(user.isEmpty() || !passwordEncoder.matches(req.password(), user.get().getPassword()))
+		if(user.isEmpty() || !passwordEncoder.matches(req.password(), user.get().getPassword())){
 			throw new IllegalArgumentException("이메일 또는 비밀번호가 잘못됐습니다.");
+		}
 
 		User foundUser = user.get();
 		String token = jwtUtil.generateToken(foundUser);
