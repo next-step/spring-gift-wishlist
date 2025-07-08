@@ -1,7 +1,5 @@
 package gift.exception;
 
-import gift.controller.MemberViewController;
-import gift.controller.ProductViewController;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,7 +9,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.HashMap;
 import java.util.Map;
 
-@ControllerAdvice(assignableTypes = {ProductViewController.class, MemberViewController.class})
+@ControllerAdvice(basePackages = "gift.controller.view")
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class ViewExceptionHandler {
 
