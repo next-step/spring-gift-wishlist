@@ -64,3 +64,9 @@
     3. 사용자 ID 추출
     4. Request에 회원 ID 저장
     5. 다음 필터(or 컨트롤러)로 진행
+
+    테스트 코드 작성
+    JwtAuthenticationFilterTest
+    -> 유효한 토큰 처리 테스트
+    -> 예외 상황 테스트 (헤더 없음, Bearer 없음, 무효한 토큰)
+    -> 필터 제외 경로 테스트
