@@ -18,8 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/admin/members")
 public class AdminMemberController {
 
-  private final MemberService service;
   private static final String MEMBERS_LIST_PAGE_PATH = "/admin/members";
+
+  private final MemberService service;
 
   public AdminMemberController(MemberService service) {
     this.service = service;

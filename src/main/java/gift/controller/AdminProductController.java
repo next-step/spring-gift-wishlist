@@ -21,8 +21,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/admin/products")
 public class AdminProductController {
 
-  private final ProductService service;
   private static final String PRODUCTS_LIST_PAGE_PATH = "/admin/products";
+
+  private final ProductService service;
 
   public AdminProductController(ProductService service) {
     this.service = service;
