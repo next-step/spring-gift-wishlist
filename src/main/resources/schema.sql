@@ -4,3 +4,10 @@ CREATE TABLE products (
     price INT NOT NULL,
     image_url VARCHAR(500)
 );
+
+CREATE TABLE members (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    email VARCHAR(30) NOT NULL UNIQUE,
+    password VARCHAR(60) NOT NULL,
+    role VARCHAR(20) NOT NULL DEFAULT 'USER'
+);
