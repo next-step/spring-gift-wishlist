@@ -6,3 +6,8 @@ CREATE TABLE product (
     category_id BIGINT
 );
 
+CREATE TABLE member (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL
+);
