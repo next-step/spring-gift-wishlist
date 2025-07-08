@@ -7,7 +7,6 @@ import gift.dto.MemberResponseDto;
 import gift.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,7 +49,7 @@ public class MemberController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @DeleteMapping("/myInfo")
+    @DeleteMapping("/withdraw")
     public ResponseEntity<MemberResponseDto> deleteMyInfo(HttpServletRequest request){
         Long id = Long.parseLong(request.getAttribute("memberId").toString());
         memberService.delete(id);
