@@ -1,18 +1,15 @@
 package gift.service;
 
-import gift.dto.request.LoginRequestDto;
-import gift.dto.request.UserCreateRequestDto;
+import gift.dto.request.UserAuthRequestDto;
 import gift.dto.response.TokenResponseDto;
 import gift.entity.User;
 
 public interface UserServiceInterface {
 
-    TokenResponseDto registerAndReturnToken(UserCreateRequestDto userCreateRequestDto);
+    TokenResponseDto registerAndReturnToken(UserAuthRequestDto userAuthRequestDto);
 
-    TokenResponseDto login(LoginRequestDto loginRequestDto);
+    TokenResponseDto login(UserAuthRequestDto loginRequest);
 
-    String createToken(User user);
-
-    User userWithEncodedPassword(UserCreateRequestDto userCreateRequestDto);
+    User userWithEncodedPassword(UserAuthRequestDto userAuthRequestDto);
 
 }
