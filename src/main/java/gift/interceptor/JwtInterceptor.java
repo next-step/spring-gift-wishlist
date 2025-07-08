@@ -47,5 +47,4 @@ public class JwtInterceptor implements HandlerInterceptor {
     request.setAttribute("member", member.get());
     return true;
   }
-
 }

@@ -6,17 +6,22 @@ import gift.model.Member;
 import gift.jwt.JwtUtil;
 import gift.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.Map;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@Controller
 @RequestMapping("/api/members")
 public class MemberController {
   private final MemberService memberService;
@@ -26,27 +31,40 @@ public class MemberController {
     this.memberService = memberService;
     this.jwtUtil = jwtUtil;
   }
+  @GetMapping("/register")
+  public String showRegisterForm(){
+    return "user/register";
+  }
 
   @PostMapping("/register")
-  public ResponseEntity<MemberResponseDto> register(@RequestBody MemberRequestDto req) {
-    memberService.register(req.getEmail(), req.getPassword());
-    MemberResponseDto response = new MemberResponseDto();
-    response.setEmail(req.getEmail());
-    return ResponseEntity.status(HttpStatus.CREATED).body(response);
+  public String register(@ModelAttribute MemberRequestDto req, Model model) {
+    try{
+      memberService.register(req.getEmail(), req.getPassword());
+      return "redirect:/api/members/login";
+    }catch (IllegalArgumentException e){
+      model.addAttribute("error", e.getMessage());
+      return "user/register";
+    }
+  }
+
+  @GetMapping("/login")
+  public String showLoginForm(){
+    return "user/login";
   }
 
   @PostMapping("/login")
-  public ResponseEntity<Map<String, String>> login(@RequestBody MemberRequestDto req) {
-    String token = memberService.login(req.getEmail(), req.getPassword());
-    return ResponseEntity.ok(Map.of("token", token));
-  }
-
-  @GetMapping("/me")
-  public ResponseEntity<MemberResponseDto> getMyInfo(HttpServletRequest request) {
-    Member member = (Member) request.getAttribute("member");
-    if(member == null) {
-      return ResponseEntity.status(401).build();
+  public ResponseEntity<Void> login(@ModelAttribute MemberRequestDto req, Model model, HttpServletResponse response) {
+    try{
+      String token = memberService.login(req.getEmail(), req.getPassword());
+      return ResponseEntity
+          .ok()
+          .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+          .build();
+    }catch (SecurityException e){
+      return ResponseEntity
+          .status(HttpStatus.FORBIDDEN)
+          .header("X-Error-Message", e.getMessage())
+          .build();
     }
-    return ResponseEntity.ok(MemberResponseDto.from(member));
   }
 }
