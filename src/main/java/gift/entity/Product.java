@@ -3,11 +3,9 @@ package gift.entity;
 public class Product {
 
     private Long id;
-    private String name;
-    private Integer price;
-    private String imageUrl;
-
-    public Product(){}
+    private final String name;
+    private final Integer price;
+    private final String imageUrl;
 
     public Product(String name, Integer price, String imageUrl) {
         this.name = name;

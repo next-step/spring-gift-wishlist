@@ -2,11 +2,9 @@ package gift.entity;
 
 public class Member {
     private Long id;
-    private String name;
-    private String email;
-    private String password;
-
-    public Member() {}
+    private final String name;
+    private final String email;
+    private final String password;
 
     public Member(Long id, String name, String email, String password) {
         this.id = id;
