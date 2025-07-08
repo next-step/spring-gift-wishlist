@@ -56,6 +56,18 @@ public class JdbcMemberAuthRepository implements MemberAuthRepository {
   }
 
   @Override
+  public Optional<MemberAuth> findByEmail(String email) {
+    Objects.requireNonNull(email, "Email은 null이 될 수 없습니다.");
+    String sql = "SELECT * FROM member_auth WHERE email = :email";
+    try {
+      Map<String, Object> params = Map.of("email",email);
+      return Optional.of(jdbcTemplate.queryForObject(sql, params, memberAuthRowMapper()));
+    } catch (EmptyResultDataAccessException e) {
+      return Optional.empty();
+    }
+  }
+
+  @Override
   public void update(Long memberId, MemberAuth updatedMemberAuth) {
     Objects.requireNonNull(memberId, "ID는 null일 수 없습니다");
     Objects.requireNonNull(updatedMemberAuth, "updatedMember는 null일 수 없습니다");
@@ -70,6 +82,26 @@ public class JdbcMemberAuthRepository implements MemberAuthRepository {
         .addValue("email",updatedMemberAuth.email())
         .addValue("password",updatedMemberAuth.password())
         .addValue("refreshToken",updatedMemberAuth.refreshToken());
+
+    int affected = jdbcTemplate.update(sql, params);
+    if (affected == 0) {
+      throw new IllegalArgumentException("memberAuth 수정 실패");
+    }
+  }
+
+  @Override
+  public void updateRefreshToken(Long memberId, String newRefreshToken) {
+    Objects.requireNonNull(memberId, "ID는 null일 수 없습니다");
+    Objects.requireNonNull(newRefreshToken, "리프레시 토큰값은 null일 수 없습니다");
+
+    String sql =
+        "UPDATE member_auth SET refresh_token = :refreshToken "
+            +
+            "WHERE member_id = :memberId";
+
+    SqlParameterSource params = new MapSqlParameterSource()
+        .addValue("memberId", memberId)
+        .addValue("refreshToken",newRefreshToken);
 
     int affected = jdbcTemplate.update(sql, params);
     if (affected == 0) {
