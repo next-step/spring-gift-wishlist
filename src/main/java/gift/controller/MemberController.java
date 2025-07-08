@@ -22,22 +22,14 @@ public class MemberController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody MemberRequest request) {
-        try {
-            TokenResponse response = memberService.register(request);
-            return new ResponseEntity<>(response, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
-        }
+        TokenResponse response = memberService.register(request);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody MemberRequest request) {
-        try {
-            TokenResponse response = memberService.login(request);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
-        }
+        TokenResponse response = memberService.login(request);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }
