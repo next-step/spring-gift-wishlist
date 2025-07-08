@@ -10,7 +10,7 @@ import static org.mockito.Mockito.when;
 
 import gift.entity.product.Product;
 import gift.exception.ProductNotFoundExection;
-import gift.repository.ProductRepository;
+import gift.repository.product.ProductRepository;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;

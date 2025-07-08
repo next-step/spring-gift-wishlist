@@ -1,7 +1,7 @@
 package gift.e2e.fixture;
 
 import gift.entity.product.Product;
-import gift.repository.ProductRepository;
+import gift.repository.product.ProductRepository;
 
 public class ProductFixture {
 

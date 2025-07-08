@@ -6,6 +6,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import gift.entity.product.Product;
 import gift.exception.ProductNotFoundExection;
+import gift.repository.product.ProductRepository;
+import gift.repository.product.ProductRepositoryImpl;
+import gift.repository.product.ProductRowMapper;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +20,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 @JdbcTest
-@Import({JdbcProductRepository.class, ProductRowMapper.class})
+@Import({ProductRepositoryImpl.class, ProductRowMapper.class})
 class JdbcProductRepositoryTest {
 
     @Autowired

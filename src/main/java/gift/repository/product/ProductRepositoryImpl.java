@@ -1,4 +1,4 @@
-package gift.repository;
+package gift.repository.product;
 
 import gift.entity.product.Product;
 import gift.exception.ProductNotFoundExection;
@@ -14,14 +14,14 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class JdbcProductRepository implements ProductRepository {
+public class ProductRepositoryImpl implements ProductRepository {
 
     private static final String SELECT_BASE = "SELECT id, name, price, image_url, hidden FROM product";
     private final JdbcTemplate jdbc;
     private final SimpleJdbcInsert insert;
     private final RowMapper<Product> productRowMapper;
 
-    public JdbcProductRepository(JdbcTemplate jdbc, DataSource dataSource,
+    public ProductRepositoryImpl(JdbcTemplate jdbc, DataSource dataSource,
             ProductRowMapper productRowMapper) {
         this.jdbc = jdbc;
         this.insert = new SimpleJdbcInsert(dataSource)

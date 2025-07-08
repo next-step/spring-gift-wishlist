@@ -4,7 +4,7 @@ import static gift.entity.product.value.ProductName.FORBIDDEN_PATTERNS;
 
 import gift.entity.product.Product;
 import gift.exception.ProductNotFoundExection;
-import gift.repository.ProductRepository;
+import gift.repository.product.ProductRepository;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;

@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.dto.ProductRequest;
 import gift.e2e.fixture.ProductFixture;
 import gift.entity.product.Product;
-import gift.repository.ProductRepository;
+import gift.repository.product.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
