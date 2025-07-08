@@ -33,7 +33,6 @@ public class ProductRepository{
     }
 
     public Product save(Product product) {
-
         String sql = "INSERT INTO products (name, price, imageUrl) VALUES (?, ?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -47,11 +46,9 @@ public class ProductRepository{
         }, keyHolder);
 
         Number key = keyHolder.getKey();
-        if (key != null) {
-            product.setId(key.longValue());
-        }
+        if (key == null) throw new IllegalStateException("생성된 키를 가져올 수 없습니다.");
 
-        return product;
+        return new Product(key.longValue(), product.getName(), product.getPrice(), product.getImageUrl());
     }
 
     public Optional<Product> findById(Long productId) {
