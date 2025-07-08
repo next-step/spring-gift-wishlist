@@ -1,4 +1,6 @@
 package gift.domain;
 
-public enum ROLE {
+public enum Role {
+    USER,
+    ADMIN
 }

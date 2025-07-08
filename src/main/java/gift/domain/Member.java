@@ -4,18 +4,20 @@ public class Member {
     private Long id;
     private String email;
     private String password;
+    private Role role;
 
     public Member(){
     }
 
-    public Member(Long id, String email, String password){
+    public Member(Long id, String email, String password, gift.domain.Role role){
         this.id = id;
         this.email = email;
         this.password = password;
+        this.role = role;
     }
 
     public Member(String email, String password){
-        this(null, email, password);
+        this(null, email, password, Role.USER);
     }
 
     public Long getId() {
@@ -30,4 +32,7 @@ public class Member {
         return password;
     }
 
+    public Role getRole() {
+        return role;
+    }
 }

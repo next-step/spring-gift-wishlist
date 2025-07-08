@@ -1,7 +1,8 @@
 CREATE TABLE members (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     email VARCHAR(320) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL
+    password VARCHAR(255) NOT NULL,
+    role VARCHAR(50) DEFAULT 'USER'
 );
 
 CREATE TABLE products (

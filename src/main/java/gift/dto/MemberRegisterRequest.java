@@ -1,10 +1,10 @@
 package gift.dto;
 
-public class MemberResgisterRequest {
+public class MemberRegisterRequest {
     private String email;
     private String password;
 
-    public MemberResgisterRequest(){
+    public MemberRegisterRequest(){
     }
 
     public String getEmail() {
