@@ -15,19 +15,18 @@ public class UserRepository {
     this.jdbcClient = jdbcClient;
   }
 
-  public User saveUser(String email, String password) {
+  public User saveUser(String email, String encodedPassword) {
     String sql = "insert into users (email,password) values (?, ?)";
 
     jdbcClient.sql(sql)
         .param(email)
-        .param(password)
+        .param(encodedPassword)
         .update();
 
     String sqlForFind = "SELECT memberId, email, password, role FROM users"
-        + " WHERE email = ? AND password = ?";
+        + " WHERE email = ?";
     return jdbcClient.sql(sqlForFind)
         .param(email)
-        .param(password)
         .query((result, rowNum) -> {
           User user = new User(
               result.getLong("memberId"),

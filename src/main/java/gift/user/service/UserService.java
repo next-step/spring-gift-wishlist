@@ -1,5 +1,6 @@
 package gift.user.service;
 
+import gift.security.PasswordEncoder;
 import gift.user.JwtTokenProvider;
 import gift.user.dto.LoginRequestDto;
 import gift.user.dto.LoginResponseDto;
@@ -16,14 +17,17 @@ public class UserService {
 
   private final UserRepository userRepository;
   private final JwtTokenProvider jwtTokenProvider;
-
-  public UserService(UserRepository userRepository, JwtTokenProvider jwtTokenProvider) {
+  private final PasswordEncoder passwordEncoder;
+  public UserService(UserRepository userRepository, JwtTokenProvider jwtTokenProvider, PasswordEncoder passwordEncoder) {
     this.userRepository = userRepository;
     this.jwtTokenProvider = jwtTokenProvider;
+    this.passwordEncoder = passwordEncoder;
   }
 
   public RegisterResponseDto registerUser(RegisterRequestDto registerRequestDto) {
-    User user = userRepository.saveUser(registerRequestDto.email(), registerRequestDto.password());
+    String encryptedPassword = passwordEncoder.encrypt(registerRequestDto.email(), registerRequestDto.password());
+
+    User user = userRepository.saveUser(registerRequestDto.email(), encryptedPassword);
 
     String token = jwtTokenProvider.generateToken(user);
 
@@ -37,7 +41,7 @@ public class UserService {
       throw new UserNotFoundException();
     }
 
-    if (!user.isEqualPassword(loginRequestDto.password())) {
+    if (!user.isEqualPassword(loginRequestDto.password(),passwordEncoder)) {
       throw new InvalidLoginException();
     }
 

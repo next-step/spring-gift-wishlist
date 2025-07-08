@@ -7,12 +7,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import gift.exception.InvalidLoginException;
+import gift.security.PasswordEncoder;
+import gift.user.JwtTokenProvider;
 import gift.user.controller.UserController;
 import gift.user.dto.LoginRequestDto;
 import gift.user.dto.LoginResponseDto;
 import gift.user.dto.RegisterRequestDto;
 import gift.user.dto.RegisterResponseDto;
 import gift.user.service.UserService;
+import gift.validation.PasswordValidator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -30,6 +33,15 @@ public class UserControllerTest {
 
   @MockitoBean
   private UserService userService;
+
+  @MockitoBean
+  private PasswordEncoder passwordEncoder;
+
+  @MockitoBean
+  private JwtTokenProvider jwtTokenProvider;
+
+  @MockitoBean
+  private PasswordValidator passwordValidator;
 
   @Test
   void 회원가입_성공() throws Exception {

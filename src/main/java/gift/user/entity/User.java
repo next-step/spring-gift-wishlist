@@ -1,9 +1,12 @@
 package gift.user.entity;
 
+import gift.security.PasswordEncoder;
+
 public class User {
+
+  private String encodedPassword;
   private Long id;
   private String email;
-  private String password;
   private Role role;
 
   public Long getId() {
@@ -14,22 +17,22 @@ public class User {
     return email;
   }
 
-  public String getPassword() {
-    return password;
+  public String getEncodedPassword() {
+    return encodedPassword;
   }
 
   public Role getRole() {
     return role;
   }
 
-  public User(Long id, String email, String password, Role role) {
+  public User(Long id, String email, String encodedPassword, Role role) {
     this.id = id;
     this.email = email;
-    this.password = password;
+    this.encodedPassword = encodedPassword;
     this.role = role;
   }
 
-  public boolean isEqualPassword(String password) {
-    return this.password.equals(password);
+  public boolean isEqualPassword(String password, PasswordEncoder passwordEncoder) {
+    return passwordEncoder.isMatched(this.email, password, this.encodedPassword);
   }
 }
