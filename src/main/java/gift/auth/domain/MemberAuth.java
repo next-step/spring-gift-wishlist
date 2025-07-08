@@ -28,7 +28,6 @@ public record MemberAuth (
     return new MemberAuth(memberId,Email.createEmail(email), password, refreshToken);
   }
 
-
   private static void validateId(Long id){
     if(id==null || id<0) {
       throw new IllegalArgumentException("id값은 null이거나 음수일 수 없습니다.");

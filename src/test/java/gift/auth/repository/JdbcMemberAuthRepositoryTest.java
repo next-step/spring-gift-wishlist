@@ -38,7 +38,7 @@ class JdbcMemberAuthRepositoryTest {
   @Test
   @DisplayName("memberAuth를 저장하면 memberId가 반환된다")
   void save_success() {
-    MemberAuth memberAuth = MemberAuth.withId(null,"test@example.com", "password", "token");
+    MemberAuth memberAuth = MemberAuth.of("test@example.com", "password", "token");
     Long expectedId = 1L;
 
     when(jdbcInsert.executeAndReturnKey(any(SqlParameterSource.class)))
@@ -65,7 +65,7 @@ class JdbcMemberAuthRepositoryTest {
   @DisplayName("ID로 memberAuth 조회 성공")
   void findById_success() {
     Long memberId = 1L;
-    MemberAuth expected = MemberAuth.withId(null,"test@example.com", "password", "token");
+    MemberAuth expected = MemberAuth.withId(memberId,"test@example.com", "password", "token");
     String sql = "SELECT * FROM member_auth WHERE member_id = :memberId";
 
     when(jdbcTemplate.queryForObject(eq(sql), any(Map.class), any(RowMapper.class)))
@@ -125,7 +125,7 @@ class JdbcMemberAuthRepositoryTest {
   @DisplayName("업데이트 시 영향받은 행이 없으면 예외 발생")
   void update_fail() {
     Long memberId = 999L;
-    MemberAuth updated = MemberAuth.withId(memberId, "nope", "nope", "nope");
+    MemberAuth updated = MemberAuth.withId(memberId, "abcd@gmail.com", "nope", "nope");
     String sql = "UPDATE member_auth SET member_id = :memberId, email = :email, password = :password, refresh_token = :refreshToken WHERE member_id = :memberId";
 
     when(jdbcTemplate.update(eq(sql), any(SqlParameterSource.class))).thenReturn(0);
