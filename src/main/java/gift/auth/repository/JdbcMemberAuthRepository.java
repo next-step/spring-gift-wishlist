@@ -19,28 +19,34 @@ import org.springframework.stereotype.Repository;
 public class JdbcMemberAuthRepository implements MemberAuthRepository {
 
   private final NamedParameterJdbcTemplate jdbcTemplate;
-  private final SimpleJdbcInsert jdbcInsert;
 
   @Autowired
   public JdbcMemberAuthRepository(DataSource dataSource) {
     this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-    this.jdbcInsert = new SimpleJdbcInsert(dataSource)
-        .withTableName("member_auth")
-        .usingGeneratedKeyColumns("member_id");
   }
 
-  public JdbcMemberAuthRepository(NamedParameterJdbcTemplate jdbcTemplate,
-      SimpleJdbcInsert jdbcInsert) {
+  public JdbcMemberAuthRepository(NamedParameterJdbcTemplate jdbcTemplate) {
     this.jdbcTemplate = jdbcTemplate;
-    this.jdbcInsert = jdbcInsert;
   }
 
   @Override
   public Long save(MemberAuth memberAuth) {
     Objects.requireNonNull(memberAuth,"memberAuth는 null일 수 없습니다.");
-    SqlParameterSource params = new BeanPropertySqlParameterSource(memberAuth);
-    Number key = jdbcInsert.executeAndReturnKey(params);
-    return key.longValue();
+
+    String sql = "INSERT INTO member_auth (member_id, email, password, refresh_token) " +
+        "VALUES (:memberId, :email, :password, :refreshToken)";
+
+    SqlParameterSource params = new MapSqlParameterSource()
+        .addValue("memberId", memberAuth.memberId())
+        .addValue("email", memberAuth.email().getEmailText())
+        .addValue("password", memberAuth.password())
+        .addValue("refreshToken", memberAuth.refreshToken());
+
+    int affected = jdbcTemplate.update(sql, params);
+    if (affected == 0) {
+      throw new IllegalStateException("memberAuth 저장 실패");
+    }
+    return memberAuth.memberId();
   }
 
   @Override

@@ -10,7 +10,6 @@ public record MemberAuth (
 ){
   public MemberAuth{
     validatePassword(password);
-    validateToken(refreshToken);
   }
 
   public static MemberAuth of(String email, String password){
@@ -36,7 +35,5 @@ public record MemberAuth (
   private static void validatePassword(String password){
     Assert.hasText(password,"비밀번호는 null이거나 빈 값일 수 없습니다.");
   }
-  private static void validateToken(String token){
-    Assert.hasText(token,"token은 null이거나 빈 값일 수 없습니다.");
-  }
+
 }
