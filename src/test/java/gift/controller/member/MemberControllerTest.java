@@ -1,4 +1,4 @@
-package gift.controller;
+package gift.controller.member;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -7,6 +7,7 @@ import gift.dto.api.member.MemberRequestDto;
 import gift.dto.api.member.MemberResponseDto;
 import gift.dto.api.product.AddProductRequestDto;
 import gift.dto.api.product.ProductResponseDto;
+import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -49,7 +50,7 @@ class MemberControllerTest {
         
         assertThat(responseEntity.getStatusCode().value()).isEqualTo(201); // 상태코드 201 확인
         assertThat(responseEntity.getBody()).isNotNull();
-        assertThat(responseEntity.getBody().token()).isNotBlank(); // 예시: 토큰이 존재함을 검증
+        AssertionsForClassTypes.assertThat(responseEntity.getBody().token()).isNotBlank(); // 예시: 토큰이 존재함을 검증
     }
     
     @Test
@@ -68,7 +69,7 @@ class MemberControllerTest {
         
         assertThat(responseEntity.getStatusCode().value()).isEqualTo(200); // 상태코드 201 확인
         assertThat(responseEntity.getBody()).isNotNull();
-        assertThat(responseEntity.getBody().token()).isNotBlank(); // 예시: 토큰이 존재함을 검증
+        AssertionsForClassTypes.assertThat(responseEntity.getBody().token()).isNotBlank(); // 예시: 토큰이 존재함을 검증
     }
     
     @Test
@@ -86,7 +87,7 @@ class MemberControllerTest {
             });
         
         assertThat(responseEntity.getStatusCode().value()).isEqualTo(409);
-        assertThat(responseEntity.getBody()).isNotNull();
+        AssertionsForClassTypes.assertThat(responseEntity.getBody()).isNotNull();
     }
     
     @Test
@@ -104,7 +105,7 @@ class MemberControllerTest {
             });
         
         assertThat(responseEntity.getStatusCode().value()).isEqualTo(401);
-        assertThat(responseEntity.getBody()).isNotNull();
-        assertThat(responseEntity.getBody()).isNotBlank();
+        AssertionsForClassTypes.assertThat(responseEntity.getBody()).isNotNull();
+        AssertionsForClassTypes.assertThat(responseEntity.getBody()).isNotBlank();
     }
 }

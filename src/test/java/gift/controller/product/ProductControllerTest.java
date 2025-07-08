@@ -1,4 +1,4 @@
-package gift.controller;
+package gift.controller.product;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -9,6 +9,7 @@ import gift.dto.api.product.ProductResponseDto;
 import gift.entity.Member;
 import gift.entity.Role;
 import java.io.IOException;
+import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -132,7 +133,7 @@ class ProductControllerTest {
             });
         
         assertThat(response.getStatusCode().value()).isEqualTo(400); // HTTP 400 확인
-        assertThat(response.getBody()).isEqualTo("MD와의 협의 후 사용 가능한 이름입니다.");
+        AssertionsForClassTypes.assertThat(response.getBody()).isEqualTo("MD와의 협의 후 사용 가능한 이름입니다.");
     }
     
     @Test
@@ -254,7 +255,7 @@ class ProductControllerTest {
             });
         
         assertThat(response.getStatusCode().value()).isEqualTo(400); // HTTP 400 확인
-        assertThat(response.getBody()).isEqualTo("MD와의 협의 후 사용 가능한 이름입니다.");
+        AssertionsForClassTypes.assertThat(response.getBody()).isEqualTo("MD와의 협의 후 사용 가능한 이름입니다.");
     }
     
     @Test
@@ -274,7 +275,7 @@ class ProductControllerTest {
             });
         
         assertThat(response.getStatusCode().value()).isEqualTo(400); // HTTP 400 확인
-        assertThat(response.getBody()).isEqualTo("MD와의 협의 후 사용 가능한 이름입니다.");
+        AssertionsForClassTypes.assertThat(response.getBody()).isEqualTo("MD와의 협의 후 사용 가능한 이름입니다.");
     }
     
     @Test
