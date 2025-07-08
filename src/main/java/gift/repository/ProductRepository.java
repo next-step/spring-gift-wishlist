@@ -16,34 +16,31 @@ import java.util.Optional;
 public class ProductRepository {
 
     private final JdbcClient client;
+    private static final RowMapper<Product> ROW_MAPPER = (rs, rowNum) -> {
+        Long id = rs.getLong("id");
+        String name = rs.getString("name");
+        Long price = (long) rs.getInt("price");
+        String imageUrl = rs.getString("image_url");
+        String stateName = rs.getString("state");
+        return Product.of(id, name, price, imageUrl, ProductState.fromStateName(stateName));
+    };
 
     public ProductRepository(JdbcClient client) {
         this.client = client;
-    }
-
-    private static RowMapper<Product> getRowMapper() {
-        return (rs, rowNum) -> {
-            Long id = rs.getLong("id");
-            String name = rs.getString("name");
-            Long price = (long) rs.getInt("price");
-            String imageUrl = rs.getString("image_url");
-            String stateName = rs.getString("state");
-            return Product.of(id, name, price, imageUrl, ProductState.fromStateName(stateName));
-        };
     }
 
     public Optional<Product> findById(Long id) {
         String sql = "select * from product where id=:id;";
         return client.sql(sql)
                 .param("id", id)
-                .query(getRowMapper())
+                .query(ROW_MAPPER)
                 .optional();
     }
 
     public List<Product> findAll() {
         String sql = "select * from product;";
         return client.sql(sql)
-                .query(getRowMapper())
+                .query(ROW_MAPPER)
                 .list();
     }
 

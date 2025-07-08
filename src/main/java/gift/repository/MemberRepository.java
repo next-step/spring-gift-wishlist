@@ -16,19 +16,16 @@ import java.util.Optional;
 public class MemberRepository {
 
     private final JdbcClient client;
+    private static final RowMapper<Member> ROW_MAPPER = (rs, rowNum) -> {
+        Long id = rs.getLong("id");
+        String email = rs.getString("email");
+        String password = rs.getString("password");
+        String roleName = rs.getString("role");
+        return Member.of(id, email, password, MemberRole.fromRoleName(roleName));
+    };
 
     public MemberRepository(JdbcClient client) {
         this.client = client;
-    }
-
-    private static RowMapper<Member> getRowMapper() {
-        return (rs, rowNum) -> {
-            Long id = rs.getLong("id");
-            String email = rs.getString("email");
-            String password = rs.getString("password");
-            String roleName = rs.getString("role");
-            return Member.of(id, email, password, MemberRole.fromRoleName(roleName));
-        };
     }
 
     public Optional<Member> save(Member member) {
@@ -51,7 +48,7 @@ public class MemberRepository {
         String sql = "select * from member where id = :id;";
         return client.sql(sql)
                 .param("id", id)
-                .query(getRowMapper())
+                .query(ROW_MAPPER)
                 .optional();
     }
 
@@ -59,14 +56,14 @@ public class MemberRepository {
         String sql = "select * from member where email = :email;";
         return client.sql(sql)
                 .param("email", email)
-                .query(getRowMapper())
+                .query(ROW_MAPPER)
                 .optional();
     }
 
     public List<Member> findAll() {
         String sql = "select * from member;";
         return client.sql(sql)
-                .query(getRowMapper())
+                .query(ROW_MAPPER)
                 .list();
     }
 
