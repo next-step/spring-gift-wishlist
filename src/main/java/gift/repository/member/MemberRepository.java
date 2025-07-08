@@ -51,9 +51,9 @@ public class MemberRepository {
         return keyHolder.getKey().longValue();
     }
 
-    public void update(Long memberId, MemberRequest request){
+    public void update(Member member){
         String sql = "update members set email = ?, password = ? where id = ?";
-        jdbcTemplate.update(sql, request.email(), request.password(), memberId);
+        jdbcTemplate.update(sql, member.getEmail(), member.getPassword(), member.getId());
     }
 
     public void deleteById(Long memberId){
