@@ -48,7 +48,7 @@ class MemberServiceTest {
 
         when(memberRepository.findMemberByEmail(dto.email())).thenReturn(Optional.empty());
         when(memberRepository.saveMember(any(Member.class))).thenReturn(saved);
-        when(jwtProvider.generateToken(saved.getId(), saved.getEmail(), saved.getRole().name())).thenReturn("1234");
+        when(jwtProvider.generateToken(saved)).thenReturn("1234");
 
         // when
         String token = memberService.register(dto);
@@ -78,7 +78,7 @@ class MemberServiceTest {
         var dto = new MemberLoginRequestDto("psh@test.com", "1234");
         var member = createMember();
         when(memberRepository.findMemberByEmail(dto.email())).thenReturn(Optional.of(member));
-        when(jwtProvider.generateToken(member.getId(), member.getEmail(), member.getRole().name())).thenReturn("token");
+        when(jwtProvider.generateToken(member)).thenReturn("token");
 
         // when
         String token = memberService.login(dto);

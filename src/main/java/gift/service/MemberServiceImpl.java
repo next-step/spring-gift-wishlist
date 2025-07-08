@@ -41,7 +41,7 @@ public class MemberServiceImpl implements MemberService {
         );
         Member saved = memberRepository.saveMember(member);
 
-        return jwtProvider.generateToken(saved.getId(), saved.getEmail(), saved.getRole().name());
+        return jwtProvider.generateToken(saved);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class MemberServiceImpl implements MemberService {
             throw new InvalidPasswordException();
         }
 
-        return jwtProvider.generateToken(member.getId(), member.getEmail(), member.getRole().name());
+        return jwtProvider.generateToken(member);
     }
 
     @Override
