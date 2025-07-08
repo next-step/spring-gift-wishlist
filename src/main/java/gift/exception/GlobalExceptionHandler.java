@@ -1,5 +1,6 @@
 package gift.exception;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -22,10 +23,11 @@ public class GlobalExceptionHandler {
     return "admin/product-form";
   }
 
-//  @ExceptionHandler(SecurityException.class)
-//  @ResponseStatus(HttpStatus.FORBIDDEN)
-//  public ResponseEntity<String> handleSecurity(SecurityException ex) {
-//    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
-//  }
+  @ExceptionHandler(DuplicateEmailException.class)
+  public String handleDuplicateEmail(DuplicateEmailException ex, Model model, HttpServletResponse response) {
+    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+    model.addAttribute("error", ex.getMessage());
+    return "user/register";
+  }
 }
 

@@ -38,13 +38,8 @@ public class MemberController {
 
   @PostMapping("/register")
   public String register(@ModelAttribute MemberRequestDto req, Model model) {
-    try{
       memberService.register(req.getEmail(), req.getPassword());
       return "redirect:/api/members/login";
-    }catch (IllegalArgumentException e){
-      model.addAttribute("error", e.getMessage());
-      return "user/register";
-    }
   }
 
   @GetMapping("/login")

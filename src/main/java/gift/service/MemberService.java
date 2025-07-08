@@ -1,5 +1,6 @@
 package gift.service;
 
+import gift.exception.DuplicateEmailException;
 import gift.jwt.JwtUtil;
 import gift.model.Member;
 import gift.repository.MemberRepository;
@@ -21,9 +22,9 @@ public class MemberService {
 
   public String register(String email, String password){
     if(memberRepository.findByEmail(email).isPresent()){
-      throw new IllegalArgumentException("이미 존재하는 이메일 입니다");
+      throw new DuplicateEmailException("이미 존재하는 이메일입니다");
     }
-    String encoded =  passwordEncoder.encode(password);
+    String encoded = passwordEncoder.encode(password);
     memberRepository.save(new Member(null, email, encoded));
     return jwtUtil.createToken(email);
   }
