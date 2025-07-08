@@ -14,8 +14,8 @@
     <span th:text="${userEmail}">user@example.com</span>님, 환영합니다!
   </div>
 
+  <a href="/admin/products" class="button" th:if="${#strings.equals(userRole, 'ADMIN')}">관리자 페이지</a>
   <a href="/members/logout" class="button">로그아웃</a>
-  <a href="/admin/products" class="button">관리자 페이지</a>
 </div>
 
 <table>

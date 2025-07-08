@@ -52,9 +52,14 @@ public class MemberFrontController {
             HttpServletRequest request
     ) {
         String userEmail = (String) request.getAttribute("userEmail");
+        String userRole = (String) request.getAttribute("userRole");
 
         if (userEmail != null) {
             model.addAttribute("userEmail", userEmail);
+        }
+        
+        if (userRole != null) {
+            model.addAttribute("userRole", userRole);
         }
 
         model.addAttribute("products", productService.findAllProducts(pageable, categoryId));
