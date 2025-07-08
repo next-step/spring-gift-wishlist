@@ -43,7 +43,7 @@ public class ProductController {
         if (optionalMember.isEmpty()) {
             throw new CustomException(ErrorCode.NotLogin);
         }
-        if (requestDto.name().contains("카카오") && !optionalMember.get().getRole().equals("admin")) {
+        if (requestDto.name().contains("카카오") && !optionalMember.get().isAdmin()) {
             throw new CustomException(ErrorCode.NamingForbidden);
         }
         return new ResponseEntity<>(productService.createProduct(requestDto), HttpStatus.CREATED);
@@ -68,7 +68,7 @@ public class ProductController {
         if (optionalMember.isEmpty()) {
             throw new CustomException(ErrorCode.NotLogin);
         }
-        if (requestDto.name().contains("카카오") && !optionalMember.get().getRole().equals("admin")) {
+        if (requestDto.name().contains("카카오") && !optionalMember.get().isAdmin()) {
             throw new CustomException(ErrorCode.NamingForbidden);
         }
 

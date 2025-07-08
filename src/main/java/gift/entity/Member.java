@@ -1,5 +1,7 @@
 package gift.entity;
 
+import java.util.Objects;
+
 public class Member {
 
     private Long id;
@@ -28,5 +30,9 @@ public class Member {
 
     public String getRole() {
         return role;
+    }
+
+    public Boolean isAdmin(){
+        return this.role.equals("admin");
     }
 }

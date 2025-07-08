@@ -105,7 +105,7 @@ public class AdminProductController {
         if (optionalMember.isEmpty()){
             return "redirect:/admin/boards/login";
         }
-        if (requestDto.name().contains("카카오") && !optionalMember.get().getRole().equals("admin")) {
+        if (requestDto.name().contains("카카오") && !optionalMember.get().isAdmin()) {
             throw new CustomException(ErrorCode.NamingForbidden);
         }
         productService.createProduct(requestDto);
@@ -120,7 +120,7 @@ public class AdminProductController {
         if (optionalMember.isEmpty()){
             return "redirect:/admin/boards/login";
         }
-        if (requestDto.name().contains("카카오") && !optionalMember.get().getRole().equals("admin")) {
+        if (requestDto.name().contains("카카오") && !optionalMember.get().isAdmin()) {
             throw new CustomException(ErrorCode.NamingForbidden);
         }
         productService.updateProductById(id, requestDto);
