@@ -123,8 +123,12 @@ public class ProductControllerTest {
         RestClient.ResponseSpec response = client.get()
                 .uri(url)
                 .retrieve();
-        ResponseEntity<ProductResponseDto> entity = response.toEntity(ProductResponseDto.class);
 
-        assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        HttpClientErrorException.BadRequest exception = assertThrows(HttpClientErrorException.BadRequest.class,
+                () -> {
+                    response.toEntity(String.class);
+                });
+
+        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 }
