@@ -15,6 +15,7 @@ import java.io.IOException;
 public class JwtAuthInterceptor implements HandlerInterceptor {
 
     private final JwtProvider jwtProvider;
+    private static final String BEARER_PREFIX = "Bearer ";
 
     public JwtAuthInterceptor(JwtProvider jwtProvider) {
         this.jwtProvider = jwtProvider;
@@ -28,13 +29,13 @@ public class JwtAuthInterceptor implements HandlerInterceptor {
 
         String authHeader = request.getHeader("Authorization");
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (authHeader == null || !authHeader.startsWith(BEARER_PREFIX)) {
             handleUnauthorized(response, "인증 헤더가 없거나 형식이 올바르지 않습니다.");
             return false;
         }
 
         try {
-            String token = authHeader.substring(7);
+            String token = authHeader.substring(BEARER_PREFIX.length());
             Claims claims = jwtProvider.parseClaims(token);
             request.setAttribute("memberId", claims.getSubject());
             return true;
