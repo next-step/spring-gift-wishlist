@@ -13,7 +13,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 public class LoginInterceptor implements HandlerInterceptor {
 
     private final JwtUtil jwtUtil;
-    private final String BEARER_PREFIX="Bearer ";
+    private final String BEARER_PREFIX = "Bearer ";
 
     public LoginInterceptor(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
