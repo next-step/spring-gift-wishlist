@@ -39,7 +39,7 @@ public class MemberServiceImpl implements MemberService {
 
     Member memberByEmail = memberOptional.orElseThrow(
         () -> new NotRegisterException("가입되지 않은 이메일"));
-    if (memberByEmail.getPassword().equals(member.getPassword()) == false) {
+    if (memberByEmail.isPasswordMatch(member.getPassword()) == false) {
       throw new InvalidPasswordException("비밀번호가 일치하지 않습니다");
     }
     Token token = jwtProvider.generateToken(memberByEmail);

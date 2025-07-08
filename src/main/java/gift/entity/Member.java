@@ -51,4 +51,12 @@ public class Member {
   public void setPassword(String password) {
     this.password = password;
   }
+
+  public boolean isPasswordMatch(String password) {
+    if (this.password.equals(password)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
