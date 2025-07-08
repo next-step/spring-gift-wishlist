@@ -4,10 +4,6 @@ import gift.common.exception.InvalidAccessTokenException;
 import gift.common.exception.InvalidTokenException;
 import gift.domain.Role;
 import gift.service.JwtTokenProvider;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureException;
-import io.jsonwebtoken.UnsupportedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,19 +25,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        final String authHeader = request.getHeader(AUTH_HEADER);
-
         try {
+            String authHeader = request.getHeader(AUTH_HEADER);
+            if (authHeader != null) {
+                authHeader = authHeader.trim();
+            }
+
             if (authHeader == null || !authHeader.startsWith(HEADER_PREFIX)) {
                 throw new InvalidAccessTokenException("Authorization 헤더가 유효하지 않습니다.");
             }
-            final String jwt = authHeader.substring(7);
+            final String jwt = authHeader.substring(HEADER_PREFIX.length());
 
             jwtTokenProvider.validAccessToken(jwt);
             Role role = jwtTokenProvider.getRoleFromToken(jwt);
             request.setAttribute("role", role);
 
-        } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | InvalidAccessTokenException | SignatureException e) {
+        } catch (RuntimeException e) {
             throw new InvalidTokenException(e);
         }
 
