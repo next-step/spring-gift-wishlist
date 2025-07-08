@@ -86,7 +86,7 @@ public class ProductJdbcRepositoryImpl implements ProductRepository {
     return deletedProduct;
   }
 
-  private RowMapper<Product> productRowMapper() {
+  private static RowMapper<Product> productRowMapper() {
     return new RowMapper<Product>() {
       @Override
       public Product mapRow(ResultSet rs, int rowNum) throws SQLException {

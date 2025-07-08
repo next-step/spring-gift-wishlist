@@ -93,7 +93,7 @@ public class MemberJdbcRepositoryImpl implements MemberRepository {
     return deletedMember;
   }
 
-  private RowMapper<Member> memberRowMapper() {
+  private static RowMapper<Member> memberRowMapper() {
     return new RowMapper<Member>() {
       @Override
       public Member mapRow(ResultSet rs, int rowNum) throws SQLException {
