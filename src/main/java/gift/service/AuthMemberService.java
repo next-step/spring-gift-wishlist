@@ -32,7 +32,7 @@ public class AuthMemberService implements MemberService {
         memberRepository.saveMember(member);
 
         // 토큰 생성
-        String token = jwtUtil.generateToken(member.getEmail(), member.getRole());
+        String token = jwtUtil.generateToken(member.getEmail(), member.getRole().name());
         return new MemberResponseDto(token);
     }
 
@@ -48,7 +48,7 @@ public class AuthMemberService implements MemberService {
         }
 
         // 토큰 생성
-        String token = jwtUtil.generateToken(member.getEmail(), member.getRole());
+        String token = jwtUtil.generateToken(member.getEmail(), member.getRole().name());
         return new MemberResponseDto(token);
     }
 }

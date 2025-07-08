@@ -1,6 +1,7 @@
 package gift.repository;
 
 import gift.entity.Member;
+import gift.entity.Role;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -19,7 +20,7 @@ public class JdbcMemberRepository implements MemberRepository {
     @Override
     public void saveMember(Member member) {
         String sql = "INSERT INTO member (email, password, role) VALUES (?, ?, ?)";
-        jdbcTemplate.update(sql, member.getEmail(), member.getPassword(), member.getRole());
+        jdbcTemplate.update(sql, member.getEmail(), member.getPassword(), member.getRole().name());
     }
 
     @Override
@@ -34,7 +35,7 @@ public class JdbcMemberRepository implements MemberRepository {
                 rs.getLong("id"),
                 rs.getString("email"),
                 rs.getString("password"),
-                rs.getString("role")
+                Role.valueOf(rs.getString("role"))
         );
     }
 }
