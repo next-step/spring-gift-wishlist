@@ -1,0 +1,67 @@
+package gift.controller;
+
+import gift.dto.MemberLoginRequestDto;
+import gift.dto.MemberRegisterRequestDto;
+import gift.dto.MemberResponseDto;
+import gift.dto.TokenResponseDto;
+import gift.entity.Member;
+import gift.service.MemberService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/members")
+public class MemberController {
+
+    private final MemberService memberService;
+
+    public MemberController(MemberService memberService) {
+        this.memberService = memberService;
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<TokenResponseDto> register(@RequestBody MemberRegisterRequestDto memberRegisterRequestDto) {
+        String token = memberService.register(memberRegisterRequestDto);
+        return ResponseEntity.status(201).body(new TokenResponseDto(token));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<TokenResponseDto> login(@RequestBody MemberLoginRequestDto memberLoginRequestDto) {
+        String token = memberService.login(memberLoginRequestDto);
+        return ResponseEntity.ok(new TokenResponseDto(token));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<MemberResponseDto>> list() {
+        List<MemberResponseDto> members = memberService.findAllMembers().stream()
+                .map(member -> new MemberResponseDto(
+                        member.getId(),
+                        member.getName(),
+                        member.getEmail(),
+                        member.getRole().name()))
+                .toList();
+        return ResponseEntity.ok(members);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<MemberResponseDto> get(@PathVariable Long id) {
+        Member member = memberService.findMemberById(id);
+        MemberResponseDto dto = new MemberResponseDto(member.getId(), member.getName(), member.getEmail(), member.getRole().name());
+        return ResponseEntity.ok(dto);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody MemberRegisterRequestDto memberRegisterRequestDto) {
+        memberService.updateMember(id, memberRegisterRequestDto);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteMember(@PathVariable Long id) {
+        memberService.deleteMember(id);
+        return ResponseEntity.noContent().build();
+    }
+
+}
