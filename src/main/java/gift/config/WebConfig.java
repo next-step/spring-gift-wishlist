@@ -1,4 +1,4 @@
-package gift;
+package gift.config;
 
 import gift.jwt.JwtAuthInterceptor;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +18,6 @@ public class WebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(jwtAuthInterceptor)
                 .addPathPatterns("/api/**")
-                .excludePathPatterns("/api/members/login", "/api/members/register");
+                .excludePathPatterns(AuthConstants.ALLOWLIST);
     }
 }
