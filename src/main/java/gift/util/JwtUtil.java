@@ -14,8 +14,8 @@ import java.util.Date;
 public class JwtUtil {
 
     /**
-     * 테스트 환경 키
-     * 배포 시 Keys.hmacShaKeyFor()메서드로 application.yml에 정의된 키 사용
+     * 테스트 환경에서 사용할 랜덤 비밀키
+     * ※ 배포 시 application.yml에 정의된 값으로 Keys.hmacShaKeyFor(value) 키 생성
      */
     private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     private final long expirationMs = 1000 * 60 * 60;
