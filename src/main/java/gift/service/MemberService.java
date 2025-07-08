@@ -71,9 +71,8 @@ public class MemberService {
     public void delete(Long memberId) {
         boolean deleted = memberRepository.deleteById(memberId);
         if (!deleted) {
-            throw new ProductNotExistException(memberId);
+            throw new MemberNotExistException(memberId);
         }
     }
-
 
 }
