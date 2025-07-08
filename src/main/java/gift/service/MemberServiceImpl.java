@@ -6,6 +6,7 @@ import gift.dto.MemberResponseDto;
 import gift.entity.Member;
 import gift.repository.MemberRepository;
 import gift.util.JwtUtil;
+import gift.util.Sha256Util;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -15,10 +16,13 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
     private final JwtUtil jwtUtil;
+    private final Sha256Util sha256Util;
 
-    public MemberServiceImpl(MemberRepository memberRepository, JwtUtil jwtUtil) {
+    public MemberServiceImpl(MemberRepository memberRepository, JwtUtil jwtUtil,
+        Sha256Util sha256Util) {
         this.memberRepository = memberRepository;
         this.jwtUtil = jwtUtil;
+        this.sha256Util = sha256Util;
     }
 
     @Override
@@ -27,7 +31,8 @@ public class MemberServiceImpl implements MemberService {
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
 
-        Member member = memberRepository.create(new Member(requestDto.email(), requestDto.password()));
+        Member member = memberRepository.create(
+            new Member(requestDto.email(), sha256Util.encrypt(requestDto.password())));
 
         String accessToken = jwtUtil.createToken(member.getEmail());
 
@@ -39,7 +44,7 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findByEmail(requestDto.email())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
 
-        if (!requestDto.password().equals(member.getPassword())) {
+        if (!sha256Util.encrypt(requestDto.password()).equals(member.getPassword())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
 
@@ -54,8 +59,8 @@ public class MemberServiceImpl implements MemberService {
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
 
         int changeRow = memberRepository.changePassword(
-            new Member(requestDto.email(), requestDto.beforePassword()),
-            requestDto.afterPassword());
+            new Member(requestDto.email(), sha256Util.encrypt(requestDto.beforePassword())),
+            sha256Util.encrypt(requestDto.afterPassword()));
 
         if (changeRow <= 0) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
@@ -69,6 +74,7 @@ public class MemberServiceImpl implements MemberService {
 
         // TODO: 주어진 이메일에 대해 전송 후, 사용자에게 인증받는 절차는 거쳤다고 가정
 
-        memberRepository.resetPassword(new Member(requestDto.email(), requestDto.password()));
+        memberRepository.resetPassword(
+            new Member(requestDto.email(), sha256Util.encrypt(requestDto.password())));
     }
 }
