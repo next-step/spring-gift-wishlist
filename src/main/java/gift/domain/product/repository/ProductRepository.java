@@ -1,6 +1,6 @@
-package gift.product.repository;
+package gift.domain.product.repository;
 
-import gift.product.Product;
+import gift.domain.product.Product;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 

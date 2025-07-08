@@ -1,10 +1,10 @@
-package gift.product.controller;
+package gift.domain.product.controller;
 
-import gift.product.dto.ProductListResponse;
-import gift.product.dto.ProductRequest;
-import gift.product.dto.ProductResponse;
-import gift.product.dto.ProductUpdateRequest;
-import gift.product.service.ProductService;
+import gift.domain.product.dto.ProductListResponse;
+import gift.domain.product.dto.ProductRequest;
+import gift.domain.product.dto.ProductResponse;
+import gift.domain.product.dto.ProductUpdateRequest;
+import gift.domain.product.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

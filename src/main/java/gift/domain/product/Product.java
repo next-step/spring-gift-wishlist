@@ -1,4 +1,4 @@
-package gift.product;
+package gift.domain.product;
 
 import java.util.regex.Pattern;
 

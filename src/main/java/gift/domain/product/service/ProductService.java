@@ -1,10 +1,10 @@
-package gift.product.service;
+package gift.domain.product.service;
 
-import gift.product.Product;
-import gift.product.dto.ProductRequest;
-import gift.product.dto.ProductResponse;
-import gift.product.dto.ProductUpdateRequest;
-import gift.product.repository.ProductRepository;
+import gift.domain.product.Product;
+import gift.domain.product.dto.ProductRequest;
+import gift.domain.product.dto.ProductResponse;
+import gift.domain.product.dto.ProductUpdateRequest;
+import gift.domain.product.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
