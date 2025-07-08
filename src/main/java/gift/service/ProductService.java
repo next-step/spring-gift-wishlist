@@ -22,9 +22,11 @@ import gift.repository.ProductRepository;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final MemberService memberService;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, MemberService memberService) {
         this.productRepository = productRepository;
+        this.memberService = memberService;
     }
 
     @Transactional(readOnly = true)

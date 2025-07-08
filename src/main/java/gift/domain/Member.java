@@ -2,11 +2,9 @@ package gift.domain;
 
 public class Member {
 
-    private Long id;
-    private String email;
-    private String password;
-
-    private Member() {}
+    private final Long id;
+    private final String email;
+    private final String password;
 
     private Member(Long id, String email, String password) {
         this.id = id;
@@ -32,17 +30,5 @@ public class Member {
 
     public String getPassword() {
         return password;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 }

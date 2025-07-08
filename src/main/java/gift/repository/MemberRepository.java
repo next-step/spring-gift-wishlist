@@ -3,7 +3,7 @@ package gift.repository;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.DataClassRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -19,7 +19,7 @@ public class MemberRepository {
 
     public MemberRepository(JdbcClient jdbcClient) {
         this.jdbcClient = jdbcClient;
-        this.rowMapper = new BeanPropertyRowMapper<>(Member.class);
+        this.rowMapper = new DataClassRowMapper<>(Member.class);
     }
 
     public List<Member> findAll() {
