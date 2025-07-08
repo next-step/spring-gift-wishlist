@@ -2,10 +2,13 @@ package gift.repository.member;
 
 import gift.entity.Member;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -23,25 +26,14 @@ public class MemberJdbcRepositoryImpl implements MemberRepository {
   @Override
   public List<Member> findAllMembers() {
     String sql = "select * from members";
-    return jdbcTemplate.query(sql, (rs, rowNum) -> new Member(
-            rs.getLong("id"),
-            rs.getString("email"),
-            rs.getString("password")
-        )
-    );
+    return jdbcTemplate.query(sql, MemberRowMapper());
   }
 
   @Override
   public Optional<Member> findByEmail(String email) {
     String sql = "select * from members where email=?";
     try {
-      Member result = jdbcTemplate.queryForObject(sql,
-          (rs, rowNum) -> new Member(
-              rs.getLong("id"),
-              rs.getString("email"),
-              rs.getString("password")
-          )
-          , email);
+      Member result = jdbcTemplate.queryForObject(sql, MemberRowMapper(), email);
       return Optional.of(result);
     } catch (EmptyResultDataAccessException e) {
       return Optional.empty();
@@ -105,6 +97,20 @@ public class MemberJdbcRepositoryImpl implements MemberRepository {
       throw new IllegalStateException("no delete members");
     }
     return deletedMember;
+  }
+
+  private RowMapper<Member> MemberRowMapper() {
+    return new RowMapper<Member>() {
+      @Override
+      public Member mapRow(ResultSet rs, int rowNum) throws SQLException {
+        Member member = new Member(
+            rs.getLong("id"),
+            rs.getString("email"),
+            rs.getString("password")
+        );
+        return member;
+      }
+    };
   }
 
 }
