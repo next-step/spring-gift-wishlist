@@ -1,6 +1,6 @@
-package repository;
+package gift.repository;
 
-import domain.Product;
+import gift.domain.Product;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class ProductStorage {
+public class ProductRepository {
     private final JdbcClient jdbc;
 
-    public ProductStorage(JdbcClient jdbcClient) {
+    public ProductRepository(JdbcClient jdbcClient) {
         this.jdbc = jdbcClient;
     }
 

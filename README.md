@@ -18,7 +18,7 @@
 - 상품 수정 : updateProducts()
 - 상품 삭제 : deleteProduct()
 
-### Application.java
+### gift.Application.java
 실행 main (springBootApplication)
 
 ### Product.java

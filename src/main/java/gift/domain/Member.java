@@ -1,4 +1,4 @@
-package domain;
+package gift.domain;
 
 public class Member {
     private Long id;
@@ -8,13 +8,10 @@ public class Member {
     public Member() {}
 
     public Member(Long id, String email, String password) {
-        this.id = id;
         this.email = email;
         this.password = password;
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }

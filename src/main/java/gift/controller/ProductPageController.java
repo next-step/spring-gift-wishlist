@@ -1,7 +1,7 @@
-package controller;
+package gift.controller;
 
-import domain.Product;
-import service.ProductService;
+import gift.domain.Product;
+import gift.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

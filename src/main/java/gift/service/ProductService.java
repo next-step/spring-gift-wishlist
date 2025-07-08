@@ -1,7 +1,7 @@
-package service;
+package gift.service;
 
-import domain.Product;
-import repository.ProductStorage;
+import gift.domain.Product;
+import gift.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,9 +10,9 @@ import java.util.Optional;
 @Service
 public class ProductService {
 
-    private final ProductStorage storage;
+    private final ProductRepository storage;
 
-    public ProductService(ProductStorage storage) {
+    public ProductService(ProductRepository storage) {
         this.storage = storage;
     }
 
