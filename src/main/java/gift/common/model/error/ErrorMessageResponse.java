@@ -1,4 +1,4 @@
-package gift.dto.error;
+package gift.common.model.error;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,6 +33,7 @@ public record ErrorMessageResponse (
         private LocalDateTime timestamp;
         private List<String> stackTrace = null;
         private List<ValidationError> validationErrors = null;
+        private boolean showStackTrace = false;
 
         public Builder(String message, HttpStatus status) {
             this.message = message;
@@ -52,6 +53,11 @@ public record ErrorMessageResponse (
             for (StackTraceElement element : exception.getStackTrace()) {
                 stackTrace.add(element.toString());
             }
+        }
+
+        public Builder showStackTrace() {
+            this.showStackTrace = true;
+            return this;
         }
 
         public Builder error(String error) {
@@ -115,6 +121,9 @@ public record ErrorMessageResponse (
         }
 
         public ErrorMessageResponse build() {
+            if (!showStackTrace) {
+                stackTrace = null;
+            }
             return new ErrorMessageResponse(
                 message,
                 status,

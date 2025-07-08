@@ -1,4 +1,4 @@
-package gift.dto.error;
+package gift.common.model.error;
 
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
