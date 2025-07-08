@@ -1,7 +1,5 @@
 package gift.entity;
 
-import gift.dto.ProductRequestDto;
-
 public record Product(Long id, String name, Integer price, String imageUrl, Status status) {
     public enum Status {
         APPROVED,
@@ -9,18 +7,18 @@ public record Product(Long id, String name, Integer price, String imageUrl, Stat
         REJECTED
     }
 
-    public  Product(Long id, ProductRequestDto productRequestDto) {
+    public Product(Long id, String name, int price, String imageUrl) {
         this(
                 id,
-                productRequestDto.name(),
-                productRequestDto.price(),
-                productRequestDto.imageUrl(),
-                inferStatus(productRequestDto)
+                name,
+                price,
+                imageUrl,
+                inferStatus(name)
         );
     }
 
-    public static Status inferStatus(ProductRequestDto productRequestDto) {
-        if (productRequestDto.name().contains("카카오")) {
+    public static Status inferStatus(String name) {
+        if (name.contains("카카오")) {
             return Product.Status.PENDING;
         } else {
             return Product.Status.APPROVED;

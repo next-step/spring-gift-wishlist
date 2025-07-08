@@ -25,7 +25,7 @@ public class ProductService {
             productRequestDto.name(),
             productRequestDto.price(),
             productRequestDto.imageUrl(),
-            Product.inferStatus(productRequestDto)
+            Product.inferStatus(productRequestDto.name())
         );
     }
 
@@ -35,7 +35,11 @@ public class ProductService {
 
     public void updateProduct(Long id, ProductRequestDto productUpdateDto) {
         productRepository.updateProduct(
-                new Product(id, productUpdateDto)
+                new Product(
+                        id,
+                        productUpdateDto.name(),
+                        productUpdateDto.price(),
+                        productUpdateDto.imageUrl())
         );
     }
 
