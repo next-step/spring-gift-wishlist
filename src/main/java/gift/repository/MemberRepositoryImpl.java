@@ -88,18 +88,27 @@ public class MemberRepositoryImpl implements MemberRepository {
         String sql = "SELECT id, email, password, role FROM members WHERE id = ?";
         return jdbcClient.sql(sql)
             .param(1, id)
-            .query(Member.class)
+            .query(MEMBER_ROW_MAPPER)
             .optional();
     }
 
     @Override
-    public void delete(Long id) {
-        String sql = "DELETE FROM members WHERE id = ?";
+    public Optional<Member> findByEmail(String email) {
+        String sql = "SELECT id, email, password, role FROM members WHERE email = ?";
+        return jdbcClient.sql(sql)
+            .param(1, email)
+            .query(MEMBER_ROW_MAPPER)
+            .optional();
+    }
+
+    @Override
+    public void delete(String email) {
+        String sql = "DELETE FROM members WHERE email = ?";
         int rowsCount = jdbcClient.sql(sql)
-            .param(1, id)
+            .param(1, email)
             .update();
         if (rowsCount == 0) {
-            throw new IllegalArgumentException("Member(id: " + id + " ) not found");
+            throw new IllegalArgumentException("Member(email: " + email + " ) not found");
         }
     }
 
@@ -107,7 +116,7 @@ public class MemberRepositoryImpl implements MemberRepository {
     public List<Member> findAll() {
         String sql = "SELECT id, email, password, role FROM members";
         return jdbcClient.sql(sql)
-            .query(Member.class)
+            .query(MEMBER_ROW_MAPPER)
             .list();
     }
 
