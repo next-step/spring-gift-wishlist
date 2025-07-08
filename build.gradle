@@ -22,6 +22,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+    // 비밀번호 해싱을 위한 의존성 추가
+    implementation 'org.springframework.security:spring-security-crypto'
 
     // jjwt
     compileOnly 'io.jsonwebtoken:jjwt-api:0.12.6'
