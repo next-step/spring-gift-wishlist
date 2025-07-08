@@ -1,16 +1,15 @@
 package gift.repository;
 
 import gift.entity.Member;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,9 +21,21 @@ public class MemberRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    private static class MemberRowMapper implements RowMapper<Member> {
+        @Override
+        public Member mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new Member(
+                    rs.getLong("id"),
+                    rs.getString("name"),
+                    rs.getString("email"),
+                    rs.getString("password")
+            );
+        }
+    }
+
     public Optional<Member> findByEmail(String email) {
         String sql = "select * from members where email = ?";
-        List<Member> members = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Member.class), email);
+        List<Member> members = jdbcTemplate.query(sql, new MemberRowMapper(), email);
         return Optional.ofNullable(members.isEmpty() ? null : members.getFirst());
     }
 
@@ -51,13 +62,13 @@ public class MemberRepository {
     public Optional<Member> findById(Long id) {
         String sql = "select * from members where id = ?";
 
-        List<Member> members = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Member.class), id);
+        List<Member> members = jdbcTemplate.query(sql, new MemberRowMapper(), id);
         return Optional.ofNullable(members.isEmpty() ? null : members.get(0));
     }
 
     public List<Member> findAll() {
         String sql = "select * from members";
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Member.class));
+        return jdbcTemplate.query(sql, new MemberRowMapper());
     }
 
     public Optional<Member> update(Long id, String name, String email, String password) {

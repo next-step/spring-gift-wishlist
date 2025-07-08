@@ -1,13 +1,15 @@
 package gift.repository;
 
 import gift.entity.Product;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 
 @Repository
@@ -16,6 +18,18 @@ public class ProductRepository{
     private final JdbcTemplate jdbcTemplate;
     public ProductRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+    }
+
+    private static class ProductRowMapper implements RowMapper<Product> {
+        @Override
+        public Product mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new Product(
+                    rs.getLong("id"),
+                    rs.getString("name"),
+                    rs.getInt("price"),
+                    rs.getString("imageUrl")
+            );
+        }
     }
 
     public Product save(Product product) {
@@ -43,7 +57,7 @@ public class ProductRepository{
     public Optional<Product> findById(Long productId) {
         String sql = "SELECT * FROM products WHERE id = ?";
 
-        List<Product> products = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Product.class), productId);
+        List<Product> products = jdbcTemplate.query(sql, new ProductRowMapper(), productId);
         return Optional.ofNullable(products.isEmpty() ? null : products.get(0));
     }
 
@@ -84,6 +98,6 @@ public class ProductRepository{
                 sortField, direction
         );
 
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Product.class), size, offset);
+        return jdbcTemplate.query(sql, new ProductRowMapper(), size, offset);
     }
 }
