@@ -1,8 +1,7 @@
-package gift.validation;
+package gift.validation.itemPolicy;
 
 
 import gift.dto.itemDto.ItemCreateDto;
-import gift.validation.itemPolicy.ItemPolicy;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.stereotype.Component;

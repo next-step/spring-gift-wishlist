@@ -1,6 +1,7 @@
 package gift.dto.userDto;
 
-import jakarta.validation.constraints.NotNull;
+import gift.validation.userPolicy.UserFieldValid;
 
-public record UserRegisterDto(@NotNull String email, @NotNull String password) {
+@UserFieldValid
+public record UserRegisterDto( String email, String password) {
 }

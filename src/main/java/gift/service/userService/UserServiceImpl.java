@@ -94,6 +94,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto updateUser(Long id, UserUpdateDto dto) {
         User findUser = userRepository.findUserById(id);
+        if (findUser == null) {
+            throw new UserNotFoundException();
+        }
         String changeEmail = dto.email();
         String changePassword = dto.password();
         User updatedUser = userRepository.updateUser(findUser, changeEmail, changePassword);

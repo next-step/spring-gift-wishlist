@@ -1,7 +1,7 @@
 package gift.dto.itemDto;
 
 import gift.entity.Item;
-import gift.validation.ItemFieldValid;
+import gift.validation.itemPolicy.ItemFieldValid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
