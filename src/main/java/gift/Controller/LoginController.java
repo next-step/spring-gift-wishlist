@@ -29,7 +29,7 @@ public class LoginController {
         try{
             String token = memberService.login(memberRequest.getId(), memberRequest.getPassword());
             model.addAttribute("token", token);
-            return "loginSuccess";
+            return "loginSuccess"; // Product 의 목록을 만들어 두어 그곳으로 이동시킬 예정입니다.
         }catch (Exception e){
             model.addAttribute("member", new Member());
             model.addAttribute("loginError", e.getMessage());
