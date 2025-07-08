@@ -35,7 +35,9 @@ public class ProductService {
     }
 
 
+
     public ProductResponseDto addProduct(ProductRequestDto productRequestDto) {
+
         validateNameContent(productRequestDto.getName());
         Product product = toEntity(productRequestDto);
         Product savedProduct = productRepository.save(product);
@@ -52,7 +54,9 @@ public class ProductService {
                 product.getImageUrl());
     }
 
+
     public ProductResponseDto updateProduct(Long id, ProductRequestDto productRequestDto) {
+
         validateNameContent(productRequestDto.getName());
         Product product = productRepository.findById(id);
         if (product == null) {

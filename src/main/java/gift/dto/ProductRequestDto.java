@@ -2,6 +2,7 @@ package gift.dto;
 
 import jakarta.validation.constraints.*;
 
+
 public class ProductRequestDto {
 
     @NotBlank(message = "상품 이름은 필수 입력 사항입니다.")
@@ -21,6 +22,7 @@ public class ProductRequestDto {
 
     public ProductRequestDto() {
     }
+
 
 
     public ProductRequestDto(String name, int price, String imageUrl) {

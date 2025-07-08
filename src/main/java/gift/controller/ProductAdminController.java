@@ -22,6 +22,8 @@ public class ProductAdminController {
     private final ProductAdminService productAdminService;
 
 
+
+
     public ProductAdminController(ProductAdminService productAdminService) {
         this.productAdminService = productAdminService;
     }
@@ -46,6 +48,7 @@ public class ProductAdminController {
             Model model
     ) {
         if (bindingResult.hasErrors()) {
+
             return "product/form";
         }
         productAdminService.save(dto);

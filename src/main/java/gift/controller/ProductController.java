@@ -42,16 +42,20 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<ProductResponseDto> addProduct(
             @RequestBody @Valid ProductRequestDto productRequestDto) {
+
         return new ResponseEntity<>(productService.addProduct(productRequestDto),
                 HttpStatus.CREATED);
+
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponseDto> updateProduct(
             @PathVariable Long id,
             @RequestBody @Valid ProductRequestDto productRequestDto) {
+
         return new ResponseEntity<>(productService.updateProduct(id, productRequestDto),
                 HttpStatus.OK);
+
     }
 
 
