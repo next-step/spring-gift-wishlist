@@ -43,7 +43,7 @@ public class MemberController {
             memberService.login(memberRequestDto);
             token = jwtUtil.generateToken(memberRequestDto);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
         return ResponseEntity.ok(new TokenResponseDto(token));
     }
