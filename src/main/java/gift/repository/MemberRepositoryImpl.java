@@ -1,6 +1,7 @@
 package gift.repository;
 
 import gift.domain.Member;
+import gift.domain.Role;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -35,7 +36,7 @@ public class MemberRepositoryImpl implements MemberRepository {
                 rs.getLong("id"),
                 rs.getString("email"),
                 rs.getString("password"),
-                rs.getString("role")
+                Role.valueOf(rs.getString("role"))
         );
     }
 }
