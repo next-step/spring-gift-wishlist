@@ -18,10 +18,16 @@ import java.util.Set;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository userRoleRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, RoleRepository userRoleRepository) {
+    public UserServiceImpl(
+            UserRepository userRepository,
+            RoleRepository userRoleRepository,
+            PasswordEncoder passwordEncoder
+    ) {
         this.userRepository = userRepository;
         this.userRoleRepository = userRoleRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     void validateUser(User user) {
@@ -71,7 +77,7 @@ public class UserServiceImpl implements UserService {
         if (userRepository.findByEmail(user.getEmail()).isPresent()){
             throw new DuplicateKeyException("이미 존재하는 이메일입니다: " + user.getEmail());
         }
-        user.setPassword(PasswordEncoder.encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = userRepository.save(user);
         for (UserRole role : user.getRoles()) {
             userRoleRepository.save(savedUser.getId(), role);

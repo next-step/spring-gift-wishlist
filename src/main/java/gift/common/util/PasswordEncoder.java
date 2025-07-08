@@ -1,18 +1,30 @@
 package gift.common.util;
 
 import gift.common.exception.CriticalServerException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.stereotype.Component;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+@Component
+@DependsOn("serverStartupVerifier")
 public class PasswordEncoder {
-    private static final String ALGORITHM = "SHA-256";
+    private final String passwordEncodingAlgorithm;
 
-    public static String encode(String password) {
+    public PasswordEncoder(
+            @Value("${gift.password.encoder.algorithm:SHA-256}") String passwordEncodingAlgorithm
+    ) {
+        this.passwordEncodingAlgorithm = passwordEncodingAlgorithm;
+    }
+
+    public String encode(String password) {
         if (password == null || password.isEmpty()) {
             throw new IllegalArgumentException("비밀번호는 null이거나 비어있을 수 없습니다.");
         }
         try {
-            MessageDigest messageDigest = MessageDigest.getInstance(ALGORITHM);
+            MessageDigest messageDigest = MessageDigest.getInstance(passwordEncodingAlgorithm);
             byte[] hashedBytes = messageDigest.digest(password.getBytes());
             StringBuilder hexString = new StringBuilder();
             for (byte b : hashedBytes) {
@@ -24,11 +36,12 @@ public class PasswordEncoder {
             }
             return hexString.toString();
         } catch (NoSuchAlgorithmException e) {
-            throw new CriticalServerException("비밀번호 인코딩에 실패했습니다. SHA-256 알고리즘을 사용할 수 없습니다.", e.getCause());
+            throw new CriticalServerException("비밀번호 인코딩에 실패했습니다. " + passwordEncodingAlgorithm +
+                    "알고리즘을 사용할 수 없습니다.", e.getCause());
         }
     }
 
-    public static Boolean matches(String rawPassword, String encodedPassword) {
+    public Boolean matches(String rawPassword, String encodedPassword) {
         if (rawPassword == null || encodedPassword == null) {
             throw new IllegalArgumentException("비밀번호와 인코딩된 비밀번호는 null일 수 없습니다.");
         }
