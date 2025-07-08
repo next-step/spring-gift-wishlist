@@ -31,13 +31,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // 1. 토큰 추출
         String token = extractToken(request);
 
-        // 2. 토큰 유효성 검증
-        if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
-            // 3. 토큰에서 회원 ID 추출
-            Long memberId = jwtTokenProvider.getMemberId(token);
-
-            // 4. Request에 회원 ID 저장
-            request.setAttribute("memberId", memberId);
+        // 2. 토큰이 있는 경우 → 유효성 검사
+        if (StringUtils.hasText(token)) {
+            if (jwtTokenProvider.validateToken(token)) {
+                // 3. 유효한 경우 → 회원 ID 추출 후 request에 저장
+                Long memberId = jwtTokenProvider.getMemberId(token);
+                request.setAttribute("memberId", memberId);
+            } else {
+                // 4. 유효하지 않은 경우 → 401 Unauthorized 응답 후 종료
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "유효하지 않은 토큰입니다.");
+                return;
+            }
         }
 
         // 5. 다음 필터로 진행

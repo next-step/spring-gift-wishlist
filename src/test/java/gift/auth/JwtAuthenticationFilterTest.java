@@ -2,6 +2,7 @@ package gift.auth;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -90,8 +91,8 @@ class JwtAuthenticationFilterTest {
     }
 
     @Test
-    @DisplayName("유효하지 않은 토큰이면 memberId를 설정하지 않는다")
-    void invalidToken_shouldNotSetMemberId() throws ServletException, IOException {
+    @DisplayName("유효하지 않은 토큰이면 401을 반환하고 필터 체인을 진행하지 않는다")
+    void invalidToken_shouldReturn401AndStopFilter() throws ServletException, IOException {
         // given
         String token = "invalid.jwt.token";
         request.addHeader("Authorization", "Bearer " + token);
@@ -102,9 +103,9 @@ class JwtAuthenticationFilterTest {
         jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
 
         // then
-        assertThat(request.getAttribute("memberId")).isNull();
+        assertThat(response.getStatus()).isEqualTo(HttpServletResponse.SC_UNAUTHORIZED); // 401
         verify(jwtTokenProvider, never()).getMemberId(anyString());
-        verify(filterChain).doFilter(request, response);
+        verify(filterChain, never()).doFilter(request, response); // 더 이상 필터 체인 진행되지 않음
     }
 
     @Test
