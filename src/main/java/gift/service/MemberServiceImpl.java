@@ -40,7 +40,7 @@ public class MemberServiceImpl implements MemberService {
         }
 
         Member member = memberRepository.saveMember(email, password, role);
-        String token = accessToken(member);
+        String token = getAccessToken(member);
 
         return new TokenResponseDto(token);
     }
@@ -50,20 +50,20 @@ public class MemberServiceImpl implements MemberService {
         String email = dto.getEmail();
         String password = dto.getPassword();
 
-        Optional<Member> findMember = memberRepository.findMemberByEmail(email);
+        Optional<Member> memberOptional = memberRepository.findMemberByEmail(email);
         Member member;
 
-        if (findMember.isEmpty()) {
+        if (memberOptional.isEmpty()) {
             throw new InvalidCredentialsException("아이디 또는 비밀번호가 잘못 되었습니다. 아이디와 비밀번호를 정확히 입력해 주세요.");
         }
 
-        member = findMember.get();
+        member = memberOptional.get();
 
         if (!password.equals(member.getPassword())) {
             throw new InvalidCredentialsException("아이디 또는 비밀번호가 잘못 되었습니다. 아이디와 비밀번호를 정확히 입력해 주세요.");
         }
 
-        String token = accessToken(member);
+        String token = getAccessToken(member);
 
         return new TokenResponseDto(token);
     }
@@ -162,7 +162,7 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
-    private String accessToken(Member member) {
+    private String getAccessToken(Member member) {
 
         String secretKey = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";
 
