@@ -136,7 +136,8 @@ public class WishedProductDaoImpl implements WishedProductDao {
         return jdbcClient.sql(sql)
                 .param(userId)
                 .query(Integer.class)
-                .single();
+                .optional()
+                .orElse(0);
     }
 
     @Override
@@ -146,7 +147,8 @@ public class WishedProductDaoImpl implements WishedProductDao {
         return jdbcClient.sql(sql)
                 .param(userId)
                 .query(Integer.class)
-                .single();
+                .optional()
+                .orElse(0);
     }
 
     @Override
@@ -155,6 +157,7 @@ public class WishedProductDaoImpl implements WishedProductDao {
         return jdbcClient.sql(sql)
                 .param(userId)
                 .query(Integer.class)
-                .single();
+                .optional()
+                .orElse(0);
     }
 }
