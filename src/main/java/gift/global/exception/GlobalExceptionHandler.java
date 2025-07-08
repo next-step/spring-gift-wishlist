@@ -1,4 +1,4 @@
-package gift.exception;
+package gift.global.exception;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,5 +37,32 @@ public class GlobalExceptionHandler {
         log.error("서버 내부에서 처리되지 않은 예외가 발생했습니다.", e);
         SingleErrorResponse errorResponse = new SingleErrorResponse(e.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(MemberNotFoundException.class)
+    public ResponseEntity<SingleErrorResponse> handleUserNotFoundException(MemberNotFoundException e) {
+        log.warn("유저가 존재하지 않음 : {}", e.getMessage());
+        SingleErrorResponse errorResponse = new SingleErrorResponse(e.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler(LoginFailedException.class)
+    public ResponseEntity<SingleErrorResponse> handleLoginFailedException(LoginFailedException e) {
+        log.warn("로그인 실패 : {}", e.getMessage());
+        SingleErrorResponse errorResponse = new SingleErrorResponse(e.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(TokenExpiredException.class)
+    public ResponseEntity<SingleErrorResponse> handleTokenExpiredException(TokenExpiredException e) {
+        log.warn("토큰 만료됨 : {}", e.getMessage());
+        SingleErrorResponse errorResponse = new SingleErrorResponse(e.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<SingleErrorResponse> handleBadRequestException(BadRequestException e) {
+        log.warn("잘못된 요청 : {}", e.getMessage());
+        SingleErrorResponse errorResponse = new SingleErrorResponse(e.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 }
