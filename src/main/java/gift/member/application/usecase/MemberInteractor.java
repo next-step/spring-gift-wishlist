@@ -4,10 +4,10 @@ import gift.common.exception.ForbiddenException;
 import gift.common.jwt.JwtTokenProvider;
 import gift.common.security.PasswordEncoder;
 import gift.member.application.port.in.LoginMemberUseCase;
-import gift.member.application.port.in.SignUpMemberUseCase;
+import gift.member.application.port.in.RegisterMemberUseCase;
 import gift.member.application.port.in.dto.AuthResponse;
 import gift.member.application.port.in.dto.LoginRequest;
-import gift.member.application.port.in.dto.SignUpRequest;
+import gift.member.application.port.in.dto.RegisterRequest;
 import gift.member.application.port.out.MemberPersistencePort;
 import gift.member.domain.model.Member;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class MemberInteractor implements SignUpMemberUseCase, LoginMemberUseCase {
+public class MemberInteractor implements RegisterMemberUseCase, LoginMemberUseCase {
 
     private final MemberPersistencePort memberPersistencePort;
     private final JwtTokenProvider jwtTokenProvider;
@@ -31,7 +31,7 @@ public class MemberInteractor implements SignUpMemberUseCase, LoginMemberUseCase
     }
 
     @Override
-    public AuthResponse signUp(SignUpRequest request) {
+    public AuthResponse register(RegisterRequest request) {
         if (memberPersistencePort.existsByEmail(request.email())) {
             throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
         }
