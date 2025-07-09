@@ -58,12 +58,11 @@ public class ProductRepositoryImpl implements ProductRepository{
 
     @Override
     public List<Product> findByStatus(ProductStatus status) {
-        return jdbcClient.sql("SELECT * FROM products WHERE status status = :status")
+        return jdbcClient.sql("SELECT * FROM products WHERE status = :status")
+                .param("status", status.name())
                 .query(Product.class)
                 .list();
     }
-
-
 
     @Override
     public Optional<Product> findById(Long id) {
