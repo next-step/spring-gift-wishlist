@@ -65,7 +65,7 @@
 - **토큰 검증**: `security` 패키지 내에 JWT 생성 및 검증 로직을 중앙화하여 관리하고, 인터셉터는 이 로직을 호출하여 토큰의 유효성을 판단하도록 했다.
 
 #### 3. 인증 관련 예외 처리
-- **커스텀 예외 정의**: `EmailAlreadyExistsException`(400)과 `InvalidTokenException`(401) 등 인증 과정에서 발생할 수 있는 비즈니스 예외를 명확하게 정의했다.
+- **커스텀 예외 정의**: `EmailAlreadyExistsException`(409)과 `InvalidTokenException`(401) 등 인증 과정에서 발생할 수 있는 비즈니스 예외를 명확하게 정의했다.
 - **전역 처리**: `ApiExceptionHandler`에서 새로 정의한 인증 관련 예외들을 처리하여, 역할에 맞는 HTTP 상태 코드와 에러 메시지를 클라이언트에게 반환하도록 구현했다.
 
 #### 4. 회원 기능 테스트 코드 구현
