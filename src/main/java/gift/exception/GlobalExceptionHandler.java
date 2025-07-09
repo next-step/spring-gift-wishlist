@@ -1,7 +1,7 @@
 package gift.exception;
 
-import gift.dto.ItemCreateDto;
-import gift.dto.ItemUpdateDto;
+import gift.dto.itemDto.ItemCreateDto;
+import gift.dto.itemDto.ItemUpdateDto;
 import org.springframework.ui.Model;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -15,7 +15,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public String handleValidationError(MethodArgumentNotValidException e, Model model) {
-        List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors(); // 필드 에러를 왜 리스트로 받을까? 여러 동시발생하는 에러도 얘가 받을수 있나?
+        List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
 
         for (FieldError fieldError : fieldErrors) {
             System.out.println("fieldError = " + fieldError);

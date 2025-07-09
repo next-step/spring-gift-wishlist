@@ -4,10 +4,10 @@
 - [x] DTO에 Validation 적용
 - [x] MVC에 Validation 적용
 - [x] 예외처리 상세화
-## 추후 적용 시켜볼 것
-1. Custom Constraint
 
+## Step 2
+- [x] User 객체 생성
+- [x] User CRUD 구현
+- [x] User token 발급 구현
+- [x] UserService 예외처리 구현
 
-## 질문
-1. 	Spring Validator과 Bean Validation 방식의 차이?
-- form과 내부 객체 차이?

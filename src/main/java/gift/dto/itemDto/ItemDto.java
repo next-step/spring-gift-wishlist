@@ -1,38 +1,47 @@
-package gift.entity;
+package gift.dto.itemDto;
 
+import gift.entity.Item;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-public class Item {
+public class ItemDto {
+
+    @NotNull
     private Long id;
+
+    @NotNull
+    @Size(max = 15, message = "최대 15자입니다.")
+    @Pattern(regexp = "^[a-zA-Z0-9()\\[\\]+\\-\\&/_]*$", message = "( ), [ ], +, -, &, /, _ 외에는 특수문자는 허용되지 않습니다.")
     private String name;
+
+    @NotNull
+    @Min(0)
     private Integer price;
+
+    @NotNull
+    @Size(max = 255)
     private String imageUrl;
 
-
-    public Item(Long id, String name, Integer price, String imageUrl) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.imageUrl = imageUrl;
+    public ItemDto() {
     }
 
-    public Item(Item item) {
+
+    public ItemDto(Item item) {
         this.id = item.getId();
         this.name = item.getName();
         this.price = item.getPrice();
         this.imageUrl = item.getImageUrl();
-    }
 
-    public Item(String name, @Min(0) Integer price, @NotNull @Size(max = 255) String imageUrl) {
-        this.name = name;
-        this.price = price;
-        this.imageUrl = imageUrl;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
