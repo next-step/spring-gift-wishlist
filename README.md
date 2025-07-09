@@ -57,6 +57,7 @@
 - [x] JWT expiration 적용
 - [x] JWT 관련 deprecated 메소드 사용 제거
 - [x] Interceptor: authHeader 토큰 문제 수정
+- [x] Member register, login 테스트 코드 작성
 
 # spring-gift-product (이전 구현)
 

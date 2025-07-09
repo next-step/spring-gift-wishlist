@@ -1,6 +1,5 @@
 package gift.member.controller;
 
-import gift.member.domain.Member;
 import gift.member.dto.MemberLoginRequest;
 import gift.member.dto.MemberTokenResponse;
 import gift.member.dto.MemberRegisterRequest;
@@ -15,10 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/members")
-public class MemberController {
+public class MemberApiController {
     private final MemberService memberService;
 
-    public MemberController(MemberService memberService) {
+    public MemberApiController(MemberService memberService) {
         this.memberService = memberService;
     }
 
