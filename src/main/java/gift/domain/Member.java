@@ -16,6 +16,10 @@ public class Member {
         this.role = role;
     }
 
+    public Member(Long id) {
+        this.id = id;
+    }
+
     public Member(String email, String password){
         this(null, email, password, Role.USER);
     }

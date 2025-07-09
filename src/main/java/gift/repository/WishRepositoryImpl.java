@@ -30,7 +30,19 @@ public class WishRepositoryImpl implements WishRepository  {
 
     @Override
     public List<Wish> findWishByMemberId(Long memberId) {
-        return List.of();
+        return jdbcClient.sql("""
+                SELECT id, member_id, product_id, quantity
+                FROM wishes
+                WHERE member_id = :memberId
+                """)
+                .param("memberId", memberId)
+                .query((rs, rowNum) -> new Wish(
+                        rs.getLong("id"),
+                        rs.getLong("member_id"),
+                        rs.getLong("product_id"),
+                        rs.getInt("quantity")
+                ))
+                .list();
     }
 
     @Override

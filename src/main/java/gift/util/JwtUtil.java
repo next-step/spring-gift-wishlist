@@ -50,7 +50,7 @@ public final class JwtUtil {
         }
     }
 
-    public Long getMemberIdFromToken(String token) {
+    public Long extractMemberId(String token) {
         Claims claims = Jwts.parser()
                 .verifyWith((SecretKey) key)
                 .build()
