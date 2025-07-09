@@ -1,5 +1,6 @@
 package gift.entity;
 
+import gift.domain.product.MdApprovalStatus;
 import gift.domain.product.ProductName;
 
 public class Product {

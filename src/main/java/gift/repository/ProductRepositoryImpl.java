@@ -1,6 +1,6 @@
 package gift.repository;
 
-import gift.entity.MdApprovalStatus;
+import gift.domain.product.MdApprovalStatus;
 import gift.entity.Product;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
