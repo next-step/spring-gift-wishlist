@@ -4,6 +4,6 @@ INSERT INTO product (id, name, price, imageUrl) VALUES (99998, 'note', 1500, 'te
 INSERT INTO product (id, name, price, imageUrl) VALUES (99999, 'phone', 800000, 'test.com/3.jpg');
 
 -- member
-INSERT INTO member (id, email, password) VALUES (99997, 'test1@mail.com', 'strongpw!');
-INSERT INTO member (id, email, password) VALUES (99998, 'test2@mail.com', 'strongpw@');
-INSERT INTO member (id, email, password) VALUES (99999, 'test3@mail.com', 'strongpw#');
+INSERT INTO member (id, email, password, role) VALUES (99997, 'test1@mail.com', '$2a$10$lpXAZ4wJB1HgmjFjKid9BuK1XNrVFheWMBoMTltPLb6NxD/kTqWZa', 'ROLE_USER'); -- pw: 123412!3
+INSERT INTO member (id, email, password, role) VALUES (99998, 'test2@mail.com', '$2a$10$lpXAZ4wJB1HgmjFjKid9BuK1XNrVFheWMBoMTltPLb6NxD/kTqWZa', 'ROLE_USER'); -- pw: 123412!3
+INSERT INTO member (id, email, password, role) VALUES (0, 'rootroot', '$2a$10$HqO3FZQxO5F0N9qUJM4Z1eETG1cn8GrEAqqMlHxXHyujHsJuqeIKS', 'ROLE_ADMIN'); -- pw: rootr@@t

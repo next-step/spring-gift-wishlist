@@ -8,6 +8,7 @@ import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import gift.domain.Member;
 import io.jsonwebtoken.Jwts;
 
 @Component
@@ -21,9 +22,10 @@ public class JwtProvider implements TokenProvider {
         );
     }
 
-    public String createToken(Long memberId) {
+    public String createToken(Member member) {
         return Jwts.builder()
-            .claim("memberId", memberId)
+            .claim("memberId", member.getId())
+            .claim("role", member.getRole())
             .signWith(secretKey)
             .compact();
     }
@@ -37,5 +39,14 @@ public class JwtProvider implements TokenProvider {
                 .getPayload()
                 .get("memberId", String.class)
         );
+    }
+
+    public String getRole(String token) {
+        return Jwts.parser()
+            .verifyWith(secretKey) // 검증
+            .build()
+            .parseSignedClaims(token)
+            .getPayload()
+            .get("role", String.class);
     }
 }

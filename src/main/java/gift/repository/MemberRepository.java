@@ -31,7 +31,7 @@ public class MemberRepository {
     }
 
     public Optional<Member> findById(Long id) {
-        String sql = "SELECT id, email, password FROM member WHERE id = :id";
+        String sql = "SELECT id, email, password, role FROM member WHERE id = :id";
 
         return jdbcClient.sql(sql)
             .param("id", id)
@@ -40,7 +40,7 @@ public class MemberRepository {
     }
 
     public Optional<Member> findByEmail(String email) {
-        String sql = "SELECT id, email, password FROM member WHERE email = :email";
+        String sql = "SELECT id, email, password, role FROM member WHERE email = :email";
 
         return jdbcClient.sql(sql)
             .param("email", email)
@@ -67,12 +67,13 @@ public class MemberRepository {
     }
 
     public Long save(Member member) {
-        String sql = "INSERT INTO member (email, password) VALUES (:email, :password)";
+        String sql = "INSERT INTO member (email, password, role) VALUES (:email, :password, :role)";
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcClient.sql(sql)
             .param("email", member.getEmail())
             .param("password", member.getPassword())
+            .param("role", member.getRole())
             .update(keyHolder);
 
         if (keyHolder.getKey() == null) {

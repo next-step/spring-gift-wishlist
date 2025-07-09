@@ -61,10 +61,10 @@
   - [ ] RFC 7235 - HTTP/1.1 : Authentication
 
 ## 인증, 인가, RBAC
-- [ ] 인증(Authentication)과 인가(Authorization)의 차이점 알아보기
-- [ ] RBAC(Role-Based Access Control) 알아보기
+- [x] 인증(Authentication)과 인가(Authorization)의 차이점 알아보기
+- [x] RBAC(Role-Based Access Control) 알아보기
   - [ ] RBAC의 개념과 장단점
-  - [ ] RBAC를 구현하는 방법 (스프링 시큐리티 없이!)
+  - [x] RBAC를 구현하는 방법 (스프링 시큐리티 없이!)
   - [ ] 스프링 시큐리티로 RBAC를 구현하는 방법
 
 ## DTO, 예외
