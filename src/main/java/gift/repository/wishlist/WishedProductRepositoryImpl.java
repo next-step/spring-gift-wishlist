@@ -30,14 +30,12 @@ public class WishedProductRepositoryImpl implements WishedProductRepository {
     @Transactional
     public CustomPage<WishedProduct> findAll(Long userId, int page, int size) {
         var pagedProducts = wishedProductDao.findAllProduct(userId, page, size);
-        var count = wishedProductDao.count(userId);
-        var totalPrice = wishedProductDao.totalPrice(userId);
-        var totalQuantity = wishedProductDao.totalQuantity(userId);
-        return CustomPage.builder(pagedProducts, count)
+        var stats = wishedProductDao.getWishedProductStats(userId);
+        return CustomPage.builder(pagedProducts, stats.count())
                 .page(page)
                 .size(size)
-                .extra("totalPrice",  totalPrice)
-                .extra("totalQuantity", totalQuantity)
+                .extra("totalPrice",  stats.totalPrice())
+                .extra("totalQuantity", stats.totalQuantity())
                 .build();
     }
 

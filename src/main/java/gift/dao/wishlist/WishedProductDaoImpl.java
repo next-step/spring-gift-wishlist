@@ -1,6 +1,7 @@
 package gift.dao.wishlist;
 
 import gift.entity.WishedProduct;
+import gift.entity.WishedProductStats;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
@@ -27,6 +28,17 @@ public class WishedProductDaoImpl implements WishedProductDao {
                     rs.getLong("price"),
                     rs.getString("image_url"),
                     rs.getInt("quantity")
+            );
+        }
+    }
+
+    private static class WishedProductStatsRowMapper implements RowMapper<WishedProductStats> {
+        @Override
+        public WishedProductStats mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new WishedProductStats(
+                    rs.getInt("count"),
+                    rs.getInt("total_quantity"),
+                    rs.getLong("total_price")
             );
         }
     }
@@ -123,9 +135,9 @@ public class WishedProductDaoImpl implements WishedProductDao {
     }
 
     @Override
-    public Integer clear(Long userId) {
+    public void clear(Long userId) {
         String sql = "DELETE FROM wished_products WHERE user_id = ?";
-        return jdbcClient.sql(sql)
+        jdbcClient.sql(sql)
                 .param(userId)
                 .update();
     }
@@ -159,5 +171,21 @@ public class WishedProductDaoImpl implements WishedProductDao {
                 .query(Integer.class)
                 .optional()
                 .orElse(0);
+    }
+
+    @Override
+    public WishedProductStats getWishedProductStats(Long userId) {
+        String sql = """
+                SELECT COUNT(*) AS count,
+                       SUM(w.quantity) AS total_quantity,
+                       SUM(p.price * w.quantity) AS total_price
+                FROM wished_products w
+                JOIN products p ON w.product_id = p.id
+                WHERE w.user_id = ?
+                """;
+        return jdbcClient.sql(sql)
+                .param(userId)
+                .query(new WishedProductStatsRowMapper())
+                .single();
     }
 }

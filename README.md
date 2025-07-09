@@ -41,12 +41,13 @@
 + [X] 위시리스트 테스트 코드 작성
 
 ### 기능별 API 요약
-+ 다건 위시리스트 조회 : `GET /api/wishlist`
-+ 단건 위시리스트 조회 : `GET /api/wishlist/{id}`
-+ 위시리스트 생성 : `POST /api/wishlist`
-+ 위시리스트 수정 : `PUT /api/wishlist/{id}`
++ 다건 위시리스트 조회 : `GET /api/wishes`
++ 단건 위시리스트 조회 : `GET /api/wishes/{id}`
++ 위시리스트 생성 : `POST /api/wishes`
++ 위시리스트 수정 : `PUT /api/wishes/{id}`
   + 상품 수량만 수정 가능(0일 시 삭제)
-+ 위시리스트 삭제 : `DELETE /api/wishlist/{id}`
++ 단건 위시리스트 삭제 : `DELETE /api/wishes/{id}`
++ 다건 위시리스트 삭제 : `DELETE /api/wishes`
 
 ### 이전 단계 요약
 
