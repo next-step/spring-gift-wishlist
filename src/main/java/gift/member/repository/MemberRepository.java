@@ -1,0 +1,19 @@
+package gift.member.repository;
+
+import gift.member.entity.Member;
+import java.util.List;
+
+public interface MemberRepository {
+
+    void saveMember(Member member);
+
+    Member findMemberByEmail(String email);
+
+    List<Member> findAllMembers();
+
+    Member findMemberById(Long memberId);
+
+    void updateMemberById(Member member);
+
+    void deleteMemberById(Long memberId);
+}
