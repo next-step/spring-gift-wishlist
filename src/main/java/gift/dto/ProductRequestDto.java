@@ -19,10 +19,12 @@ public class ProductRequestDto {
     @NotBlank(message = "이미지 URL은 비어 있을 수 없습니다")
     private final String imgUrl;
 
-    @AssertTrue(message = "\"카카오\"가 포함된 상품 이름은 사용할 수 없습니다")
+    @AssertTrue(message = "\"카카오\"가 포함된 상품 이름은 MD와 협의후 사용해 주세요")
     public boolean isNameNotAllowed() {
-        if (name == null) return true;
-        return !name.contains("카카오");
+        if (name.contains("카카오")) {
+            return name.endsWith("카테캠");
+        }
+        return true;
     }
 
     public ProductRequestDto(String name, BigDecimal price, String imgUrl) {
