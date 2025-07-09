@@ -6,7 +6,7 @@ values('맥북 프로', 2250000, 'https://encrypted-tbn1.gstatic.com/shopping?q=
 
 
 insert into products (name, price, image_url)
-values('애플워치', 125000, 'https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcS5oCkTuSJ0409B_5FFITHRaXypcr3-hJHtplxcXiXyYK9y8K7Lx-kgWbVhFaHVUP1NeexGHAsqVg');
+values('애플워치', 10000, 'https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcS5oCkTuSJ0409B_5FFITHRaXypcr3-hJHtplxcXiXyYK9y8K7Lx-kgWbVhFaHVUP1NeexGHAsqVg');
 
 insert into members (email, password)
 values('testuser1@kakao.com', '1234');

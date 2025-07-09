@@ -29,6 +29,12 @@ public class WishListService {
         if(productOptional.isEmpty()) {
             throw new ProductNotFoundException("해당 상품은 존재하지 않는 상품입니다.");
         }
+
+        //이미 장바구니에 해당 상품이 있는 경우에는 수량만 업데이트
+        if(wishListRepository.checkExistence(memberId, requestDto.quantity(), productOptional.get())){
+            return wishListRepository.getWishProduct(memberId, productOptional.get().getId());
+        }
+
         WishList wishList = new WishList(memberId, requestDto.productId(), requestDto.quantity());
         return wishListRepository.add(wishList, productOptional.get());
     }

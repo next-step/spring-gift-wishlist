@@ -50,7 +50,6 @@ public class WishListController {
     ){
         jwtAuthService.checkValidation(token); // 검증로직 확인
         Long memberId = jwtAuthService.getMemberId(token);
-
         WishResponseDto wishResponseDto = wishListService.addToWishList(memberId, wishRequestDto);
         return new ResponseEntity<>(wishResponseDto, HttpStatus.CREATED);
     }
@@ -74,9 +73,6 @@ public class WishListController {
     ){
         jwtAuthService.checkValidation(token);
         Long memberId = jwtAuthService.getMemberId(token);
-
-        System.out.println("memberId = " + memberId);
-
         List<WishResponseDto> myWishList = wishListService.changeQuantity(memberId, wishListId, 1);
         return ResponseEntity.ok(myWishList);
     }
@@ -88,12 +84,8 @@ public class WishListController {
             @PathVariable Long wishListId,
             @RequestHeader(value = "Authorization") String token
     ){
-        System.out.println("wishListId = " + wishListId);
         jwtAuthService.checkValidation(token);
         Long memberId = jwtAuthService.getMemberId(token);
-
-        System.out.println("memberId = " + memberId);
-
         List<WishResponseDto> myWishList = wishListService.changeQuantity(memberId, wishListId, -1);
         return ResponseEntity.ok(myWishList);
     }
