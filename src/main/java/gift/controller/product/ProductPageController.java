@@ -30,7 +30,7 @@ public class ProductPageController {
     public String findAll(Model model){
         List<Product> list = productServiceAdmin.getProductListAdmin();
         model.addAttribute("productList", list);
-        return "productMain";
+        return "product/productMain";
     }
 
     // 상품 등록 페이지 이동
@@ -39,7 +39,7 @@ public class ProductPageController {
         Model model
     ){
         model.addAttribute("request", ProductRequest.createForNewProductForm());
-        return "newProduct";
+        return "product/newProduct";
     }
 
     // 상품 등록
@@ -50,7 +50,7 @@ public class ProductPageController {
         ) {
 
         if(bindingResult.hasErrors()){
-            return "newProduct";
+            return "product/newProduct";
         }
 
         Product product = ProductMapper.toEntity(request);
@@ -73,7 +73,7 @@ public class ProductPageController {
         );
 
         model.addAttribute("request", request);
-        return "update";
+        return "product/updateProduct";
     }
 
     // 상품 수정(수정 처리)
@@ -83,7 +83,7 @@ public class ProductPageController {
         BindingResult bindingResult
     ){
         if(bindingResult.hasErrors()){
-            return "update";
+            return "product/updateProduct";
         }
 
         productServiceAdmin.updateAdmin(request);
