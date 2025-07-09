@@ -32,6 +32,12 @@ public class User {
     this.role = role;
   }
 
+  public User(Long id, String email, String encodedPassword) {
+    this.id = id;
+    this.email = email;
+    this.encodedPassword = encodedPassword;
+  }
+
   public boolean isEqualPassword(String password, PasswordEncoder passwordEncoder) {
     return passwordEncoder.isMatched(this.email, password, this.encodedPassword);
   }

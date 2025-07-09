@@ -10,6 +10,10 @@ import gift.user.domain.User;
 import gift.exception.InvalidLoginException;
 import gift.exception.UserNotFoundException;
 import gift.user.dao.UserDao;
+import gift.user.dto.UserRequestDto;
+import gift.user.dto.UserResponseDto;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,6 +26,16 @@ public class UserService {
     this.userDao = userDao;
     this.jwtTokenProvider = jwtTokenProvider;
     this.passwordEncoder = passwordEncoder;
+  }
+
+  private User findByIdOrFail(Long id) {
+    User user = userDao.findById(id);
+
+    if (user == null) {
+      throw new UserNotFoundException();
+    }
+
+    return user;
   }
 
   public RegisterResponseDto registerUser(RegisterRequestDto registerRequestDto) {
@@ -41,7 +55,7 @@ public class UserService {
       throw new UserNotFoundException();
     }
 
-    if (!user.isEqualPassword(loginRequestDto.password(),passwordEncoder)) {
+    if (!user.isEqualPassword(loginRequestDto.password(), passwordEncoder)) {
       throw new InvalidLoginException();
     }
 
@@ -49,4 +63,37 @@ public class UserService {
 
     return new LoginResponseDto(token);
   }
+
+  public List<UserResponseDto> findAllUsers() {
+    return userDao.findAllUsers()
+        .stream()
+        .map(UserResponseDto::from)
+        .collect(Collectors.toList());
+  }
+
+  public UserResponseDto saveUser(UserRequestDto dto) {
+    String encryptedPassword = passwordEncoder.encrypt(dto.email(), dto.password());
+    User user = userDao.saveUser(dto.email(), encryptedPassword);
+    return UserResponseDto.from(user);
+  }
+
+  public UserResponseDto findById(Long userId) {
+    User user = findByIdOrFail(userId);
+    return UserResponseDto.from(user);
+  }
+
+  public UserResponseDto updateUser(Long userId, UserRequestDto dto) {
+    String encryptedPassword = passwordEncoder.encrypt(dto.email(),dto.password());
+    User user = userDao.updateUser(userId,dto.email(),encryptedPassword);
+    return UserResponseDto.from(user);
+  }
+
+  public void deleteUser(Long userId) {
+    findByIdOrFail(userId);
+    userDao.deleteById(userId);
+  }
+
+
+
+
 }
