@@ -9,13 +9,16 @@ import java.security.Key;
 import java.time.Instant;
 import java.util.Date;
 import javax.crypto.SecretKey;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class JwtUtil {
+  private final Key KEY;
 
-  private static final String SECRET = "KAKAOTECHCAMPUS_0707_LONG_SECRET_KEY_2025";
-  private static final Key KEY = Keys.hmacShaKeyFor(SECRET.getBytes());
+  public JwtUtil(@Value("${jwt.secret}") String secret) {
+    this.KEY = Keys.hmacShaKeyFor(secret.getBytes());
+  }
   private static final long EXPIRATION_TIME = 3600; // 1시간 후 만료
 
   // ✅ JWT 생성
