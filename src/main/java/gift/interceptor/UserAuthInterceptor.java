@@ -24,6 +24,9 @@ public class UserAuthInterceptor implements HandlerInterceptor {
         HttpServletResponse response,
         Object handler
     ) throws Exception {
+        if (request.getMethod().equals("GET")) {
+            return true; // GET 요청은 인증 생략
+        }
         String token = request.getHeader("Authorization");
         if (!StringUtils.hasText(token)) {
             throw new AuthorizationRequiredException("인증이 필요한 요청입니다.");

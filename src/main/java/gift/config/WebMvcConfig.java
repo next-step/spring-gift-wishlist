@@ -24,7 +24,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(userAuthInterceptor)
-            .addPathPatterns("/api/products/**"); // get요청은 개방하려면..? (상품 전체 조회, ID로 상품 조회)
+            .addPathPatterns("/api/products/**");
 
         registry.addInterceptor(adminAuthInterceptor)
             .addPathPatterns("/admin/**"); // `ROLE_ADMIN` 권한의 JWT 토큰을 가진 사용자만 인가
