@@ -66,7 +66,7 @@ public class MemberControllerTest {
     void 회원가입_실패_중복이메일() {
         var requestDto1 = new MemberRegisterRequestDto(generateUniqueValidEmail(), VALID_NAME,
                 VALID_PW);
-        restTemplate.postForEntity(baseUrl, requestDto1, MemberRegisterRequestDto.class);
+        restTemplate.postForEntity(baseUrl, requestDto1, MemberDto.class);
 
         var requestDto2 = new MemberRegisterRequestDto(requestDto1.email(), "홍길동", "qweqweqweqwe");
         var response = restTemplate.postForEntity(baseUrl, requestDto2,
