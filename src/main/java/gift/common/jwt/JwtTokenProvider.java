@@ -6,6 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import gift.member.domain.model.Role;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -14,13 +15,6 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
-/**
- * 토큰 생성 메서드:{@link #createAccessToken(Long, String)}
- * 토큰 검증 메서드: {@link #validateToken(String)}
- * 토큰 정보 추출 메서드: {@link #getEmailFromToken(String)}, {@link #getMemberIdFromToken(String)}
- * 토큰 만료/시간 관련 메서드: {@link #getRemainingTimeInSeconds(String)}
- * 토큰 검증 결과 객체: {@link JwtTokenProvider.TokenValidationResult}
- */
 @Component
 public class JwtTokenProvider implements JwtTokenPort {
 
@@ -30,6 +24,9 @@ public class JwtTokenProvider implements JwtTokenPort {
     private final long refreshTokenExpirationDays;
     private final Algorithm algorithm;
     private final JWTVerifier verifier;
+    
+    private static final String BEARER_PREFIX = "Bearer ";
+    private static final String AUTHORIZATION_HEADER = "Authorization";
 
     public JwtTokenProvider(
             @Value("${jwt.secret:Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=}") String secretKey,
@@ -50,7 +47,7 @@ public class JwtTokenProvider implements JwtTokenPort {
     }
 
     @Override
-    public String createAccessToken(Long memberId, String email) {
+    public String createAccessToken(Long memberId, String email, Role role) {
         Instant now = Instant.now();
         Instant expiration = now.plus(accessTokenExpirationMinutes, ChronoUnit.MINUTES);
 
@@ -58,6 +55,7 @@ public class JwtTokenProvider implements JwtTokenPort {
                 .withSubject(email)
                 .withClaim("memberId", memberId)
                 .withClaim("email", email)
+                .withClaim("role", role.name())
                 .withClaim("tokenType", "access")
                 .withIssuer(issuer)
                 .withAudience(audience)
@@ -67,7 +65,7 @@ public class JwtTokenProvider implements JwtTokenPort {
     }
 
     @Override
-    public String createRefreshToken(Long memberId, String email) {
+    public String createRefreshToken(Long memberId, String email, Role role) {
         Instant now = Instant.now();
         Instant expiration = now.plus(refreshTokenExpirationDays, ChronoUnit.DAYS);
 
@@ -75,21 +73,13 @@ public class JwtTokenProvider implements JwtTokenPort {
                 .withSubject(email)
                 .withClaim("memberId", memberId)
                 .withClaim("email", email)
+                .withClaim("role", role.name())
                 .withClaim("tokenType", "refresh")
                 .withIssuer(issuer)
                 .withAudience(audience)
                 .withIssuedAt(Date.from(now))
                 .withExpiresAt(Date.from(expiration))
                 .sign(algorithm);
-    }
-
-    @Override
-    public String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-        return null;
     }
 
     @Override
@@ -100,15 +90,26 @@ public class JwtTokenProvider implements JwtTokenPort {
         } catch (TokenExpiredException e) {
             return TokenValidationResult.expired();
         } catch (JWTVerificationException e) {
-            return TokenValidationResult.invalid(e.getMessage());
+            return TokenValidationResult.invalid("토큰 검증 실패: " + e.getMessage());
+        } catch (Exception e) {
+            return TokenValidationResult.invalid("예상치 못한 오류: " + e.getMessage());
         }
+    }
+
+    @Override
+    public String resolveToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+        if (bearerToken != null && bearerToken.startsWith(BEARER_PREFIX)) {
+            return bearerToken.substring(BEARER_PREFIX.length());
+        }
+        return null;
     }
 
     @Override
     public String getEmailFromToken(String token) {
         TokenValidationResult result = validateToken(token);
         if (!result.isValid()) {
-            throw new IllegalArgumentException("Invalid token: " + result.getErrorMessage());
+            throw new IllegalArgumentException("유효하지 않은 토큰: " + result.getErrorMessage());
         }
         return result.getDecodedJWT().getClaim("email").asString();
     }
@@ -117,7 +118,7 @@ public class JwtTokenProvider implements JwtTokenPort {
     public Long getMemberIdFromToken(String token) {
         TokenValidationResult result = validateToken(token);
         if (!result.isValid()) {
-            throw new IllegalArgumentException("Invalid token: " + result.getErrorMessage());
+            throw new IllegalArgumentException("유효하지 않은 토큰: " + result.getErrorMessage());
         }
         return result.getDecodedJWT().getClaim("memberId").asLong();
     }
@@ -126,9 +127,18 @@ public class JwtTokenProvider implements JwtTokenPort {
     public String getTokenTypeFromToken(String token) {
         TokenValidationResult result = validateToken(token);
         if (!result.isValid()) {
-            throw new IllegalArgumentException("Invalid token: " + result.getErrorMessage());
+            throw new IllegalArgumentException("유효하지 않은 토큰: " + result.getErrorMessage());
         }
         return result.getDecodedJWT().getClaim("tokenType").asString();
+    }
+
+    @Override
+    public String getRoleFromToken(String token) {
+        TokenValidationResult result = validateToken(token);
+        if (!result.isValid()) {
+            throw new IllegalArgumentException("유효하지 않은 토큰: " + result.getErrorMessage());
+        }
+        return result.getDecodedJWT().getClaim("role").asString();
     }
 
     @Override
@@ -159,7 +169,7 @@ public class JwtTokenProvider implements JwtTokenPort {
         }
 
         public static TokenValidationResult expired() {
-            return new TokenValidationResult(false, true, "Token has expired", null);
+            return new TokenValidationResult(false, true, "토큰이 만료되었습니다.", null);
         }
 
         public static TokenValidationResult invalid(String errorMessage) {

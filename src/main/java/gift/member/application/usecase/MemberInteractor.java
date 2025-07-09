@@ -1,5 +1,6 @@
 package gift.member.application.usecase;
 
+import gift.common.exception.ForbiddenException;
 import gift.common.jwt.JwtTokenProvider;
 import gift.common.security.PasswordEncoder;
 import gift.member.application.port.in.LoginMemberUseCase;
@@ -11,9 +12,6 @@ import gift.member.application.port.out.MemberPersistencePort;
 import gift.member.domain.model.Member;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 
 @Service
 @Transactional
@@ -42,65 +40,23 @@ public class MemberInteractor implements SignUpMemberUseCase, LoginMemberUseCase
         Member member = Member.create(request.email(), encodedPassword);
         Member savedMember = memberPersistencePort.save(member);
 
-        return createAuthResponse(savedMember.getId(), savedMember.getEmail());
+        return createAuthResponse(savedMember.getId(), savedMember.getEmail(), savedMember.getRole());
     }
 
     @Override
     public AuthResponse login(LoginRequest request) {
         Member member = memberPersistencePort.findByEmail(request.email())
-                .orElseThrow(() -> new IllegalArgumentException("잘못된 이메일 또는 비밀번호입니다."));
+                .orElseThrow(() -> new ForbiddenException("이메일 또는 비밀번호가 올바르지 않습니다."));
 
         if (!passwordEncoder.matches(request.password(), member.getPassword())) {
-            throw new IllegalArgumentException("잘못된 이메일 또는 비밀번호입니다.");
+            throw new ForbiddenException("이메일 또는 비밀번호가 올바르지 않습니다.");
         }
 
-        return createAuthResponse(member.getId(), member.getEmail());
+        return createAuthResponse(member.getId(), member.getEmail(), member.getRole());
     }
 
-    public AuthResponse refreshAccessToken(String refreshToken) {
-        JwtTokenProvider.TokenValidationResult result = jwtTokenProvider.validateToken(refreshToken);
-        
-        if (!result.isValid()) {
-            throw new IllegalArgumentException("Invalid refresh token: " + result.getErrorMessage());
-        }
-        
-        String tokenType = jwtTokenProvider.getTokenTypeFromToken(refreshToken);
-        if (!"refresh".equals(tokenType)) {
-            throw new IllegalArgumentException("Token is not a refresh token");
-        }
-        
-        Long memberId = jwtTokenProvider.getMemberIdFromToken(refreshToken);
-        String email = jwtTokenProvider.getEmailFromToken(refreshToken);
-
-        String newAccessToken = jwtTokenProvider.createAccessToken(memberId, email);
-        long expiresInSeconds = jwtTokenProvider.getRemainingTimeInSeconds(newAccessToken);
-        
-        Instant accessTokenExpiry = Instant.now().plus(15, ChronoUnit.MINUTES);
-        Instant refreshTokenExpiry = Instant.ofEpochMilli(result.getDecodedJWT().getExpiresAt().getTime());
-        
-        return AuthResponse.withRefreshToken(
-                newAccessToken,
-                refreshToken,
-                expiresInSeconds,
-                accessTokenExpiry,
-                refreshTokenExpiry
-        );
-    }
-
-    private AuthResponse createAuthResponse(Long memberId, String email) {
-        String accessToken = jwtTokenProvider.createAccessToken(memberId, email);
-        String refreshToken = jwtTokenProvider.createRefreshToken(memberId, email);
-        
-        long expiresInSeconds = jwtTokenProvider.getRemainingTimeInSeconds(accessToken);
-        Instant accessTokenExpiry = Instant.now().plus(15, ChronoUnit.MINUTES);
-        Instant refreshTokenExpiry = Instant.now().plus(7, ChronoUnit.DAYS);
-        
-        return AuthResponse.withRefreshToken(
-                accessToken, 
-                refreshToken, 
-                expiresInSeconds,
-                accessTokenExpiry,
-                refreshTokenExpiry
-        );
+    private AuthResponse createAuthResponse(Long memberId, String email, gift.member.domain.model.Role role) {
+        String accessToken = jwtTokenProvider.createAccessToken(memberId, email, role);
+        return new AuthResponse(accessToken);
     }
 } 
