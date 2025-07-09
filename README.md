@@ -1,5 +1,14 @@
 # spring-gift-wishlist
 
+# 3단계
+
+## 1. 2단계 피드백 반영
+- Forbidden 대신 UnAuthorized로 응답하게 하기
+- Login 시 Post로 요청하게 하기
+- password 암호화하기
+- secret key를 applicaiton.porperties파일로 옮기
+- 정적 팩토리 메서드와 빌더패턴에 대해 알아보 ErrorResponseDto 수정해보기
+
 # 2단계
 
 ## 1. 1단계 피드백 반영
