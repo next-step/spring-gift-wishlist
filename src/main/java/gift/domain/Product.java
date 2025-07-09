@@ -6,20 +6,22 @@ public class Product {
     private int price;
     private String imageUrl;
     private ProductStatus status;
+    private boolean isDeleted;
 
     public Product() {
     }
 
-    public Product(Long id, String name, int price, String imageUrl, ProductStatus status) {
+    public Product(Long id, String name, int price, String imageUrl, ProductStatus status, boolean isDeleted) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
         this.status = status;
+        this.isDeleted = isDeleted;
     }
 
     public Product(String name, int price, String imageUrl, ProductStatus status) {
-        this(null, name, price, imageUrl,status);
+        this(null, name, price, imageUrl,status, false);
     }
 
     public Long getId() {
@@ -40,6 +42,10 @@ public class Product {
 
     public ProductStatus getStatus() {
         return status;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
     }
 
     public void setId(Long id){

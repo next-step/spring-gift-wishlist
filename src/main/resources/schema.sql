@@ -11,5 +11,6 @@ CREATE TABLE products (
     price INT NOT NULL,
     image_url VARCHAR(2048),
     status VARCHAR(20) DEFAULT 'ACTIVE',
+    is_deleted BOOLEAN DEFAULT FALSE,
     CONSTRAINT chk_status CHECK (status IN ('ACTIVE', 'INACTIVE', 'DISCONTINUED'))
 );

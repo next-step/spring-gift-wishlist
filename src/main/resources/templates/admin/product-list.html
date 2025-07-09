@@ -29,6 +29,8 @@
         <th>ID</th>
         <th>이름</th>
         <th>가격</th>
+        <th>상태</th>
+        <th>삭제 여부</th>
         <th>이미지</th>
         <th>관리</th>
     </tr>
@@ -41,6 +43,8 @@
                th:text="${product.name}">상품명</a>
         </td>
         <td th:text="${product.price} + '원'">가격</td>
+        <td th:text="${product.status}">상태</td>
+        <td th:text="${product.deleted}">삭제 여부</td>
         <td>
             <img th:if="${product.imageUrl != null}" th:src="${product.imageUrl}" alt="상품 이미지"/>
         </td>

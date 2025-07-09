@@ -80,6 +80,18 @@ public class ProductRepositoryImpl implements ProductRepository{
     }
 
     @Override
+    public void softDeleteById(Long id) {
+        jdbcClient.sql("""
+        UPDATE products
+        SET is_deleted = true,
+            status = 'DISCONTINUED'
+        WHERE id = :id
+    """)
+                .param("id", id)
+                .update();
+    }
+
+    @Override
     public boolean existsById(Long id) {
         Integer count = jdbcClient.sql("SELECT COUNT(*) FROM products WHERE id = :id")
                 .param("id", id)

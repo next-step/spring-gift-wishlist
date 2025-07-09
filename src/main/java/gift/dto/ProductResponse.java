@@ -10,13 +10,15 @@ public class ProductResponse {
     private final int price;
     private final String imageUrl;
     private final ProductStatus status;
+    private final boolean isDeleted;
 
-    public ProductResponse(Long id, String name, int price, String imageUrl, ProductStatus status) {
+    public ProductResponse(Long id, String name, int price, String imageUrl, ProductStatus status, boolean isDeleted) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
         this.status = status;
+        this.isDeleted = isDeleted;
     }
 
     public Long getId() {
@@ -39,13 +41,18 @@ public class ProductResponse {
         return status;
     }
 
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
     public static ProductResponse from(Product product) {
         return new ProductResponse(
                 product.getId(),
                 product.getName(),
                 product.getPrice(),
                 product.getImageUrl(),
-                product.getStatus()
+                product.getStatus(),
+                product.isDeleted()
         );
     }
 }

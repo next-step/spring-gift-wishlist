@@ -40,6 +40,6 @@ public class ProductRequest {
     }
 
     public Product toEntity() {
-        return new Product(name, price, imageUrl,status);
+        return new Product(name, price, imageUrl, status);
     }
 }

@@ -4,6 +4,7 @@ import gift.domain.Product;
 import gift.domain.ProductStatus;
 import gift.repository.ProductRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -44,6 +45,14 @@ public class ProductService {
             throw new NoSuchElementException("해당 상품이 존재하지 않습니다.");
         }
         productRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void softDelete(Long id) {
+        if (!productRepository.existsById(id)) {
+            throw new NoSuchElementException("해당 상품이 존재하지 않습니다.");
+        }
+        productRepository.softDeleteById(id);
     }
 
     public void update(Long id, Product product) {

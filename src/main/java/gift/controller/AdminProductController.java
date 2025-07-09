@@ -88,7 +88,7 @@ public class AdminProductController {
 
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable(name = "id") Long productId) {
-        productService.delete(productId);
+        productService.softDelete(productId);
         return "redirect:/admin/products";
     }
 

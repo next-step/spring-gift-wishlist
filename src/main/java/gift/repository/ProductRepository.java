@@ -13,6 +13,7 @@ public interface ProductRepository {
     List<Product> findByStatus(ProductStatus status);
     Optional<Product> findById(Long id);
     void deleteById(Long id);
+    void softDeleteById(Long id);
     boolean existsById(Long id);
     boolean updateById(Long id, Product product);
 }
