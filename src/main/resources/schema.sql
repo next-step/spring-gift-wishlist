@@ -8,6 +8,6 @@ create table product (
 create table users (
     id bigint primary key auto_increment not null,
     email varchar(50) not null,
-    password varchar(30) not null,
+    password varchar(255) not null,
     role varchar(10) not null
 )
