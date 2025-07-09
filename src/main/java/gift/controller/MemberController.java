@@ -2,6 +2,7 @@ package gift.controller;
 
 import gift.domain.Member;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,20 +25,17 @@ public class MemberController {
         return ResponseEntity.ok("회원가입 성공!");
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<String> login(HttpServletRequest request) {
+    @PostMapping("/tokenval")
+    public ResponseEntity<String> login(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+            HttpServletRequest request){
+
         String memberHeader = request.getHeader("Authorization");
+
         if (memberHeader == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증 정보 없음!");
         }
-
-        String base64Credentials = memberHeader.substring("Basic ".length());
-        String credentials = new String(Base64.getDecoder().decode(base64Credentials));
-        StringTokenizer tokenizer = new StringTokenizer(credentials, ":");
-        
-        String email = tokenizer.nextToken();
-        String password = tokenizer.nextToken();
-        boolean valid = service.login(email, password);
+        boolean valid = service.tokenvalidation(memberHeader);
 
         if (valid) {
             return ResponseEntity.ok("로그인 성공!");
