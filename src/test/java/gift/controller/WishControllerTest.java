@@ -1,9 +1,6 @@
 package gift.controller;
 
-import gift.dto.AuthResponseDto;
-import gift.dto.MemberRequestDto;
-import gift.dto.WishRequestDto;
-import gift.dto.WishResponseDto;
+import gift.dto.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,71 +30,70 @@ public class WishControllerTest {
     }
 
     @Test
-    void Wish_추가_수정_get_list_테스트() {
+    void Wish_추가_테스트() {
+        String token = registerMemberAndGetToken("demo1@email", "asdf");
 
-        // Member 추가
-        ResponseEntity<AuthResponseDto> registerResponseEntity = registerTestMember("demo@demo", "asdf");
+        ResponseEntity<String> responseEntity = addWish(token, 1L, 234);
 
-        assertThat(registerResponseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-
-        String token = registerResponseEntity.getBody().token();
-
-        // Wish 추가
-        ResponseEntity<String> wishCreatedResponseEntity = restClient.post()
-                .uri(baseUrl + "/api/wishes/1")
-                .header("Authorization", "Bearer " + token)
-                .body(
-                        new WishRequestDto(123)
-                )
-                .retrieve()
-                .toEntity(String.class);
-
-        assertThat(wishCreatedResponseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-
-        // get wish list
-        ResponseEntity<List<WishResponseDto>> wishListResponseEntity = getWishList(token);
-
-        assertThat(wishListResponseEntity.getBody()).isNotNull();
-        assertThat(wishListResponseEntity.getBody().size()).isEqualTo(1);
-        assertThat(wishListResponseEntity.getBody().get(0).count()).isEqualTo(123);
-        assertThat(wishListResponseEntity.getBody().get(0).productResponseDto().id()).isEqualTo(1);
-
-        // patch wish
-        ResponseEntity<String> wishUpdatedResponseEntity = restClient.patch()
-                .uri(baseUrl + "/api/wishes/1")
-                .header("Authorization", "Bearer " + token)
-                .body(
-                        new WishRequestDto(321)
-                )
-                .retrieve()
-                .toEntity(String.class);
-
-        assertThat(wishUpdatedResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-
-        // get wish list
-        ResponseEntity<List<WishResponseDto>> wishListResponseEntity2 = getWishList(token);
-
-        assertThat(wishListResponseEntity2.getBody()).isNotNull();
-        assertThat(wishListResponseEntity2.getBody().size()).isEqualTo(1);
-        assertThat(wishListResponseEntity2.getBody().get(0).count()).isEqualTo(321);
-        assertThat(wishListResponseEntity2.getBody().get(0).productResponseDto().id()).isEqualTo(1);
-
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     }
 
-    private ResponseEntity<AuthResponseDto> registerTestMember(String email, String password) {
-        return restClient.post()
+    @Test
+    void Wish_수정_테스트() {
+        String token = registerMemberAndGetToken("demo2@email", "asdf");
+        addWish(token, 1L, 123);
+
+        ResponseEntity<String> responseEntity = updateWish(token, 1L, 321);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    void Wish_GetList_테스트() {
+        String token = registerMemberAndGetToken("demo3@email", "asdf");
+        addWish(token, 1L, 123);
+
+        ResponseEntity<WishesResponseDto> responseEntity = getWishList(token);
+
+        assertThat(responseEntity.getBody().wishes()).isNotNull();
+        assertThat(responseEntity.getBody().wishes().size()).isGreaterThan(0);
+        assertThat(responseEntity.getBody().wishes().getLast().count()).isEqualTo(123);
+        assertThat(responseEntity.getBody().wishes().getLast().productResponseDto().id()).isEqualTo(1);
+    }
+
+    private String registerMemberAndGetToken(String email, String password) {
+        ResponseEntity<AuthResponseDto> registerResponseEntity = restClient.post()
                 .uri(baseUrl + "/api/members/register")
                 .body(new MemberRequestDto(email, password))
                 .retrieve()
                 .toEntity(AuthResponseDto.class);
+
+        return registerResponseEntity.getBody().token();
     }
 
-    private ResponseEntity<List<WishResponseDto>> getWishList(String token) {
+    private ResponseEntity<String> addWish(String token, Long productId, int count) {
+        return restClient.post()
+                .uri(baseUrl + "/api/wishes/" + productId)
+                .header("Authorization", "Bearer " + token)
+                .body(new WishRequestDto(count))
+                .retrieve()
+                .toEntity(String.class);
+    }
+
+    private ResponseEntity<String> updateWish(String token, Long productId, int count) {
+        return restClient.patch()
+                .uri(baseUrl + "/api/wishes/" + productId)
+                .header("Authorization", "Bearer " + token)
+                .body(new WishRequestDto(count))
+                .retrieve()
+                .toEntity(String.class);
+    }
+
+    private ResponseEntity<WishesResponseDto> getWishList(String token) {
         return restClient.get()
                 .uri(baseUrl + "/api/wishes")
                 .header("Authorization", "Bearer " + token)
                 .retrieve()
-                .toEntity(new ParameterizedTypeReference<List<WishResponseDto>>() {});
+                .toEntity(WishesResponseDto.class);
     }
 }
