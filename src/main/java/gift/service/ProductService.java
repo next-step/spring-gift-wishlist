@@ -19,6 +19,8 @@ public class ProductService implements ProductServiceInterface {
         this.productRepository = productRespository;
     }
 
+    private static final String KAKAO_KEYWORD = "카카오";
+
     public ProductResponseDto productToResponseDto(Product product) {
         return new ProductResponseDto(product.productId(), product.name(), product.price(),
             product.imageURL());
@@ -34,7 +36,7 @@ public class ProductService implements ProductServiceInterface {
 
 
     public ProductResponseDto createProduct(ProductRequestDto productRequestDto) {
-        if (productRequestDto.name().contains("카카오")) {
+        if (productRequestDto.name().contains(KAKAO_KEYWORD)) {
             throw new KakaoApproveException(
                 "\"카카오\" 문구가 들어간 상품은 담당MD와 협의 후 사용할 수 있습니다");
         }
@@ -60,7 +62,6 @@ public class ProductService implements ProductServiceInterface {
             productUpdateRequestDto.price(),
             productUpdateRequestDto.imageURL());
         productRepository.updateProduct(product);
-
 
         return productToResponseDto(product);
     }

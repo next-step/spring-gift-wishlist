@@ -2,7 +2,8 @@ package gift.service;
 
 
 import gift.auth.JwtTokenHandler;
-import gift.dto.request.UserAuthRequestDto;
+import gift.dto.request.LoginRequestDto;
+import gift.dto.request.RegisterRequestDto;
 import gift.dto.response.TokenResponseDto;
 import gift.entity.User;
 import gift.exception.EmailDuplicationException;
@@ -16,7 +17,6 @@ import org.springframework.stereotype.Service;
 public class UserService implements UserServiceInterface {
 
     private final UserRepository userRepository;
-
     private final JwtTokenHandler jwtTokenHandler;
 
 
@@ -25,30 +25,26 @@ public class UserService implements UserServiceInterface {
         this.jwtTokenHandler = jwtTokenHandler;
     }
 
-    public User userWithEncodedPassword(UserAuthRequestDto userAuthRequestDto) {
-        String encodedPassword = BCrypt.hashpw(userAuthRequestDto.password(), BCrypt.gensalt());
-        String userRole = "user";
-        if (userAuthRequestDto.email().contains("kakao.com")) {
-            userRole = "manager";
-        }
-        return new User(userRole, userAuthRequestDto.email(), encodedPassword);
+    public User userWithEncodedPassword(RegisterRequestDto registerRequestDto) {
+        String encodedPassword = BCrypt.hashpw(registerRequestDto.password(), BCrypt.gensalt());
+        return new User(registerRequestDto.userRole(), registerRequestDto.email(), encodedPassword);
     }
 
     @Override
-    public TokenResponseDto registerAndReturnToken(UserAuthRequestDto userAuthRequestDto) {
+    public TokenResponseDto registerAndReturnToken(RegisterRequestDto registerRequestDto) {
 
-        if (userRepository.findUserByEmail(userAuthRequestDto.email()).isPresent()) {
+        if (userRepository.findUserByEmail(registerRequestDto.email()).isPresent()) {
             throw new EmailDuplicationException("중복된 이메일입니다");
         }
 
-        User user = userWithEncodedPassword(userAuthRequestDto);
+        User user = userWithEncodedPassword(registerRequestDto);
         userRepository.createUser(user);
 
         return new TokenResponseDto(jwtTokenHandler.createToken(user));
     }
 
     @Override
-    public TokenResponseDto login(UserAuthRequestDto loginRequest) {
+    public TokenResponseDto login(LoginRequestDto loginRequest) {
         User storedUser = userRepository.findUserByEmail(loginRequest.email())
             .orElseThrow(() -> new UserNotFoundException("사용자를 찾을 수 없습니다"));
 

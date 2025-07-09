@@ -20,7 +20,8 @@ public class GlobalExceptionHandler {
         ProductNotFoundException e) {
         List<String> errors = new ArrayList<>();
         errors.add(e.getMessage());
-        ExceptionResponseDto exception = new ExceptionResponseDto(errors, 404,
+        ExceptionResponseDto exception = new ExceptionResponseDto(
+            errors,
             LocalDateTime.now());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception);
@@ -33,10 +34,9 @@ public class GlobalExceptionHandler {
 
         ExceptionResponseDto response = new ExceptionResponseDto(
             List.of(e.getMessage()),
-            HttpStatus.BAD_REQUEST.value(),
             LocalDateTime.now()
         );
-        return ResponseEntity.badRequest().body(response);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     @ResponseBody
@@ -45,10 +45,10 @@ public class GlobalExceptionHandler {
         EmailDuplicationException e) {
         List<String> errors = new ArrayList<>();
         errors.add(e.getMessage());
-        ExceptionResponseDto exception = new ExceptionResponseDto(errors, 409,
+        ExceptionResponseDto exception = new ExceptionResponseDto(errors,
             LocalDateTime.now());
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(exception);
     }
 
     @ResponseBody
@@ -57,10 +57,11 @@ public class GlobalExceptionHandler {
         UserNotFoundException e) {
         List<String> errors = new ArrayList<>();
         errors.add(e.getMessage());
-        ExceptionResponseDto exception = new ExceptionResponseDto(errors, 401,
+        ExceptionResponseDto exception = new ExceptionResponseDto(
+            errors,
             LocalDateTime.now());
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exception);
     }
 
     @ResponseBody
@@ -69,10 +70,11 @@ public class GlobalExceptionHandler {
         InvalidPasswordException e) {
         List<String> errors = new ArrayList<>();
         errors.add(e.getMessage());
-        ExceptionResponseDto exception = new ExceptionResponseDto(errors, 401,
+        ExceptionResponseDto exception = new ExceptionResponseDto(
+            errors,
             LocalDateTime.now());
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exception);
     }
 
     @ResponseBody
@@ -86,7 +88,6 @@ public class GlobalExceptionHandler {
             .toList();
         ExceptionResponseDto exception = new ExceptionResponseDto(
             errorMessage,
-            HttpStatus.BAD_REQUEST.value(),
             LocalDateTime.now()
         );
 

@@ -2,11 +2,9 @@ package gift.repository;
 
 
 import gift.entity.User;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -16,43 +14,43 @@ import org.springframework.stereotype.Repository;
 public class UserJdbcRepository implements UserRepository {
 
     private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert jdbcInsert;
 
     public UserJdbcRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        this.jdbcInsert = new SimpleJdbcInsert(this.jdbcTemplate)
+            .withTableName("users")
+            .usingColumns("user_role", "email", "password");
     }
 
     private RowMapper<User> userRowMapper() {
-        return new RowMapper<>() {
-            @Override
-            public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new User(
-                    rs.getString("user_role"),
-                    rs.getString("email"),
-                    rs.getString("password")
-                );
-            }
-        };
+        return (rs, rowNum) -> new User(
+            rs.getString("user_role"),
+            rs.getString("email"),
+            rs.getString("password")
+        );
     }
 
     @Override
     public void createUser(User user) {
-        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(this.jdbcTemplate)
-            .withTableName("users")
-            .usingColumns("user_role", "email", "password");
 
-        Map<String, Object> parameters = new HashMap<>();
+        Map<String, Object> parameters = Map.of(
+            "user_role", user.userRole(),
+            "email", user.email(),
+            "password", user.password());
 
-        parameters.put("user_role", user.userRole());
-        parameters.put("email", user.email());
-        parameters.put("password", user.password());
-
-        jdbcInsert.withTableName("users").execute(parameters);
+        jdbcInsert.execute(parameters);
     }
 
     @Override
     public Optional<User> findUserByEmail(String email) {
-        return jdbcTemplate.query("select * from users where email = ?",
-            userRowMapper(),
-            email).stream().findFirst();
+        try {
+            User user = jdbcTemplate.queryForObject("select * from users where email = ?",
+                userRowMapper(),
+                email);
+            return Optional.ofNullable(user);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 }

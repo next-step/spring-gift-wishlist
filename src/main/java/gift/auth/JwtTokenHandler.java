@@ -59,6 +59,4 @@ public class JwtTokenHandler {
             .getPayload();
         return claims.get("userRole", String.class);
     }
-
-
 }
