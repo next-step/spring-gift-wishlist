@@ -1,13 +1,13 @@
-package gift.domain.member.service;
+package gift.domain.auth.service;
 
 import gift.domain.member.Member;
-import gift.domain.member.dto.LoginRequest;
-import gift.domain.member.dto.SignInRequest;
-import gift.domain.member.jwt.JwtProvider;
+import gift.domain.auth.dto.LoginRequest;
+import gift.domain.auth.dto.SignInRequest;
+import gift.domain.auth.jwt.JwtProvider;
 import gift.global.exception.BadRequestException;
 import gift.global.exception.LoginFailedException;
 import gift.global.exception.MemberNotFoundException;
-import gift.domain.member.dto.TokenResponse;
+import gift.domain.auth.dto.TokenResponse;
 import gift.domain.member.repository.MemberRepository;
 import gift.global.exception.TokenExpiredException;
 import org.springframework.stereotype.Service;

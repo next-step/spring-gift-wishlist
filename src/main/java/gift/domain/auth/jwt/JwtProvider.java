@@ -1,4 +1,4 @@
-package gift.domain.member.jwt;
+package gift.domain.auth.jwt;
 
 import gift.domain.member.Member;
 import gift.global.exception.BadRequestException;

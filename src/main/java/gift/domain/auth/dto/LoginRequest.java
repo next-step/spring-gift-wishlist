@@ -1,4 +1,4 @@
-package gift.domain.member.dto;
+package gift.domain.auth.dto;
 
 import jakarta.validation.constraints.NotBlank;
 

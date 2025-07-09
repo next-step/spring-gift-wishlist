@@ -1,9 +1,9 @@
-package gift.domain.member.controller;
+package gift.domain.auth.controller;
 
-import gift.domain.member.dto.LoginRequest;
-import gift.domain.member.dto.SignInRequest;
-import gift.domain.member.dto.TokenResponse;
-import gift.domain.member.service.AuthService;
+import gift.domain.auth.dto.LoginRequest;
+import gift.domain.auth.dto.SignInRequest;
+import gift.domain.auth.dto.TokenResponse;
+import gift.domain.auth.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
