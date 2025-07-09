@@ -52,6 +52,7 @@
   - [x] Member의 요청 DTO에 Validation 어노테이션을 사용해 유효성 검사
   - [x] Controller에 @Valid 추가
   - [x] 상황에 맞는 예외 클래스 생성 및 모든 예외 GlobalExceptionHandler에서 처리하도록 구현
+- [x] 비밀번호를 암호화하여 저장하기 위해 PasswordUtil 추가(salt, SHA-256 활용)
 
 
 ### 관리자 전용 회원 관리 API
