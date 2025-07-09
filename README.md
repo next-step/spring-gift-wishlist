@@ -6,6 +6,7 @@
 
 0. [0단계 - 기본 코드 준비](#step-0---기본-코드-준비)
 1. [1단계 - 유효성 검사 및 예외 처리](#step-1---유효성-검사-및-예외-처리)
+2. [2단계 - 회원 로그인](#step-2---회원-로그인)
 
 ---
 
@@ -41,3 +42,31 @@
 - `validation` 패키지의 어노테이션들을 통해 예외 처리 구현
 - 유효성 검사 실패 시 발생하는 `MethodArgumentNotValidException`을 처리하기 위해 `GlobalExceptionHandler`에서 처리
 - `"카카오"` 포함 문구에 대한 예외 처리 클래스인 `ForbiddenWordException` 추가 및 핸들러에서 처리하도록 구현
+
+---
+
+<br>
+
+## Step 2 - 회원 로그인
+
+---
+
+#### 기능 요구 사항
+
+- 사용자가 회원 가입, 로그인, 추후 회원별 기능을 이용할 수 있도록 구현
+- 이메일, 비밀번호를 입력하여 회원 가입을 진행
+- 이메일 중복 및 로그인 실패 시 적절한 예외 처리
+
+
+#### 구현 상세 설명
+
+- `POST /api/members/register` → 회원 가입
+- `POST /api/members/login` → 로그인 및 토큰 발급
+
+<br>
+
+- 토큰을 생성하는 방법으로 `JJWT` 라이브러리를 사용
+    + `JwtUtil` 클래스를 만들어 토큰 생성 코드를 재사용할 수 있도록 함
+    + 추후 다른 메서드를 추가하여 `Filter`를 적용하는데도 도움을 줄 수 있음
+- 커스텀 예외 클래스 추가 (`LoginFailedException`, `DuplicateEmailException`)
+- `schema.sql`에 member 테이블 추가 코드 작성, 테스트를 위해 `data.sql`에 멤버 데이터 삽입
