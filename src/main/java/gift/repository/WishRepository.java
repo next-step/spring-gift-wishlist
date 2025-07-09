@@ -23,12 +23,6 @@ public class WishRepository {
             (:memberId, :productId, :count);
             """;
 
-    private static final String GET_WISH_COUNT = """
-            SELECT count
-            FROM wishes
-            WHERE productId = :productId and memberId = :memberId;
-            """;
-
     private static final String UPDATE_WISH_COUNT = """
             UPDATE wishes SET count = :count
             WHERE memberId = :memberId and productId = :productId;
@@ -53,14 +47,6 @@ public class WishRepository {
                 .update();
         if (numOfUpdatedRows == 0)
             throw new IllegalArgumentException("not found wish");
-    }
-
-    public int getWishCount(long memberId, long productId) {
-        return (Integer) jdbcClient.sql(GET_WISH_COUNT)
-                .param("memberId", memberId)
-                .param("productId", productId)
-                .query()
-                .singleValue();
     }
 
     public void saveWish(long memberId, long productId, int count) {
