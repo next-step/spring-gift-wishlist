@@ -23,11 +23,43 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
   }
 
-  @ExceptionHandler(value = ProductNotFoundException.class)
+  @ExceptionHandler(value = NameHasKakaoException.class)
+  public ResponseEntity<CustomErrorResponse> NameHasKakaoExceptionHandler(
+      NameHasKakaoException exception) {
+    CustomErrorResponse errorResponse = new CustomErrorResponse(HttpStatus.BAD_REQUEST,
+        exception.getMessage());
+    return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(value = {ProductNotFoundException.class, MemberNotFoundException.class})
   public ResponseEntity<CustomErrorResponse> handleProductNotFoundException(
       ProductNotFoundException exception) {
     CustomErrorResponse errorResponse = new CustomErrorResponse(HttpStatus.NOT_FOUND,
         exception.getMessage());
     return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+  }
+
+  @ExceptionHandler(value = AlreadyRegisterException.class)
+  public ResponseEntity<CustomErrorResponse> handleAlreadyRegisterException(
+      AlreadyRegisterException exception) {
+    CustomErrorResponse errorResponse = new CustomErrorResponse(HttpStatus.CONFLICT,
+        exception.getMessage());
+    return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+  }
+
+  @ExceptionHandler(value = NotRegisterException.class)
+  public ResponseEntity<CustomErrorResponse> handleNotRegisterException(
+      NotRegisterException exception) {
+    CustomErrorResponse errorResponse = new CustomErrorResponse(HttpStatus.UNAUTHORIZED,
+        exception.getMessage());
+    return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+  }
+
+  @ExceptionHandler(value = InvalidPasswordException.class)
+  public ResponseEntity<CustomErrorResponse> handleInvalidPasswordException(
+      InvalidPasswordException exception) {
+    CustomErrorResponse errorResponse = new CustomErrorResponse(HttpStatus.UNAUTHORIZED,
+        exception.getMessage());
+    return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
   }
 }

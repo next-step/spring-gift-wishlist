@@ -1,10 +1,10 @@
 package gift.controller;
 
-import gift.dto.ProductCreateFormDto;
-import gift.dto.ProductRequestDto;
-import gift.dto.ProductResponseDto;
-import gift.dto.ProductUpdateFormDto;
-import gift.service.ProductService;
+import gift.dto.product.ProductCreateFormDto;
+import gift.dto.product.ProductRequestDto;
+import gift.dto.product.ProductResponseDto;
+import gift.dto.product.ProductUpdateFormDto;
+import gift.service.product.ProductService;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.stereotype.Controller;
@@ -20,12 +20,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/admin/products")
-public class AdminController {
+public class AdminProductController {
 
-  private final ProductService service;
   private static final String PRODUCTS_LIST_PAGE_PATH = "/admin/products";
 
-  public AdminController(ProductService service) {
+  private final ProductService service;
+
+  public AdminProductController(ProductService service) {
     this.service = service;
   }
 
@@ -46,12 +47,18 @@ public class AdminController {
   public String create(@Valid @ModelAttribute ProductCreateFormDto createFormDto,
       BindingResult bindingResult, Model model) {
     if (bindingResult.hasErrors()) {
-      model.addAttribute("createFormDto", new ProductCreateFormDto());
-      model.addAttribute("validationError", "validation에 맞지 않으니 다시 입력하세요");
+      String errorMessage = bindingResult
+          .getFieldErrors()
+          .stream()
+          .findFirst()
+          .map(fieldError -> fieldError.getDefaultMessage())
+          .orElse("잘못된 요청입니다.");
+      model.addAttribute("createFormDto", createFormDto);
+      model.addAttribute("validationError", errorMessage);
       return "createProductForm";
     }
     ProductRequestDto requestDto = new ProductRequestDto(createFormDto.getName(),
-        createFormDto.getPrice(), createFormDto.getImageUrl());
+        createFormDto.getPrice(), createFormDto.getImageUrl(), createFormDto.getMdOk());
     service.createProduct(requestDto);
     return "redirect:" + PRODUCTS_LIST_PAGE_PATH;
   }
@@ -73,13 +80,19 @@ public class AdminController {
       ProductResponseDto responseDto = service.findProductById(id);
       ProductUpdateFormDto newUpdateFormDto = new ProductUpdateFormDto(responseDto.getId(),
           responseDto.getName(), responseDto.getPrice(), responseDto.getImageUrl());
+      String errorMessage = bindingResult
+          .getFieldErrors()
+          .stream()
+          .findFirst()
+          .map(fieldError -> fieldError.getDefaultMessage())
+          .orElse("잘못된 요청입니다.");
       model.addAttribute("updateFormDto", updateFormDto);
-      model.addAttribute("validationError", "validation에 맞지 않으니 다시 입력하세요");
+      model.addAttribute("validationError", errorMessage);
       return "updateProductForm";
     }
     service.updateProduct(id,
         new ProductRequestDto(updateFormDto.getName(), updateFormDto.getPrice(),
-            updateFormDto.getImageUrl()));
+            updateFormDto.getImageUrl(), updateFormDto.getMdOk()));
     return "redirect:" + PRODUCTS_LIST_PAGE_PATH;
   }
 

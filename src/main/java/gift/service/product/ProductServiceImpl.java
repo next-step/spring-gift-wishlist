@@ -1,10 +1,11 @@
-package gift.service;
+package gift.service.product;
 
-import gift.dto.ProductRequestDto;
-import gift.dto.ProductResponseDto;
+import gift.dto.product.ProductRequestDto;
+import gift.dto.product.ProductResponseDto;
 import gift.entity.Product;
+import gift.exception.NameHasKakaoException;
 import gift.exception.ProductNotFoundException;
-import gift.repository.ProductRepository;
+import gift.repository.product.ProductRepository;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -39,6 +40,9 @@ public class ProductServiceImpl implements ProductService {
 
   @Override
   public ProductResponseDto createProduct(ProductRequestDto requestDto) {
+    if (requestDto.getName().contains("카카오") && !requestDto.getMdOk()) {
+      throw new NameHasKakaoException("상품 이름에 '카카오'가 포함되어 있습니다. 담당 MD와 협의가 필요합니다.");
+    }
     Product product = repository.createProduct(
         new Product(requestDto.getName(), requestDto.getPrice(),
             requestDto.getImageUrl()));
@@ -47,17 +51,17 @@ public class ProductServiceImpl implements ProductService {
 
   @Override
   public ProductResponseDto updateProduct(Long id, ProductRequestDto requestDto) {
-
-    return repository.updateProduct(id, new Product(requestDto.getName(), requestDto.getPrice(),
-            requestDto.getImageUrl())).map(ProductResponseDto::new)
+    if (requestDto.getName().contains("카카오") && !requestDto.getMdOk()) {
+      throw new NameHasKakaoException("상품 이름에 '카카오'가 포함되어 있습니다. 담당 MD와 협의가 필요합니다.");
+    }
+    return repository.updateProduct(id,
+            new Product(requestDto.getName(), requestDto.getPrice(), requestDto.getImageUrl()))
+        .map(ProductResponseDto::new)
         .orElseThrow(() -> new ProductNotFoundException("product가 없습니다."));
   }
 
   @Override
   public void deleteProduct(Long id) {
-    int delete = repository.deleteProduct(id);
-    if (delete != 1) {
-      throw new ProductNotFoundException("삭제할 것이 없습니다");
-    }
+    int deletedProduct = repository.deleteProduct(id);
   }
 }

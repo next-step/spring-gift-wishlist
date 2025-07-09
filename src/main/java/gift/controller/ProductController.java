@@ -1,9 +1,8 @@
 package gift.controller;
 
-import gift.dto.ProductRequestDto;
-import gift.dto.ProductResponseDto;
-import gift.entity.Product;
-import gift.service.ProductService;
+import gift.dto.product.ProductRequestDto;
+import gift.dto.product.ProductResponseDto;
+import gift.service.product.ProductService;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -18,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/products")//코드리뷰: 코드중복줄이기
+@RequestMapping("/api/products")
 public class ProductController {
 
   private final ProductService service;
@@ -50,7 +49,7 @@ public class ProductController {
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Product> deleteProduct(@PathVariable Long id) {
+  public ResponseEntity<ProductResponseDto> deleteProduct(@PathVariable Long id) {
     service.deleteProduct(id);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
