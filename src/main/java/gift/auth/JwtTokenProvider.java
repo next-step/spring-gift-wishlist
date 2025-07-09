@@ -1,7 +1,6 @@
 package gift.auth;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -38,27 +37,21 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    // 토큰에서 회원 ID 추출
-    public Long getMemberId(String token) {
-        Claims claims = Jwts.parserBuilder()
+    /**
+     * 토큰 유효성 검증 및 토큰 파싱
+     * 예외가 발생하면 던지고
+     * JwtAuthenticationFilter 에서 처리
+     */
+    public Claims validateAndParseClaims(String token) {
+        return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-
-        return Long.valueOf(claims.getSubject());
     }
 
-    // 토큰 유효성 검증
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token);
-            return true;
-        } catch (JwtException | IllegalArgumentException e) {
-            return false;
-        }
+    // 토큰에서 파싱된 Claims 에서 회원 ID 추출
+    public Long getMemberId(Claims claims) {
+        return Long.valueOf(claims.getSubject());
     }
 }

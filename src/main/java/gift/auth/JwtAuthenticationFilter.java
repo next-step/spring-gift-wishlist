@@ -32,7 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // 2. 토큰이 있는 경우 → 유효성 검사
         if (StringUtils.hasText(token)) {
-            if (jwtTokenProvider.validateToken(token)) {
+            if (jwtTokenProvider.validateAndParseClaims(token)) {
                 // 3. 유효한 경우 → 회원 ID 추출 후 request에 저장
                 Long memberId = jwtTokenProvider.getMemberId(token);
                 request.setAttribute("memberId", memberId);

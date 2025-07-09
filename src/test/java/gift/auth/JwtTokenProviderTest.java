@@ -52,12 +52,12 @@ class JwtTokenProviderTest {
 
     @Test
     @DisplayName("유효한 토큰은 검증을 통과한다")
-    void validateToken_validToken_returnsTrue() {
+    void validateAndParseClaims_returnsTrue() {
         // given
         String token = jwtTokenProvider.createToken(5L);
 
         // when
-        boolean isValid = jwtTokenProvider.validateToken(token);
+        boolean isValid = jwtTokenProvider.validateAndParseClaims(token);
 
         // then
         assertThat(isValid).isTrue();
@@ -65,9 +65,9 @@ class JwtTokenProviderTest {
 
     @Test
     @DisplayName("null 토큰은 검증을 통과하지 못한다")
-    void validateToken_nullToken_returnsFalse() {
+    void validateAndParseClaims_returnsFalse() {
         // when
-        boolean isValid = jwtTokenProvider.validateToken(null);
+        boolean isValid = jwtTokenProvider.validateAndParseClaims(null);
 
         // then
         assertThat(isValid).isFalse();
@@ -75,9 +75,9 @@ class JwtTokenProviderTest {
 
     @Test
     @DisplayName("빈 토큰은 검증을 통과하지 못한다")
-    void validateToken_emptyToken_returnsFalse() {
+    void validateAndParseClaims_returnsFalse() {
         // when
-        boolean isValid = jwtTokenProvider.validateToken("");
+        boolean isValid = jwtTokenProvider.validateAndParseClaims("");
 
         // then
         assertThat(isValid).isFalse();
@@ -85,12 +85,12 @@ class JwtTokenProviderTest {
 
     @Test
     @DisplayName("잘못된 형식의 토큰은 검증을 통과하지 못한다")
-    void validateToken_malformedToken_returnsFalse() {
+    void validateAndParseClaims_returnsFalse() {
         // given
         String malformedToken = "this.is.not.a.valid.jwt.token";
 
         // when
-        boolean isValid = jwtTokenProvider.validateToken(malformedToken);
+        boolean isValid = jwtTokenProvider.validateAndParseClaims(malformedToken);
 
         // then
         assertThat(isValid).isFalse();
@@ -98,7 +98,7 @@ class JwtTokenProviderTest {
 
     @Test
     @DisplayName("다른 키로 서명된 토큰은 검증을 통과하지 못한다")
-    void validateToken_differentKey_returnsFalse() {
+    void validateAndParseClaims_differentKey_returnsFalse() {
         // given
         JwtTokenProvider otherProvider = new JwtTokenProvider(
                 "different-secret-key-that-is-long-enough-for-jwt-requirements-256-bits",
@@ -107,7 +107,7 @@ class JwtTokenProviderTest {
         String tokenFromOtherProvider = otherProvider.createToken(5L);
 
         // when
-        boolean isValid = jwtTokenProvider.validateToken(tokenFromOtherProvider);
+        boolean isValid = jwtTokenProvider.validateAndParseClaims(tokenFromOtherProvider);
 
         // then
         assertThat(isValid).isFalse();
@@ -115,7 +115,7 @@ class JwtTokenProviderTest {
 
     @Test
     @DisplayName("만료된 토큰은 검증을 통과하지 못한다")
-    void validateToken_expiredToken_returnsFalse() throws InterruptedException {
+    void validateAndParseClaims_returnsFalse() throws InterruptedException {
         // given
         JwtTokenProvider shortLivedProvider = new JwtTokenProvider(
                 "test-secret-key-for-jwt-token-provider-unit-test-must-be-at-least-256-bits",
@@ -127,7 +127,7 @@ class JwtTokenProviderTest {
         Thread.sleep(10);
 
         // when
-        boolean isValid = shortLivedProvider.validateToken(token);
+        boolean isValid = shortLivedProvider.validateAndParseClaims(token);
 
         // then
         assertThat(isValid).isFalse();
