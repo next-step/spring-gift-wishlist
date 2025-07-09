@@ -1,14 +1,23 @@
 package gift.product.domain;
 
+import java.util.UUID;
+
 public class Product {
-    private String id;
+    private UUID id;
     private String name;
-    private int price;
+    private Integer price;
     private String imageUrl;
 
     public Product() {}
 
-    public String getId() {
+    public Product(UUID id, String name, Integer price, String imageUrl) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.imageUrl = imageUrl;
+    }
+
+    public UUID getId() {
         return id;
     }
 
@@ -16,7 +25,7 @@ public class Product {
         return name;
     }
 
-    public int getPrice() {
+    public Integer getPrice() {
         return price;
     }
 
@@ -24,7 +33,7 @@ public class Product {
         return imageUrl;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -32,7 +41,7 @@ public class Product {
         this.name = name;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(Integer price) {
         this.price = price;
     }
 

@@ -1,13 +1,14 @@
 package gift.product.repository;
 
 import gift.product.domain.Product;
-import gift.product.dto.ProductDto;
+import gift.product.dto.RequestDto;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 public class ProductDao {
@@ -17,12 +18,15 @@ public class ProductDao {
         this.jdbcClient = jdbcClient;
     }
 
-    public void save(ProductDto productDto) {
-        jdbcClient.sql("INSERT INTO PRODUCTS (id, name, price, imageUrl) VALUES (UUID(), :name, :price, :imageUrl)")
-                .param("name", productDto.getName())
-                .param("price", productDto.getPrice())
-                .param("imageUrl", productDto.getImageUrl())
+    public Product save(Product product) {
+        jdbcClient.sql("INSERT INTO PRODUCTS (id, name, price, imageUrl) VALUES (:id, :name, :price, :imageUrl)")
+                .param("id", product.getId())
+                .param("name", product.getName())
+                .param("price", product.getPrice())
+                .param("imageUrl", product.getImageUrl())
                 .update();
+
+        return product;
     }
 
 
@@ -32,7 +36,7 @@ public class ProductDao {
                 .list();
     }
 
-    public Product findById(String id) throws EmptyResultDataAccessException {
+    public Product findById(UUID id) throws EmptyResultDataAccessException {
         return jdbcClient.sql("SELECT * FROM PRODUCTS WHERE id = :id")
                 .param("id", id)
                 .query(Product.class)
@@ -40,28 +44,33 @@ public class ProductDao {
     }
 
     @Transactional
-    public void update(String id, ProductDto productDto) {
-        if (productDto.getName() != null) {
+    public Product update(UUID id, RequestDto requestDto) {
+        if (requestDto.getName() != null) {
             jdbcClient.sql("UPDATE PRODUCTS SET name = :name WHERE id = :id")
-                    .param("name", productDto.getName())
+                    .param("name", requestDto.getName())
                     .param("id", id)
                     .update();
         }
-        if (productDto.getPrice() != 0) {
+        if (requestDto.getPrice() != 0) {
             jdbcClient.sql("UPDATE PRODUCTS SET price = :price WHERE id = :id")
-                    .param("price", productDto.getPrice())
+                    .param("price", requestDto.getPrice())
                     .param("id", id)
                     .update();
         }
-        if (productDto.getImageUrl() != null) {
+        if (requestDto.getImageUrl() != null) {
             jdbcClient.sql("UPDATE PRODUCTS SET imageUrl = :imageUrl WHERE id = :id")
-                    .param("imageUrl", productDto.getImageUrl())
+                    .param("imageUrl", requestDto.getImageUrl())
                     .param("id", id)
                     .update();
         }
+
+        return jdbcClient.sql("SELECT * FROM PRODUCTS WHERE id = :id")
+                .param("id", id)
+                .query(Product.class)
+                .single();
     }
 
-    public void delete(String id) {
+    public void delete(UUID id) {
         jdbcClient.sql("DELETE FROM PRODUCTS WHERE id = :id")
                 .param("id", id)
                 .update();

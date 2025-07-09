@@ -1,66 +1,48 @@
 package gift.product.service;
 
 import gift.product.domain.Product;
-import gift.product.dto.ProductDto;
+import gift.product.dto.RequestDto;
 import gift.product.repository.ProductDao;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
 @Service
 public class ProductService {
-    private ProductDao productdao;
+    private final ProductDao productdao;
 
     public ProductService(ProductDao productdao) {
         this.productdao = productdao;
     }
 
     @Transactional
-    public ProductDto saveProduct(ProductDto productdto) {
-        if(productdto.getPrice() < 0) {
-            throw new IllegalArgumentException("Price should be positive");
-        }
-        productdao.save(productdto);
-        return productdto;
+    public Product saveProduct(RequestDto requestDto) {
+        UUID id = UUID.randomUUID();
+        Product product = new Product(id, requestDto.getName(), requestDto.getPrice(), requestDto.getImageUrl());
+        return productdao.save(product);
     }
 
     @Transactional(readOnly = true)
-    public List<ProductDto> findAll() {
-        return productdao.findAll().stream()
-                .map(ProductDto::new)
-                .collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true)
-    public List<Product> adminFindAll() {
+    public List<Product> findAll() {
         return productdao.findAll();
     }
 
     @Transactional(readOnly = true)
-    public ProductDto findById(String id) {
-        return new ProductDto(productdao.findById(id));
-    }
-
-    @Transactional(readOnly = true)
-    public Product adminFindById(String id) {
+    public Product findById(UUID id) {
         return productdao.findById(id);
     }
 
     @Transactional
-    public void updateProduct(String id, ProductDto productdto) {
-        if(productdto.getPrice() < 0) {
-            throw new IllegalArgumentException("Price should be positive");
-        }
+    public Product updateProduct(UUID id, RequestDto requestDto) {
         productdao.findById(id);
-        productdao.update(id, productdto);
+        return productdao.update(id, requestDto);
     }
 
     @Transactional
-    public ProductDto deleteProduct(String id) {
-        Product product = productdao.findById(id);
+    public void deleteProduct(UUID id) {
+        productdao.findById(id);
         productdao.delete(id);
-        return new ProductDto(product);
     }
 }
