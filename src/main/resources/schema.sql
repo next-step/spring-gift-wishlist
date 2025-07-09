@@ -2,7 +2,8 @@ create table products(
     id bigint auto_increment,
     name varchar(255) not null,
     price int not null,
-    image_url varchar(255) not null
+    image_url varchar(255) not null,
+    primary key (id)
 );
 
 create table members(
@@ -15,8 +16,10 @@ create table members(
 
 create table wishList(
     id bigint auto_increment,
-    memberid varchar(255) not null,
+    memberid bigint not null,
     productid bigint not null,
     quantity int not null,
-    primary key (id)
+    primary key (id),
+    foreign key (productid) references products(id),
+    foreign key (memberid) references members(id)
 );

@@ -1,0 +1,76 @@
+
+<html layout:decorate="~{view/layout}">
+
+<div layout:fragment="content">
+
+  <table>
+
+    <style>
+      td h2 {
+        display: inline-block;
+        margin: 0 6px;
+        font-size: 18px;
+        line-height: 1;
+        vertical-align: middle;
+        cursor: pointer;
+      }
+
+      td form {
+        display: inline-block;
+        margin-left: 6px;
+      }
+
+      td form button {
+        height: 32px;
+        padding: 0 10px;
+        font-size: 14px;
+        background-color: #90ee90;
+        border: 1px solid #ccc;
+        cursor: pointer;
+        font-weight: bold;
+      }
+
+    </style>
+
+  <thead>
+  <tr>
+    <th>상품명</th>
+    <th>상품이미지</th>
+    <th>수량</th>
+    <th>가격</th>
+    <th>장바구니 수정</th>
+  </tr>
+  </thead>
+
+  <tbody>
+  <tr th:each="responseDto: ${wishlist}">
+    <td th:text="${responseDto.productName}"></td>
+    <td><img th:src="@{${responseDto.productImage}}" width="100px" alt="상품 이미지"/></td>
+    <td th:text="${responseDto.quantity}"></td>
+    <td th:text="${responseDto.price}"></td>
+
+    <td>
+      <form th:action="@{/view/wishlist/add/{wishListId}(wishListId=${responseDto.wishListId})}" method="post">
+        <button type="submit">+</button>
+      </form>
+      <form th:action="@{/view/wishlist/subtract/{wishListId}(wishListId=${responseDto.wishListId})}" method="post">
+        <button type="submit">-</button>
+      </form>
+      <form th:action="@{/view/payment}" method="get">
+        <button type="submit">바로 구매하기</button>
+      </form>
+      <form th:action="@{/view/wishlist/delete/{wishListId}(wishListId=${responseDto.wishListId})}" method="post">
+        <button type="submit">비우기</button>
+      </form>
+    </td>
+
+
+
+  </tr>
+  </tbody>
+</table>
+
+
+</body>
+</div>
+</html>
