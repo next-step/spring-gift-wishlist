@@ -1,8 +1,11 @@
 package gift.user.controller;
 
+import gift.security.AdminInterceptor;
 import gift.user.dto.UserRequestDto;
 import gift.user.dto.UserResponseDto;
 import gift.user.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,39 +20,72 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class AdminViewController {
 
   private final UserService userService;
+  private final AdminInterceptor adminInterceptor;
 
-  public AdminViewController(UserService userService) {
+  public AdminViewController(UserService userService, AdminInterceptor adminInterceptor) {
     this.userService = userService;
+    this.adminInterceptor = adminInterceptor;
   }
 
   @GetMapping
-  public String index(Model model) {
+  public String index(Model model, HttpServletRequest req, HttpServletResponse res)
+      throws Exception {
+
+    if (!adminInterceptor.isAdmin(req, res)) {
+      return null;
+    }
+
     List<UserResponseDto> users = userService.findAllUsers();
     model.addAttribute("users", users);
     return "admin/index";
   }
 
   @GetMapping("/users/new")
-  public String moveForm() {
+  public String moveForm(HttpServletRequest req, HttpServletResponse res) throws Exception {
+
+    if (!adminInterceptor.isAdmin(req, res)) {
+      return null;
+    }
+
     return "admin/form";
   }
 
   @PostMapping
-  public String createUser(@RequestParam String email, @RequestParam String password) {
+  public String createUser(@RequestParam String email, @RequestParam String password
+      , HttpServletRequest req, HttpServletResponse res)
+      throws Exception {
+
+    if (!adminInterceptor.isAdmin(req, res)) {
+      return null;
+    }
+
     UserRequestDto dto = new UserRequestDto(email, password);
     userService.saveUser(dto);
     return "redirect:/api/admin";
   }
 
   @GetMapping("/users/{id}")
-  public String findUser(@PathVariable Long id, Model model) {
+  public String findUser(@PathVariable Long id, Model model, HttpServletRequest req,
+      HttpServletResponse res)
+      throws Exception {
+
+    if (!adminInterceptor.isAdmin(req, res)) {
+      return null;
+    }
+
     UserResponseDto dto = userService.findById(id);
     model.addAttribute("user", dto);
     return "admin/detail";
   }
 
   @GetMapping("/users/{id}/update")
-  public String moveUpdateForm(@PathVariable Long id, Model model) {
+  public String moveUpdateForm(@PathVariable Long id, Model model, HttpServletRequest req,
+      HttpServletResponse res) throws Exception {
+
+    if (!adminInterceptor.isAdmin(req, res)) {
+      return null;
+    }
+
     UserResponseDto user = userService.findById(id);
     model.addAttribute("user", user);
     return "admin/update";
@@ -57,14 +93,25 @@ public class AdminViewController {
 
   @PostMapping("/users/{id}")
   public String updateUser(@PathVariable Long id, @RequestParam String email,
-      @RequestParam String password) {
+      @RequestParam String password, HttpServletRequest req, HttpServletResponse res) throws Exception {
+
+    if (!adminInterceptor.isAdmin(req, res)) {
+      return null;
+    }
+
     UserRequestDto dto = new UserRequestDto(email, password);
     userService.updateUser(id, dto);
     return "redirect:/api/admin/users/" + id;
   }
 
   @GetMapping("/users/{id}/delete")
-  public String deleteUser(@PathVariable Long id) {
+  public String deleteUser(@PathVariable Long id, HttpServletRequest req, HttpServletResponse res)
+  throws Exception {
+
+    if (!adminInterceptor.isAdmin(req, res)) {
+      return null;
+    }
+
     userService.deleteUser(id);
     return "redirect:/api/admin";
   }
