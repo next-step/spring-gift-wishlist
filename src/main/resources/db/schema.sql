@@ -1,4 +1,4 @@
-CREATE TABLE product (
+CREATE TABLE products (
         id BIGINT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(20) NOT NULL,
         price BIGINT NOT NULL,
