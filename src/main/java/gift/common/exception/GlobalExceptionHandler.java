@@ -7,7 +7,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestControllerAdvice
@@ -26,6 +25,21 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleProductNotFoundException(ProductNotFoundException e) {
-        return new ResponseEntity<>(new ErrorResponse(LocalDateTime.now(), e.getMessage()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(ErrorResponse.of(e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException e) {
+        return new ResponseEntity<>(ErrorResponse.of(e.getMessage()), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleUserAlreadyExistsException(UserAlreadyExistsException e) {
+        return new ResponseEntity<>(ErrorResponse.of(e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidUserException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidUserException(InvalidUserException e) {
+        return new ResponseEntity<>(ErrorResponse.of(e.getMessage()), HttpStatus.FORBIDDEN);
     }
 }

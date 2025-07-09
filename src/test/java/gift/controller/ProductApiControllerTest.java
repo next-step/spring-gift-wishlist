@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -19,8 +20,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @Sql(scripts = "/cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-@Sql(scripts = "/dropTable.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_CLASS)
 class ProductApiControllerTest {
 
     @Autowired
@@ -115,7 +116,7 @@ class ProductApiControllerTest {
     }
 
     @Test
-    @DisplayName("상품 생성 dto 유효성 검증3 - 상품 이름에 [카카오] 라는 단어가 포함된 경우 상태코드 400을 반환한다.")
+    @DisplayName("상품 생성 dto 유효성 검증3 - 상품 이름에 [카카오] 라는 단어가 포함된 경우 상태코드 403을 반환한다.")
     void test5_3() throws Exception{
         String body = mapper.writeValueAsString(
                 new CreateProductRequest("카카오톡", 1000000, 1)
@@ -124,7 +125,7 @@ class ProductApiControllerTest {
         mvc.perform(post("/api/products")
                 .content(body)
                 .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isBadRequest());
+        ).andExpect(status().isForbidden());
     }
 
     @Test
@@ -176,7 +177,7 @@ class ProductApiControllerTest {
     }
 
     @Test
-    @DisplayName("상품 생성 dto 유효성 검증6 - 상품 가격이 1억을 넘어갈 경우 상태코드 400을 반환한다.")
+    @DisplayName("상품 생성 dto 유효성 검증7 - 상품 가격이 1억을 넘어갈 경우 상태코드 400을 반환한다.")
     void test5_7() throws Exception {
         String body = mapper.writeValueAsString(
                 new CreateProductRequest("맛동산", 100_000_001, 100)
@@ -189,7 +190,7 @@ class ProductApiControllerTest {
     }
 
     @Test
-    @DisplayName("상품 생성 dto 유효성 검증6 - 상품 수량이 음수로 들어올 경우 상태코드 400을 반환한다.")
+    @DisplayName("상품 생성 dto 유효성 검증8 - 상품 수량이 음수로 들어올 경우 상태코드 400을 반환한다.")
     void test5_8() throws Exception {
         String body = mapper.writeValueAsString(
                 new CreateProductRequest("맛동산", 1000, -1)
@@ -202,7 +203,7 @@ class ProductApiControllerTest {
     }
 
     @Test
-    @DisplayName("상품 생성 dto 유효성 검증6 - 상품 수량이 1억을 넘어갈 경우 상태코드 400을 반환한다.")
+    @DisplayName("상품 생성 dto 유효성 검증9 - 상품 수량이 1억을 넘어갈 경우 상태코드 400을 반환한다.")
     void test5_9() throws Exception {
         String body = mapper.writeValueAsString(
                 new CreateProductRequest("맛동산", 1000, 100_000_001)
