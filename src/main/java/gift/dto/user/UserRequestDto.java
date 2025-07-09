@@ -15,11 +15,20 @@ public class UserRequestDto {
     @Size(min = 8, message = "비밀번호는 최소 8자리를 입력해주세요.")
     private String password;
 
-    @NotBlank(message = "사용자 이름 값 입력은 필수입니다.")
     private String name;
 
-    public User toEntity() {
-        return new User(this.email, this.password, this.name);
+    public UserRequestDto(String mail, String password, String name) {
+        this.email = mail;
+        this.password = password;
+        this.name = name;
     }
 
+    public User toEntity() {
+        return new User(this.email, this.name);
+    }
+
+    //Getters
+    public String getEmail() {return this.email;}
+    public String getPassword() {return this.password;}
+    public String getName() {return this.name;}
 }
