@@ -1,6 +1,6 @@
 package gift.controller;
 
-import gift.dto.ProductRequestDto;
+import gift.dto.product.ProductRequestDto;
 import gift.entity.Product;
 import gift.service.ProductService;
 import org.springframework.stereotype.Controller;
@@ -36,6 +36,7 @@ public class ProductAdminController {
     public String createForm(Model model) {
         model.addAttribute("productRequestDto", new ProductRequestDto("", 0L, ""));
 
+        return "";
     }
 
     // 상품 추가
