@@ -22,10 +22,7 @@ public class ProductService {
 
     public Long saveProduct(ProductRequestDto productRequestDto) {
         return productRepository.saveProduct(
-            productRequestDto.name(),
-            productRequestDto.price(),
-            productRequestDto.imageUrl(),
-            Product.inferStatus(productRequestDto.name())
+                productRequestDto.toEntity()
         );
     }
 
@@ -46,7 +43,7 @@ public class ProductService {
     @Transactional(readOnly = true)
     public List<ProductResponseDto> findApprovedProducts() {
         return productRepository.findAllProducts().stream()
-                .filter(product -> product.status() == Product.Status.APPROVED)
+                .filter(product -> product.getStatus() == Product.Status.APPROVED)
                 .map(ProductResponseDto::new)
                 .toList();
     }

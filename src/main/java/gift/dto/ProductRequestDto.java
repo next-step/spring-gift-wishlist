@@ -12,8 +12,9 @@ public record ProductRequestDto(
         String name,
         @Min(0) Integer price,
         @Length(max = 255) String imageUrl) {
-    public Product toEntity(Long id, Product.Status status) {
-        return new Product(id, name, price, imageUrl, status);
+
+    public Product toEntity() {
+        return new Product(name, price, imageUrl);
     }
 }
 
