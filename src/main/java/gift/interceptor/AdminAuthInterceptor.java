@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import gift.exception.AuthorizationRequiredException;
 import gift.util.TokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,7 +26,7 @@ public class AdminAuthInterceptor implements HandlerInterceptor {
     ) throws Exception {
         String token = request.getHeader("Authorization");
         if (!StringUtils.hasText(token) || !tokenProvider.getRole(token).equals("ROLE_ADMIN")) {
-            return false;
+            throw new AuthorizationRequiredException("인증이 필요한 요청입니다.");
         }
 
         return true;

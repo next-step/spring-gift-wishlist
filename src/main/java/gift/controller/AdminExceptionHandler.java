@@ -9,12 +9,14 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import gift.exception.ApprovalRequiredException;
+import gift.exception.AuthorizationRequiredException;
 import gift.exception.ProductCreateException;
 import gift.exception.ProductNotFoundException;
 import gift.exception.ProductUpdateException;
 import gift.exception.MemberDeleteException;
 import gift.exception.MemberNotFoundException;
 import gift.exception.MemberUpdateException;
+import io.jsonwebtoken.JwtException;
 
 @ControllerAdvice(
     assignableTypes = {ProductAdminController.class, MemberAdminController.class}
@@ -43,7 +45,9 @@ public class AdminExceptionHandler {
         ApprovalRequiredException.class,
         MemberNotFoundException.class,
         MemberUpdateException.class,
-        MemberDeleteException.class
+        MemberDeleteException.class,
+        AuthorizationRequiredException.class,
+        JwtException.class
     })
     public String handleProductExceptions(RuntimeException e, Model model) {
         model.addAttribute("errorMessage", e.getMessage());
