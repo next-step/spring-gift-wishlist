@@ -83,8 +83,16 @@ public class UserService {
   }
 
   public UserResponseDto updateUser(Long userId, UserRequestDto dto) {
-    String encryptedPassword = passwordEncoder.encrypt(dto.email(),dto.password());
-    User user = userDao.updateUser(userId,dto.email(),encryptedPassword);
+    User existingUser = findByIdOrFail(userId);
+    String updatedPassword;
+
+    if (dto.password() == null || dto.password().trim().isEmpty()) {
+      updatedPassword = existingUser.getEncodedPassword();
+    } else {
+      updatedPassword = passwordEncoder.encrypt(dto.email(), dto.password());
+    }
+
+    User user = userDao.updateUser(userId, dto.email(), updatedPassword);
     return UserResponseDto.from(user);
   }
 
