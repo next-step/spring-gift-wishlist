@@ -54,11 +54,14 @@ public class WishlistController {
     
     
     @PatchMapping
-    public ResponseEntity<WishlistResponseDto> modifyProductCntFromMyWishlist(
+    public ResponseEntity<?> modifyProductCntFromMyWishlist(
         @CurrentUser Long userId,
         @RequestBody WishlistRequestDto requestDto
     ) {
         WishlistResponseDto responseDto = wishlistService.modifyProductCntFromMyWishlist(userId, requestDto);
+        if(responseDto == null) {
+            return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+        }
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 }

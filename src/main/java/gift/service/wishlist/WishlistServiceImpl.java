@@ -5,7 +5,6 @@ import gift.dto.api.wishlist.WishlistResponseDto;
 import gift.entity.Member;
 import gift.entity.Product;
 import gift.entity.WishlistInfo;
-import gift.exception.nocontent.DeleteByModifyException;
 import gift.repository.member.MemberRepository;
 import gift.repository.product.ProductRepository;
 import gift.repository.wishlist.WishlistRepository;
@@ -79,7 +78,7 @@ public class WishlistServiceImpl implements WishlistService {
         
         if(requestDto.productCnt() == 0) {
             deleteFromMyWishlist(wishlistInfo.getUserId(), wishlistInfo.getProductId());
-            throw new DeleteByModifyException();
+            return null;
         }
         
         WishlistInfo modifiedWishlistInfo = wishlistRepository.modifyProductCntFromMyWishlist(
