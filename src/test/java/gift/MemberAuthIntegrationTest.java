@@ -30,11 +30,13 @@ public class MemberAuthIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    String randomEmail;
+
     @BeforeEach
     void setUp() throws Exception {
+        randomEmail = "user_" + UUID.randomUUID().toString() + "@email.com";
         Map<String, String> member = new HashMap<>();
-        String testEmail = "testuser" + UUID.randomUUID() + "@email.com";
-        member.put("email", testEmail);
+        member.put("email", randomEmail);
         member.put("password", "password123");
 
         mockMvc.perform(post("/api/members/register")
@@ -82,5 +84,18 @@ public class MemberAuthIntegrationTest {
         mockMvc.perform(get("/api/products")
                         .header("Authorization", "Bearer invalid.token.here"))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @DisplayName("중복 이메일로 회원가입 시도 시 400 Bad Request 반환")
+    void 회원가입_실패_중복_이메일() throws Exception {
+        Map<String, String> duplicateMember = new HashMap<>();
+        duplicateMember.put("email", randomEmail);
+        duplicateMember.put("password", "anotherpassword");
+
+        mockMvc.perform(post("/api/members/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(duplicateMember)))
+                .andExpect(status().isBadRequest());
     }
 }
