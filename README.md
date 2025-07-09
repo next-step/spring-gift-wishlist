@@ -45,8 +45,9 @@
 - [x] MemberService 구현
 - [x] MemberController 구현
 - [x] Member 예외 처리 구현
-- [ ] JWT 인증 필터(인터셉터) 적용
-- [ ] 인증 예외 처리 구현
+- [x] JWT 인증 필터(인터셉터) 적용
+- [x] 인증 예외 처리 구현
+- [x] 테스트 코드 JWT 인증 추가
 - [ ] 회원 관련 페이지 구현
 
 ### 2단계 - 코드 리뷰 반영
@@ -54,8 +55,8 @@
 - [x] 헬퍼 메서드 접근 지정자 수정
 - [x] 표기법 통일(properties)
 - [x] JWT expiration 적용
-- [ ] JWT 관련 deprecated 메소드 사용 제거
-- [ ] Interceptor: authHeader 토큰 문제 수정
+- [x] JWT 관련 deprecated 메소드 사용 제거
+- [x] Interceptor: authHeader 토큰 문제 수정
 
 # spring-gift-product (이전 구현)
 

@@ -1,6 +1,9 @@
 package gift.product.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gift.auth.JwtUtil;
+import gift.member.dto.MemberRegisterRequest;
+import gift.member.service.MemberService;
 import gift.product.domain.Product;
 import gift.product.dto.ProductRequestDto;
 import gift.product.service.ProductService;
@@ -34,11 +37,19 @@ public class ProductApiControllerTest {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private MemberService memberService;
+
     private Product product1;
     private Product product2;
+    private String adminToken;
 
     @BeforeEach
     void setUp() {
+        MemberRegisterRequest request = new MemberRegisterRequest("test@gmail.com", "12345678");
+
+        adminToken = memberService.register(request).token();
+
         ProductRequestDto requestDto1 = new ProductRequestDto("Test1", 1000, "Test1.jpg");
         ProductRequestDto requestDto2 = new ProductRequestDto("Test2", 1200, "Test2.jpg");
 
@@ -56,6 +67,7 @@ public class ProductApiControllerTest {
         // when
         // then
         mockMvc.perform(post("/api/products")
+                .header("Authorization", "Bearer " + adminToken)
                 .content(content)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
@@ -67,6 +79,7 @@ public class ProductApiControllerTest {
     @DisplayName("전체 상품 조회 테스트 - 200")
     void getProducts() throws Exception {
         mockMvc.perform(get("/api/products")
+                .header("Authorization", "Bearer " + adminToken)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -81,6 +94,7 @@ public class ProductApiControllerTest {
         Long productId = product1.getId();
 
         mockMvc.perform(get("/api/products/" + productId)
+                .header("Authorization", "Bearer " + adminToken)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(productId.intValue())))
@@ -93,6 +107,7 @@ public class ProductApiControllerTest {
         Long notFoundId = 999999L;
 
         mockMvc.perform(get("/api/products/" + notFoundId)
+                .header("Authorization", "Bearer " + adminToken)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andDo(print());
@@ -108,12 +123,14 @@ public class ProductApiControllerTest {
         String content = objectMapper.writeValueAsString(requestDto);
 
         mockMvc.perform(put("/api/products/" + productId)
+                .header("Authorization", "Bearer " + adminToken)
                 .content(content)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())
                 .andDo(print());
 
         mockMvc.perform(get("/api/products/" + productId)
+                .header("Authorization", "Bearer " + adminToken)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.name", is("수정된 이름")))
                 .andExpect(jsonPath("$.price", is(12000)));
@@ -124,11 +141,13 @@ public class ProductApiControllerTest {
     void deleteProduct() throws Exception {
         Long productId = product1.getId();
 
-        mockMvc.perform(delete("/api/products/" + productId))
+        mockMvc.perform(delete("/api/products/" + productId)
+                .header("Authorization", "Bearer " + adminToken))
                 .andExpect(status().isNoContent())
                 .andDo(print());
 
-        mockMvc.perform(get("/api/products/" + productId))
+        mockMvc.perform(get("/api/products/" + productId)
+                .header("Authorization", "Bearer " + adminToken))
                 .andExpect(status().isNotFound());
     }
 
@@ -139,6 +158,7 @@ public class ProductApiControllerTest {
         String content = objectMapper.writeValueAsString(invalidProduct);
 
         mockMvc.perform(post("/api/products")
+                .header("Authorization", "Bearer " + adminToken)
                 .content(content)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
