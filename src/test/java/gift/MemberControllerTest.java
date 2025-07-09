@@ -3,6 +3,7 @@ package gift;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.controller.MemberController;
 import gift.dto.request.MemberRequest;
+import gift.dto.response.MemberResponse;
 import gift.exception.DuplicateMemberException;
 import gift.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
@@ -15,9 +16,8 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.willThrow;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -37,7 +37,10 @@ public class MemberControllerTest {
     @DisplayName("유효한 이메일과 비밀번호로 회원가입에 성공한다")
     @Test
     void 회원가입_성공() throws Exception{
-        var response = mockMvc.perform(
+        given(memberService.register(any(MemberRequest.class)))
+                .willReturn(new MemberResponse("mock.jwt.token"));
+
+        mockMvc.perform(
                 post("/api/members/register")
                         .contentType("application/json")
                         .content("""
@@ -46,19 +49,17 @@ public class MemberControllerTest {
                                 "pwd": "abc1234"
                             }
                         """)
-            ).andReturn().getResponse();
-
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response.getContentAsString()).contains("회원가입이 완료되었습니다.");
+            ).andExpect(status().isCreated())
+                .andExpect(jsonPath("$.token").value("mock.jwt.token"));
     }
 
     @DisplayName("이미 가입된 이메일로 회원가입 시도 시 409CONFLICT 에러가 발생한다")
     @Test
     void 회원가입_중복_실패() throws Exception{
-        willThrow(new DuplicateMemberException())
-                .given(memberService).register(any(),any());
+        given(memberService.register(any(MemberRequest.class)))
+                .willThrow(new DuplicateMemberException());
 
-        var response = mockMvc.perform(post("/api/members/register")
+        mockMvc.perform(post("/api/members/register")
                 .contentType("application/json")
                 .content("""
                      {
@@ -66,17 +67,16 @@ public class MemberControllerTest {
                         "pwd": "abc1234"
                      }
                 """))
-            .andReturn().getResponse();
-
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.CONFLICT.value());
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").value("이미 존재하는 이메일입니다."));
     }
 
     @DisplayName("로그인 성공 시 토큰을 반환한다")
     @Test
     void 로그인_성공() throws Exception{
         MemberRequest request = new MemberRequest("test@email.com", "abc1234");
-        when(memberService.login(request.email(), request.pwd()))
-                .thenReturn("fake.jwt.token");
+        when(memberService.login(request))
+                .thenReturn(new MemberResponse("fake.jwt.token"));
 
         mockMvc.perform(post("/api/members/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -89,13 +89,14 @@ public class MemberControllerTest {
     @Test
     void 로그인_실패_비밀번호_불일치() throws Exception {
         MemberRequest request = new MemberRequest("test@email.com", "wrong");
-        when(memberService.login(request.email(), request.pwd()))
+        when(memberService.login(request))
                 .thenThrow(new ResponseStatusException(HttpStatus.FORBIDDEN, "비밀번호가 일치하지 않습니다."));
 
         mockMvc.perform(post("/api/members/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value("비밀번호가 일치하지 않습니다."));
 
     }
 
@@ -104,12 +105,13 @@ public class MemberControllerTest {
     void 로그인_실패_계정없음() throws Exception {
         MemberRequest request = new MemberRequest("nonexistent@email.com", "abc1234");
 
-        when(memberService.login(request.email(), request.pwd()))
+        when(memberService.login(request))
                 .thenThrow(new ResponseStatusException(HttpStatus.FORBIDDEN, "회원이 존재하지 않습니다."));
 
         mockMvc.perform(post("/api/members/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value("회원이 존재하지 않습니다."));
     }
 }
