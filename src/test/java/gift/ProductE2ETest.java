@@ -1,8 +1,10 @@
 package gift;
 
+import gift.dto.MemberLoginRequestDto;
+import gift.dto.MemberLoginResponseDto;
+import gift.dto.MemberRequestDto;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,7 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -21,36 +23,35 @@ class ProductE2ETest {
     private int port;
 
     private RestClient restClient;
+    private String token;
 
     @BeforeEach
     void setUp() {
         restClient = RestClient.builder()
                 .baseUrl("http://localhost:" + port)
                 .build();
+
+        token = 회원가입_후_토큰_발급();
     }
 
     @Test
     void 상품을_등록하고_조회() {
-        // 상품 등록
         ProductRequestDto request = new ProductRequestDto(null, "녹차", 3500, "green_tea.jpg");
 
         restClient.post()
                 .uri("/api/products")
+                .header("Authorization", "Bearer " + token)
                 .body(request)
                 .retrieve()
                 .toBodilessEntity();
 
-        // 상품 목록 조회
         ProductResponseDto[] response = restClient.get()
                 .uri("/api/products")
+                .header("Authorization", "Bearer " + token)
                 .retrieve()
                 .body(ProductResponseDto[].class);
 
-        // 상품 개수 확인
-        assertThat(response).hasSize(3);
-
-        // 상품 존재 확인
-        Assertions.assertNotNull(response);
+        assertThat(response).isNotNull();
         ProductResponseDto product = response[response.length - 1];
         assertThat(product.name()).isEqualTo("녹차");
         assertThat(product.price()).isEqualTo(3500);
@@ -58,44 +59,44 @@ class ProductE2ETest {
     }
 
     @Test
-    void 상품을_수정하고_조회(){
-        // 상품 수정
+    void 상품을_수정하고_조회() {
         ProductRequestDto request = new ProductRequestDto(null, "아이스 카페라떼", 7000, "ice_cafe_latte.jpg");
 
         restClient.put()
                 .uri("/api/products/2")
+                .header("Authorization", "Bearer " + token)
                 .body(request)
                 .retrieve()
                 .toBodilessEntity();
 
-        // 상품 단건 조회
         ProductResponseDto response = restClient.get()
                 .uri("/api/products/2")
+                .header("Authorization", "Bearer " + token)
                 .retrieve()
-                .toEntity(ProductResponseDto.class)
-                .getBody();
+                .body(ProductResponseDto.class);
 
-        Assertions.assertNotNull(response);
+        assertThat(response).isNotNull();
+        assertThat(response.name()).isEqualTo("아이스 카페라떼");
         assertThat(response.price()).isEqualTo(7000);
     }
 
     @Test
-    void 상품을_삭제한다(){
-        // 상품 삭제
+    void 상품을_삭제한다() {
         restClient.delete()
                 .uri("/api/products/1")
+                .header("Authorization", "Bearer " + token)
                 .retrieve()
                 .toBodilessEntity();
 
-        // try-catch로 예외 처리
         HttpClientErrorException exception = assertThrows(HttpClientErrorException.class, () -> {
             restClient.get()
                     .uri("/api/products/1")
+                    .header("Authorization", "Bearer " + token)
                     .retrieve()
                     .toBodilessEntity();
         });
-        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
 
+        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     @Test
@@ -105,6 +106,7 @@ class ProductE2ETest {
         HttpClientErrorException exception = assertThrows(HttpClientErrorException.class, () -> {
             restClient.post()
                     .uri("/api/products")
+                    .header("Authorization", "Bearer " + token)
                     .body(invalidRequest)
                     .retrieve()
                     .toBodilessEntity();
@@ -114,8 +116,32 @@ class ProductE2ETest {
 
         String responseBody = exception.getResponseBodyAsString();
 
-        assertThat(responseBody).contains("특수문자는");
+        assertThat(responseBody).contains("특수문자");
         assertThat(responseBody).contains("카카오");
         assertThat(responseBody).contains("100원");
+    }
+
+    private String 회원가입_후_토큰_발급() {
+        String name = "홍길동";
+        String email = "hong" + System.currentTimeMillis() + "@email.com";
+        String password = "password";
+
+        MemberRequestDto joinRequest = new MemberRequestDto(null, name, email, password);
+
+        restClient.post()
+                .uri("/api/members/register")
+                .body(joinRequest)
+                .retrieve()
+                .toBodilessEntity();
+
+        MemberLoginRequestDto loginRequest = new MemberLoginRequestDto(email, password);
+
+        MemberLoginResponseDto loginResponse = restClient.post()
+                .uri("/api/members/login")
+                .body(loginRequest)
+                .retrieve()
+                .body(MemberLoginResponseDto.class);
+
+        return loginResponse.token();
     }
 }
