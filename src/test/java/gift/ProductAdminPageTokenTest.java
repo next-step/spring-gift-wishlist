@@ -2,7 +2,6 @@ package gift;
 
 import gift.entity.Member;
 import gift.entity.Role;
-import gift.repository.MemberRepository;
 import gift.token.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
@@ -22,18 +20,12 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql(scripts = "/clear_member_table.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-class AdminPageTokenTest {
+class ProductAdminPageTokenTest {
 
     private final String baseUrl = "http://localhost:";
 
     @LocalServerPort
     private int port;
-
-    @Autowired
-    private MemberRepository memberRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
@@ -46,12 +38,10 @@ class AdminPageTokenTest {
         restClient = RestClient.create();
 
         // 관리자 계정을 데이터베이스에 직접 생성
-        String encodedPassword = passwordEncoder.encode("adminpassword123456789");
-        Member admin = new Member(1L, "admin@example.com", encodedPassword, Role.ROLE_MD);
-        memberRepository.createMember(admin);
+        Member admin = new Member(1L, "admin@example.com", "adminpassword123456789", Role.ROLE_MD);
 
         // 관리자용 JWT 토큰 생성
-        adminToken = jwtTokenProvider.createToken("admin@example.com");
+        adminToken = jwtTokenProvider.createToken(admin);
     }
 
     @Test
@@ -83,12 +73,10 @@ class AdminPageTokenTest {
     @Test
     void 일반_사용자_권한으로_관리자_페이지_접근_시_403() throws Exception {
         // 일반 사용자 계정 생성
-        String userPassword = passwordEncoder.encode("userpassword123456789");
-        Member user = new Member(2L, "user@example.com", userPassword, Role.ROLE_USER);
-        memberRepository.createMember(user);
+        Member user = new Member(2L, "user@example.com", "userpassword123456789", Role.ROLE_USER);
 
         // 일반 사용자 토큰 생성
-        String userToken = jwtTokenProvider.createToken("user@example.com");
+        String userToken = jwtTokenProvider.createToken(user);
         String url = baseUrl + port + "/admin/products";
 
         assertThatExceptionOfType(HttpClientErrorException.class)
@@ -97,6 +85,6 @@ class AdminPageTokenTest {
                         .header("Authorization", "Bearer " + userToken)
                         .retrieve()
                         .toBodilessEntity())
-                .satisfies(ex -> assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED));
+                .satisfies(ex -> assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN));
     }
 }

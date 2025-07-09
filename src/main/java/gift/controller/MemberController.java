@@ -5,13 +5,9 @@ import gift.dto.LoginMemberRequest;
 import gift.dto.CreateMemberResponse;
 import gift.dto.LoginMemberResponse;
 import gift.service.MemberService;
-import gift.token.JwtTokenProvider;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,15 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
 
     private final MemberService memberService;
-    private final AuthenticationManager authenticationManager;
-    private final JwtTokenProvider jwtTokenProvider;
 
-    public MemberController(MemberService memberService,
-                            AuthenticationManager authenticationManager,
-                            JwtTokenProvider jwtTokenProvider) {
+    public MemberController(MemberService memberService) {
         this.memberService = memberService;
-        this.authenticationManager = authenticationManager;
-        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @PostMapping("/register")
@@ -39,7 +29,7 @@ public class MemberController {
     ) {
         memberService.createMember(createMemberRequest.email(), createMemberRequest.password());
 
-        String token = authenticateAndGenerateToken(
+        String token = memberService.login(
             createMemberRequest.email(),
             createMemberRequest.password()
         );
@@ -53,7 +43,7 @@ public class MemberController {
     public ResponseEntity<LoginMemberResponse> login (
             @Valid @RequestBody LoginMemberRequest loginMemberRequest
     ) {
-        String token = authenticateAndGenerateToken(
+        String token = memberService.login(
             loginMemberRequest.email(),
             loginMemberRequest.password()
         );
@@ -62,12 +52,4 @@ public class MemberController {
                 .status(HttpStatus.OK)
                 .body(new LoginMemberResponse(token));
     }
-
-    private String authenticateAndGenerateToken(String email, String password) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(email, password)
-        );
-        return jwtTokenProvider.createToken(authentication.getName());
-    }
-
 }

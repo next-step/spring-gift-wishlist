@@ -15,7 +15,6 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
@@ -36,13 +35,7 @@ public class ProductControllerTest {
     private int port;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
     private JwtTokenProvider jwtTokenProvider;
-
-    @Autowired
-    private MemberRepository memberRepository;
 
     private RestClient restClient;
     private String mdToken;
@@ -52,12 +45,10 @@ public class ProductControllerTest {
         restClient = RestClient.create();
 
         // MD 계정 생성
-        String userPassword = passwordEncoder.encode("userpassword123456789");
-        Member user = new Member(2L, "user@example.com", userPassword, Role.ROLE_MD);
-        memberRepository.createMember(user);
+        Member user = new Member(2L, "user@example.com", "userpassword123456789", Role.ROLE_MD);
 
         // MD 토큰 생성
-        mdToken = jwtTokenProvider.createToken("user@example.com");
+        mdToken = jwtTokenProvider.createToken(user);
     }
 
     @Test

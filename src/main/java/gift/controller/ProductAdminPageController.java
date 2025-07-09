@@ -17,11 +17,11 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin/products")
-public class AdminPageController {
+public class ProductAdminPageController {
 
     private final ProductService productService;
 
-    public AdminPageController(ProductService productService) {
+    public ProductAdminPageController(ProductService productService) {
         this.productService = productService;
     }
 

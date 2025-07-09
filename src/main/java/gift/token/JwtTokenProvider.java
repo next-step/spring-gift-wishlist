@@ -1,15 +1,13 @@
 package gift.token;
 
-import gift.service.MemberService;
+import gift.entity.Member;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -21,39 +19,35 @@ public class JwtTokenProvider {
 
     private final Key secretKey;
     private final long validityInMilliseconds;
-    private final MemberService memberService;
 
     public JwtTokenProvider(
-        @Value("${security.jwt.token.secret-key}") String secret,
-        @Value("${security.jwt.token.expire-length}") long validityInMilliseconds,
-        MemberService memberService
+        @Value("${jwt.secret-key}") String secret,
+        @Value("${jwt.expire-length}") long validityInMilliseconds
     ) {
         this.validityInMilliseconds = validityInMilliseconds;
-        this.memberService = memberService;
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         this.secretKey = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String createToken(String email) {
+    public String createToken(Member member) {
         Date now = new Date();
         Date expiry = new Date(now.getTime() + validityInMilliseconds);
 
         return Jwts.builder()
-                .subject(email)
+                .subject(member.getEmail())
+                .claim("role", member.getAuthority().name())
                 .issuedAt(now)
                 .expiration(expiry)
                 .signWith(secretKey)
                 .compact();
     }
 
-    public Authentication getAuthentication(String token) {
-        String username = getUsername(token);
-        UserDetails userDetails = memberService.loadUserByUsername(username);
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+    public String getUsername(String token) {
+        return extractAllClaims(token).getSubject();
     }
 
-    private String getUsername(String token) {
-        return extractAllClaims(token).getSubject();
+    public String getRole(String token) {
+        return extractAllClaims(token).get("role", String.class);
     }
 
     private Claims extractAllClaims(String token) {
@@ -66,7 +60,17 @@ public class JwtTokenProvider {
 
     public String resolveToken(HttpServletRequest request) {
         String bearer = request.getHeader("Authorization");
-        return (bearer != null && bearer.startsWith("Bearer ")) ? bearer.substring(7) : null;
+        if (bearer != null && bearer.startsWith("Bearer ")) {
+            return bearer.substring(7);
+        }
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if (cookie.getName().equals("token")) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
     }
 
     public boolean validateToken(String token) {

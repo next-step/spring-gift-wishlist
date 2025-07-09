@@ -1,14 +1,14 @@
 package gift.handler;
 
-import gift.controller.AdminPageController;
+import gift.controller.ProductAdminPageController;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.server.ResponseStatusException;
 
-@ControllerAdvice(assignableTypes = AdminPageController.class)
-public class AdminPageControllerExceptionHandler {
+@ControllerAdvice(assignableTypes = ProductAdminPageController.class)
+public class ProductAdminPageControllerExceptionHandler {
 
     @ExceptionHandler(ResponseStatusException.class)
     public String handleWebException(ResponseStatusException ex, Model model) {

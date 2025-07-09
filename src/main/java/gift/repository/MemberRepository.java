@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -30,9 +31,15 @@ public class MemberRepository {
         jdbcClient.sql("insert into member (email, password, authority) values (:email, :password, :authority)")
             .param("email", member.getEmail())
             .param("password", member.getPassword())
-            .param("authority", member.getAuthorities().stream().findFirst().get().getAuthority())
+            .param("authority", member.getAuthority().name())
             .update(keyHolder);
         return Optional.ofNullable(keyHolder.getKeyAs(Long.class));
+    }
+
+    public List<Member> getMemberList() {
+        return jdbcClient.sql("select * from member")
+            .query(memberRowMapper)
+            .list();
     }
 
     public Boolean checkEmailExists(String email) {
