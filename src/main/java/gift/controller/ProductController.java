@@ -47,13 +47,13 @@ public class ProductController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ResponseDto> updateProduct(@Valid
-            @PathVariable Long id,
+    @PathVariable Long id,
             @RequestBody RequestDto dto
     ) {
         ResponseDto response = productService.update(id, dto);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
-     }
+    }
 
     // 4. 상품 삭제
     @DeleteMapping("/{id}")

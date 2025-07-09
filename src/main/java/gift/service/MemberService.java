@@ -33,7 +33,6 @@ public class MemberService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 이메일입니다."));
 
-
         member.validatePassword(password);
 
         return jwtTokenProvider.createToken(member.getEmail());

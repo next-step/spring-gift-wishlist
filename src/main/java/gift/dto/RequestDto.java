@@ -28,9 +28,13 @@ public class RequestDto {
         return name;
     }
 
-    public String getImageUrl() {return imageUrl;}
+    public String getImageUrl() {
+        return imageUrl;
+    }
 
-    public void setId(Long id) {this.id = id;}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public void setName(String name) {
         this.name = name;

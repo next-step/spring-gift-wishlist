@@ -44,7 +44,7 @@ public class AdminProductController {
 
         try {
             productService.create(dto);
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             model.addAttribute("errorMessage", e.getMessage());
             model.addAttribute("actionUrl", "/admin/products/new");
             return "admin/form";
@@ -81,7 +81,7 @@ public class AdminProductController {
 
         try {
             productService.update(id, dto);
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             model.addAttribute("errorMessage", e.getMessage());
             model.addAttribute("actionUrl", "/admin/products/" + id + "/edit");
             return "admin/form";

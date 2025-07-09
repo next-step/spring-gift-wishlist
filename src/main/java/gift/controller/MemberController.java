@@ -15,7 +15,7 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    public MemberController(MemberService memberService){
+    public MemberController(MemberService memberService) {
         this.memberService = memberService;
     }
 
@@ -30,7 +30,8 @@ public class MemberController {
 
     // 2. 로그인
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody MemberDto member) throws IllegalAccessException {
+    public ResponseEntity<String> login(@RequestBody MemberDto member)
+            throws IllegalAccessException {
 
         // 요청으로 들어온 이메일, 비밀번호가 일치하면 JWT 토큰 발급
         String token = memberService.login(member.getEmail(), member.getPassword());

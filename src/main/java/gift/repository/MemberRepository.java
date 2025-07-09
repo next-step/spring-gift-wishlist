@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class MemberRepository {
+
     private final JdbcTemplate jdbcTemplate;
 
     public MemberRepository(JdbcTemplate jdbcTemplate) {
@@ -27,7 +28,8 @@ public class MemberRepository {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = connection.prepareStatement(sql,
+                    Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, member.getEmail());
             ps.setString(2, member.getPassword());
             return ps;
@@ -35,7 +37,7 @@ public class MemberRepository {
 
         Number key = keyHolder.getKey();
 
-        if(key != null) {
+        if (key != null) {
             member.withId(key.longValue(), member.getEmail(), member.getPassword());
         }
 
@@ -44,7 +46,8 @@ public class MemberRepository {
 
     public Optional<Member> findByEmail(String email) {
         String sql = "select * from member where email = ?";
-        List<Member> member = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Member.class), email);
+        List<Member> member = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Member.class),
+                email);
         return member.stream().findFirst();
     }
 }

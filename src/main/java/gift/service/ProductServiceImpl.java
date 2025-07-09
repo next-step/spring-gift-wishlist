@@ -23,7 +23,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ResponseDto create(RequestDto dto) {
 
-        if(dto.getName().contains("카카오")) {
+        if (dto.getName().contains("카카오")) {
             throw new IllegalArgumentException("상품명에 '카카오'를 포함하려면 담당 MD와의 협의가 필요합니다.");
         }
 
@@ -60,7 +60,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ResponseDto update(Long id, RequestDto dto) {
 
-        if(dto.getName().contains("카카오")) {
+        if (dto.getName().contains("카카오")) {
             throw new IllegalArgumentException("상품명에 '카카오'를 포함하려면 담당 MD와의 협의가 필요합니다.");
         }
 
