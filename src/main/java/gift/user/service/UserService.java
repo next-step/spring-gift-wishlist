@@ -22,7 +22,9 @@ public class UserService {
   private final UserDao userDao;
   private final JwtTokenProvider jwtTokenProvider;
   private final PasswordEncoder passwordEncoder;
-  public UserService(UserDao userDao, JwtTokenProvider jwtTokenProvider, PasswordEncoder passwordEncoder) {
+
+  public UserService(UserDao userDao, JwtTokenProvider jwtTokenProvider,
+      PasswordEncoder passwordEncoder) {
     this.userDao = userDao;
     this.jwtTokenProvider = jwtTokenProvider;
     this.passwordEncoder = passwordEncoder;
@@ -39,7 +41,8 @@ public class UserService {
   }
 
   public RegisterResponseDto registerUser(RegisterRequestDto registerRequestDto) {
-    String encryptedPassword = passwordEncoder.encrypt(registerRequestDto.email(), registerRequestDto.password());
+    String encryptedPassword = passwordEncoder.encrypt(registerRequestDto.email(),
+        registerRequestDto.password());
 
     User user = userDao.saveUser(registerRequestDto.email(), encryptedPassword);
 
@@ -100,8 +103,6 @@ public class UserService {
     findByIdOrFail(userId);
     userDao.deleteById(userId);
   }
-
-
 
 
 }

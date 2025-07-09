@@ -20,6 +20,7 @@ public class JwtTokenProvider {
         .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
         .compact();
   }
+
   private Date createExpirationDate() {
     long EXPIRATION_MINUTES = 30;
     return new Date(System.currentTimeMillis() + EXPIRATION_MINUTES * 60 * 1000);

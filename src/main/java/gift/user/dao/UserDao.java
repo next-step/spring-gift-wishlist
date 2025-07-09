@@ -1,6 +1,5 @@
 package gift.user.dao;
 
-import gift.exception.ProductNotFoundException;
 import gift.exception.UserNotFoundException;
 import gift.user.domain.Role;
 import gift.user.domain.User;
@@ -26,7 +25,7 @@ public class UserDao {
         .update();
 
     String sqlForFind = "SELECT memberId, email, password, role FROM users"
-        + " WHERE email = ?";
+                        + " WHERE email = ?";
     return jdbcClient.sql(sqlForFind)
         .param(email)
         .query((result, rowNum) -> {
@@ -78,14 +77,14 @@ public class UserDao {
   public List<User> findAllUsers() {
     String sql = "select memberId, email, password, role from users";
     return jdbcClient.sql(sql)
-        .query((resultSet,rowNum)-> {
-          User user = new User(
-              resultSet.getLong("memberId"),
-              resultSet.getString("email"),
-              resultSet.getString("password"),
-              Role.valueOf(resultSet.getString("role"))
-          );
-          return user;
+        .query((resultSet, rowNum) -> {
+              User user = new User(
+                  resultSet.getLong("memberId"),
+                  resultSet.getString("email"),
+                  resultSet.getString("password"),
+                  Role.valueOf(resultSet.getString("role"))
+              );
+              return user;
             }
         ).list();
   }
@@ -93,11 +92,11 @@ public class UserDao {
   public User updateUser(Long userId, String email, String encodedPassword) {
     String sql = "update users set email = ?, password = ? where memberId = ?";
     int updatedRow = jdbcClient.sql(sql)
-          .param(email)
-          .param(encodedPassword)
-          .param(userId)
-          .update();
-    if(updatedRow == 0) {
+        .param(email)
+        .param(encodedPassword)
+        .param(userId)
+        .update();
+    if (updatedRow == 0) {
       throw new UserNotFoundException();
     }
     return findById(userId);

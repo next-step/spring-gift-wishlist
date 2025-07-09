@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/api/admin")
 public class AdminViewController {
 
-  private UserService userService;
+  private final UserService userService;
 
   public AdminViewController(UserService userService) {
     this.userService = userService;
@@ -35,8 +35,8 @@ public class AdminViewController {
   }
 
   @PostMapping
-  public String createUser(@RequestParam String email,@RequestParam String password) {
-    UserRequestDto dto = new UserRequestDto(email,password);
+  public String createUser(@RequestParam String email, @RequestParam String password) {
+    UserRequestDto dto = new UserRequestDto(email, password);
     userService.saveUser(dto);
     return "redirect:/api/admin";
   }
@@ -47,14 +47,17 @@ public class AdminViewController {
     model.addAttribute("user", dto);
     return "admin/detail";
   }
+
   @GetMapping("/users/{id}/update")
   public String moveUpdateForm(@PathVariable Long id, Model model) {
     UserResponseDto user = userService.findById(id);
     model.addAttribute("user", user);
     return "admin/update";
   }
+
   @PostMapping("/users/{id}")
-  public String updateUser(@PathVariable Long id,@RequestParam String email,@RequestParam String password) {
+  public String updateUser(@PathVariable Long id, @RequestParam String email,
+      @RequestParam String password) {
     UserRequestDto dto = new UserRequestDto(email, password);
     userService.updateUser(id, dto);
     return "redirect:/api/admin/users/" + id;
