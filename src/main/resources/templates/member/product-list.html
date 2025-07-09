@@ -1,114 +1,57 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <title>상품 목록</title>
-  <link rel="stylesheet" th:href="@{/css/kakao-style.css}"/>
-</head>
-<body>
+<html th:replace="~{layout/layout :: layout('상품 목록', ~{::#content}, null)}">
+<div id="content">
+  <div class="top-bar">
+    <div class="user-info">
+      <span th:text="${userEmail}">user@example.com</span>님, 환영합니다!
+    </div>
 
-<h1>상품 목록</h1>
-
-<div class="top-bar">
-  <div class="user-info">
-    <span th:text="${userEmail}">user@example.com</span>님, 환영합니다!
+    <a href="/members/wishlist" class="button">🎁 내 위시리스트</a>
+    <a href="/admin/products" class="button admin-button"
+       th:if="${#strings.equals(userRole, 'ADMIN')}">관리자 페이지</a>
+    <a href="/members/logout" class="button">로그아웃</a>
   </div>
 
-  <a href="/members/wishlist" class="button">🎁 내 위시리스트</a>
-  <a href="/admin/products" class="button admin-button"
-     th:if="${#strings.equals(userRole, 'ADMIN')}">관리자 페이지</a>
-  <a href="/members/logout" class="button">로그아웃</a>
+  <table>
+    <thead>
+    <tr>
+      <th>상품명</th>
+      <th>가격</th>
+      <th>이미지</th>
+      <th>위시 추가</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${products.empty}">
+      <td colspan="4">등록된 상품이 없습니다.</td>
+    </tr>
+
+    <tr th:each="product : ${products}">
+      <td class="clickable-row" th:data-id="${product.id}"
+          th:data-link="@{/members/products/{id}(id=${product.id})}" th:text="${product.name}">상품명
+      </td>
+      <td class="clickable-row" th:data-id="${product.id}"
+          th:data-link="@{/members/products/{id}(id=${product.id})}" th:text="${product.price}">가격
+      </td>
+      <td class="clickable-row" th:data-id="${product.id}"
+          th:data-link="@{/members/products/{id}(id=${product.id})}">
+        <img th:src="${product.imageUrl}" alt="이미지 없음"/>
+      </td>
+      <td>
+        <button class="add-to-wishlist-btn" th:data-product-id="${product.id}">추가</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <div class="pagination" th:if="${!products.empty}">
+        <span th:if="${products.hasPrevious()}">
+            <a th:href="@{/members/products(page=${products.number - 1})}">&laquo; 이전</a>
+        </span>
+    <span>페이지 <b th:text="${products.number + 1}"></b></span>
+    <span th:if="${products.hasNext()}">
+            <a th:href="@{/members/products(page=${products.number + 1})}">다음 &raquo;</a>
+        </span>
+  </div>
 </div>
-
-<table>
-  <thead>
-  <tr>
-    <th>상품명</th>
-    <th>가격</th>
-    <th>이미지</th>
-    <th>위시 추가</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr th:if="${products.empty}">
-    <td colspan="4">등록된 상품이 없습니다.</td>
-  </tr>
-
-  <tr th:each="product : ${products}">
-    <td style="cursor: pointer;" th:data-id="${product.id}" class="clickable-row"
-        th:text="${product.name}">상품명
-    </td>
-    <td style="cursor: pointer;" th:data-id="${product.id}" class="clickable-row"
-        th:text="${product.price}">가격
-    </td>
-    <td style="cursor: pointer;" th:data-id="${product.id}" class="clickable-row">
-      <img th:src="${product.imageUrl}" alt="이미지 없음"/>
-    </td>
-    <td>
-      <button class="add-to-wishlist-btn" th:data-product-id="${product.id}">추가</button>
-    </td>
-  </tr>
-  </tbody>
-</table>
-
-<div class="pagination">
-  <span th:if="${products.hasPrevious()}">
-    <a th:href="@{/members/products(page=${products.number - 1})}">&laquo; 이전</a>
-  </span>
-
-  <span>페이지 <b th:text="${products.number + 1}"></b></span>
-
-  <span th:if="${products.hasNext()}">
-    <a th:href="@{/members/products(page=${products.number + 1})}">다음 &raquo;</a>
-  </span>
-</div>
-
-<script>
-  // 테이블 행 클릭 시 상세 페이지로 이동
-  document.querySelectorAll(".clickable-row").forEach(row => {
-    row.addEventListener("click", function () {
-      const id = this.dataset.id;
-      window.location.href = `/members/products/${id}`;
-    });
-  });
-
-  // 위시리스트 추가 스크립트
-  document.querySelectorAll('.add-to-wishlist-btn').forEach(button => {
-    button.addEventListener('click', async function (event) {
-      event.stopPropagation();
-
-      const productId = this.dataset.productId;
-      const token = localStorage.getItem('accessToken');
-
-      if (!token) {
-        alert('로그인이 필요합니다.');
-        window.location.href = '/members/login';
-        return;
-      }
-
-      try {
-        const response = await fetch('/api/wishes', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': token
-          },
-          body: JSON.stringify({productId: productId})
-        });
-
-        if (response.ok) {
-          alert('위시리스트에 상품을 추가했습니다!');
-        } else {
-          const error = await response.json();
-          alert(`추가 실패: ${error.message}`);
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        alert('요청 중 오류가 발생했습니다.');
-      }
-    });
-  });
-</script>
-
-</body>
 </html>

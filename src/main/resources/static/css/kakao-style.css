@@ -3,7 +3,15 @@ body {
   background-color: #fffbea;
   color: #3c2a1e;
   margin: 0;
-  padding: 40px;
+  padding: 0; /* body의 padding을 제거합니다. */
+}
+
+.main-container {
+  width: 100%;
+  max-width: 1024px; /* 페이지의 최대 너비를 설정합니다. */
+  margin: 0 auto; /* 컨테이너를 화면 중앙에 정렬합니다. */
+  padding: 40px; /* body 대신 컨테이너에 내부 여백을 줍니다. */
+  box-sizing: border-box; /* padding이 너비에 영향을 주지 않도록 설정합니다. */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -11,8 +19,8 @@ body {
 
 /* 관리자 페이지 전용 스타일 */
 body.admin-page {
-  background-color: #f0f8ff; /* 연한 하늘색 배경 */
-  color: #333; /* 어두운 회색 글자 */
+  background-color: #f0f8ff;
+  color: #333;
 }
 
 h1 {
@@ -53,15 +61,14 @@ a.button:hover, button:hover {
 
 /* 관리자 페이지 이동 버튼 스타일 */
 a.admin-button {
-  background-color: #4a90e2; /* 파란색 배경 */
-  color: white; /* 흰색 글자 */
+  background-color: #4a90e2;
+  color: white;
   border-color: #357ab8;
 }
 
 a.admin-button:hover {
   background-color: #357ab8;
 }
-
 
 /* ✅ 목록 테이블 스타일 */
 table {
@@ -87,10 +94,9 @@ th {
 }
 
 /* 관리자 페이지의 테이블 헤더 */
-.admin-page th {
-  background-color: #d6eaff; /* 연한 파란색 */
+.admin-page .main-container th {
+  background-color: #d6eaff;
 }
-
 
 img {
   max-width: 80px;
@@ -109,13 +115,13 @@ form {
   border-radius: 12px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 600px; /* 🔼 기존 400px → 600px */
+  max-width: 600px;
   text-align: center;
   margin-bottom: 20px;
 }
 
 .product-detail img {
-  max-width: 300px; /* 🔼 이미지 확대 */
+  max-width: 300px;
   max-height: 300px;
   width: auto;
   height: auto;
@@ -181,7 +187,9 @@ form label {
 }
 
 form input[type="text"],
-form input[type="number"] {
+form input[type="password"],
+form input[type="number"],
+form input[type="email"] {
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
