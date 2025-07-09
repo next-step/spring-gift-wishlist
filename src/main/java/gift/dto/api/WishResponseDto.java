@@ -1,4 +1,9 @@
 package gift.dto.api;
 
-public class WishResponseDto {
-}
+public record WishResponseDto(
+        Long productId,
+        String name,
+        int price,
+        String imageUrl,
+        int quantity
+) { }
