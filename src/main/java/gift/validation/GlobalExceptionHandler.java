@@ -1,4 +1,5 @@
 package gift.validation;
+
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.ResponseEntity;
@@ -27,5 +28,12 @@ public class GlobalExceptionHandler {
         Map<String, String> error = new HashMap<>();
         error.put("message", e.getMessage());
         return ResponseEntity.badRequest().body(error);
+    }
+
+    @ExceptionHandler(IllegalAccessException.class)
+    public ResponseEntity<Map<String, String>> handleIllegalAccess(IllegalAccessException e) {
+        Map<String, String> error = new HashMap<>();
+        error.put("message", e.getMessage());
+        return ResponseEntity.status(401).body(error);
     }
 }
