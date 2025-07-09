@@ -7,10 +7,19 @@ public class ErrorResponse {
     private String message;
     private List<ValidationError> errors;
 
+    public ErrorResponse(String code, String message) {
+        this.code = code;
+        this.message = message;
+    }
+
     public ErrorResponse(String code, String message, List<ValidationError> errors) {
         this.code = code;
         this.message = message;
         this.errors = errors;
+    }
+
+    public static ErrorResponse of(ErrorCode errorcode) {
+        return new ErrorResponse(errorcode.getErrorCode(), errorcode.getMessage());
     }
 
     public static ErrorResponse of(ErrorCode errorcode, List<ValidationError> errors) {

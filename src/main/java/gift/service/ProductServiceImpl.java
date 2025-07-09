@@ -4,14 +4,8 @@ import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.entity.Product;
 import gift.repository.ProductRepository;
-import java.nio.channels.ReadPendingException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -39,7 +33,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponseDto create(ProductRequestDto requestDto) {
-        Long id = productRepository.create(requestDto);
+        Long id = productRepository.create(new Product(requestDto.name(), requestDto.price(), requestDto.imageUrl()));
 
         return new ProductResponseDto(id, requestDto.name(), requestDto.price(),
             requestDto.imageUrl());
