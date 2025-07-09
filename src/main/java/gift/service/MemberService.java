@@ -27,16 +27,9 @@ public class MemberService {
                 .orElse(false);
     }
 
-    public boolean tokenvalidation(String memberHeader) {
-
-        String base64Credentials = memberHeader.substring("Basic ".length());
-        String credentials = new String(Base64.getDecoder().decode(base64Credentials));
-        StringTokenizer tokenizer = new StringTokenizer(credentials, ":");
-
-        String email = tokenizer.nextToken();
-        String password = tokenizer.nextToken();
-        boolean valid = login(email, password);
-        return valid;
+    public String createToken(String email, String password) {
+        String raw = email + ":" + password;
+        return "Basic " + Base64.getEncoder().encodeToString(raw.getBytes());
     }
 
 }

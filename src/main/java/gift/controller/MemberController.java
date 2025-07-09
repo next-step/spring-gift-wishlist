@@ -25,23 +25,15 @@ public class MemberController {
         return ResponseEntity.ok("회원가입 성공!");
     }
 
-    @PostMapping("/tokenval")
-    public ResponseEntity<String> login(
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
-            HttpServletRequest request){
-
-        String memberHeader = request.getHeader("Authorization");
-
-        if (memberHeader == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증 정보 없음!");
-        }
-        boolean valid = service.tokenvalidation(memberHeader);
+    @PostMapping("/gettoken")
+    public ResponseEntity<String> login(@RequestBody Member member) {
+        boolean valid = service.login(member.getEmail(), member.getPassword());
 
         if (valid) {
-            return ResponseEntity.ok("로그인 성공!");
-        }
-        else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("로그인 실패");
+            String token = service.createToken(member.getEmail(), member.getPassword());
+            return ResponseEntity.ok(token);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("이메일 또는 비밀번호가 올바르지 않습니다.");
         }
     }
 }
