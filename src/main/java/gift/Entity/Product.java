@@ -1,15 +1,12 @@
 package gift.Entity;
 
-import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
-@Entity
 public class Product {
 
     //MD와 협의 여부 파악
     private boolean MDapproved;
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     //NotNull -> null이 아니어야함
@@ -53,7 +50,3 @@ public class Product {
     public boolean getMDapproved() { return MDapproved; }
     public void setMDapproved(boolean MDapproved) { this.MDapproved = MDapproved; }
 }
-
-
-
-

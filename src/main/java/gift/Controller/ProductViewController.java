@@ -1,4 +1,4 @@
-package gift.admin;
+package gift.Controller;
 
 import gift.Entity.Product;
 import gift.dto.ProductDto;
@@ -9,16 +9,16 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.List;
 
 @Controller
-@RequestMapping("/admin/products")
-public class AdminController {
+@RequestMapping("/user/products")
+public class ProductViewController {
 
     private final ProductDto productDto;
     private final ProductService productservice;
 
-    public AdminController( ProductService productservice, ProductDto productDto) {
+    public ProductViewController(ProductService productservice, ProductDto productDto) {
         this.productservice = productservice;
         this.productDto = productDto;
     }
@@ -28,7 +28,7 @@ public class AdminController {
     public String list(Model model) {
         List<Product> products = productDto.showProducts();
         model.addAttribute("products", products);
-        return "admin/list";
+        return "products/list";
     }
 
     // 상품 등록 폼
@@ -37,7 +37,7 @@ public class AdminController {
     public String createForm(Model model) {
         model.addAttribute("product", new Product());
         model.addAttribute("formType", "add");
-        return "admin/form";
+        return "products/form";
     }
 
     // 상품 등록 처리 -> 상품 등록에서  method="post" 로 등록 해놓았기 때문에 이곳으로 보내짐
@@ -48,11 +48,11 @@ public class AdminController {
                                 Model model) {
         if (!productservice.validateProduct(product, bindingResult)) {
             model.addAttribute("formType", "add");
-            return "admin/form";
+            return "products/form";
         }
 
         productDto.insertProduct(product);
-        return "redirect:/admin/products";
+        return "redirect:/user/products";
     }
 
     // 상품 수정 폼
@@ -62,7 +62,7 @@ public class AdminController {
         Product product = productDto.selectProduct(id);
         model.addAttribute("product", product);
         model.addAttribute("formType", "edit");
-        return "admin/form";
+        return "products/form";
     }
 
     // 상품 수정 처리
@@ -72,11 +72,11 @@ public class AdminController {
                                 Model model) {
         if (!productservice.validateProduct(product, bindingResult)) {
             model.addAttribute("formType", "add");
-            return "admin/form";
+            return "products/form";
         }
 
         productDto.updateProduct(id, product);
-        return "redirect:/admin/products";
+        return "redirect:/user/products";
     }
 
     // 상품 삭제 처리
@@ -84,7 +84,7 @@ public class AdminController {
     @PostMapping("/{id}/delete")
     public String deleteProduct(@PathVariable Long id) {
         productDto.deleteProduct(id);
-        return "redirect:/admin/products";
+        return "redirect:/user/products";
     }
 
 }

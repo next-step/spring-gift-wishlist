@@ -6,19 +6,21 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/data.sql")
-public class ProductDBControllerTest {
+public class ProductRestControllerTest {
     @LocalServerPort
     private int port;
 
     private RestClient client = RestClient.builder().build();
 
-    //CRUD Test 만들기
+
+    @Transactional
     @Test
     public void testCreateProduct() {
         var url = "http://localhost:" + port + "/products";
@@ -33,6 +35,7 @@ public class ProductDBControllerTest {
         var actual = response.getBody();
         assertThat(actual.getName()).isEqualTo("민트 초코 라떼");
     }
+
 
     @Test
     public void testReadProduct() {
@@ -61,9 +64,5 @@ public class ProductDBControllerTest {
         assertThat(actual.getName()).isEqualTo("에스프레소");
     }
 
-    @Test
-    public void testDeleteProduct() {
-
-    }
 
 }
