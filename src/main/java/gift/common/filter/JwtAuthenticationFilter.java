@@ -3,7 +3,9 @@ package gift.common.filter;
 import gift.common.exception.InvalidAccessTokenException;
 import gift.common.exception.InvalidTokenException;
 import gift.domain.Role;
+import gift.dto.user.UserInfo;
 import gift.service.JwtTokenProvider;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -41,6 +43,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
             if (authHeader == null) {
+                if (request.getCookies().length == 0) {
+                    throw new InvalidAccessTokenException();
+                }
                 for (Cookie cookie : request.getCookies()) {
                     if (cookie.getName().equals(COOKIE_NAME)) {
                         String val = URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8);
@@ -57,9 +62,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 throw new InvalidAccessTokenException();
             }
 
-            jwtTokenProvider.validAccessToken(jwt);
-            Role role = jwtTokenProvider.getRoleFromToken(jwt);
-            request.setAttribute("role", role);
+            Claims claims = jwtTokenProvider.validAccessToken(jwt);
+            UserInfo userInfo = jwtTokenProvider.getUserInfoFromClaims(claims);
+            request.setAttribute("userInfo", userInfo);
 
         } catch (RuntimeException e) {
             throw new InvalidTokenException(e);
