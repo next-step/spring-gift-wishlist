@@ -4,6 +4,8 @@ import gift.entity.Member;
 import gift.entity.Role;
 import gift.token.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,60 +33,66 @@ class ProductAdminPageTokenTest {
     private JwtTokenProvider jwtTokenProvider;
 
     private RestClient restClient;
-    private String adminToken;
+    private String mdToken;
 
     @BeforeEach
     void setUp() {
         restClient = RestClient.create();
 
-        // 관리자 계정을 데이터베이스에 직접 생성
-        Member admin = new Member(1L, "admin@example.com", "adminpassword123456789", Role.ROLE_MD);
-
-        // 관리자용 JWT 토큰 생성
-        adminToken = jwtTokenProvider.createToken(admin);
+        Member user = new Member(0L, "md@example.com", "mdpassword123456789", Role.ROLE_MD);
+        mdToken = jwtTokenProvider.createToken(user);
     }
 
-    @Test
-    void 관리자_권한으로_상품목록_조회_성공() throws Exception {
+    @Nested
+    @DisplayName("GET /admin/products - 상품 목록 조회 테스트")
+    class GetProductList {
         String url = baseUrl + port + "/admin/products";
 
-        ResponseEntity<String> response = restClient.get()
-                .uri(url)
-                .header("Authorization", "Bearer " + adminToken)
-                .retrieve()
-                .toEntity(String.class);
+        @Test
+        @DisplayName("GET /admin/products - 유효한 권한으로 상품 목록 조회 시 200 OK")
+        void 유효한_권한으로_상품목록_조회_시_200_OK() {
+            ResponseEntity<String> response = restClient.get()
+                    .uri(url)
+                    .header("Authorization", "Bearer " + mdToken)
+                    .retrieve()
+                    .toEntity(String.class);
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isNotNull();
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody()).isNotNull();
+        }
+
+        @Test
+        @DisplayName("GET /admin/products - 권한 없이 상품 목록 조회 시 401 UNAUTHORIZED")
+        void 권한_없이_상품목록_조회_시_401_UNAUTHORIZED() {
+            assertThatExceptionOfType(HttpClientErrorException.class)
+                    .isThrownBy(() -> restClient.get()
+                            .uri(url)
+                            .retrieve()
+                            .toBodilessEntity())
+                    .satisfies(ex -> assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED));
+        }
+
+        @Test
+        @DisplayName("GET /admin/products - 다른 권한으로 상품 목록 조회 시 403 FORBIDDEN")
+        void 다른_권한으로_상품목록_조회_시_403_FORBIDDEN() {
+            String userToken = jwtTokenProvider.createToken(
+                    new Member(
+                            2L,
+                            "user@example.com",
+                            "userpassword123456789",
+                            Role.ROLE_USER
+                    )
+            );
+
+            assertThatExceptionOfType(HttpClientErrorException.class)
+                    .isThrownBy(() -> restClient.get()
+                            .uri(url)
+                            .header("Authorization", "Bearer " + userToken)
+                            .retrieve()
+                            .toBodilessEntity())
+                    .satisfies(ex -> assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN));
+        }
     }
 
-    @Test
-    void 권한_없이_관리자_페이지_접근_시_401() throws Exception {
-        String url = baseUrl + port + "/admin/products";
 
-        assertThatExceptionOfType(HttpClientErrorException.class)
-                .isThrownBy(() -> restClient.get()
-                        .uri(url)
-                        .retrieve()
-                        .toBodilessEntity())
-                .satisfies(ex -> assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED));
-    }
-
-    @Test
-    void 일반_사용자_권한으로_관리자_페이지_접근_시_403() throws Exception {
-        // 일반 사용자 계정 생성
-        Member user = new Member(2L, "user@example.com", "userpassword123456789", Role.ROLE_USER);
-
-        // 일반 사용자 토큰 생성
-        String userToken = jwtTokenProvider.createToken(user);
-        String url = baseUrl + port + "/admin/products";
-
-        assertThatExceptionOfType(HttpClientErrorException.class)
-                .isThrownBy(() -> restClient.get()
-                        .uri(url)
-                        .header("Authorization", "Bearer " + userToken)
-                        .retrieve()
-                        .toBodilessEntity())
-                .satisfies(ex -> assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN));
-    }
 }

@@ -31,7 +31,6 @@ public class LoginAdminPageController {
     @GetMapping("/login")
     public String loginAdminPage(Model model) {
         model.addAttribute("member", LoginMemberRequest.empty());
-        model.addAttribute("memberId", null);
         return "admin/login-form";
     }
 
@@ -44,7 +43,6 @@ public class LoginAdminPageController {
             HttpServletResponse response
     ) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("memberId", null);
             model.addAttribute("member", request);
             String errorMessages = bindingResult.getFieldErrors().stream()
                     .map(error -> "- " + error.getDefaultMessage())
@@ -63,13 +61,11 @@ public class LoginAdminPageController {
             return "redirect:/admin";
 
         } catch (ResponseStatusException e) {
-            model.addAttribute("memberId", null);
             model.addAttribute("member", request);
             model.addAttribute("message", "Login failed: Invalid credentials.");
             response.setStatus(HttpStatus.FORBIDDEN.value());
             return "admin/login-form";
         } catch (Exception e) {
-            model.addAttribute("memberId", null);
             model.addAttribute("member", request);
             model.addAttribute("message", "An unexpected error occurred.");
             return "admin/login-form";
