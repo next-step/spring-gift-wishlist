@@ -25,32 +25,27 @@ public class AuthService {
 
     public TokenResponse signIn(SignInRequest signInRequest) {
         String email = signInRequest.email();
-        String password = signInRequest.password();
-
-        Optional<Member> optionalMember = memberRepository.findByEmail(email);
-        if (optionalMember.isPresent()){
+        if (memberRepository.existsByEmail(email)){
             throw new BadRequestException("AuthService : signIn() failed - Already registered member");
         }
-        Member member = new Member(signInRequest.email(), signInRequest.password(), signInRequest.name(), signInRequest.role());
+        Member member = new Member(email, signInRequest.password(), signInRequest.name(), signInRequest.role());
         memberRepository.save(member);
-        Optional<Member> optionalMember1 = memberRepository.findByEmail(email);
-        if (optionalMember1.isEmpty()){
+        if (memberRepository.existsByEmail(email)){
             throw new MemberNotFoundException("AuthService : signIn() failed - Member not saved");
         }
-
-        String accessToken = jwtProvider.generateToken(optionalMember1.get());
+        String accessToken = jwtProvider.generateToken(member);
         return new TokenResponse(accessToken);
     }
 
     public TokenResponse login(LoginRequest loginRequest) {
         String email = loginRequest.email();
         String password = loginRequest.password();
-        Optional<Member> optionalMember = memberRepository.findByEmail(email);
-        if (optionalMember.isEmpty()){
+        if (!memberRepository.existsByEmail(email)){
             throw new MemberNotFoundException("AuthService : login() failed - 404 Not Found Error");
         }
-        Member member = optionalMember.get();
-        if (!member.getPassword().equals(password)){
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberNotFoundException("AuthService : login() failed - Member not found"));
+        if (!member.verifyPassword(password)){
             throw new LoginFailedException("AuthService : login() failed - Wrong Password Error");
         }
         String accessToken = jwtProvider.generateToken(member);

@@ -32,6 +32,10 @@ public class Member {
         return role;
     }
 
+    public boolean verifyPassword(String password){
+        return this.password.equals(password);
+    }
+
     public void update(Long id, String email, String password, String name, String role){
         this.id = id;
         this.email = email;

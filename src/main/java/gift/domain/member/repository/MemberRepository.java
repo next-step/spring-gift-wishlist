@@ -32,4 +32,13 @@ public class MemberRepository {
                 .update();
         return Optional.of(member);
     }
+
+    public boolean existsByEmail(String email) {
+        String sql = "SELECT COUNT(*) FROM users WHERE email = :email";
+        Integer count = jdbcClient.sql(sql)
+                .param("email", email)
+                .query(Integer.class)
+                .single();
+        return count > 0;
+    }
 }
