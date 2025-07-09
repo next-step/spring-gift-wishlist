@@ -1,6 +1,7 @@
 package gift.controller;
 
-import gift.entity.Product;
+import gift.dto.product.ProductRequestDto;
+import gift.dto.product.ProductResponseDto;
 import gift.service.product.ProductService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -26,29 +27,29 @@ public class ProductController {
   }
 
   @GetMapping
-  public ResponseEntity<List<Product>> findAllProduct() {
+  public ResponseEntity<List<ProductResponseDto>> findAllProduct() {
     return new ResponseEntity<>(service.findAllProduct(), HttpStatus.OK);
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<Product> findProductById(@PathVariable Long id) {
+  public ResponseEntity<ProductResponseDto> findProductById(@PathVariable Long id) {
     return new ResponseEntity<>(service.findProductById(id), HttpStatus.OK);
   }
 
   @PostMapping
-  public ResponseEntity<Product> createProduct(
-      @Valid @RequestBody Product requestDto) {
+  public ResponseEntity<ProductResponseDto> createProduct(
+      @Valid @RequestBody ProductRequestDto requestDto) {
     return new ResponseEntity<>(service.createProduct(requestDto), HttpStatus.CREATED);
   }
 
   @PatchMapping("/{id}")
-  public ResponseEntity<Product> updateProduct(@PathVariable Long id,
-      @Valid @RequestBody Product requestDto) {
+  public ResponseEntity<ProductResponseDto> updateProduct(@PathVariable Long id,
+      @Valid @RequestBody ProductRequestDto requestDto) {
     return new ResponseEntity<>(service.updateProduct(id, requestDto), HttpStatus.OK);
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Product> deleteProduct(@PathVariable Long id) {
+  public ResponseEntity<ProductResponseDto> deleteProduct(@PathVariable Long id) {
     service.deleteProduct(id);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }

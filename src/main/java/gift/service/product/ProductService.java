@@ -1,17 +1,18 @@
 package gift.service.product;
 
-import gift.entity.Product;
+import gift.dto.product.ProductRequestDto;
+import gift.dto.product.ProductResponseDto;
 import java.util.List;
 
 public interface ProductService {
 
-  List<Product> findAllProduct();
+  List<ProductResponseDto> findAllProduct();
 
-  Product findProductById(Long id);
+  ProductResponseDto findProductById(Long id);
 
-  Product createProduct(Product requestDto);
+  ProductResponseDto createProduct(ProductRequestDto requestDto);
 
-  Product updateProduct(Long id, Product requestDto);
+  ProductResponseDto updateProduct(Long id, ProductRequestDto requestDto);
 
   void deleteProduct(Long id);
 

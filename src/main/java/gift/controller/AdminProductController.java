@@ -1,8 +1,9 @@
 package gift.controller;
 
 import gift.dto.product.ProductCreateFormDto;
+import gift.dto.product.ProductRequestDto;
+import gift.dto.product.ProductResponseDto;
 import gift.dto.product.ProductUpdateFormDto;
-import gift.entity.Product;
 import gift.service.product.ProductService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -31,7 +32,7 @@ public class AdminProductController {
 
   @GetMapping
   public String findAllProduct(Model model) {
-    List<Product> responseDtoList = service.findAllProduct();
+    List<ProductResponseDto> responseDtoList = service.findAllProduct();
     model.addAttribute("responseDtoList", responseDtoList);
     return "list";
   }
@@ -56,17 +57,15 @@ public class AdminProductController {
       model.addAttribute("validationError", errorMessage);
       return "createProductForm";
     }
-//    ProductRequestDto requestDto = new ProductRequestDto(createFormDto.getName(),
-//        createFormDto.getPrice(), createFormDto.getImageUrl());
-    Product product = new Product(createFormDto.getName(), createFormDto.getPrice(),
-        createFormDto.getImageUrl());
-    service.createProduct(product);
+    ProductRequestDto requestDto = new ProductRequestDto(createFormDto.getName(),
+        createFormDto.getPrice(), createFormDto.getImageUrl());
+    service.createProduct(requestDto);
     return "redirect:" + PRODUCTS_LIST_PAGE_PATH;
   }
 
   @GetMapping("/{id}/update")
   public String updateForm(@PathVariable("id") Long id, Model model) {
-    Product responseDto = service.findProductById(id);
+    ProductResponseDto responseDto = service.findProductById(id);
     ProductUpdateFormDto updateFormDto = new ProductUpdateFormDto(responseDto.getId(),
         responseDto.getName(), responseDto.getPrice(), responseDto.getImageUrl());
     model.addAttribute("updateFormDto", updateFormDto);
@@ -78,7 +77,7 @@ public class AdminProductController {
       @Valid @ModelAttribute ProductUpdateFormDto updateFormDto, BindingResult bindingResult,
       Model model) {
     if (bindingResult.hasErrors()) {
-      Product responseDto = service.findProductById(id);
+      ProductResponseDto responseDto = service.findProductById(id);
       ProductUpdateFormDto newUpdateFormDto = new ProductUpdateFormDto(responseDto.getId(),
           responseDto.getName(), responseDto.getPrice(), responseDto.getImageUrl());
 
@@ -93,7 +92,7 @@ public class AdminProductController {
       return "updateProductForm";
     }
     service.updateProduct(id,
-        new Product(updateFormDto.getName(), updateFormDto.getPrice(),
+        new ProductRequestDto(updateFormDto.getName(), updateFormDto.getPrice(),
             updateFormDto.getImageUrl()));
     return "redirect:" + PRODUCTS_LIST_PAGE_PATH;
   }
