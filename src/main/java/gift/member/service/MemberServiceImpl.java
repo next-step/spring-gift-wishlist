@@ -10,6 +10,7 @@ import gift.member.exception.MemberNotFoundException;
 import gift.member.repository.MemberRepository;
 import gift.member.security.JwtTokenProvider;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -60,7 +61,17 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public List<AdminMemberGetResponseDto> findAllMembers() {
-        return memberRepository.findAllMembers();
+        List<Member> members = memberRepository.findAllMembers();
+
+        return members.stream()
+            .map(member -> new AdminMemberGetResponseDto(
+                member.getMemberId(),
+                member.getEmail(),
+                member.getPassword(),
+                member.getName(),
+                member.getRole()
+            ))
+            .collect(Collectors.toList());
     }
 
     @Override

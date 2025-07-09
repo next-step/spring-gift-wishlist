@@ -8,6 +8,7 @@ import gift.product.entity.Product;
 import gift.product.exception.UnapprovedProductException;
 import gift.product.repository.ProductRepository;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -43,7 +44,17 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductGetResponseDto> findAllProducts() {
-        return productRepository.findAllProducts();
+        List<Product> products = productRepository.findAllProducts();
+
+        return products.stream()
+            .map(product -> new ProductGetResponseDto(
+                product.getProductId(),
+                product.getName(),
+                product.getPrice(),
+                product.getImageUrl(),
+                product.getMdConfirmed()
+            ))
+            .collect(Collectors.toList());
     }
 
     @Override

@@ -1,6 +1,5 @@
 package gift.product.repository;
 
-import gift.product.dto.ProductGetResponseDto;
 import gift.product.entity.Product;
 import gift.product.exception.ProductNotFoundException;
 import java.util.List;
@@ -27,12 +26,12 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public List<ProductGetResponseDto> findAllProducts() {
+    public List<Product> findAllProducts() {
 
         String sql = "SELECT productId, name, price, imageUrl, mdConfirmed FROM products";
 
         return jdbcTemplate.query(sql,
-            (rs, rowNum) -> new ProductGetResponseDto(rs.getLong("productId"), rs.getString("name"),
+            (rs, rowNum) -> new Product(rs.getLong("productId"), rs.getString("name"),
                 rs.getDouble("price"), rs.getString("imageUrl"), rs.getBoolean("mdConfirmed")));
     }
 

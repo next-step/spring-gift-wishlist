@@ -1,6 +1,5 @@
 package gift.member.repository;
 
-import gift.member.dto.AdminMemberGetResponseDto;
 import gift.member.entity.Member;
 import gift.member.exception.MemberNotFoundException;
 import java.util.List;
@@ -39,12 +38,12 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
-    public List<AdminMemberGetResponseDto> findAllMembers() {
+    public List<Member> findAllMembers() {
 
         String sql = "SELECT memberId, email, password, name, role FROM members";
 
         return jdbcTemplate.query(sql,
-            (rs, rowNum) -> new AdminMemberGetResponseDto(rs.getLong("memberId"),
+            (rs, rowNum) -> new Member(rs.getLong("memberId"),
                 rs.getString("email"),
                 rs.getString("password"),
                 rs.getString("name"),
