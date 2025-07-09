@@ -9,6 +9,7 @@ import gift.global.exception.LoginFailedException;
 import gift.global.exception.MemberNotFoundException;
 import gift.domain.member.dto.TokenResponse;
 import gift.domain.member.repository.MemberRepository;
+import gift.global.exception.TokenExpiredException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -50,5 +51,13 @@ public class AuthService {
         }
         String accessToken = jwtProvider.generateToken(member);
         return new TokenResponse(accessToken);
+    }
+
+    public Optional<Member> getMemberByToken(String token) throws TokenExpiredException {
+        String email = jwtProvider.extractEmailFromAccessToken(token);
+        if (!memberRepository.existsByEmail(email)) {
+            throw new MemberNotFoundException("MemberService : validateToken() failed - Member with email " + email + " not found");
+        }
+        return memberRepository.findByEmail(email);
     }
 }
