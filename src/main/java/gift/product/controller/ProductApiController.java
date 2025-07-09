@@ -1,11 +1,10 @@
-package gift.controller;
+package gift.product.controller;
 
-import gift.dto.request.ProductSaveReqDTO;
-import gift.dto.request.ProductUpdateReqDTO;
-import gift.dto.response.ProductResDTO;
-import gift.service.ProductService;
+import gift.product.dto.request.ProductSaveRequest;
+import gift.product.dto.request.ProductUpdateRequest;
+import gift.product.dto.response.ProductResponse;
+import gift.product.service.ProductService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,35 +21,34 @@ public class ProductApiController {
 
     private final ProductService productService;
 
-    @Autowired
     public ProductApiController(ProductService productService) {
         this.productService = productService;
     }
 
     @PostMapping
-    public ResponseEntity<ProductResDTO> createProduct(
+    public ResponseEntity<ProductResponse> createProduct(
         @Valid
         @RequestBody
-        ProductSaveReqDTO productSaveReqDTO
+        ProductSaveRequest productSaveRequest
     ) {
-        return ResponseEntity.ok(productService.save(productSaveReqDTO));
+        return ResponseEntity.ok(productService.save(productSaveRequest));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductResDTO> findById(@PathVariable("id") Long id) {
+    public ResponseEntity<ProductResponse> findById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(productService.findById(id));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ProductResDTO> updateProduct(
+    public ResponseEntity<ProductResponse> updateProduct(
         @PathVariable("id")
         Long id,
 
         @Valid
         @RequestBody
-        ProductUpdateReqDTO productUpdateReqDTO
+        ProductUpdateRequest productUpdateRequest
     ) {
-        return ResponseEntity.ok(productService.update(id, productUpdateReqDTO));
+        return ResponseEntity.ok(productService.update(id, productUpdateRequest));
     }
 
     @DeleteMapping("/{id}")

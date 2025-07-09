@@ -4,11 +4,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import gift.common.ErrorResult;
-import gift.dto.request.ProductSaveReqDTO;
-import gift.dto.request.ProductUpdateReqDTO;
-import gift.dto.response.ProductResDTO;
+import gift.product.dto.request.ProductSaveRequest;
+import gift.product.dto.request.ProductUpdateRequest;
+import gift.product.dto.response.ProductResponse;
+import gift.product.repository.ProductRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
@@ -25,6 +28,9 @@ public class ProductApiControllerTest {
     private RestClient restClient;
 
     String baseURL;
+    
+    @Autowired
+    private ProductRepository productRepository;
 
     @BeforeEach
     void setUp() {
@@ -32,9 +38,14 @@ public class ProductApiControllerTest {
         restClient = RestClient.builder().baseUrl(baseURL).build();
     }
 
+    @AfterEach
+    void cleanUp() {
+        productRepository.deleteAll();
+    }
+
     @Test
     void 상품_저장_테스트() {
-        ProductSaveReqDTO saveReqDTO = new ProductSaveReqDTO(
+        ProductSaveRequest saveReqDTO = new ProductSaveRequest(
             "저장 테스트",
             115000L,
             "test"
@@ -42,18 +53,18 @@ public class ProductApiControllerTest {
         var response = restClient.post()
             .body(saveReqDTO)
             .retrieve()
-            .toEntity(ProductResDTO.class);
+            .toEntity(ProductResponse.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        ProductResDTO productResDTO = response.getBody();
-        assertThat(productResDTO).isNotNull();
-        assertThat(productResDTO.name()).isEqualTo("저장 테스트");
-        assertThat(productResDTO.price()).isEqualTo(115000L);
+        ProductResponse productResponse = response.getBody();
+        assertThat(productResponse).isNotNull();
+        assertThat(productResponse.name()).isEqualTo("저장 테스트");
+        assertThat(productResponse.price()).isEqualTo(115000L);
     }
 
     @Test
     void 글자_수를_초과한_상품_저장_테스트() {
-        ProductSaveReqDTO saveReqDTO = new ProductSaveReqDTO(
+        ProductSaveRequest saveReqDTO = new ProductSaveRequest(
             "qwertyuikjhgafhskjnjwhq",
             20000L,
             "test"
@@ -71,7 +82,7 @@ public class ProductApiControllerTest {
 
     @Test
     void 허용되지_않은_문자를_상품명으로_등록() {
-        ProductSaveReqDTO saveReqDTO = new ProductSaveReqDTO(
+        ProductSaveRequest saveReqDTO = new ProductSaveRequest(
             "!@#$%@#^$&*%",
             20000L,
             "test"
@@ -90,7 +101,7 @@ public class ProductApiControllerTest {
 
     @Test
     void 특정_단어가_포함된_상품명_등록() {
-        ProductSaveReqDTO saveReqDTO = new ProductSaveReqDTO(
+        ProductSaveRequest saveReqDTO = new ProductSaveRequest(
             "카카오프렌즈",
             20000L,
             "test"
@@ -109,7 +120,7 @@ public class ProductApiControllerTest {
 
     @Test
     void 상품_조회_테스트() {
-        ProductSaveReqDTO saveReqDTO = new ProductSaveReqDTO(
+        ProductSaveRequest saveReqDTO = new ProductSaveRequest(
             "조회 테스트",
             20000L,
             "test"
@@ -118,26 +129,26 @@ public class ProductApiControllerTest {
         var postResponse = restClient.post()
             .body(saveReqDTO)
             .retrieve()
-            .toEntity(ProductResDTO.class);
+            .toEntity(ProductResponse.class);
 
         Long id = postResponse.getBody().id();
 
         var getResponse = restClient.get()
             .uri("/{id}", id)
             .retrieve()
-            .toEntity(ProductResDTO.class);
+            .toEntity(ProductResponse.class);
 
         assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-        ProductResDTO productResDTO = getResponse.getBody();
-        assertThat(productResDTO).isNotNull();
-        assertThat(productResDTO.id()).isEqualTo(id);
-        assertThat(productResDTO.name()).isEqualTo("조회 테스트");
-        assertThat(productResDTO.price()).isEqualTo(20000L);
+        ProductResponse productResponse = getResponse.getBody();
+        assertThat(productResponse).isNotNull();
+        assertThat(productResponse.id()).isEqualTo(id);
+        assertThat(productResponse.name()).isEqualTo("조회 테스트");
+        assertThat(productResponse.price()).isEqualTo(20000L);
     }
 
     @Test
     void 상품_수정_테스트() {
-        ProductSaveReqDTO saveReqDTO = new ProductSaveReqDTO(
+        ProductSaveRequest saveReqDTO = new ProductSaveRequest(
             "수정 테스트",
             50000L,
             "test"
@@ -146,11 +157,11 @@ public class ProductApiControllerTest {
         var createResponse = restClient.post()
             .body(saveReqDTO)
             .retrieve()
-            .toEntity(ProductResDTO.class);
+            .toEntity(ProductResponse.class);
 
         Long id = createResponse.getBody().id();
 
-        ProductUpdateReqDTO updateReqDTO = new ProductUpdateReqDTO(
+        ProductUpdateRequest updateReqDTO = new ProductUpdateRequest(
             "수정됨",
             1234123L,
             null
@@ -160,19 +171,19 @@ public class ProductApiControllerTest {
             .uri("/{id}", id)
             .body(updateReqDTO)
             .retrieve()
-            .toEntity(ProductResDTO.class);
+            .toEntity(ProductResponse.class);
 
         assertThat(updateResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-        ProductResDTO productResDTO = updateResponse.getBody();
-        assertThat(productResDTO).isNotNull();
-        assertThat(productResDTO.id()).isEqualTo(id);
-        assertThat(productResDTO.name()).isEqualTo("수정됨");
-        assertThat(productResDTO.price()).isEqualTo(1234123L);
+        ProductResponse productResponse = updateResponse.getBody();
+        assertThat(productResponse).isNotNull();
+        assertThat(productResponse.id()).isEqualTo(id);
+        assertThat(productResponse.name()).isEqualTo("수정됨");
+        assertThat(productResponse.price()).isEqualTo(1234123L);
     }
 
     @Test
     void 상품_삭제_테스트() {
-        ProductSaveReqDTO saveReqDTO = new ProductSaveReqDTO(
+        ProductSaveRequest saveReqDTO = new ProductSaveRequest(
             "삭제 테스트",
             30000L,
             "test"
@@ -181,7 +192,7 @@ public class ProductApiControllerTest {
         var createResponse = restClient.post()
             .body(saveReqDTO)
             .retrieve()
-            .toEntity(ProductResDTO.class);
+            .toEntity(ProductResponse.class);
 
         Long id = createResponse.getBody().id();
 

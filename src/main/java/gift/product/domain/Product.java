@@ -1,11 +1,11 @@
-package gift.domain;
+package gift.product.domain;
 
 public class Product {
 
-    Long id;
-    String name;
-    Long price;
-    String imageURL;
+    private Long id;
+    private String name;
+    private Long price;
+    private String imageURL;
 
     public Product(String name, Long price, String imageURL) {
         this.name = name;

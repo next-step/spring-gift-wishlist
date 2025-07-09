@@ -1,6 +1,6 @@
-package gift.repository;
+package gift.product.repository;
 
-import gift.domain.Product;
+import gift.product.domain.Product;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.jdbc.core.RowMapper;
@@ -114,6 +114,11 @@ public class ProductRepository {
         return jdbcClient.sql(sql)
             .query(productRowMapper())
             .list();
+    }
+
+    public void deleteAll() {
+        String sql = "DELETE FROM product";
+        jdbcClient.sql(sql).update();
     }
 
     private RowMapper<Product> productRowMapper() {
