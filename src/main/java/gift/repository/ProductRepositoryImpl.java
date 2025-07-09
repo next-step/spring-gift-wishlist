@@ -1,6 +1,7 @@
 package gift.repository;
 
 import gift.domain.Product;
+import gift.domain.ProductStatus;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -42,11 +43,27 @@ public class ProductRepositoryImpl implements ProductRepository{
     }
 
     @Override
+    public List<Product> findAllActive() {
+        return jdbcClient.sql("SELECT * FROM products WHERE status = 'ACTIVE'")
+                .query(Product.class)
+                .list();
+    }
+
+    @Override
     public List<Product> findAll() {
         return jdbcClient.sql("SELECT * FROM products")
                 .query(Product.class)
                 .list();
     }
+
+    @Override
+    public List<Product> findByStatus(ProductStatus status) {
+        return jdbcClient.sql("SELECT * FROM products WHERE status status = :status")
+                .query(Product.class)
+                .list();
+    }
+
+
 
     @Override
     public Optional<Product> findById(Long id) {

@@ -9,5 +9,7 @@ CREATE TABLE products (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
     price INT NOT NULL,
-    image_url VARCHAR(2048)
+    image_url VARCHAR(2048),
+    status VARCHAR(20) DEFAULT 'ACTIVE',
+    CONSTRAINT chk_status CHECK (status IN ('ACTIVE', 'INACTIVE))
 );

@@ -1,6 +1,7 @@
 package gift.service;
 
 import gift.domain.Product;
+import gift.domain.ProductStatus;
 import gift.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +22,16 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public List<Product> getAll() {
+    public List<Product> getAllActive() {
+        return productRepository.findAllActive();
+    }
+
+    public List<Product> getAllProduct(){
         return productRepository.findAll();
+    }
+
+    public List<Product> getByStatus(ProductStatus status){
+        return productRepository.findByStatus(status);
     }
 
     public Product getById(Long id) {
