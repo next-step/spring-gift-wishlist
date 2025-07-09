@@ -1,6 +1,7 @@
 package gift.repository;
 
 import gift.entity.User;
+import gift.entity.vo.Email;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -17,9 +18,9 @@ public class H2UserRepository {
         this.jdbcClient = jdbcClient;
     }
 
-    public Optional<User> findByEmail(String email) {
+    public Optional<User> findByEmail(Email email) {
         return jdbcClient.sql("select * from users where email = :email")
-                .param("email", email)
+                .param("email", email.value())
                 .query(User.class)
                 .optional();
     }
@@ -27,8 +28,8 @@ public class H2UserRepository {
     public User save(User user) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcClient.sql("insert into users (email, password) values (:email, :password)")
-                .param("email", user.getEmail())
-                .param("password", user.getPassword())
+                .param("email", user.email().value())
+                .param("password", user.password().value())
                 .update(keyHolder);
 
         user.setId(keyHolder.getKey().longValue());

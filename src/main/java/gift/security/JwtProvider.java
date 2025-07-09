@@ -28,7 +28,7 @@ public class JwtProvider {
 
         return Jwts.builder()
                 .subject(user.getId().toString())
-                .claim("email", user.getEmail())
+                .claim("email", user.email().value())
                 .expiration(expireDate)
                 .signWith(secretKey)
                 .compact();

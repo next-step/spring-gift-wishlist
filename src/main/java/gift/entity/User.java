@@ -27,11 +27,11 @@ public class User {
         this.id = id;
     }
 
-    public String getEmail() {
-        return email.value();
+    public Email email() {
+        return email;
     }
 
-    public String getPassword() {
-        return password.value();
+    public Password password() {
+        return password;
     }
 }

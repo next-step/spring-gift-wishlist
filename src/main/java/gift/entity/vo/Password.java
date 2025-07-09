@@ -15,6 +15,10 @@ public class Password {
         }
     }
 
+    public boolean matches(Password password) {
+        return password.value().equals(this.value);
+    }
+
     public String value() {
         return value;
     }
