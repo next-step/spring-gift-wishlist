@@ -34,9 +34,16 @@ public class WebControllerAdvice {
     }
 
     @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<Map<String, String>> handleResponseStatus(ResponseStatusException ex) {
+    public ResponseEntity<Map<String, String>> handleResponseStatus(ResponseStatusException e) {
         return ResponseEntity
-                .status(ex.getStatusCode())
-                .body(Map.of("message", ex.getReason()));
+                .status(e.getStatusCode())
+                .body(Map.of("message", e.getReason()));
+    }
+
+    @ExceptionHandler(DuplicateMemberException.class)
+    public ResponseEntity<Map<String,String>> handleDuplicateMember (DuplicateMemberException e){
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(Map.of("message",e.getMessage()));
     }
 }

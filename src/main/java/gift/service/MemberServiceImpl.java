@@ -1,10 +1,11 @@
 package gift.service;
 
+import gift.auth.JwtProvider;
 import gift.domain.Member;
+import gift.dto.request.MemberRequest;
+import gift.dto.response.MemberResponse;
 import gift.exception.DuplicateMemberException;
 import gift.repository.MemberRepository;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -13,35 +14,35 @@ import org.springframework.web.server.ResponseStatusException;
 public class MemberServiceImpl implements MemberService{
 
     private final MemberRepository memberRepository;
-    private final String secretKey = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";
+    private final JwtProvider jwtProvider;
 
-    public MemberServiceImpl(MemberRepository memberRepository){
+    public MemberServiceImpl(MemberRepository memberRepository, JwtProvider jwtProvider){
         this.memberRepository = memberRepository;
+        this.jwtProvider = jwtProvider;
     }
 
     @Override
-    public void register(String email, String pwd){
-        memberRepository.findByEmail(email)
+    public MemberResponse register(MemberRequest request){
+        memberRepository.findByEmail(request.email())
                 .ifPresent(member -> {
                     throw new DuplicateMemberException();
                 });
-        Member newMember = new Member(null,email,pwd);
-        memberRepository.register(newMember);
+        Member member = new Member(null,request.email(),request.pwd());
+        Member newMember = memberRepository.register(member);
+
+        String token = jwtProvider.createToken(newMember.id(), newMember.email());
+        return new MemberResponse(token);
     }
 
     @Override
-    public String login(String email, String pwd){
-        Member member = memberRepository.findByEmail(email)
+    public MemberResponse login(MemberRequest request){
+        Member member = memberRepository.findByEmail(request.email())
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.FORBIDDEN, "회원이 존재하지 않습니다."));
 
-        if (!member.pwd().equals(pwd)){
+        if (!member.pwd().equals(request.pwd())){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "비밀번호가 일치하지 않습니다.");
         }
-
-        return Jwts.builder()
-                .setSubject(member.id().toString())
-                .claim("email", member.email())
-                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
-                .compact();
+        String token = jwtProvider.createToken(member.id(), member.email());
+        return new MemberResponse(token);
     }
 }

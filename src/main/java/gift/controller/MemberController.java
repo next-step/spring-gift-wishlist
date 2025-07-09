@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/members")
@@ -25,21 +24,20 @@ public class MemberController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Map<String,String>> register(@RequestBody @Valid MemberRequest request) {
-        memberService.register(request.email(), request.pwd());
+    public ResponseEntity<MemberResponse> register(@RequestBody @Valid MemberRequest request) {
+        MemberResponse response = memberService.register(request);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{email}")
                 .buildAndExpand(request.email())
                 .toUri();
 
-        return ResponseEntity.created(location)
-                .body(Map.of("message", "회원가입이 완료되었습니다."));
+        return ResponseEntity.created(location).body(response);
     }
 
     @PostMapping("/login")
     public ResponseEntity<MemberResponse> login(@RequestBody @Valid MemberRequest request){
-        String token = memberService.login(request.email(), request.pwd());
-        return ResponseEntity.ok(new MemberResponse(token));
+        MemberResponse response = memberService.login(request);
+        return ResponseEntity.ok(response);
     }
 }

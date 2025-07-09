@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProductRepository {
-    void register(Product product);
+    Product register(Product product);
 
     Optional<Product> findById(Long id);
 

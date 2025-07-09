@@ -1,6 +1,9 @@
 package gift.service;
 
+import gift.dto.request.MemberRequest;
+import gift.dto.response.MemberResponse;
+
 public interface MemberService{
-    void register(String email, String pwd);
-    String login(String email, String pwd);
+    MemberResponse register(MemberRequest request);
+    MemberResponse login(MemberRequest request);
 }
