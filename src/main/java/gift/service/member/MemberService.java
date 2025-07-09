@@ -48,8 +48,18 @@ public class MemberService {
     }
 
     public Long insert(MemberRequest request) {
-        return memberRepository.insert(
-            Member.of(request.email(), request.password(), passwordEncoder));
+        try {
+            memberRepository.findByEmail(request.email());
+            // 위 findByEmail()이 성공했다면 이미 같은 이메일이 존재한다는 뜻임.
+            // 이메일 중복 예외를 터트림
+            throw new InvalidMemberException(ErrorCode.DUPLICATE_EMAIL,
+                ErrorCode.DUPLICATE_EMAIL.getErrorMessage());
+        } catch (DataAccessException e) {
+            // findByEmail()에서 결과값을 찾지 못한 거면 해당 이메일 값으로 회원가입이 가능하다는 뜻임.
+            // 원래 로직 그대로 실행
+            return memberRepository.insert(
+                Member.of(request.email(), request.password(), passwordEncoder));
+        }
     }
 
     public MemberResponse findById(Long memberId) {
