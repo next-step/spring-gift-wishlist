@@ -8,6 +8,7 @@ import gift.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import java.net.URI;
 import java.util.Map;
 
 import org.springframework.http.HttpHeaders;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -41,20 +43,19 @@ public class MemberController {
 
 
   @PostMapping("/register")
-  public String register(@Valid @ModelAttribute MemberRequestDto req, BindingResult bindingResult, Model model) {
-    if(bindingResult.hasErrors()){
-      model.addAttribute("memberRequestDto", req);
-      return "user/register";
+  public ResponseEntity<Void> register(@Valid @ModelAttribute MemberRequestDto req,
+      BindingResult bindingResult) throws BindException {
+    if (bindingResult.hasErrors()) {
+      throw new BindException(bindingResult);
     }
-    try {
-      memberService.register(req.getEmail(), req.getPassword());
-      return "redirect:/api/members/login";
-    } catch (IllegalArgumentException e) {
-      model.addAttribute("memberRequestDto", req);
-      model.addAttribute("error", e.getMessage());
-      return "user/register";
-    }
+
+    memberService.register(req.getEmail(), req.getPassword());
+
+    // 201 Created + 로그인 페이지로 리다이렉트 안내
+    URI loginUri = URI.create("/api/members/login");
+    return ResponseEntity.created(loginUri).build();
   }
+
 
   @GetMapping("/login")
   public String showLoginForm(){

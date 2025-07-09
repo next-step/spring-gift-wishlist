@@ -25,7 +25,7 @@ public class MemberControllerTest {
 
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-    String formData = "email=abc123@gmail.com&password=123";
+    String formData = "email=abc123@gmail.com&password=qwer1234!@";
 
     ResponseEntity<String> response = client.post()
         .uri(url)
@@ -34,7 +34,7 @@ public class MemberControllerTest {
         .retrieve()
         .toEntity(String.class);
 
-    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FOUND); // 302 redirect
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
   }
 
   @Test
@@ -45,7 +45,7 @@ public class MemberControllerTest {
 
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-    String formData = "email=abc123@gmail.com&password=123";
+    String formData = "email=abc123@gmail.com&password=qwer1234!@";
 
     try {
       client.post()

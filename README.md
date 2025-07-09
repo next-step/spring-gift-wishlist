@@ -46,4 +46,4 @@
   - [x] Email형식 제한
 - [ ] 로그인 실패시 Http Status UnAuthorized로
 - [ ] 로그인 테스트 케이스 추가
-- [ ] 회원가입 성공시 Http Status 201 반환하도록
+- [x] 회원가입 성공시 Http Status 201 반환하도록
