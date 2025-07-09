@@ -2,11 +2,14 @@ package gift;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import gift.dto.jwt.TokenResponse;
+import gift.dto.member.LoginRequest;
 import gift.dto.product.ProductCreateResponse;
 import gift.dto.product.ProductRequest;
 import gift.dto.product.ProductResponse;
 import gift.global.exception.ErrorCode;
 import gift.global.exception.ErrorResponse;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -25,11 +29,34 @@ public class ProductApiTest {
 
     private final RestClient restClient = RestClient.builder().build();
 
+    private String jwtToken="";
+
     @LocalServerPort
     private int port;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+
+    @BeforeEach
+    void loginSetTup(){
+        LoginRequest loginRequest = new LoginRequest("member1@mem", "password1");
+        var loginUrl = "http://localhost:" + port + "/api/members/login";
+
+        // 로그인 API 호출하여 JWT 토큰 받기
+        var loginResponse = restClient.post()
+            .uri(loginUrl)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(loginRequest)
+            .retrieve()
+            .toEntity(TokenResponse.class);
+
+        // 로그인 성공 확인 및 토큰 추출
+        assertThat(loginResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(loginResponse.getBody()).isNotNull();
+        this.jwtToken = loginResponse.getBody().token(); // JWT 토큰 저장
+        assertThat(jwtToken).isNotBlank(); // 토큰이 비어있지 않은지 확인
+    }
 
     @BeforeEach
     void setUp() {
@@ -55,6 +82,7 @@ public class ProductApiTest {
 
         var response = restClient.get()
             .uri(url)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
             .retrieve()
             .toEntity(ProductResponse.class);
 
@@ -70,6 +98,7 @@ public class ProductApiTest {
 
         var response = restClient.get()
             .uri(url)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
             .retrieve()
             // List로 변환하지 않고 배열로 간단하게 처리
             .toEntity(ProductResponse[].class);
@@ -88,6 +117,7 @@ public class ProductApiTest {
 
         var response = restClient.post()
             .uri(url)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
             .contentType(MediaType.APPLICATION_JSON)
             .body(request)
             .retrieve()
@@ -107,6 +137,7 @@ public class ProductApiTest {
 
         var response = restClient.patch()
             .uri(url)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
             .contentType(MediaType.APPLICATION_JSON)
             .body(updateRequest)
             .retrieve()
@@ -116,6 +147,7 @@ public class ProductApiTest {
 
         var getResponse = restClient.get()
             .uri(url)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
             .retrieve()
             .toEntity(ProductResponse.class);
 
@@ -134,6 +166,7 @@ public class ProductApiTest {
 
         var response = restClient.delete()
             .uri(url)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
             .retrieve()
             .toBodilessEntity();
 
@@ -141,6 +174,7 @@ public class ProductApiTest {
 
         var notFoundResponse = restClient.get()
             .uri(url)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
             .retrieve()
             .onStatus(status -> status.is4xxClientError(), (req, res) -> {
             })
@@ -157,14 +191,15 @@ public class ProductApiTest {
 
         var response = restClient.get()
             .uri(url)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
             .retrieve()
             .onStatus(status -> status.is4xxClientError(), (req, res)->{})
             .toEntity(ErrorResponse.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().errorCode()).isEqualTo(ErrorCode.NOT_EXISTS_PRODUCT);
-        assertThat(response.getBody().message()).isEqualTo(ErrorCode.NOT_EXISTS_PRODUCT.getErrorMessage());
+        assertThat(response.getBody().errorCode()).isEqualTo(ErrorCode.NOT_EXISTS);
+        assertThat(response.getBody().message()).isEqualTo(ErrorCode.NOT_EXISTS.getErrorMessage());
     }
 
     @Test
@@ -176,6 +211,7 @@ public class ProductApiTest {
         ProductRequest request = new ProductRequest(null, "test%", 100, "test url");
         var response1 = restClient.post()
             .uri(url)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
             .contentType(MediaType.APPLICATION_JSON)
             .body(request)
             .retrieve()
@@ -191,6 +227,7 @@ public class ProductApiTest {
         request = new ProductRequest(null, "testtesttesttest", 100, "test url");
         var response2 = restClient.post()
             .uri(url)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
             .contentType(MediaType.APPLICATION_JSON)
             .body(request)
             .retrieve()
@@ -206,6 +243,7 @@ public class ProductApiTest {
         request = new ProductRequest(null, "test카카오", 100, "test url");
         var response3 = restClient.post()
             .uri(url)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
             .contentType(MediaType.APPLICATION_JSON)
             .body(request)
             .retrieve()
@@ -231,6 +269,7 @@ public class ProductApiTest {
 
         var response1 = restClient.patch()
             .uri(url)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
             .contentType(MediaType.APPLICATION_JSON)
             .body(updateRequest)
             .retrieve()
@@ -251,6 +290,7 @@ public class ProductApiTest {
 
         var response2 = restClient.patch()
             .uri(url)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
             .contentType(MediaType.APPLICATION_JSON)
             .body(updateRequest)
             .retrieve()
@@ -259,8 +299,8 @@ public class ProductApiTest {
 
         assertThat(response2.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(response2.getBody()).isNotNull();
-        assertThat(response2.getBody().errorCode()).isEqualTo(ErrorCode.NOT_EXISTS_PRODUCT);
-        assertThat(response2.getBody().message()).isEqualTo(ErrorCode.NOT_EXISTS_PRODUCT.getErrorMessage());
+        assertThat(response2.getBody().errorCode()).isEqualTo(ErrorCode.NOT_EXISTS);
+        assertThat(response2.getBody().message()).isEqualTo(ErrorCode.NOT_EXISTS.getErrorMessage());
 
     }
 
@@ -272,13 +312,14 @@ public class ProductApiTest {
 
         var response = restClient.delete()
             .uri(url)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
             .retrieve()
             .onStatus(status -> status.is4xxClientError(), (req, res)->{})
             .toEntity(ErrorResponse.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().errorCode()).isEqualTo(ErrorCode.NOT_EXISTS_PRODUCT);
-        assertThat(response.getBody().message()).isEqualTo(ErrorCode.NOT_EXISTS_PRODUCT.getErrorMessage());
+        assertThat(response.getBody().errorCode()).isEqualTo(ErrorCode.NOT_EXISTS);
+        assertThat(response.getBody().message()).isEqualTo(ErrorCode.NOT_EXISTS.getErrorMessage());
     }
 }
