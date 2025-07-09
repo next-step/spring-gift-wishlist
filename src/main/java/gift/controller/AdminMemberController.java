@@ -1,5 +1,7 @@
 package gift.controller;
 
+import gift.dto.member.MemberRequestDto;
+import gift.dto.member.MemberResponseDto;
 import gift.entity.Member;
 import gift.service.member.MemberService;
 import jakarta.validation.Valid;
@@ -28,7 +30,7 @@ public class AdminMemberController {
 
   @GetMapping
   public String findAllMembers(Model model) {
-    List<Member> memberList = service.findAllMember();
+    List<MemberResponseDto> memberList = service.findAllMember();
     model.addAttribute("memberList", memberList);
     return "memberList";
   }
@@ -40,21 +42,22 @@ public class AdminMemberController {
   }
 
   @PostMapping("/new")
-  public String createMember(@Valid @ModelAttribute Member member) {
-    service.createMember(member);
+  public String createMember(@Valid @ModelAttribute MemberRequestDto requestDto) {
+    service.createMember(requestDto);
     return "redirect:" + MEMBERS_LIST_PAGE_PATH;
   }
 
   @GetMapping("/{id}/update")
   public String updateMemberForm(@PathVariable("id") Long id, Model model) {
-    Member memberById = service.findMemberById(id);
+    MemberResponseDto memberById = service.findMemberById(id);
     model.addAttribute("member", memberById);
     return "updateMemberForm";
   }
 
   @PutMapping("/{id}/update")
-  public String update(@PathVariable("id") Long id, @Valid @ModelAttribute Member member) {
-    service.updateMember(id, member);
+  public String update(@PathVariable("id") Long id,
+      @Valid @ModelAttribute MemberRequestDto requestDto) {
+    service.updateMember(id, requestDto);
     return "redirect:" + MEMBERS_LIST_PAGE_PATH;
   }
 

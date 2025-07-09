@@ -1,22 +1,23 @@
 package gift.service.member;
 
-import gift.entity.Member;
+import gift.dto.member.MemberRequestDto;
+import gift.dto.member.MemberResponseDto;
 import gift.entity.Token;
 import java.util.List;
 
 public interface MemberService {
 
-  public Token register(Member member);
+  public Token register(MemberRequestDto requestDto);
 
-  public Token login(Member member);
+  public Token login(MemberRequestDto requestDto);
 
-  List<Member> findAllMember();
+  List<MemberResponseDto> findAllMember();
 
-  Member findMemberById(Long id);
+  MemberResponseDto findMemberById(Long id);
 
-  Member createMember(Member member);
+  MemberResponseDto createMember(MemberRequestDto requestDto);
 
-  Member updateMember(Long id, Member member);
+  MemberResponseDto updateMember(Long id, MemberRequestDto requestDto);
 
   void deleteMember(Long id);
 }
