@@ -33,10 +33,12 @@ public class UserServiceImpl implements UserService {
         String email = dto.email();
         String password = dto.password();
         UserRole role = dto.role();
+
         if (userRepository.findUserByEmail(email) != null) {
             throw new UserDuplicatedException();
         }
-        User savedUser = userRepository.save(email,password,role);
+
+        User savedUser = userRepository.save(email, password, role);
         String token = jwtUtil.generateToken(savedUser);
 
         return token;
@@ -61,7 +63,6 @@ public class UserServiceImpl implements UserService {
     public List<UserResponseDto> getUserList(String email,boolean isAdmin) {
 
         if (!isAdmin) {
-            System.out.println("권한이 없습니다.");
             throw new UserAuthorizationException();
         }
         List<User> users = getUsersByEmail(email);
