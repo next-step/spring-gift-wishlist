@@ -1,77 +1,76 @@
 package gift.exception.handler;
 
-import gift.exception.InvalidAuthExeption;
-import gift.exception.InvalidBearerAuthException;
-import gift.exception.MemberNotFoundException;
-import gift.exception.ProductHiddenException;
-import gift.exception.ProductNotFoundExection;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import gift.exception.BaseException;
+import io.jsonwebtoken.JwtException;
+import jakarta.servlet.ServletException;
 import jakarta.validation.ConstraintViolationException;
-import java.sql.SQLException;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.ui.Model;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler({MethodArgumentNotValidException.class, BindException.class})
-    public Object handleValidationExceptions(
-            Exception ex,
-            HttpServletRequest request,
-            HttpServletResponse response,
-            Model model) {
-
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
-
-        if (request.getHeader("Accept") != null
-                && request.getHeader("Accept").contains("application/json")) {
-
-            MethodArgumentNotValidException manv =
-                    (MethodArgumentNotValidException) (ex instanceof MethodArgumentNotValidException
-                            ? ex : null);
-
-            List<FieldErrorDetail> fieldErrors = manv.getBindingResult()
-                    .getFieldErrors().stream()
-                    .map(error -> new FieldErrorDetail(
-                            error.getField(),
-                            error.getDefaultMessage(),
-                            error.getRejectedValue(),
-                            error.getCode()))
-                    .toList();
-
-            return new ErrorResponse(
-                    ErrorCode.VALIDATION_FAILED,
-                    "입력값 검증에 실패했습니다.",
-                    fieldErrors,
-                    LocalDateTime.now());
-        }
-
-        BindingResult br = ex instanceof MethodArgumentNotValidException
-                ? ((MethodArgumentNotValidException) ex).getBindingResult()
-                : ((BindException) ex).getBindingResult();
-
-        model.addAttribute("productForm", br.getTarget());
-        model.addAttribute(
-                BindingResult.MODEL_KEY_PREFIX + "productForm",
-                br
+    @ExceptionHandler(BaseException.class)
+    public ResponseEntity<ErrorResponse> handleBase(BaseException ex) {
+        ErrorResponse body = new ErrorResponse(
+                ex.getErrorCode(),
+                ex.getMessage(),
+                List.of(),
+                LocalDateTime.now()
         );
+        return ResponseEntity
+                .status(ex.getHttpStatus())
+                .body(body);
+    }
 
-        return "admin/product_form";
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException ex,
+            HttpHeaders headers,
+            HttpStatus status,
+            WebRequest request) {
+
+        List<FieldErrorDetail> details = ex.getBindingResult().getFieldErrors().stream()
+                .map(fe -> new FieldErrorDetail(
+                        fe.getField(),
+                        fe.getDefaultMessage(),
+                        fe.getRejectedValue(),
+                        fe.getCode()))
+                .toList();
+
+        ErrorResponse body = new ErrorResponse(
+                ErrorCode.VALIDATION_FAILED,
+                "입력값 검증에 실패했습니다.",
+                details,
+                LocalDateTime.now()
+        );
+        return ResponseEntity.badRequest().body(body);
+    }
+
+    protected ResponseEntity<Object> handleBindException(
+            BindException ex,
+            HttpHeaders headers,
+            HttpStatus status,
+            WebRequest request) {
+
+        return handleMethodArgumentNotValid(
+                new MethodArgumentNotValidException(null, ex.getBindingResult()),
+                headers, status, request
+        );
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleConstraintViolation(ConstraintViolationException ex) {
+    public ResponseEntity<ErrorResponse> handleConstraintViolation(
+            ConstraintViolationException ex) {
         List<FieldErrorDetail> details = ex.getConstraintViolations().stream()
                 .map(cv -> new FieldErrorDetail(
                         cv.getPropertyPath().toString(),
@@ -83,121 +82,64 @@ public class GlobalExceptionHandler {
                                 .getSimpleName()))
                 .toList();
 
-        return new ErrorResponse(
+        ErrorResponse body = new ErrorResponse(
                 ErrorCode.VALIDATION_FAILED,
                 "데이터 무결성 검사에 실패했습니다.",
                 details,
                 LocalDateTime.now()
         );
+        return ResponseEntity.badRequest().body(body);
     }
 
-    @ExceptionHandler(NullPointerException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleNullPointer(NullPointerException ex) {
-        return new ErrorResponse(
-                ErrorCode.VALIDATION_FAILED,
-                ex.getMessage(),
+    @ExceptionHandler(ServletException.class)
+    public ResponseEntity<ErrorResponse> handleServletException(ServletException ex) {
+        ErrorResponse body = new ErrorResponse(
+                ErrorCode.INTERNAL_ERROR,
+                "서버 처리 중 오류가 발생했습니다.",
                 List.of(),
                 LocalDateTime.now()
         );
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(body);
     }
 
-    @ExceptionHandler(ProductHiddenException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ErrorResponse handleProductHiddenExeption(ProductHiddenException ex) {
-        return new ErrorResponse(
-                ErrorCode.FORBIDDEN,
-                ex.getMessage(),
+    @ExceptionHandler(IOException.class)
+    public ResponseEntity<ErrorResponse> handleIOException(IOException ex) {
+        ErrorResponse body = new ErrorResponse(
+                ErrorCode.INTERNAL_ERROR,
+                "입출력 처리 중 오류가 발생했습니다.",
                 List.of(),
                 LocalDateTime.now()
         );
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(body);
     }
 
-    @ExceptionHandler(InvalidAuthExeption.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ErrorResponse handleInvalidAuthExeption(InvalidAuthExeption ex) {
-        return new ErrorResponse(
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<ErrorResponse> handleJwtException(JwtException ex) {
+        ErrorResponse body = new ErrorResponse(
                 ErrorCode.UNAUTHORIZED,
-                ex.getMessage(),
+                "유효하지 않은 토큰입니다.",
                 List.of(),
                 LocalDateTime.now()
         );
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(body);
     }
 
-    @ExceptionHandler(InvalidBearerAuthException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ErrorResponse handleInvalidAuthExeption(InvalidBearerAuthException ex) {
-        return new ErrorResponse(
-                ErrorCode.UNAUTHORIZED,
-                ex.getMessage(),
-                List.of(),
-                LocalDateTime.now()
-        );
-    }
-
-    @ExceptionHandler(ProductNotFoundExection.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleProductNotFoundExeption(ProductNotFoundExection ex) {
-        return new ErrorResponse(
-                ErrorCode.FORBIDDEN,
-                ex.getMessage(),
-                List.of(),
-                LocalDateTime.now()
-        );
-    }
-
-    @ExceptionHandler(MemberNotFoundException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ErrorResponse handleMemberNotFoundExeption(MemberNotFoundException ex) {
-        return new ErrorResponse(
-                ErrorCode.FORBIDDEN,
-                ex.getMessage(),
-                List.of(),
-                LocalDateTime.now()
-        );
-    }
-
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
-        return new ErrorResponse(
-                ErrorCode.BAD_REQUEST,
-                ex.getMessage(),
-                List.of(),
-                LocalDateTime.now()
-        );
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleIllegalArgumentExeption(IllegalArgumentException ex) {
-        return new ErrorResponse(
-                ErrorCode.BAD_REQUEST,
-                ex.getMessage(),
-                List.of(),
-                LocalDateTime.now()
-        );
-    }
-
-    @ExceptionHandler(SQLException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleSQLException(SQLException ex) {
-        return new ErrorResponse(
-                ErrorCode.DATABASE_ERROR,
-                ex.getMessage(),
-                List.of(),
-                LocalDateTime.now()
-        );
-    }
-
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleGeneral(Exception ex) {
-        return new ErrorResponse(
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException ex) {
+        ErrorResponse body = new ErrorResponse(
                 ErrorCode.INTERNAL_ERROR,
                 ex.getMessage(),
                 List.of(),
                 LocalDateTime.now()
         );
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(body);
     }
 }

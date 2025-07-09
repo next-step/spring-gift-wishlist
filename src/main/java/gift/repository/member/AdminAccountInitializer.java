@@ -56,11 +56,7 @@ public class AdminAccountInitializer {
                     String.valueOf(Role.USER),
                     LocalDateTime.now()
             );
-
             memberRepository.register(user);
-
-
         }
-
     }
 }

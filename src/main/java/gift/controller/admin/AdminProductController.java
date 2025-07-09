@@ -1,10 +1,10 @@
 package gift.controller.admin;
 
-import static gift.controller.user.ProductController.extractRole;
+import static gift.util.RoleUtil.extractRole;
 
 import gift.dto.product.ProductForm;
 import gift.entity.product.Product;
-import gift.exception.ProductNotFoundExection;
+import gift.exception.custom.ProductNotFoundException;
 import gift.service.product.ProductService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,14 +31,6 @@ public class AdminProductController {
         this.productService = productService;
     }
 
-//    private String extractRole(HttpServletRequest req) {
-//        Claims claims = (Claims) req.getAttribute("authClaims");
-//        if (claims == null) {
-//            throw new IllegalArgumentException("토큰이 없습니다.");
-//        }
-//        return claims.get("role", String.class);
-//    }
-
     @GetMapping
     public String list(HttpServletRequest req, Model model) {
         model.addAttribute("products", productService.getAllProducts(extractRole(req)));
@@ -59,7 +51,7 @@ public class AdminProductController {
             BindingResult bindingResult,
             HttpServletResponse response
     ) {
-        String errorView = checkErrors(bindingResult, response, "admin/product_form");
+        String errorView = checkErrors(bindingResult, response);
         if (errorView != null) {
             return errorView;
         }
@@ -79,7 +71,7 @@ public class AdminProductController {
             Model model
     ) {
         Product p = productService.getProductById(id, extractRole(req))
-                .orElseThrow(() -> new ProductNotFoundExection(id));
+                .orElseThrow(() -> new ProductNotFoundException(id));
         ProductForm form = new ProductForm(
                 p.id().id(),
                 p.name().name(),
@@ -98,7 +90,7 @@ public class AdminProductController {
             BindingResult bindingResult,
             HttpServletResponse response
     ) {
-        String errorView = checkErrors(bindingResult, response, "admin/product_form");
+        String errorView = checkErrors(bindingResult, response);
         if (errorView != null) {
             return errorView;
         }
@@ -131,11 +123,10 @@ public class AdminProductController {
     }
 
     private String checkErrors(BindingResult bindingResult,
-            HttpServletResponse response,
-            String viewName) {
+            HttpServletResponse response) {
         if (bindingResult.hasErrors()) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return viewName;
+            return "admin/product_form";
         }
         return null;
     }

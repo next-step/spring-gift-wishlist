@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/admin")
 public class AdminDashboardController {
-
-    // authClaims 는 JwtCookieFilter 에서 request 속성에 담긴다고 가정
+    
     private String extractId(Claims claims) {
         return claims.getSubject();
     }

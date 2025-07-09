@@ -1,10 +1,11 @@
 package gift.controller.admin;
 
+import static gift.util.RoleUtil.extractRole;
+
 import gift.dto.member.MemberForm;
 import gift.entity.member.Member;
-import gift.exception.MemberNotFoundException;
+import gift.exception.custom.MemberNotFoundException;
 import gift.service.member.MemberService;
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -30,17 +31,6 @@ public class AdminMemberController {
         this.memberService = memberService;
     }
 
-    private String extractRole(HttpServletRequest req) {
-        Claims claims = (Claims) req.getAttribute("authClaims");
-        if (claims == null) {
-            throw new IllegalStateException("인증 정보가 없습니다.");
-        }
-        return claims.get("role", String.class);
-    }
-
-    /**
-     * 회원 목록
-     */
     @GetMapping
     public String list(HttpServletRequest req, Model model) {
         String role = extractRole(req);
@@ -49,9 +39,6 @@ public class AdminMemberController {
         return "admin/member_list";
     }
 
-    /**
-     * 신규 회원 등록 폼
-     */
     @GetMapping("/new")
     public String createForm(Model model) {
         model.addAttribute("memberForm", new MemberForm(null, "", "", "USER"));
@@ -76,9 +63,6 @@ public class AdminMemberController {
         return "redirect:/admin/members";
     }
 
-    /**
-     * 회원 수정 폼
-     */
     @GetMapping("/{id}/edit")
     public String editForm(
             @PathVariable Long id,
@@ -94,9 +78,6 @@ public class AdminMemberController {
         return "admin/member_form";
     }
 
-    /**
-     * 회원 수정 처리
-     */
     @PutMapping("/{id}")
     public String update(
             @PathVariable Long id,
@@ -116,9 +97,6 @@ public class AdminMemberController {
         return "redirect:/admin/members";
     }
 
-    /**
-     * 회원 삭제 처리
-     */
     @DeleteMapping("/{id}")
     public String delete(
             @PathVariable Long id,

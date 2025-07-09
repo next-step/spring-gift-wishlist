@@ -1,8 +1,8 @@
 package gift.repository.member;
 
 import gift.entity.member.Member;
-import gift.exception.DuplicateEmailException;
-import gift.exception.MemberNotFoundException;
+import gift.exception.custom.MemberAlreadyExistException;
+import gift.exception.custom.MemberNotFoundException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -43,7 +43,7 @@ public class MemberRepositoryImpl implements MemberRepository {
             Number newId = insert.executeAndReturnKey(params);
             return member.withId(newId.longValue());
         } catch (DataIntegrityViolationException e) {
-            throw new DuplicateEmailException();
+            throw new MemberAlreadyExistException("이미 가입된 이메일입니다.");
         }
     }
 
@@ -67,7 +67,7 @@ public class MemberRepositoryImpl implements MemberRepository {
             }
             return member;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new MemberNotFoundException(member.getEmail().email());
         }
     }
 
@@ -86,7 +86,7 @@ public class MemberRepositoryImpl implements MemberRepository {
                 return Optional.empty();
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new MemberNotFoundException(email);
         }
     }
 
@@ -121,7 +121,7 @@ public class MemberRepositoryImpl implements MemberRepository {
                 return Optional.empty();
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new MemberNotFoundException(id);
         }
     }
 
@@ -134,7 +134,7 @@ public class MemberRepositoryImpl implements MemberRepository {
             ps.setLong(1, id);
             ps.executeUpdate();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new MemberNotFoundException(id);
         }
     }
 

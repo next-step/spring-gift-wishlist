@@ -1,11 +1,12 @@
 package gift.controller.user;
 
+import static gift.util.RoleUtil.extractRole;
+
 import gift.dto.product.ProductRequest;
 import gift.dto.product.ProductResponse;
 import gift.entity.product.Product;
-import gift.exception.ProductNotFoundExection;
+import gift.exception.custom.ProductNotFoundException;
 import gift.service.product.ProductService;
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -31,14 +32,6 @@ public class ProductController {
         this.productService = svc;
     }
 
-    /**
-     * Request에서 인증된 사용자 role을 추출합니다.
-     */
-    public static String extractRole(HttpServletRequest request) {
-        Claims claims = (Claims) request.getAttribute("authClaims");
-        return claims.get("role", String.class);
-    }
-
     @GetMapping
     public ResponseEntity<List<ProductResponse>> getAll(HttpServletRequest request) {
         String role = extractRole(request);
@@ -53,7 +46,7 @@ public class ProductController {
             HttpServletRequest request,
             @PathVariable Long id) {
         Product p = productService.getProductById(id, extractRole(request))
-                .orElseThrow(() -> new ProductNotFoundExection(id));
+                .orElseThrow(() -> new ProductNotFoundException(id));
         return ResponseEntity.ok(p.toResponse());
     }
 

@@ -9,7 +9,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import gift.entity.product.Product;
-import gift.exception.ProductNotFoundExection;
+import gift.exception.custom.ProductNotFoundException;
 import gift.repository.product.ProductRepository;
 import gift.service.product.ProductServiceImpl;
 import java.util.List;
@@ -108,7 +108,7 @@ class ProductServiceTest {
         when(repo.findById(5L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> service.updateProduct(5L, "X", 100, "http://example.com/new.png"))
-                .isInstanceOf(ProductNotFoundExection.class);
+                .isInstanceOf(ProductNotFoundException.class);
     }
 
     @Test
@@ -125,7 +125,7 @@ class ProductServiceTest {
         when(repo.existsById(2L)).thenReturn(false);
 
         assertThatThrownBy(() -> service.deleteProduct(2L))
-                .isInstanceOf(ProductNotFoundExection.class);
+                .isInstanceOf(ProductNotFoundException.class);
     }
 
     @Test

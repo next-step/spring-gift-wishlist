@@ -5,7 +5,8 @@ import gift.dto.member.AuthRequest;
 import gift.dto.member.AuthResponse;
 import gift.entity.member.Member;
 import gift.entity.member.value.Role;
-import gift.exception.MemberNotFoundException;
+import gift.exception.custom.InvalidAuthExeption;
+import gift.exception.custom.MemberNotFoundException;
 import gift.repository.member.MemberRepository;
 import gift.util.JwtUtil;
 import java.nio.charset.StandardCharsets;
@@ -18,9 +19,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class MemberServiceImpl implements MemberService {
 
+    private final JwtUtil jwtUtil;
     private final MemberRepository memberRepository;
 
-    public MemberServiceImpl(MemberRepository memberDao) {
+    public MemberServiceImpl(MemberRepository memberDao, JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
         this.memberRepository = memberDao;
     }
 
@@ -43,7 +46,7 @@ public class MemberServiceImpl implements MemberService {
         String hash = sha256(req.password());
         Member m = Member.register(req.email(), hash);
         m = memberRepository.register(m);
-        String token = JwtUtil.generateToken(m.getId().id(), m.getRole().name());
+        String token = jwtUtil.generateToken(m.getId().id(), m.getRole().name());
         return new AuthResponse(token);
     }
 
@@ -54,13 +57,13 @@ public class MemberServiceImpl implements MemberService {
         if (!m.getPassword().password().equals(sha256(rawPassword))) {
             throw new MemberNotFoundException(email);
         }
-        String token = JwtUtil.generateToken(m.getId().id(), m.getRole().name());
+        String token = jwtUtil.generateToken(m.getId().id(), m.getRole().name());
         return new AuthResponse(token);
     }
 
     private void checkAdmin(String role) {
         if (!"ADMIN".equals(role)) {
-            throw new IllegalArgumentException("관리자 권한이 필요합니다.");
+            throw new InvalidAuthExeption("관리자 권한이 필요합니다.");
         }
     }
 

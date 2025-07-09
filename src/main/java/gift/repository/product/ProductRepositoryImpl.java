@@ -1,7 +1,7 @@
 package gift.repository.product;
 
 import gift.entity.product.Product;
-import gift.exception.ProductNotFoundExection;
+import gift.exception.custom.ProductNotFoundException;
 import jakarta.transaction.Transactional;
 import java.util.HashMap;
 import java.util.List;
@@ -78,7 +78,7 @@ public class ProductRepositoryImpl implements ProductRepository {
                 product.id().id()
         );
         if (updated == 0) {
-            throw new ProductNotFoundExection(product.id().id());
+            throw new ProductNotFoundException(product.id().id());
         }
         return product;
     }
@@ -91,7 +91,7 @@ public class ProductRepositoryImpl implements ProductRepository {
         }
         int deleted = jdbc.update("DELETE FROM product WHERE id = ?", id);
         if (deleted == 0) {
-            throw new ProductNotFoundExection(id);
+            throw new ProductNotFoundException(id);
         }
     }
 }

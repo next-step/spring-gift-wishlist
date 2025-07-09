@@ -3,7 +3,7 @@ package gift.service.product;
 import static gift.entity.product.value.ProductName.FORBIDDEN_PATTERNS;
 
 import gift.entity.product.Product;
-import gift.exception.ProductNotFoundExection;
+import gift.exception.custom.ProductNotFoundException;
 import gift.repository.product.ProductRepository;
 import java.util.List;
 import java.util.Optional;
@@ -34,9 +34,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Optional<Product> getProductById(Long id, String role) {
         Optional<Product> opt = repo.findById(id);
-        Product p = opt.orElseThrow(() -> new ProductNotFoundExection(id));
+        Product p = opt.orElseThrow(() -> new ProductNotFoundException(id));
         if ("USER".equals(role) && p.hidden()) {
-            throw new ProductNotFoundExection(id);
+            throw new ProductNotFoundException(id);
         }
         return Optional.of(p);
     }
@@ -53,9 +53,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product updateProduct(Long id, String name, int price, String imageUrl, String role) {
         Product existing = repo.findById(id)
-                .orElseThrow(() -> new ProductNotFoundExection(id));
+                .orElseThrow(() -> new ProductNotFoundException(id));
         if ("USER".equals(role) && existing.hidden()) {
-            throw new ProductNotFoundExection(id);
+            throw new ProductNotFoundException(id);
         }
 
         Product updated = existing.withName(name)
@@ -71,9 +71,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProduct(Long id, String role) {
         Product existing = repo.findById(id)
-                .orElseThrow(() -> new ProductNotFoundExection(id));
+                .orElseThrow(() -> new ProductNotFoundException(id));
         if ("USER".equals(role) && existing.hidden()) {
-            throw new ProductNotFoundExection(id);
+            throw new ProductNotFoundException(id);
         }
         repo.deleteById(id);
     }
@@ -81,20 +81,20 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void hideProduct(Long id, String role) {
         if ("USER".equals(role)) {
-            throw new ProductNotFoundExection(id);
+            throw new ProductNotFoundException(id);
         }
         Product p = repo.findById(id)
-                .orElseThrow(() -> new ProductNotFoundExection(id));
+                .orElseThrow(() -> new ProductNotFoundException(id));
         repo.save(p.withHidden(true));
     }
 
     @Override
     public void unhideProduct(Long id, String role) {
         if ("USER".equals(role)) {
-            throw new ProductNotFoundExection(id);
+            throw new ProductNotFoundException(id);
         }
         Product p = repo.findById(id)
-                .orElseThrow(() -> new ProductNotFoundExection(id));
+                .orElseThrow(() -> new ProductNotFoundException(id));
         repo.save(p.withHidden(false));
     }
 

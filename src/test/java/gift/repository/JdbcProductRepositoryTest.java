@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import gift.entity.product.Product;
-import gift.exception.ProductNotFoundExection;
+import gift.exception.custom.ProductNotFoundException;
 import gift.repository.product.ProductRepository;
 import gift.repository.product.ProductRepositoryImpl;
 import gift.repository.product.ProductRowMapper;
@@ -83,7 +83,7 @@ class JdbcProductRepositoryTest {
     void updateNonExistentThrows() {
         Product p = Product.of(999L, "No", 1, "http://example.com/no.png", false);
         assertThatThrownBy(() -> repository.save(p))
-                .isInstanceOf(ProductNotFoundExection.class)
+                .isInstanceOf(ProductNotFoundException.class)
                 .hasMessageContaining("999");
     }
 
@@ -95,7 +95,7 @@ class JdbcProductRepositoryTest {
         assertThat(repository.existsById(saved.id().id())).isFalse();
 
         assertThatThrownBy(() -> repository.deleteById(999L))
-                .isInstanceOf(ProductNotFoundExection.class)
+                .isInstanceOf(ProductNotFoundException.class)
                 .hasMessageContaining("999");
     }
 }

@@ -56,7 +56,6 @@ public class AdminAuthController {
             cookie.setMaxAge(60 * 60);
             response.addCookie(cookie);
 
-            // ▶ 로그인 성공 후 대시보드로
             return "redirect:/admin/dashboard";
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
@@ -64,4 +63,14 @@ public class AdminAuthController {
         }
     }
 
+    @GetMapping("/logout")
+    public String logout(HttpServletResponse response) {
+        Cookie cookie = new Cookie("AUTH_TOKEN", null);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+
+        return "redirect:/admin/login";
+    }
 }
