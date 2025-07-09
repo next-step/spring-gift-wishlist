@@ -1,5 +1,6 @@
 package gift.security;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.MessageDigest;
@@ -8,7 +9,8 @@ import java.util.Base64;
 
 @Component
 public class PasswordEncoder {
-    private final String salt = "kimhaejoong1";
+    @Value("${password.salt}")
+    private String salt;
 
     public String encode(String password) {
         try {
