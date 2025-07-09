@@ -2,14 +2,12 @@ package gift.controller;
 
 import gift.config.LoginMember;
 import gift.dto.WishRequestDto;
-import gift.dto.WishResponseDto;
+import gift.dto.WishesResponseDto;
 import gift.entity.Member;
 import gift.service.WishService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RequestMapping("/api/wishes")
 @RestController
@@ -22,9 +20,11 @@ public class WishController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<WishResponseDto>> getWishList(@LoginMember Member member) {
+    public ResponseEntity<WishesResponseDto> getWishList(@LoginMember Member member) {
         return ResponseEntity.ok(
-                wishService.getWishList(member.id())
+            new WishesResponseDto(
+                    wishService.getWishList(member.id())
+            )
         );
     }
 
