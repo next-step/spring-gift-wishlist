@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponseDto> handleDuplicateEmailException(
+    public ResponseEntity<ErrorResponseDto> handleMethodArgumentNotValidException(
         MethodArgumentNotValidException e,
         HttpServletRequest request
     ) {
