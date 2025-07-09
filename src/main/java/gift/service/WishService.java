@@ -1,10 +1,14 @@
 package gift.service;
 
 import gift.domain.Wish;
+import gift.dto.WishResponse;
 import gift.repository.WishRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Service
 public class WishService {
 
     private final WishRepository wishRepository;
@@ -13,7 +17,10 @@ public class WishService {
         this.wishRepository = wishRepository;
     }
 
-    public List<Wish> getWishes(Long memberId) {
-        return wishRepository.findWishByMemberId(memberId);
+    public List<WishResponse> getWishes(Long memberId) {
+        List<Wish> wishes = wishRepository.findWishByMemberId(memberId);
+        return wishes.stream()
+                .map(WishResponse::from)
+                .collect(Collectors.toList());
     }
 }

@@ -6,6 +6,10 @@ public class Wish {
     private final Long productId;
     private final int quantity;
 
+    private String name;
+    private int price;
+    private String imageUrl;
+
     public Wish(Long id, Long memberId, Long productId, int quantity) {
         this.id = id;
         this.memberId = memberId;
@@ -33,4 +37,15 @@ public class Wish {
         return quantity;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public String getImageUrl(){
+        return imageUrl;
+    }
 }
