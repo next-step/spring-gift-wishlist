@@ -22,7 +22,7 @@ public interface MemberService {
 
     void deleteById(UUID id);
 
-    void tokenValidate(String email, String role);
+    void validateToken(String email, String role);
 
     MemberResponse validate(String email, String password);
 }

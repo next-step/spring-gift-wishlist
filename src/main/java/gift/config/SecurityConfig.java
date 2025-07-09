@@ -2,6 +2,7 @@ package gift.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.jwt.JWTUtil;
+import gift.jwt.JWTValidator;
 import gift.jwt.filter.CustomLoginFilter;
 import gift.jwt.filter.ApiFilter;
 import gift.jwt.filter.CustomLogoutFilter;
@@ -21,6 +22,7 @@ import java.util.List;
 public class SecurityConfig implements WebMvcConfigurer {
 
     private final MemberService memberService;
+    private final JWTValidator jwtValidator;
     private final JWTUtil jwtUtil;
     private final ObjectMapper objectMapper;
 
@@ -29,6 +31,7 @@ public class SecurityConfig implements WebMvcConfigurer {
         this.memberService = memberService;
         this.jwtUtil = jwtUtil;
         this.objectMapper = objectMapper;
+        this.jwtValidator = new JWTValidator(jwtUtil, memberService);
     }
 
     @Bean
@@ -44,7 +47,7 @@ public class SecurityConfig implements WebMvcConfigurer {
     @Bean
     public FilterRegistrationBean jwtFilter() {
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
-        filterRegistrationBean.setFilter(new ApiFilter(jwtUtil, objectMapper, memberService));
+        filterRegistrationBean.setFilter(new ApiFilter(objectMapper, jwtValidator));
 
         filterRegistrationBean.addUrlPatterns("/api/*");
         filterRegistrationBean.setOrder(2);
@@ -54,7 +57,7 @@ public class SecurityConfig implements WebMvcConfigurer {
     @Bean
     public FilterRegistrationBean viewFilter() {
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
-        filterRegistrationBean.setFilter(new ViewFilter(jwtUtil, memberService));
+        filterRegistrationBean.setFilter(new ViewFilter(jwtValidator));
         filterRegistrationBean.addUrlPatterns("/*");
         filterRegistrationBean.setOrder(1);
 

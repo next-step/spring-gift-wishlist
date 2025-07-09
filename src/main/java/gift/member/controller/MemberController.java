@@ -1,7 +1,6 @@
 package gift.member.controller;
 
-import gift.domain.Role;
-import gift.global.annotation.Admin;
+import gift.global.annotation.OnlyForAdmin;
 import gift.member.annotation.MyAuthenticalPrincipal;
 import gift.member.dto.*;
 import gift.member.service.MemberService;
@@ -49,7 +48,7 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @Admin
+    @OnlyForAdmin
     @GetMapping()
     public ResponseEntity<List<MemberResponse>> getMembers() {
 
@@ -58,7 +57,7 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @Admin
+    @OnlyForAdmin
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMember(@PathVariable UUID id) {
 
@@ -67,7 +66,7 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @Admin
+    @OnlyForAdmin
     @PostMapping("/admin")
     public ResponseEntity<Void> addMemberForAdmin(@Valid @RequestBody MemberCreateReqForAdmin memberCreateReqForAdmin) {
         UUID id = memberService.save(memberCreateReqForAdmin);
@@ -76,14 +75,14 @@ public class MemberController {
                 location(LocationGenerator.generate(id)).build();
     }
 
-    @Admin
+    @OnlyForAdmin
     @GetMapping("/{id}")
     public ResponseEntity<MemberResponse> getMemberById(@PathVariable UUID id) {
         MemberResponse memberResponse = memberService.findById(id);
         return ResponseEntity.status(HttpStatus.OK).body(memberResponse);
     }
 
-    @Admin
+    @OnlyForAdmin
     @PutMapping("/{id}")
     public ResponseEntity<Void> editMemberForAdmin(@PathVariable UUID id, @Valid @RequestBody MemberUpdateReqForAdmin memberUpdateReqForAdmin) {
         memberService.updateMemberForAdmin(id, memberUpdateReqForAdmin);

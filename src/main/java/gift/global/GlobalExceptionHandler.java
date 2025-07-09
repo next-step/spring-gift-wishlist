@@ -5,14 +5,15 @@ import gift.global.error.ObjectErrorResponse;
 import gift.global.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.nio.file.AccessDeniedException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -30,11 +31,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse>  handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
 
-
-        Map<String,String> fieldErrorResponses = new HashMap<>();
-
-        ex.getBindingResult().getFieldErrors()
-                .forEach(fieldError -> fieldErrorResponses.put(fieldError.getField(), fieldError.getDefaultMessage()));
+        Map<String, String> fieldErrorResponses = ex.getBindingResult().getFieldErrors()
+                .stream()
+                .collect(Collectors.toMap(FieldError::getField
+                        ,FieldError::getDefaultMessage
+                        ,(existing, replacement) -> existing));
 
         List<ObjectErrorResponse> globalErrorResponses = ex.getBindingResult().getGlobalErrors()
                 .stream()
@@ -48,18 +49,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("message", ex.getMessage()));
     }
 
-    @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<Map<String, String>> handleAuthenticationException(AuthenticationException ex) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", ex.getMessage()));
+    @ExceptionHandler(AuthorizationException.class)
+    public ResponseEntity<Map<String, String>> handleAuthenticationException(AuthorizationException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("message", ex.getMessage()));
     }
 
     @ExceptionHandler(BadRequestEntityException.class)
     public ResponseEntity<Map<String, String>> handleBadRequestEntityException(BadRequestEntityException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", ex.getMessage()));
-    }
-
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<Map<String, String>> handleAccessDeniedException(AccessDeniedException ex) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("message", ex.getMessage()));
     }
 }

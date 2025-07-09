@@ -1,7 +1,7 @@
 package gift.jwt.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gift.global.exception.AuthenticationException;
+import gift.global.exception.AuthorizationException;
 import gift.global.exception.NotFoundEntityException;
 import gift.jwt.JWTUtil;
 import gift.member.dto.MemberLoginRequest;
@@ -56,7 +56,7 @@ public class CustomLoginFilter implements Filter {
             response.setStatus(HttpServletResponse.SC_OK);
             response.addCookie(createCookie("Authorization", jwt));
 
-        } catch (NotFoundEntityException | AuthenticationException ex) {
+        } catch (NotFoundEntityException | AuthorizationException ex) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.setContentType("application/json; charset=UTF-8");
             response.getWriter().write(objectMapper.writeValueAsString(Map.of("message", ex.getMessage())));

@@ -2,7 +2,7 @@ package gift.member.service;
 
 import gift.domain.Member;
 import gift.domain.Role;
-import gift.global.exception.AuthenticationException;
+import gift.global.exception.AuthorizationException;
 import gift.global.exception.BadRequestEntityException;
 import gift.global.exception.DuplicateEntityException;
 import gift.global.exception.NotFoundEntityException;
@@ -47,7 +47,7 @@ public class MemberServiceV1 implements MemberService{
                 .orElseThrow(() -> new NotFoundEntityException("존재하는 회원이 아닙니다."));
 
         if (!member.getPassword().equals(memberUpdateRequest.getPassword()))
-            throw new AuthenticationException("비밀번호가 다릅니다.");
+            throw new AuthorizationException("비밀번호가 다릅니다.");
 
 
         if (!memberUpdateRequest.getConfirmPassword().equals(memberUpdateRequest.getNewPassword()))
@@ -62,7 +62,7 @@ public class MemberServiceV1 implements MemberService{
                 .orElseThrow(() -> new NotFoundEntityException("존재하는 회원이 아닙니다."));
 
         if (!member.getPassword().equals(memberUpdateReqForAdmin.getPassword()))
-            throw new AuthenticationException("비밀번호가 다릅니다.");
+            throw new AuthorizationException("비밀번호가 다릅니다.");
 
 
         if (!memberUpdateReqForAdmin.getConfirmPassword().equals(memberUpdateReqForAdmin.getNewPassword()))
@@ -107,7 +107,7 @@ public class MemberServiceV1 implements MemberService{
     }
 
     @Override
-    public void tokenValidate(String email, String role) {
+    public void validateToken(String email, String role) {
         Member findMember = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundEntityException("존재하는 회원이 아닙니다."));
 
@@ -123,7 +123,7 @@ public class MemberServiceV1 implements MemberService{
                 .orElseThrow(() -> new NotFoundEntityException("존재하는 회원이 아닙니다"));
 
         if (!findMember.getPassword().equals(password))
-            throw new AuthenticationException("비밀번호가 다릅니다.");
+            throw new AuthorizationException("비밀번호가 다릅니다.");
 
         return new  MemberResponse(findMember.getId(), findMember.getEmail(), findMember.getRole());
     }

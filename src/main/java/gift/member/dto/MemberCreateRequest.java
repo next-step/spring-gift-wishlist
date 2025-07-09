@@ -1,9 +1,12 @@
 package gift.member.dto;
 
+import gift.util.PatternUtil;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+
+import static gift.util.PatternUtil.*;
 
 public class MemberCreateRequest implements MemberCreateDto{
 
@@ -12,7 +15,7 @@ public class MemberCreateRequest implements MemberCreateDto{
 
     @Size(min = 10, max = 20, message = "비밀번호는 10자이상 20자이하로 입력해주세요")
     @Pattern(
-            regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[~`!@#$%^&*()_+=\\-\\[\\]{}|\\\\:;\"'<>,.?/]).{10,20}$",
+            regexp = PASSWORD_PATTERN,
             message = "비밀번호는 대문자, 소문자, 숫자, 특수문자를 모두 포함해야 합니다."
     )
     @NotBlank(message = "비밀번호를 입력해주세요")
@@ -20,7 +23,7 @@ public class MemberCreateRequest implements MemberCreateDto{
 
     @Size(min = 10, max = 20, message = "비밀번호는 10자이상 20자이하로 입력해주세요")
     @Pattern(
-            regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[~`!@#$%^&*()_+=\\-\\[\\]{}|\\\\:;\"'<>,.?/]).{10,20}$",
+            regexp = PASSWORD_PATTERN,
             message = "비밀번호는 대문자, 소문자, 숫자, 특수문자를 모두 포함해야 합니다."
     )
     @NotBlank(message = "확인 비밀번호를 입력해주세요")

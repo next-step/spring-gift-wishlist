@@ -3,10 +3,14 @@ package gift.jwt.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.domain.Role;
 import gift.global.MySecurityContextHolder;
+import gift.global.exception.JWTValidateException;
 import gift.global.exception.NotFoundEntityException;
 import gift.jwt.JWTUtil;
+import gift.jwt.JWTValidator;
 import gift.member.dto.AuthMember;
 import gift.member.service.MemberService;
+import gift.util.PatternUtil;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.*;
 import jakarta.servlet.http.Cookie;
@@ -14,20 +18,18 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Map;
 
 public class ApiFilter implements Filter {
 
-    private final JWTUtil jwtUtil;
     private final ObjectMapper objectMapper;
-    private final MemberService memberService;
+    private final JWTValidator jwtValidator;
 
-    public ApiFilter(JWTUtil jwtUtil, ObjectMapper objectMapper, MemberService memberService) {
-        this.jwtUtil = jwtUtil;
+    public ApiFilter(ObjectMapper objectMapper, JWTValidator jwtValidator) {
         this.objectMapper = objectMapper;
-        this.memberService = memberService;
+        this.jwtValidator = jwtValidator;
     }
+
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse rep, FilterChain chain) throws IOException, ServletException {
@@ -42,39 +44,11 @@ public class ApiFilter implements Filter {
             return;
         }
 
-        Cookie[] cookies = request.getCookies();
-        if(cookies == null) {
-            writeUnauthorizedResponse(response,"쿠키가 존재하지 않습니다.");
-            return;
-        }
-
-        String accessToken = Arrays.stream(request.getCookies())
-                .filter(cookie -> cookie.getName().equals("Authorization"))
-                .findFirst()
-                .map(cookie -> cookie.getValue())
-                .orElse(null);
-
-        if (accessToken == null) {
-            writeUnauthorizedResponse(response, "토큰이 존재하지 않습니다.");
-            return;
-        }
-
-
         try {
-            jwtUtil.isExpired(accessToken);
-        } catch (ExpiredJwtException e) {
-            writeUnauthorizedResponse(response, "만료된 토큰입니다.");
-            return;
-        }
-
-
-        try {
-            String email = jwtUtil.getEmail(accessToken);
-            String role = jwtUtil.getRole(accessToken);
-            memberService.tokenValidate(email, role);
-            MySecurityContextHolder.set(new AuthMember(email, Role.valueOf(role)));
-            chain.doFilter(request, response);
-        } catch (NotFoundEntityException e) {
+            AuthMember authMember = jwtValidator.validateJWT(request);
+            MySecurityContextHolder.set(authMember);
+            chain.doFilter(request,response);
+        } catch (JWTValidateException e) {
             writeUnauthorizedResponse(response, e.getMessage());
         }
         finally {

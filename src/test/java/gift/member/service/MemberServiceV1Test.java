@@ -3,7 +3,7 @@ package gift.member.service;
 
 import gift.domain.Member;
 import gift.domain.Role;
-import gift.global.exception.AuthenticationException;
+import gift.global.exception.AuthorizationException;
 import gift.global.exception.BadRequestEntityException;
 import gift.global.exception.DuplicateEntityException;
 import gift.global.exception.NotFoundEntityException;
@@ -196,7 +196,7 @@ class MemberServiceV1Test {
 
         // when
         assertThatThrownBy(()->memberService.changePassword(member.getEmail(), updateRequest))
-                .isInstanceOf(AuthenticationException.class);
+                .isInstanceOf(AuthorizationException.class);
 
         verify(memberRepository).findByEmail(member.getEmail());
         verifyNoMoreInteractions(memberRepository);
@@ -270,7 +270,7 @@ class MemberServiceV1Test {
                 .willReturn(Optional.of(member));
         //when & then
         assertThatThrownBy(()->memberService.validate(member.getEmail(), "1234Qwer!!"))
-                .isInstanceOf(AuthenticationException.class);
+                .isInstanceOf(AuthorizationException.class);
         verify(memberRepository).findByEmail(member.getEmail());
         verifyNoMoreInteractions(memberRepository);
     }
@@ -285,7 +285,7 @@ class MemberServiceV1Test {
                 .willReturn(Optional.of(member));
 
         // when
-        memberService.tokenValidate(member.getEmail(), member.getRole().toString());
+        memberService.validateToken(member.getEmail(), member.getRole().toString());
 
         // then
         verify(memberRepository).findByEmail(member.getEmail());
@@ -303,7 +303,7 @@ class MemberServiceV1Test {
                 .willReturn(Optional.of(member));
 
         // when & then
-        assertThatThrownBy(()->memberService.tokenValidate(member.getEmail(), "ADMIN"))
+        assertThatThrownBy(()->memberService.validateToken(member.getEmail(), "ADMIN"))
                 .isInstanceOf(NotFoundEntityException.class);
         verify(memberRepository).findByEmail(member.getEmail());
         verifyNoMoreInteractions(memberRepository);
@@ -318,7 +318,7 @@ class MemberServiceV1Test {
                 .willReturn(Optional.empty());
 
         // when & then
-        assertThatThrownBy(()->memberService.tokenValidate(anyString(), "REGULAR"))
+        assertThatThrownBy(()->memberService.validateToken(anyString(), "REGULAR"))
                 .isInstanceOf(NotFoundEntityException.class);
         verify(memberRepository).findByEmail(anyString());
         verifyNoMoreInteractions(memberRepository);

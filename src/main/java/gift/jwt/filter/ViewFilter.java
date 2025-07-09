@@ -2,10 +2,13 @@ package gift.jwt.filter;
 
 import gift.domain.Role;
 import gift.global.MySecurityContextHolder;
+import gift.global.exception.JWTValidateException;
 import gift.global.exception.NotFoundEntityException;
 import gift.jwt.JWTUtil;
+import gift.jwt.JWTValidator;
 import gift.member.dto.AuthMember;
 import gift.member.service.MemberService;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.*;
 import jakarta.servlet.http.Cookie;
@@ -19,12 +22,10 @@ import java.util.Arrays;
 
 public class ViewFilter implements Filter {
 
-    private final JWTUtil jwtUtil;
-    private final MemberService memberService;
+    private final JWTValidator jwtValidator;
 
-    public ViewFilter(JWTUtil jwtUtil, MemberService memberService) {
-        this.jwtUtil = jwtUtil;
-        this.memberService = memberService;
+    public ViewFilter(JWTValidator jwtValidator) {
+        this.jwtValidator = jwtValidator;
     }
 
     @Override
@@ -37,45 +38,15 @@ public class ViewFilter implements Filter {
         if(passRequestURI(requestURI)) {
             chain.doFilter(request, response);
             return;
-        };
+        }
 
         String redirectUrl = "/login?redirect=" + URLEncoder.encode(requestURI, StandardCharsets.UTF_8);
 
-        Cookie[] cookies = request.getCookies();
-        if(cookies == null) {
-            response.sendRedirect(redirectUrl);
-            return;
-        }
-
-        String accessToken = Arrays.stream(cookies)
-                .filter(cookie -> cookie.getName().equals("Authorization"))
-                .findFirst()
-                .map(cookie -> cookie.getValue())
-                .orElse(null);
-
-
-        if (accessToken == null) {
-            response.sendRedirect(redirectUrl);
-            return;
-        }
-
-
-
         try {
-            jwtUtil.isExpired(accessToken);
-        } catch (ExpiredJwtException e) {
-            response.sendRedirect(redirectUrl);
-            return;
-        }
-
-
-        try {
-            String email = jwtUtil.getEmail(accessToken);
-            String role = jwtUtil.getRole(accessToken);
-            memberService.tokenValidate(email, role);
-            MySecurityContextHolder.set(new AuthMember(email, Role.valueOf(role)));
+            AuthMember authMember = jwtValidator.validateJWT(request);
+            MySecurityContextHolder.set(authMember);
             chain.doFilter(request, response);
-        } catch (NotFoundEntityException e) {
+        } catch (JWTValidateException e) {
             response.sendRedirect(redirectUrl);
         }
         finally {

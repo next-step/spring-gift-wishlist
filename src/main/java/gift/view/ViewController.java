@@ -1,6 +1,6 @@
 package gift.view;
 
-import gift.global.annotation.Admin;
+import gift.global.annotation.OnlyForAdmin;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,19 +16,19 @@ public class ViewController {
         return "login";
     }
 
-    @Admin
+    @OnlyForAdmin
     @GetMapping("/admin/products")
     public String adminProducts(){
         return "admin-product";
     }
 
-    @Admin
+    @OnlyForAdmin
     @GetMapping("/admin/members")
     public String adminMembers(){
         return "admin-member";
     }
 
-    @Admin
+    @OnlyForAdmin
     @GetMapping("/admin/products/{id}")
     public String editProduct(@PathVariable UUID id, Model model){
 
@@ -37,13 +37,13 @@ public class ViewController {
         return "edit-product";
     }
 
-    @Admin
+    @OnlyForAdmin
     @GetMapping("/admin/members/add")
     public String addMember(){
         return "add-member";
     }
 
-    @Admin
+    @OnlyForAdmin
     @GetMapping("/admin/members/{id}")
     public String editMember(@PathVariable UUID id, Model model){
         model.addAttribute("memberId", id);
