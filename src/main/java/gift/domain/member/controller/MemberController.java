@@ -24,7 +24,6 @@ public class MemberController {
     public ResponseEntity<MemberInfoResponse> getMemberInfo(
             @PathVariable Long id,
             @RequestHeader("Authorization") String accessToken) throws TokenExpiredException {
-        System.out.println("accessToken: " + accessToken);
         return new ResponseEntity<>(memberService.getMemberInfo(id, accessToken), HttpStatus.OK);
     }
 
