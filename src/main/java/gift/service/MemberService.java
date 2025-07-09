@@ -29,21 +29,18 @@ public class MemberService {
     }
 
     // 회원가입
-    public String register(String email, String password) {
-        // 1. 이메일 중복 체크
-        if (memberRepository.findByEmail(email).isPresent()) {
-            throw new IllegalArgumentException("이미 사용중인 이메일입니다.");
-        }
+    public String register(String email, String rawPassword) {
+        // 유효성 검사만 먼저 수행
+        Member.validateForRegister(email, rawPassword);
 
-        // 2. 비밀번호 암호화
-        String encodedPassword = passwordEncoder.encode(password);
+        // 비밀번호 암호화
+        String encodedPassword = passwordEncoder.encode(rawPassword);
 
-        // 3. Member 생성 및 저장
-        Member member = Member.register(email, encodedPassword);
-        Member savedMember = memberRepository.save(member);
+        // 암호화된 비밀번호로 Member 객체 생성
+        Member member = Member.withEncodedPassword(email, encodedPassword);
+        Member saved = memberRepository.save(member);
 
-        // 4. JWT 토큰 생성 및 반환
-        return jwtTokenProvider.createToken(savedMember.getId());
+        return jwtTokenProvider.createToken(saved.getId());
     }
 
     // 로그인

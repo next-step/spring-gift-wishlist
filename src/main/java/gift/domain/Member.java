@@ -15,21 +15,23 @@ public class Member {
         this.password = password;
     }
 
+    // DB 에서 조회된 데이터를 복원할 때 사용 (검증 생략)
     public static Member withId(Long id, String email, String password) {
-        validateEmail(email);
-        validatePassword(password);
-
         return new Member(id, email, password);
     }
 
-    // 회원가입용 - ID 없이 생성
-    public static Member register(String email, String password) {
-        validateEmail(email);
-        validatePassword(password);
-
-        return new Member(null, email, password);
+    // 암호화된 비밀번호를 이용해 ID 없이 Member 생성 (유효성 검사는 외부에서 수행)
+    public static Member withEncodedPassword(String email, String encodedPassword) {
+        return new Member(null, email, encodedPassword);
     }
 
+    // 유효성 검사만 수행 (암호화 전 사용)
+    public static void validateForRegister(String email, String rawPassword) {
+        validateEmail(email);
+        validatePassword(rawPassword);
+    }
+
+    // 유효성 검사 내부 로직
     private static void validateEmail(String email) {
         if (email == null || email.isBlank()) {
             throw new IllegalArgumentException("이메일은 필수입니다.");
