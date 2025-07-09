@@ -6,11 +6,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import gift.dto.ProductRequestDTO;
 import gift.dto.ProductResponseDTO;
+import gift.dto.RegisterRequestDTO;
+import gift.dto.TokenResponseDTO;
 import gift.entity.Product;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -18,6 +21,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
@@ -26,13 +30,41 @@ class ProductControllerTest {
 
   @LocalServerPort
   private int port;
-
   private RestClient client;
+
+  @Autowired
+  private JdbcTemplate jdbcTemplate;
 
   @BeforeEach
   void setup() {
-    String url = "http://localhost:" + port + "/api/products";
+    String url = "http://localhost:" + port + "/api/members"; // members로 수정
     client = RestClient.builder().baseUrl(url).build();
+    final String email = "test@test.com";
+    final String password = "password123";
+    RegisterRequestDTO req = new RegisterRequestDTO(email, password);
+    ResponseEntity<TokenResponseDTO> response = client.post()
+        .uri("/register")
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(req)
+        .retrieve()
+        .toEntity(TokenResponseDTO.class);
+    assertNotNull(response);
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    assertThat(response.getBody()).isNotNull();
+    assertThat(response.getBody().token()).isNotBlank();
+
+    String jwtToken = response.getBody().token();
+
+    url = "http://localhost:" + port + "/api/products";
+    client = RestClient.builder()
+        .baseUrl(url)
+        .defaultHeader("Authorization", "Bearer " + jwtToken)
+        .build();
+  }
+
+  @BeforeEach
+  void clearDatabase() {
+    jdbcTemplate.update("DELETE FROM member");
   }
 
   @Test
