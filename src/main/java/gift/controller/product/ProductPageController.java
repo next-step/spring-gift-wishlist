@@ -30,7 +30,7 @@ public class ProductPageController {
     public String findAll(Model model){
         List<Product> list = productServiceAdmin.getProductListAdmin();
         model.addAttribute("productList", list);
-        return "main";
+        return "productMain";
     }
 
     // 상품 등록 페이지 이동
