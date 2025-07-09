@@ -61,7 +61,8 @@ public class TokenProvider {
         return null;
     }
 
-    public UUID getMemberUuidFromRefreshToken(String refreshTokenString) throws InvalidCredentialsException {
+    public UUID getMemberUuidFromRefreshToken(String refreshTokenString)
+            throws InvalidCredentialsException {
         RefreshToken refreshToken = refreshTokenRepository.findByToken(refreshTokenString)
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid refresh token"));
         if (refreshToken.getExpirationDate().isBefore(LocalDateTime.now())) {
@@ -71,25 +72,23 @@ public class TokenProvider {
         return refreshToken.getMemberUuid();
     }
 
-    public UUID getMemberUuidFromAccessToken(String token) {
-        if (isTokenExpired(token)) {
-            throw new InvalidCredentialsException("Invalid access token");
-        }
-
+    public UUID getMemberUuidFromAccessToken(String token) throws InvalidCredentialsException {
         return UUID.fromString(getClaimsFromToken(token).getSubject());
     }
 
-    private boolean isTokenExpired(String token) {
-        Date expirationDate = getClaimsFromToken(token).getExpiration();
-        return expirationDate.before(new Date());
-    }
-
-    private Claims getClaimsFromToken(String accessToken) {
-        return Jwts.parser()
+    private Claims getClaimsFromToken(String accessToken) throws InvalidCredentialsException {
+        Claims claims = Jwts.parser()
                 .verifyWith(getSigningKey())
                 .build()
                 .parseSignedClaims(accessToken)
                 .getPayload();
+
+        Date expirationDate = claims.getExpiration();
+        if (expirationDate.before(new Date())) {
+            throw new InvalidCredentialsException("Invalid access token");
+        }
+
+        return claims;
     }
 
     private SecretKey getSigningKey() {
