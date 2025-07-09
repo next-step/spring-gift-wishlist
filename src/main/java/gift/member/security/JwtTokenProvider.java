@@ -16,12 +16,23 @@ public class JwtTokenProvider {
     }
 
     public String generateToken(Long memberId, String email, String role) {
-        // access token
         return Jwts.builder()
             .setSubject(memberId.toString())
             .claim("email", email)
             .claim("role", role)
             .signWith(key)
             .compact();
+    }
+
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parser()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
