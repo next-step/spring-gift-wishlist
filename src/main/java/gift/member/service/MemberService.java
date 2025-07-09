@@ -4,11 +4,11 @@ import gift.exception.EntityAlreadyExistsException;
 import gift.exception.EntityNotFoundException;
 import gift.exception.InvalidCredentialsException;
 import gift.member.dto.AccessTokenRefreshResponseDto;
-import gift.member.dto.MemberInfo;
+import gift.member.dto.MemberDto;
 import gift.member.dto.MemberLoginRequestDto;
 import gift.member.dto.MemberLoginResponseDto;
 import gift.member.dto.MemberRegisterRequestDto;
-import gift.member.dto.MemberTokenInfo;
+import gift.member.dto.MemberTokenDto;
 import gift.member.dto.AccessTokenRefreshRequestDto;
 import gift.member.entity.Member;
 import gift.member.repository.MemberRepository;
@@ -29,14 +29,14 @@ public class MemberService {
     }
 
     @Transactional
-    public MemberInfo register(MemberRegisterRequestDto requestDto) {
+    public MemberDto register(MemberRegisterRequestDto requestDto) {
         if (memberRepository.existsByEmail(requestDto.email())) {
             throw new EntityAlreadyExistsException("이미 가입된 계정입니다.");
         }
 
         Member member = new Member(requestDto);
         memberRepository.save(member);
-        return new MemberInfo(member);
+        return new MemberDto(member);
     }
 
     @Transactional
@@ -48,10 +48,10 @@ public class MemberService {
             throw new InvalidCredentialsException();
         }
 
-        MemberTokenInfo memberTokenInfo = new MemberTokenInfo(
+        MemberTokenDto memberTokenDto = new MemberTokenDto(
                 tokenProvider.generateAccessToken(member),
                 tokenProvider.generateRefreshToken(member));
-        return new MemberLoginResponseDto(new MemberInfo(member), memberTokenInfo);
+        return new MemberLoginResponseDto(new MemberDto(member), memberTokenDto);
     }
 
     public AccessTokenRefreshResponseDto refreshAccessToken(

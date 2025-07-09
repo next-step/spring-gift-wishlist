@@ -4,7 +4,7 @@ import gift.member.entity.Member;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public record MemberInfo(
+public record MemberDto(
         UUID uuid,
         String email,
         String name,
@@ -12,7 +12,7 @@ public record MemberInfo(
         LocalDateTime updatedAt
 ) {
 
-    public MemberInfo(Member member) {
+    public MemberDto(Member member) {
         this(member.getUuid(), member.getEmail(), member.getName(), member.getCreatedAt(),
                 member.getUpdatedAt());
     }

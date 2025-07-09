@@ -2,7 +2,7 @@ package gift.member.controller;
 
 import gift.member.dto.AccessTokenRefreshRequestDto;
 import gift.member.dto.AccessTokenRefreshResponseDto;
-import gift.member.dto.MemberInfo;
+import gift.member.dto.MemberDto;
 import gift.member.dto.MemberLoginRequestDto;
 import gift.member.dto.MemberLoginResponseDto;
 import gift.member.dto.MemberRegisterRequestDto;
@@ -26,7 +26,7 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity<MemberInfo> register(
+    public ResponseEntity<MemberDto> register(
             @Valid @RequestBody MemberRegisterRequestDto requestDto) {
         var createdMember = memberService.register(requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdMember);

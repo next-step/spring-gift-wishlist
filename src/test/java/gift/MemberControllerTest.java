@@ -6,7 +6,7 @@ import gift.common.dto.ErrorResponseDto;
 import gift.exception.ErrorStatus;
 import gift.member.dto.AccessTokenRefreshRequestDto;
 import gift.member.dto.AccessTokenRefreshResponseDto;
-import gift.member.dto.MemberInfo;
+import gift.member.dto.MemberDto;
 import gift.member.dto.MemberLoginRequestDto;
 import gift.member.dto.MemberLoginResponseDto;
 import gift.member.dto.MemberRegisterRequestDto;
@@ -54,7 +54,7 @@ public class MemberControllerTest {
     void 회원가입_성공() {
         var requestDto = new MemberRegisterRequestDto(generateUniqueValidEmail(), VALID_NAME,
                 VALID_PW);
-        var response = restTemplate.postForEntity(baseUrl, requestDto, MemberInfo.class);
+        var response = restTemplate.postForEntity(baseUrl, requestDto, MemberDto.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody()).isNotNull();
@@ -118,11 +118,11 @@ public class MemberControllerTest {
 
         assertThat(loginResponse.getBody()).isNotNull();
 
-        assertThat(loginResponse.getBody().memberInfo()).isNotNull();
-        assertThat(loginResponse.getBody().memberInfo().uuid()).isNotNull();
-        assertThat(loginResponse.getBody().memberInfo().email()).isEqualTo(
+        assertThat(loginResponse.getBody().memberDto()).isNotNull();
+        assertThat(loginResponse.getBody().memberDto().uuid()).isNotNull();
+        assertThat(loginResponse.getBody().memberDto().email()).isEqualTo(
                 registerRequestDto.email());
-        assertThat(loginResponse.getBody().memberInfo().name()).isEqualTo(
+        assertThat(loginResponse.getBody().memberDto().name()).isEqualTo(
                 registerRequestDto.name());
 
         assertThat(loginResponse.getBody().tokenInfo()).isNotNull();
@@ -131,7 +131,7 @@ public class MemberControllerTest {
 
         assertThat(tokenProvider.getMemberUuidFromAccessToken(
                 loginResponse.getBody().tokenInfo().accessToken()))
-                .isEqualTo(loginResponse.getBody().memberInfo().uuid());
+                .isEqualTo(loginResponse.getBody().memberDto().uuid());
     }
 
     @Test
@@ -206,7 +206,7 @@ public class MemberControllerTest {
 
         assertThat(refreshResponse.getBody()).isNotNull();
         assertThat(tokenProvider.getMemberUuidFromAccessToken(refreshResponse.getBody().accessToken()))
-                .isEqualTo(loginResponse.getBody().memberInfo().uuid());
+                .isEqualTo(loginResponse.getBody().memberDto().uuid());
 
     }
 

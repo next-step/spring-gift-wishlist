@@ -1,6 +1,6 @@
 package gift.member.dto;
 
-public record MemberTokenInfo(
+public record MemberTokenDto(
         String accessToken,
         String refreshToken
 ) {
