@@ -6,41 +6,47 @@ document.addEventListener('DOMContentLoaded', function () {
     localStorage.removeItem('accessToken');
   }
 
-  // --- 회원가입 처리 ---
+  // --- 회원가입 및 로그인 처리 ---
   const registerForm = document.getElementById('register-form');
   if (registerForm) {
     registerForm.addEventListener('submit', handleAuthFormSubmit);
   }
 
-  // --- 로그인 처리 ---
   const loginForm = document.getElementById('login-form');
   if (loginForm) {
     loginForm.addEventListener('submit', handleAuthFormSubmit);
   }
 
-  // --- 위시리스트 추가 ---
-  document.querySelectorAll('.add-to-wishlist-btn').forEach(button => {
-    button.addEventListener('click', handleWishlistAction);
-  });
+  // --- 위시리스트 페이지일 경우, 데이터 로드 함수 실행 ---
+  const wishlistBody = document.getElementById('wishlist-body');
+  if (wishlistBody) {
+    fetchWishlist();
+  }
 
-  // --- 위시리스트 삭제 ---
-  // 위시리스트 페이지는 동적으로 로드되므로, body에 이벤트 위임을 사용합니다.
+  // --- 이벤트 위임을 사용한 통합 이벤트 리스너 ---
   document.body.addEventListener('click', function (event) {
+    // [추가] 상세 페이지 이동 로직
+    const clickableRow = event.target.closest('.clickable-row');
+    if (clickableRow) {
+      const link = clickableRow.dataset.link;
+      if (link) {
+        window.location.href = link;
+      }
+      return; // 다른 클릭 이벤트와 중복되지 않도록 여기서 종료
+    }
+
+    // 위시리스트 추가 버튼
+    if (event.target.classList.contains('add-to-wishlist-btn')) {
+      handleWishlistAction(event);
+    }
+    // 위시리스트 삭제 버튼
     if (event.target.classList.contains('delete-from-wishlist-btn')) {
       handleWishlistAction(event);
     }
   });
 
-  // --- 상세 페이지 이동 ---
-  document.querySelectorAll(".clickable-row").forEach(row => {
-    row.addEventListener("click", function () {
-      const id = this.dataset.id;
-      const link = this.dataset.link;
-      if (id && link) {
-        window.location.href = link;
-      }
-    });
-  });
+  // --- [삭제] 기존 상세 페이지 이동 로직은 위의 통합 리스너로 이전했습니다. ---
+  // document.querySelectorAll(".clickable-row").forEach(...)
 
   // --- 삭제 확인 ---
   document.querySelectorAll(".delete-form").forEach(form => {
@@ -56,9 +62,9 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
-// 로그인/회원가입 폼 제출을 위한 비동기 함수 (개선된 버전)
+// 로그인/회원가입 폼 제출 비동기 함수
 async function handleAuthFormSubmit(event) {
-  event.preventDefault(); // 폼의 기본 제출 동작을 막습니다.
+  event.preventDefault();
   const form = event.target;
   const url = form.action;
   const email = form.email.value;
@@ -67,32 +73,28 @@ async function handleAuthFormSubmit(event) {
   try {
     const response = await fetch(url, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({email, password})
     });
 
     const result = await response.json();
 
     if (response.ok) {
-      // 성공 시 토큰을 저장하고 명확하게 페이지를 이동시킵니다.
       localStorage.setItem('accessToken', result.token);
-      const successMsg = url.includes('register') ? '회원가입 성공!' : '로그인 성공!';
+      const successMsg = (url.includes('register')) ? '회원가입 성공!' : '로그인 성공!';
       alert(successMsg);
-      window.location.href = '/members/products'; // 상품 목록 페이지로 리다이렉트
+      window.location.href = '/members/products';
     } else {
-      // 실패 시 서버가 보낸 에러 메시지를 표시합니다.
-      const errorMsg = result.message || '알 수 없는 오류가 발생했습니다.';
-      alert(`${url.includes('register') ? '회원가입' : '로그인'} 실패: ${errorMsg}`);
+      const errorMsg = (result.message) ? result.message : '오류가 발생했습니다.';
+      alert(`${(url.includes('register')) ? '회원가입' : '로그인'} 실패: ${errorMsg}`);
     }
   } catch (error) {
-    console.error('Error during auth request:', error);
-    alert('요청 중 오류가 발생했습니다. 서버가 실행 중인지 확인해주세요.');
+    console.error('Error:', error);
+    alert('요청 중 오류가 발생했습니다.');
   }
 }
 
-// 위시리스트 추가/삭제 함수 (수정 없음)
+// 위시리스트 추가/삭제 비동기 함수
 async function handleWishlistAction(event) {
   event.stopPropagation();
   const button = event.target;
@@ -136,5 +138,55 @@ async function handleWishlistAction(event) {
   } catch (error) {
     console.error('Error:', error);
     alert('요청 중 오류가 발생했습니다.');
+  }
+}
+
+// 위시리스트 데이터를 가져와 렌더링하는 함수
+async function fetchWishlist() {
+  const token = localStorage.getItem('accessToken');
+  const wishlistBody = document.getElementById('wishlist-body');
+
+  if (!token) {
+    alert('로그인이 필요합니다.');
+    window.location.href = '/members/login';
+    return;
+  }
+
+  try {
+    const response = await fetch(`/api/wishes`, {
+      headers: {'Authorization': token}
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message);
+    }
+
+    const items = await response.json();
+    wishlistBody.innerHTML = '';
+
+    if (items.length === 0) {
+      wishlistBody.innerHTML = '<tr><td colspan="4">위시리스트에 담긴 상품이 없습니다.</td></tr>';
+      return;
+    }
+
+    items.forEach(item => {
+      // [수정] 상품명, 가격, 이미지 td에 clickable-row 클래스와 data-link 속성을 추가합니다.
+      const row = `
+        <tr>
+          <td class="clickable-row" data-link="/members/products/${item.product.id}">${item.product.name}</td>
+          <td class="clickable-row" data-link="/members/products/${item.product.id}">${item.product.price}원</td>
+          <td class="clickable-row" data-link="/members/products/${item.product.id}"><img src="${item.product.imageUrl}" alt="이미지 없음"/></td>
+          <td>
+            <button class="delete-from-wishlist-btn" data-wish-id="${item.id}">삭제</button>
+          </td>
+        </tr>
+      `;
+      wishlistBody.innerHTML += row;
+    });
+
+  } catch (error) {
+    console.error('Error:', error);
+    wishlistBody.innerHTML = `<tr><td colspan="4">위시리스트를 불러오는 중 오류 발생: ${error.message}</td></tr>`;
   }
 }

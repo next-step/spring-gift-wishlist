@@ -5,7 +5,7 @@ import gift.api.dto.WishlistResponseDto;
 import gift.api.service.WishlistService;
 import jakarta.validation.Valid;
 import java.net.URI;
-import org.springframework.data.domain.Page;
+import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -30,10 +30,11 @@ public class WishlistController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<WishlistResponseDto>> getWishlist(
+    public ResponseEntity<List<WishlistResponseDto>> getWishlist(
             @RequestAttribute("userEmail") String email,
             @PageableDefault(size = 5, sort = "created_date", direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<WishlistResponseDto> wishlist = wishlistService.getWishlist(email, pageable);
+        List<WishlistResponseDto> wishlist = wishlistService.getWishlist(email, pageable)
+                .getContent();
 
         return ResponseEntity.ok(wishlist);
     }

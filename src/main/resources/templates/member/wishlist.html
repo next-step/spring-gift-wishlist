@@ -22,96 +22,15 @@
     </tbody>
   </table>
 
-  <div class="pagination" id="pagination-controls">
+  <div class="pagination" th:if="${!wishlistPage.empty}">
+    <span th:if="${wishlistPage.hasPrevious()}">
+        <a th:href="@{/members/wishlist(page=${wishlistPage.number - 1})}">&laquo; 이전</a>
+    </span>
+    <span>페이지 <b th:text="${wishlistPage.number + 1}"></b> / <b
+        th:text="${wishlistPage.totalPages}"></b></span>
+    <span th:if="${wishlistPage.hasNext()}">
+        <a th:href="@{/members/wishlist(page=${wishlistPage.number + 1})}">다음 &raquo;</a>
+    </span>
   </div>
-
-  <script>
-    // Script content remains the same
-    const token = localStorage.getItem('accessToken');
-    const wishlistBody = document.getElementById('wishlist-body');
-    const paginationControls = document.getElementById('pagination-controls');
-
-    async function fetchWishlist(page = 0) {
-      if (!token) {
-        alert('로그인이 필요합니다.');
-        window.location.href = '/members/login';
-        return;
-      }
-
-      try {
-        const response = await fetch(`/api/wishes?page=${page}&size=5&sort=created_date,desc`, {
-          headers: {'Authorization': token}
-        });
-
-        if (!response.ok) {
-          const error = await response.json();
-          throw new Error(error.message);
-        }
-
-        const pageData = await response.json();
-        renderWishlist(pageData.content);
-        renderPagination(pageData);
-
-      } catch (error) {
-        console.error('Error:', error);
-        wishlistBody.innerHTML = `<tr><td colspan="4">위시리스트를 불러오는 중 오류 발생: ${error.message}</td></tr>`;
-      }
-    }
-
-    function renderWishlist(items) {
-      wishlistBody.innerHTML = '';
-      if (items.length === 0) {
-        wishlistBody.innerHTML = '<tr><td colspan="4">위시리스트에 담긴 상품이 없습니다.</td></tr>';
-        return;
-      }
-
-      items.forEach(item => {
-        const row = `
-                    <tr>
-                        <td>${item.product.name}</td>
-                        <td>${item.product.price}원</td>
-                        <td><img src="${item.product.imageUrl}" alt="이미지 없음"/></td>
-                        <td>
-                            <button class="delete-from-wishlist-btn" data-wish-id="${item.id}">삭제</button>
-                        </td>
-                    </tr>
-                `;
-        wishlistBody.innerHTML += row;
-      });
-      addDeleteEventListeners();
-    }
-
-    function renderPagination(pageData) {
-      paginationControls.innerHTML = '';
-      if (pageData.totalPages <= 1) {
-        return;
-      }
-
-      let paginationHtml = '';
-      if (!pageData.first) {
-        paginationHtml += `<a href="#" onclick="event.preventDefault(); fetchWishlist(${pageData.number
-        - 1})">&laquo; 이전</a>`;
-      }
-      paginationHtml += `<span>페이지 <b>${pageData.number + 1}</b> / ${pageData.totalPages}</span>`;
-      if (!pageData.last) {
-        paginationHtml += `<a href="#" onclick="event.preventDefault(); fetchWishlist(${pageData.number
-        + 1})">다음 &raquo;</a>`;
-      }
-      paginationControls.innerHTML = paginationHtml;
-    }
-
-    function addDeleteEventListeners() {
-      document.querySelectorAll('.delete-from-wishlist-btn').forEach(button => {
-        button.addEventListener('click', function (event) {
-          // This now calls the global handler from common.js
-          handleWishlistAction(event);
-        });
-      });
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-      fetchWishlist(0);
-    });
-  </script>
 </div>
 </html>

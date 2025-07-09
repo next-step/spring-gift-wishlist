@@ -45,13 +45,14 @@
   </table>
 
   <div class="pagination" th:if="${!products.empty}">
-        <span th:if="${products.hasPrevious()}">
-            <a th:href="@{/members/products(page=${products.number - 1})}">&laquo; 이전</a>
-        </span>
-    <span>페이지 <b th:text="${products.number + 1}"></b></span>
+    <span th:if="${products.hasPrevious()}">
+        <a th:href="@{/members/products(page=${products.number - 1})}">&laquo; 이전</a>
+    </span>
+    <span>페이지 <b th:text="${products.number + 1}"></b> / <b
+        th:text="${products.totalPages}"></b></span>
     <span th:if="${products.hasNext()}">
-            <a th:href="@{/members/products(page=${products.number + 1})}">다음 &raquo;</a>
-        </span>
+        <a th:href="@{/members/products(page=${products.number + 1})}">다음 &raquo;</a>
+    </span>
   </div>
 </div>
 </html>
