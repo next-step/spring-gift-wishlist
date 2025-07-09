@@ -13,12 +13,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class MemberServiceImpl implements MemberService {
+public class AuthServiceImpl implements AuthService {
     private final MemberRepository memberRepository;
     private final PasswordUtil passwordUtil;
     private final JwtUtil jwtUtil;
 
-    public MemberServiceImpl(MemberRepository memberRepository, PasswordUtil passwordUtil, JwtUtil jwtUtil) {
+    public AuthServiceImpl(MemberRepository memberRepository, PasswordUtil passwordUtil, JwtUtil jwtUtil) {
         this.memberRepository = memberRepository;
         this.passwordUtil = passwordUtil;
         this.jwtUtil = jwtUtil;
