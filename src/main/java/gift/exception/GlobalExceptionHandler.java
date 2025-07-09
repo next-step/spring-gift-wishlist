@@ -45,7 +45,7 @@ public class GlobalExceptionHandler {
                 "Invalid Credentials",
                 "이메일 또는 비밀번호가 일치하지 않습니다."
         );
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(DuplicateEmailException.class)
