@@ -70,6 +70,16 @@ public class WishlistRepository {
         }
     }
 
+    public Optional<Wishlist> findByProductId(Long productId) {
+        String sql = "select * from wishlist where product_id=?";
+        try {
+            Wishlist wishlist = jdbcTemplate.queryForObject(sql, toWishlist(), productId);
+            return Optional.of(wishlist);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
     private RowMapper<Wishlist> toWishlist() {
         return (rs, rowNum) -> new Wishlist(
                 rs.getLong("id"),

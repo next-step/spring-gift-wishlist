@@ -2,6 +2,7 @@ package gift.service;
 
 import gift.common.exception.InvalidUserException;
 import gift.common.exception.ProductNotFoundException;
+import gift.common.exception.WishlistAlreadyExistsException;
 import gift.common.exception.WishlistNotFoundException;
 import gift.domain.Product;
 import gift.domain.Wishlist;
@@ -29,6 +30,10 @@ public class WishlistService {
         Optional<Product> product = productRepository.findById(request.productId());
         if (product.isEmpty()) {
             throw new ProductNotFoundException(request.productId());
+        }
+        Optional<Wishlist> byProductId = wishlistRepository.findByProductId(request.productId());
+        if (byProductId.isPresent()) {
+            throw new WishlistAlreadyExistsException();
         }
         Wishlist wishlist = new Wishlist(userId, request.productId());
         return wishlistRepository.save(wishlist);
