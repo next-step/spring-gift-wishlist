@@ -51,4 +51,5 @@ public class Member {
     public void setName(String name) { this.name = name; }
     public void setAddress(String address) { this.address = address; }
     public void setRole(String role) { this.role = role; }
+
 }

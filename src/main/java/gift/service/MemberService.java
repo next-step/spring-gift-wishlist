@@ -17,7 +17,7 @@ public class MemberService {
     }
 
     public void register(Member member) {
-        if (memberDto.selectId(member.getId()) != null) {
+        if (memberDto.findById(member.getId()).isPresent()) {
             throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
         }
 
@@ -29,9 +29,10 @@ public class MemberService {
     }
 
     public String login(String id, String rawPassword) {
-        Member member = memberDto.selectId(id);
+        Member member = memberDto.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("아이디 또는 비밀번호가 일치하지 않습니다."));
 
-        if (member == null || !rawPassword.equals(member.getPassword())) {
+        if (!rawPassword.equals(member.getPassword())) {
             throw new IllegalArgumentException("아이디 또는 비밀번호가 일치하지 않습니다.");
         }
 

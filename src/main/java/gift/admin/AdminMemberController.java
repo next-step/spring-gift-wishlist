@@ -1,7 +1,6 @@
 package gift.admin;
 
 import gift.Entity.Member;
-import gift.Entity.Product;
 import gift.dto.MemberDto;
 import gift.service.MemberService;
 import jakarta.validation.Valid;
@@ -54,11 +53,11 @@ public class AdminMemberController {
         return "redirect:/admin/members";
     }
 
-    // 상품 수정 폼
-    // 메소드 이름 중 첫 글자는 소문자로 시작하도록 통일
     @GetMapping("/{id}/edit")
     public String editMember(@PathVariable String id, Model model) {
-        Member member = memberDto.selectId(id);
+        Member member = memberDto.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 아이디의 회원을 찾을 수 없습니다."));
+
         model.addAttribute("member", member);
         model.addAttribute("formType", "edit");
         return "admin/memberform";

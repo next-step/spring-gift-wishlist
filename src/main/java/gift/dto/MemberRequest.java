@@ -1,15 +1,15 @@
 package gift.dto;
 
 public class MemberRequest {
-    private String id;
-    private String password;
+    private final String id;
+    private final String password;
+
+    public MemberRequest(String id, String password) {
+        this.id = id;
+        this.password = password;
+    }
 
     public String getId() { return id; }
     public String getPassword() { return password; }
-
-    public void setId(String id) { this.id = id; }
-    public void setPassword(String password) { this.password = password; }
-
-
 }
 

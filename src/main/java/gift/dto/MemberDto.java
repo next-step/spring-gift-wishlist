@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class MemberDto {
@@ -32,7 +33,7 @@ public class MemberDto {
                 .update();
     }
 
-    public Member selectEmail(String email) {
+    public Optional<Member> selectEmail(String email) {
         var sql = """
             SELECT id, email, password, name, address, role
             FROM members
@@ -41,11 +42,10 @@ public class MemberDto {
         return client.sql(sql)
                 .param("email", email)
                 .query(memberRowMapper())
-                .optional()
-                .orElse(null);
+                .optional();
     }
 
-    public Member selectId(String id) {
+    public Optional<Member> findById(String id) {
         var sql = """
             SELECT id, email, password, name, address, role
             FROM members
@@ -54,8 +54,7 @@ public class MemberDto {
         return client.sql(sql)
                 .param("id", id)
                 .query(memberRowMapper())
-                .optional()
-                .orElse(null);
+                .optional();
     }
 
     public void updateMember(String id, Member member) {

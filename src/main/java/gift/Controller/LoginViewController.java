@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
-public class LoginController {
+public class LoginViewController {
     private final MemberService memberService;
 
-    public LoginController(MemberService memberService) {
+    public LoginViewController(MemberService memberService) {
         this.memberService = memberService;
     }
 
@@ -29,11 +29,11 @@ public class LoginController {
         try{
             String token = memberService.login(memberRequest.getId(), memberRequest.getPassword());
             model.addAttribute("token", token);
-            return "loginSuccess"; // Product 의 목록을 만들어 두어 그곳으로 이동시킬 예정입니다.
+            return "redirect:/user/products";
         }catch (Exception e){
             model.addAttribute("member", new Member());
             model.addAttribute("loginError", e.getMessage());
-            return "Login";
+            return "login";
         }
     }
 }
