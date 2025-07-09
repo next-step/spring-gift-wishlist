@@ -70,3 +70,8 @@ th {
     background-color: #f44336;
     color: white;
 }
+
+.error-message {
+    color: red;
+    margin-bottom: 10px;
+}

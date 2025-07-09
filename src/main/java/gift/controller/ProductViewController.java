@@ -6,7 +6,9 @@ import gift.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -26,16 +28,54 @@ public class ProductViewController {
     }
 
     @PostMapping("/create")
-    public String createProduct(@Valid @ModelAttribute ProductRequestDTO product) {
-        productService.create(product);
+    public String createProduct(@Valid @ModelAttribute ProductRequestDTO product,
+                                BindingResult bindingResult,
+                                RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            StringBuilder errorMessage = new StringBuilder();
+            bindingResult.getFieldErrors().forEach(e ->
+                errorMessage.append(e.getDefaultMessage())
+                        .append("\n"));
+            redirectAttributes.addFlashAttribute("createError", errorMessage.toString());
+            redirectAttributes.addFlashAttribute("showCreateModal", true);
+            redirectAttributes.addFlashAttribute("createFormData", product);
+            return "redirect:/products";
+        }
+
+        try {
+            productService.create(product);
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("createError", e.getMessage());
+            redirectAttributes.addFlashAttribute("showCreateModal", true);
+            redirectAttributes.addFlashAttribute("createFormData", product);
+            return "redirect:/products";
+        }
         return "redirect:/products";
     }
 
     @PostMapping("/update")
     public String updateProduct(
             @RequestParam("id") Integer id,
-            @Valid @ModelAttribute ProductRequestDTO product) {
-        productService.update(id, product);
+            @Valid @ModelAttribute ProductRequestDTO product,
+            BindingResult bindingResult,
+            RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            StringBuilder errorMessage = new StringBuilder();
+            bindingResult.getFieldErrors().forEach(e ->
+                    errorMessage.append(e.getDefaultMessage())
+                            .append("\n"));
+            redirectAttributes.addFlashAttribute("updateError", errorMessage.toString());
+            redirectAttributes.addFlashAttribute("showUpdateModal", true);
+            redirectAttributes.addFlashAttribute("updateFormData", product);
+            return "redirect:/products";
+        }
+        try {
+            productService.update(id, product);
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("updateError", e.getMessage());
+            redirectAttributes.addFlashAttribute("showUpdateModal", true);
+            redirectAttributes.addFlashAttribute("updateFormData", product);
+        }
         return "redirect:/products";
     }
 
