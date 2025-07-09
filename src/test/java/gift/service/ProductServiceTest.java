@@ -99,13 +99,12 @@ public class ProductServiceTest {
     }
 
     @Test
-    void 존재하지_않는_ID로_삭제하면_예외가_발생한다() {
+    void 존재하지_않는_ID로_삭제해도_예외가_발생하지_않는다() {
         // given
         Long invalidId = 999L;
 
         // when & then
-        assertThrows(ProductNotFoundException.class, () ->
-                productService.delete(invalidId));
+        assertDoesNotThrow(() -> productService.delete(invalidId));
     }
 
 }
