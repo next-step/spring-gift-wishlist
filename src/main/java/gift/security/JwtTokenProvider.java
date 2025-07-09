@@ -22,14 +22,13 @@ public class JwtTokenProvider {
         this.validityInMilliseconds = validityInMilliseconds;
     }
 
-    public String createToken(String subject) {
+    public String createToken(Long memberId) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
-
         return Jwts.builder()
-                .setSubject(subject)
-                .setIssuedAt(now)
-                .setExpiration(validity)
+                .subject(String.valueOf(memberId)) // Deprecated된 setSubject 대신 subject 사용 (리뷰 반영)
+                .issuedAt(now)
+                .expiration(validity)
                 .signWith(key)
                 .compact();
     }
@@ -37,12 +36,13 @@ public class JwtTokenProvider {
         Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
     }
 
-    public String getSubject(String token) {
-        Claims claims = Jwts.parser()
+    public Long getSubject(String token) {
+        String subject = Jwts.parser()
                 .verifyWith(key)
                 .build()
                 .parseSignedClaims(token)
-                .getPayload();
-        return claims.getSubject();
+                .getPayload()
+                .getSubject();
+        return Long.parseLong(subject);
     }
 }

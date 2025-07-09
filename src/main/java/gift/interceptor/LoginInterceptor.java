@@ -11,10 +11,13 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @Component
 public class LoginInterceptor implements HandlerInterceptor {
     private final JwtTokenProvider jwtTokenProvider;
+
     private static final String BEARER_PREFIX = "Bearer ";
+
     public LoginInterceptor(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String authHeader = request.getHeader("Authorization");
@@ -25,8 +28,8 @@ public class LoginInterceptor implements HandlerInterceptor {
         String token = authHeader.substring(BEARER_PREFIX.length());
         try {
             jwtTokenProvider.validateToken(token);
-            String memberId=jwtTokenProvider.getSubject(token);
-            request.setAttribute("memberId", Long.parseLong(memberId));
+            Long memberId=jwtTokenProvider.getSubject(token);
+            request.setAttribute("memberId", memberId);
             return true;
         } catch (JwtException | NumberFormatException e) {
             throw new InvalidTokenException("토큰이 유효하지 않습니다.");
