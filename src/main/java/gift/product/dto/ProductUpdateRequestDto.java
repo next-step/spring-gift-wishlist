@@ -3,6 +3,7 @@ package gift.product.dto;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.URL;
 
 public record ProductUpdateRequestDto(
         @Length(max = 15, message = "상품 이름은 최대 15자까지만 입력 가능합니다.")
@@ -11,6 +12,7 @@ public record ProductUpdateRequestDto(
         String name,
         @PositiveOrZero(message = "상품 가격은 0 이상이어야 합니다.")
         Long price,
+        @URL(message = "유효한 URL 형식이어야 합니다.")
         String imageUrl
 ) {
 

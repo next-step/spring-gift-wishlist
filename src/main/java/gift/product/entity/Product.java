@@ -2,12 +2,27 @@ package gift.product.entity;
 
 import gift.product.dto.ProductCreateRequestDto;
 import gift.product.dto.ProductUpdateRequestDto;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.PositiveOrZero;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.URL;
 
 public class Product {
 
     private Long id;
+
+    @NotBlank
+    @Length(max = 15)
+    @Pattern(regexp = "[0-9a-zA-Zㄱ-ㅎ가-힣 ()\\[\\]+\\-&/_]+")
     private String name;
+
+    @NotNull
+    @PositiveOrZero
     private Long price;
+
+    @URL
     private String imageUrl;
 
     public Product() {

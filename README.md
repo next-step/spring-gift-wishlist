@@ -14,3 +14,16 @@
 
 1. 기존 ProductCreateRequestDto, ProductUpdateRequestDto에 지정해둔 validation 어노테이션들을 과제 조건에 맞게 수정한다.
 2. 상품명에 카카오가 포함된 경우는 Service 단에서 검증하여 exception을 던진다. (추후 회원 기능이 추가되면 MD 협의 여부를 체크하는 로직 작성하여 통과 여부 결정)
+
+## 2단계 - 회원 로그인
+
+### 구현할 기능 목록
+
+1. JWT 및 Argon2 관련 의존성을 추가한다.
+2. Member 엔티티를 생성한다.
+3. JWT 토큰 프로바이더를 구현한다.
+    - Access Token 발급 기능 구현
+    - Refresh Token 발급 기능 구현
+4. 회원가입 기능을 구현한다.
+5. 로그인 기능을 구현한다.
+6. Refresh Token을 이용한 Access Token 재발급 기능을 구현한다.

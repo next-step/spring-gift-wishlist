@@ -3,10 +3,12 @@ package gift.exception;
 public enum ErrorStatus {
     INTERNAL_SERVER_ERROR(-1, "Internal Server Error"),
     NOT_FOUND(2, "Entity Not Found"),
-    MD_APPROVAL_REQUIRED(3, "MD Approval Required"),
+    ENTITY_ALREADY_EXISTS(3, "Entity Already Exists"),
+    MD_APPROVAL_REQUIRED(4, "MD Approval Required"),
     VALIDATION_ERROR(-2, "Validation error"),
     REQUEST_BODY_ERROR(-3, "Request body error"),
-    METHOD_NOT_ALLOWED(-4, "Method Not Allowed");
+    METHOD_NOT_ALLOWED(-4, "Method Not Allowed"),
+    INVALID_CREDENTIALS(1, "Invalid Credentials");
 
     private final int code;
     private final String defaultMessage;

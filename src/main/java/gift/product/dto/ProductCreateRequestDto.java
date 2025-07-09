@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.URL;
 
 public record ProductCreateRequestDto(
         @NotBlank(message = "상품 이름은 필수입니다.")
@@ -14,6 +15,7 @@ public record ProductCreateRequestDto(
         @NotNull(message = "상품 가격은 필수입니다.")
         @PositiveOrZero(message = "상품 가격은 0 이상이어야 합니다.")
         Long price,
+        @URL(message = "유효한 URL 형식이어야 합니다.")
         String imageUrl
 ) {
 
