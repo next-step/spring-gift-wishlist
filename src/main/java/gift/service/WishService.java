@@ -4,6 +4,7 @@ import gift.domain.Wish;
 import gift.dto.WishResponse;
 import gift.repository.WishRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,5 +23,14 @@ public class WishService {
         return wishes.stream()
                 .map(WishResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void addWish(Long memberId, Long productId, int quantity) {
+        if (wishRepository.exists(memberId, productId)) {
+            wishRepository.updateQuantity(memberId, productId,quantity);
+        } else {
+            wishRepository.save(memberId, productId, quantity);
+        }
     }
 }

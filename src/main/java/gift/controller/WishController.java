@@ -1,6 +1,7 @@
 package gift.controller;
 
 import gift.domain.Wish;
+import gift.dto.WishRequest;
 import gift.dto.WishResponse;
 import gift.service.WishService;
 import gift.domain.Member;
@@ -22,5 +23,10 @@ public class WishController {
     @GetMapping
     public List<WishResponse> getWishes(@LoginMember Member member) {
         return wishService.getWishes(member.getId());
+    }
+
+    @PostMapping
+    public void addWish(@RequestBody WishRequest request, @LoginMember Member member) {
+        wishService.addWish(member.getId(), request.getProductId(), request.getQuantity());
     }
 }

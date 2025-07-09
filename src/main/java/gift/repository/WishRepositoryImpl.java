@@ -16,12 +16,28 @@ public class WishRepositoryImpl implements WishRepository  {
     }
 
     @Override
-    public void save(Wish wish) {
-
+    public void save(Long memberId, Long productId, int quantity) {
+        jdbcClient.sql("""
+            INSERT INTO wishes (member_id, product_id, quantity)
+            VALUES (:memberId, :productId, :quantity)
+            """)
+                .param("memberId", memberId)
+                .param("productId", productId)
+                .param("quantity", quantity)
+                .update();
     }
 
     @Override
     public void updateQuantity(Long memberId, Long productId, int quantity) {
+        jdbcClient.sql("""
+            UPDATE wishes
+            SET quantity = :quantity
+            WHERE member_id = :memberId AND product_id = :productId
+            """)
+                .param("quantity", quantity)
+                .param("memberId", memberId)
+                .param("productId", productId)
+                .update();
 
     }
 
@@ -49,6 +65,15 @@ public class WishRepositoryImpl implements WishRepository  {
 
     @Override
     public boolean exists(Long memberId, Long productId) {
-        return false;
+        Integer count = jdbcClient.sql("""
+            SELECT COUNT(*) FROM wishes
+            WHERE member_id = :memberId AND product_id = :productId
+            """)
+                .param("memberId", memberId)
+                .param("productId", productId)
+                .query(Integer.class)
+                .single();
+
+        return count != null && count > 0;
     }
 }
