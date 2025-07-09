@@ -32,10 +32,38 @@
     .btn-success { background-color: #28a745; }
     .btn-warning { background-color: #ffc107; color: black; }
     .btn-danger { background-color: #dc3545; }
+    .header-buttons {
+      text-align: right;
+      margin-bottom: 20px;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .register-btn {
+      padding: 8px 16px;
+      margin-left: 10px;
+      text-decoration: none;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background-color: white;
+      color: #333;
+      font-size: 14px;
+      display: inline-block;
+    }
+
+    .register-btn:hover {
+      background-color: #f8f9fa;
+      border-color: #999;
+    }
   </style>
 </head>
 <body>
 <h1>상품</h1>
+
+<div class="header-buttons">
+  <a href="/users/login" class="register-btn">로그인</a>
+  <a href="/users/register" class="register-btn">회원가입</a>
+</div>
 
 <div>
   <a href="products/new" class="btn btn-success">상품 추가</a>
@@ -56,7 +84,8 @@
   <tr th:each="product : ${products}">
     <td th:text="${product.id}">1</td>
     <td>
-      <a th:href="@{/products/{id}(id=${product.id})}"
+      <a th:href="@{/products/{id}(id=${product.id})}
+"
          th:text="${product.name}"
          style="text-decoration: none; color: #007bff;">상품명</a>
     </td>
