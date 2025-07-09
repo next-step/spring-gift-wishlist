@@ -22,4 +22,9 @@ public class Wishlist {
         this.userId = userId;
         this.productId = productId;
     }
+
+    public Wishlist(Long userId, Long productId) {
+        this.userId = userId;
+        this.productId = productId;
+    }
 }

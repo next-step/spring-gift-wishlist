@@ -15,7 +15,8 @@ public class FilterConfig {
             "/admin/products/*",
             "/admin/users/*",
             "/api/users/password",
-            "/api/users/admin"
+            "/api/users/admin",
+            "/api/wishlists/*"
     };
 
     @Bean

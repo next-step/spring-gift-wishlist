@@ -2,7 +2,6 @@ package gift.common.filter;
 
 import gift.common.exception.InvalidAccessTokenException;
 import gift.common.exception.InvalidTokenException;
-import gift.domain.Role;
 import gift.dto.user.UserInfo;
 import gift.service.JwtTokenProvider;
 import io.jsonwebtoken.Claims;
