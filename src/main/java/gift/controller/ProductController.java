@@ -12,7 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+//@Controller
 @RequestMapping("/api/products")
 public class ProductController {
 
@@ -26,20 +26,20 @@ public class ProductController {
     public String items(Model model) {
         List<Product> products = service.findAll();
         model.addAttribute("products", products);
-        return "/products";
+        return "product/products";
     }
 
     @GetMapping("/add")
     public String addProduct(Model model) {
         model.addAttribute("product", new CreateProductRequest("",null,""));
-        return "/addForm";
+        return "product/addForm";
     }
 
 
     @PostMapping("/add")
     public String addProduct(@Validated @ModelAttribute("product") CreateProductRequest product, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return "/addForm";
+            return "product/addForm";
         }
         service.save(product);
         return "redirect:/api/products";
@@ -49,7 +49,7 @@ public class ProductController {
     public String updateProduct(@PathVariable Long id, Model model) {
         Product findProduct = service.findById(id);
         model.addAttribute("product", findProduct);
-        return "/editForm";
+        return "product/editForm";
     }
 
     @PostMapping("/{id}/edit")
@@ -57,7 +57,7 @@ public class ProductController {
                                 @Validated @ModelAttribute("product") UpdateProductRequest product,
                                 BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return "/editForm";
+            return "product/editForm";
         }
         service.update(id, product);
         return "redirect:/api/products";

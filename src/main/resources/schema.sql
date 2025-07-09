@@ -7,3 +7,12 @@ create table product
    primary key (id)
 );
 
+create table member
+(
+   id bigint auto_increment,
+   email varchar(100),
+   password varchar(255),
+   salt varchar(255),
+   primary key (id)
+);
+

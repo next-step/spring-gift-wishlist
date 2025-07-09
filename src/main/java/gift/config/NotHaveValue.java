@@ -10,8 +10,8 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-@Constraint(validatedBy = HaveKakaoValidator.class)
-public @interface HaveKakao {
+@Constraint(validatedBy = NotHaveValueValidator.class)
+public @interface NotHaveValue {
 
     String message();
     String value();

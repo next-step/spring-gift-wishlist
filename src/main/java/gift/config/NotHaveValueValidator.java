@@ -3,12 +3,12 @@ package gift.config;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class HaveKakaoValidator implements ConstraintValidator<HaveKakao, String> {
+public class NotHaveValueValidator implements ConstraintValidator<NotHaveValue, String> {
 
     String required;
 
     @Override
-    public void initialize(HaveKakao constraintAnnotation) {
+    public void initialize(NotHaveValue constraintAnnotation) {
         this.required = constraintAnnotation.value();
     }
 
