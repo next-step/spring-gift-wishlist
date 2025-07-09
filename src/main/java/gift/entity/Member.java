@@ -40,4 +40,8 @@ public class Member {
         this.email = email;
         this.password = password;
     }
+
+    public boolean isPasswordMatch(String password) {
+        return this.password.equals(password);
+    }
 }

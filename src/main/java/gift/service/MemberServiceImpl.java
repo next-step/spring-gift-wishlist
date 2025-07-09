@@ -52,7 +52,7 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findMemberByEmail(memberLoginRequestDto.email())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
-        if (!memberLoginRequestDto.password().equals(member.getPassword())) {
+        if (!member.isPasswordMatch(memberLoginRequestDto.password())) {
             throw new InvalidPasswordException();
         }
 
