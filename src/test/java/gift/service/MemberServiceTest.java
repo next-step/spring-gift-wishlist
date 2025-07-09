@@ -3,6 +3,7 @@ package gift.service;
 import gift.config.JwtProvider;
 import gift.dto.MemberLoginRequestDto;
 import gift.dto.MemberRegisterRequestDto;
+import gift.dto.TokenResponseDto;
 import gift.entity.Member;
 import gift.entity.Role;
 import gift.exception.EmailAlreadyExistsException;
@@ -51,10 +52,10 @@ class MemberServiceTest {
         when(jwtProvider.generateToken(saved)).thenReturn("1234");
 
         // when
-        String token = memberService.register(dto);
+        TokenResponseDto response = memberService.register(dto);
 
         // then
-        assertThat(token).isEqualTo("1234");
+        assertThat(response.token()).isEqualTo("1234");
         verify(memberRepository).saveMember(any(Member.class));
     }
 
