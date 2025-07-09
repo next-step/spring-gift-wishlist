@@ -22,13 +22,11 @@ public class MemberService {
     }
 
     public TokenResponseDTO register(RegisterRequestDTO req) {
-        if (memberRepository.existsByEmail(req.getEmail())) {
+        if (memberRepository.existsByEmail(req.email())) {
             throw new DuplicateEmailException("사용중인 이메일입니다.");
         }
 
-        Member member = new Member();
-        member.setEmail(req.getEmail());
-        member.setPassword(req.getPassword());
+        Member member = new Member(req.email(), req.password());
         memberRepository.save(member);
 
         return new TokenResponseDTO(jwtUtil.createToken(member.getEmail()));

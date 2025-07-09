@@ -22,10 +22,8 @@ public class MemberRepository {
     }
 
     private final RowMapper<Member> memberRowMapper = (rs, rowNum) -> {
-        Member member = new Member();
+        Member member = new Member(rs.getString("email"), rs.getString("password"));
         member.setId(rs.getLong("id"));
-        member.setEmail(rs.getString("email"));
-        member.setPassword(rs.getString("password"));
         return member;
     };
 
