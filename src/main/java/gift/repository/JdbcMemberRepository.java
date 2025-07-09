@@ -1,12 +1,16 @@
 package gift.repository;
 
+import gift.dto.MemberRequestDto;
+import gift.dto.MemberResponseDto;
 import gift.entity.Member;
 import gift.entity.Role;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class JdbcMemberRepository implements MemberRepository {
@@ -29,6 +33,35 @@ public class JdbcMemberRepository implements MemberRepository {
         return jdbcTemplate.query(sql, new Object[]{email}, memberRowMapper())
                 .stream().findFirst();
     }
+
+    @Override
+    public List<MemberResponseDto> getAllMembers() {
+        String sql = "SELECT * FROM member";
+        return jdbcTemplate.query(sql, memberRowMapper())
+                .stream()
+                .map(MemberResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<Member> getMemberById(Long id) {
+        String sql = "SELECT * FROM member WHERE id = ?";
+        return jdbcTemplate.query(sql, new Object[]{id}, memberRowMapper())
+                .stream().findFirst();
+    }
+
+    @Override
+    public void updateMember(Long id, MemberRequestDto requestDto) {
+        String sql = "UPDATE member SET email = ?, password = ?, role = ? WHERE id = ?";
+        jdbcTemplate.update(sql, requestDto.email(), requestDto.password(), requestDto.role().name(), id);
+    }
+
+    @Override
+    public void deleteMember(Long id) {
+        String sql = "DELETE FROM member WHERE id = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
 
     private RowMapper<Member> memberRowMapper() {
         return (rs, rowNum) -> new Member(
