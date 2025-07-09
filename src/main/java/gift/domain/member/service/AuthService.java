@@ -12,6 +12,7 @@ import gift.domain.member.repository.MemberRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.Jwts;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -20,13 +21,12 @@ import java.util.Optional;
 @Service
 public class AuthService {
     private final MemberRepository memberRepository;
+    private final String secretKey;
 
-    public AuthService(MemberRepository memberRepository) {
+    public AuthService(MemberRepository memberRepository, @Value("${JWT_SECRET_KEY}") String secretKey) {
         this.memberRepository = memberRepository;
+        this.secretKey = secretKey;
     }
-
-    String secretKey = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";
-
 
     public TokenResponse signIn(SignInRequest signInRequest) {
         String email = signInRequest.email();
@@ -34,7 +34,7 @@ public class AuthService {
 
         Optional<Member> optionalMember = memberRepository.findByEmail(email);
         if (optionalMember.isPresent()){
-            throw new MemberNotFoundException("AuthService : signIn() failed - Already registered member");
+            throw new BadRequestException("AuthService : signIn() failed - Already registered member");
         }
         Member member = new Member(signInRequest.email(), signInRequest.password(), signInRequest.name(), signInRequest.role());
         memberRepository.save(member);
