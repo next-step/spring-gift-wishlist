@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -63,6 +64,38 @@ public class WishListController {
         jwtAuthService.checkValidation(token);
         wishListService.removeFromWishList(wishListId);
         return ResponseEntity.noContent().build();
+    }
+
+    //동일한 상품을 추가하는 경우 (장바구니 내 물품 수량 조절)
+    @PatchMapping("/wishList/add/{wishListId}")
+    public ResponseEntity<List<WishResponseDto>> addItem(
+            @PathVariable Long wishListId,
+            @RequestHeader(value = "Authorization") String token
+    ){
+        jwtAuthService.checkValidation(token);
+        Long memberId = jwtAuthService.getMemberId(token);
+
+        System.out.println("memberId = " + memberId);
+
+        List<WishResponseDto> myWishList = wishListService.changeQuantity(memberId, wishListId, 1);
+        return ResponseEntity.ok(myWishList);
+    }
+
+
+    //동일한 상품을 제거하는 경우 (장바구니 내 물품 수량 조절)
+    @PatchMapping("/wishList/subtract/{wishListId}")
+    public ResponseEntity<List<WishResponseDto>> subtractItem(
+            @PathVariable Long wishListId,
+            @RequestHeader(value = "Authorization") String token
+    ){
+        System.out.println("wishListId = " + wishListId);
+        jwtAuthService.checkValidation(token);
+        Long memberId = jwtAuthService.getMemberId(token);
+
+        System.out.println("memberId = " + memberId);
+
+        List<WishResponseDto> myWishList = wishListService.changeQuantity(memberId, wishListId, -1);
+        return ResponseEntity.ok(myWishList);
     }
 
 }

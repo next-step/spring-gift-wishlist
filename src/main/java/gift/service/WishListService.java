@@ -41,6 +41,12 @@ public class WishListService {
        wishListRepository.remove(wishListId);
     }
 
+    public List<WishResponseDto> changeQuantity(Long memberId, Long wishListId, int amount){
+        wishListRepository.updateQuantity(memberId, wishListId, amount);
+        List<WishResponseDto> myList = getList(memberId);
+        return myList;
+    }
+
 
 
 }

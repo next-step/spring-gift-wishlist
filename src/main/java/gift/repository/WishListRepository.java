@@ -55,6 +55,23 @@ public class WishListRepository {
         jdbcTemplate.update(sql, wishListId);
     }
 
+    public void updateQuantity(Long memberId, Long wishListId, int amount){
+        String sql = "select quantity from wishlist where memberid = ? and id = ?";
+        Integer quantity = jdbcTemplate.queryForObject(sql, Integer.class, memberId, wishListId);
+        Integer updateQuantity = quantity + amount;
+
+        System.out.println("updateQuantity = " + updateQuantity);
+
+
+        if(updateQuantity == 0){
+            remove(wishListId);
+            return;
+        }
+
+        String udpateSql = "update wishlist set quantity = ? where memberid = ? and id = ?";
+        jdbcTemplate.update(udpateSql, updateQuantity, memberId, wishListId);
+    }
+
     private RowMapper<WishResponseDto> wishResponseDtoRowMapper(){
         return new RowMapper<WishResponseDto>() {
             @Override
