@@ -33,4 +33,10 @@ public class WishlistApiController {
         List<WishlistResponse> responses = wishlistService.getWishlistsByUserId(userInfo.id());
         return ResponseEntity.ok(responses);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteWishlist(@LoginUser UserInfo userInfo, @PathVariable(name = "id") Long wishlistId) {
+        wishlistService.deleteWishlist(userInfo.id(), wishlistId);
+        return ResponseEntity.noContent().build();
+    }
 }

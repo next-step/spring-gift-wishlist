@@ -1,5 +1,6 @@
 package gift.repository;
 
+import gift.common.exception.WishlistNotFoundException;
 import gift.domain.Wishlist;
 import gift.dto.wishlist.WishlistResponse;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -46,5 +47,13 @@ public class WishlistRepository {
                 rs.getString("product_name"),
                 rs.getString("product_price")
         ), id);
+    }
+
+    public void deleteById(Long id) {
+        String sql = "delete from wishlist where id=?";
+        int updated = jdbcTemplate.update(sql, id);
+        if (updated == 0) {
+            throw new WishlistNotFoundException(id);
+        }
     }
 }
