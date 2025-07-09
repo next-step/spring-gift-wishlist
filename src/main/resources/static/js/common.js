@@ -24,8 +24,11 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   // --- 위시리스트 삭제 ---
-  document.querySelectorAll('.delete-from-wishlist-btn').forEach(button => {
-    button.addEventListener('click', handleWishlistAction);
+  // 위시리스트 페이지는 동적으로 로드되므로, body에 이벤트 위임을 사용합니다.
+  document.body.addEventListener('click', function (event) {
+    if (event.target.classList.contains('delete-from-wishlist-btn')) {
+      handleWishlistAction(event);
+    }
   });
 
   // --- 상세 페이지 이동 ---
@@ -53,38 +56,43 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
+// 로그인/회원가입 폼 제출을 위한 비동기 함수 (개선된 버전)
 async function handleAuthFormSubmit(event) {
-  event.preventDefault();
+  event.preventDefault(); // 폼의 기본 제출 동작을 막습니다.
   const form = event.target;
   const url = form.action;
   const email = form.email.value;
   const password = form.password.value;
-  const method = form.method.toUpperCase();
 
   try {
     const response = await fetch(url, {
-      method: 'POST', // HTML form method is GET, but we POST with JS
-      headers: {'Content-Type': 'application/json'},
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({email, password})
     });
 
     const result = await response.json();
 
     if (response.ok) {
+      // 성공 시 토큰을 저장하고 명확하게 페이지를 이동시킵니다.
       localStorage.setItem('accessToken', result.token);
-      const successMsg = (url.includes('register')) ? '회원가입 성공!' : '로그인 성공!';
+      const successMsg = url.includes('register') ? '회원가입 성공!' : '로그인 성공!';
       alert(successMsg);
-      window.location.href = '/members/products';
+      window.location.href = '/members/products'; // 상품 목록 페이지로 리다이렉트
     } else {
-      const errorMsg = (result.message) ? result.message : '오류가 발생했습니다.';
-      alert(`${(url.includes('register')) ? '회원가입' : '로그인'} 실패: ${errorMsg}`);
+      // 실패 시 서버가 보낸 에러 메시지를 표시합니다.
+      const errorMsg = result.message || '알 수 없는 오류가 발생했습니다.';
+      alert(`${url.includes('register') ? '회원가입' : '로그인'} 실패: ${errorMsg}`);
     }
   } catch (error) {
-    console.error('Error:', error);
-    alert('요청 중 오류가 발생했습니다.');
+    console.error('Error during auth request:', error);
+    alert('요청 중 오류가 발생했습니다. 서버가 실행 중인지 확인해주세요.');
   }
 }
 
+// 위시리스트 추가/삭제 함수 (수정 없음)
 async function handleWishlistAction(event) {
   event.stopPropagation();
   const button = event.target;
