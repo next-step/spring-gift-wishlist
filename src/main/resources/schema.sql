@@ -19,3 +19,14 @@ CREATE TABLE members
     email VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL
 );
+
+CREATE TABLE wish_items
+(
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    member_id BIGINT NOT NULL,
+    product_id BIGINT NOT NULL,
+    quantity INT NOT NULL DEFAULT 1,
+    UNIQUE uk_member_product(member_id, product_id),
+    FOREIGN KEY (member_id) REFERENCES members(id),
+    FOREIGN KEY (product_id) REFERENCES products(id)
+)
