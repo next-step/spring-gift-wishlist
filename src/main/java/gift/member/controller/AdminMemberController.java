@@ -61,7 +61,7 @@ public class AdminMemberController {
         return "member/members";
     }
 
-    @GetMapping("/{memberId}")
+    @GetMapping("/search")
     public String getMemberById(@RequestParam Long memberId, Model model) {
 
         try {

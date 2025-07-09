@@ -60,7 +60,7 @@ public class AdminProductController {
         return "product/products";
     }
 
-    @GetMapping("/{productId}")
+    @GetMapping("/search")
     public String getProductById(@RequestParam Long productId, Model model) {
 
         try {
