@@ -1,5 +1,6 @@
 package gift.common.jwt;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -8,6 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ProblemDetail;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -34,9 +38,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         "/favicon.ico"
     );
     private final JwtTokenPort jwtTokenPort;
+    private final ObjectMapper objectMapper;
 
-    public JwtAuthenticationFilter(JwtTokenPort jwtTokenPort) {
+    public JwtAuthenticationFilter(JwtTokenPort jwtTokenPort, ObjectMapper objectMapper) {
         this.jwtTokenPort = jwtTokenPort;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -74,24 +80,37 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     log.info("JWT 인증 성공: {} (ID: {}), role: {}", email, memberId, role);
                 } else {
                     log.info("유효하지 않은 JWT 토큰: {}", validationResult.getErrorMessage());
-                    request.setAttribute("authenticated", false);
-                    request.setAttribute("authError", validationResult.getErrorMessage());
+                    sendUnauthorizedResponse(response, validationResult.getErrorMessage());
+                    return;
                 }
             } else {
                 log.info("Authorization 헤더에 JWT 토큰이 없음");
-                request.setAttribute("authenticated", false);
+                sendUnauthorizedResponse(response, "인증이 필요합니다. Authorization 헤더에 JWT 토큰을 포함해주세요.");
+                return;
             }
             
         } catch (Exception e) {
             log.info("JWT 인증 중 오류 발생", e);
-            request.setAttribute("authenticated", false);
-            request.setAttribute("authError", "인증 오류: " + e.getMessage());
+            sendUnauthorizedResponse(response, "인증 오류: " + e.getMessage());
+            return;
         }
 
         filterChain.doFilter(request, response);
     }
 
+    private void sendUnauthorizedResponse(HttpServletResponse response, String message) throws IOException {
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding("UTF-8");
+
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+            HttpStatus.UNAUTHORIZED, message);
+        problemDetail.setTitle("Unauthorized");
+
+        response.getWriter().write(objectMapper.writeValueAsString(problemDetail));
+    }
+
     private boolean shouldSkipFilter(String requestURI) {
         return SKIP_PATHS.stream().anyMatch(requestURI::startsWith);
     }
-} 
+}

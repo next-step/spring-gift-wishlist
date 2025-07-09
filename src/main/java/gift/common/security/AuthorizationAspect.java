@@ -44,4 +44,4 @@ public class AuthorizationAspect implements HandlerInterceptor {
             throw new ForbiddenException("관리자 권한이 필요합니다. 접근이 거부되었습니다.");
         }
     }
-} 
+}
