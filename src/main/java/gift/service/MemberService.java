@@ -28,10 +28,7 @@ public class MemberService {
         }
 
         Member member = new Member(dto.getEmail(), dto.getPassword());
-        memberRepository.save(member);
-
-        Member saved = memberRepository.findByEmail(member.getEmail())
-                .orElseThrow(() -> new IllegalStateException("회원 저장 실패"));
+        Member saved = memberRepository.save(member);
 
         String token = jwtProvider.generateToken(saved);
         return new TokenResponseDto(token);
