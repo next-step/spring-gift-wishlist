@@ -2,7 +2,8 @@ package gift.controller;
 
 import gift.dto.AuthTokenResponseDTO;
 import gift.dto.MemberLoginRequestDTO;
-import gift.dto.MemberRegisterRequestDTO;
+import gift.dto.MemberRequestDTO;
+import gift.entity.Role;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,7 +22,7 @@ public class MemberControllerE2ETest {
 
     @Test
     void register_success() {
-        MemberRegisterRequestDTO request = new MemberRegisterRequestDTO("test@example.com", "password");
+        MemberRequestDTO request = new MemberRequestDTO("test@example.com", "password", Role.USER);
 
         ResponseEntity<AuthTokenResponseDTO> response = restTemplate.postForEntity("/api/members/register", request, AuthTokenResponseDTO.class);
 
@@ -32,7 +33,7 @@ public class MemberControllerE2ETest {
 
     @Test
     void register_failed() {
-        MemberRegisterRequestDTO request = new MemberRegisterRequestDTO("test@example.com", "password");
+        MemberRequestDTO request = new MemberRequestDTO("test@example.com", "password", Role.USER);
         restTemplate.postForEntity("/api/members/register", request, AuthTokenResponseDTO.class);
 
         ResponseEntity<String> response = restTemplate.postForEntity("/api/members/register", request, String.class);
@@ -43,7 +44,7 @@ public class MemberControllerE2ETest {
 
     @Test
     void login_success() {
-        MemberRegisterRequestDTO registerRequest = new MemberRegisterRequestDTO("test@example.com", "password");
+        MemberRequestDTO registerRequest = new MemberRequestDTO("test@example.com", "password", Role.USER);
         restTemplate.postForEntity("/api/members/register", registerRequest, String.class);
 
         MemberLoginRequestDTO request = new MemberLoginRequestDTO("test@example.com", "password");
@@ -67,7 +68,7 @@ public class MemberControllerE2ETest {
 
     @Test
     void login_failed_unmatched_password() {
-        MemberRegisterRequestDTO registerRequest = new MemberRegisterRequestDTO("test@example.com", "password");
+        MemberRequestDTO registerRequest = new MemberRequestDTO("test@example.com", "password", Role.USER);
         restTemplate.postForEntity("/api/members/register", registerRequest, String.class);
 
         MemberLoginRequestDTO request = new MemberLoginRequestDTO("test@example.com", "password1");

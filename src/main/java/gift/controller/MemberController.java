@@ -2,7 +2,7 @@ package gift.controller;
 
 import gift.dto.AuthTokenResponseDTO;
 import gift.dto.MemberLoginRequestDTO;
-import gift.dto.MemberRegisterRequestDTO;
+import gift.dto.MemberRequestDTO;
 import gift.service.MemberService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ public class MemberController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthTokenResponseDTO> register(@Valid @RequestBody MemberRegisterRequestDTO member) {
+    public ResponseEntity<AuthTokenResponseDTO> register(@Valid @RequestBody MemberRequestDTO member) {
         AuthTokenResponseDTO token = memberService.register(member);
         return ResponseEntity.status(201)
                 .body(token);

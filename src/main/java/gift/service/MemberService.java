@@ -1,14 +1,15 @@
 package gift.service;
 
-import gift.dto.AuthTokenResponseDTO;
-import gift.dto.MemberLoginRequestDTO;
-import gift.dto.MemberRegisterRequestDTO;
+import gift.dto.*;
 import gift.entity.Member;
 import gift.entity.Role;
 import gift.exception.LoginFailedException;
 import gift.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -24,14 +25,14 @@ public class MemberService {
     }
 
     @Transactional
-    public AuthTokenResponseDTO register(MemberRegisterRequestDTO request) {
+    public AuthTokenResponseDTO register(MemberRequestDTO request) {
         if (memberRepository.findByEmail(request.email()).isPresent()) {
             throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
         }
 
         String encodedPassword = passwordEncoder.encode(request.password());
 
-        Member member = new Member(0, request.email(), encodedPassword, Role.USER);
+        Member member = new Member(0, request.email(), encodedPassword, request.role());
         Member savedMember = memberRepository.register(member);
 
         String token = jwtTokenService.generateJwtToken(savedMember);
@@ -50,5 +51,55 @@ public class MemberService {
         String token = jwtTokenService.generateJwtToken(member);
 
         return new AuthTokenResponseDTO(token);
+    }
+
+    public List<MemberResponseDTO> getAllMembers() {
+        List<Member> members = memberRepository.findAll();
+        return members.stream()
+                .map(member -> new MemberResponseDTO(
+                        member.getId(),
+                        member.getEmail(),
+                        member.getRole()
+                ))
+                .collect(Collectors.toList());
+    }
+
+    public MemberResponseDTO getMemberById(Integer id) {
+        Member member = memberRepository.findById(id);
+
+        return new MemberResponseDTO(
+                member.getId(),
+                member.getEmail(),
+                member.getRole()
+        );
+    }
+
+    @Transactional
+    public MemberResponseDTO update(Integer id, MemberRequestDTO request) {
+        String encodedPassword = passwordEncoder.encode(request.password());
+
+        Member updated = new Member(
+                id,
+                request.email(),
+                encodedPassword,
+                request.role()
+        );
+
+        if (memberRepository.update(id, updated) == 0) {
+            throw new IllegalArgumentException("Member Not Found");
+        }
+
+        return new MemberResponseDTO(
+                updated.getId(),
+                updated.getEmail(),
+                updated.getRole()
+        );
+    }
+
+    @Transactional
+    public void delete(Integer id) {
+        if (memberRepository.delete(id) == 0) {
+            throw new IllegalArgumentException("Member Not Found");
+        }
     }
 }
