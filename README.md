@@ -155,3 +155,89 @@
 
 - [ ] Spring Security 및 JWT 필터 설정
 - [ ] 보호된 API 구현 및 테스트
+
+
+
+---
+
+## Step 3 - 위시 리스트
+
+### ✅ 진행 체크리스트
+
+- [ ] 테이블(`wish_items`) 생성 & 마이그레이션
+- [ ] `WishRepository` 구현 (JdbcClient)
+- [ ] `WishService` 비즈니스 로직
+  - 상품 추가(중복 시 수량 +1)
+  - 목록 조회
+  - 삭제 / 수량 0 처리
+- [ ] `WishController` REST API
+  - `GET /api/wishes`
+  - `POST /api/wishes`
+  - `DELETE /api/wishes/{productId}`
+- [ ] `@LoginMember`ArgumentResolver로 인증 회원 주입
+- [ ] MockMvc • 통합 테스트 작성
+- [ ] 위시 리스트 UI 화면 구현 (Thymeleaf)
+  - `/wishes` : 로그인 사용자의 장바구니 찜 목록
+- [ ] README 갱신 & 예제 스크린샷 추가
+
+### 🗄️ DB 스키마
+
+```sql
+CREATE TABLE wish_items (
+    id          BIGINT AUTO_INCREMENT PRIMARY KEY,
+    member_id   BIGINT NOT NULL,
+    product_id  BIGINT NOT NULL,
+    quantity    INT    NOT NULL DEFAULT 1,
+    UNIQUE KEY uk_member_product (member_id, product_id),
+    FOREIGN KEY (member_id) REFERENCES members(id),
+    FOREIGN KEY (product_id) REFERENCES products(id)
+);
+```
+
+### 🔗 API 명세
+
+- 위시 리스트 조회
+  - Method : `GET`
+  - Path : `/api/wishes`
+  - 요청 Body : X
+  - 성공 응답 : `{ productId, name, price, imageUrl, quantity }`
+  - 상태 코드 : `200 OK`
+  - 예시
+  - ```Plain Text
+    [
+      {
+        "productId": 3,
+        "name": "카카오 프렌즈 볼펜",
+        "price": 15000,
+        "imageUrl": "https://image.com/item.jpg",
+        "quantity": 2
+      }
+    ]
+    ```
+
+- 위시 리스트 상품 추가
+  - Method : `Post`
+  - Path : `/api/wishes`
+  - 요청 Body : `{ "productId": 3, "quantity": 1 }`
+  - 성공 응답 : X
+  - 상태 코드 : `201 Created`
+  - 예시
+    ```Plain Text
+    POST /api/wishes
+    Authorization: Bearer eyJhbGciOi...
+    Content-Type: application/json
+  
+    {
+      "productId": 3,
+      "quantity": 2
+    }
+    ```
+
+- 위시 리스트 상품 제거
+  - Method : `DELETE`
+  - Path : `/api/wishes/{productId}`
+  - 요청 Body : X
+  - 성공 응답 : X
+  - 상태 코드 : `204 No Content`
+
+- 공통 헤더 : `Authorization: Bearer <JWT Access Token>`
