@@ -1,4 +1,4 @@
-package gift.api.exception;
+package gift.api.handler;
 
 
 import gift.api.dto.ErrorResponseDto;
@@ -6,6 +6,7 @@ import gift.exception.AuthenticationException;
 import gift.exception.AuthorizationException;
 import gift.exception.LoginFailedException;
 import gift.exception.ProductNotFoundException;
+import gift.exception.WishlistException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Objects;
 import org.springframework.http.HttpStatus;
@@ -84,6 +85,20 @@ public class ApiExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+    }
+
+    @ExceptionHandler(WishlistException.class)
+    public ResponseEntity<ErrorResponseDto> handleWishlistException(
+            WishlistException ex,
+            HttpServletRequest request) {
+        ErrorResponseDto error = new ErrorResponseDto(
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
     @ExceptionHandler(Exception.class)

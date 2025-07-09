@@ -57,7 +57,7 @@ public class MemberFrontController {
         if (userEmail != null) {
             model.addAttribute("userEmail", userEmail);
         }
-        
+
         if (userRole != null) {
             model.addAttribute("userRole", userRole);
         }
@@ -74,5 +74,13 @@ public class MemberFrontController {
         model.addAttribute("product", productService.findProductById(id));
 
         return "member/product-detail";
+    }
+
+    @GetMapping("/wishlist")
+    public String wishlist(Model model, HttpServletRequest request) {
+        model.addAttribute("userEmail", request.getAttribute("userEmail"));
+        model.addAttribute("userRole", request.getAttribute("userRole"));
+
+        return "member/wishlist";
     }
 }

@@ -1,10 +1,11 @@
-package gift.front.exception;
+package gift.front.handler;
 
 import gift.api.dto.ErrorResponseDto;
 import gift.exception.AuthenticationException;
 import gift.exception.AuthorizationException;
 import gift.exception.LoginFailedException;
 import gift.exception.ProductNotFoundException;
+import gift.exception.WishlistException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Objects;
 import org.springframework.http.HttpStatus;
@@ -95,6 +96,23 @@ public class FrontExceptionHandler {
         ErrorResponseDto error = new ErrorResponseDto(
                 HttpStatus.FORBIDDEN.value(),
                 HttpStatus.FORBIDDEN.getReasonPhrase(),
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        model.addAttribute("errorInfo", error);
+
+        return "error";
+    }
+
+    @ExceptionHandler(WishlistException.class)
+    public String handleWishlistException(
+            WishlistException ex,
+            Model model,
+            HttpServletRequest request) {
+
+        ErrorResponseDto error = new ErrorResponseDto(
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
                 ex.getMessage(),
                 request.getRequestURI()
         );

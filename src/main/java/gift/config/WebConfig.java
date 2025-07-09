@@ -27,8 +27,10 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(authenticationInterceptor)
                 .addPathPatterns(
                         "/api/products/**",
+                        "/api/wishes/**",
                         "/admin/**",
-                        "/members/products/**"
+                        "/members/products/**",
+                        "/members/wishlist/**"
                 );
     }
 }

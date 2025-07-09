@@ -75,6 +75,11 @@ public class JwtUtil {
 
     // 2. 쿠키에서 토큰을 가져오는 메서드
     public String getTokenFromRequest(HttpServletRequest req) {
+        String bearerToken = req.getHeader(AUTHORIZATION_HEADER);
+        if (bearerToken != null && bearerToken.startsWith(BEARER_PREFIX)) {
+            return bearerToken;
+        }
+        
         Cookie[] cookies = req.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
