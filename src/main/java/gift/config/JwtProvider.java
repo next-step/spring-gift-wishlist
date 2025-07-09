@@ -6,6 +6,8 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
+
 @Component
 public class JwtProvider {
 
@@ -16,11 +18,16 @@ public class JwtProvider {
     }
 
     public String generateToken(Member member) {
+        Date now = new Date();
+        Date expiration = new Date(now.getTime() + 3600_000);
+
         return Jwts.builder()
-                .setSubject(member.getId().toString())
+                .subject(member.getId().toString())
                 .claim("name", member.getName())
                 .claim("email", member.getEmail())
                 .claim("role", member.getRole().name())
+                .issuedAt(now)
+                .expiration(expiration)
                 .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
                 .compact();
     }
