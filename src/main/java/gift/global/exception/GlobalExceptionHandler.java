@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<?> handleDataAccessException(EmptyResultDataAccessException e){
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-            .body(new ErrorResponse(ErrorCode.NOT_EXISTS_PRODUCT, ErrorCode.NOT_EXISTS_PRODUCT.getErrorMessage()));
+            .body(new ErrorResponse(ErrorCode.NOT_EXISTS, ErrorCode.NOT_EXISTS.getErrorMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
