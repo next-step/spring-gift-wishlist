@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -43,7 +44,8 @@ class MemberControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.token").exists());
+                .andExpect(jsonPath("$.token").exists())
+                .andDo(print());
     }
 
     @Test
@@ -54,13 +56,15 @@ class MemberControllerTest {
         mockMvc.perform(post("/api/members/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andDo(print());
 
         mockMvc.perform(post("/api/members/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isConflict())
-                .andExpect(content().string(containsString("이미 사용 중인 이메일입니다")));
+                .andExpect(content().string(containsString("이미 사용 중인 이메일입니다")))
+                .andDo(print());
     }
 
     @Test
@@ -69,7 +73,8 @@ class MemberControllerTest {
         var registerDto = createRegisterDto();
         mockMvc.perform(post("/api/members/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(registerDto)));
+                .content(objectMapper.writeValueAsString(registerDto)))
+                .andDo(print());
 
         var loginDto = createLoginDto("psh@test.com", "1234");
 
@@ -77,7 +82,8 @@ class MemberControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginDto)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.token").exists());
+                .andExpect(jsonPath("$.token").exists())
+                .andDo(print());
     }
 
     @Test
@@ -86,7 +92,8 @@ class MemberControllerTest {
         var registerDto = createRegisterDto();
         mockMvc.perform(post("/api/members/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(registerDto)));
+                .content(objectMapper.writeValueAsString(registerDto)))
+                .andDo(print());
 
         var loginDto = createLoginDto("psh@test.com", "1212"); // 올바른 비밀 번호는 1234에 해당
 
@@ -94,7 +101,8 @@ class MemberControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginDto)))
                 .andExpect(status().isUnauthorized())
-                .andExpect(content().string("비밀번호가 일치하지 않습니다."));
+                .andExpect(content().string("비밀번호가 일치하지 않습니다."))
+                .andDo(print());
     }
 
     @Test
@@ -103,14 +111,16 @@ class MemberControllerTest {
         var dto = createRegisterDto();
         mockMvc.perform(post("/api/members/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto)));
+                .content(objectMapper.writeValueAsString(dto)))
+                .andDo(print());
 
         Member saved = memberRepository.findMemberByEmail("psh@test.com").get();
 
         mockMvc.perform(get("/api/members/" + saved.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("솨야"))
-                .andExpect(jsonPath("$.email").value("psh@test.com"));
+                .andExpect(jsonPath("$.email").value("psh@test.com"))
+                .andDo(print());
     }
 
     @Test
@@ -118,7 +128,8 @@ class MemberControllerTest {
     void shouldFailToGetNonExistentMember() throws Exception {
         mockMvc.perform(get("/api/members/9999"))
                 .andExpect(status().isNotFound())
-                .andExpect(content().string("해당 회원을 찾을 수 없습니다. id=9999"));
+                .andExpect(content().string("해당 회원을 찾을 수 없습니다. id=9999"))
+                .andDo(print());
     }
 
     @Test
@@ -127,12 +138,14 @@ class MemberControllerTest {
         var dto = createRegisterDto();
         mockMvc.perform(post("/api/members/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto)));
+                .content(objectMapper.writeValueAsString(dto)))
+                .andDo(print());
 
         Member saved = memberRepository.findMemberByEmail("psh@test.com").get();
 
         mockMvc.perform(delete("/api/members/" + saved.getId()))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isNoContent())
+                .andDo(print());
     }
 
     @Test
@@ -140,7 +153,8 @@ class MemberControllerTest {
     void shouldFailToDeleteNonExistentMember() throws Exception {
         mockMvc.perform(delete("/api/members/9999"))
                 .andExpect(status().isNotFound())
-                .andExpect(content().string("해당 회원을 찾을 수 없습니다. id=9999"));
+                .andExpect(content().string("해당 회원을 찾을 수 없습니다. id=9999"))
+                .andDo(print());
     }
 
     private MemberRegisterRequestDto createRegisterDto() {
