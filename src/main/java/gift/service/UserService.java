@@ -23,7 +23,7 @@ public class UserService {
             throw new IllegalArgumentException("이미 가입된 이메일입니다.");
         }
 
-        User user = User.createUser(null, dto.getEmail(), dto.getPassword());
+        User user = User.createUser(dto.getEmail(), dto.getPassword());
         User saved = userRepository.save(user);
 
         return new UserDto(saved);

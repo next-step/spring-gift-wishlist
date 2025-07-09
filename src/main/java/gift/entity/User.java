@@ -6,7 +6,16 @@ public class User {
     private String email;
     private String password;
 
-    public User(Long id, String email, String password) {
+    // 정적 팩토리 메서드
+    public static User createUser(String email, String password) {
+        return new User(null, email, password);
+    }
+
+    public static User withId(Long id, String email, String password) {
+        return new User(id, email, password);
+    }
+
+    private User(Long id, String email, String password) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -20,7 +29,5 @@ public class User {
         return password;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+
 }

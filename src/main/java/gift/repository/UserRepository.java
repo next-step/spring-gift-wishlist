@@ -36,7 +36,7 @@ public class UserRepository {
         Number key = keyHolder.getKey();
 
         if(key != null) {
-            user.setId(key.longValue());
+            user.withId(key.longValue(), user.getEmail(), user.getPassword());
         }
 
         return user;
