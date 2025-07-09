@@ -42,6 +42,12 @@ public class ProductRepository {
         return result.stream().findAny();
     }
 
+    public boolean existsById(Long id) {
+        String sql = "SELECT EXISTS (SELECT 1 FROM product WHERE id = ?)";
+        Boolean exists = jdbcTemplate.queryForObject(sql, Boolean.class, id);
+        return Boolean.TRUE.equals(exists);
+    }
+
     public List<Product> findAll() {
         return jdbcTemplate.query("SELECT * FROM product", rowMapper());
     }

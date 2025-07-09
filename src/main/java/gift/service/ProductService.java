@@ -70,8 +70,9 @@ public class ProductService {
     public void delete(Long id) {
 
         // 상품 존재 여부 확인
-        Optional<Product> product = repository.findById(id);
-        if(product.isEmpty()) {throw new ProductNotFoundException(id);}
+        if (!repository.existsById(id)) {
+            throw new ProductNotFoundException(id);
+        }
 
         int deletedCount = repository.deleteById(id);
 
@@ -86,8 +87,9 @@ public class ProductService {
         validateNameContainKakao(name);
 
         // 상품 존재 여부 확인
-        Optional<Product> product = repository.findById(id);
-        if (product.isEmpty()) {throw new ProductNotFoundException(id);}
+        if (!repository.existsById(id)) {
+            throw new ProductNotFoundException(id);
+        }
 
         int updatedCount = repository.update(id, name, price, imageUrl);
 
