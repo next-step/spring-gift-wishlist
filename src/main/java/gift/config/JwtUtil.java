@@ -1,6 +1,7 @@
 package gift.config;
 
 import gift.entity.Member;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +20,20 @@ public class JwtUtil {
             .claim("role", member.getRole())
             .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
             .compact();
+    }
+
+    public boolean validateToken(String token) {
+        try {
+            Claims claims = Jwts.parser()
+                .verifyWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+            return true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
     }
 
 }
