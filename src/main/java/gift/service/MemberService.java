@@ -39,7 +39,7 @@ public class MemberService {
 
     public String login(@Valid MemberLoginRequestDto requestDto) {
         Member existedMember = memberRepository.findByEmail(requestDto.email())
-                .orElseThrow(() -> new MemberNotFoundException(requestDto.email()));
+                .orElseThrow(() -> new MemberNotFoundException("email", requestDto.email()));
 
         if (existedMember.getPassword().equals(requestDto.password())) {
              return jwtProvider.generateToken(existedMember);
@@ -57,21 +57,21 @@ public class MemberService {
 
     public MemberResponseDto find(Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(()-> new MemberNotExistException(memberId));
+                .orElseThrow(()-> new MemberNotFoundException("id", memberId.toString()));
 
         return new MemberResponseDto(member.getId(), member.getName(), member.getEmail(), member.getPassword());
     }
 
     public MemberResponseDto update(Long memberId, @Valid MemberRequestDto requestDto) {
         Member member = memberRepository.update(memberId, requestDto.name(), requestDto.email(), requestDto.password())
-                .orElseThrow(() -> new MemberNotExistException(memberId));
+                .orElseThrow(() -> new MemberNotFoundException("id", memberId.toString()));
         return new MemberResponseDto(member.getId(), member.getName(), member.getEmail(), member.getPassword());
     }
 
     public void delete(Long memberId) {
         boolean deleted = memberRepository.deleteById(memberId);
         if (!deleted) {
-            throw new MemberNotExistException(memberId);
+            throw new MemberNotFoundException("id", memberId.toString());
         }
     }
 

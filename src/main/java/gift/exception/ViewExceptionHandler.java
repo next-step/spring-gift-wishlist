@@ -22,12 +22,18 @@ public class ViewExceptionHandler {
         return new ModelAndView("error/product-not-found", model);
     }
 
-    @ExceptionHandler(MemberNotExistException.class)
-    public ModelAndView handleMemberNotExist() {
 
+    @ExceptionHandler(MemberNotFoundException.class)
+    public ModelAndView handleMemberNotFound(MemberNotFoundException ex) {
         Map<String, String> model = new HashMap<>();
-        model.put("errorMessage", "회원이 존재하지 않습니다.");
+        model.put("errorMessage", ex.getMessage());
+        return new ModelAndView("error/member-not-found", model);
+    }
 
-        return new ModelAndView("error/member-not-exist", model);
+    @ExceptionHandler(InvalidPasswordException.class)
+    public ModelAndView handleInvalidPassword() {
+        Map<String, String> model = new HashMap<>();
+        model.put("errorMessage", "비밀번호가 일치하지 않습니다.");
+        return new ModelAndView("error/invalid-password", model);
     }
 }
