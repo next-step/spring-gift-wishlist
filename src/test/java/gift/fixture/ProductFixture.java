@@ -3,7 +3,6 @@ package gift.fixture;
 
 import gift.entity.product.Product;
 
-
 public final class ProductFixture {
 
     private ProductFixture() {

@@ -155,7 +155,7 @@ class ProductControllerTest {
                     .andExpect(jsonPath("$.name", is("D")));
         }
     }
-    
+
     @Test
     @DisplayName("PUT /api/products/{id} - USER 권한, 숨김 상품 수정 시 NotFound")
     void updateProductForbiddenForUser() throws Exception {
