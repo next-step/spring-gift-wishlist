@@ -7,6 +7,7 @@ import gift.dto.member.MemberRequest;
 import gift.dto.member.MemberResponse;
 import gift.dto.member.RegisterResponse;
 import gift.service.member.MemberService;
+import jakarta.validation.Valid;
 import org.springframework.boot.autoconfigure.graphql.GraphQlProperties.Http;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,7 @@ public class MemberApiController {
     // 로그인
     @PostMapping("/login")
     public ResponseEntity<?> login(
-        @RequestBody LoginRequest loginRequest
+        @Valid @RequestBody LoginRequest loginRequest
     ){
         TokenResponse token = memberService.login(loginRequest);
         return ResponseEntity.status(HttpStatus.OK)
@@ -41,7 +42,7 @@ public class MemberApiController {
     // member 생성: 회원가입
     @PostMapping("/register")
     public ResponseEntity<?> createMember(
-        @RequestBody MemberRequest memberRequest
+        @Valid @RequestBody MemberRequest memberRequest
     ){
         Long memberId = memberService.insert(memberRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -62,7 +63,7 @@ public class MemberApiController {
     // member 수정: 관리자용 기능
     @PatchMapping("/{memberId}")
     public ResponseEntity<?> updateMember(
-        @RequestBody MemberRequest memberRequest,
+        @Valid @RequestBody MemberRequest memberRequest,
         @PathVariable Long memberId
     ){
         memberService.update(memberId, memberRequest);
