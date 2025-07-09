@@ -1,31 +1,39 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
     <title>내 정보</title>
+    <script>
+        window.onload = function() {
+            const token = localStorage.getItem('jwtToken');
+            if (!token) {
+                alert('로그인이 필요합니다.');
+                window.location.href = '/members/login';
+                return;
+            }
+            fetch('/members/wishlist', {
+                method: 'GET',
+                headers: { 'Authorization': 'Bearer ' + token }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('tokenValue').innerText = token;
+                    document.getElementById('wishlist').innerText = JSON.stringify(data);
+                });
+        }
+    </script>
 </head>
 <body>
 <h2>내 정보</h2>
-<div id="myInfo"></div>
-<script>
-    const jwtToken = localStorage.getItem('jwtToken');
-
-    async function loadMyInfo() {
-        const response = await fetch('/members/info', {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + jwtToken
-            }
-        });
-        if (response.status === 200) {
-            const data = await response.json();
-            document.getElementById('myInfo').innerHTML =
-                `<p><strong>JWT 토큰:</strong> ${data.token}</p>`;
-        } else {
-            document.getElementById('myInfo').innerText = '정보를 불러오지 못했습니다.';
-        }
-    }
-    loadMyInfo();
-</script>
+<div>
+    <strong>JWT 토큰:</strong>
+    <span id="tokenValue"></span>
+</div>
+<div>
+    <strong>내 위시리스트:</strong>
+    <pre id="wishlist"></pre>
+</div>
+<button onclick="localStorage.removeItem('jwtToken'); window.location.href='/members/login';">
+    로그아웃
+</button>
 </body>
 </html>
