@@ -33,6 +33,12 @@ public class Item {
 		}
 	}
 
+	public void isItemAuthor(Long userId) {
+		if(this.userId != userId){
+			throw new IllegalArgumentException("작성자만 수정,삭제 가능합니다.");
+		}
+	}
+
 	public Long getId() {
 		return id;
 	}

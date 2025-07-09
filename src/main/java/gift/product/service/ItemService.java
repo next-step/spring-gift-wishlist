@@ -26,7 +26,6 @@ public class ItemService {
 
 
 	public Long createItem(ItemRequest req, Long userId) {
-		//Item item = new Item(userId, req.name(), req.price(), req.imageUrl());
 		Item item = Item.builder()
 			.userId(userId)
 			.name(req.name())
@@ -68,7 +67,7 @@ public class ItemService {
 
 	public GetItemResponse updateItem(Long itemId, Long userId, ItemRequest req) {
 		Item item = itemRepository.findById(itemId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 아이템입니다."));
-		isItemAuthor(item.getUserId(), userId);
+		item.isItemAuthor(userId);
 
 		Item updatedItem = Item.builder()
 				.id(itemId)
@@ -85,14 +84,10 @@ public class ItemService {
 
 	public void deleteItem(Long itemId, Long userId) {
 		Item item = itemRepository.findById(itemId).orElseThrow(() -> new RuntimeException("존재하지 않는 아이템입니다."));
-		isItemAuthor(item.getUserId(), userId);
+		item.isItemAuthor(userId);
 		itemRepository.deleteById(itemId);
 	}
 
-	private void isItemAuthor(Long itemAuthorId, Long userId) {
-		if(itemAuthorId != userId){
-			throw new IllegalArgumentException("작성자만 수정,삭제 가능합니다.");
-		}
-	}
+
 
 }
