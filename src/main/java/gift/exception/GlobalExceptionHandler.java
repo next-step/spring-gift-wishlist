@@ -1,18 +1,24 @@
 package gift.exception;
 
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public String handleValidationErrors(MethodArgumentNotValidException ex, Model model) {
-        model.addAttribute("errorMessage", "입력값이 올바르지 않습니다.");
-        return "error";
+    public ResponseEntity<Map<String, String>> handleValidationErrors(MethodArgumentNotValidException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("errorMessage", "입력값이 올바르지 않습니다.");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
