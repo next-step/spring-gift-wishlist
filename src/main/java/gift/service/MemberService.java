@@ -3,6 +3,7 @@ package gift.service;
 import gift.common.dto.request.MemberRequestDto;
 import gift.common.dto.response.TokenDto;
 import gift.common.exception.CreationFailException;
+import gift.common.exception.EntityNotFoundException;
 import gift.common.exception.RegisterFailException;
 import gift.common.exception.SecurityException;
 import gift.domain.member.Member;
@@ -33,6 +34,11 @@ public class MemberService {
 
     public TokenDto handleLoginRequest(MemberRequestDto request) {
         return login(request.email(), request.password());
+    }
+
+    public Member getMemberByEmail(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Member not found, email: " + email));
     }
 
     private Member register(String email, String plainPassword) {
