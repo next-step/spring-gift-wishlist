@@ -15,13 +15,9 @@ import java.net.URI;
 @RequestMapping("/api/auth")
 public class AuthController {
     private final UserService userService;
-    private final UserDao userDao;
-    private final JwtProvider jwtProvider;
 
-    public AuthController(UserService userService, UserDao userDao, JwtProvider jwtProvider) {
+    public AuthController(UserService userService) {
         this.userService = userService;
-        this.userDao = userDao;
-        this.jwtProvider = jwtProvider;
     }
 
     @PostMapping("/signup")
@@ -35,12 +31,12 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserRequestDto userRequestDto) {
-        User user = userDao.findByEmail(userRequestDto.getEmail());
-
-        if(!user.getPassword().equals(userRequestDto.getPassword())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("잘못된 비밀번호입니다.");
+        try {
+            String token = userService.login(userRequestDto);
+            return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, "Bearer"+token).body(token);
         }
-        String token = userService.login(userRequestDto, jwtProvider);
-        return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, "Bearer"+token).body(token);
+        catch(IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
     }
 }
