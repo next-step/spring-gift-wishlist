@@ -18,9 +18,10 @@ CREATE TABLE MEMBER
 
 CREATE TABLE WISHLIST
 (
-    id          BIGINT  NOT NULL AUTO_INCREMENT,
-    member_id   BIGINT  NOT NULL,
-    item_id     BIGINT  NOT NULL,
+    id          BIGINT      NOT NULL AUTO_INCREMENT,
+    member_id   BIGINT      NOT NULL,
+    item_id     BIGINT      NOT NULL,
+    created_at  DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     UNIQUE KEY unique_member_item (member_id, item_id),
     FOREIGN KEY (member_id) REFERENCES MEMBER(id) ON DELETE CASCADE,
