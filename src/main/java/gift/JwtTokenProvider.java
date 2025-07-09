@@ -2,6 +2,7 @@ package gift;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -46,10 +47,12 @@ public class JwtTokenProvider {
     // 토큰 유효성 검증
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder()
+            JwtParser jwtParser = Jwts.parserBuilder()
                     .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token);
+                    .build();
+
+            jwtParser.parseClaimsJws(token);
+
             return true;
         } catch (JwtException | IllegalArgumentException e) {
             return false;
