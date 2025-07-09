@@ -35,13 +35,13 @@ public class MemberController {
     this.memberService = memberService;
     this.jwtUtil = jwtUtil;
   }
+
+  // 회원가입 기능
   @GetMapping("/register")
   public String showRegisterForm(Model model){
     model.addAttribute("memberRequestDto", new MemberRequestDto());
     return "user/register";
   }
-
-
   @PostMapping("/register")
   public ResponseEntity<Void> register(@Valid @ModelAttribute MemberRequestDto req,
       BindingResult bindingResult) throws BindException {
@@ -56,25 +56,19 @@ public class MemberController {
     return ResponseEntity.created(loginUri).build();
   }
 
-
+  // 로그인 기능
   @GetMapping("/login")
   public String showLoginForm(){
     return "user/login";
   }
 
   @PostMapping("/login")
-  public ResponseEntity<Void> login(@ModelAttribute MemberRequestDto req, Model model, HttpServletResponse response) {
-    try{
-      String token = memberService.login(req.getEmail(), req.getPassword());
-      return ResponseEntity
-          .ok()
-          .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-          .build();
-    }catch (SecurityException e){
-      return ResponseEntity
-          .status(HttpStatus.UNAUTHORIZED)
-          .header("X-Error-Message", e.getMessage())
-          .build();
-    }
+  public ResponseEntity<Void> login(@ModelAttribute MemberRequestDto req) {
+    String token = memberService.login(req.getEmail(), req.getPassword());
+
+    return ResponseEntity
+        .ok()
+        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+        .build();
   }
 }

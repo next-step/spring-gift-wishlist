@@ -10,7 +10,6 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -46,6 +45,15 @@ public class GlobalExceptionHandler {
     model.addAttribute("error", ex.getMessage());
 
     return "user/register";
+  }
+
+  // ✅ 로그인 실패 (SecurityException) 처리
+  @ExceptionHandler(SecurityException.class)
+  public ResponseEntity<String> handleLoginFail(SecurityException ex) {
+    return ResponseEntity
+        .status(HttpStatus.UNAUTHORIZED)
+        .header("X-Error-Message", ex.getMessage())
+        .body("로그인 실패: " + ex.getMessage());
   }
 }
 
