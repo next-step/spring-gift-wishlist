@@ -27,20 +27,13 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public Member parseJwtToken(String jwtToken) {
+    public JwtPayload parseJwtToken(String jwtToken) {
         JwtParser parser = Jwts.parser()
                 .verifyWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
                 .build();
         Claims claims = (Claims) parser.parse(jwtToken).getPayload();
 
-        String idString = claims.get("sub", String.class);
-        String email = claims.get("email", String.class);
-
-        if (idString.isEmpty() || email.isEmpty()) {
-            throw new JwtException("NOT valid Token");
-        }
-
-        Long id = Long.parseLong(idString);
-        return new Member(id, email, "");
+        return new JwtPayload(claims);
     }
 }
+

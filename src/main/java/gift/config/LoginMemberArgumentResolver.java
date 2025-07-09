@@ -3,6 +3,7 @@ package gift.config;
 import gift.util.JwtTokenProvider;
 import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.core.MethodParameter;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -10,8 +11,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private static final String HEADER_KEY = "Authorization";
-    private static final String AUTH_STRING_PREFIX = "Bearer ";
+    private static final String AUTHORIZATION_PREFIX = "Bearer ";
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -26,13 +26,13 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-         String authString = webRequest.getHeader(HEADER_KEY);
+         String authorizationHeader = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
 
-         if (authString == null || !authString.startsWith(AUTH_STRING_PREFIX)) {
+         if (authorizationHeader == null || !authorizationHeader.startsWith(AUTHORIZATION_PREFIX)) {
              throw new AuthenticationException("Invalid Authorization header");
          }
 
-         String token = authString.substring(AUTH_STRING_PREFIX.length());
-        return jwtTokenProvider.parseJwtToken(token);
+         String token = authorizationHeader.substring(AUTHORIZATION_PREFIX.length());
+        return jwtTokenProvider.parseJwtToken(token).toMember();
     }
 }
