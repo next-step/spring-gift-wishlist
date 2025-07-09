@@ -65,4 +65,11 @@ public class GlobalExceptionHandler {
         SingleErrorResponse errorResponse = new SingleErrorResponse(e.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(NotAdminException.class)
+    public ResponseEntity<SingleErrorResponse> handleNotAdminException(NotAdminException e) {
+        log.warn("관리자만 이 기능을 사용할 수 있음 : {}", e.getMessage());
+        SingleErrorResponse errorResponse = new SingleErrorResponse(e.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+    }
 }
