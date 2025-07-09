@@ -80,7 +80,12 @@ public class MemberViewController {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             throw new MemberExceptions.InvalidAuthorizationHeaderException();
         }
+
         String token = authHeader.substring(7);
+        if (!jwtAuth.validateToken(token)) {
+            throw new MemberExceptions.InvalidTokenException();
+        }
+
         List<String> wishlist = new ArrayList<>();
         return ResponseEntity.status(HttpStatus.OK).body(wishlist);
     }

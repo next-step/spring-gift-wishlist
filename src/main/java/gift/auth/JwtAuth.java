@@ -1,8 +1,7 @@
 package gift.auth;
 
 import gift.entity.Member;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -21,13 +20,13 @@ public class JwtAuth {
         String accessToken = Jwts.builder()
                 .setSubject(member.getEmail())
                 .claim("email", member.getEmail())
-                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                .signWith(getKeyFromSecretKey(secretKey))
                 .compact();
         return accessToken;
     }
 
     public String getEmailFromToken(String token) {
-        SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes());
+        SecretKey key = getKeyFromSecretKey(secretKey);
         Claims claims = Jwts.parser()
                 .verifyWith(key)
                 .build()
@@ -36,4 +35,27 @@ public class JwtAuth {
         return claims.get("email", String.class);
     }
 
+    public boolean validateToken(String token) {
+        try {
+            Claims claims = Jwts.parser()
+                    .verifyWith(getKeyFromSecretKey(secretKey))
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+            return true;
+        } catch (ExpiredJwtException e) {
+            System.out.println("Expired JWT Token: " + e);
+        } catch (UnsupportedJwtException e) {
+            System.out.println("Unsupported JWT Token: " + e);
+        } catch (IllegalArgumentException e) {
+            System.out.println("JWT claims string is empty. " + e);
+        } catch (Exception e) {
+            System.out.println("JWT Signature is invalid. " + e);
+        }
+        return false;
+    }
+
+    private SecretKey getKeyFromSecretKey(String secretKey) {
+        return Keys.hmacShaKeyFor(secretKey.getBytes());
+    }
 }
