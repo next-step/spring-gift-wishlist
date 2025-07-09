@@ -107,7 +107,7 @@ class MemberRestControllerTest {
                         .body(new LoginMemberRequest("test@exam.com", "12345"))
                         .retrieve()
                         .toEntity(LoginMemberResponse.class)
-        ).isInstanceOf(HttpClientErrorException.NotFound.class);
+        ).isInstanceOf(HttpClientErrorException.Unauthorized.class);
     }
 
     @Test

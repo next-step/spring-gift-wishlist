@@ -6,6 +6,7 @@ import gift.domain.Product;
 import gift.dto.*;
 import gift.repository.MemberRepository;
 import gift.repository.ProductRepository;
+import gift.util.ShaUtil;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,9 @@ public class MemberService {
 
     public CreateMemberResponse register(CreateMemberRequest request) {
         duplicateEmailCheck(request.email());
-        Member member = memberRepository.save(request);
+        String salt = ShaUtil.getSalt();
+        String encryptPassword = ShaUtil.encrypt(request.password(), salt);
+        Member member = memberRepository.save(request.email(), encryptPassword, salt);
         return new CreateMemberResponse(member.getId(), member.getEmail());
     }
 
@@ -36,7 +39,8 @@ public class MemberService {
             throw new NoSuchElementException("Email이 존재하지 않습니다.");
         }
         Member member = findMember.get();
-        if (!member.getPassword().equals(request.password())) {
+        String requestPassword = ShaUtil.encrypt(request.password(), member.getSalt());
+        if (!member.getPassword().equals(requestPassword)) {
             throw new NotMatchPasswordException("비밀번호가 일치하지 않습니다.");
         }
     }
@@ -57,7 +61,9 @@ public class MemberService {
     public UpdateMemberResponse update(Long id, UpdateMemberRequest request) {
         findByIdOrThrow(id);
         duplicateEmailCheck(request.email());
-        Member updateMember = memberRepository.update(id, request);
+        String salt = ShaUtil.getSalt();
+        String encryptPassword = ShaUtil.encrypt(request.password(), salt);
+        Member updateMember = memberRepository.update(id, request.email(), encryptPassword, salt);
         return new UpdateMemberResponse(id, updateMember.getEmail(), updateMember.getPassword());
     }
 

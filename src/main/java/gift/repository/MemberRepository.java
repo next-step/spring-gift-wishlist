@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MemberRepository {
-    Member save(CreateMemberRequest request);
+    Member save(String email, String password, String salt);
 
     Optional<Member> findById(Long id);
 
@@ -16,7 +16,7 @@ public interface MemberRepository {
 
     List<Member> findAll();
 
-    Member update(Long id, UpdateMemberRequest request);
+    Member update(Long id, String email, String password, String salt);
 
     void delete(Long id);
 }

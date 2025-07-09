@@ -32,7 +32,7 @@ public class MemberController {
 
     @GetMapping("/add")
     public String registerMember(Model model) {
-        model.addAttribute("member", new Member(null, "", ""));
+        model.addAttribute("member", new Member(null, "", "", ""));
         return "member/addForm";
     }
 
