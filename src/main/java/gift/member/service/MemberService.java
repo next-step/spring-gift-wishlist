@@ -8,7 +8,7 @@ import gift.member.dto.response.MemberResponseDto;
 import gift.member.dto.request.RegisterRequestDto;
 import gift.member.entity.Member;
 import gift.member.repository.MemberRepository;
-import jakarta.validation.constraints.Email;
+import gift.member.util.PasswordUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,9 +16,11 @@ import java.util.List;
 @Service
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final PasswordUtil passwordUtil;
 
-    public MemberService(MemberRepository memberRepository) {
+    public MemberService(MemberRepository memberRepository, PasswordUtil passwordUtil) {
         this.memberRepository = memberRepository;
+        this.passwordUtil = passwordUtil;
     }
 
     public MemberResponseDto register(RegisterRequestDto registerRequestDto) {
@@ -26,9 +28,13 @@ public class MemberService {
             throw new EmailExistsException();
         }
 
+        String salt = passwordUtil.getSalt();
+        String hashedPassword = passwordUtil.hashPassword(registerRequestDto.password(), salt);
+
         Member member = new Member(
                 registerRequestDto.email(),
-                registerRequestDto.password(),
+                salt,
+                hashedPassword,
                 "USER");
 
         return MemberResponseDto.from(memberRepository.save(member));
@@ -62,10 +68,14 @@ public class MemberService {
                     throw new EmailExistsException();
                 });
 
+        String newSalt = passwordUtil.getSalt();
+        String hashedPassword = passwordUtil.hashPassword(updateRequestDto.password(), newSalt);
+
         Member memberToUpdate = new Member(
                 id,
                 updateRequestDto.email(),
-                updateRequestDto.password(),
+                newSalt,
+                hashedPassword,
                 updateRequestDto.role()
         );
 
