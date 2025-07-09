@@ -5,6 +5,7 @@ import gift.dto.MemberLoginRequestDTO;
 import gift.dto.MemberRequestDTO;
 import gift.service.MemberService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ public class MemberController {
     @PostMapping("/register")
     public ResponseEntity<AuthTokenResponseDTO> register(@Valid @RequestBody MemberRequestDTO member) {
         AuthTokenResponseDTO token = memberService.register(member);
-        return ResponseEntity.status(201)
+        return ResponseEntity.status(HttpStatus.CREATED)
                 .body(token);
     }
 
