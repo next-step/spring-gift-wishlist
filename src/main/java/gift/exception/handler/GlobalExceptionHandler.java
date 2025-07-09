@@ -1,7 +1,8 @@
 package gift.exception.handler;
 
 import gift.exception.InvalidAuthExeption;
-import gift.exception.InvalidBearerAuthExeption;
+import gift.exception.InvalidBearerAuthException;
+import gift.exception.MemberNotFoundException;
 import gift.exception.ProductHiddenException;
 import gift.exception.ProductNotFoundExection;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,6 +11,7 @@ import jakarta.validation.ConstraintViolationException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindException;
@@ -122,9 +124,9 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(InvalidBearerAuthExeption.class)
+    @ExceptionHandler(InvalidBearerAuthException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ErrorResponse handleInvalidAuthExeption(InvalidBearerAuthExeption ex) {
+    public ErrorResponse handleInvalidAuthExeption(InvalidBearerAuthException ex) {
         return new ErrorResponse(
                 ErrorCode.UNAUTHORIZED,
                 ex.getMessage(),
@@ -138,6 +140,28 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleProductNotFoundExeption(ProductNotFoundExection ex) {
         return new ErrorResponse(
                 ErrorCode.FORBIDDEN,
+                ex.getMessage(),
+                List.of(),
+                LocalDateTime.now()
+        );
+    }
+
+    @ExceptionHandler(MemberNotFoundException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse handleMemberNotFoundExeption(MemberNotFoundException ex) {
+        return new ErrorResponse(
+                ErrorCode.FORBIDDEN,
+                ex.getMessage(),
+                List.of(),
+                LocalDateTime.now()
+        );
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        return new ErrorResponse(
+                ErrorCode.BAD_REQUEST,
                 ex.getMessage(),
                 List.of(),
                 LocalDateTime.now()

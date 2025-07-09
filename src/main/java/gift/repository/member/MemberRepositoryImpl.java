@@ -1,6 +1,7 @@
 package gift.repository.member;
 
 import gift.entity.member.Member;
+import gift.exception.DuplicateEmailException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -30,7 +31,7 @@ public class MemberRepositoryImpl implements MemberRepository {
     public Member save(Member member) {
         Map<String, Object> params = new HashMap<>();
         params.put("email", member.getEmail().email());
-        params.put("password_hash", member.getPasswordHash().password());
+        params.put("password_hash", member.getPassword().password());
         params.put("role", member.getRole().name());
         params.put("created_at", Timestamp.valueOf(member.getCreatedAt()));
 
@@ -38,7 +39,7 @@ public class MemberRepositoryImpl implements MemberRepository {
             Number newId = insert.executeAndReturnKey(params);
             return member.withId(newId.longValue());
         } catch (DataIntegrityViolationException e) {
-            throw new IllegalArgumentException("이미 존재하는 이메일입니다.", e);
+            throw new DuplicateEmailException();
         }
     }
 

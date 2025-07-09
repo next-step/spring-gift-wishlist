@@ -1,7 +1,6 @@
-// src/main/java/gift/util/BearerAuthUtil.java
 package gift.util;
 
-import gift.exception.InvalidBearerAuthExeption;
+import gift.exception.InvalidBearerAuthException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 
@@ -9,9 +8,9 @@ public class BearerAuthUtil {
 
     public static Jws<Claims> parse(String header) {
         if (header == null || !header.startsWith("Bearer ")) {
-            throw new InvalidBearerAuthExeption();
+            throw new InvalidBearerAuthException();
         }
         String token = header.substring(7);
-        return JwtUtil.validate(token);
+        return JwtUtil.parseToken(token);
     }
 }

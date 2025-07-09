@@ -1,38 +1,53 @@
-// src/main/java/gift/util/JwtUtil.java
 package gift.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import java.security.Key;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Base64;
 import java.util.Date;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+@Component
 public class JwtUtil {
 
-    private static final String SECRET = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";
-    private static final Key KEY = Keys.hmacShaKeyFor(SECRET.getBytes());
+    private static Key key = null;
+    private static long expireMillis = 0;
 
-    public static String generateToken(Long memberId, String role, long expireMillis) {
+    public JwtUtil(
+            @Value("${jwt.secret}") String secretKey,
+            @Value("${jwt.expireMillisecond}") long expireMillisecond
+    ) {
+        key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secretKey));
+        expireMillis = expireMillisecond;
+    }
+
+    public static String generateToken(Long memberId, String role) {
         long now = System.currentTimeMillis();
+        Date issuedAt = new Date(now);
+        Date expiration = new Date(now + expireMillis);
         return Jwts.builder()
                 .subject(memberId.toString())
                 .claim("role", role)
-                .issuedAt(new Date(now))
-                .expiration(new Date(now + expireMillis))
-                .signWith(KEY)
+                .issuedAt(issuedAt)
+                .expiration(expiration)
+                .signWith(key)
                 .compact();
     }
 
-    public static Jws<Claims> validate(String token) {
-        try {
-            return Jwts.parser()
-                    .setSigningKey(KEY)
-                    .build()
-                    .parseClaimsJws(token);
-        } catch (JwtException e) {
-            throw new IllegalArgumentException("Invalid JWT token", e);
-        }
+    public static LocalDateTime getExpiration(String token) {
+        Claims claims = parseToken(token).getPayload();
+        return LocalDateTime.ofInstant(claims.getExpiration().toInstant(), ZoneId.systemDefault());
+    }
+
+    public static Jws<Claims> parseToken(String token) {
+        return Jwts.parser()
+                .setSigningKey(key)
+                .build()
+                .parseSignedClaims(token);
     }
 }

@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/admin/products")
 public class AdminProductController {
 
+    private static final String ROLE = "ADMIN";
     private final ProductService productService;
 
     public AdminProductController(ProductService productService) {
@@ -30,7 +31,7 @@ public class AdminProductController {
 
     @GetMapping
     public String list(Model model) {
-        model.addAttribute("products", productService.getAllProducts());
+        model.addAttribute("products", productService.getAllProducts(ROLE));
         return "admin/product_list";
     }
 
@@ -46,10 +47,15 @@ public class AdminProductController {
             BindingResult bindingResult,
             HttpServletResponse response
     ) {
+        String errorView = checkErrors(bindingResult, response, "admin/product_form");
+        if (errorView != null) {
+            return errorView;
+        }
         productService.createProduct(
                 productForm.getName(),
                 productForm.getPrice(),
-                productForm.getImageUrl()
+                productForm.getImageUrl(),
+                ROLE
         );
         return "redirect:/admin/products";
     }
@@ -59,9 +65,8 @@ public class AdminProductController {
             @PathVariable Long id,
             Model model
     ) {
-        Product p = productService.getProductById(id)
+        Product p = productService.getProductById(id, ROLE)
                 .orElseThrow(() -> new ProductNotFoundExection(id));
-
         ProductForm form = new ProductForm(
                 p.id().id(),
                 p.name().name(),
@@ -79,18 +84,23 @@ public class AdminProductController {
             BindingResult bindingResult,
             HttpServletResponse response
     ) {
+        String errorView = checkErrors(bindingResult, response, "admin/product_form");
+        if (errorView != null) {
+            return errorView;
+        }
         productService.updateProduct(
                 id,
                 productForm.getName(),
                 productForm.getPrice(),
-                productForm.getImageUrl()
+                productForm.getImageUrl(),
+                ROLE
         );
         return "redirect:/admin/products";
     }
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id) {
-        productService.deleteProduct(id);
+        productService.deleteProduct(id, ROLE);
         return "redirect:/admin/products";
     }
 
@@ -102,7 +112,7 @@ public class AdminProductController {
 
     @PostMapping("/{id}/hide")
     public String hide(@PathVariable Long id) {
-        productService.unhideProduct(id);
+        productService.hideProduct(id);
         return "redirect:/admin/products";
     }
 

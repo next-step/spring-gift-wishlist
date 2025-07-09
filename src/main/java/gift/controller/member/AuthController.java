@@ -1,8 +1,6 @@
-// src/main/java/gift/controller/AuthController.java
 package gift.controller.member;
 
 import gift.dto.member.AuthResponse;
-import gift.dto.member.LoginRequest;
 import gift.dto.member.RegisterRequest;
 import gift.service.member.MemberService;
 import gift.util.BasicAuthUtil;
@@ -29,20 +27,15 @@ public class AuthController {
         return ResponseEntity.status(201).body(resp);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest req) {
-        AuthResponse resp = memberService.login(req);
-        return ResponseEntity.ok(resp);
-    }
 
-    @PostMapping("/login/basic")
-    public ResponseEntity<AuthResponse> loginWithBasic(
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> login(
             @RequestHeader("Authorization") String authHeader) {
         BasicAuthUtil.Credentials cred = BasicAuthUtil.parse(authHeader);
         String email = cred.email();
         String password = cred.password();
-        
-        AuthResponse resp = memberService.loginByBasic(email, password);
+
+        AuthResponse resp = memberService.login(email, password);
         return ResponseEntity.ok(resp);
     }
 }

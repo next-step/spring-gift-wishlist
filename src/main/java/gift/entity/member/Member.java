@@ -104,7 +104,7 @@ public class Member {
         return email;
     }
 
-    public MemberPassword getPasswordHash() {
+    public MemberPassword getPassword() {
         return passwordHash;
     }
 
