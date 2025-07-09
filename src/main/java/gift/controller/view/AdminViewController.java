@@ -1,4 +1,4 @@
-package gift.controller;
+package gift.controller.view;
 
 import gift.dto.MemberLoginRequestDto;
 import gift.service.MemberService;
@@ -18,10 +18,10 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/admin")
-public class AdminController {
+public class AdminViewController {
 
     private final MemberService memberService;
-    public AdminController(MemberService memberService) {
+    public AdminViewController(MemberService memberService) {
         this.memberService = memberService;
     }
 
@@ -52,6 +52,11 @@ public class AdminController {
         jwtCookie.setMaxAge(60 * 60);
         response.addCookie(jwtCookie);
 
-        return new ModelAndView("redirect:/admin/members");
+        return new ModelAndView("redirect:/admin/dashboard");
+    }
+
+    @GetMapping("/dashboard")
+    public ModelAndView dashboard() {
+        return new ModelAndView("admin/dashboard");
     }
 }
