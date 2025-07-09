@@ -12,5 +12,5 @@ INSERT INTO product (name, price, image_url) VALUES
 
 
 INSERT INTO member (email, password, name, role) VALUES
-    ('admin', 'admin', '김철수', '관리자'),
-    ('abcd@gmail.com', '1234', '이천수', '축구선수');
+    ('admin', 'admin', '김철수', 'ADMIN'),
+    ('abcd@gmail.com', '1234', '이천수', 'USER');
