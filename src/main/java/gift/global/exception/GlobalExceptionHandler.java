@@ -31,6 +31,7 @@ public class GlobalExceptionHandler {
             .body(new ErrorResponse(ErrorCode.NOT_EXISTS, ErrorCode.NOT_EXISTS.getErrorMessage()));
     }
 
+    // validation 관련 예외
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         List<ErrorResponse> errors = new ArrayList<>();
