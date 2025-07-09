@@ -25,10 +25,6 @@ class ProductRequestDtoTest {
         url = "http://localhost:" + port + "/api/products";
     }
 
-    private ProductRequestDto createProductRequestDto(String name, Integer price, String imageUrl) {
-        return new ProductRequestDto(name, price, imageUrl);
-    }
-
     // 생성 테스트
     @Test
     @DisplayName("Product 생성 시, 검증된 input을 넣으면 201(Created)이 반환된다. ")
@@ -227,5 +223,9 @@ class ProductRequestDtoTest {
                                 .retrieve()
                                 .toBodilessEntity()
                 );
+    }
+
+    private ProductRequestDto createProductRequestDto(String name, Integer price, String imageUrl) {
+        return new ProductRequestDto(name, price, imageUrl);
     }
 }

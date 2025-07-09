@@ -32,14 +32,6 @@ class MemberServiceTest {
         memberService = new MemberServiceImpl(memberRepository, jwtProvider);
     }
 
-    private MemberRegisterRequestDto createRegisterDto() {
-        return new MemberRegisterRequestDto("솨야", "psh@test.com", "1234");
-    }
-
-    private Member createMember() {
-        return new Member(1L, "솨야", "psh@test.com", "1234", Role.USER);
-    }
-
     @Test
     @DisplayName("회원 가입 성공 시, 저장 및 토큰을 발급한다.")
     void shouldRegisterSuccessfully() {
@@ -124,5 +116,13 @@ class MemberServiceTest {
 
         // then
         verify(memberRepository).deleteMember(1L);
+    }
+
+    private MemberRegisterRequestDto createRegisterDto() {
+        return new MemberRegisterRequestDto("솨야", "psh@test.com", "1234");
+    }
+
+    private Member createMember() {
+        return new Member(1L, "솨야", "psh@test.com", "1234", Role.USER);
     }
 }

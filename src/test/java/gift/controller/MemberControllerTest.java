@@ -34,14 +34,6 @@ class MemberControllerTest {
         memberRepository.findAllMembers().forEach(m -> memberRepository.deleteMember(m.getId()));
     }
 
-    private MemberRegisterRequestDto createRegisterDto() {
-        return new MemberRegisterRequestDto("솨야", "psh@test.com", "1234");
-    }
-
-    private MemberLoginRequestDto createLoginDto(String email, String password) {
-        return new MemberLoginRequestDto(email, password);
-    }
-
     @Test
     @DisplayName("회원 가입 성공 시 201(Created)과 accessToken을 반환한다.")
     void shouldRegisterMemberSuccessfully() throws Exception {
@@ -149,5 +141,13 @@ class MemberControllerTest {
         mockMvc.perform(delete("/api/members/9999"))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("해당 회원을 찾을 수 없습니다. id=9999"));
+    }
+
+    private MemberRegisterRequestDto createRegisterDto() {
+        return new MemberRegisterRequestDto("솨야", "psh@test.com", "1234");
+    }
+
+    private MemberLoginRequestDto createLoginDto(String email, String password) {
+        return new MemberLoginRequestDto(email, password);
     }
 }
