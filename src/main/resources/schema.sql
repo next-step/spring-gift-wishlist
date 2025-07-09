@@ -4,10 +4,12 @@ CREATE TABLE IF NOT EXISTS product (
     price INT NOT NULL,
     image_url VARCHAR(500),
     md_approved BOOLEAN DEFAULT FALSE
+
 );
 
 CREATE TABLE IF NOT EXISTS member (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL
+
 );
