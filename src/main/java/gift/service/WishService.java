@@ -33,4 +33,8 @@ public class WishService {
             wishRepository.save(memberId, productId, quantity);
         }
     }
+
+    public void deleteWish(Long memberId, Long productId) {
+        wishRepository.deleteByMemberAndProduct(memberId, productId);
+    }
 }

@@ -42,7 +42,14 @@ public class WishRepositoryImpl implements WishRepository  {
     }
 
     @Override
-    public void delete(Long memberId, Long productId) {
+    public void deleteByMemberAndProduct(Long memberId, Long productId) {
+        jdbcClient.sql("""
+            DELETE FROM wishes
+            WHERE member_id = :memberId AND product_id = :productId
+            """)
+                .param("memberId", memberId)
+                .param("productId", productId)
+                .update();
 
     }
 

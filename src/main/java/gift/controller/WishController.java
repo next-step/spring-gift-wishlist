@@ -29,4 +29,9 @@ public class WishController {
     public void addWish(@RequestBody WishRequest request, @LoginMember Member member) {
         wishService.addWish(member.getId(), request.getProductId(), request.getQuantity());
     }
+
+    @DeleteMapping
+    public void deleteWish(@RequestBody WishRequest request, @LoginMember Member member) {
+        wishService.deleteWish(member.getId(), request.getProductId());
+    }
 }
