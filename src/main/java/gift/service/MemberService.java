@@ -15,14 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-    private final JwtTokenProvider jwtTokenProvider;
 
-    public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
+    public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
-        this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public AuthResponseDto creatMember(MemberRequestDto memberRequestDto) {
+    public Member creatMember(MemberRequestDto memberRequestDto) {
         String passwordHash = BCrypt.hashpw(
                 memberRequestDto.password(),
                 BCrypt.gensalt());
@@ -37,15 +35,14 @@ public class MemberService {
                 .orElseThrow(() -> new IllegalArgumentException("Member를 생성할 수 없습니다."))
                 .longValue();
 
-        return new AuthResponseDto(
-                jwtTokenProvider.makeJwtToken(new Member(
-                        id,
-                        memberRequestDto.email(),
-                        passwordHash)));
+        return new Member(
+                id,
+                memberRequestDto.email(),
+                passwordHash);
     }
 
     @Transactional(readOnly = true)
-    public AuthResponseDto login(MemberRequestDto memberRequestDto) throws AuthenticationException {
+    public Member login(MemberRequestDto memberRequestDto) {
         Member member = memberRepository.findMemberByEmail(memberRequestDto.email())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 멤버입니다."));
         if (!BCrypt.checkpw(
@@ -54,7 +51,6 @@ public class MemberService {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        return new AuthResponseDto(
-                jwtTokenProvider.makeJwtToken(member));
+        return member;
     }
 }
