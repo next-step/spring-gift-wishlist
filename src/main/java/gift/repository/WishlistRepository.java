@@ -3,7 +3,9 @@ package gift.repository;
 import gift.common.exception.WishlistNotFoundException;
 import gift.domain.Wishlist;
 import gift.dto.wishlist.WishlistResponse;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class WishlistRepository {
@@ -55,5 +58,23 @@ public class WishlistRepository {
         if (updated == 0) {
             throw new WishlistNotFoundException(id);
         }
+    }
+
+    public Optional<Wishlist> findById(Long id) {
+        String sql = "select * from wishlist where id=?";
+        try {
+            Wishlist wishlist = jdbcTemplate.queryForObject(sql, toWishlist(), id);
+            return Optional.of(wishlist);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    private RowMapper<Wishlist> toWishlist() {
+        return (rs, rowNum) -> new Wishlist(
+                rs.getLong("id"),
+                rs.getLong("user_id"),
+                rs.getLong("product_id")
+        );
     }
 }
