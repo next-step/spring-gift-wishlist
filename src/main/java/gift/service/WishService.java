@@ -34,6 +34,15 @@ public class WishService {
         }
     }
 
+    @Transactional
+    public void updateWish(Long memberId, Long productId, int quantity) {
+        if (quantity <= 0) {
+            wishRepository.deleteByMemberAndProduct(memberId, productId);
+        } else {
+            wishRepository.updateQuantity(memberId, productId, quantity);
+        }
+    }
+
     public void deleteWish(Long memberId, Long productId) {
         wishRepository.deleteByMemberAndProduct(memberId, productId);
     }

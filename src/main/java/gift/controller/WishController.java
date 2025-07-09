@@ -30,8 +30,18 @@ public class WishController {
         wishService.addWish(member.getId(), request.getProductId(), request.getQuantity());
     }
 
+    @PatchMapping
+    public void updateWish(
+            @RequestBody WishRequest request,
+            @LoginMember Member member
+    ) {
+        wishService.updateWish(member.getId(), request.getProductId(), request.getQuantity());
+    }
+
     @DeleteMapping
     public void deleteWish(@RequestBody WishRequest request, @LoginMember Member member) {
         wishService.deleteWish(member.getId(), request.getProductId());
     }
+
+
 }
