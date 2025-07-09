@@ -6,7 +6,7 @@ import gift.dto.itemDto.ItemDto;
 import gift.dto.itemDto.ItemResponseDto;
 import gift.dto.itemDto.ItemUpdateDto;
 import gift.entity.Item;
-import gift.exception.ItemNotFoundException;
+import gift.exception.itemException.ItemNotFoundException;
 import gift.repository.itemRepository.ItemRepository;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +15,7 @@ import java.util.List;
 
 @Service
 public class ItemServiceImpl implements ItemService {
+
     private final ItemRepository itemRepository;
 
     public ItemServiceImpl(ItemRepository itemRepository) {
@@ -39,7 +40,6 @@ public class ItemServiceImpl implements ItemService {
             items = itemRepository.getItems(name, price);
         }
         if (items.isEmpty()) {
-            System.out.println("예외 처리 실행");
             throw new ItemNotFoundException();
         }
 

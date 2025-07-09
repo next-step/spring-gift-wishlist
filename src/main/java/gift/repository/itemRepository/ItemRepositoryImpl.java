@@ -2,6 +2,7 @@ package gift.repository.itemRepository;
 
 
 import gift.entity.Item;
+import gift.entity.WishItem;
 
 import java.util.ArrayList;
 import java.util.List;

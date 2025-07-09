@@ -4,6 +4,9 @@ import gift.dto.itemDto.ItemCreateDto;
 import gift.dto.itemDto.ItemDto;
 import gift.dto.itemDto.ItemResponseDto;
 import gift.dto.itemDto.ItemUpdateDto;
+import gift.dto.wishListDto.AddWishItemDto;
+import gift.dto.wishListDto.ResponseWishItemDto;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -15,7 +18,6 @@ public interface ItemService {
     void delete(String name);
 
     ItemUpdateDto updateItem(Long id, ItemUpdateDto dto);
-
 
     ItemDto findById(Long id);
 

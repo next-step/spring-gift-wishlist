@@ -1,7 +1,7 @@
 package gift.Jwt;
 
-import gift.exception.NeedAuthorizedException;
-import gift.exception.UnauthorizedException;
+import gift.exception.userException.NeedAuthorizedException;
+import gift.exception.userException.UnauthorizedException;
 import io.jsonwebtoken.Claims;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +22,11 @@ public class TokenUtils {
         if (!jwtUtil.validate(token)) {
             throw new UnauthorizedException();
         }
+    }
+
+    public String extractEmail(String token) {
+        Claims claims = jwtUtil.getClaims(token);
+        return claims.get("email", String.class);
     }
 
     public boolean hasRole(String token, String expectedRole) {

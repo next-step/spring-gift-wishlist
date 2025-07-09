@@ -1,6 +1,7 @@
 package gift.repository.itemRepository;
 
 import gift.entity.Item;
+import gift.repository.userRepository.UserRepository;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -29,9 +30,11 @@ public class ItemRepositoryJdbcTemplate implements ItemRepository {
             );
         }
     };
+    private final UserRepository userRepository;
 
-    public ItemRepositoryJdbcTemplate(JdbcTemplate jdbcTemplate) {
+    public ItemRepositoryJdbcTemplate(JdbcTemplate jdbcTemplate, UserRepository userRepository) {
         this.jdbcTemplate = jdbcTemplate;
+        this.userRepository = userRepository;
     }
 
     @Override

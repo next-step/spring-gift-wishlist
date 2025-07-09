@@ -7,10 +7,10 @@ import gift.dto.userDto.UserResponseDto;
 import gift.dto.userDto.UserUpdateDto;
 import gift.entity.User;
 import gift.entity.UserRole;
-import gift.exception.UserAuthorizationException;
-import gift.exception.UserDuplicatedException;
-import gift.exception.UserNotFoundException;
-import gift.exception.UserPasswordException;
+import gift.exception.userException.UserAuthorizationException;
+import gift.exception.userException.UserDuplicatedException;
+import gift.exception.userException.UserNotFoundException;
+import gift.exception.userException.UserPasswordException;
 import gift.repository.userRepository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public String loginUser(UserLoginDto dto) {
         String targetEmail = dto.email();
-        String targetPassword = dto.password();
+
         User findUser = userRepository.findUserByEmail(targetEmail);
         if (findUser == null) {
             throw new UserNotFoundException(targetEmail);
