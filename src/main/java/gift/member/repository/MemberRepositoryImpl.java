@@ -26,7 +26,7 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
-    public Member save(Member member) {
+    public void save(Member member) {
         final String sql = "INSERT INTO members (name, email, password) VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -53,12 +53,6 @@ public class MemberRepositoryImpl implements MemberRepository {
         if (key == null) {
             throw new FailedGenerateKeyException();
         }
-
-        return new Member(
-                key.longValue(),
-                member.getName(),
-                member.getEmail(),
-                member.getPassword());
     }
 
     @Override

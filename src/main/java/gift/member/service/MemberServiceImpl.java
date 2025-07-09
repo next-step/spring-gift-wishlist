@@ -27,7 +27,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public MemberLoginResponseDto register(MemberRegisterRequestDto requestDto) {
+    public void register(MemberRegisterRequestDto requestDto) {
         if (memberRepository.findByEmail(requestDto.email()) != null) {
             throw new MemberEmailAlreadyExistsException();
         }
@@ -38,9 +38,7 @@ public class MemberServiceImpl implements MemberService {
             new Email(requestDto.email()),
             new Password(requestDto.password())
         );
-        member = memberRepository.save(member);
-
-        return new MemberLoginResponseDto(jwtProvider.createToken(member));
+        memberRepository.save(member);
     }
 
     @Override

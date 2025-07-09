@@ -8,7 +8,7 @@ import gift.member.dto.MemberResponseDto;
 import java.util.List;
 
 public interface MemberService {
-    MemberLoginResponseDto register(MemberRegisterRequestDto requestDto);
+    void register(MemberRegisterRequestDto requestDto);
     MemberLoginResponseDto findByEmail(MemberLoginRequestDto requestDto);
     List<MemberResponseDto> findAll();
     MemberResponseDto findById(Long id);
