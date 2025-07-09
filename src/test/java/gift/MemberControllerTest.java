@@ -26,8 +26,8 @@ public class MemberControllerTest {
     @Test
     void 회원가입_중복_이메일_테스트(){
         System.out.println("Elready Exist Email Register test");
-        MemberRequestDto requestDto = new MemberRequestDto("abc@pusan.ac.kr", "1234");
-        var url = "http://localhost:" + port + "/api/members/register";
+        MemberRequestDto requestDto = new MemberRequestDto("abc@pusan.ac.kr", "12345678");
+        var url = "http://localhost:" + port + "/api/members/membership";
         assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
                 .isThrownBy(
                         () -> client.post()
@@ -42,8 +42,8 @@ public class MemberControllerTest {
     @Test
     void 회원가입_정상_테스트(){
         System.out.println("Member Register Success test");
-        MemberRequestDto requestDto = new MemberRequestDto("abcd@pusan.ac.kr", "1234");
-        var url = "http://localhost:" + port + "/api/members/register";
+        MemberRequestDto requestDto = new MemberRequestDto("zxc@pusan.ac.kr", "12345678");
+        var url = "http://localhost:" + port + "/api/members/membership";
         var response = client.post()
                 .uri(url)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -57,7 +57,7 @@ public class MemberControllerTest {
     @Test
     void 로그인_없는_이메일_시도_테스트(){
         System.out.println("Member Login Not register Email test");
-        MemberRequestDto requestDto = new MemberRequestDto("abcde@pusan.ac.kr", "1234");
+        MemberRequestDto requestDto = new MemberRequestDto("qwerty@pusan.ac.kr", "12345678");
         var url = "http://localhost:" + port + "/api/members/login";
         assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
                 .isThrownBy(
@@ -74,7 +74,7 @@ public class MemberControllerTest {
     @Test
     void 로그인_틀린_비밀번호_테스트(){
         System.out.println("Member Login Invalid password test");
-        MemberRequestDto requestDto = new MemberRequestDto("abc@pusan.ac.kr", "12345");
+        MemberRequestDto requestDto = new MemberRequestDto("abcd@pusan.ac.kr", "12345678888");
         var url = "http://localhost:" + port + "/api/members/login";
         assertThatExceptionOfType(HttpClientErrorException.Forbidden.class)
                 .isThrownBy(
@@ -90,7 +90,7 @@ public class MemberControllerTest {
     @Test
     void 로그인_정상_테스트(){
         System.out.println("Member Login success test");
-        MemberRequestDto requestDto = new MemberRequestDto("abc@pusan.ac.kr", "1234");
+        MemberRequestDto requestDto = new MemberRequestDto("abcd@pusan.ac.kr", "12345678");
         var url = "http://localhost:" + port + "/api/members/login";
         var response = client.post()
                 .uri(url)
