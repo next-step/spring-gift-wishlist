@@ -89,5 +89,11 @@ public class AuthViewController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
+
+
+    @GetMapping("/error/403")
+    public String error403() {
+        return "error/403";
+    }
 }
 
