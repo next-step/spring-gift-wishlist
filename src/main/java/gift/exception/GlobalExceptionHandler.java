@@ -62,4 +62,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity.of(pd).build();
     }
 
+    @ExceptionHandler(LoginFailedException.class)
+    public ResponseEntity<ProblemDetail> handleLoginFailedException(
+            LoginFailedException ex) {
+
+        ProblemDetail pd = ProblemDetail.forStatus(HttpStatus.FORBIDDEN);
+
+        pd.setType(URI.create("/errors/login-failed"));
+        pd.setTitle("로그인에 실패하였습니다.");
+        pd.setDetail(ex.getMessage());
+
+        return ResponseEntity.of(pd).build();
+    }
+
 }
