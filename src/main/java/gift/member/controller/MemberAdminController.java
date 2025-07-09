@@ -1,6 +1,7 @@
 package gift.member.controller;
 
 import gift.member.dto.MemberLoginRequestDto;
+import gift.member.dto.MemberRegisterRequestDto;
 import gift.member.service.MemberService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -24,7 +25,7 @@ public class MemberAdminController {
 
     @GetMapping("/new")
     public String createForm(Model model) {
-        model.addAttribute("member", MemberLoginRequestDto.from());
+        model.addAttribute("member", MemberRegisterRequestDto.from());
         return "/members/create_form";
     }
 
@@ -35,13 +36,13 @@ public class MemberAdminController {
     }
 
     @PostMapping
-    public String create(@Valid @ModelAttribute MemberLoginRequestDto requestDto) {
+    public String create(@Valid @ModelAttribute MemberRegisterRequestDto requestDto) {
         memberService.register(requestDto);
         return "redirect:/admin/members";
     }
 
     @PutMapping("/{id}")
-    public String update(@PathVariable Long id, @Valid @ModelAttribute MemberLoginRequestDto requestDto) {
+    public String update(@PathVariable Long id, @Valid @ModelAttribute MemberRegisterRequestDto requestDto) {
         memberService.update(id, requestDto);
         return "redirect:/admin/members";
     }

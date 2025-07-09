@@ -22,13 +22,15 @@
             <table class="table table-bordered table-hover">
                 <colgroup>
                     <col style="width: 5%;">   <!-- ID -->
-                    <col style="width: 40%;">   <!-- EMAIL -->
-                    <col style="width: 40%;">   <!-- PASSWORD -->
-                    <col style="width: 15%;">   <!-- PASSWORD -->
+                    <col style="width: 20%;">   <!-- NAME -->
+                    <col style="width: 30%;">   <!-- EMAIL -->
+                    <col style="width: 30%;">   <!-- PASSWORD -->
+                    <col style="width: 15%;">   <!-- OPTIONS -->
                 </colgroup>
                 <thead class="table-dark">
                 <tr>
                     <th>ID</th>
+                    <th>NAME</th>
                     <th>EMAIL</th>
                     <th>PASSWORD</th>
                     <th>OPTION</th>
@@ -36,7 +38,8 @@
                 </thead>
                 <tbody>
                 <tr th:each="member : ${members}">
-                    <td th:text="${member.id}" class="text-center"></td>
+                    <td th:text="${member.id}"></td>
+                    <td th:text="${member.name}"></td>
                     <td th:text="${member.email}"></td>
                     <td th:text="${member.password}"></td>
                     <td class="text-center align-middle">

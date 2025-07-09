@@ -2,6 +2,7 @@ package gift.member.service;
 
 import gift.member.dto.MemberLoginRequestDto;
 import gift.member.dto.MemberLoginResponseDto;
+import gift.member.dto.MemberRegisterRequestDto;
 import gift.member.dto.MemberResponseDto;
 import gift.member.entity.Member;
 import gift.global.exception.InvalidPasswordException;
@@ -9,6 +10,7 @@ import gift.global.exception.MemberEmailAlreadyExistsException;
 import gift.member.repository.MemberRepository;
 import gift.member.util.JwtProvider;
 import gift.member.vo.Email;
+import gift.member.vo.Name;
 import gift.member.vo.Password;
 import org.springframework.stereotype.Service;
 
@@ -25,13 +27,14 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public MemberLoginResponseDto register(MemberLoginRequestDto requestDto) {
+    public MemberLoginResponseDto register(MemberRegisterRequestDto requestDto) {
         if (memberRepository.findByEmail(requestDto.email()) != null) {
             throw new MemberEmailAlreadyExistsException();
         }
 
         Member member = new Member(
             null,
+            new Name(requestDto.name()),
             new Email(requestDto.email()),
             new Password(requestDto.password())
         );
@@ -66,9 +69,10 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void update(Long id, MemberLoginRequestDto requestDto) {
+    public void update(Long id, MemberRegisterRequestDto requestDto) {
         Member member = new Member(
             id,
+            new Name(requestDto.name()),
             new Email(requestDto.email()),
             new Password(requestDto.password())
         );

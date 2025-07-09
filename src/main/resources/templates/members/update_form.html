@@ -19,6 +19,11 @@
                 <input type="hidden" name="_method" th:value="'put'"/>
 
                 <div class="mb-3">
+                    <label for="name">Name</label>
+                    <input type="text" th:field="*{name}" class="form-control" id="name" required>
+                </div>
+
+                <div class="mb-3">
                     <label for="email">Email</label>
                     <input type="email" th:field="*{email}" class="form-control" id="email" required>
                 </div>

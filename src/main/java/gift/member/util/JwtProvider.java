@@ -1,6 +1,7 @@
 package gift.member.util;
 
 import gift.member.entity.Member;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -25,7 +26,7 @@ public class JwtProvider {
     public String createToken(Member member) {
         return Jwts.builder()
             .subject(member.getId().toString())
-            .claim("email", member.getEmail())
+            .claim("email", member.getName())
             .signWith(key)
             .compact();
     }

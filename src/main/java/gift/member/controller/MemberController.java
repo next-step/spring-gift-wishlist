@@ -2,6 +2,7 @@ package gift.member.controller;
 
 import gift.member.dto.MemberLoginRequestDto;
 import gift.member.dto.MemberLoginResponseDto;
+import gift.member.dto.MemberRegisterRequestDto;
 import gift.member.service.MemberService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,7 @@ public class MemberController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<MemberLoginResponseDto> register(@Valid @RequestBody MemberLoginRequestDto requestDto) {
+    public ResponseEntity<MemberLoginResponseDto> register(@Valid @RequestBody MemberRegisterRequestDto requestDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(memberService.register(requestDto));
     }
 

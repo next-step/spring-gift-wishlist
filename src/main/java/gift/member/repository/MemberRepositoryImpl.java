@@ -4,6 +4,7 @@ import gift.member.entity.Member;
 import gift.global.exception.FailedGenerateKeyException;
 import gift.global.exception.MemberNotFoundException;
 import gift.member.vo.Email;
+import gift.member.vo.Name;
 import gift.member.vo.Password;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -26,18 +27,23 @@ public class MemberRepositoryImpl implements MemberRepository {
 
     @Override
     public Member save(Member member) {
-        final String sql = "INSERT INTO members (email, password) VALUES (?, ?)";
+        final String sql = "INSERT INTO members (name, email, password) VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(
                 1,
-                member.getEmail()
+                member.getName()
                     .getValue()
             );
             ps.setString(
                 2,
+                member.getEmail()
+                    .getValue()
+            );
+            ps.setString(
+                3,
                 member.getPassword()
                     .getValue());
             return ps;
@@ -50,6 +56,7 @@ public class MemberRepositoryImpl implements MemberRepository {
 
         return new Member(
                 key.longValue(),
+                member.getName(),
                 member.getEmail(),
                 member.getPassword());
     }
@@ -85,10 +92,12 @@ public class MemberRepositoryImpl implements MemberRepository {
 
     @Override
     public void update(Member member) {
-        final String sql = "UPDATE members SET email = ?, password = ? WHERE id = ?";
+        final String sql = "UPDATE members SET name = ?, email = ?, password = ? WHERE id = ?";
 
         int updated = jdbcTemplate.update(
             sql,
+            member.getName()
+                .getValue(),
             member.getEmail()
                 .getValue(),
             member.getPassword()
@@ -113,6 +122,7 @@ public class MemberRepositoryImpl implements MemberRepository {
     private RowMapper<Member> memberRowMapper() {
         return (rs, rowNum) -> new Member(
             rs.getLong("id"),
+            new Name(rs.getString("name")),
             new Email(rs.getString("email")),
             new Password(rs.getString("password"))
         );
