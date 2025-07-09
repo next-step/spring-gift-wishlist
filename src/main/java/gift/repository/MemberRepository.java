@@ -32,7 +32,7 @@ public class MemberRepository {
         );
 
         Number id = memberInserter.executeAndReturnKey(new MapSqlParameterSource(params));
-        return Member.of(id.longValue(), member.getEmail(), member.getPassword());
+        return Member.withId(id.longValue(), member.getEmail(), member.getPassword());
     }
 
     // 이메일로 회원 찾기
@@ -50,7 +50,7 @@ public class MemberRepository {
     }
 
     private RowMapper<Member> rowMapper() {
-        return (rs, rowNum) -> Member.of(
+        return (rs, rowNum) -> Member.withId(
                 rs.getLong("id"),
                 rs.getString("email"),
                 rs.getString("password")

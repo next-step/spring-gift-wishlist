@@ -12,7 +12,7 @@ public class Member {
     }
 
     // 정적 팩토리 메소드 사용을 통해 객체 생성 전에 유효성 검사를 진행
-    public static Member of(Long id, String email, String password) {
+    public static Member withId(Long id, String email, String password) {
         validateEmail(email);
         validatePassword(password);
 
@@ -21,7 +21,7 @@ public class Member {
 
     // 정적 팩토리 메소드 사용을 통해 객체 생성 전에 유효성 검사를 진행
     // 회원가입용 - ID 없이 생성
-    public static Member create(String email, String password) {
+    public static Member register(String email, String password) {
         validateEmail(email);
         validatePassword(password);
 

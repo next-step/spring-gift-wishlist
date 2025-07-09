@@ -1,6 +1,5 @@
 package gift.auth;
 
-import gift.auth.JwtTokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

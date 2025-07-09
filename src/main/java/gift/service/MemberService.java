@@ -33,7 +33,7 @@ public class MemberService {
         String encodedPassword = passwordEncoder.encode(password);
 
         // 3. Member 생성 및 저장
-        Member member = Member.create(email, encodedPassword);
+        Member member = Member.register(email, encodedPassword);
         Member savedMember = memberRepository.save(member);
 
         // 4. JWT 토큰 생성 및 반환
