@@ -55,7 +55,7 @@ public class JwtProvider {
     }
 
     public Long getUserId(String token) {
-        return Long.getLong(getClaims(token).getSubject());
+        return Long.parseLong(getClaims(token).getSubject());
     }
 
     public boolean isTokenExpired(String token) {
