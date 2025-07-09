@@ -4,12 +4,19 @@ import gift.member.dto.response.MemberResponseDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import javax.crypto.SecretKey;
 import java.util.Date;
 
 @Component
 public class TokenProvider {
-    private final String secretKey = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";
+    private final SecretKey secretKey;
+
+    public TokenProvider(@Value("${jwt.secret.key}") String secretValue) {
+        this.secretKey = Keys.hmacShaKeyFor(secretValue.getBytes());
+    }
 
     public String generateToken(MemberResponseDto memberResponseDto) {
         Date now = new Date();
@@ -20,14 +27,14 @@ public class TokenProvider {
                 .claim("role", memberResponseDto.role())
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + 1000 * 60 * 60))
-                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                .signWith(secretKey)
                 .compact();
     }
 
     public boolean isValidToken(String token){
         try{
             Jwts.parser()
-                    .verifyWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                    .verifyWith(secretKey)
                     .build()
                     .parseSignedClaims(token);
 
@@ -39,7 +46,7 @@ public class TokenProvider {
 
     public String getRoleFromToken(String token){
         Claims claims = Jwts.parser()
-                .verifyWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                .verifyWith(secretKey)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
