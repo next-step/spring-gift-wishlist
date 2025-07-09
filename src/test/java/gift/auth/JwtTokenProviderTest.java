@@ -1,9 +1,12 @@
 package gift.auth;
 
-import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -11,11 +14,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class JwtTokenProviderTest {
 
     private JwtTokenProvider jwtTokenProvider;
+    private String secretKey;
+    private String differentKey;
 
     @BeforeEach
     void setUp() {
-        // 테스트용 설정값
-        String secretKey = "test-secret-key-for-jwt-token-provider-unit-test-must-be-at-least-256-bits";
+        secretKey = "test-secret-key-for-jwt-token-provider-unit-test-must-be-at-least-256-bits";
+        differentKey = "different-secret-key-that-is-long-enough-for-jwt-requirements-256-bits";
         long expirationTime = 3600000; // 1시간
 
         jwtTokenProvider = new JwtTokenProvider(secretKey, expirationTime);
@@ -24,123 +29,65 @@ class JwtTokenProviderTest {
     @Test
     @DisplayName("회원 ID로 JWT 토큰을 생성한다")
     void createToken_success() {
-        // given
         Long memberId = 5L;
-
-        // when
         String token = jwtTokenProvider.createToken(memberId);
 
-        // then
         assertThat(token).isNotNull();
         assertThat(token).isNotEmpty();
-        assertThat(token.split("\\.")).hasSize(3); // JWT는 3부분으로 구성
+        assertThat(token.split("\\.")).hasSize(3);
     }
 
     @Test
-    @DisplayName("생성한 토큰에서 회원 ID를 추출할 수 있다")
+    @DisplayName("정상 토큰에서 회원 ID를 추출할 수 있다")
     void getMemberId_success() {
-        // given
         Long expectedMemberId = 5L;
         String token = jwtTokenProvider.createToken(expectedMemberId);
+        Claims claims = jwtTokenProvider.validateAndParseClaims(token);
 
-        // when
-        Long actualMemberId = jwtTokenProvider.getMemberId(token);
+        Long actualMemberId = jwtTokenProvider.getMemberId(claims);
 
-        // then
         assertThat(actualMemberId).isEqualTo(expectedMemberId);
     }
 
     @Test
-    @DisplayName("유효한 토큰은 검증을 통과한다")
-    void validateAndParseClaims_returnsTrue() {
-        // given
-        String token = jwtTokenProvider.createToken(5L);
-
-        // when
-        boolean isValid = jwtTokenProvider.validateAndParseClaims(token);
-
-        // then
-        assertThat(isValid).isTrue();
-    }
-
-    @Test
-    @DisplayName("null 토큰은 검증을 통과하지 못한다")
-    void validateAndParseClaims_returnsFalse() {
-        // when
-        boolean isValid = jwtTokenProvider.validateAndParseClaims(null);
-
-        // then
-        assertThat(isValid).isFalse();
-    }
-
-    @Test
-    @DisplayName("빈 토큰은 검증을 통과하지 못한다")
-    void validateAndParseClaims_returnsFalse() {
-        // when
-        boolean isValid = jwtTokenProvider.validateAndParseClaims("");
-
-        // then
-        assertThat(isValid).isFalse();
-    }
-
-    @Test
-    @DisplayName("잘못된 형식의 토큰은 검증을 통과하지 못한다")
-    void validateAndParseClaims_returnsFalse() {
-        // given
-        String malformedToken = "this.is.not.a.valid.jwt.token";
-
-        // when
-        boolean isValid = jwtTokenProvider.validateAndParseClaims(malformedToken);
-
-        // then
-        assertThat(isValid).isFalse();
-    }
-
-    @Test
-    @DisplayName("다른 키로 서명된 토큰은 검증을 통과하지 못한다")
-    void validateAndParseClaims_differentKey_returnsFalse() {
-        // given
-        JwtTokenProvider otherProvider = new JwtTokenProvider(
-                "different-secret-key-that-is-long-enough-for-jwt-requirements-256-bits",
-                3600000
-        );
-        String tokenFromOtherProvider = otherProvider.createToken(5L);
-
-        // when
-        boolean isValid = jwtTokenProvider.validateAndParseClaims(tokenFromOtherProvider);
-
-        // then
-        assertThat(isValid).isFalse();
-    }
-
-    @Test
-    @DisplayName("만료된 토큰은 검증을 통과하지 못한다")
-    void validateAndParseClaims_returnsFalse() throws InterruptedException {
-        // given
-        JwtTokenProvider shortLivedProvider = new JwtTokenProvider(
-                "test-secret-key-for-jwt-token-provider-unit-test-must-be-at-least-256-bits",
-                1 // 1밀리초
-        );
-        String token = shortLivedProvider.createToken(5L);
-
-        // 토큰 만료 대기
+    @DisplayName("만료된 토큰은 ExpiredJwtException을 발생시킨다")
+    void expiredToken_throwsExpiredJwtException() throws InterruptedException {
+        JwtTokenProvider shortLivedProvider = new JwtTokenProvider(secretKey, 1);
+        String token = shortLivedProvider.createToken(1L);
         Thread.sleep(10);
 
-        // when
-        boolean isValid = shortLivedProvider.validateAndParseClaims(token);
+        assertThatThrownBy(() -> shortLivedProvider.validateAndParseClaims(token))
+                .isInstanceOf(ExpiredJwtException.class);
+    }
 
-        // then
-        assertThat(isValid).isFalse();
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "this.is.not.jwt",
+            "123", // 단순 숫자
+            "abc.def", // dot 1개
+            "header.payload.signature.extra", // dot 3개 이상
+    })
+    @DisplayName("형식이 잘못된 토큰은 MalformedJwtException을 발생시킨다")
+    void malformedToken_throwsMalformedJwtException(String malformedToken) {
+        assertThatThrownBy(() -> jwtTokenProvider.validateAndParseClaims(malformedToken))
+                .isInstanceOf(MalformedJwtException.class);
     }
 
     @Test
-    @DisplayName("잘못된 토큰에서 회원 ID를 추출하면 예외가 발생한다")
-    void getMemberId_invalidToken_throwsException() {
-        // given
-        String invalidToken = "invalid.jwt.token";
+    @DisplayName("서명이 잘못된 토큰은 SignatureException을 발생시킨다")
+    void signatureMismatch_throwsSignatureException() {
+        JwtTokenProvider otherProvider = new JwtTokenProvider(differentKey, 3600000);
+        String token = otherProvider.createToken(5L);
 
-        // when & then
-        assertThatThrownBy(() -> jwtTokenProvider.getMemberId(invalidToken))
-                .isInstanceOf(JwtException.class);
+        assertThatThrownBy(() -> jwtTokenProvider.validateAndParseClaims(token))
+                .isInstanceOf(SignatureException.class);
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @DisplayName("null 또는 빈 토큰은 IllegalArgumentException을 발생시킨다")
+    void nullOrEmptyToken_throwsIllegalArgumentException(String token) {
+        assertThatThrownBy(() -> jwtTokenProvider.validateAndParseClaims(token))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }
