@@ -5,6 +5,7 @@ import gift.member.application.port.in.RegisterMemberUseCase;
 import gift.member.application.port.in.dto.AuthResponse;
 import gift.member.application.port.in.dto.LoginRequest;
 import gift.member.application.port.in.dto.RegisterRequest;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,13 +26,13 @@ public class MemberController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
         AuthResponse response = registerMemberUseCase.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         AuthResponse response = loginMemberUseCase.login(request);
         return ResponseEntity.ok(response);
     }
