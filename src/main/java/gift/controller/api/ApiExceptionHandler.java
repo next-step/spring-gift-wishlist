@@ -3,6 +3,7 @@ package gift.controller.api;
 import gift.dto.ErrorResponse;
 import gift.exception.EmailAlreadyExistsException;
 import gift.exception.InvalidTokenException;
+import gift.exception.LoginFailedException;
 import gift.exception.ProductNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -47,9 +48,9 @@ public class ApiExceptionHandler {
         return new ErrorResponse("서버 내부 오류가 발생했습니다.");
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
+    @ExceptionHandler(LoginFailedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ErrorResponse handleIllegalArgument(IllegalArgumentException e) {
+    public ErrorResponse handleLoginFailed(LoginFailedException e) {
         return new ErrorResponse(e.getMessage());
     }
 
