@@ -36,7 +36,7 @@ public class WishListRepository {
         Long wishListId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
 
         Integer totalPrice = product.getPrice() * wishList.getQuantity();
-        WishResponseDto wishResponseDto = new WishResponseDto(product.getName(), product.getImageUrl(), wishList.getQuantity(), totalPrice);
+        WishResponseDto wishResponseDto = new WishResponseDto(wishListId, product.getName(), product.getImageUrl(), wishList.getQuantity(), totalPrice);
 
         return wishResponseDto;
     }
@@ -44,7 +44,7 @@ public class WishListRepository {
     //TODO: WishList에 대한 CRUD
     //조회
     public List<WishResponseDto> getWishList(Long id){
-        String sql = "select p.name, p.image_url, w.quantity, p.price from Products p, WishList w, Members m "
+        String sql = "select w.id, p.name, p.image_url, w.quantity, p.price from Products p, WishList w, Members m "
                 + "where w.memberid = m.id and w.productid = p.id and m.id = ?";
         List<WishResponseDto> mywishList = jdbcTemplate.query(sql, wishResponseDtoRowMapper(), id);
         return mywishList;
@@ -59,11 +59,12 @@ public class WishListRepository {
         return new RowMapper<WishResponseDto>() {
             @Override
             public WishResponseDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                Long wishListId = rs.getLong("id");
                 String productName = rs.getString("name");
                 String image_url = rs.getString("image_url");
                 Integer quantity = rs.getInt("quantity");
                 Integer price = rs.getInt("price");
-                return new WishResponseDto(productName, image_url, quantity, price);
+                return new WishResponseDto(wishListId, productName, image_url, quantity, price);
             }
         };
     }
