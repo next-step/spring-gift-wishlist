@@ -39,7 +39,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ProblemDetail> handleIllegalArgumentException(
             IllegalArgumentException e, HttpServletRequest request
     ) {
-
         var builder = new ErrorMessageResponse.Builder(request, e, HttpStatus.BAD_REQUEST);
         if (showStackTrace) {
             builder.showStackTrace();
@@ -109,7 +108,6 @@ public class GlobalExceptionHandler {
         if (showStackTrace) {
             builder.showStackTrace();
         }
-
         return new ResponseEntity<>(builder.build().toProblemDetail(), HttpStatus.FORBIDDEN);
     }
 
@@ -167,8 +165,8 @@ public class GlobalExceptionHandler {
         var builder = new ErrorMessageResponse.Builder(request, e, HttpStatus.INTERNAL_SERVER_ERROR);
         if (showStackTrace) {
             builder.showStackTrace();
-
-        }        log.error("치명적인 서버 오류가 발생했습니다: {}", e.getMessage(), e);
+        }
+        log.error("치명적인 서버 오류가 발생했습니다: {}", e.getMessage(), e);
         return new ResponseEntity<>(builder.build().toProblemDetail(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -179,8 +177,8 @@ public class GlobalExceptionHandler {
         var builder = new ErrorMessageResponse.Builder(request, e, HttpStatus.INTERNAL_SERVER_ERROR);
         if (showStackTrace) {
             builder.showStackTrace();
-
-        }        log.error("예상치 못한 오류가 발생했습니다: {}", e.getMessage(), e);
+        }
+        log.error("예상치 못한 오류가 발생했습니다: {}", e.getMessage(), e);
         return new ResponseEntity<>(builder.build().toProblemDetail(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
