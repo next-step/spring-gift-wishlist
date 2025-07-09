@@ -3,6 +3,7 @@ package gift.config;
 import gift.common.dto.response.ErrorResponseDto;
 import gift.common.exception.CreationFailException;
 import gift.common.exception.EntityNotFoundException;
+import gift.common.exception.RegisterFailException;
 import gift.common.exception.RequestValidateFailException;
 import gift.domain.product.ProductDomainRuleException;
 import org.slf4j.Logger;
@@ -19,7 +20,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RequestValidateFailException.class)
     public ResponseEntity<ErrorResponseDto> handleRequestValidateFail(RequestValidateFailException e) {
         log.warn("RequestValidateFail: {}", e.getMessage());
-        var response = new ErrorResponseDto(e.getMessage(), 400);
+        ErrorResponseDto response = new ErrorResponseDto(e.getMessage(), 400);
         return ResponseEntity.badRequest().body(response);
     }
 
@@ -32,14 +33,21 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CreationFailException.class)
     public ResponseEntity<ErrorResponseDto> handleCreationFail(CreationFailException e) {
         log.warn("CreationFailException: {}", e.getMessage());
-        var response = new ErrorResponseDto(e.getMessage(), 500);
+        ErrorResponseDto response = new ErrorResponseDto(e.getMessage(), 500);
         return ResponseEntity.internalServerError().body(response);
     }
 
     @ExceptionHandler(ProductDomainRuleException.class)
     public ResponseEntity<ErrorResponseDto> handleProductDomainRoleException(ProductDomainRuleException e) {
         log.warn("ProductDomainRuleException: {}", e.getMessage());
-        var response = new ErrorResponseDto(e.getMessage(), 422);
+        ErrorResponseDto response = new ErrorResponseDto(e.getMessage(), 422);
         return ResponseEntity.unprocessableEntity().body(response);
+    }
+
+    @ExceptionHandler(RegisterFailException.class)
+    public ResponseEntity<ErrorResponseDto> handleRegisterFail(RegisterFailException e) {
+        log.warn("RegisterFailException: {}", e.getMessage());
+        ErrorResponseDto response = new ErrorResponseDto(e.getMessage(), e.getStatus().value());
+        return ResponseEntity.status(response.code()).body(response);
     }
 }

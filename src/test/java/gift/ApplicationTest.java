@@ -1,7 +1,6 @@
 package gift;
 
-import gift.common.dto.request.CreateProductDto;
-import gift.common.dto.request.UpdateProductDto;
+import gift.common.dto.request.ProductRequestDto;
 import gift.common.dto.response.MessageResponseDto;
 import gift.common.dto.response.ProductDto;
 import org.junit.jupiter.api.Test;
@@ -40,7 +39,7 @@ public class ApplicationTest {
         var response = client.post()
                 .uri(url)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new CreateProductDto("coffee", 3500L, "test-url"))
+                .body(new ProductRequestDto("coffee", 3500L, "test-url"))
                 .retrieve()
                 .toEntity(new ParameterizedTypeReference<MessageResponseDto<ProductDto>>() {
                 });
@@ -73,7 +72,7 @@ public class ApplicationTest {
         var response = client.put()
                 .uri(url)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new UpdateProductDto("coffee", 3500L, "test-url"))
+                .body(new ProductRequestDto("coffee", 3500L, "test-url"))
                 .retrieve()
                 .toEntity(new ParameterizedTypeReference<MessageResponseDto<ProductDto>>() {
                 });
@@ -87,7 +86,7 @@ public class ApplicationTest {
         client.put()
                 .uri(url)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new UpdateProductDto(reset.name(), reset.price(), reset.imageUrl()));
+                .body(new ProductRequestDto(reset.name(), reset.price(), reset.imageUrl()));
     }
 
     @Test
@@ -109,7 +108,7 @@ public class ApplicationTest {
         var response_put = client.put()
                 .uri(url)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new UpdateProductDto("name", 0L, "test-url"))
+                .body(new ProductRequestDto("name", 0L, "test-url"))
                 .exchange((req, res) -> res);
         var response_delete = client.delete()
                 .uri(url)
@@ -136,7 +135,7 @@ public class ApplicationTest {
             var response = client.post()
                     .uri(url)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(new CreateProductDto(name, 0L, "test-url"))
+                    .body(new ProductRequestDto(name, 0L, "test-url"))
                     .exchange((req, res) -> res);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         }
@@ -148,7 +147,7 @@ public class ApplicationTest {
         var response = client.post()
                 .uri(url)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new CreateProductDto("카카오_관련상품", 1000000L, "test-url"))
+                .body(new ProductRequestDto("카카오_관련상품", 1000000L, "test-url"))
                 .retrieve()
                 .toEntity(MessageResponseDto.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.ACCEPTED);

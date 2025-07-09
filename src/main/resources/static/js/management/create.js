@@ -1,5 +1,5 @@
 function handleExitButtonClick() {
-    window.location.href("/products/management/home");
+    window.location.href = "/products/management/home";
 }
 
 function handleSubmit(event) {
@@ -23,7 +23,7 @@ function handleSubmit(event) {
     .then(res => res.json())
     .then(data => {
         if (data.success) {
-            window.location.href("/products/management/home")
+            window.location.href = "/products/management/home";
         }
         else {
             alert(data.message + "\nHttp Code: "+data.code);
@@ -32,5 +32,5 @@ function handleSubmit(event) {
     .catch(error => {
         console.error("에러 발생: ", error);
         alert("에러 발생");
-    })
+    });
 }

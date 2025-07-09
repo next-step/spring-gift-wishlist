@@ -1,7 +1,6 @@
 package gift.controller;
 
-import gift.common.dto.request.CreateProductDto;
-import gift.common.dto.request.UpdateProductDto;
+import gift.common.dto.request.ProductRequestDto;
 import gift.common.dto.response.MessageResponseDto;
 import gift.common.dto.response.ProductDto;
 import gift.domain.product.ProductQueryOption;
@@ -24,8 +23,8 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<MessageResponseDto<ProductDto>> createProduct(@Valid @RequestBody CreateProductDto body) {
-        var response = productService.createProduct(body);
+    public ResponseEntity<MessageResponseDto<ProductDto>> createProduct(@Valid @RequestBody ProductRequestDto body) {
+        MessageResponseDto<ProductDto> response = productService.createProduct(body);
         if (response.success()) {
             URI location = URI.create("/api/products/" + response.data().id());
             return ResponseEntity.created(location).body(response);
@@ -48,8 +47,8 @@ public class ProductController {
 
     @PutMapping("/{id}")
     public ResponseEntity<MessageResponseDto<ProductDto>> updateProduct(@PathVariable Long id,
-                                                    @RequestBody UpdateProductDto body) {
-        var response = productService.updateProduct(id, body);
+                                                                        @RequestBody ProductRequestDto body) {
+        MessageResponseDto<ProductDto> response = productService.updateProduct(id, body);
         if (response.success()) {
             return ResponseEntity.ok(response);
         }
