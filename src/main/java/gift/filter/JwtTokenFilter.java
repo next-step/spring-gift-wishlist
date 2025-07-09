@@ -24,8 +24,10 @@ public class JwtTokenFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         String token = jwtTokenProvider.resolveToken(httpRequest);
         if (token != null && jwtTokenProvider.validateToken(token)) {
+            httpRequest.setAttribute("username", jwtTokenProvider.getUsername(token));
             httpRequest.setAttribute("role", jwtTokenProvider.getRole(token));
         } else {
+            httpRequest.setAttribute("username", null);
             httpRequest.setAttribute("role", null);
         }
         chain.doFilter(request, response);
