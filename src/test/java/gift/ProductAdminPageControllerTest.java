@@ -1,10 +1,11 @@
 package gift;
 
-import gift.controller.AdminPageController;
+import gift.controller.ProductAdminPageController;
 import gift.entity.Product;
 import gift.service.ProductService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -15,8 +16,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(AdminPageController.class)
-class AdminPageControllerTest {
+@WebMvcTest(value = ProductAdminPageController.class, excludeAutoConfiguration = {SecurityAutoConfiguration.class})
+class ProductAdminPageControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -36,7 +37,6 @@ class AdminPageControllerTest {
         mockMvc.perform(get("/admin/products/new"))
             .andExpect(view().name("admin/product-form"))
             .andExpect(model().attributeExists("product"));
-        // productId도 null로써 값 자체는 제공되나, attributeExists 내부에서 nullable 검사 수행하므로 배제
     }
 
     @Test
@@ -111,7 +111,6 @@ class AdminPageControllerTest {
                 .param("imageUrl", "https://...")
             )
             .andExpect(redirectedUrl("/admin/products/1"));
-
     }
 
     @Test
@@ -131,7 +130,9 @@ class AdminPageControllerTest {
 
     @Test
     void 유효한_상품_삭제_시_리다이렉션() throws Exception {
-        mockMvc.perform(delete("/admin/products/1"))
+        mockMvc.perform(
+            delete("/admin/products/1")
+            )
             .andExpect(redirectedUrl("/admin/products"));
     }
 }
