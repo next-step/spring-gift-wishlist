@@ -1,8 +1,8 @@
 package gift.controller;
 
 import gift.dto.MemberRequestDto;
-import gift.dto.MemberResponseDto;
-import gift.service.AuthMemberService;
+import gift.dto.TokenResponseDto;
+import gift.service.AuthenticationService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,23 +13,23 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/members")
-public class MemberController {
+public class MemberApiController {
 
-    private AuthMemberService authMemberService;
+    private final AuthenticationService authService;
 
-    public MemberController(AuthMemberService authMemberService) {
-        this.authMemberService = authMemberService;
+    public MemberApiController(AuthenticationService authMemberService) {
+        this.authService = authMemberService;
     }
 
     @PostMapping("/register")
-    public ResponseEntity<MemberResponseDto> signUp(@RequestBody @Valid MemberRequestDto requestDto) {
-        MemberResponseDto responseDto = authMemberService.signUp(requestDto);
+    public ResponseEntity<TokenResponseDto> signUp(@RequestBody @Valid MemberRequestDto requestDto) {
+        TokenResponseDto responseDto = authService.signUp(requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<MemberResponseDto> login(@RequestBody @Valid MemberRequestDto requestDto) {
-        MemberResponseDto responseDto = authMemberService.login(requestDto);
+    public ResponseEntity<TokenResponseDto> login(@RequestBody @Valid MemberRequestDto requestDto) {
+        TokenResponseDto responseDto = authService.login(requestDto);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 }
