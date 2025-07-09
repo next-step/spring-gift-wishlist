@@ -7,6 +7,7 @@ import gift.entity.Member;
 import gift.entity.MemberRole;
 import gift.exception.EmailAlreadyExistsException;
 import gift.repository.MemberRepository;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,8 +28,11 @@ public class MemberService {
             throw new EmailAlreadyExistsException(memberRequestDto.email());
         }
 
-        Member member = new Member(memberRequestDto.email(),
-                memberRequestDto.password(), MemberRole.ROLE_USER);
+        Member member = new Member(
+                memberRequestDto.email(),
+                BCrypt.hashpw(memberRequestDto.password(), BCrypt.gensalt()),
+                MemberRole.ROLE_USER
+        );
 
         Long savedId = memberRepository.saveMember(member);
 
