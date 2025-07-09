@@ -71,10 +71,7 @@ public class ProductService {
 
         int deletedCount = repository.deleteById(id);
 
-        // 상품이 실제로 존재하지 않는 경우
-        if (deletedCount == 0) {
-            throw new ProductNotFoundException(id);
-        }
+        // 삭제된 항목이 없어도 예외 없이 정상 처리 (멱등성 보장)
 
         // 여러 상품이 삭제 되어버린 경우
         if (deletedCount > 1) {
@@ -87,8 +84,9 @@ public class ProductService {
         validateNameContainKakao(name);
 
         // 상품 존재 여부 확인
-        Optional<Product> product = repository.findById(id);
-        if (product.isEmpty()) {throw new ProductNotFoundException(id);}
+        if (!repository.existsById(id)) {
+            throw new ProductNotFoundException(id);
+        }
 
         int updatedCount = repository.update(id, name, price, imageUrl);
 
