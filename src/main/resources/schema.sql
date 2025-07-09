@@ -15,3 +15,14 @@ CREATE TABLE MEMBER
     password    VARCHAR(255)    NOT NULL,
     PRIMARY KEY (id)
 )
+
+CREATE TABLE WISHLIST
+(
+    id          BIGINT  NOT NULL AUTO_INCREMENT,
+    member_id   BIGINT  NOT NULL,
+    item_id     BIGINT  NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY unique_member_item (member_id, item_id),
+    FOREIGN KEY (member_id) REFERENCES MEMBER(id) ON DELETE CASCADE,
+    FOREIGN KEY (item_id) REFERENCES ITEM(id) ON DELETE CASCADE
+)
