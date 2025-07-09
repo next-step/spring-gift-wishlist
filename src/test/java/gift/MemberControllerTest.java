@@ -24,6 +24,40 @@ public class MemberControllerTest {
     private RestClient client = RestClient.builder().build();
 
     @Test
+    void 회원가입_잘못된_이메일_입력_테스트(){
+        System.out.println("Member Register Not Valid Email test");
+        MemberRequestDto requestDto = new MemberRequestDto("qwertypusan.ac.kr", "12345678");
+        var url = "http://localhost:" + port + "/api/members/membership";
+        assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
+                .isThrownBy(
+                        () ->
+                                client.post()
+                                        .uri(url)
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .body(requestDto)
+                                        .retrieve()
+                                        .toEntity(MemberResponseDto.class)
+                );
+    }
+
+    @Test
+    void 회원가입_잘못된_비밀번호_입력_테스트(){
+        System.out.println("Member Register Not Valid Email test");
+        MemberRequestDto requestDto = new MemberRequestDto("abcd@pusan.ac.kr", "1234");
+        var url = "http://localhost:" + port + "/api/members/membership";
+        assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
+                .isThrownBy(
+                        () ->
+                                client.post()
+                                        .uri(url)
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .body(requestDto)
+                                        .retrieve()
+                                        .toEntity(MemberResponseDto.class)
+                );
+    }
+
+    @Test
     void 회원가입_중복_이메일_테스트(){
         System.out.println("Elready Exist Email Register test");
         MemberRequestDto requestDto = new MemberRequestDto("abc@pusan.ac.kr", "12345678");
@@ -52,6 +86,40 @@ public class MemberControllerTest {
                 .toEntity(MemberResponseDto.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    }
+
+    @Test
+    void 로그인_잘못된_이메일_입력_테스트(){
+        System.out.println("Member Login Not Valid Email test");
+        MemberRequestDto requestDto = new MemberRequestDto("qwertypusan.ac.kr", "12345678");
+        var url = "http://localhost:" + port + "/api/members/login";
+        assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
+                .isThrownBy(
+                        () ->
+                                client.post()
+                                        .uri(url)
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .body(requestDto)
+                                        .retrieve()
+                                        .toEntity(MemberResponseDto.class)
+                );
+    }
+
+    @Test
+    void 로그인_잘못된_비밀번호_입력_테스트(){
+        System.out.println("Member Login Not Valid Email test");
+        MemberRequestDto requestDto = new MemberRequestDto("abcd@pusan.ac.kr", "1234");
+        var url = "http://localhost:" + port + "/api/members/login";
+        assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
+                .isThrownBy(
+                        () ->
+                                client.post()
+                                        .uri(url)
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .body(requestDto)
+                                        .retrieve()
+                                        .toEntity(MemberResponseDto.class)
+                );
     }
 
     @Test
