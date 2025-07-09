@@ -6,3 +6,10 @@ CREATE TABLE product
     image VARCHAR(255),
     mdApproved BOOLEAN DEFAULT FALSE
 );
+
+CREATE TABLE users (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    userid VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role VARCHAR(50) NOT NULL
+);
