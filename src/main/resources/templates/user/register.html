@@ -8,16 +8,25 @@
 <body class="bg-light">
 <div class="container py-5">
   <h2 class="text-center mb-4">회원가입</h2>
-  <form th:action="@{/api/members/register}" method="post">
+  <form th:action="@{/api/members/register}" th:object="${memberRequestDto}" method="post">
+    <!-- 이메일 입력 폼 -->
     <div class="mb-3">
       <label class="form-label">이메일</label>
-      <input type="email" name="email" class="form-control" required>
-      <p th:if="${error}" th:text="${error}" class="text-danger mt-1"></p>
+      <input type="email" name="email" class="form-control" required
+             th:value="*{email}">
+      <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger mt-1"></p>
     </div>
+
+    <!-- 비밀번호 입력 폼 -->
     <div class="mb-3">
       <label class="form-label">비밀번호</label>
       <input type="password" name="password" class="form-control" required>
+      <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger mt-1"></p>
     </div>
+
+    <!-- 비즈니스 로직 에러 메시지 -->
+    <p th:if="${error}" th:text="${error}" class="text-danger mt-2"></p>
+
     <button type="submit" class="btn btn-primary w-100">회원가입</button>
     <p class="mt-3 text-center">이미 계정이 있으신가요? <a th:href="@{/api/members/login}">로그인</a></p>
   </form>

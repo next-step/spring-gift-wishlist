@@ -7,6 +7,7 @@ import gift.jwt.JwtUtil;
 import gift.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import java.util.Map;
 
 import org.springframework.http.HttpHeaders;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,14 +34,26 @@ public class MemberController {
     this.jwtUtil = jwtUtil;
   }
   @GetMapping("/register")
-  public String showRegisterForm(){
+  public String showRegisterForm(Model model){
+    model.addAttribute("memberRequestDto", new MemberRequestDto());
     return "user/register";
   }
 
+
   @PostMapping("/register")
-  public String register(@ModelAttribute MemberRequestDto req, Model model) {
+  public String register(@Valid @ModelAttribute MemberRequestDto req, BindingResult bindingResult, Model model) {
+    if(bindingResult.hasErrors()){
+      model.addAttribute("memberRequestDto", req);
+      return "user/register";
+    }
+    try {
       memberService.register(req.getEmail(), req.getPassword());
       return "redirect:/api/members/login";
+    } catch (IllegalArgumentException e) {
+      model.addAttribute("memberRequestDto", req);
+      model.addAttribute("error", e.getMessage());
+      return "user/register";
+    }
   }
 
   @GetMapping("/login")

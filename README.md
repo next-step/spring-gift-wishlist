@@ -41,10 +41,9 @@
 
 ### Step2 Refactoring [ 07/09 ]
 - [x] token 생성 비밀키 property값으로 변경
-- [ ] JwtUtil Exception 구체화
-- [ ] Member Field에 대한 Validation 설정
-  - [ ] 비밀번호는 대소문자/특수문자/숫자 포함
-  - [ ] Email형식 제한
+- [x] Member Field에 대한 Validation 설정
+  - [x] 비밀번호는 대소문자/특수문자/숫자 포함
+  - [x] Email형식 제한
 - [ ] 로그인 실패시 Http Status UnAuthorized로
 - [ ] 로그인 테스트 케이스 추가
 - [ ] 회원가입 성공시 Http Status 201 반환하도록

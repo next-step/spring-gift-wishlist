@@ -1,5 +1,6 @@
 package gift.jwt;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -38,7 +39,6 @@ public class JwtUtil {
       JwtParser parser = Jwts.parser()
           .verifyWith((SecretKey) KEY)
           .build();
-
       parser.parseSignedClaims(token);
       return true;
     } catch (Exception e) {

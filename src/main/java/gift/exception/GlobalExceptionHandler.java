@@ -1,5 +1,7 @@
 package gift.exception;
 
+import gift.dto.MemberRequestDto;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,10 +26,18 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(DuplicateEmailException.class)
-  public String handleDuplicateEmail(DuplicateEmailException ex, Model model, HttpServletResponse response) {
+  public String handleDuplicateEmail(DuplicateEmailException ex, Model model, HttpServletRequest request, HttpServletResponse response) {
     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+
+    // 원래 폼 객체를 복원
+    MemberRequestDto dto = new MemberRequestDto();
+    dto.setEmail(request.getParameter("email")); // 수동 복원
+    dto.setPassword(request.getParameter("password"));
+
+    model.addAttribute("memberRequestDto", dto);
     model.addAttribute("error", ex.getMessage());
     return "user/register";
   }
+
 }
 
