@@ -1,0 +1,2 @@
+insert into member values(X'980CFFE637054C879594C49C4D43A603', 'Qwer1234@naver.com', 'Qwer1234!!', 'ADMIN')
+insert into member values(X'980CFFE631234C879594C49C4D43A603', 'Qwer4567@naver.com', 'Qwer1234!!', 'REGULAR')
