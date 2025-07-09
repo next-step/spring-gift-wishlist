@@ -5,6 +5,4 @@ VALUES
       ('립스틱', 50000, 'https://i.namu.wiki/i/0GQWD4DtVb4MCjTzYV3lvvFjQE2J05KIoU2-5TPX1Zvq3TXum5D1vYcBkVJndm0YrUntKAwNLRw-qgJ2gtD_Tic8zHCnbTEX5-OEUoiVQ_p_-hS9uD0S8zDak7jcwNtvPvqqjhjRT_NbvPMGt-6HaA.webp'),
        ('향수', 35000, 'https://image.oliveyoung.co.kr/cfimages/cf-goods/uploads/images/thumbnails/10/0000/0020/A00000020498534ko.jpg?qt=80');
 
-INSERT INTO member (email, password, role)
-VALUES
-    ('admin@daum.net', '123', 'ADMIN');
+INSERT INTO member (email, salt, password, role) VALUES ('admin@daum.net', '3OaHrnPIBjVIDVXt7EtDDg==', 'XnRT8uekMpgwh3R7l7X9PSECCtQd9DJYFQyHqbJPirM=', 'ADMIN');
