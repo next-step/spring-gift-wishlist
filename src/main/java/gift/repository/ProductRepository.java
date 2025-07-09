@@ -18,13 +18,13 @@ public class ProductRepository {
     }
 
     public List<ProductRequestDto> findAll() {
-        return jdbc.sql("SELECT * FROM productRequestDto")
+        return jdbc.sql("SELECT * FROM product")
                 .query(ProductRequestDto.class)
                 .list();
     }
 
     public Optional<ProductRequestDto> findById(Long id) {
-        return jdbc.sql("SELECT * FROM productRequestDto WHERE id= :id")
+        return jdbc.sql("SELECT * FROM product WHERE id= :id")
                 .param("id", id)
                 .query(ProductRequestDto.class)
                 .optional();
@@ -33,7 +33,7 @@ public class ProductRepository {
     public ProductRequestDto save(ProductRequestDto productRequestDto) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbc.sql("""
-                    INSERT INTO productRequestDto (name, price, image_url)
+                    INSERT INTO product (name, price, image_url)
                     VALUES (:name, :price, :image_url)
                    """)
                 .param("name", productRequestDto.getName())
@@ -47,7 +47,7 @@ public class ProductRepository {
 
     public void update(ProductRequestDto productRequestDto) {
         jdbc.sql("""
-                    Update productRequestDto
+                    Update product
                     set name = :name, price = :price, image_url = :image_url
                     where id = :id
                 """)
@@ -59,7 +59,7 @@ public class ProductRepository {
     }
 
     public void delete(Long id) {
-        jdbc.sql("DELETE FROM productRequestDto WHERE id = :id")
+        jdbc.sql("DELETE FROM product WHERE id = :id")
                 .param("id", id)
                 .update();
     }
