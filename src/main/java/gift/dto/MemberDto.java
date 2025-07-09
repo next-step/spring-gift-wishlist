@@ -10,7 +10,7 @@ public class MemberDto {
 
     private String password;
 
-    public MemberDto(Member user) {
+    public MemberDto(Member member) {
     }
 
     public Long getId() {
