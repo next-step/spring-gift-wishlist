@@ -17,7 +17,7 @@ public class JwtUtil {
     @Value("${jwt.secret:Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=}")
     private String secretKey;
 
-    @Value("${jwt.expiration:86400000}") // 24시간
+    @Value("${jwt.expiration:86400000}")
     private long expiration;
 
     private SecretKey getSigningKey() {
@@ -67,7 +67,7 @@ public class JwtUtil {
         }
     }
 
-    public boolean validateToken(String token) {
+    public boolean isTokenValid(String token) {
         try {
             extractAllClaims(token);
             return !isTokenExpired(token);

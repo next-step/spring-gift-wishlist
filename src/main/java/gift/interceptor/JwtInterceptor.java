@@ -1,19 +1,23 @@
 package gift.interceptor;
 
-import gift.util.JwtUtil;
+import gift.auth.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
 public class JwtInterceptor implements HandlerInterceptor {
+    private final AuthenticationService authenticationService;
+    private final AuthorizationService authorizationService;
+    private final AuthErrorResponseHandler errorResponseHandler;
 
-    private final JwtUtil jwtUtil;
-
-    public JwtInterceptor(JwtUtil jwtUtil) {
-        this.jwtUtil = jwtUtil;
+    public JwtInterceptor(AuthenticationService authenticationService,
+                          AuthorizationService authorizationService,
+                          AuthErrorResponseHandler errorResponseHandler) {
+        this.authenticationService = authenticationService;
+        this.authorizationService = authorizationService;
+        this.errorResponseHandler = errorResponseHandler;
     }
 
     @Override
@@ -22,28 +26,21 @@ public class JwtInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        String authHeader = request.getHeader("Authorization");
-
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.getWriter().write("{\"error\": \"Authorization header is missing or invalid\"}");
-            response.setContentType("application/json");
+        AuthenticationResult authResult = authenticationService.authenticate(request.getHeader("Authorization"));
+        if (!authResult.isSuccess()) {
+            errorResponseHandler.handleAuthenticationError(response, authResult.getErrorMessage());
             return false;
         }
 
-        String token = authHeader.substring(7);
+        request.setAttribute("memberId", authResult.getMemberId());
+        request.setAttribute("email", authResult.getEmail());
+        request.setAttribute("role", authResult.getRole());
 
-        if (!jwtUtil.validateToken(token)) {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.getWriter().write("{\"error\": \"Invalid or expired token\"}");
-            response.setContentType("application/json");
+        AuthorizationResult authzResult = authorizationService.authorize(request.getRequestURI(), authResult.getRole());
+        if (!authzResult.isSuccess()) {
+            errorResponseHandler.handleAuthorizationError(response, authzResult.getErrorMessage());
             return false;
         }
-
-        request.setAttribute("memberId", jwtUtil.extractMemberId(token));
-        request.setAttribute("email", jwtUtil.extractEmail(token));
-        request.setAttribute("role", jwtUtil.extractRole(token));
-
         return true;
     }
 }

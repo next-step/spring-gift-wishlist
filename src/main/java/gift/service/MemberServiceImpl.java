@@ -5,8 +5,9 @@ import gift.dto.MemberRequestDto;
 import gift.entity.Member;
 import gift.repository.MemberRepository;
 import gift.util.JwtUtil;
+import gift.util.PasswordUtil;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -14,12 +15,12 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordUtil passwordUtil;
     private final JwtUtil jwtUtil;
 
-    public MemberServiceImpl(MemberRepository memberRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
+    public MemberServiceImpl(MemberRepository memberRepository, PasswordUtil passwordUtil, JwtUtil jwtUtil) {
         this.memberRepository = memberRepository;
-        this.passwordEncoder = passwordEncoder;
+        this.passwordUtil = passwordUtil;
         this.jwtUtil = jwtUtil;
     }
 
@@ -30,7 +31,7 @@ public class MemberServiceImpl implements MemberService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 존재하는 이메일입니다.");
         }
 
-        String encodedPassword = passwordEncoder.encode(dto.password());
+        String encodedPassword = passwordUtil.encode(dto.password());
         Member member = new Member(dto.email(), encodedPassword);
         Member savedMember = memberRepository.saveMember(member);
 
@@ -44,7 +45,7 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findByEmail(dto.email())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "잘못된 이메일입니다."));
 
-        if (!passwordEncoder.matches(dto.password(), member.getPassword())) {
+        if (!passwordUtil.matches(dto.password(), member.getPassword())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "잘못된 비밀번호입니다.");
         }
 
