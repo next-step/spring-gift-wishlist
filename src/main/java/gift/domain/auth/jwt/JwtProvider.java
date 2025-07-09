@@ -9,26 +9,37 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Service
 public class JwtProvider {
-    private final String secretKey;
+    private final SecretKey secretKey;
+    private final long accessTokenValidityInMilliseconds;
 
-    public JwtProvider(@Value("${JWT_SECRET_KEY}") String secretKey) {
-        this.secretKey = secretKey;
+    public JwtProvider(
+            @Value("${jwt.secret}") String secretKey,
+            @Value("${jwt.expiration-in-ms}") long expiration) {
+        this.secretKey = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+        this.accessTokenValidityInMilliseconds = expiration;
     }
+    public String generateToken(Member member) {
+        Date now = new Date();
+        Date expiration = new Date(now.getTime() + accessTokenValidityInMilliseconds);
 
-    public String generateToken(Member member){
         return Jwts.builder()
-                .setSubject(member.getId().toString())
+                .subject(member.getEmail())
+                .claim("tokenType", "access")
                 .claim("name", member.getName())
                 .claim("role", member.getRole())
-                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                .issuedAt(now)
+                .expiration(expiration)
+                .signWith(secretKey)
                 .compact();
     }
 
-    public String extractEmailFromAccessToken(String accessToken) throws TokenExpiredException {
+    public String extractEmailFromAccessToken(String accessToken) {
         Claims claims = parseClaims(accessToken);
         if (!"access".equals(claims.get("tokenType", String.class))) {
             throw new BadRequestException("사용된 토큰이 엑세스 토큰이 아닙니다. 요청하신 로직에서는 엑세스 토큰으로만 처리가 가능합니다.");
@@ -39,16 +50,12 @@ public class JwtProvider {
         return claims.getSubject();
     }
 
-    public Claims parseClaims(String token) throws TokenExpiredException {
-        try {
-            return Jwts.parser()
-                    .setSigningKey(secretKey)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
-        } catch (Exception e) {
-            throw new TokenExpiredException(e.getMessage());
-        }
+    private Claims parseClaims(String token) {
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
 }
