@@ -47,9 +47,7 @@ class MemberControllerTest {
     void registerTest() {
         final String email = "test@test.com";
         final String password = "password123";
-        RegisterRequestDTO req = new RegisterRequestDTO();
-        req.setEmail(email);
-        req.setPassword(password);
+        RegisterRequestDTO req = new RegisterRequestDTO(email, password);
 
         ResponseEntity<TokenResponseDTO> response = client.post()
             .uri("/register")
@@ -69,9 +67,7 @@ class MemberControllerTest {
     void loginTest() {
         final String email = "test@test.com";
         final String password = "password123";
-        RegisterRequestDTO req = new RegisterRequestDTO();
-        req.setEmail(email);
-        req.setPassword(password);
+        RegisterRequestDTO req = new RegisterRequestDTO(email, password);
 
         client.post().uri("/register").contentType(MediaType.APPLICATION_JSON).body(req).retrieve().toBodilessEntity();
 
@@ -110,9 +106,7 @@ class MemberControllerTest {
     void jwtInfo() {
         final String email = "test@test.com";
         final String password = "password123";
-        RegisterRequestDTO req = new RegisterRequestDTO();
-        req.setEmail(email);
-        req.setPassword(password);
+        RegisterRequestDTO req = new RegisterRequestDTO(email, password);
 
         // 1. 회원가입을 통해 토큰 발급
         ResponseEntity<TokenResponseDTO> registerResponse = client.post()
