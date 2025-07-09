@@ -5,6 +5,8 @@ import gift.dto.MemberResponseDto;
 
 public interface MemberServiceInterface {
 
+    boolean isEmailExists(String email);
+
     MemberResponseDto register(MemberRequestDto requestDto);
 
     MemberResponseDto login(MemberRequestDto requestDto);

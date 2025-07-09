@@ -41,19 +41,17 @@ public class MemberViewController {
             BindingResult bindingResult,
             Model model) {
 
+        if (memberService.isEmailExists(memberRequestDto.getEmail())) {
+            bindingResult.rejectValue("email", "ExistEmail", "이미 등록된 이메일입니다.");
+        }
+
         if (bindingResult.hasErrors()) {
             return "member/register";
         }
 
-        MemberResponseDto responseDto = null;
-        try {
-            responseDto = memberService.register(memberRequestDto);
-            model.addAttribute("jwtToken", responseDto.getToken());
-            model.addAttribute("successMessage", "회원가입이 완료되었습니다.");
-        } catch (MemberExceptions.EmailAlreadyExistsException e) {
-            bindingResult.rejectValue("email", "ExistEmail", e.getMessage());
-            model.addAttribute("errorMessages", List.of(e.getMessage()));
-        }
+        MemberResponseDto responseDto = memberService.register(memberRequestDto);
+        model.addAttribute("jwtToken", responseDto.getToken());
+        model.addAttribute("successMessage", "회원가입이 완료되었습니다.");
 
         return "member/register";
     }

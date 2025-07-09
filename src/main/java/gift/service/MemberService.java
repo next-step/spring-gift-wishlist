@@ -20,6 +20,11 @@ public class MemberService implements MemberServiceInterface {
     }
 
     @Override
+    public boolean isEmailExists(String email) {
+        return memberRepository.findByEmail(email).isPresent();
+    }
+
+    @Override
     public MemberResponseDto register(MemberRequestDto requestDto) {
         if (memberRepository.findByEmail(requestDto.getEmail()).isPresent()) {
             throw new MemberExceptions.EmailAlreadyExistsException(requestDto.getEmail());
