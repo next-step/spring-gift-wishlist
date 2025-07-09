@@ -4,6 +4,7 @@ import gift.domain.member.dto.LoginRequest;
 import gift.domain.member.dto.SignInRequest;
 import gift.domain.member.dto.TokenResponse;
 import gift.domain.member.service.AuthService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,12 +22,12 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    private ResponseEntity<TokenResponse> signInAndLogin(@RequestBody SignInRequest signInRequest) {
+    private ResponseEntity<TokenResponse> signInAndLogin(@RequestBody @Valid SignInRequest signInRequest) {
         return new ResponseEntity<>(authService.signIn(signInRequest), HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
-    private ResponseEntity<TokenResponse> login(@RequestBody LoginRequest loginRequest) {
+    private ResponseEntity<TokenResponse> login(@RequestBody @Valid LoginRequest loginRequest) {
         return new ResponseEntity<>(authService.login(loginRequest), HttpStatus.OK);
     }
 }
