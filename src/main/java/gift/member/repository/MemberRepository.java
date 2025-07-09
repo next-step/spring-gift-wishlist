@@ -66,6 +66,7 @@ public class MemberRepository {
 
     public Member update(Member member) {
         int affectedRows = jdbcClient.sql("UPDATE member SET email = :email, salt = :salt, password = :password, role = :role WHERE id = :id")
+                .param("id", member.getId())
                 .param("email", member.getEmail())
                 .param("salt", member.getSalt())
                 .param("password", member.getPassword())
