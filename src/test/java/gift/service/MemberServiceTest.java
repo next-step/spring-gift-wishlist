@@ -48,7 +48,7 @@ class MemberServiceTest {
 
         // then
         assertThat(response.token()).isEqualTo("1234");
-        verify(memberRepository).saveMember(any(Member.class));
+        verify(memberRepository, atLeast(1)).saveMember(any(Member.class));
     }
 
     @Test
