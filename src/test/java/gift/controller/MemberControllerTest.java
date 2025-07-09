@@ -92,9 +92,7 @@ class MemberControllerTest {
     void loginTestNoEmail() {
         final String email = "test@test.com";
         final String password = "password123";
-        LoginRequestDTO req = new LoginRequestDTO();
-        req.setEmail(email);
-        req.setPassword(password);
+        LoginRequestDTO req = new LoginRequestDTO(email, password);
 
         HttpClientErrorException exception = assertThrows(HttpClientErrorException.class, () ->
             client.post()
