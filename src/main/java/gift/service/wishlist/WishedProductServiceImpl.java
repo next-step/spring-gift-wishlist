@@ -95,9 +95,6 @@ public class WishedProductServiceImpl implements WishedProductService {
     public void removeAllProducts(Long userId) {
         validateUserId(userId);
         wishedProductRepository.removeAllProducts(userId);
-        if (wishedProductRepository.countBy(userId) > 0) {
-            throw new IllegalStateException("장바구니의 모든 제품을 제거하는데 실패했습니다. userId: " + userId);
-        }
     }
 
     @Override
