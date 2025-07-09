@@ -31,13 +31,7 @@ public class MemberService {
         Member member = new Member(request.getEmail(), encryptedPassword);
         Member savedMember = memberRepository.save(member);
 
-        String secretKey = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";
-
-        String accessToken = Jwts.builder()
-            .setSubject(savedMember.getId().toString())
-            .claim("email", savedMember.getEmail())
-            .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
-            .compact();
+        String accessToken = generateAccessToken(savedMember);
 
         return new TokenResponse(accessToken);
     }
@@ -51,13 +45,17 @@ public class MemberService {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        String accessToken = Jwts.builder()
+        String accessToken = generateAccessToken(member);
+
+        return new TokenResponse(accessToken);
+    }
+
+    public String generateAccessToken(Member member) {
+        return Jwts.builder()
             .setSubject(member.getId().toString())
             .claim("email", member.getEmail())
             .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
             .compact();
-
-        return new TokenResponse(accessToken);
     }
 
     public List<Member> getAllMembers() {
