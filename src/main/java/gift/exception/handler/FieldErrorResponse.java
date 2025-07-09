@@ -1,4 +1,4 @@
-package gift.handler;
+package gift.exception.handler;
 
 public class FieldErrorResponse {
     private final String field;
