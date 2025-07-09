@@ -11,5 +11,5 @@ CREATE TABLE products (
     price INT NOT NULL,
     image_url VARCHAR(2048),
     status VARCHAR(20) DEFAULT 'ACTIVE',
-    CONSTRAINT chk_status CHECK (status IN ('ACTIVE', 'INACTIVE))
+    CONSTRAINT chk_status CHECK (status IN ('ACTIVE', 'INACTIVE', 'DISCONTINUED'))
 );
