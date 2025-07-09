@@ -91,7 +91,9 @@ public class AdminController {
             bindingResult.rejectValue("name", "invalid.name", e.getMessage());
         }
         model.addAttribute("product", dto);
-        if (id != null) model.addAttribute("id", id);
+        if (id != null) {
+            model.addAttribute("id", id);
+        }
         return errorView;
     }
 }
