@@ -1,5 +1,10 @@
 package gift.auth;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,20 +35,31 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // 1. 토큰 추출
         String token = extractToken(request);
 
-        // 2. 토큰이 있는 경우 → 유효성 검사
+        // 2. 토큰이 있는 경우 -> 유효성 검사 및 파싱 + memberId 추출
         if (StringUtils.hasText(token)) {
-            if (jwtTokenProvider.validateAndParseClaims(token)) {
-                // 3. 유효한 경우 → 회원 ID 추출 후 request에 저장
-                Long memberId = jwtTokenProvider.getMemberId(token);
+            try {
+                Claims claims = jwtTokenProvider.validateAndParseClaims(token);
+                Long memberId = jwtTokenProvider.getMemberId(claims);
                 request.setAttribute("memberId", memberId);
-            } else {
-                // 4. 유효하지 않은 경우 → 401 Unauthorized 응답 후 종료
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "유효하지 않은 토큰입니다.");
+            } catch (ExpiredJwtException e) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "만료된 토큰입니다.");
+                return;
+            } catch (UnsupportedJwtException e) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "지원되지 않는 토큰 형식입니다.");
+                return;
+            } catch (MalformedJwtException e) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "손상된 토큰입니다.");
+                return;
+            } catch (SignatureException e) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "토큰 서명이 유효하지 않습니다.");
+                return;
+            } catch (IllegalArgumentException e) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "토큰이 비어있거나 잘못되었습니다.");
                 return;
             }
         }
 
-        // 5. 다음 필터로 진행
+        // 3. 다음 필터로 진행
         filterChain.doFilter(request, response);
     }
 
