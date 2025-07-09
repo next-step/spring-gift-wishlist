@@ -1,29 +1,26 @@
 package gift.dto;
 
 import gift.entity.User;
-import jakarta.validation.constraints.Email;
+import gift.entity.vo.Email;
+import gift.entity.vo.Password;
 import jakarta.validation.constraints.NotBlank;
 
 public class UserRequestDto {
 
-    @NotBlank(message = "이메일은 필수입니다.")
-    @Email(message = "올바른 이메일 형식이 아닙니다.")
-    private String email;
+    private Email email;
+    private Password password;
 
-    @NotBlank(message="비밀번호는 필수입니다.")
-    private String password;
-
-    public UserRequestDto(String email, String password) {
+    public UserRequestDto(Email email, Password password) {
         this.email = email;
         this.password = password;
     }
 
     public String getEmail() {
-        return email;
+        return email.value();
     }
 
     public String getPassword() {
-        return password;
+        return password.value();
     }
 
     public User toEntity() {

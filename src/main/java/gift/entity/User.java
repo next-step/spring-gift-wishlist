@@ -1,14 +1,20 @@
 package gift.entity;
 
+import gift.entity.vo.Email;
+import gift.entity.vo.Password;
+
 public class User {
 
     private Long id;
-    private String email;
-    private String password;
+    private final Email email;
+    private final Password password;
 
-    public User() {}
+    protected User() {
+        this.email = null;
+        this.password = null;
+    }
 
-    public User(String email, String password) {
+    public User(Email email, Password password) {
         this.email = email;
         this.password = password;
     }
@@ -22,10 +28,10 @@ public class User {
     }
 
     public String getEmail() {
-        return email;
+        return email.value();
     }
 
     public String getPassword() {
-        return password;
+        return password.value();
     }
 }

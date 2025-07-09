@@ -22,13 +22,13 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<TokenResponseDto> register(@Valid @RequestBody UserRequestDto userRequestDto) {
+    public ResponseEntity<TokenResponseDto> register(@RequestBody UserRequestDto userRequestDto) {
         String token = userService.register(userRequestDto);
         return new ResponseEntity<>(new TokenResponseDto(token), HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenResponseDto> login(@Valid @RequestBody UserRequestDto userRequestDto) {
+    public ResponseEntity<TokenResponseDto> login(@RequestBody UserRequestDto userRequestDto) {
         String token = userService.login(userRequestDto);
         return new ResponseEntity<>(new TokenResponseDto(token), HttpStatus.OK);
     }
