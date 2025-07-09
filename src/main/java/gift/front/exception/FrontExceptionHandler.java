@@ -57,8 +57,8 @@ public class FrontExceptionHandler {
             HttpServletRequest request) {
 
         ErrorResponseDto error = new ErrorResponseDto(
-                HttpStatus.FORBIDDEN.value(),
-                HttpStatus.FORBIDDEN.getReasonPhrase(),
+                HttpStatus.UNAUTHORIZED.value(),
+                HttpStatus.UNAUTHORIZED.getReasonPhrase(),
                 ex.getMessage(),
                 request.getRequestURI()
         );
@@ -67,23 +67,7 @@ public class FrontExceptionHandler {
         return "error";
     }
 
-    @ExceptionHandler(AuthorizationException.class)
-    public String handleAuthorizationException(
-            AuthorizationException ex,
-            Model model,
-            HttpServletRequest request) {
-
-        ErrorResponseDto error = new ErrorResponseDto(
-                HttpStatus.FORBIDDEN.value(),
-                HttpStatus.FORBIDDEN.getReasonPhrase(),
-                ex.getMessage(),
-                request.getRequestURI()
-        );
-        model.addAttribute("errorInfo", error);
-
-        return "error";
-    }
-
+    // 인증
     @ExceptionHandler(AuthenticationException.class)
     public String handleAuthenticationException(
             AuthenticationException ex,
@@ -93,6 +77,24 @@ public class FrontExceptionHandler {
         ErrorResponseDto error = new ErrorResponseDto(
                 HttpStatus.UNAUTHORIZED.value(),
                 HttpStatus.UNAUTHORIZED.getReasonPhrase(),
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        model.addAttribute("errorInfo", error);
+
+        return "error";
+    }
+
+    // 인가
+    @ExceptionHandler(AuthorizationException.class)
+    public String handleAuthorizationException(
+            AuthorizationException ex,
+            Model model,
+            HttpServletRequest request) {
+
+        ErrorResponseDto error = new ErrorResponseDto(
+                HttpStatus.FORBIDDEN.value(),
+                HttpStatus.FORBIDDEN.getReasonPhrase(),
                 ex.getMessage(),
                 request.getRequestURI()
         );
