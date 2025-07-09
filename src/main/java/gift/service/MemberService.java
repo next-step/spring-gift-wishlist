@@ -27,7 +27,7 @@ public class MemberService {
             throw new IllegalStateException("이미 사용 중인 이메일입니다.");
         }
 
-        Member member = new Member(dto);
+        Member member = new Member(dto.getEmail(), dto.getPassword());
         memberRepository.save(member);
 
         Member saved = memberRepository.findByEmail(member.getEmail())

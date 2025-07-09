@@ -16,8 +16,8 @@ public class Member {
 
     }
     //부 생성자
-    public Member(MemberRequsetDto dto) {
-        this(null, dto.getEmail(), dto.getPassword(), "USER");
+    public Member(String email, String password) {
+        this(null, email, password, "USER");
     }
 
     public Long getId() {
