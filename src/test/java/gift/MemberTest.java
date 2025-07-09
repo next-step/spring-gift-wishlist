@@ -7,6 +7,7 @@ import gift.dto.MemberRequestDto;
 import gift.dto.TokenResponseDto;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -67,6 +68,70 @@ public class MemberTest {
         );
 
         assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
+    }
+
+    @Test
+    void 로그인_성공() {
+        String url = "http://localhost:" + port + "/api/members/login";
+
+        jdbcClient.sql(
+                          "INSERT INTO member (email, password, role) VALUES ('user@email.com', :hashedPassword, 'ROLE_USER')")
+                  .param("hashedPassword", BCrypt.hashpw("password", BCrypt.gensalt()))
+                  .update();
+
+        MemberRequestDto memberRequestDto = new MemberRequestDto("user@email.com", "password");
+
+        ResponseEntity<TokenResponseDto> responseEntity = client.post()
+                                                                .uri(url)
+                                                                .body(memberRequestDto)
+                                                                .retrieve()
+                                                                .toEntity(
+                                                                        TokenResponseDto.class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody().token()).isNotNull();
+    }
+
+    @Test
+    void 존재하지_않는_이메일로_로그인_실패() {
+        String url = "http://localhost:" + port + "/api/members/login";
+
+        MemberRequestDto memberRequestDto = new MemberRequestDto("notexist@email.com", "password");
+
+        HttpClientErrorException exception = assertThrows(
+                HttpClientErrorException.Forbidden.class,
+                () -> client.post()
+                            .uri(url)
+                            .body(memberRequestDto)
+                            .retrieve()
+                            .toBodilessEntity()
+        );
+
+        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+    }
+
+    @Test
+    void 비밀번호_불일치로_로그인_실패() {
+        String url = "http://localhost:" + port + "/api/members/login";
+
+        jdbcClient.sql(
+                          "INSERT INTO member (email, password, role) VALUES ('user@email.com', :hashedPassword, 'ROLE_USER')")
+                  .param("hashedPassword", BCrypt.hashpw("password", BCrypt.gensalt()))
+                  .update();
+
+        MemberRequestDto memberRequestDto = new MemberRequestDto("user@email.com",
+                "wrong_password");
+
+        HttpClientErrorException exception = assertThrows(
+                HttpClientErrorException.Forbidden.class,
+                () -> client.post()
+                            .uri(url)
+                            .body(memberRequestDto)
+                            .retrieve()
+                            .toBodilessEntity()
+        );
+
+        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }
 
 }
