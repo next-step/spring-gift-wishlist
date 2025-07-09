@@ -9,6 +9,8 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import gift.member.domain.model.Role;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -16,12 +18,17 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 @Component
+@Profile("!test")
+@ConditionalOnProperty(
+    name = "jwt.enabled", 
+    havingValue = "true", 
+    matchIfMissing = true
+)
 public class JwtTokenProvider implements JwtTokenPort {
 
     private final String issuer;
     private final String audience;
     private final long accessTokenExpirationMinutes;
-    private final long refreshTokenExpirationDays;
     private final Algorithm algorithm;
     private final JWTVerifier verifier;
     
@@ -32,12 +39,10 @@ public class JwtTokenProvider implements JwtTokenPort {
             @Value("${jwt.secret:Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=}") String secretKey,
             @Value("${jwt.issuer:spring-gift-wishlist}") String issuer,
             @Value("${jwt.audience:spring-gift-api}") String audience,
-            @Value("${jwt.access-token-expiration-minutes:15}") long accessTokenExpirationMinutes,
-            @Value("${jwt.refresh-token-expiration-days:7}") long refreshTokenExpirationDays) {
+            @Value("${jwt.access-token-expiration-minutes:15}") long accessTokenExpirationMinutes) {
         this.issuer = issuer;
         this.audience = audience;
         this.accessTokenExpirationMinutes = accessTokenExpirationMinutes;
-        this.refreshTokenExpirationDays = refreshTokenExpirationDays;
         Algorithm algo = Algorithm.HMAC256(secretKey);
         this.algorithm = algo;
         this.verifier = JWT.require(algo)
@@ -57,24 +62,6 @@ public class JwtTokenProvider implements JwtTokenPort {
                 .withClaim("email", email)
                 .withClaim("role", role.name())
                 .withClaim("tokenType", "access")
-                .withIssuer(issuer)
-                .withAudience(audience)
-                .withIssuedAt(Date.from(now))
-                .withExpiresAt(Date.from(expiration))
-                .sign(algorithm);
-    }
-
-    @Override
-    public String createRefreshToken(Long memberId, String email, Role role) {
-        Instant now = Instant.now();
-        Instant expiration = now.plus(refreshTokenExpirationDays, ChronoUnit.DAYS);
-
-        return JWT.create()
-                .withSubject(email)
-                .withClaim("memberId", memberId)
-                .withClaim("email", email)
-                .withClaim("role", role.name())
-                .withClaim("tokenType", "refresh")
                 .withIssuer(issuer)
                 .withAudience(audience)
                 .withIssuedAt(Date.from(now))
@@ -141,16 +128,6 @@ public class JwtTokenProvider implements JwtTokenPort {
         return result.getDecodedJWT().getClaim("role").asString();
     }
 
-    @Override
-    public long getRemainingTimeInSeconds(String token) {
-        TokenValidationResult result = validateToken(token);
-        if (!result.isValid()) {
-            return 0;
-        }
-        Date expiration = result.getDecodedJWT().getExpiresAt();
-        return (expiration.getTime() - System.currentTimeMillis()) / 1000;
-    }
-
     public static class TokenValidationResult {
         private final boolean valid;
         private final boolean expired;
@@ -177,7 +154,6 @@ public class JwtTokenProvider implements JwtTokenPort {
         }
 
         public boolean isValid() { return valid; }
-        public boolean isExpired() { return expired; }
         public String getErrorMessage() { return errorMessage; }
         public DecodedJWT getDecodedJWT() { return decodedJWT; }
     }

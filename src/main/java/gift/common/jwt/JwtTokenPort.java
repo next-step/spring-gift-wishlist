@@ -5,12 +5,10 @@ import jakarta.servlet.http.HttpServletRequest;
 
 public interface JwtTokenPort {
     String createAccessToken(Long memberId, String email, Role role);
-    String createRefreshToken(Long memberId, String email, Role role);
     JwtTokenProvider.TokenValidationResult validateToken(String token);
     String getEmailFromToken(String token);
     Long getMemberIdFromToken(String token);
     String getTokenTypeFromToken(String token);
     String getRoleFromToken(String token);
-    long getRemainingTimeInSeconds(String token);
     String resolveToken(HttpServletRequest request);
 }

@@ -5,11 +5,19 @@ import gift.common.exception.ForbiddenException;
 import gift.common.exception.UnauthorizedException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
+@Profile("!test")
+@ConditionalOnProperty(
+    name = "jwt.enabled", 
+    havingValue = "true", 
+    matchIfMissing = true
+)
 public class AuthorizationAspect implements HandlerInterceptor {
 
     @Override

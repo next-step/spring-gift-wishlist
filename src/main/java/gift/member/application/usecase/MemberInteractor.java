@@ -1,7 +1,7 @@
 package gift.member.application.usecase;
 
 import gift.common.exception.ForbiddenException;
-import gift.common.jwt.JwtTokenProvider;
+import gift.common.jwt.JwtTokenPort;
 import gift.common.security.PasswordEncoder;
 import gift.member.application.port.in.LoginMemberUseCase;
 import gift.member.application.port.in.RegisterMemberUseCase;
@@ -18,15 +18,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberInteractor implements RegisterMemberUseCase, LoginMemberUseCase {
 
     private final MemberPersistencePort memberPersistencePort;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenPort jwtTokenPort;
     private final PasswordEncoder passwordEncoder;
 
     public MemberInteractor(
             MemberPersistencePort memberPersistencePort,
-            JwtTokenProvider jwtTokenProvider,
+            JwtTokenPort jwtTokenPort,
             PasswordEncoder passwordEncoder) {
         this.memberPersistencePort = memberPersistencePort;
-        this.jwtTokenProvider = jwtTokenProvider;
+        this.jwtTokenPort = jwtTokenPort;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -56,7 +56,7 @@ public class MemberInteractor implements RegisterMemberUseCase, LoginMemberUseCa
     }
 
     private AuthResponse createAuthResponse(Long memberId, String email, gift.member.domain.model.Role role) {
-        String accessToken = jwtTokenProvider.createAccessToken(memberId, email, role);
+        String accessToken = jwtTokenPort.createAccessToken(memberId, email, role);
         return new AuthResponse(accessToken);
     }
 } 
