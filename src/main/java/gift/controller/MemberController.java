@@ -3,6 +3,7 @@ package gift.controller;
 import gift.dto.*;
 import gift.entity.Member;
 import gift.service.MemberService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,8 +21,8 @@ public class MemberController {
 
     @PostMapping("/register")
     public ResponseEntity<TokenResponseDto> register(@RequestBody MemberRegisterRequestDto memberRegisterRequestDto) {
-        String token = memberService.register(memberRegisterRequestDto);
-        return ResponseEntity.status(201).body(new TokenResponseDto(token));
+        TokenResponseDto tokenDto = memberService.register(memberRegisterRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(tokenDto);
     }
 
     @PostMapping("/login")

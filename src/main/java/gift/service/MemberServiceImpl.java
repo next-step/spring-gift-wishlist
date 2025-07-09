@@ -3,6 +3,7 @@ package gift.service;
 import gift.dto.MemberLoginRequestDto;
 import gift.dto.MemberRegisterRequestDto;
 import gift.dto.MemberUpdateRequestDto;
+import gift.dto.TokenResponseDto;
 import gift.entity.Member;
 import gift.entity.Role;
 import gift.exception.EmailAlreadyExistsException;
@@ -26,7 +27,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public String register(MemberRegisterRequestDto memberRegisterRequestDto) {
+    public TokenResponseDto register(MemberRegisterRequestDto memberRegisterRequestDto) {
         String email = memberRegisterRequestDto.email();
         if (memberRepository.findMemberByEmail(email).isPresent()) {
             throw new EmailAlreadyExistsException(email);
@@ -42,7 +43,8 @@ public class MemberServiceImpl implements MemberService {
         );
         Member saved = memberRepository.saveMember(member);
 
-        return jwtProvider.generateToken(saved);
+        String token = jwtProvider.generateToken(saved);
+        return new TokenResponseDto(token);
     }
 
     @Override
