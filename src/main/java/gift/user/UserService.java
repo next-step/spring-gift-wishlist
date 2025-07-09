@@ -8,9 +8,11 @@ import java.util.UUID;
 @Service
 public class UserService {
     private final UserDao userDao;
+    private final JwtProvider jwtProvider;
 
-    public UserService(UserDao userDao) {
+    public UserService(UserDao userDao, JwtProvider jwtProvider) {
         this.userDao = userDao;
+        this.jwtProvider = jwtProvider;
     }
 
     public User signUp(UserRequestDto userRequestDto) {
@@ -19,9 +21,12 @@ public class UserService {
         return userDao.save(user);
     }
 
-    public String login(UserRequestDto userRequestDto, JwtProvider jwtProvider) {
+    public String login(UserRequestDto userRequestDto) {
         User user = userDao.findByEmail(userRequestDto.getEmail());
 
+        if(!user.getPassword().equals(userRequestDto.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
         return jwtProvider.createToken(user);
     }
 }
