@@ -55,9 +55,9 @@ public class MemberServiceTest {
 
     @Test
     void register_success() {
-        given(memberRepository.existsByEmail(registerRequestDto.getEmail())).willReturn(false);
+        given(memberRepository.findByEmail(registerRequestDto.getEmail())).willReturn(Optional.empty());
         given(memberRepository.save(any(Member.class))).willReturn(member);
-        given(jwtTokenProvider.createToken(member.getId().toString())).willReturn("test.token");
+        given(jwtTokenProvider.createToken(member.getId())).willReturn("test.token");
         TokenResponse tokenResponse = memberService.register(registerRequestDto);
         assertThat(tokenResponse.getToken()).isEqualTo("test.token");
         verify(memberRepository).save(any(Member.class));
@@ -65,7 +65,7 @@ public class MemberServiceTest {
 
     @Test
     void register_fail_email_exists() {
-        given(memberRepository.existsByEmail(registerRequestDto.getEmail())).willReturn(true);
+        given(memberRepository.findByEmail(registerRequestDto.getEmail())).willReturn(Optional.of(member));
         assertThatThrownBy(() -> memberService.register(registerRequestDto))
                 .isInstanceOf(EmailAlreadyExistsException.class)
                 .hasMessageContaining("이미 가입된 이메일입니다");
@@ -74,7 +74,7 @@ public class MemberServiceTest {
     @Test
     void login_success() {
         given(memberRepository.findByEmail(loginRequestDto.getEmail())).willReturn(Optional.of(member));
-        given(jwtTokenProvider.createToken(member.getId().toString())).willReturn("test.token");
+        given(jwtTokenProvider.createToken(member.getId())).willReturn("test.token");
         TokenResponse tokenResponse = memberService.login(loginRequestDto);
         assertThat(tokenResponse.getToken()).isEqualTo("test.token");
     }
@@ -100,8 +100,8 @@ public class MemberServiceTest {
     void findMemberProfileById_success() {
         given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
         MemberProfileDto profileDto = memberService.findMemberProfileById(member.getId());
-        assertThat(profileDto.getId()).isEqualTo(member.getId());
-        assertThat(profileDto.getEmail()).isEqualTo(member.getEmail());
+        assertThat(profileDto.id()).isEqualTo(member.getId());
+        assertThat(profileDto.email()).isEqualTo(member.getEmail());
     }
 
     @Test
