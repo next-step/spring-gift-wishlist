@@ -74,10 +74,10 @@ class MemberServiceTest {
         when(jwtProvider.generateToken(member)).thenReturn("token");
 
         // when
-        String token = memberService.login(dto);
+        TokenResponseDto response = memberService.login(dto);
 
         // then
-        assertThat(token).isEqualTo("token");
+        assertThat(response).isEqualTo(new TokenResponseDto("token"));
     }
 
     @Test

@@ -1,9 +1,6 @@
 package gift.service;
 
-import gift.dto.MemberLoginRequestDto;
-import gift.dto.MemberRegisterRequestDto;
-import gift.dto.MemberUpdateRequestDto;
-import gift.dto.TokenResponseDto;
+import gift.dto.*;
 import gift.entity.Member;
 import gift.entity.Role;
 import gift.exception.EmailAlreadyExistsException;
@@ -48,7 +45,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public String login(MemberLoginRequestDto memberLoginRequestDto) {
+    public TokenResponseDto login(MemberLoginRequestDto memberLoginRequestDto) {
         Member member = memberRepository.findMemberByEmail(memberLoginRequestDto.email())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
@@ -56,23 +53,38 @@ public class MemberServiceImpl implements MemberService {
             throw new InvalidPasswordException();
         }
 
-        return jwtProvider.generateToken(member);
+        String token = jwtProvider.generateToken(member);
+
+        return new TokenResponseDto(token);
     }
 
     @Override
-    public List<Member> findAllMembers() {
-        return memberRepository.findAllMembers();
+    public List<MemberResponseDto> findAllMembers() {
+        return memberRepository.findAllMembers().stream()
+                .map(member -> new MemberResponseDto(
+                        member.getId(),
+                        member.getName(),
+                        member.getEmail(),
+                        member.getRole().name()))
+                .toList();
     }
 
     @Override
-    public Member findMemberById(Long id) {
-        return memberRepository.findMemberById(id)
+    public MemberResponseDto findMemberById(Long id) {
+        Member member = memberRepository.findMemberById(id)
                 .orElseThrow(() -> new MemberNotFoundException(id));
+        return new MemberResponseDto(
+                member.getId(),
+                member.getName(),
+                member.getEmail(),
+                member.getRole().name()
+        );
     }
 
     @Override
     public void updateMember(Long id, MemberUpdateRequestDto memberUpdateRequestDto) {
-        Member member = findMemberById(id);
+        Member member = memberRepository.findMemberById(id)
+                .orElseThrow(() -> new MemberNotFoundException(id));
         member.update(memberUpdateRequestDto.name(), memberUpdateRequestDto.email(), memberUpdateRequestDto.password());
         memberRepository.updateMember(member);
     }

@@ -1,7 +1,6 @@
 package gift.controller;
 
 import gift.dto.*;
-import gift.entity.Member;
 import gift.service.MemberService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,37 +20,26 @@ public class MemberController {
 
     @PostMapping("/register")
     public ResponseEntity<TokenResponseDto> register(@RequestBody MemberRegisterRequestDto memberRegisterRequestDto) {
-        TokenResponseDto tokenDto = memberService.register(memberRegisterRequestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(tokenDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(memberService.register(memberRegisterRequestDto));
     }
 
     @PostMapping("/login")
     public ResponseEntity<TokenResponseDto> login(@RequestBody MemberLoginRequestDto memberLoginRequestDto) {
-        String token = memberService.login(memberLoginRequestDto);
-        return ResponseEntity.ok(new TokenResponseDto(token));
+        return ResponseEntity.ok(memberService.login(memberLoginRequestDto));
     }
 
     @GetMapping
-    public ResponseEntity<List<MemberResponseDto>> list() {
-        List<MemberResponseDto> members = memberService.findAllMembers().stream()
-                .map(member -> new MemberResponseDto(
-                        member.getId(),
-                        member.getName(),
-                        member.getEmail(),
-                        member.getRole().name()))
-                .toList();
-        return ResponseEntity.ok(members);
+    public ResponseEntity<List<MemberResponseDto>> findAllMembers() {
+        return ResponseEntity.ok(memberService.findAllMembers());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MemberResponseDto> get(@PathVariable Long id) {
-        Member member = memberService.findMemberById(id);
-        MemberResponseDto dto = new MemberResponseDto(member.getId(), member.getName(), member.getEmail(), member.getRole().name());
-        return ResponseEntity.ok(dto);
+    public ResponseEntity<MemberResponseDto> findMemberById(@PathVariable Long id) {
+        return ResponseEntity.ok(memberService.findMemberById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody MemberUpdateRequestDto memberUpdateRequestDto) {
+    public ResponseEntity<Void> updateMember(@PathVariable Long id, @RequestBody MemberUpdateRequestDto memberUpdateRequestDto) {
         memberService.updateMember(id, memberUpdateRequestDto);
         return ResponseEntity.noContent().build();
     }

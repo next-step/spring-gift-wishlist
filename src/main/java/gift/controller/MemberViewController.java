@@ -1,10 +1,6 @@
 package gift.controller;
 
-import gift.dto.MemberLoginRequestDto;
-import gift.dto.MemberRegisterRequestDto;
-import gift.dto.MemberUpdateRequestDto;
-import gift.entity.Member;
-import gift.repository.MemberRepository;
+import gift.dto.*;
 import gift.service.MemberService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,11 +10,9 @@ import org.springframework.web.bind.annotation.*;
 public class MemberViewController {
 
     private final MemberService memberService;
-    private final MemberRepository memberRepository;
 
-    public MemberViewController(MemberService memberService, MemberRepository memberRepository) {
+    public MemberViewController(MemberService memberService) {
         this.memberService = memberService;
-        this.memberRepository = memberRepository;
     }
 
     @GetMapping("/register")
@@ -41,8 +35,8 @@ public class MemberViewController {
     @PostMapping("/login")
     public String login(@ModelAttribute MemberLoginRequestDto dto, Model model) {
         try {
-            String token = memberService.login(dto);
-            model.addAttribute("token", token);
+            TokenResponseDto tokenDto = memberService.login(dto);
+            model.addAttribute("token", tokenDto.token());
             return "redirect:/admin/members";
         } catch (Exception e) {
             model.addAttribute("error", "로그인 실패");
@@ -57,15 +51,15 @@ public class MemberViewController {
 
     @GetMapping("/admin/members")
     public String memberList(Model model) {
-        model.addAttribute("members", memberRepository.findAllMembers());
+        model.addAttribute("members", memberService.findAllMembers());
         return "member/list";
     }
 
     @GetMapping("/admin/members/{id}/update")
     public String updateForm(@PathVariable Long id, Model model) {
-        Member member = memberService.findMemberById(id);
+        MemberResponseDto memberResponseDto = memberService.findMemberById(id);
         model.addAttribute("id", id);
-        model.addAttribute("dto", new MemberUpdateRequestDto(member.getName(), member.getEmail(), member.getPassword()));
+        model.addAttribute("dto", new MemberUpdateRequestDto(memberResponseDto.name(), memberResponseDto.email(), ""));
         return "member/update";
     }
 

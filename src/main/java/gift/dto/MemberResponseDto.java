@@ -5,4 +5,5 @@ public record MemberResponseDto(
         String name,
         String email,
         String role
-) {}
+) {
+}
