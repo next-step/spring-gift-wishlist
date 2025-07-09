@@ -9,7 +9,7 @@ create table product
 create table user
 (
     id bigint AUTO_INCREMENT,
-    email varchar(255),
+    email varchar(255) unique,
     password varchar(100),
     primary key (id)
 )

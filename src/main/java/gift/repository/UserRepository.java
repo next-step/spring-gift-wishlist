@@ -1,6 +1,5 @@
 package gift.repository;
 
-import gift.entity.Product;
 import gift.entity.User;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -23,7 +22,7 @@ public class UserRepository {
 
     public User save(User user) {
 
-        String sql = "insert into product (name, imageUrl) values (?, ?)";
+        String sql = "insert into user (name, imageUrl) values (?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -48,5 +47,4 @@ public class UserRepository {
         List<User> users = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class), email);
         return users.stream().findFirst();
     }
-
 }
