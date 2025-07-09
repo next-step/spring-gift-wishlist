@@ -98,7 +98,7 @@ class MemberControllerTest {
                 .retrieve()
                 .toEntity(TokenResponseDTO.class)
         );
-        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
     @Test
