@@ -3,14 +3,20 @@ package gift.product.controller;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+import gift.member.security.JwtTokenProvider;
 import gift.product.builder.ProductBuilder;
 import gift.product.dto.ProductCreateResponseDto;
 import gift.product.dto.ProductGetResponseDto;
 import gift.product.entity.Product;
 import java.util.List;
+import java.util.stream.Stream;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,6 +30,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestInstance(Lifecycle.PER_CLASS)
 class ProductControllerTest {
 
     @LocalServerPort
@@ -34,26 +41,34 @@ class ProductControllerTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
+    String userToken;
+    String adminToken;
+
     private String baseUrl() {
         return "http://localhost:" + port + "/api/products";
     }
 
     private <T> ResponseEntity<T> exchange(HttpMethod method,
         String url,
+        String token,
         Object body,
         ParameterizedTypeReference<T> type) {
 
-        if (body == null) {
-            return client.method(method)
-                .uri(url)
-                .retrieve()
-                .toEntity(type);
+        var request = client.method(method)
+            .uri(url);
+
+        if (token != null) {
+            request = request.headers(headers -> headers.setBearerAuth(token));
         }
 
-        return client.method(method)
-            .uri(url)
-            .body(body)
-            .retrieve()
+        if (body != null) {
+            request = request.body(body);
+        }
+
+        return request.retrieve()
             .toEntity(type);
     }
 
@@ -77,9 +92,27 @@ class ProductControllerTest {
         assertThat(actual.getMdConfirmed()).isEqualTo(expected.getMdConfirmed());
     }
 
+    Stream<String> tokenProvider() {
+        return Stream.of(userToken, adminToken);
+    }
+
+    @BeforeAll
+    void beforeAll() {
+        jdbcTemplate.execute("DELETE FROM members");
+        jdbcTemplate.execute("ALTER TABLE members ALTER COLUMN memberId RESTART WITH 1");
+
+        String sql = "INSERT INTO members(email, password, name, role) VALUES (?, ?, ?, ?)";
+        jdbcTemplate.update(sql, "user@email.com", "1234", "user", "ROLE_USER");
+        jdbcTemplate.update(sql, "admin@email.com", "1234", "admin", "ROLE_ADMIN");
+
+        userToken =
+            "Bearer " + jwtTokenProvider.generateToken(1L, "user@email.com", "ROLE_USER");
+        adminToken =
+            "Bearer " + jwtTokenProvider.generateToken(2L, "admin@email.com", "ROLE_ADMIN");
+    }
+
     @BeforeEach
     void setUp() {
-        // products TABLE
         jdbcTemplate.execute("DELETE FROM products");
         jdbcTemplate.execute("ALTER TABLE products ALTER COLUMN productId RESTART WITH 1");
 
@@ -90,13 +123,14 @@ class ProductControllerTest {
     }
 
     // POST
-    @Test
-    void 단건상품등록_CREATED_테스트() {
+    @ParameterizedTest
+    @MethodSource("tokenProvider")
+    void 단건상품등록_CREATED_테스트(String token) {
         // given
         var request = ProductBuilder.aProduct().build();
 
         // when
-        var response = exchange(HttpMethod.POST, baseUrl(), request,
+        var response = exchange(HttpMethod.POST, baseUrl(), token, request,
             new ParameterizedTypeReference<ProductCreateResponseDto>() {
             });
 
@@ -131,7 +165,7 @@ class ProductControllerTest {
             .build();
 
         // when
-        var response = exchange(HttpMethod.POST, baseUrl(), request,
+        var response = exchange(HttpMethod.POST, baseUrl(), userToken, request,
             new ParameterizedTypeReference<ProductCreateResponseDto>() {
             });
 
@@ -159,17 +193,32 @@ class ProductControllerTest {
         // when & then
         assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
             .isThrownBy(
-                () -> exchange(HttpMethod.POST, baseUrl(), request,
+                () -> exchange(HttpMethod.POST, baseUrl(), userToken, request,
+                    new ParameterizedTypeReference<ProductCreateResponseDto>() {
+                    })
+            );
+    }
+
+    @Test
+    void 단건상품등록_UNAUTHORIZED_인증없음() {
+        //given
+        var request = ProductBuilder.aProduct().build();
+
+        // when & then
+        assertThatExceptionOfType(HttpClientErrorException.Unauthorized.class)
+            .isThrownBy(
+                () -> exchange(HttpMethod.POST, baseUrl(), null, request,
                     new ParameterizedTypeReference<ProductCreateResponseDto>() {
                     })
             );
     }
 
     // GET
-    @Test
-    void 전체상품조회_OK_테스트() {
+    @ParameterizedTest
+    @MethodSource("tokenProvider")
+    void 전체상품조회_OK_테스트(String token) {
         // given & when
-        var response = exchange(HttpMethod.GET, baseUrl(), null,
+        var response = exchange(HttpMethod.GET, baseUrl(), token, null,
             new ParameterizedTypeReference<List<ProductGetResponseDto>>() {
             });
 
@@ -183,7 +232,7 @@ class ProductControllerTest {
     @Test
     void 단건상품조회_OK_테스트() {
         // given & when
-        var response = exchange(HttpMethod.GET, baseUrl() + "/1", null,
+        var response = exchange(HttpMethod.GET, baseUrl() + "/1", userToken, null,
             new ParameterizedTypeReference<ProductGetResponseDto>() {
             });
 
@@ -199,20 +248,32 @@ class ProductControllerTest {
         // given & when
         assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
             .isThrownBy(
-                () -> exchange(HttpMethod.GET, baseUrl() + "/321", null,
+                () -> exchange(HttpMethod.GET, baseUrl() + "/321", userToken, null,
+                    new ParameterizedTypeReference<ProductGetResponseDto>() {
+                    })
+            );
+    }
+
+    @Test
+    void 단건상품조회_UNAUTHORIZED_인증없음() {
+        // given & when
+        assertThatExceptionOfType(HttpClientErrorException.Unauthorized.class)
+            .isThrownBy(
+                () -> exchange(HttpMethod.GET, baseUrl() + "/1", null, null,
                     new ParameterizedTypeReference<ProductGetResponseDto>() {
                     })
             );
     }
 
     // PUT
-    @Test
-    void 단건상품수정_NO_CONTENT_테스트() {
+    @ParameterizedTest
+    @MethodSource("tokenProvider")
+    void 단건상품수정_NO_CONTENT_테스트(String token) {
         // given
         var request = ProductBuilder.aProduct().build();
 
         // when
-        var response = exchange(HttpMethod.PUT, baseUrl() + "/1", request,
+        var response = exchange(HttpMethod.PUT, baseUrl() + "/1", token, request,
             new ParameterizedTypeReference<Void>() {
             });
 
@@ -247,7 +308,7 @@ class ProductControllerTest {
             .build();
 
         // when
-        var response = exchange(HttpMethod.PUT, baseUrl() + "/1", request,
+        var response = exchange(HttpMethod.PUT, baseUrl() + "/1", userToken, request,
             new ParameterizedTypeReference<Void>() {
             });
 
@@ -275,17 +336,32 @@ class ProductControllerTest {
         // when & then
         assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
             .isThrownBy(
-                () -> exchange(HttpMethod.PUT, baseUrl() + "/1", request,
+                () -> exchange(HttpMethod.PUT, baseUrl() + "/1", userToken, request,
+                    new ParameterizedTypeReference<Void>() {
+                    })
+            );
+    }
+
+    @Test
+    void 단건상품수정_UNAUTHORIZED_인증없음() {
+        //given
+        var request = ProductBuilder.aProduct().build();
+
+        // when & then
+        assertThatExceptionOfType(HttpClientErrorException.Unauthorized.class)
+            .isThrownBy(
+                () -> exchange(HttpMethod.PUT, baseUrl() + "/1", null, request,
                     new ParameterizedTypeReference<Void>() {
                     })
             );
     }
 
     // DELETE
-    @Test
-    void 단건상품삭제_NO_CONTENT_테스트() {
+    @ParameterizedTest
+    @MethodSource("tokenProvider")
+    void 단건상품삭제_NO_CONTENT_테스트(String token) {
         // given & when
-        var response = exchange(HttpMethod.DELETE, baseUrl() + "/1", null,
+        var response = exchange(HttpMethod.DELETE, baseUrl() + "/1", token, null,
             new ParameterizedTypeReference<Void>() {
             });
 
@@ -305,7 +381,18 @@ class ProductControllerTest {
         // given & when & then
         assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
             .isThrownBy(
-                () -> exchange(HttpMethod.DELETE, baseUrl() + "/321", null,
+                () -> exchange(HttpMethod.DELETE, baseUrl() + "/321", userToken, null,
+                    new ParameterizedTypeReference<Void>() {
+                    })
+            );
+    }
+
+    @Test
+    void 단건상품삭제_UNAUTHORIZED_인증없음() {
+        // given & when & then
+        assertThatExceptionOfType(HttpClientErrorException.Unauthorized.class)
+            .isThrownBy(
+                () -> exchange(HttpMethod.DELETE, baseUrl() + "/1", null, null,
                     new ParameterizedTypeReference<Void>() {
                     })
             );
