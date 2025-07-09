@@ -26,34 +26,38 @@ public class AuthService {
 
     public TokenResponse signIn(SignInRequest signInRequest) {
         String email = signInRequest.email();
-        if (memberRepository.existsByEmail(email)){
+        if (memberRepository.existsByEmail(email)) {
             throw new BadRequestException("AuthService : signIn() failed - Already registered member");
         }
-        Member member = new Member(email, signInRequest.password(), signInRequest.name(), signInRequest.role());
+        Member member = new Member(email, signInRequest.password(), signInRequest.name());
         memberRepository.save(member);
-        if (memberRepository.existsByEmail(email)){
+        if (!memberRepository.existsByEmail(email)) {
             throw new MemberNotFoundException("AuthService : signIn() failed - Member not saved");
         }
-        String accessToken = jwtProvider.generateToken(member);
+        Member member1 = memberRepository.findByEmail(member.getEmail()).orElseThrow(() -> new MemberNotFoundException("AuthService : signIn() failed - Member not found"));
+        String accessToken = jwtProvider.generateToken(member1);
         return new TokenResponse(accessToken);
     }
 
     public TokenResponse login(LoginRequest loginRequest) {
         String email = loginRequest.email();
         String password = loginRequest.password();
-        if (!memberRepository.existsByEmail(email)){
+        if (!memberRepository.existsByEmail(email)) {
             throw new MemberNotFoundException("AuthService : login() failed - 404 Not Found Error");
         }
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberNotFoundException("AuthService : login() failed - Member not found"));
-        if (!member.verifyPassword(password)){
+        if (!member.verifyPassword(password)) {
             throw new LoginFailedException("AuthService : login() failed - Wrong Password Error");
         }
         String accessToken = jwtProvider.generateToken(member);
         return new TokenResponse(accessToken);
     }
 
-    public Optional<Member> getMemberByToken(String token) throws TokenExpiredException {
+    public Optional<Member> getMemberByToken(String token) {
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
         String email = jwtProvider.extractEmailFromAccessToken(token);
         if (!memberRepository.existsByEmail(email)) {
             throw new MemberNotFoundException("MemberService : validateToken() failed - Member with email " + email + " not found");
