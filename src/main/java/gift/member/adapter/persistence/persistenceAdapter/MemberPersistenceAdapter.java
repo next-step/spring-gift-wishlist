@@ -1,4 +1,4 @@
-package gift.member.adapter.persistence;
+package gift.member.adapter.persistence.persistenceAdapter;
 
 import gift.member.application.port.out.MemberPersistencePort;
 import gift.member.domain.model.Member;
@@ -31,15 +31,15 @@ public class MemberPersistenceAdapter implements MemberPersistencePort {
     }
 
     public Member save(Member member) {
-        Long id = member.getId();
+        Long id = member.id();
 
         if (id == null) {
             id = insertMember(member);
-            return new Member(id, member.getEmail(), member.getPassword(), member.getRole(), member.getCreatedAt());
+            return new Member(id, member.email(), member.password(), member.role(), member.createdAt());
         }
 
         updateMember(member);
-        return new Member(id, member.getEmail(), member.getPassword(), member.getRole(), member.getCreatedAt());
+        return new Member(id, member.email(), member.password(), member.role(), member.createdAt());
     }
 
     private Long insertMember(Member member) {
@@ -48,10 +48,10 @@ public class MemberPersistenceAdapter implements MemberPersistencePort {
                         """
                                 INSERT INTO MEMBER (email, password, role, created_at) VALUES (:email, :password, :role, :createdAt)
                             """
-                ).param("email", member.getEmail())
-                .param("password", member.getPassword())
-                .param("role", member.getRole().name())
-                .param("createdAt", member.getCreatedAt())
+                ).param("email", member.email())
+                .param("password", member.password())
+                .param("role", member.role().name())
+                .param("createdAt", member.createdAt())
                 .update(keyHolder);
 
         Number key = (Number) keyHolder.getKeys().get("ID");
@@ -68,11 +68,11 @@ public class MemberPersistenceAdapter implements MemberPersistencePort {
                                     created_at = :createdAt
                                 WHERE id = :id
                             """
-                ).param("id", member.getId())
-                .param("email", member.getEmail())
-                .param("password", member.getPassword())
-                .param("role", member.getRole().name())
-                .param("createdAt", member.getCreatedAt())
+                ).param("id", member.id())
+                .param("email", member.email())
+                .param("password", member.password())
+                .param("role", member.role().name())
+                .param("createdAt", member.createdAt())
                 .update();
     }
 
