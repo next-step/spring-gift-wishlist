@@ -2,9 +2,10 @@ package gift.service;
 
 import gift.dto.*;
 import gift.entity.Member;
-import gift.entity.Role;
 import gift.exception.LoginFailedException;
 import gift.repository.MemberRepository;
+import gift.security.JwtTokenProvider;
+import gift.security.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,12 +16,12 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class MemberService {
     private final MemberRepository memberRepository;
-    private final JwtTokenService jwtTokenService;
+    private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
 
-    public MemberService(MemberRepository memberRepository, JwtTokenService jwtTokenService, PasswordEncoder passwordEncoder) {
+    public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider, PasswordEncoder passwordEncoder) {
         this.memberRepository = memberRepository;
-        this.jwtTokenService = jwtTokenService;
+        this.jwtTokenProvider = jwtTokenProvider;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -35,7 +36,7 @@ public class MemberService {
         Member member = new Member(0, request.email(), encodedPassword, request.role());
         Member savedMember = memberRepository.register(member);
 
-        String token = jwtTokenService.generateJwtToken(savedMember);
+        String token = jwtTokenProvider.generateJwtToken(savedMember);
 
         return new AuthTokenResponseDTO(token);
     }
@@ -48,7 +49,7 @@ public class MemberService {
             throw new LoginFailedException("비밀번호가 일치하지 않습니다.");
         }
 
-        String token = jwtTokenService.generateJwtToken(member);
+        String token = jwtTokenProvider.generateJwtToken(member);
 
         return new AuthTokenResponseDTO(token);
     }

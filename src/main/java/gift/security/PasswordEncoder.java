@@ -1,12 +1,12 @@
-package gift.service;
+package gift.security;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
-@Service
+@Component
 public class PasswordEncoder {
     private final String salt = "kimhaejoong1";
 
