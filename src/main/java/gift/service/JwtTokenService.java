@@ -17,10 +17,10 @@ public class JwtTokenService {
 
     public String generateJwtToken(Member member) {
         return Jwts.builder()
-                .setSubject(member.getEmail())
+                .subject(member.getEmail())
                 .claim("role", member.getRole())
                 .issuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
                 .compact();
     }
