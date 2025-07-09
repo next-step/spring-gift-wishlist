@@ -29,4 +29,11 @@ public class MemberController {
                 .status(HttpStatus.CREATED)
                 .body(memberService.registerMember(memberRequestDto));
     }
+
+    // 로그인
+    @PostMapping("/login")
+    public ResponseEntity<TokenResponseDto> loginMember(
+            @Valid @RequestBody MemberRequestDto memberRequestDto) {
+        return ResponseEntity.ok(memberService.loginMember(memberRequestDto));
+    }
 }

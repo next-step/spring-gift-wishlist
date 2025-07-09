@@ -6,6 +6,7 @@ import gift.dto.TokenResponseDto;
 import gift.entity.Member;
 import gift.entity.MemberRole;
 import gift.exception.EmailAlreadyExistsException;
+import gift.exception.LoginFailedException;
 import gift.repository.MemberRepository;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
@@ -39,5 +40,15 @@ public class MemberService {
         return new TokenResponseDto(jwtProvider.generateToken(savedId, member.getRole()));
     }
 
+    @Transactional(readOnly = true)
+    public TokenResponseDto loginMember(MemberRequestDto memberRequestDto) {
+        Member member = memberRepository.findMemberByEmail(memberRequestDto.email())
+                                        .orElseThrow(LoginFailedException::new);
 
+        if (!BCrypt.checkpw(memberRequestDto.password(), member.getPassword())) {
+            throw new LoginFailedException();
+        }
+
+        return new TokenResponseDto(jwtProvider.generateToken(member.getId(), member.getRole()));
+    }
 }
