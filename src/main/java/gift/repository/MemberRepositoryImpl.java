@@ -47,13 +47,13 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
-    public Optional<Member> findMemberByEmail(String email) {
+    public Member findMemberByEmail(String email) {
         final String sql = "SELECT * FROM members WHERE email = ?";
 
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, memberRowMapper(), email));
+            return jdbcTemplate.queryForObject(sql, memberRowMapper(), email);
         } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
+            return null;
         }
     }
 

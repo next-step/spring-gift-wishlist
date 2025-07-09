@@ -6,13 +6,11 @@ import gift.dto.MemberResponseDto;
 import gift.entity.Member;
 import gift.exception.InvalidPasswordException;
 import gift.exception.MemberEmailAlreadyExistsException;
-import gift.exception.MemberEmailNotExistsException;
 import gift.repository.MemberRepository;
 import gift.util.JwtProvider;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class MemberServiceImpl implements MemberService {
@@ -26,7 +24,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberLogInResponseDto registerMember(MemberLogInRequestDto requestDto) {
-        if (memberRepository.findMemberByEmail(requestDto.email()).isPresent()) {
+        if (memberRepository.findMemberByEmail(requestDto.email()) != null) {
             throw new MemberEmailAlreadyExistsException();
         }
 
@@ -41,11 +39,10 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberLogInResponseDto findMemberToLogIn(MemberLogInRequestDto requestDto) {
-        Optional<Member> memberOptional = memberRepository.findMemberByEmail(requestDto.email());
-        Member member = memberOptional.orElseThrow(MemberEmailNotExistsException::new);
+        Member member = memberRepository.findMemberByEmail(requestDto.email());
 
         if (!requestDto.password().equals(member.getPassword())) {
-            throw new InvalidPasswordException("비밀번호가 일치하지 않습니다.");
+            throw new InvalidPasswordException();
         }
 
         return new MemberLogInResponseDto(jwtProvider.createToken(member));
@@ -66,15 +63,13 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public MemberResponseDto updateMember(Long id, MemberLogInRequestDto requestDto) {
+    public void updateMember(Long id, MemberLogInRequestDto requestDto) {
         Member member = new Member(
             id,
             requestDto.email(),
             requestDto.password()
         );
         memberRepository.updateMember(member);
-
-        return MemberResponseDto.from(member);
     }
 
     @Override

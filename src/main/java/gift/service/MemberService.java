@@ -11,6 +11,6 @@ public interface MemberService {
     MemberLogInResponseDto findMemberToLogIn(MemberLogInRequestDto requestDto);
     List<MemberResponseDto> findAllMembers();
     MemberResponseDto findMemberById(Long id);
-    MemberResponseDto updateMember(Long id, MemberLogInRequestDto requestDto);
+    void updateMember(Long id, MemberLogInRequestDto requestDto);
     void deleteMember(Long id);
 }
