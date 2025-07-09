@@ -1,4 +1,4 @@
-package giftproject.member.repository; // 패키지명 변경: gift -> java
+package giftproject.member.repository;
 
 import giftproject.member.entity.Member;
 import java.sql.PreparedStatement;

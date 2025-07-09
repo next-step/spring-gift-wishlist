@@ -20,13 +20,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/members/register", "/api/members/login").permitAll()
                         .requestMatchers("/api/members/**").authenticated()
                         .requestMatchers("/api/products/**").permitAll()
-                        .requestMatchers(
-                                "/h2-console/**",
-                                "/swagger-ui/**",
-                                "/v3/api-docs/**",
-                                "/swagger-resources/**",
-                                "/webjars/**"
-                        ).permitAll()
+                        .requestMatchers("/h2-console/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
