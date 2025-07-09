@@ -35,6 +35,29 @@
 
 - [x] 유효성 검사 실패시 모든 실패 항목 메시지에 포함하기
 - [x] README.md 에 체크박스 사용해보기
+- [x] 400 에러 테스트 코드 추가하기
+
+### 2단계 - 회원 로그인
+
+- [x] Member 도메인 구현, 스키마 추가
+- [x] MemberRepository 구현
+- [x] JWT 토큰 생성, 토근 정보 추출 구현
+- [x] MemberService 구현
+- [x] MemberController 구현
+- [x] Member 예외 처리 구현
+- [x] JWT 인증 필터(인터셉터) 적용
+- [x] 인증 예외 처리 구현
+- [x] 테스트 코드 JWT 인증 추가
+- [ ] 회원 관련 페이지 구현
+
+### 2단계 - 코드 리뷰 반영
+
+- [x] 헬퍼 메서드 접근 지정자 수정
+- [x] 표기법 통일(properties)
+- [x] JWT expiration 적용
+- [x] JWT 관련 deprecated 메소드 사용 제거
+- [x] Interceptor: authHeader 토큰 문제 수정
+- [x] Member register, login 테스트 코드 작성
 
 # spring-gift-product (이전 구현)
 
