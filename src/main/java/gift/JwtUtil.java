@@ -1,7 +1,6 @@
 package gift;
 
 import gift.entity.Member;
-import gift.entity.Role;
 import gift.exception.UnauthorizedException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.UUID;
 
 @Component
 public class JwtUtil {
@@ -31,6 +31,7 @@ public class JwtUtil {
 
         return Jwts.builder()
             .setSubject(member.getId().toString())
+            .setId(UUID.randomUUID().toString())
             .claim("email", member.getEmail())
             .claim("role", member.getRole().name())
             .setIssuedAt(now)
