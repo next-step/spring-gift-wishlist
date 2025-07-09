@@ -24,9 +24,8 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> getAllProducts(String role) {
         List<Product> all = repo.findAll();
         if ("USER".equals(role)) {
-            // USER는 forbidden 패턴 상품 제외
             return all.stream()
-                    .filter(Product::hidden)
+                    .filter(p -> !p.hidden())
                     .toList();
         }
         return all;
@@ -44,12 +43,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product createProduct(String name, int price, String imageUrl, String role) {
-        if ("USER".equals(role) && isForbidden(name)) {
-            throw new IllegalArgumentException(
-                    "USER 권한으로는 '카카오'가 포함된 상품을 생성할 수 없습니다.");
-        }
-        // 엔티티 static factory 사용
         Product newProduct = Product.of(name, price, imageUrl);
+        if ("USER".equals(role) && isForbidden(name)) {
+            newProduct = newProduct.withHidden(true);
+        }
         return repo.save(newProduct);
     }
 
@@ -60,14 +57,14 @@ public class ProductServiceImpl implements ProductService {
         if ("USER".equals(role) && existing.hidden()) {
             throw new ProductNotFoundExection(id);
         }
-        if ("USER".equals(role) && isForbidden(name)) {
-            throw new IllegalArgumentException(
-                    "USER 권한으로는 '카카오'가 포함된 상품이름으로 수정할 수 없습니다.");
-        }
 
         Product updated = existing.withName(name)
                 .withPrice(price)
                 .withImageUrl(imageUrl);
+
+        if ("USER".equals(role) && isForbidden(name)) {
+            updated = updated.withHidden(true);
+        }
         return repo.save(updated);
     }
 
@@ -82,14 +79,20 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void hideProduct(Long id) {
+    public void hideProduct(Long id, String role) {
+        if ("USER".equals(role)) {
+            throw new ProductNotFoundExection(id);
+        }
         Product p = repo.findById(id)
                 .orElseThrow(() -> new ProductNotFoundExection(id));
         repo.save(p.withHidden(true));
     }
 
     @Override
-    public void unhideProduct(Long id) {
+    public void unhideProduct(Long id, String role) {
+        if ("USER".equals(role)) {
+            throw new ProductNotFoundExection(id);
+        }
         Product p = repo.findById(id)
                 .orElseThrow(() -> new ProductNotFoundExection(id));
         repo.save(p.withHidden(false));

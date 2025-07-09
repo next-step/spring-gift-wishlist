@@ -15,9 +15,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-/**
- * 모든 /api/** 요청에 대해 Bearer 토큰을 검증하고 JSON 에러를 직접 응답으로 작성
- */
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class JwtAuthFilter extends OncePerRequestFilter {
@@ -29,44 +26,47 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     }
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String uri = request.getRequestURI();
+        String ctx = request.getContextPath();
+        return uri.startsWith(ctx + "/api/members");
+    }
+
+    @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
-            @NonNull FilterChain filterChain
+            @NonNull FilterChain chain
     ) throws ServletException, IOException {
-        String path = request.getRequestURI();
-        if (path.startsWith("/api/members/register") || path.startsWith("/api/members/login")) {
-            filterChain.doFilter(request, response);
-            return;
+        String uri = request.getRequestURI();
+        String ctx = request.getContextPath();
+
+        // /api/ 로 시작하는 나머지 요청은 모두 Bearer 검사
+        if (uri.startsWith(ctx + "/api/")) {
+            String header = request.getHeader("Authorization");
+            if (header == null || !header.startsWith("Bearer ")) {
+                writeError(response, "유효한 Bearer 토큰이 필요합니다.");
+                return;
+            }
+            String token = header.substring(7).trim();
+            try {
+                Jws<Claims> jws = JwtUtil.parseToken(token);  // JwtUtil.parseToken 내부에서 서명+만료 검증
+                // 검증된 Claims를 request 속성에 담아두면 컨트롤러에서 꺼낼 수 있습니다.
+                request.setAttribute("authClaims", jws.getBody());
+            } catch (JwtException ex) {
+                writeError(response, "유효하지 않은 토큰입니다.");
+                return;
+            }
         }
 
-        String header = request.getHeader("Authorization");
-        if (header == null || !header.startsWith("Bearer ")) {
-            writeError(response, "유효한 Bearer 토큰이 필요합니다.");
-            return;
-        }
-        String token = header.substring(7).trim();
-        try {
-            Jws<Claims> jws = JwtUtil.parseToken(token);
-            request.setAttribute("authClaims", jws.getPayload());
-        } catch (JwtException ex) {
-            writeError(response, "유효하지 않은 토큰입니다.");
-            return;
-        }
-        filterChain.doFilter(request, response);
+        chain.doFilter(request, response);
     }
 
     private void writeError(HttpServletResponse response, String message) throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json;charset=UTF-8");
-        String body = String.format(
-                "{\"status\":%d,\"error\":\"%s\"}",
-                HttpServletResponse.SC_UNAUTHORIZED, message
+        response.getWriter().write(
+                String.format("{\"code\":\"UNAUTHORIZED\",\"message\":\"%s\"}", message)
         );
-        response.getWriter().write(body);
-    }
-
-    public JwtUtil getJwtUtil() {
-        return jwtUtil;
     }
 }

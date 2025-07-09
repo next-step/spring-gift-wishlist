@@ -16,7 +16,7 @@ public interface ProductService {
 
     void deleteProduct(Long id, String role);
 
-    void hideProduct(Long id);
+    void hideProduct(Long id, String role);
 
-    void unhideProduct(Long id);
+    void unhideProduct(Long id, String role);
 }

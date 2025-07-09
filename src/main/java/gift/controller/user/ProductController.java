@@ -1,4 +1,4 @@
-package gift.controller.product;
+package gift.controller.user;
 
 import gift.dto.product.ProductRequest;
 import gift.dto.product.ProductResponse;
@@ -34,7 +34,7 @@ public class ProductController {
     /**
      * Request에서 인증된 사용자 role을 추출합니다.
      */
-    private String extractRole(HttpServletRequest request) {
+    public static String extractRole(HttpServletRequest request) {
         Claims claims = (Claims) request.getAttribute("authClaims");
         return claims.get("role", String.class);
     }

@@ -1,9 +1,12 @@
-package gift.controller.product;
+package gift.controller.admin;
+
+import static gift.controller.user.ProductController.extractRole;
 
 import gift.dto.product.ProductForm;
 import gift.entity.product.Product;
 import gift.exception.ProductNotFoundExection;
 import gift.service.product.ProductService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -22,27 +25,36 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/admin/products")
 public class AdminProductController {
 
-    private static final String ROLE = "ADMIN";
     private final ProductService productService;
 
     public AdminProductController(ProductService productService) {
         this.productService = productService;
     }
 
+//    private String extractRole(HttpServletRequest req) {
+//        Claims claims = (Claims) req.getAttribute("authClaims");
+//        if (claims == null) {
+//            throw new IllegalArgumentException("토큰이 없습니다.");
+//        }
+//        return claims.get("role", String.class);
+//    }
+
     @GetMapping
-    public String list(Model model) {
-        model.addAttribute("products", productService.getAllProducts(ROLE));
+    public String list(HttpServletRequest req, Model model) {
+        model.addAttribute("products", productService.getAllProducts(extractRole(req)));
         return "admin/product_list";
     }
 
     @GetMapping("/new")
-    public String createForm(Model model) {
+    public String createForm(HttpServletRequest req, Model model) {
+        extractRole(req);
         model.addAttribute("productForm", new ProductForm(null, "", null, ""));
         return "admin/product_form";
     }
 
     @PostMapping("/new")
     public String create(
+            HttpServletRequest req,
             @Valid @ModelAttribute ProductForm productForm,
             BindingResult bindingResult,
             HttpServletResponse response
@@ -55,17 +67,18 @@ public class AdminProductController {
                 productForm.getName(),
                 productForm.getPrice(),
                 productForm.getImageUrl(),
-                ROLE
+                extractRole(req)
         );
         return "redirect:/admin/products";
     }
 
     @GetMapping("/{id}/edit")
     public String editForm(
+            HttpServletRequest req,
             @PathVariable Long id,
             Model model
     ) {
-        Product p = productService.getProductById(id, ROLE)
+        Product p = productService.getProductById(id, extractRole(req))
                 .orElseThrow(() -> new ProductNotFoundExection(id));
         ProductForm form = new ProductForm(
                 p.id().id(),
@@ -79,6 +92,7 @@ public class AdminProductController {
 
     @PutMapping("/{id}")
     public String update(
+            HttpServletRequest req,
             @PathVariable Long id,
             @Valid @ModelAttribute ProductForm productForm,
             BindingResult bindingResult,
@@ -93,26 +107,26 @@ public class AdminProductController {
                 productForm.getName(),
                 productForm.getPrice(),
                 productForm.getImageUrl(),
-                ROLE
+                extractRole(req)
         );
         return "redirect:/admin/products";
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable Long id) {
-        productService.deleteProduct(id, ROLE);
+    public String delete(HttpServletRequest req, @PathVariable Long id) {
+        productService.deleteProduct(id, extractRole(req));
         return "redirect:/admin/products";
     }
 
     @PostMapping("/{id}/unhide")
-    public String unhide(@PathVariable Long id) {
-        productService.unhideProduct(id);
+    public String unhide(HttpServletRequest req, @PathVariable Long id) {
+        productService.unhideProduct(id, extractRole(req));
         return "redirect:/admin/products";
     }
 
     @PostMapping("/{id}/hide")
-    public String hide(@PathVariable Long id) {
-        productService.hideProduct(id);
+    public String hide(HttpServletRequest req, @PathVariable Long id) {
+        productService.hideProduct(id, extractRole(req));
         return "redirect:/admin/products";
     }
 

@@ -9,7 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gift.controller.product.ProductController;
+import gift.controller.user.ProductController;
 import gift.dto.product.ProductRequest;
 import gift.entity.product.Product;
 import gift.service.product.ProductService;

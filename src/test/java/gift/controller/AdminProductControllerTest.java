@@ -8,7 +8,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import gift.controller.product.AdminProductController;
+import gift.controller.admin.AdminProductController;
 import gift.entity.product.Product;
 import gift.service.product.ProductService;
 import java.util.List;

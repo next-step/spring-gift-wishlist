@@ -39,9 +39,6 @@ public class Member {
         );
     }
 
-    /**
-     * DB 조회용: 모든 필드를 검증하여 생성 MemberId(null) 허용하려면 생성자 null 체크에서 제외하거나 아래처럼 분리
-     */
     public static Member of(
             Long id,
             String email,
@@ -57,9 +54,6 @@ public class Member {
         );
     }
 
-    /**
-     * DAO 저장 후 ID가 생겼을 때 호출
-     */
     public Member withId(Long newId) {
         return new Member(
                 new MemberId(newId),
@@ -70,9 +64,16 @@ public class Member {
         );
     }
 
-    /**
-     * 비밀번호 해시만 교체
-     */
+    public Member withEmail(String newEmail) {
+        return new Member(
+                this.id,
+                new MemberEmail(newEmail),
+                this.passwordHash,
+                this.role,
+                this.createdAt
+        );
+    }
+
     public Member withPasswordHash(String newPasswordHash) {
         return new Member(
                 this.id,
@@ -83,9 +84,6 @@ public class Member {
         );
     }
 
-    /**
-     * 역할만 교체
-     */
     public Member withRole(Role newRole) {
         return new Member(
                 this.id,

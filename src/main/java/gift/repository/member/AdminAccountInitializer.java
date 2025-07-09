@@ -34,7 +34,7 @@ public class AdminAccountInitializer {
             );
 
             try {
-                memberRepository.save(admin);
+                memberRepository.register(admin);
                 System.out.println("Admin 계정 생성 완료");
             } catch (DataIntegrityViolationException e) {
                 System.out.println("Admin 계정이 이미 존재합니다.");
@@ -42,5 +42,25 @@ public class AdminAccountInitializer {
         } else {
             System.out.println("Admin 계정이 이미 존재합니다.");
         }
+    }
+
+    @EventListener(ContextRefreshedEvent.class)
+    public void createUserAccountIfNotExists() {
+        String userEmail = "user@user.com";
+        String userPassword = "user123";
+        if (memberRepository.findByEmail(userEmail).isEmpty()) {
+            Member user = Member.of(
+                    null,
+                    userEmail,
+                    sha256(userPassword),
+                    String.valueOf(Role.USER),
+                    LocalDateTime.now()
+            );
+
+            memberRepository.register(user);
+
+
+        }
+
     }
 }
