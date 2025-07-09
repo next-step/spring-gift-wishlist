@@ -12,10 +12,9 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/wish")
@@ -40,6 +39,19 @@ public class WishListController {
         ResponseWishItemDto addedWishItem = wishListService.addWishItem(dto, userEmail);
 
         return new ResponseEntity<>(addedWishItem, HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ResponseWishItemDto>> getWishItemList(@RequestHeader("Authorization") String authHeader, @RequestParam(required = false) String name, @RequestParam(required = false) Integer price) {
+        String token = tokenUtils.extractToken(authHeader);
+
+        tokenUtils.validateToken(token);
+
+        String userEmail = tokenUtils.extractEmail(token);
+
+        List<ResponseWishItemDto> wishItemList = wishListService.getItemList(name, price, userEmail);
+
+        return new ResponseEntity<>(wishItemList, HttpStatus.OK);
     }
 
 }

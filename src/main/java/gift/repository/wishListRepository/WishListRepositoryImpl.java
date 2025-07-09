@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 @Repository
 public class WishListRepositoryImpl implements WishListRepository {
@@ -61,4 +62,68 @@ public class WishListRepositoryImpl implements WishListRepository {
 
         return new WishItem(item.getId(), item.getName(), item.getImageUrl(), item.getPrice(), quantity);
     }
+
+    @Override
+    public List<WishItem> getAllWishItems(String userEmail) {
+        String sql = """
+        SELECT
+            i.id AS item_id,
+            i.name,
+            i.image_url,
+            i.price,
+            w.quantity
+        FROM wish_items w
+        JOIN users u ON w.user_id = u.id
+        JOIN items i ON w.item_id = i.id
+        WHERE u.email = ?
+    """;
+
+        return jdbcTemplate.query(sql, new Object[]{userEmail}, (rs, rowNum) -> new WishItem(
+                rs.getLong("item_id"),
+                rs.getString("name"),
+                rs.getString("image_url"),
+                rs.getInt("price"),
+                rs.getInt("quantity")
+        ));
+    }
+
+    @Override
+    public List<WishItem> getWishItems(String name, Integer price, String userEmail) {
+        StringBuilder sql = new StringBuilder("""
+        SELECT
+            i.id AS item_id,
+            i.name,
+            i.image_url,
+            i.price,
+            w.quantity
+        FROM wish_items w
+        JOIN users u ON w.user_id = u.id
+        JOIN items i ON w.item_id = i.id
+        WHERE u.email = ?
+    """);
+
+        if (name != null) {
+            sql.append(" AND i.name = ?");
+        }
+        if (price != null) {
+            sql.append(" AND i.price = ?");
+        }
+
+        var params = new java.util.ArrayList<>();
+        params.add(userEmail);
+        if (name != null) params.add(name);
+        if (price != null) params.add(price);
+
+        return jdbcTemplate.query(sql.toString(), params.toArray(), (rs, rowNum) ->
+                new WishItem(
+                        rs.getLong("item_id"),
+                        rs.getString("name"),
+                        rs.getString("image_url"),
+                        rs.getInt("price"),
+                        rs.getInt("quantity")
+                )
+        );
+    }
+
+
 }
