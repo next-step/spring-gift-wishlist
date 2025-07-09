@@ -14,3 +14,13 @@ CREATE TABLE products (
     is_deleted BOOLEAN DEFAULT FALSE,
     CONSTRAINT chk_status CHECK (status IN ('ACTIVE', 'INACTIVE', 'DISCONTINUED'))
 );
+
+CREATE TABLE wishes(
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    member_id BIGINT NOT NULL,
+    product_id BIGINT NOT NULL,
+    quantity INT NOT NULL DEFAULT 1,
+    UNIQUE (member_id, product_id),
+    FOREIGN KEY (member_id) REFERENCES members(id),
+    FOREIGN KEY (product_id) REFERENCES products(id)
+)
