@@ -40,4 +40,8 @@ public class Member {
   public boolean isPasswordMatch(String password) {
     return this.password.equals(password);
   }
+
+  public boolean isPasswordNotMatch(String password) {
+    return !this.password.equals(password);
+  }
 }
