@@ -1,6 +1,7 @@
 package gift.member.service;
 
 import gift.exception.EntityAlreadyExistsException;
+import gift.exception.EntityNotFoundException;
 import gift.exception.InvalidCredentialsException;
 import gift.member.dto.AccessTokenRefreshResponseDto;
 import gift.member.dto.MemberInfo;
@@ -12,6 +13,7 @@ import gift.member.dto.AccessTokenRefreshRequestDto;
 import gift.member.entity.Member;
 import gift.member.repository.MemberRepository;
 import gift.token.service.TokenProvider;
+import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,7 +56,10 @@ public class MemberService {
 
     public AccessTokenRefreshResponseDto refreshAccessToken(
             AccessTokenRefreshRequestDto requestDto) {
-        return new AccessTokenRefreshResponseDto(
-                tokenProvider.generateAccessToken(requestDto.refreshToken()));
+        UUID memberUuid = tokenProvider.getMemberUuidFromRefreshToken(requestDto.refreshToken());
+        Member member = memberRepository.findByUuid(memberUuid)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회원입니다."));
+
+        return new AccessTokenRefreshResponseDto(tokenProvider.generateAccessToken(member));
     }
 }

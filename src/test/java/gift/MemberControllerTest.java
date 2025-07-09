@@ -129,7 +129,7 @@ public class MemberControllerTest {
         assertThat(loginResponse.getBody().tokenInfo().accessToken()).isNotBlank();
         assertThat(loginResponse.getBody().tokenInfo().refreshToken()).isNotBlank();
 
-        assertThat(tokenProvider.getMemberUuidFromToken(
+        assertThat(tokenProvider.getMemberUuidFromAccessToken(
                 loginResponse.getBody().tokenInfo().accessToken()))
                 .isEqualTo(loginResponse.getBody().memberInfo().uuid());
     }
@@ -205,7 +205,7 @@ public class MemberControllerTest {
         assertThat(refreshResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         assertThat(refreshResponse.getBody()).isNotNull();
-        assertThat(tokenProvider.getMemberUuidFromToken(refreshResponse.getBody().accessToken()))
+        assertThat(tokenProvider.getMemberUuidFromAccessToken(refreshResponse.getBody().accessToken()))
                 .isEqualTo(loginResponse.getBody().memberInfo().uuid());
 
     }

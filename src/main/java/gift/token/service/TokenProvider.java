@@ -1,9 +1,7 @@
 package gift.token.service;
 
-import gift.exception.EntityNotFoundException;
 import gift.exception.InvalidCredentialsException;
 import gift.member.entity.Member;
-import gift.member.repository.MemberRepository;
 import gift.token.entity.RefreshToken;
 import gift.token.repository.RefreshTokenRepository;
 import io.jsonwebtoken.Claims;
@@ -29,13 +27,9 @@ public class TokenProvider {
     private String secretKey;
 
     private static final Duration ACCESS_TOKEN_TTL = Duration.ofMinutes(15);
-
-    private final MemberRepository memberRepository;
     private final RefreshTokenRepository refreshTokenRepository;
 
-    public TokenProvider(MemberRepository memberRepository,
-            RefreshTokenRepository refreshTokenRepository) {
-        this.memberRepository = memberRepository;
+    public TokenProvider(RefreshTokenRepository refreshTokenRepository) {
         this.refreshTokenRepository = refreshTokenRepository;
     }
 
@@ -50,18 +44,6 @@ public class TokenProvider {
                 .expiration(expiry)
                 .signWith(key)
                 .compact();
-    }
-
-    public String generateAccessToken(String refreshTokenString) throws IllegalArgumentException {
-        RefreshToken refreshToken = refreshTokenRepository.findByToken(refreshTokenString)
-                .orElseThrow(() -> new InvalidCredentialsException("Invalid refresh token"));
-        if (refreshToken.getExpirationDate().isBefore(LocalDateTime.now())) {
-            throw new InvalidCredentialsException("Refresh token has expired");
-        }
-
-        Member member = memberRepository.findByUuid(refreshToken.getMemberUuid())
-                .orElseThrow(() -> new EntityNotFoundException("Member not found"));
-        return generateAccessToken(member);
     }
 
     @Transactional
@@ -79,7 +61,17 @@ public class TokenProvider {
         return null;
     }
 
-    public UUID getMemberUuidFromToken(String token) {
+    public UUID getMemberUuidFromRefreshToken(String refreshTokenString) throws InvalidCredentialsException {
+        RefreshToken refreshToken = refreshTokenRepository.findByToken(refreshTokenString)
+                .orElseThrow(() -> new InvalidCredentialsException("Invalid refresh token"));
+        if (refreshToken.getExpirationDate().isBefore(LocalDateTime.now())) {
+            throw new InvalidCredentialsException("Refresh token has expired");
+        }
+
+        return refreshToken.getMemberUuid();
+    }
+
+    public UUID getMemberUuidFromAccessToken(String token) {
         if (isTokenExpired(token)) {
             throw new InvalidCredentialsException("Invalid access token");
         }
@@ -92,11 +84,11 @@ public class TokenProvider {
         return expirationDate.before(new Date());
     }
 
-    private Claims getClaimsFromToken(String token) {
+    private Claims getClaimsFromToken(String accessToken) {
         return Jwts.parser()
                 .verifyWith(getSigningKey())
                 .build()
-                .parseSignedClaims(token)
+                .parseSignedClaims(accessToken)
                 .getPayload();
     }
 
