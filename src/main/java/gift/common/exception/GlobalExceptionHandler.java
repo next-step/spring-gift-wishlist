@@ -43,7 +43,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(BindException.class)
     public ResponseEntity<ProblemDetail> handleBind(BindException ex, HttpServletRequest req) {
-        List<ProblemDetail> fieldErrors = createFieldErrorDetails(ex);
+        List<FieldErrorResponse> fieldErrors = createFieldErrorDetails(ex);
 
         ErrorCode errorCode = ErrorCode.VALIDATION_FAILED;
         ProblemDetail body = ProblemDetail.forStatusAndDetail(errorCode.getHttpStatus(), errorCode.getMessage());
@@ -60,7 +60,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             HttpStatusCode status,
             WebRequest request) {
 
-        List<ProblemDetail> fieldErrors = createFieldErrorDetails(ex);
+        List<FieldErrorResponse> fieldErrors = createFieldErrorDetails(ex);
 
         ErrorCode errorCode = ErrorCode.VALIDATION_FAILED;
         ProblemDetail body = ProblemDetail.forStatusAndDetail(errorCode.getHttpStatus(), errorCode.getMessage());
@@ -159,19 +159,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(errorCode.getHttpStatus()).body(body);
     }
 
-    private List<ProblemDetail> createFieldErrorDetails(BindException ex) {
+    private List<FieldErrorResponse> createFieldErrorDetails(BindException ex) {
         return ex.getFieldErrors().stream()
-                .map(fe -> {
-                    ErrorCode errorCode = ErrorCode.fromMessage(fe.getDefaultMessage());
-                    ProblemDetail pd = ProblemDetail.forStatusAndDetail(
-                            errorCode.getHttpStatus(),
-                            errorCode.getMessage()
-                    );
-                    pd.setProperty("code", errorCode.name());
-                    pd.setProperty("field", fe.getField());
-                    pd.setProperty("rejectedValue", fe.getRejectedValue());
-                    return pd;
-                })
+                .map(fe -> new FieldErrorResponse(
+                        fe.getField(),
+                        fe.getRejectedValue(),
+                        fe.getDefaultMessage()
+                ))
                 .toList();
     }
 }
