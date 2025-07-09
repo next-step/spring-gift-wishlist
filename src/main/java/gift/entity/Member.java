@@ -1,40 +1,46 @@
 package gift.entity;
 
-public class Member {
-    private Long id;
-    private String email;
-    private String password;
-    private String role = "USER";
+import gift.domain.member.Email;
+import gift.domain.member.Password;
+import gift.domain.member.Role;
 
-    public Member(String email, String password) {
+public class Member {
+    private final Long id;
+    private Email email;
+    private Password password;
+    private final Role role;
+
+    public Member(Email email, Password password) {
+        this.id = null;
         this.email = email;
         this.password = password;
+        this.role = Role.USER;
     }
 
-    public Member(Long id, String email, String password, String role) {
+    public Member(Long id, Email email, Password password, Role role) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.role = role;
     }
 
+    public Member withId(Long id) {
+        return new Member(id, this.email, this.password, this.role);
+    }
+
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getEmail() {
+    public Email getEmail() {
         return email;
     }
 
-    public String getPassword() {
+    public Password getPassword() {
         return password;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 }

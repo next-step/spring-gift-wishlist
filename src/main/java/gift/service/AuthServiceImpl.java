@@ -1,5 +1,7 @@
 package gift.service;
 
+import gift.domain.member.Email;
+import gift.domain.member.Password;
 import gift.dto.LoginResponseDto;
 import gift.dto.MemberRequestDto;
 import gift.entity.Member;
@@ -32,10 +34,12 @@ public class AuthServiceImpl implements AuthService {
         }
 
         String encodedPassword = passwordUtil.encode(dto.password());
-        Member member = new Member(dto.email(), encodedPassword);
+        Email email = new Email(dto.email());
+        Password password = new Password(encodedPassword);
+        Member member = new Member(email, password);
         Member savedMember = memberRepository.saveMember(member);
 
-        String token = jwtUtil.generateToken(savedMember.getEmail(), savedMember.getId(), savedMember.getRole());
+        String token = jwtUtil.generateToken(savedMember.getEmail().getValue(), savedMember.getId(), savedMember.getRole().name());
         return new LoginResponseDto(token);
     }
 
@@ -45,11 +49,11 @@ public class AuthServiceImpl implements AuthService {
         Member member = memberRepository.findByEmail(dto.email())
                 .orElseThrow(LoginFailedException::new);
 
-        if (!passwordUtil.matches(dto.password(), member.getPassword())) {
+        if (!passwordUtil.matches(dto.password(), member.getPassword().getValue())) {
             throw new LoginFailedException();
         }
 
-        String token = jwtUtil.generateToken(member.getEmail(), member.getId(), member.getRole());
+        String token = jwtUtil.generateToken(member.getEmail().getValue(), member.getId(), member.getRole().name());
         return new LoginResponseDto(token);
     }
 }

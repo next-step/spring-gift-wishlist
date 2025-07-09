@@ -1,5 +1,8 @@
 package gift.repository;
 
+import gift.domain.member.Email;
+import gift.domain.member.Password;
+import gift.domain.member.Role;
 import gift.entity.Member;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -30,14 +33,13 @@ public class MemberRepositoryImpl implements MemberRepository {
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, member.getEmail());
-            ps.setString(2, member.getPassword());
-            ps.setString(3, member.getRole());
+            ps.setString(1, member.getEmail().getValue());
+            ps.setString(2, member.getPassword().getValue());
+            ps.setString(3, member.getRole().name());
             return ps;
         }, keyHolder);
 
-        member.setId(keyHolder.getKey().longValue());
-        return member;
+        return member.withId(keyHolder.getKey().longValue());
     }
 
     @Override
@@ -63,9 +65,9 @@ public class MemberRepositoryImpl implements MemberRepository {
         public Member mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new Member(
                     rs.getLong("id"),
-                    rs.getString("email"),
-                    rs.getString("password"),
-                    rs.getString("role")
+                    new Email(rs.getString("email")),
+                    new Password(rs.getString("password")),
+                    Role.fromString(rs.getString("role"))
             );
         }
     };
