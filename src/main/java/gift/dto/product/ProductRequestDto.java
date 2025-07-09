@@ -21,10 +21,11 @@ public class ProductRequestDto {
 
     @AssertTrue(message = "'카카오'가 포함된 상품명은 담당 MD와 협의가 필요합니다.")
     private boolean isKakaoPolicyCompliant() {
-        if (name == null || !name.contains("카카오")) {
-            return true;
+        if (name != null && name.contains("카카오")) {
+            return usableKakao;
         }
-        return usableKakao;
+
+        return true;
     }
 
     public ProductRequestDto() {}
