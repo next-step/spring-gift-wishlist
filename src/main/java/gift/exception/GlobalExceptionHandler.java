@@ -23,6 +23,14 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
   }
 
+  @ExceptionHandler(value = NameHasKakaoException.class)
+  public ResponseEntity<CustomErrorResponse> NameHasKakaoExceptionHandler(
+      NameHasKakaoException exception) {
+    CustomErrorResponse errorResponse = new CustomErrorResponse(HttpStatus.BAD_REQUEST,
+        exception.getMessage());
+    return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+  }
+
   @ExceptionHandler(value = {ProductNotFoundException.class, MemberNotFoundException.class})
   public ResponseEntity<CustomErrorResponse> handleProductNotFoundException(
       ProductNotFoundException exception) {
@@ -34,7 +42,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(value = AlreadyRegisterException.class)
   public ResponseEntity<CustomErrorResponse> handleAlreadyRegisterException(
       AlreadyRegisterException exception) {
-    CustomErrorResponse errorResponse = new CustomErrorResponse(HttpStatus.NOT_FOUND,
+    CustomErrorResponse errorResponse = new CustomErrorResponse(HttpStatus.CONFLICT,
         exception.getMessage());
     return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
   }
@@ -42,7 +50,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(value = NotRegisterException.class)
   public ResponseEntity<CustomErrorResponse> handleNotRegisterException(
       NotRegisterException exception) {
-    CustomErrorResponse errorResponse = new CustomErrorResponse(HttpStatus.NOT_FOUND,
+    CustomErrorResponse errorResponse = new CustomErrorResponse(HttpStatus.UNAUTHORIZED,
         exception.getMessage());
     return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
   }
@@ -50,7 +58,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(value = InvalidPasswordException.class)
   public ResponseEntity<CustomErrorResponse> handleInvalidPasswordException(
       InvalidPasswordException exception) {
-    CustomErrorResponse errorResponse = new CustomErrorResponse(HttpStatus.NOT_FOUND,
+    CustomErrorResponse errorResponse = new CustomErrorResponse(HttpStatus.UNAUTHORIZED,
         exception.getMessage());
     return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
   }

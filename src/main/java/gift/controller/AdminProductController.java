@@ -58,7 +58,7 @@ public class AdminProductController {
       return "createProductForm";
     }
     ProductRequestDto requestDto = new ProductRequestDto(createFormDto.getName(),
-        createFormDto.getPrice(), createFormDto.getImageUrl());
+        createFormDto.getPrice(), createFormDto.getImageUrl(), createFormDto.getMdOk());
     service.createProduct(requestDto);
     return "redirect:" + PRODUCTS_LIST_PAGE_PATH;
   }
@@ -80,7 +80,6 @@ public class AdminProductController {
       ProductResponseDto responseDto = service.findProductById(id);
       ProductUpdateFormDto newUpdateFormDto = new ProductUpdateFormDto(responseDto.getId(),
           responseDto.getName(), responseDto.getPrice(), responseDto.getImageUrl());
-
       String errorMessage = bindingResult
           .getFieldErrors()
           .stream()
@@ -93,7 +92,7 @@ public class AdminProductController {
     }
     service.updateProduct(id,
         new ProductRequestDto(updateFormDto.getName(), updateFormDto.getPrice(),
-            updateFormDto.getImageUrl()));
+            updateFormDto.getImageUrl(), updateFormDto.getMdOk()));
     return "redirect:" + PRODUCTS_LIST_PAGE_PATH;
   }
 

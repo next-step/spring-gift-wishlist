@@ -14,7 +14,6 @@ public class ProductUpdateFormDto {
   @NotBlank(message = "이름은 필수입니다.")
   @Size(max = 15, message = "이름은 최대 15글자입니다")
   @Pattern(regexp = "^[가-힣a-zA-Z0-9\\(\\)\\[\\]\\+\\-\\&\\/\\_ ]+$", message = "한글, 영문자, 숫자, ( ), [ ], +, -, &, /, _ 만 입력 가능(공백포함)")
-  @Pattern(regexp = "^(?!.*카카오).*$", message = "상품 이름에 '카카오'가 포함되어 있습니다. 담당 MD와 협의가 필요합니다.")
   private String name;
 
   @NotNull(message = "가격은 필수입니다.")
@@ -25,11 +24,21 @@ public class ProductUpdateFormDto {
   @URL(message = "유효한 URL 형식이여야합니다.(http://, https://로 시작)")
   private String imageUrl;
 
-  public ProductUpdateFormDto(Long id, String name, Long price, String imageUrl) {
+  private Boolean mdOk;
+
+  public ProductUpdateFormDto(Long id, String name, Long price, String imageUrl, Boolean mdOk) {
     this.id = id;
     this.name = name;
     this.price = price;
     this.imageUrl = imageUrl;
+    this.mdOk = mdOk;
+  }
+
+  public ProductUpdateFormDto(Long id, String name, Long price, String imageUrl) {
+    this(id, name, price, imageUrl, false);
+  }
+
+  public ProductUpdateFormDto() {
   }
 
   public Long getId() {
@@ -62,5 +71,13 @@ public class ProductUpdateFormDto {
 
   public void setImageUrl(String imageUrl) {
     this.imageUrl = imageUrl;
+  }
+
+  public Boolean getMdOk() {
+    return mdOk;
+  }
+
+  public void setMdOk(Boolean mdOk) {
+    this.mdOk = mdOk;
   }
 }
