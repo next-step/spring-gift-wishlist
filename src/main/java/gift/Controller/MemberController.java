@@ -72,7 +72,7 @@ public class MemberController {
           .build();
     }catch (SecurityException e){
       return ResponseEntity
-          .status(HttpStatus.FORBIDDEN)
+          .status(HttpStatus.UNAUTHORIZED)
           .header("X-Error-Message", e.getMessage())
           .build();
     }
