@@ -1,21 +1,34 @@
 package gift;
 
+import gift.component.JwtUtil;
 import gift.dto.CreateProductRequestDto;
 import gift.dto.UpdateProductRequestDto;
-import gift.entity.Product;
+import gift.domain.Product;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ProductControllerTest {
     @LocalServerPort
     private int port;
+
+    @MockitoBean
+    private JwtUtil jwtUtil;
+
+    @BeforeEach
+    void setUp() {
+        doNothing().when(jwtUtil).validateAuthorizationHeader(anyString(), anyString());
+    }
 
     private RestClient client = RestClient.builder().build();
 
@@ -162,21 +175,21 @@ public class ProductControllerTest {
     // 단위 테스트
     @Test
     void 카카오가_포함된_이름은_예외를_던진다() {
-        assertThatThrownBy(() -> new Product(null, "[카카오] 메로나", 1200L, "img.jpg"))
+        assertThatThrownBy(() -> Product.of(null, "[카카오] 메로나", 1200L, "img.jpg"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("카카오");
     }
 
     @Test
     void 허용되지_않은_문자가_포함된_이름은_예외를_던진다() {
-        assertThatThrownBy(() -> new Product(null, "메로나!", 1000L, "img.jpg"))
+        assertThatThrownBy(() -> Product.of(null, "메로나!", 1000L, "img.jpg"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("특수 문자");
     }
 
     @Test
     void 상품_가격이_음수인_경우_예외를_던진다() {
-        assertThatThrownBy(() -> new Product(null, "메로나", -12L, "img.jpg"))
+        assertThatThrownBy(() -> Product.of(null, "메로나", -12L, "img.jpg"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("가격");
     }

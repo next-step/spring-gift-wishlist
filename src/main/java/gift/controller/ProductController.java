@@ -1,5 +1,6 @@
 package gift.controller;
 
+import gift.component.JwtUtil;
 import gift.dto.CreateProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.dto.UpdateProductRequestDto;
@@ -15,9 +16,11 @@ import java.util.List;
 @RequestMapping("api/products")
 public class ProductController {
     private final ProductService productService;
+    private final JwtUtil jwtUtil;
 
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, JwtUtil jwtUtil) {
         this.productService = productService;
+        this.jwtUtil = jwtUtil;
     }
 
     // 상품 목록 조회
@@ -38,7 +41,10 @@ public class ProductController {
 
     // 상품 추가
     @PostMapping
-    public ResponseEntity<ProductResponseDto> createProduct(@Valid @RequestBody CreateProductRequestDto requestDto) {
+    public ResponseEntity<ProductResponseDto> createProduct(
+            @RequestHeader(value = "Authorization", required = false) String authHeader,
+            @Valid @RequestBody CreateProductRequestDto requestDto) {
+        jwtUtil.validateAuthorizationHeader(authHeader, "products-api");
         ProductResponseDto productResponseDto = productService.createProduct(requestDto);
 
         return new ResponseEntity<>(productResponseDto, HttpStatus.CREATED);
@@ -46,7 +52,10 @@ public class ProductController {
 
     // 상품 삭제
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteProduct(
+            @RequestHeader(value = "Authorization", required = false) String authHeader,
+            @PathVariable Long id) {
+        jwtUtil.validateAuthorizationHeader(authHeader, "products-api");
         productService.deleteProduct(id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -55,9 +64,11 @@ public class ProductController {
     // 상품 전체 수정
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateProduct(
+            @RequestHeader(value = "Authorization", required = false) String authHeader,
             @PathVariable Long id,
             @Valid @RequestBody UpdateProductRequestDto requestDto
     ) {
+        jwtUtil.validateAuthorizationHeader(authHeader, "products-api");
         productService.updateProduct(requestDto);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

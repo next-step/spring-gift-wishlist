@@ -1,6 +1,7 @@
 package gift.exception;
 
 import gift.dto.ErrorResponseDto;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -41,5 +42,18 @@ public class GlobalExceptionHandler {
         ErrorResponseDto errorResponseDto = new ErrorResponseDto(error);
 
         return new ResponseEntity<>(errorResponseDto, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ErrorResponseDto> handleUnauthorized(
+            UnauthorizedException e,
+            HttpServletResponse response
+    ) {
+        Map<String, String> error = new HashMap<>();
+        response.setHeader("WWW-Authenticate", "Bearer realm=\"" + e.getRealm() + "\"");
+        error.put("message", e.getMessage());
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto(error);
+
+        return new ResponseEntity<>(errorResponseDto, HttpStatus.UNAUTHORIZED);
     }
 }
