@@ -1,6 +1,6 @@
 package gift.repository;
 
-import gift.entity.User;
+import gift.entity.Member;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
@@ -13,38 +13,38 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public class UserRepository {
+public class MemberRepository {
     private final JdbcTemplate jdbcTemplate;
 
-    public UserRepository(JdbcTemplate jdbcTemplate) {
+    public MemberRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public User save(User user) {
+    public Member save(Member member) {
 
-        String sql = "insert into user (name, imageUrl) values (?, ?)";
+        String sql = "insert into member (name, imageUrl) values (?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, user.getEmail());
-            ps.setString(2, user.getPassword());
+            ps.setString(1, member.getEmail());
+            ps.setString(2, member.getPassword());
             return ps;
         }, keyHolder);
 
         Number key = keyHolder.getKey();
 
         if(key != null) {
-            user.withId(key.longValue(), user.getEmail(), user.getPassword());
+            member.withId(key.longValue(), member.getEmail(), member.getPassword());
         }
 
-        return user;
+        return member;
     }
 
-    public Optional<User> findByEmail(String email) {
-        String sql = "select * from users where email = ?";
-        List<User> users = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class), email);
-        return users.stream().findFirst();
+    public Optional<Member> findByEmail(String email) {
+        String sql = "select * from member where email = ?";
+        List<Member> member = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Member.class), email);
+        return member.stream().findFirst();
     }
 }

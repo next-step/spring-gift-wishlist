@@ -1,7 +1,7 @@
 package gift.controller;
 
-import gift.dto.UserDto;
-import gift.service.UserService;
+import gift.dto.MemberDto;
+import gift.service.MemberService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,30 +10,30 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/users")
-public class UserController {
+@RequestMapping("/api/members")
+public class MemberController {
 
-    private final UserService userService;
+    private final MemberService memberService;
 
-    public UserController(UserService userService){
-        this.userService = userService;
+    public MemberController(MemberService memberService){
+        this.memberService = memberService;
     }
 
     // 1. 회원 가입
     @PostMapping("/register")
-    public ResponseEntity<UserDto> register(@RequestBody UserDto userDto) {
+    public ResponseEntity<MemberDto> register(@RequestBody MemberDto memberDto) {
 
-        UserDto response = userService.register(userDto);
+        MemberDto response = memberService.register(memberDto);
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     // 2. 로그인
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserDto user) throws IllegalAccessException {
+    public ResponseEntity<String> login(@RequestBody MemberDto member) throws IllegalAccessException {
 
         // 요청으로 들어온 이메일, 비밀번호가 일치하면 JWT 토큰 발급
-        String token = userService.login(user.getEmail(), user.getPassword());
+        String token = memberService.login(member.getEmail(), member.getPassword());
 
         return ResponseEntity.ok(token);
     }

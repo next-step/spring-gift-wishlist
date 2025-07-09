@@ -1,8 +1,8 @@
 package gift.dto;
 
-import gift.entity.User;
+import gift.entity.Member;
 
-public class UserDto {
+public class MemberDto {
 
     private Long id;
 
@@ -10,7 +10,7 @@ public class UserDto {
 
     private String password;
 
-    public UserDto(User user) {
+    public MemberDto(Member user) {
     }
 
     public Long getId() {return id;}

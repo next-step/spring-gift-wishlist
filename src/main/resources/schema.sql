@@ -6,7 +6,7 @@ create table product
     primary key (id)
 );
 
-create table user
+create table member
 (
     id bigint AUTO_INCREMENT,
     email varchar(255) unique,
