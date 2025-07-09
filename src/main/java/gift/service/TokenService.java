@@ -1,5 +1,6 @@
 package gift.service;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -30,6 +31,14 @@ public class TokenService {
             .setExpiration(exp)
             .signWith(key, SignatureAlgorithm.HS256)
             .compact();
+    }
+
+    public Claims parseClaims(String token) {
+        return Jwts.parser()
+                .setSigningKey(key)   // 생성 때 사용한 key 그대로
+                .build()
+                .parseClaimsJws(token)
+                .getBody();          // exp 검증까지 자동
     }
 
 }

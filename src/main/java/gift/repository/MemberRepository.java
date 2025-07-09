@@ -49,6 +49,15 @@ public class MemberRepository {
         );
     }
 
+    public Optional<Member> findById(Long id) {
+        String sql = "SELECT id, email, password FROM members WHERE id = ?";
+        return jdbcClient
+                .sql(sql)
+                .param(id)
+                .query(this::mapRowToMember)
+                .optional();
+    }
+
     public Optional<Member> findByEmail(String email) {
         String sql = "SELECT id, email, password FROM members WHERE email = ?";
         return jdbcClient
