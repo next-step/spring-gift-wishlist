@@ -7,6 +7,6 @@ CREATE TABLE products (
 
 CREATE TABLE members (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    email VARCHAR(50) NOT NULL,
+    email VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(50) NOT NULL
 );
