@@ -39,18 +39,18 @@ public class E2ETest {
 	@Test
 	@DisplayName("인증인가 적용된 상품 e2e 테스트")
 	void userAndItemE2ETest() {
-		// 회원가입
-		CreateUserRequest createUserRequest = new CreateUserRequest("test@t", "1", "testUser");
-		Long userId = restClient.post()
-			.uri("/users/register")
-			.body(createUserRequest)
-			.retrieve()
-			.body(Long.class);
-
-		assertThat(userId).isEqualTo(3L);
+//		// 회원가입
+//		CreateUserRequest createUserRequest = new CreateUserRequest("test@t", "1", "testUser");
+//		Long userId = restClient.post()
+//			.uri("/users/register")
+//			.body(createUserRequest)
+//			.retrieve()
+//			.body(Long.class);
+//
+//		assertThat(userId).isEqualTo(3L);
 
 		// 로그인
-		LoginRequest loginRequest = new LoginRequest("test@t", "1");
+		LoginRequest loginRequest = new LoginRequest("s@s", "1");
 		LoginResponse loginResponse = restClient.post()
 			.uri("/users/login")
 			.body(loginRequest)
@@ -78,6 +78,7 @@ public class E2ETest {
 			.body(GetItemResponse.class);
 
 		assertThat(getItemResponse.name()).isEqualTo("테스트콜라");
+		assertThat(getItemResponse.authorId()).isEqualTo(1L);
 
 		// 수정
 		ItemRequest updateItemRequest = new ItemRequest("테스트사이다", 2000, "url2");

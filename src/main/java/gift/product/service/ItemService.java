@@ -2,13 +2,10 @@ package gift.product.service;
 
 
 import gift.product.entity.Item;
-import gift.product.entity.User;
 import gift.product.repository.ItemRepository;
-import gift.product.repository.ItemRepositoryImpl;
 import gift.product.dto.GetItemResponse;
 import gift.product.dto.ItemRequest;
 import gift.product.repository.UserRepository;
-import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,14 +41,28 @@ public class ItemService {
 	@Transactional(readOnly = true)
 	public List<GetItemResponse> getAllItems() {
 		List<Item> items = itemRepository.findAll();
-		return items.stream().map(item -> new GetItemResponse(item.getId(), item.getName(), item.getPrice(), item.getImageUrl())).toList();
+		return items.stream()
+			.map(item -> GetItemResponse.builder()
+				.id(item.getId())
+				.authorId(item.getUserId())
+				.name(item.getName())
+				.price(item.getPrice())
+				.imageUrl(item.getImageUrl())
+				.build())
+			.toList();
 	}
 
 
 	@Transactional(readOnly = true)
 	public GetItemResponse getItem(Long itemId) {
 		Item item = itemRepository.findById(itemId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 아이템입니다."));
-		return new GetItemResponse(item.getId(), item.getName(), item.getPrice(), item.getImageUrl());
+		return GetItemResponse.builder()
+			.id(item.getId())
+			.authorId(item.getUserId())
+			.name(item.getName())
+			.price(item.getPrice())
+			.imageUrl(item.getImageUrl())
+			.build();
 	}
 
 

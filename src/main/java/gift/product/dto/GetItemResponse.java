@@ -1,5 +1,9 @@
 package gift.product.dto;
 
 
-public record GetItemResponse(Long id, String name, Integer price, String imageUrl) {
+import lombok.Builder;
+
+
+@Builder
+public record GetItemResponse(Long id, Long authorId, String name, Integer price, String imageUrl) {
 }
