@@ -5,3 +5,11 @@ CREATE TABLE products (
     image_url VARCHAR(255),
     PRIMARY KEY(id)
 );
+
+CREATE TABLE members (
+    id BIGINT AUTO_INCREMENT,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role VARCHAR(255) NOT NULL,
+    PRIMARY KEY(id)
+);
