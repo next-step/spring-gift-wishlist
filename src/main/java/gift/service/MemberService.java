@@ -4,8 +4,11 @@ import gift.domain.Member;
 import gift.exception.ForbiddenException;
 import gift.repository.MemberRepository;
 import gift.auth.JwtTokenProvider;
+import org.springframework.context.MessageSource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Locale;
 
 @Service
 public class MemberService {
@@ -13,13 +16,16 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final MessageSource messageSource;
 
     public MemberService(MemberRepository memberRepository,
                          PasswordEncoder passwordEncoder,
-                         JwtTokenProvider jwtTokenProvider) {
+                         JwtTokenProvider jwtTokenProvider,
+                         MessageSource messageSource) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.messageSource = messageSource;
     }
 
     // 회원가입
@@ -44,11 +50,11 @@ public class MemberService {
     public String login(String email, String password) {
         // 1. 이메일로 회원 찾기
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new ForbiddenException("이메일 또는 비밀번호가 올바르지 않습니다."));
+                .orElseThrow(() -> new ForbiddenException(getMessage("member.login.failed")));
 
         // 2. 비밀번호 검증
         if (!passwordEncoder.matches(password, member.getPassword())) {
-            throw new ForbiddenException("이메일 또는 비밀번호가 올바르지 않습니다.");
+            throw new ForbiddenException(getMessage("member.login.failed"));
         }
 
         // 3. JWT 토큰 생성 및 반환
@@ -59,5 +65,9 @@ public class MemberService {
     public Member findById(Long id) {
         return memberRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
+    }
+
+    private String getMessage(String code) {
+        return messageSource.getMessage(code, null, Locale.getDefault());
     }
 }
