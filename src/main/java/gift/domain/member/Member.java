@@ -5,15 +5,15 @@ public class Member {
     private String email;
     private String password;
     private String name;
-    private String role;
+    private RoleType role;
 
     protected Member(){}
 
-    public Member(String email, String password, String name, String role){
+    public Member(String email, String password, String name){
         this.email = email;
         this.password = password;
         this.name = name;
-        this.role = role;
+        this.role = RoleType.USER;
     }
 
     public Long getId(){
@@ -29,18 +29,16 @@ public class Member {
         return name;
     }
     public String getRole(){
-        return role;
+        return role.toString();
     }
 
     public boolean verifyPassword(String password){
         return this.password.equals(password);
     }
 
-    public void update(Long id, String email, String password, String name, String role){
-        this.id = id;
+    public void update(String email, String password, String name){
         this.email = email;
         this.password = password;
         this.name = name;
-        this.role = role;
     }
 }
