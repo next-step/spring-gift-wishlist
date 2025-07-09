@@ -51,13 +51,6 @@ public class MemberRepository {
         }
     }
 
-    public boolean existsByEmail(String email) {
-        String sql = "SELECT COUNT(*) FROM member WHERE email = ?";
-        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, email);
-        return count != null && count > 0;
-    }
-
-
     private static final RowMapper<Member> MEMBER_ROW_MAPPER = (rs, rowNum) -> new Member(
             rs.getLong("id"),
             rs.getString("email"),
