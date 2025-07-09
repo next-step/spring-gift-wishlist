@@ -36,4 +36,11 @@ public class ViewExceptionHandler {
         model.put("errorMessage", "비밀번호가 일치하지 않습니다.");
         return new ModelAndView("error/invalid-password", model);
     }
+
+    @ExceptionHandler(UnauthorizedAccessException.class)
+    public ModelAndView handleUnauthorizedAccess(UnauthorizedAccessException ex) {
+        Map<String, String> model = new HashMap<>();
+        model.put("errorMessage", ex.getMessage());
+        return new ModelAndView("error/unauthorized", model);
+    }
 }
