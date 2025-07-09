@@ -62,19 +62,28 @@ public class MemberService {
     }
 
     public MemberResponseDto updateMember(Long id, UpdateRequestDto updateRequestDto) {
+        Member member = memberRepository.findById(id)
+                        .orElseThrow(() -> new MemberNotFoundByIdException(id));
+
         memberRepository.findByEmail(updateRequestDto.email())
                 .filter(foundMember -> !foundMember.getId().equals(id))
                 .ifPresent(m -> {
                     throw new EmailExistsException();
                 });
 
-        String newSalt = passwordUtil.getSalt();
-        String hashedPassword = passwordUtil.hashPassword(updateRequestDto.password(), newSalt);
+        String newPassword = updateRequestDto.password();
+        String salt = member.getSalt();
+        String hashedPassword = member.getPassword();
+
+        if(newPassword != null && !newPassword.isBlank()){
+            salt = passwordUtil.getSalt();
+            hashedPassword = passwordUtil.hashPassword(newPassword, salt);
+        }
 
         Member memberToUpdate = new Member(
                 id,
                 updateRequestDto.email(),
-                newSalt,
+                salt,
                 hashedPassword,
                 updateRequestDto.role()
         );
