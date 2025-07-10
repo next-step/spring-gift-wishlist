@@ -11,7 +11,7 @@ public class Member {
         this.pwd = pwd;
     }
 
-    public Long id() { return id; }
-    public String email() { return email; }
-    public String pwd() { return pwd; }
+    public Long getId() { return id; }
+    public String getEmail() { return email; }
+    public String getPwd() { return pwd; }
 }
