@@ -30,7 +30,6 @@ public class JdbcWishlistRepository implements WishlistRepository {
         Map<String, Object> params = new HashMap<>();
         params.put("member_id", wishlist.getMemberId());
         params.put("item_id", wishlist.getItemId());
-        params.put("created_at", Timestamp.valueOf(wishlist.getCreatedAt()));
 
         Long generatedValue = simpleInsert.executeAndReturnKey(params).longValue();
         wishlist.setId(generatedValue);
