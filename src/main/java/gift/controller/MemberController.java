@@ -1,6 +1,7 @@
 package gift.controller;
 
 import gift.domain.Member;
+import gift.exception.UnauthorizedException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,15 +26,15 @@ public class MemberController {
         return ResponseEntity.ok("회원가입 성공!");
     }
 
-    @PostMapping("/gettoken")
+    @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody Member member) {
         boolean valid = service.login(member.getEmail(), member.getPassword());
 
-        if (valid) {
-            String token = service.createToken(member.getEmail(), member.getPassword());
-            return ResponseEntity.ok(token);
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("이메일 또는 비밀번호가 올바르지 않습니다.");
+        if (!valid) {
+            throw new UnauthorizedException("이메일 또는 비밀번호가 일치하지 않습니다.");
         }
+
+        String token = service.createToken(member.getEmail(), member.getPassword());
+        return ResponseEntity.ok(token);
     }
 }
