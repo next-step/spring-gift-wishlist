@@ -35,6 +35,8 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
             throw new LoggedInRequiredException("로그인이 필요합니다.");
         }
 
+        System.out.println("token = " + token);
+
         //토큰이 존재하는 경우 -> 토큰을 검증
         jwtAuthService.checkValidation(token);
         log.info("JWT 토큰 검증 성공,,,");

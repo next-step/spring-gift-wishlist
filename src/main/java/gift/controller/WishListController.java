@@ -2,7 +2,8 @@ package gift.controller;
 
 import gift.dto.wish.WishRequestDto;
 import gift.dto.wish.WishResponseDto;
-import gift.service.JwtAuthService;
+import gift.entity.LoggedInMember;
+import gift.entity.Member;
 import gift.service.WishListService;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -13,9 +14,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -23,21 +22,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class WishListController {
 
     //precondition : 유효한 회원인지를 확인해야함
-    private final JwtAuthService jwtAuthService;
     private final WishListService wishListService;
 
-    public WishListController(JwtAuthService jwtAuthService, WishListService wishListService){
-        this.jwtAuthService = jwtAuthService;
+    public WishListController(WishListService wishListService){
         this.wishListService = wishListService;
     }
 
     //TODO: WishList에 담긴 상품 목록을 조회
     @GetMapping
-    public ResponseEntity<List<WishResponseDto>> getWishList(
-            @RequestHeader(value = "Authorization") String token
-    ){
-        Long memberId = jwtAuthService.getMemberId(token);
-        List<WishResponseDto> myWishList = wishListService.getList(memberId);
+    public ResponseEntity<List<WishResponseDto>> getWishList(@LoggedInMember Member member){
+        List<WishResponseDto> myWishList = wishListService.getList(member.getMemberId());
         return ResponseEntity.ok(myWishList);
     }
 
@@ -45,9 +39,9 @@ public class WishListController {
     @PostMapping("/add")
     public ResponseEntity<WishResponseDto> addToWishList(
             @RequestBody WishRequestDto wishRequestDto, //상품ID, 수량
-            @RequestHeader(value = "Authorization") String token
+            @LoggedInMember Member member
     ){
-        Long memberId = jwtAuthService.getMemberId(token);
+        Long memberId = member.getMemberId();
         WishResponseDto wishResponseDto = wishListService.addToWishList(memberId, wishRequestDto);
         return new ResponseEntity<>(wishResponseDto, HttpStatus.CREATED);
     }
@@ -63,9 +57,9 @@ public class WishListController {
     @PatchMapping("/add/{wishListId}")
     public ResponseEntity<List<WishResponseDto>> addItem(
             @PathVariable Long wishListId,
-            @RequestHeader(value = "Authorization") String token
+            @LoggedInMember Member member
     ){
-        Long memberId = jwtAuthService.getMemberId(token);
+        Long memberId = member.getMemberId();
         List<WishResponseDto> myWishList = wishListService.changeQuantity(memberId, wishListId, 1);
         return ResponseEntity.ok(myWishList);
     }
@@ -75,9 +69,9 @@ public class WishListController {
     @PatchMapping("/subtract/{wishListId}")
     public ResponseEntity<List<WishResponseDto>> subtractItem(
             @PathVariable Long wishListId,
-            @RequestHeader(value = "Authorization") String token
+            @LoggedInMember Member member
     ){
-        Long memberId = jwtAuthService.getMemberId(token);
+        Long memberId = member.getMemberId();
         List<WishResponseDto> myWishList = wishListService.changeQuantity(memberId, wishListId, -1);
         return ResponseEntity.ok(myWishList);
     }

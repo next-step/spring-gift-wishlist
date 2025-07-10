@@ -52,28 +52,26 @@ public class LoginFilter implements Filter {
 
             log.info("로그인 요청이 들어옴,,,");
 
-//            String email = request.getParameter("email");
-//            String password = httpServletRequest.getParameter("password");
-//
-//            System.out.println("password = " + password);
-//            System.out.println("email = " + email);
-//
-//            if(email == null || password == null){
-//                throw new RequiredFieldException("비밀번호와 이메일은 필수로 입력해야 합니다.");
-//            }
-//
-//            if(!memberService.checkMember(new MemberRequestDto(email, password))){
-//                throw new MemberNotFoundException("해당하는 회원을 찾을 수 없습니다.");
-//            }
-//
-//            Member member = memberService.getMemberByEmail(email).get();
-//            String token = jwtAuthService.createJwt(email, member.getMemberId());
+            //TODO: Request 파싱하기
 
-            String token = jwtAuthService.createJwt("abc@gmail.com", 1L);
+            String email = "testuser1@kakao.com";
+            String password = "12345678";
+
+            if(email == null || password == null){
+                throw new RequiredFieldException("비밀번호와 이메일은 필수로 입력해야 합니다.");
+            }
+
+            if(!memberService.checkMember(new MemberRequestDto(email, password))){
+                throw new MemberNotFoundException("해당하는 회원을 찾을 수 없습니다.");
+            }
+
+            Member member = memberService.getMemberByEmail(email).get();
+            //String token = jwtAuthService.createJwt(email, member.getMemberId());
+            String token = jwtAuthService.createJwt(email, 1L);
+
             httpServletResponse.addHeader("Authorization", "Bearer "+ token);
             log.info("토큰 생성 완료");
         }
-
         //다음 필터가 있다면 동작해라
         chain.doFilter(request, response);
     }
