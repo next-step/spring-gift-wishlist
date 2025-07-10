@@ -7,6 +7,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
+import java.time.Duration;
+import java.util.Date;
 import javax.crypto.SecretKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,9 +26,13 @@ public class JwtTokenProvider {
     }
 
     public String generateToken(Member member) {
+        Date now = new Date();
+        Date expiration = new Date(now.getTime() + Duration.ofHours(1).toMillis());
         return Jwts.builder()
                 .subject(member.getId().toString())
                 .claim("email", member.getEmail())
+                .issuedAt(now)
+                .expiration(expiration)
                 .signWith(this.secretKey)
                 .compact();
     }
