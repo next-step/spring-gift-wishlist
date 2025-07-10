@@ -5,6 +5,7 @@ import gift.entity.Product;
 import gift.exception.ForbiddenException;
 import gift.exception.MemberNotFoundException;
 import gift.exception.ProductNotFoundException;
+import gift.exception.UnauthorizedException;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -58,7 +59,7 @@ public class MemberRepositoryImpl implements MemberRepository {
                 .param("email", email)
                 .query(Member.class)
                 .optional();
-        return member.orElseThrow(() -> new ForbiddenException("존재하지 않는 이메일입니다."));
+        return member.orElseThrow(() -> new UnauthorizedException("존재하지 않는 이메일입니다."));
     }
 
     @Override

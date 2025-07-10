@@ -6,10 +6,13 @@ import gift.entity.Role;
 import gift.exception.ForbiddenException;
 import gift.exception.InvalidMemberException;
 import gift.exception.OperationFailedException;
+import gift.exception.UnauthorizedException;
 import gift.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static gift.service.SaltedSHA256.hashWithSHA256;
 
 @Service
 public class MemberServiceImpl implements MemberService{
@@ -25,7 +28,8 @@ public class MemberServiceImpl implements MemberService{
     public void addMember(MemberAddRequestDto requestDto) {
         validateMemberEmail(requestDto.email(), "admin/memberAdd");
         validateMemberRole(requestDto.role(), "admin/memberAdd");
-        Member member = new Member(null, requestDto.email(), requestDto.password(), requestDto.name(), requestDto.role());
+        String hashedPassword = hashWithSHA256(requestDto.password());
+        Member member = new Member(null, requestDto.email(), hashedPassword, requestDto.name(), requestDto.role());
         int result = memberRepository.addMember(member);
         if (result == 0) {
             throw new OperationFailedException();
@@ -36,7 +40,9 @@ public class MemberServiceImpl implements MemberService{
     public TokenResponseDto registerMember(MemberRegisterRequestDto requestDto) {
         validateMemberEmail(requestDto.email(), "admin/memberAdd");
 
-        Member member = new Member(null, requestDto.email(), requestDto.password(), requestDto.name(), "USER");
+        String hashedPassword = hashWithSHA256(requestDto.password());
+
+        Member member = new Member(null, requestDto.email(), hashedPassword, requestDto.name(), "USER");
         int result = memberRepository.addMember(member);
         if (result == 0) {
             throw new OperationFailedException();
@@ -51,8 +57,10 @@ public class MemberServiceImpl implements MemberService{
     public TokenResponseDto loginMember(MemberLoginRequestDto requestDto) {
         Member member = memberRepository.findMemberByEmailOrElseThrow(requestDto.email());
 
-        if (!member.password().equals(requestDto.password())) {
-            throw new ForbiddenException("비밀번호가 일치하지 않습니다.");
+        String hashedPassword = hashWithSHA256(requestDto.password());
+
+        if (!member.password().equals(hashedPassword)) {
+            throw new UnauthorizedException("비밀번호가 일치하지 않습니다.");
         }
 
         return new TokenResponseDto(jwtProvider.createToken(member.id(), member.name(), member.email(), member.role()));

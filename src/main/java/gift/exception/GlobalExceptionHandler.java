@@ -17,7 +17,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(OperationFailedException.class)
     public ResponseEntity<ErrorResponseDto> handleOperationFailed(OperationFailedException ex) {
-        ErrorResponseDto responseDto = new ErrorResponseDto(
+        ErrorResponseDto responseDto = ErrorResponseDto.of(
                 HttpStatus.NOT_FOUND.value(),
                 "Operation Failed",
                 ex.getMessage()
@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidProductException.class)
     public ResponseEntity<ErrorResponseDto> handleInvalidProduct(InvalidProductException ex) {
-        ErrorResponseDto responseDto = new ErrorResponseDto(
+        ErrorResponseDto responseDto = ErrorResponseDto.of(
                 HttpStatus.BAD_REQUEST.value(),
                 "Invalid Product",
                 ex.getMessage()
@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidMemberException.class)
     public ResponseEntity<ErrorResponseDto> handleInvalidMember(InvalidMemberException ex) {
-        ErrorResponseDto responseDto = new ErrorResponseDto(
+        ErrorResponseDto responseDto = ErrorResponseDto.of(
                 HttpStatus.BAD_REQUEST.value(),
                 "Invalid Member",
                 ex.getMessage()
@@ -52,7 +52,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<ErrorResponseDto> handleUnauthorized(UnauthorizedException ex) {
-        ErrorResponseDto responseDto = new ErrorResponseDto(
+        ErrorResponseDto responseDto = ErrorResponseDto.of(
                 HttpStatus.UNAUTHORIZED.value(),
                 "UnAuthorized",
                 ex.getMessage()
@@ -62,7 +62,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ForbiddenException.class)
     public ResponseEntity<ErrorResponseDto> handleForbidden(ForbiddenException ex) {
-        ErrorResponseDto responseDto = new ErrorResponseDto(
+        ErrorResponseDto responseDto = ErrorResponseDto.of(
                 HttpStatus.FORBIDDEN.value(),
                 "Forbidden",
                 ex.getMessage()
