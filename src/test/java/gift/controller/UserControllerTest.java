@@ -15,7 +15,6 @@ import gift.user.dto.LoginResponseDto;
 import gift.user.dto.RegisterRequestDto;
 import gift.user.dto.RegisterResponseDto;
 import gift.user.service.UserService;
-import gift.validation.PasswordValidator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -40,8 +39,6 @@ public class UserControllerTest {
   @MockitoBean
   private JwtTokenProvider jwtTokenProvider;
 
-  @MockitoBean
-  private PasswordValidator passwordValidator;
 
   @Test
   void 회원가입_성공() throws Exception {
@@ -79,8 +76,8 @@ public class UserControllerTest {
     when(userService.loginUser(any(LoginRequestDto.class))).thenReturn(mockResponse);
 
     mockMvc.perform(post("/api/users/login")
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(requestBody))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestBody))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.token").value(""));
   }
@@ -91,12 +88,12 @@ public class UserControllerTest {
     String requestBody = """
         {
         "email": "",
-        "password": "password"
+        "password": "Password123!"
         }
         """;
     mockMvc.perform(post("/api/users/register")
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(requestBody))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestBody))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.errors[0].field").value("email"));
   }
@@ -116,15 +113,69 @@ public class UserControllerTest {
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.errors[0].field").value("password"));
   }
+
+  @Test
+  void 회원가입시_비밀번호_대문자없음_예외발생() throws Exception {
+    //given
+    String requestBody = """
+        {
+        "email": "admin@email.com",
+        "password": "password123!"
+        }
+        """;
+    mockMvc.perform(post("/api/users/register")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestBody))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.errors[0].field").value("password"))
+        .andExpect(jsonPath("$.errors[0].reason").value("비밀번호에는 반드시 1글자 이상의 대문자가 포함되어야 합니다."));
+  }
+
+  @Test
+  void 회원가입시_비밀번호_숫자_3글자미만_예외발생() throws Exception {
+    //given
+    String requestBody = """
+        {
+        "email": "admin@email.com",
+        "password": "Password12!"
+        }
+        """;
+    mockMvc.perform(post("/api/users/register")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestBody))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.errors[0].field").value("password"))
+        .andExpect(jsonPath("$.errors[0].reason").value("비밀번호에는 반드시 숫자가 3개 이상 포함되어야 합니다."));
+  }
+
+  @Test
+  void 회원가입시_비밀번호_특수문자없음_예외발생() throws Exception {
+    //given
+    String requestBody = """
+        {
+        "email": "admin@email.com",
+        "password": "Password123"
+        }
+        """;
+    mockMvc.perform(
+            post("/api/users/register").
+                contentType(MediaType.APPLICATION_JSON).
+                content(requestBody))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.errors[0].field").value("password"))
+        .andExpect(jsonPath("$.errors[0].reason").value("비밀번호에는 반드시 !,@,#,$,. 중 하나 이상의 특수문자가 포함되어야 합니다."));
+  }
+
+
   @Test
   void 로그인시_사용자없음_예외발생() throws Exception {
     // given
     String requestBody = """
-            {
-                "email": "unknown@email.com",
-                "password": "password"
-            }
-            """;
+        {
+            "email": "unknown@email.com",
+            "password": "password"
+        }
+        """;
 
     when(userService.loginUser(any(LoginRequestDto.class))).thenThrow(new InvalidLoginException());
 
