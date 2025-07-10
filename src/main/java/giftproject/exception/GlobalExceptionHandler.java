@@ -1,4 +1,4 @@
-package gift.exception;
+package giftproject.exception;
 
 import java.util.HashMap;
 import java.util.Map;

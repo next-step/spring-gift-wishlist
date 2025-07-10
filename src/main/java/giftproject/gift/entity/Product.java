@@ -1,4 +1,4 @@
-package gift.entity;
+package giftproject.gift.entity;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;

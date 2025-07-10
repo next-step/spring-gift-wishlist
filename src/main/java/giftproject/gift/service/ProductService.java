@@ -1,9 +1,9 @@
-package gift.service;
+package giftproject.gift.service;
 
-import gift.dto.ProductRequestDto;
-import gift.dto.ProductResponseDto;
-import gift.entity.Product;
-import gift.repository.ProductRepository;
+import giftproject.gift.dto.ProductRequestDto;
+import giftproject.gift.dto.ProductResponseDto;
+import giftproject.gift.entity.Product;
+import giftproject.gift.repository.ProductRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;

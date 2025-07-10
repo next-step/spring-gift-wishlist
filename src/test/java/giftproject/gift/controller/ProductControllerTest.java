@@ -1,10 +1,10 @@
-package gift.controller;
+package giftproject.gift.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import gift.dto.ProductRequestDto;
-import gift.dto.ProductResponseDto;
+import giftproject.gift.dto.ProductRequestDto;
+import giftproject.gift.dto.ProductResponseDto;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

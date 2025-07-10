@@ -1,6 +1,6 @@
-package gift.repository;
+package giftproject.gift.repository;
 
-import gift.entity.Product;
+import giftproject.gift.entity.Product;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
