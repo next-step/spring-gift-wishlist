@@ -58,6 +58,32 @@ public class jdbcWishlistRepository implements  WishlistRepository {
         );
     }
 
+    @Override
+    public List<WishlistResponseDto> getWishlist(Long memberId) {
+
+        String sql = """
+        SELECT 
+            p.id AS product_id,
+            p.name AS product_name,
+            p.price,
+            p.image_url,
+            w.quantity
+        FROM wishlist w
+        JOIN product p ON w.product_id = p.id
+        WHERE w.member_id = ?
+        """;
+
+        return jdbcTemplate.query(sql, new Object[]{memberId}, (rs, rowNum) ->
+                new WishlistResponseDto(
+                        rs.getLong("product_id"),
+                        rs.getString("product_name"),
+                        rs.getInt("quantity"),
+                        rs.getInt("price"),
+                        rs.getString("image_url")
+                )
+        );
+    }
+
 
     private RowMapper<Wishlist> wishlistRowMapper() {
         return (rs, rowNum) -> new Wishlist(

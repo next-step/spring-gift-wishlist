@@ -6,10 +6,9 @@ import gift.wishlist.dto.WishlistResponseDto;
 import gift.wishlist.service.WishlistService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/wishes")
@@ -29,6 +28,13 @@ public class WishlistController {
         WishlistResponseDto responseDto = wishlistService.addProductToWishlist(memberId, requestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<WishlistResponseDto>> getWishlist(@LoginMember Long memberId) {
+        List<WishlistResponseDto> productsOfWishlist = wishlistService.getWishlist(memberId);
+
+        return ResponseEntity.ok(productsOfWishlist);
     }
 
 

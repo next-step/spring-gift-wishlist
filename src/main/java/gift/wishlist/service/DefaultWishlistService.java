@@ -5,6 +5,8 @@ import gift.wishlist.dto.WishlistResponseDto;
 import gift.wishlist.repository.WishlistRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class DefaultWishlistService implements WishlistService {
 
@@ -17,5 +19,10 @@ public class DefaultWishlistService implements WishlistService {
     @Override
     public WishlistResponseDto addProductToWishlist(Long memberId, WishlistRequestDto requestDto) {
         return wishlistRepository.addProductToWishlist(memberId, requestDto);
+    }
+
+    @Override
+    public List<WishlistResponseDto> getWishlist(Long memberId) {
+        return wishlistRepository.getWishlist(memberId);
     }
 }
