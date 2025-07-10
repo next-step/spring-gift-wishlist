@@ -64,6 +64,23 @@ public class WishlistRepository {
                 .list();
     }
 
+    public void deleteWishByMemberIdAndProductId(Long memberId, Long wishId) {
+        String sql = """
+                DELETE FROM wishlist
+                WHERE id = ?
+                AND member_id = ?
+                """;
+
+        int affectedRows = jdbcClient.sql(sql)
+                .param(wishId)
+                .param(memberId)
+                .update();
+
+        if(affectedRows == 0){
+            throw new IllegalArgumentException("삭제할 위시리스트가 존재하지 않습니다.");
+        }
+    }
+
     private static RowMapper<Wishlist> getRowMapper(){
         return (rs, rowNum) -> new Wishlist(
                 rs.getLong("id"),

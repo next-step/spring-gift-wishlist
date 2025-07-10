@@ -2,7 +2,6 @@ package gift.wishlist.controller;
 
 import gift.wishlist.dto.WishRequestDto;
 import gift.wishlist.dto.WishResponseDto;
-import gift.wishlist.entity.Wishlist;
 import gift.wishlist.service.WishlistService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,5 +34,14 @@ public class WishlistController {
         List<WishResponseDto> wishResponseDto = wishlistService.getWishesByMemberId(memberId);
 
         return ResponseEntity.ok(wishResponseDto);
+    }
+
+    @DeleteMapping("/{wishId}")
+    public ResponseEntity<Void> deleteWishlist(
+            @RequestHeader Long memberId,
+            @PathVariable Long wishId) {
+        wishlistService.deleteWish(memberId, wishId);
+
+        return ResponseEntity.noContent().build();
     }
 }

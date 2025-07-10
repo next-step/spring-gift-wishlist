@@ -70,6 +70,9 @@ public class WishlistService {
                     );
                 } )
                 .toList();
+    }
 
+    public void deleteWish(Long memberId, Long wishId) {
+        wishlistRepository.deleteWishByMemberIdAndProductId(memberId, wishId);
     }
 }
