@@ -69,4 +69,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponseDto> handleGenericException(
+        Exception e,
+        HttpServletRequest request
+    ) {
+        ErrorResponseDto errorResponse = new ErrorResponseDto(
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            "서버 내부 오류가 발생했습니다.",
+            URI.create(request.getRequestURI())
+        );
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    }
+
 }
