@@ -1,8 +1,7 @@
 package gift.controller;
 
-import gift.dto.request.ModifyUserRequest;
+import gift.dto.request.UserModifyRequest;
 import gift.dto.response.UserResponse;
-import gift.exception.token.TokenExpiredException;
 import gift.exception.token.TokenTypeException;
 import gift.service.TokenService;
 import gift.service.UserService;
@@ -16,7 +15,7 @@ import java.util.List;
 import static gift.status.TokenErrorStatus.*;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/users")
 public class UserController {
     private final UserService userService;
     private final TokenService tokenService;
@@ -32,9 +31,6 @@ public class UserController {
             throw new TokenTypeException(INVALID_TOKEN_TYPE.getErrorMessage());
         }
         String token = JwtParser.getToken(headers.get("Authorization"));
-        if(tokenService.isTokenExpired(token)) {
-            throw new TokenExpiredException(TOKEN_EXPIRED.getErrorMessage());
-        }
         return ResponseEntity.ok().body(tokenService.extractEmail(token));
     }
 
@@ -47,16 +43,13 @@ public class UserController {
     public ResponseEntity<String> modifyUser(
             @RequestHeader HttpHeaders headers,
             @PathVariable Long userId,
-            @RequestBody ModifyUserRequest modifyUserRequest
+            @RequestBody UserModifyRequest userModifyRequest
     ){
         if(headers.get("Authorization") == null || !JwtParser.isValidTokenType(headers.get("Authorization"))){
             throw new TokenTypeException(INVALID_TOKEN_TYPE.getErrorMessage());
         }
-        String token = JwtParser.getToken(headers.get("Authorization"));
-        if(tokenService.isTokenExpired(token)){
-            throw new TokenTypeException(TOKEN_EXPIRED.getErrorMessage());
-        }
-        return ResponseEntity.ok().body(userService.modifyUserInfo(userId, modifyUserRequest));
+        userService.modifyUserInfo(userId, userModifyRequest);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{userId}")
@@ -66,10 +59,6 @@ public class UserController {
     ){
         if(headers.get("Authorization") == null || !JwtParser.isValidTokenType(headers.get("Authorization"))){
             throw new TokenTypeException(INVALID_TOKEN_TYPE.getErrorMessage());
-        }
-        String token = JwtParser.getToken(headers.get("Authorization"));
-        if(tokenService.isTokenExpired(token)){
-            throw new TokenTypeException(TOKEN_EXPIRED.getErrorMessage());
         }
         userService.deleteById(userId);
         return ResponseEntity.noContent().build();

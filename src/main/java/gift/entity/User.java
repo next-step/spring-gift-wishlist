@@ -36,7 +36,7 @@ public class User {
         this.password = password;
     }
 
-    public boolean validatePassword(String password){
+    public boolean isPasswordMatched(String password){
         return this.password.equals(password);
     }
 }

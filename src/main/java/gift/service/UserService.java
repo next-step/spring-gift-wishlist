@@ -1,6 +1,6 @@
 package gift.service;
 
-import gift.dto.request.ModifyUserRequest;
+import gift.dto.request.UserModifyRequest;
 import gift.dto.request.UserInfoRequest;
 import gift.dto.response.UserResponse;
 import gift.exception.gift.NoValueException;
@@ -26,16 +26,14 @@ public class UserService {
     }
 
     public List<UserResponse> getAllUsers() {
-        return userRepository
-                .getAllUsers()
+        return userRepository.getAllUsers()
                 .stream()
                 .map(UserResponse::from)
                 .toList();
     }
 
-    public String modifyUserInfo(Long userId, ModifyUserRequest modifyUserRequest){
-        userRepository.modify(userId, ModifyUserRequest.toEntity(modifyUserRequest));
-        return "유저 "+ userId + "번님을 수정하였습니다.";
+    public void modifyUserInfo(Long userId, UserModifyRequest userModifyRequest){
+        userRepository.modify(userId, userModifyRequest.toEntity());
     }
 
     public void deleteById(Long userId){

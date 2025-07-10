@@ -1,13 +1,14 @@
 package gift.controller;
 
-import gift.dto.request.CreateGiftRequest;
-import gift.dto.request.ModifyGiftRequest;
-import gift.dto.response.ResponseGift;
+import gift.dto.request.GiftCreateRequest;
+import gift.dto.request.GiftModifyRequest;
+import gift.dto.response.GiftResponse;
 import gift.exception.gift.InValidSpecialCharException;
 import gift.exception.gift.NeedAcceptException;
 import gift.exception.gift.NoGiftException;
 import gift.exception.gift.NoValueException;
 import gift.service.GiftService;
+import gift.service.TokenService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -19,43 +20,44 @@ import java.util.List;
 import static gift.status.GiftErrorStatus.*;
 
 @RestController
-@RequestMapping("/api/products")
+@RequestMapping("/api/gifts")
 public class GiftController {
     private final GiftService giftService;
+    private final TokenService tokenService;
 
-    public GiftController(GiftService giftService) {
+    public GiftController(GiftService giftService, TokenService tokenService) {
         this.giftService = giftService;
+        this.tokenService = tokenService;
     }
 
     @PostMapping("")
-    public ResponseEntity<ResponseGift> addGift(
-            @Valid @RequestBody CreateGiftRequest createGiftRequest,
+    public ResponseEntity<GiftResponse> addGift(
+            @Valid @RequestBody GiftCreateRequest giftCreateRequest,
             @RequestHeader HttpHeaders headers
     ) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(giftService.addGift(createGiftRequest, headers.get("Authorization")));
+                .body(giftService.addGift(giftCreateRequest, headers.get("Authorization")));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseGift> getGiftById(@PathVariable Long id) {
+    public ResponseEntity<GiftResponse> getGiftById(@PathVariable Long id) {
         return ResponseEntity.ok().body(giftService.getGiftById(id));
     }
 
     @GetMapping("")
-    public ResponseEntity<List<ResponseGift>> getAllGifts(){
+    public ResponseEntity<List<GiftResponse>> getAllGifts(){
         return ResponseEntity.ok().body(giftService.getAllGifts());
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ResponseGift> updateGift(
+    public ResponseEntity<GiftResponse> updateGift(
             @PathVariable Long id,
-            @Valid @RequestBody ModifyGiftRequest modifyGiftRequest,
+            @Valid @RequestBody GiftModifyRequest giftModifyRequest,
             @RequestHeader HttpHeaders headers
     ) {
-        return ResponseEntity
-                .ok()
-                .body(giftService.updateGift(id, modifyGiftRequest, headers.get("Authorization")));
+        tokenService.isTokenExpired(headers.get("Authorization"));
+        return ResponseEntity.ok().body(giftService.updateGift(id, giftModifyRequest));
     }
 
     @DeleteMapping("/{id}")
@@ -63,8 +65,8 @@ public class GiftController {
             @PathVariable Long id,
             @RequestHeader HttpHeaders headers
     ) {
-        System.out.println("headers.get(\"Authorization\") = " + headers.get("Authorization"));
-        giftService.deleteGift(id,  headers.get("Authorization"));
+        tokenService.isTokenExpired(headers.get("Authorization"));
+        giftService.deleteGift(id);
         return ResponseEntity.noContent().build();
     }
 
