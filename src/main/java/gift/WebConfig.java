@@ -1,7 +1,7 @@
 package gift;
 
 import gift.interceptor.LoginCheckInterceptor;
-import gift.interceptor.LoginFilter;
+import gift.filter.LoginFilter;
 import java.util.List;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -11,16 +11,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    private final LoginFilter loginFilter;
+    //private final LoginFilter loginFilter;
     private final LoginCheckInterceptor loginCheckInterceptor;
     private final LoggedInMemberArgumentResolver loggedInMemberArgumentResolver;
 
     public WebConfig(
-            LoginFilter loginFilter,
             LoginCheckInterceptor loginCheckInterceptor,
             LoggedInMemberArgumentResolver loggedInMemberArgumentResolver
     ) {
-        this.loginFilter = loginFilter;
         this.loginCheckInterceptor = loginCheckInterceptor;
         this.loggedInMemberArgumentResolver = loggedInMemberArgumentResolver;
     }

@@ -1,13 +1,11 @@
-package gift.interceptor;
+package gift.filter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.dto.MemberRequestDto;
 import gift.entity.Member;
 import gift.exception.MemberNotFoundException;
 import gift.exception.RequiredFieldException;
 import gift.service.JwtAuthService;
 import gift.service.MemberService;
-import groovy.util.logging.Slf4j;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -16,16 +14,9 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
-import org.springframework.util.StreamUtils;
 
-@Component
-@Slf4j
 public class LoginFilter implements Filter {
 
     private static final Logger log = LoggerFactory.getLogger(LoginFilter.class);
@@ -52,10 +43,9 @@ public class LoginFilter implements Filter {
 
             log.info("로그인 요청이 들어옴,,,");
 
-            //TODO: Request 파싱하기
-
-            String email = "testuser1@kakao.com";
-            String password = "12345678";
+            //TODO: Request 파싱하기 : 실패..
+            String email = "eamil";
+            String password = "password";
 
             if(email == null || password == null){
                 throw new RequiredFieldException("비밀번호와 이메일은 필수로 입력해야 합니다.");
@@ -66,8 +56,7 @@ public class LoginFilter implements Filter {
             }
 
             Member member = memberService.getMemberByEmail(email).get();
-            //String token = jwtAuthService.createJwt(email, member.getMemberId());
-            String token = jwtAuthService.createJwt(email, 1L);
+            String token = jwtAuthService.createJwt(email, member.getMemberId());
 
             httpServletResponse.addHeader("Authorization", "Bearer "+ token);
             log.info("토큰 생성 완료");
