@@ -5,6 +5,7 @@ import gift.common.security.exception.MissingTokenException;
 import gift.item.exception.ItemNotFoundException;
 import gift.member.exception.DuplicateEmailException;
 import gift.member.exception.InvalidLoginException;
+import gift.wishlist.exception.WishlistNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.net.URI;
 import org.springframework.http.HttpStatus;
@@ -16,9 +17,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(ItemNotFoundException.class)
+    @ExceptionHandler({
+        ItemNotFoundException.class,
+        WishlistNotFoundException.class
+    })
     public ResponseEntity<ErrorResponseDto> handleItemNotFoundException(
-        ItemNotFoundException e,
+        RuntimeException e,
         HttpServletRequest request
     ) {
         ErrorResponseDto errorResponse = new ErrorResponseDto(

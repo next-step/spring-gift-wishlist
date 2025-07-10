@@ -6,6 +6,7 @@ import gift.item.repository.ItemRepository;
 import gift.wishlist.Wishlist;
 import gift.wishlist.dto.WishlistAddDto;
 import gift.wishlist.dto.WishlistResponseDto;
+import gift.wishlist.exception.WishlistNotFoundException;
 import gift.wishlist.repository.WishlistRepository;
 import jakarta.validation.Valid;
 import java.util.ArrayList;
@@ -64,5 +65,23 @@ public class WishlistService {
 
         return wishlistResponseDtos;
 
+    }
+
+    public WishlistResponseDto findWishlist(Long wishlistId) {
+        Wishlist wishlist = wishlistRepository.findById(wishlistId)
+            .orElseThrow(() -> new WishlistNotFoundException(wishlistId));
+
+        Item item = itemRepository.findById(wishlist.getItemId())
+            .orElseThrow(() -> new ItemNotFoundException(wishlist.getItemId()));
+
+        return new WishlistResponseDto(
+            wishlist.getId(),
+            wishlist.getMemberId(),
+            wishlist.getItemId(),
+            item.getName(),
+            item.getPrice(),
+            item.getImageUrl(),
+            wishlist.getCreatedAt()
+        );
     }
 }

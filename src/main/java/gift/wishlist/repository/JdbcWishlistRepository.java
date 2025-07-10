@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -57,5 +59,24 @@ public class JdbcWishlistRepository implements WishlistRepository {
                 rs.getTimestamp("created_at").toLocalDateTime()
             )
         );
+    }
+
+    @Override
+    public Optional<Wishlist> findById(Long id) {
+        String sql = "SELECT id, member_id, item_id, created_at FROM wishlist WHERE id = ?";
+
+        try {
+            Wishlist wishlist = jdbcTemplate.queryForObject(sql,
+                (rs, rowNum) -> new Wishlist(
+                    rs.getLong("id"),
+                    rs.getLong("member_id"),
+                    rs.getLong("item_id"),
+                    rs.getTimestamp("created_at").toLocalDateTime()
+                ), id
+            );
+            return Optional.ofNullable(wishlist);
+        } catch (DataAccessException e) {
+            return Optional.empty();
+        }
     }
 }
