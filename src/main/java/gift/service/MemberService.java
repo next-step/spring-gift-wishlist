@@ -68,8 +68,9 @@ public class MemberService {
                 .ifPresent(member -> {
                     throw new EmailAlreadyExistsException("이미 사용 중인 이메일입니다.");
                 });
-
-        Member member = new Member(request.email(), request.password());
+        
+        String encodedPassword = passwordEncoder.encode(request.password());
+        Member member = new Member(request.email(), encodedPassword);
         memberRepository.save(member);
     }
 }
