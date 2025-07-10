@@ -50,11 +50,11 @@ public class MemberRepository implements MemberRepositoryInterface {
     @Override
     public List<Product> findAllProductsFromWishListByEmail(String email) {
         String sql = "SELECT productId FROM wishlist WHERE email = ?";
-        List<Integer> wishlistProductId = jdbcTemplate.query(sql, this::mapRowToProductId, email);
+        List<Long> wishlistProductId = jdbcTemplate.query(sql, this::mapRowToProductId, email);
         List<Product> wishlistProduct = new ArrayList<>();
 
         String sql2 = "SELECT * FROM product WHERE id = ?";
-        for(Integer productId : wishlistProductId) {
+        for(Long productId : wishlistProductId) {
             Product product = jdbcTemplate.queryForObject(sql2, this::mapRowToProduct, productId);
             wishlistProduct.add(product);
         }
@@ -62,7 +62,7 @@ public class MemberRepository implements MemberRepositoryInterface {
     }
 
     @Override
-    public void addProductToWishListByEmail(String email, Integer productId) {
+    public void addProductToWishListByEmail(String email, Long productId) {
         String sql = "INSERT INTO wishlist (email, productId) VALUES (?, ?)";
         jdbcTemplate.update(sql, email, productId);
     }
@@ -93,8 +93,8 @@ public class MemberRepository implements MemberRepositoryInterface {
         return product;
     }
 
-    private Integer mapRowToProductId(ResultSet rs, int rowNum) throws SQLException {
-        Integer productId = rs.getInt("productId");
+    private Long mapRowToProductId(ResultSet rs, int rowNum) throws SQLException {
+        Long productId = rs.getLong("productId");
         return productId;
     }
 }

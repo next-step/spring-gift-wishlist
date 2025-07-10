@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Size;
 
 public class WishListProductRequestDto {
 
-    private int id;
+    private Long id;
     @Size(min = 1, max = 15, message = "상품 이름은 최대 15자까지 입력할 수 있습니다.")
     @Pattern(
             regexp = "^[a-zA-Z0-9가-힣()\\[\\]+\\-&/_ ]*$",
@@ -16,13 +16,13 @@ public class WishListProductRequestDto {
 
     public WishListProductRequestDto() {}
 
-    public WishListProductRequestDto(Integer id, String name, Integer price) {
+    public WishListProductRequestDto(Long id, String name, Integer price) {
         this.id =  id;
         this.name = name;
         this.price = price;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
