@@ -57,12 +57,12 @@ public class WishRepository {
                 .update();
     }
 
-    public void delete(Long memberId, Long productId) {
+    public int delete(Long memberId, Long productId) {
         String sql = "DELETE FROM wish_items WHERE member_id = ? AND product_id = ?";
-        jdbcClient.sql(sql)
+        return jdbcClient.sql(sql)
                 .param(memberId)
                 .param(productId)
-                .update();
+                .update();        // update() 가 영향 행 수를 리턴
     }
 
 }

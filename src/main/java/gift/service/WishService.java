@@ -57,6 +57,11 @@ public class WishService {
             throw new NoSuchElementException("상품을 찾을 수 없습니다.");
         }
 
-        wishRepository.delete(member.getId(),productId);
+        int rows = wishRepository.delete(member.getId(), productId);
+
+        if (rows == 0) {                               // ← 위시 항목 없었음
+            throw new NoSuchElementException("위시 목록에 없는 상품입니다.");
+        }
     }
+
 }
