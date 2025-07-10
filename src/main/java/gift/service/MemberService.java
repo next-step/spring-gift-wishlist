@@ -1,11 +1,8 @@
 package gift.service;
 
-import gift.dto.AuthResponseDto;
 import gift.dto.MemberRequestDto;
 import gift.entity.Member;
 import gift.repository.MemberRepository;
-import gift.util.JwtTokenProvider;
-import org.apache.tomcat.websocket.AuthenticationException;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +15,11 @@ public class MemberService {
 
     public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
+    }
+
+    public Member getMember(long memberId) {
+        return memberRepository.findMemberById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Member 입니다."));
     }
 
     public Member creatMember(MemberRequestDto memberRequestDto) {
