@@ -35,5 +35,8 @@ public class MemberServiceImpl implements MemberService {
         return jwtUtil.generateToken(memberRequestDto);
     }
 
-
+    @Override
+    public Member findByEmail (String email) {
+        return memberRepository.findByEmail(email);
+    }
 }
