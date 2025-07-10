@@ -2,7 +2,7 @@ package gift.member.controller;
 
 import gift.member.dto.LoginRequestDto;
 import gift.member.dto.TokenResponseDto;
-import gift.member.service.AuthService;
+import gift.member.service.LoginService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/members")
-public class AuthController {
+public class LoginController {
 
-    private final AuthService authService;
+    private final LoginService authService;
 
-    public AuthController(AuthService authService) {
+    public LoginController(LoginService authService) {
         this.authService = authService;
     }
 

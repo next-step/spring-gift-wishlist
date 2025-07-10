@@ -10,11 +10,11 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthServiceImpl implements AuthService {
+public class LoginServiceImpl implements LoginService {
 
     private final MemberRepository memberRepository;
 
-    public AuthServiceImpl(MemberRepository memberRepository) {
+    public LoginServiceImpl(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
 
