@@ -3,6 +3,7 @@ package gift.global.interceptor;
 import gift.global.exception.ErrorCode;
 import gift.global.exception.InvalidTokenException;
 import gift.global.jwt.JwtUtil;
+import gift.global.util.RequestAttributes;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
@@ -35,7 +36,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         // 원래 member 객체나 memberId등 controller에서 필요한 정보들을 httpServlet에 넣어두고,
         // controller에서 @RequestAttribute("")로 전달받아서 사용하려고 했습니다.
         // 참고로 토큰 자체에 대한 유효성 검증은 jwtUtil.getSubject()에서 수행됩니다.
-        request.setAttribute("memberId", Long.parseLong(jwtUtil.getSubject(token)));
+        request.setAttribute(RequestAttributes.MEMBER_ID, Long.parseLong(jwtUtil.getSubject(token)));
 
         return true;
     }
