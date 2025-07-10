@@ -1,14 +1,13 @@
 package gift.dto;
 
-public class MemberResponseDto {
-
+public class MemberLoginResponseDto {
     private String token;
 
 
-    public MemberResponseDto() {
+    public MemberLoginResponseDto() {
     }
 
-    public MemberResponseDto(String token) {
+    public MemberLoginResponseDto(String token) {
         this.token = token;
     }
 
