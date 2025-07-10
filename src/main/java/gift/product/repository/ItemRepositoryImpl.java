@@ -76,10 +76,10 @@ public class ItemRepositoryImpl implements ItemRepository {
 
 
 	@Override
-	public void update(Item item) {
+	public void update(Long itemId, Item item) {
 		final String sql = "update item set name = ?, price = ?, image_url = ? where id = ?";
 
-		jdbcTemplate.update(sql, item.getName(), item.getPrice(), item.getImageUrl(), item.getId());
+		jdbcTemplate.update(sql, item.getName(), item.getPrice(), item.getImageUrl(), itemId);
 	}
 
 

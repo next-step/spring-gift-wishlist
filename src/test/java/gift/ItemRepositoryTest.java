@@ -61,7 +61,7 @@ public class ItemRepositoryTest {
 		assertThat(item).isPresent();
 		assertThat(item.get().getId()).isEqualTo(1L);
 		//when
-		itemRepository.update(new Item(1L, 1L,"수정된이름", 99, "http://www.naver.com"));
+		itemRepository.update(1L, new Item(1L,"수정된이름", 99, "http://www.naver.com"));
 		//then
 		assertThat(itemRepository.findById(1L).get().getName()).isEqualTo("수정된이름");
 	}
