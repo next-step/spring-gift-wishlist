@@ -22,6 +22,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
+    @Deprecated
     public List<Product> findAll() {
         return productDao.findAll();
     }

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface WishedProductDao {
+    @Deprecated
     List<WishedProduct> findAllProduct(Long userId);
     List<WishedProduct> findAllProduct(Long userId, int page, int size);
     Optional<WishedProduct> findById(Long userId, Long productId);
@@ -17,7 +18,5 @@ public interface WishedProductDao {
     Integer decreaseProductQuantity(Long userId, Long productId, Integer quantity);
     void clear(Long userId);
     Integer count(Long userId);
-    Integer totalPrice(Long userId);
-    Integer totalQuantity(Long userId);
     WishedProductStats getWishedProductStats(Long userId);
 }

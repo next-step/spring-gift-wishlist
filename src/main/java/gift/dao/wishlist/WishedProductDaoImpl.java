@@ -44,6 +44,7 @@ public class WishedProductDaoImpl implements WishedProductDao {
     }
 
     @Override
+    @Deprecated
     public List<WishedProduct> findAllProduct(Long userId) {
         String sql = "SELECT w.product_id, p.name, p.price, p.image_url, w.quantity " +
                      "FROM wished_products w JOIN products p ON w.product_id = p.id " +
@@ -145,27 +146,6 @@ public class WishedProductDaoImpl implements WishedProductDao {
     @Override
     public Integer count(Long userId) {
         String sql = "SELECT COUNT(*) FROM wished_products WHERE user_id = ?";
-        return jdbcClient.sql(sql)
-                .param(userId)
-                .query(Integer.class)
-                .optional()
-                .orElse(0);
-    }
-
-    @Override
-    public Integer totalPrice(Long userId) {
-        String sql = "SELECT SUM(p.price * w.quantity) FROM wished_products w " +
-                     "JOIN products p ON w.product_id = p.id WHERE w.user_id = ?";
-        return jdbcClient.sql(sql)
-                .param(userId)
-                .query(Integer.class)
-                .optional()
-                .orElse(0);
-    }
-
-    @Override
-    public Integer totalQuantity(Long userId) {
-        String sql = "SELECT SUM(quantity) FROM wished_products WHERE user_id = ?";
         return jdbcClient.sql(sql)
                 .param(userId)
                 .query(Integer.class)

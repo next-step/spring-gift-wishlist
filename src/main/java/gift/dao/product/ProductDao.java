@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProductDao {
+    @Deprecated
     List<Product> findAll();
     List<Product> findAll(int page, int size);
     Optional<Product> findById(Long productId);

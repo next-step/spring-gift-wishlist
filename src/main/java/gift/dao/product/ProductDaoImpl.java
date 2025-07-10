@@ -35,6 +35,7 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
+    @Deprecated
     public List<Product> findAll() {
         String sql = "SELECT * FROM products";
         return jdbcClient.sql(sql)

@@ -2,7 +2,6 @@ package gift.repository.role;
 
 import gift.dao.role.UserRoleDao;
 import gift.entity.UserRole;
-import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,7 +51,7 @@ public class RoleRepositoryImpl implements RoleRepository {
 
     @Override
     @Transactional
-    public Set<UserRole> sync(Long userId, Set<UserRole> roles) {
+    public Boolean sync(Long userId, Set<UserRole> roles) {
         if (userId == null || roles == null) {
             throw new IllegalArgumentException("사용자 ID와 역할 집합은 null일 수 없습니다.");
         }
@@ -68,9 +67,6 @@ public class RoleRepositoryImpl implements RoleRepository {
                 .forEach(role -> delete(userId, role));
 
         Set<UserRole> updatedRoles = findByUserId(userId);
-        if (!updatedRoles.equals(roles)) {
-            throw new DataRetrievalFailureException("역할을 업데이트 하는데 실패했습니다.");
-        }
-        return updatedRoles;
+        return updatedRoles.equals(roles);
     }
 }

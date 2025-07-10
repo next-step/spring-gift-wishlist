@@ -1,8 +1,6 @@
 package gift.dao.user;
 
 import gift.entity.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -15,7 +13,6 @@ import java.util.Optional;
 
 @Repository
 public class UserDaoImpl implements UserDao {
-    private static final Logger log = LoggerFactory.getLogger(UserDaoImpl.class);
     private final JdbcClient jdbcClient;
 
     private static class UserRowMapper implements RowMapper<User> {
@@ -34,6 +31,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    @Deprecated
     public List<User> findAll() {
         String sql = "SELECT * FROM users";
         return jdbcClient.sql(sql)

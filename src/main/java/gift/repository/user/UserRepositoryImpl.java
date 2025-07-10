@@ -21,6 +21,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    @Deprecated
     public List<User> findAll() {
         return userDao.findAll();
     }

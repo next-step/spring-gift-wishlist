@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserDao {
+    @Deprecated
     List<User> findAll();
     List<User> findAll(int page, int size);
     Optional<User> findById(Long userId);

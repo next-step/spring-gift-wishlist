@@ -1,5 +1,10 @@
 package gift.common.model;
 
+/**
+ * 정렬 기준을 나타내는 클래스입니다. 추후 정렬 기능을 확장할 수 있도록 설계되었습니다.
+ * @param field 정렬할 필드 이름
+ * @param ascending 정렬 방향 (true: 오름차순, false: 내림차순)
+ */
 public record SortBy(
         String field,
         Boolean ascending
