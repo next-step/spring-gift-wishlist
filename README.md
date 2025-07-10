@@ -30,7 +30,7 @@
 
 ## 3️⃣ 3단계 - 위시 리스트
 ### 개발 예정 기능 목록
-- [ ] 위시 리스트 API 
+- [ ] 위시 리스트 API
   - [x] 위시 리스트에 등록된 상품 조회 API (`GET /api/wishes`)
   - [ ] 위시 리스트에 상품 등록 API (`POST /api/wishes`)
   - [ ] 위시 리시트 상품 삭제 API (`DELETE /api/wishes/{productId}`)
