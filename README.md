@@ -61,3 +61,11 @@
 ### 추가 구현
 - Admin Page 로그인 기능 구현
 - 테스트 코드 리팩터링
+
+## 3단계 코드리뷰 요청 (구현내용 명세)
+### 2단계 코드리뷰 반영 및 추가 구현
+- Member AdminPage 기능 구현
+- Admin Page 디자인 개선
+- AuthorizationFilter 가독성 향상
+- token 검증 method의 token 가져오기 역할 분담 (to JwtTokenFilter)
+- BCryptEncryptor의 불필요한 `@Component` 제거
