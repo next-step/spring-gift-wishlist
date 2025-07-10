@@ -37,12 +37,9 @@ public class JdbcWishlistRepository implements WishlistRepository {
         LocalDateTime createdAt = jdbcTemplate.queryForObject(sql, LocalDateTime.class,
             generatedValue);
 
-        return new Wishlist(
-            generatedValue,
-            wishlist.getMemberId(),
-            wishlist.getItemId(),
-            createdAt
-        );
+        wishlist.setCreatedAt(createdAt);
+
+        return wishlist;
     }
 
     @Override
