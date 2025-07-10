@@ -6,6 +6,8 @@ public class Member {
     private String email;
     private String password;
 
+    public Member() {}
+
     // 정적 팩토리 메서드
     public static Member createMember(String email, String password) {
         return new Member(null, email, password);
@@ -21,6 +23,10 @@ public class Member {
         this.password = password;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -28,6 +34,7 @@ public class Member {
     public String getPassword() {
         return password;
     }
+
 
     public void validatePassword(String password) throws IllegalAccessException {
         if (!this.password.equals(password)) {

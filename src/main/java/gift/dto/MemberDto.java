@@ -10,9 +10,13 @@ public class MemberDto {
 
     private String password;
 
-    public MemberDto() {}
+    public MemberDto() {
+    }
 
     public MemberDto(Member member) {
+        this.id = member.getId();
+        this.email = member.getEmail();
+        this.password = member.getPassword();
     }
 
     public Long getId() {
@@ -29,5 +33,13 @@ public class MemberDto {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
