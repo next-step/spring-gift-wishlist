@@ -8,6 +8,7 @@ import gift.entity.Member;
 import gift.exception.LoginException;
 import gift.repository.MemberRepository;
 import java.util.List;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,14 +16,18 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
+    private final PasswordEncoder passwordEncoder;
 
-    public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
+    public MemberService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider,
+            PasswordEncoder passwordEncoder) {
         this.memberRepository = memberRepository;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public TokenResponse register(MemberRequest request) {
-        Member member = new Member(request.email(), request.password());
+        String encodedPassword = passwordEncoder.encode(request.password());
+        Member member = new Member(request.email(), encodedPassword);
         Member savedMember = memberRepository.save(member);
 
         String token = jwtTokenProvider.createToken(savedMember.getEmail());
@@ -33,7 +38,7 @@ public class MemberService {
         Member member = memberRepository.findByEmail(request.email())
                 .orElseThrow(() -> new LoginException("이메일 또는 비밀번호가 일치하지 않습니다."));
 
-        if (!member.getPassword().equals(request.password())) {
+        if (!passwordEncoder.matches(request.password(), member.getPassword())) {
             throw new LoginException("이메일 또는 비밀번호가 일치하지 않습니다.");
         }
 
@@ -45,7 +50,7 @@ public class MemberService {
         Member member = memberRepository.findByEmail(request.email())
                 .orElseThrow(() -> new LoginException("이메일 또는 비밀번호가 일치하지 않습니다."));
 
-        if (!member.getPassword().equals(request.password())) {
+        if (!passwordEncoder.matches(request.password(), member.getPassword())) {
             throw new LoginException("이메일 또는 비밀번호가 일치하지 않습니다.");
         }
         return member;
