@@ -4,15 +4,20 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import java.util.Date;
 import javax.crypto.SecretKey;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+@Component
 public class JwtUtil {
 
-    private static final String SECRET_KEY_STRING = "your-256-bit-secret-your-256-bit-secret";
+    private final SecretKey secretKey;
     private static final long EXPIRATION_TIME = 1000 * 60 * 60;
 
-    private static final SecretKey SECRET_KEY = Keys.hmacShaKeyFor(SECRET_KEY_STRING.getBytes());
+    public JwtUtil(@Value("${jwt.secret}") String secretKeyString) {
+        this.secretKey = Keys.hmacShaKeyFor(secretKeyString.getBytes());
+    }
 
-    public static String generateToken(String email) {
+    public String generateToken(String email) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + EXPIRATION_TIME);
 
@@ -20,7 +25,7 @@ public class JwtUtil {
             .subject(email)
             .issuedAt(now)
             .expiration(expiryDate)
-            .signWith(SECRET_KEY)
+            .signWith(secretKey)
             .compact();
     }
 }

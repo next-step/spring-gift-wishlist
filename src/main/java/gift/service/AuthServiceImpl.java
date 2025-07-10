@@ -15,10 +15,13 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
-    public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder,
+        JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
     }
 
     @Override
@@ -31,7 +34,7 @@ public class AuthServiceImpl implements AuthService {
         User user = new User(null, request.email(), encrypted);
         User savedUser = userRepository.save(user);
 
-        String token = JwtUtil.generateToken(savedUser.getEmail());
+        String token = jwtUtil.generateToken(savedUser.getEmail());
 
         return AuthResponse.from(token);
     }
@@ -45,7 +48,7 @@ public class AuthServiceImpl implements AuthService {
             throw new CustomException(CustomResponseCode.LOGIN_FAILED);
         }
 
-        String token = JwtUtil.generateToken(user.getEmail());
+        String token = jwtUtil.generateToken(user.getEmail());
 
         return AuthResponse.from(token);
     }
