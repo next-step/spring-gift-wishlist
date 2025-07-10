@@ -1,12 +1,13 @@
 package gift.controller;
 
 import gift.auth.LoginMember;
+import gift.dto.api.WishRequestDto;
 import gift.dto.api.WishResponseDto;
 import gift.entity.Member;
 import gift.service.WishService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,6 +24,13 @@ public class WishController {
     @GetMapping
     public List<WishResponseDto> getWishList(@LoginMember Member member) {
         return wishService.getWishListForMember(member);
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addWishItem(@LoginMember Member member,
+                            @RequestBody @Valid WishRequestDto wishRequestDto) {
+        wishService.addWishItemForMember(member, wishRequestDto);
     }
 
 }

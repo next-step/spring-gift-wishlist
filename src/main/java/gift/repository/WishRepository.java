@@ -42,4 +42,19 @@ public class WishRepository {
                 .list();
     }
 
+    public void updateOrInsertWishItem(Long memberId, Long productId, int quantity) {
+        String sql = """
+                INSERT INTO wish_items (member_id, product_id, quantity)
+                VALUES (?, ?, ?)
+                ON DUPLICATE KEY UPDATE
+                quantity = wish_items.quantity + ?
+                """;
+        jdbcClient.sql(sql)
+                .param(memberId)
+                .param(productId)
+                .param(quantity)
+                .param(quantity)
+                .update();
+    }
+
 }

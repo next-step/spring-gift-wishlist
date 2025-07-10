@@ -8,6 +8,7 @@ import gift.exception.InvalidAuthorizationHeaderException;
 import gift.exception.MissingAuthorizationHeaderException;
 import gift.repository.MemberRepository;
 import gift.repository.ProductRepository;
+import gift.repository.WishRepository;
 import gift.service.WishService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,6 +25,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc
@@ -150,6 +152,116 @@ public class WishControllerTest {
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.error")
                         .value("Authorization 헤더 형식이 올바르지 않습니다."));
+    }
+
+
+    @Test @DisplayName("POST /api/wishes – productId null → Bad Request")
+    void add_nullProductId_badRequest() throws Exception {
+        String body = """
+            { "productId": "", "quantity": 2 }
+            """;
+
+        mockMvc.perform(post("/api/wishes")
+                        .header("Authorization", "Bearer dummy-token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.productId")
+                        .value("상품 ID는 필수입니다."));
+    }
+
+    @Test
+    @DisplayName("POST /api/wishes – 없는 상품 → 404")
+    void add_nonexistentProduct_notFound() throws Exception {
+        String body = """
+        { "productId": 999, "quantity": 1 }
+        """;
+
+        mockMvc.perform(post("/api/wishes")
+                        .header("Authorization", "Bearer dummy-token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.error")
+                        .value("상품을 찾을 수 없습니다."));
+    }
+
+    @Test
+    @DisplayName("POST /api/wishes – quantity null → 400")
+    void add_nullQuantity_badRequest() throws Exception {
+        String body = """
+            { "productId": 5, "quantity": "" }
+            """;
+
+        mockMvc.perform(post("/api/wishes")
+                        .header("Authorization", "Bearer dummy-token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.quantity")
+                        .value("상품 수량은 필수입니다."));
+    }
+
+    @Test
+    @DisplayName("POST /api/wishes – quantity 0 이하 → 400")
+    void add_invalidQuantity_badRequest() throws Exception {
+        String body = """
+            { "productId": 5, "quantity": 0 }
+            """;
+
+        mockMvc.perform(post("/api/wishes")
+                        .header("Authorization", "Bearer dummy-token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.quantity")
+                        .value("한 개 이상 담을 수 있습니다."));
+    }
+
+    @Test
+    @DisplayName("POST /api/wishes – 인증 헤더 누락 → 401")
+    void add_withoutAuth_unauthorized() throws Exception {
+        String body = """
+            { "productId": 5, "quantity": 2 }
+            """;
+
+        mockMvc.perform(post("/api/wishes")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.error")
+                        .value("Authorization 헤더가 필요합니다."));
+    }
+
+    @Test @DisplayName("POST /api/wishes – 잘못된 프리픽스 → 401")
+    void add_badPrefix_unauthorized() throws Exception {
+        String body = """
+        { "productId": 5, "quantity": 2 }
+        """;
+
+        mockMvc.perform(post("/api/wishes")
+                        .header("Authorization", "Basic abc123")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.error")
+                        .value("Authorization 헤더 형식이 올바르지 않습니다."));
+    }
+
+    @Test
+    @DisplayName("POST /api/wishes – productId 누락 → 400")
+    void add_missingProductId_badRequest() throws Exception {
+        String body = """
+                { productId : , quantity : 2 }
+                """;
+
+        mockMvc.perform(post("/api/wishes")
+                        .header("Authorization", "Bearer dummy-token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error")
+                        .value("요청 JSON 형식이 잘못되었습니다."));
     }
 
 }
