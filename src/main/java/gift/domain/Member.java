@@ -14,16 +14,12 @@ public class Member {
         this.role = role;
     }
 
-    public static Member of(Long id, String email, String password, String role) {
-        return new Member(id, email, password, role);
-    }
-
-    public static Member of(Long id, String email, String password) {
-        return new Member(id, email, password, "ROLE_USER");
-    }
-
-    public static Member of(String email, String password) {
+    public static Member createMemberWithEmailAndPassword(String email, String password) {
         return new Member(null, email, password, "ROLE_USER");
+    }
+
+    public static Member createMemberForUpdate(Long id, String email) {
+        return new Member(id, email, null, null);
     }
 
     public Long getId() {

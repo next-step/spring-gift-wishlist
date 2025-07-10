@@ -43,7 +43,7 @@ public class MemberService {
             throw new RegisterException("이미 가입된 이메일입니다.");
         }
 
-        Long generatedId = memberRepository.save(Member.of(
+        Long generatedId = memberRepository.save(Member.createMemberWithEmailAndPassword(
             request.email(),
             passwordEncoder.encode(request.password()))
         );
@@ -68,6 +68,8 @@ public class MemberService {
 
     // TODO: 추후 브라우저 로컬스토리지나 쿠키에 토큰을 저장한다면, 토큰을 invalidate하는 signout 메서드 구현하기!
 
+    // ######################## 관리자 페이지를 위한 메서드 ########################
+
     @Transactional(readOnly = true)
     public List<AdminMemberResponse> findAll() {
         return memberRepository.findAll()
@@ -87,7 +89,7 @@ public class MemberService {
     public void update(Long id, UpdateMemberRequest request) {
         checkMemberExistence(id);
 
-        Member newMember = Member.of(id, request.email(), null);
+        Member newMember = Member.createMemberForUpdate(id, request.email());
         int count = memberRepository.update(newMember);
         if (count != 1) {
             throw new MemberUpdateException("유저 이메일 수정을 실패했습니다.");
