@@ -15,16 +15,14 @@ public class JwtTokenProvider {
 
     private final SecretKey secretKey;
 
-
     public JwtTokenProvider(@Value("${jwt.secretKey}") String secretKey) {
         this.secretKey = Keys.hmacShaKeyFor(secretKey.getBytes());
 
     }
 
-    public String makeJwtToken(Member member) {
+    public String makeJwtToken(long memberId) {
         return Jwts.builder()
-                .subject(Long.toString(member.id()))
-                .claim("email", member.email())
+                .subject(Long.toString(memberId))
                 .signWith(secretKey)
                 .compact();
     }
@@ -33,7 +31,7 @@ public class JwtTokenProvider {
         JwtParser parser = Jwts.parser()
                 .verifyWith(secretKey)
                 .build();
-        Claims claims = (Claims) parser.parse(jwtToken).getPayload();
+        Claims claims = parser.parseSignedClaims(jwtToken).getPayload();
 
         return new JwtPayload(claims);
     }

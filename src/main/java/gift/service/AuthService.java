@@ -2,6 +2,7 @@ package gift.service;
 
 import gift.dto.AuthResponseDto;
 import gift.dto.MemberRequestDto;
+import gift.entity.Member;
 import gift.util.JwtTokenProvider;
 import org.springframework.stereotype.Service;
 
@@ -17,17 +18,14 @@ public class AuthService {
     }
 
     public AuthResponseDto register(MemberRequestDto memberRequestDto) {
-        return new AuthResponseDto(
-                jwtTokenProvider.makeJwtToken(
-                        memberService.creatMember(memberRequestDto)
-                ));
+        Member member = memberService.creatMember(memberRequestDto);
+        String token = jwtTokenProvider.makeJwtToken(member.id());
+        return new AuthResponseDto(token);
     }
 
     public AuthResponseDto login(MemberRequestDto memberRequestDto) {
-
-        return new AuthResponseDto(
-                jwtTokenProvider.makeJwtToken(
-                        memberService.login(memberRequestDto)
-                ));
+        Member member = memberService.login(memberRequestDto);
+        String token = jwtTokenProvider.makeJwtToken(member.id());
+        return new AuthResponseDto(token);
     }
 }
