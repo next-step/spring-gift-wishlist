@@ -38,7 +38,6 @@ public class WishController {
     }
 
     // /api/wishes?page=0&size=10&sort=createdDate,desc
-    // TODO: sort 추가 -> 테스트 필요
     @GetMapping
     public ResponseEntity<WishPageResponseDto> getWishes(@LoginMember Member member,
         @RequestParam(defaultValue = "0") Integer page,

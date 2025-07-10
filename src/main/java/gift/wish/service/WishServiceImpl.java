@@ -41,6 +41,7 @@ public class WishServiceImpl implements WishService {
             wish.getCreateDate());
     }
 
+    // TODO: 상품 이름도 같이 반환할 수 있는 방법이 뭐가 있을까?
     @Override
     public WishPageResponseDto getWishes(Member member, WishGetRequestDto wishGetRequestDto) {
         Integer page = wishGetRequestDto.page();
@@ -86,10 +87,8 @@ public class WishServiceImpl implements WishService {
 
     @Override
     public void deleteWish(Member member, Long wishId) {
-        // TODO: 위시 ID 검색(WishRepository.findByWishId), 실패 시 예외 처리(존재하지 않은 위시) -> 테스트 필요
         Wish wish = wishRepository.findByWishId(wishId);
 
-        // TODO: 위시 데이터에 존재하는 회원 ID와 제공한 회원 ID 비교, 실패 시 예외 처리(다른 사용자) -> 테스트 필요
         if (!member.getMemberId().equals(wish.getMemberId())) {
             throw new WishlistAccessDeniedException("다른 사용자의 위시리스트에 접근할 수 없습니다.");
         }

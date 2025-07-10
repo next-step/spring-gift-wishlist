@@ -7,15 +7,15 @@ import java.util.List;
 
 public interface WishRepository {
 
-    public void addWish(Wish wish);
+    void addWish(Wish wish);
 
-    public List<Wish> getWishes(Member member, Page page);
+    List<Wish> getWishes(Member member, Page page);
 
-    public void deleteWish(Long wishId);
+    void deleteWish(Long wishId);
 
-    public Wish findByWishId(Long wishId);
+    Wish findByWishId(Long wishId);
 
-    public Long countWishesByMemberId(Long memberId);
+    Long countWishesByMemberId(Long memberId);
 
-    public Boolean existsByMemberAndProduct(Long memberId, Long productId);
+    Boolean existsByMemberAndProduct(Long memberId, Long productId);
 }
