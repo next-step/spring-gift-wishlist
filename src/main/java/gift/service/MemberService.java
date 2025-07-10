@@ -3,7 +3,7 @@ package gift.service;
 import gift.auth.JwtTokenProvider;
 import gift.dto.MemberInfoResponse;
 import gift.dto.MemberRequest;
-import gift.dto.MemberResponse;
+import gift.dto.TokenResponse;
 import gift.entity.Member;
 import gift.exception.LoginException;
 import gift.repository.MemberRepository;
@@ -21,15 +21,15 @@ public class MemberService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public MemberResponse register(MemberRequest request) {
+    public TokenResponse register(MemberRequest request) {
         Member member = new Member(request.email(), request.password());
         Member savedMember = memberRepository.save(member);
 
         String token = jwtTokenProvider.createToken(savedMember.getEmail());
-        return new MemberResponse(token);
+        return new TokenResponse(token);
     }
 
-    public MemberResponse login(MemberRequest request) {
+    public TokenResponse login(MemberRequest request) {
         Member member = memberRepository.findByEmail(request.email())
                 .orElseThrow(() -> new LoginException("이메일 또는 비밀번호가 일치하지 않습니다."));
 
@@ -38,7 +38,7 @@ public class MemberService {
         }
 
         String token = jwtTokenProvider.createToken(member.getEmail());
-        return new MemberResponse(token);
+        return new TokenResponse(token);
     }
 
     public Member authenticate(MemberRequest request) {
