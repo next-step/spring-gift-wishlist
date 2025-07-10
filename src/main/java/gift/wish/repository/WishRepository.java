@@ -6,9 +6,9 @@ public interface WishRepository {
 
     public void addWish(Wish wish);
 
-//    public void getWishes();
+    //    public void getWishes();
 //
-//    public void deleteWish();
+    public void deleteWish(Long wishId);
 
     public Wish findByWishId(Long wishId);
 

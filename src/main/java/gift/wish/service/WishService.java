@@ -8,8 +8,8 @@ public interface WishService {
 
     public WishCreateResponseDto addWish(Member member, WishCreateRequestDto wishCreateRequestDto);
 
-//    public void getWishes();
+    //    public void getWishes();
 //
-//    public void deleteWish();
+    public void deleteWish(Long wishId);
 
 }

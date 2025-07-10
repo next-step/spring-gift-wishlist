@@ -27,4 +27,9 @@ public class WishServiceImpl implements WishService {
             wish.getCreateDate());
     }
 
+    @Override
+    public void deleteWish(Long wishId) {
+        wishRepository.deleteWish(wishId);
+    }
+
 }

@@ -22,6 +22,12 @@ public class WishRepositoryImpl implements WishRepository {
     }
 
     @Override
+    public void deleteWish(Long wishId) {
+        String sql = "DELETE FROM wishes WHERE wishId = ?";
+        jdbcTemplate.update(sql, wishId);
+    }
+
+    @Override
     public Wish findByWishId(Long wishId) {
         String sql = "SELECT wishId, memberId, productId, createdDate FROM wishes WHERE wishId = ?";
 
