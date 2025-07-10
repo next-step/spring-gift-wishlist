@@ -1,0 +1,32 @@
+package gift.product.controller;
+
+
+import gift.product.commons.annotations.Authenticated;
+import gift.product.dto.CreateWishListRequest;
+import gift.product.entity.WishList;
+import gift.product.service.WishListService;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+
+@RestController
+@RequestMapping("/wishlists")
+public class WishListController {
+	private final WishListService wishListService;
+	public WishListController(WishListService wishListService) {
+		this.wishListService = wishListService;
+	}
+
+	@GetMapping
+	@Authenticated
+	public List<WishList> getWishList(@RequestAttribute Long userId) {
+		return wishListService.getWishList(userId);
+	}
+
+	@PostMapping
+	@Authenticated
+	public Long createWishList(@RequestAttribute Long userId, @RequestBody CreateWishListRequest request) {
+		return wishListService.createWishList(userId, request);
+	}
+}
