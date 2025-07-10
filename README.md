@@ -31,8 +31,19 @@
     - 멤버 단건 조회: `GET /api/members/{id}`
     - 멤버 생성: `POST /api/member`
     - 멤버 수정: `PUT /api/member/{id}` 
-    - 멤버 삭제: `DELETE /api/member{id}`
+    - 멤버 삭제: `DELETE /api/member/{id}`
   - 관리자 멤버 관리 페이지
     - 멤버 목록 페이지: `http://localhost:8080/admin/members`
     - 멤버 추가 페이지: `http://localhost:8080/admin/members/new`
     - 멤버 수정 페이지: `http://localhost:8080/admin/members/{id}/edit`
+
+### STEP3: 위시 리스트
+- 위시 리스트 구현
+  - 위시 리스트 API 구현 목록
+    - 상품 전체 조회: `GET /api/wishes`
+    - 상품 추가: `POST /api/wishes`
+    - 상품 삭제: `DELETE /api/wishes/{id}`
+- 토큰 인증
+  - 위시 리스트 기능은 로그인 후 사용이 가능하다.
+    - @LoginMember 어노테이션 생성
+    - LoginMemberArgumentResolver 클래스 구현
