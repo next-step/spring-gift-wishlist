@@ -29,7 +29,7 @@ public class MemberController {
             @RequestBody @Valid MemberRegisterRequestDto requestDto) {
 
         String token = memberService.register(requestDto);
-        MemberRegisterResponseDto responseDto = new MemberRegisterResponseDto(token);//받아온 토큰으로 REsponseDto를 만들어줘
+        MemberRegisterResponseDto responseDto = new MemberRegisterResponseDto(token);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
 
     }
