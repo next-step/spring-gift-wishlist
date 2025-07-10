@@ -49,4 +49,11 @@ public class Member {
     public String getPassword() {
         return password;
     }
+
+    public Member applyPatch(String email, String password, Role authority) {
+        String updatedEmail = email != null ? email : this.email;
+        String updatedPassword = !(password == null || password.isEmpty()) ? password : this.password;
+        Role updateAuthority = authority != null ? authority : this.authority;
+        return new Member(identifyNumber, updatedEmail, updatedPassword, updateAuthority);
+    }
 }
