@@ -7,19 +7,17 @@ import gift.exception.forbidden.EmailDuplicateException;
 import gift.exception.forbidden.EmailNotFoundException;
 import gift.exception.forbidden.WrongPasswordException;
 import gift.repository.MemberRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
 
     private final MemberRepository memberRepository;
-    private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
 
-    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, JwtProvider jwtProvider) {
+    public MemberService(MemberRepository memberRepository, JwtProvider jwtProvider) {
         this.memberRepository = memberRepository;
-        this.passwordEncoder = passwordEncoder;
         this.jwtProvider = jwtProvider;
     }
 
@@ -28,8 +26,8 @@ public class MemberService {
             throw new EmailDuplicateException();
         }
 
-        String encodedPassword = passwordEncoder.encode(dto.getPassword());
-        Member member = new Member(null, dto.getEmail(), encodedPassword, "USER");
+        String hashedPassword = BCrypt.hashpw(dto.getPassword(), BCrypt.gensalt());
+        Member member = new Member(null, dto.getEmail(), hashedPassword, "USER");
         memberRepository.save(member);
     }
 
@@ -37,7 +35,7 @@ public class MemberService {
         Member member = memberRepository.findByEmail(dto.getEmail())
                 .orElseThrow(EmailNotFoundException::new);
 
-        if (!passwordEncoder.matches(dto.getPassword(), member.getPassword())) {
+        if (!BCrypt.checkpw(dto.getPassword(), member.getPassword())) {
             throw new WrongPasswordException();
         }
 
