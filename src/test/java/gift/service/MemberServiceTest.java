@@ -8,6 +8,7 @@ import gift.dto.RegisterRequestDto;
 import gift.dto.TokenResponse;
 import gift.entity.Member;
 import gift.exception.EmailAlreadyExistsException;
+import gift.exception.LoginFailedException;
 import gift.repository.MemberRepository;
 import gift.security.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
@@ -83,7 +84,7 @@ public class MemberServiceTest {
     void login_fail_unregistered_email() {
         given(memberRepository.findByEmail(loginRequestDto.getEmail())).willReturn(Optional.empty());
         assertThatThrownBy(() -> memberService.login(loginRequestDto))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(LoginFailedException.class)
                 .hasMessageContaining("가입되지 않은 이메일입니다.");
     }
 
@@ -92,7 +93,7 @@ public class MemberServiceTest {
         loginRequestDto.setPassword("wrong_password");
         given(memberRepository.findByEmail(loginRequestDto.getEmail())).willReturn(Optional.of(member));
         assertThatThrownBy(() -> memberService.login(loginRequestDto))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(LoginFailedException.class)
                 .hasMessageContaining("비밀번호가 일치하지 않습니다.");
     }
 
