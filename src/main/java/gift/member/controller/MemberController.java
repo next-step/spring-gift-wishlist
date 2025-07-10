@@ -31,7 +31,6 @@ public class MemberController {
     }
 
     //로그인 기능
-
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<MemberResponseDto>> login(@Valid @RequestBody MemberRequestDto memberRequestDto){
 

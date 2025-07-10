@@ -76,5 +76,4 @@ public class ProductService {
             throw new IllegalArgumentException("카카오가 포함된 문구는 담당 MD와 협의한 경우에만 사용할 수 있다.");
         }
     }
-
 }

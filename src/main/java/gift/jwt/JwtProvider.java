@@ -16,8 +16,6 @@ public class JwtProvider {
                 .claim("role", member.getRole())
                 .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
                 .compact();
-
-
     }
 
 }
