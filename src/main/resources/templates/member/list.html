@@ -2,31 +2,31 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>상품 목록</title>
+    <title>회원 목록</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 <div class="container">
-    <h1>상품 목록</h1>
+    <h1>회원 목록</h1>
 
     <table>
         <thead>
         <tr>
             <th>이름</th>
-            <th>가격</th>
-            <th>이미지 URL</th>
+            <th>이메일</th>
+            <th>비밀번호</th>
             <th>관리</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="product : ${products}">
-            <td th:text="${product.name}">이름</td>
-            <td th:text="${product.price} + '원'">가격</td>
-            <td th:text="${product.imageUrl}">이미지 URL</td>
+        <tr th:each="member : ${members}">
+            <td th:text="${member.name}">이름</td>
+            <td th:text="${member.email}">이메일</td>
+            <td th:text="${member.password}">비밀번호</td>
             <td>
-                <a th:href="@{'/admin/products/' + ${product.id}}">상세</a>
-                <a th:href="@{'/admin/products/edit/' + ${product.id}}">수정</a>
-                <form th:action="@{/admin/products/{id}/delete(id=${product.id})}" method="post" style="display:inline">
+                <a th:href="@{'/admin/members/' + ${member.id}}">상세</a>
+                <a th:href="@{'/admin/members/edit/' + ${member.id}}">수정</a>
+                <form th:action="@{/admin/members/{id}/delete(id=${member.id})}" method="post" style="display:inline">
                     <button type="submit" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
                 </form>
             </td>

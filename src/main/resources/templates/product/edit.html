@@ -9,7 +9,7 @@
 <div class="container">
   <h1>상품 수정</h1>
 
-  <form th:action="@{'/products/' + ${product.id}}" th:object="${product}" method="post">
+  <form th:action="@{'/admin/products/' + ${product.id}}" th:object="${product}" method="post">
     <input type="hidden" th:field="*{id}" />
 
     <label>이름:
@@ -31,8 +31,8 @@
   </form>
 
   <div class="back-link">
-    <a th:href="@{/products/{id}(id=${product.id})}">← 상세 보기</a> |
-    <a th:href="@{/products}">목록으로</a>
+    <a th:href="@{/admin/products/{id}(id=${product.id})}">← 상세 보기</a> |
+    <a th:href="@{/admin/products}">목록으로</a>
   </div>
 </div>
 </body>
