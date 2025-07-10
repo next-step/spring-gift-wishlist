@@ -87,15 +87,15 @@ public class UserService {
 
   public UserResponseDto updateUser(Long userId, UserRequestDto dto) {
     User existingUser = findByIdOrFail(userId);
-    String updatedPassword;
+    String finalPassword;
 
     if (dto.password() == null || dto.password().trim().isEmpty()) {
-      updatedPassword = existingUser.getEncodedPassword();
+      finalPassword = existingUser.getEncodedPassword();
     } else {
-      updatedPassword = passwordEncoder.encrypt(dto.email(), dto.password());
+      finalPassword = passwordEncoder.encrypt(dto.email(), dto.password());
     }
 
-    User user = userDao.updateUser(userId, dto.email(), updatedPassword);
+    User user = userDao.updateUser(userId, dto.email(), finalPassword);
     return UserResponseDto.from(user);
   }
 
