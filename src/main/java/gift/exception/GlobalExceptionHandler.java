@@ -2,6 +2,8 @@ package gift.exception;
 
 import gift.exception.member.MemberAlreadyExistsException;
 import gift.exception.member.InvalidCredentialsException;
+import gift.exception.wishList.AlreadyInWishListException;
+import gift.exception.wishList.WishAccessDeniedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -52,6 +54,24 @@ public class GlobalExceptionHandler {
         errors.put("message", e.getMessage());
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errors);
+    }
+
+    @ExceptionHandler(AlreadyInWishListException.class)
+    public ResponseEntity<Map<String, String>>
+    handlerValidationError(AlreadyInWishListException e) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("message", e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errors);
+    }
+
+    @ExceptionHandler(WishAccessDeniedException.class)
+    public ResponseEntity<Map<String, String>>
+    handlerValidationError(WishAccessDeniedException e) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("message", e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errors);
     }
 
 }
