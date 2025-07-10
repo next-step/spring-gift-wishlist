@@ -105,10 +105,8 @@ class ProductControllerTest {
         jdbcTemplate.update(sql, "user@email.com", "1234", "user", "ROLE_USER");
         jdbcTemplate.update(sql, "admin@email.com", "1234", "admin", "ROLE_ADMIN");
 
-        userToken =
-            "Bearer " + jwtTokenProvider.generateToken(1L, "user@email.com", "ROLE_USER");
-        adminToken =
-            "Bearer " + jwtTokenProvider.generateToken(2L, "admin@email.com", "ROLE_ADMIN");
+        userToken = jwtTokenProvider.generateToken(1L, "user@email.com", "ROLE_USER");
+        adminToken = jwtTokenProvider.generateToken(2L, "admin@email.com", "ROLE_ADMIN");
     }
 
     @BeforeEach
