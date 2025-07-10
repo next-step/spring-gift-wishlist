@@ -15,21 +15,16 @@ public class MemberRepository {
     }
 
     public boolean existsByEmail(String email) {
-        Integer count = jdbcClient.sql("SELECT COUNT(*) FROM members WHERE email = :email")
-                .param("email", email)
-                .query(Integer.class)
-                .single();
-        return count > 0;
+        return findByEmail(email).isPresent();
     }
 
-    public void save(Member member) {
+    public Member save(Member member) {
         jdbcClient.sql("INSERT INTO members (email, password) VALUES (:email, :password)")
                 .param("email", member.getEmail())
                 .param("password", member.getPassword())
                 .update();
 
-        Member saved = findByEmail(member.getEmail()).orElseThrow();
-        member.setId(saved.getId());
+        return findByEmail(member.getEmail()).orElseThrow();
     }
 
 
