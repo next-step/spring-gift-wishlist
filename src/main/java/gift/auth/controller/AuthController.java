@@ -1,9 +1,9 @@
-package gift.auth;
+package gift.auth.controller;
 
 import gift.user.domain.User;
-import gift.user.dto.UserLoginRequestDto;
-import gift.user.service.UserService;
-import gift.user.dto.UserSingupRequestDto;
+import gift.auth.dto.UserLoginRequestDto;
+import gift.auth.service.AuthService;
+import gift.auth.dto.UserSingupRequestDto;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,15 +14,15 @@ import java.net.URI;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-    private final UserService userService;
+    private final AuthService authService;
 
-    public AuthController(UserService userService) {
-        this.userService = userService;
+    public AuthController(AuthService authService) {
+        this.authService = authService;
     }
 
     @PostMapping("/signup")
     public ResponseEntity<?> singup(@RequestBody UserSingupRequestDto userSignupRequestDto) {
-        User user = userService.signUp(userSignupRequestDto);
+        User user = authService.signUp(userSignupRequestDto);
 
         return ResponseEntity
                 .created(URI.create("/api/auth/" + user.getId()))
@@ -32,7 +32,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserLoginRequestDto userLoginRequestDto) {
         try {
-            String token = userService.login(userLoginRequestDto);
+            String token = authService.login(userLoginRequestDto);
             return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, "Bearer"+token).body(token);
         }
         catch(IllegalArgumentException e) {

@@ -1,20 +1,20 @@
-package gift.user.service;
+package gift.auth.service;
 
 import gift.auth.JwtProvider;
 import gift.user.domain.User;
-import gift.user.dto.UserLoginRequestDto;
-import gift.user.dto.UserSingupRequestDto;
+import gift.auth.dto.UserLoginRequestDto;
+import gift.auth.dto.UserSingupRequestDto;
 import gift.user.repository.UserDao;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
 @Service
-public class UserService {
+public class AuthService {
     private final UserDao userDao;
     private final JwtProvider jwtProvider;
 
-    public UserService(UserDao userDao, JwtProvider jwtProvider) {
+    public AuthService(UserDao userDao, JwtProvider jwtProvider) {
         this.userDao = userDao;
         this.jwtProvider = jwtProvider;
     }

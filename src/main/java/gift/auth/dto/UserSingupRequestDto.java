@@ -1,4 +1,4 @@
-package gift.user.dto;
+package gift.auth.dto;
 
 public class UserSingupRequestDto {
     private String email;
