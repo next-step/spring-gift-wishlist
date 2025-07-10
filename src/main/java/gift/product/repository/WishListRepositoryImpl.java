@@ -46,9 +46,9 @@ public class WishListRepositoryImpl implements WishListRepository {
 
 
 	@Override
-	public void delete(WishList wishList) {
+	public void delete(Long userId, Long itemId) {
 		final String sql = "DELETE FROM wish_list WHERE user_id = ? AND item_id = ?";
-		jdbcTemplate.update(sql, wishList.getUserId(), wishList.getItemId());
+		jdbcTemplate.update(sql, userId, itemId);
 	}
 
 }
