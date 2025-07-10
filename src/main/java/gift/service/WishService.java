@@ -19,8 +19,9 @@ public class WishService {
     }
 
     public void saveWish(long memberId, long productId, int count) {
-        if (count == 0)
+        if (count == 0){
             return;
+        }
 
         wishRepository.saveWish(memberId, productId, count);
     }
