@@ -25,18 +25,14 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AuthResponse register(AuthRequest request) {
+    public void register(AuthRequest request) {
         if (userRepository.findByEmail(request.email()).isPresent()) {
             throw new CustomException(CustomResponseCode.EMAIL_DUPLICATE);
         }
 
         String encrypted = passwordEncoder.encode(request.password());
         User user = new User(null, request.email(), encrypted);
-        User savedUser = userRepository.save(user);
-
-        String token = jwtUtil.generateToken(savedUser.getEmail());
-
-        return AuthResponse.from(token);
+        userRepository.save(user);
     }
 
     @Override
