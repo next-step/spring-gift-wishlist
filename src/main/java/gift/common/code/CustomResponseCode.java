@@ -10,7 +10,7 @@ public enum CustomResponseCode {
     DELETED(204, "삭제 성공", HttpStatus.NO_CONTENT),
     LIST_RETRIEVED(200, "목록 조회 성공", HttpStatus.OK),
 
-    LOGIN_SUCCESS(200, "로그인 성공¡", HttpStatus.OK),
+    LOGIN_SUCCESS(200, "로그인 성공!", HttpStatus.OK),
     VALIDATION_FAILED(400, "요청 값이 유효하지 않습니다.", HttpStatus.BAD_REQUEST),
     LOGIN_FAILED(403, "로그인에 실패!", HttpStatus.FORBIDDEN),
     FORBIDDEN_KEYWORD(403, "%s - 해당 문구는 담당 MD와 협의한 경우에만 사용할 수 있습니다.", HttpStatus.FORBIDDEN),
