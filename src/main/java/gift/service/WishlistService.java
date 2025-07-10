@@ -4,6 +4,7 @@ import gift.model.WishItem;
 import gift.repository.ProductRepository;
 import gift.repository.WishlistRepository;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,5 +24,15 @@ public class WishlistService {
   public List<WishItem> getWishList(Long memberId) {
     return wishlistRepository.findAllByMemberId(memberId);
   }
+
+  public void addToWishlist(Long memberId, Long productId) {
+    Optional<WishItem> existing = wishlistRepository.findByMemberIdAndProductId(memberId, productId);
+    if (existing.isPresent()) {
+      throw new IllegalArgumentException("이미 찜한 상품입니다.");
+    }
+
+    wishlistRepository.insert(memberId, productId);
+  }
+
 }
 

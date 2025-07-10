@@ -22,7 +22,7 @@ public class WishlistRepository {
   // 회원의 찜 항목 1개 조회
   public Optional<WishItem> findByMemberIdAndProductId(Long memberId, Long productId) {
     String sql = """
-        SELECT w.member_id, p.id AS product_id, p.name, p.price, w.quantity
+        SELECT w.member_id, p.id AS product_id, p.name, p.price, w.quantity, p.imageUrl
         FROM wishlist w
         JOIN product p ON w.product_id = p.id
         WHERE w.member_id = ? AND w.product_id = ?
@@ -34,7 +34,7 @@ public class WishlistRepository {
   // 회원의 전체 찜 목록 조회
   public List<WishItem> findAllByMemberId(Long memberId) {
     String sql = """
-        SELECT w.member_id, p.id AS product_id, p.name, p.price, w.quantity
+        SELECT w.member_id, p.id AS product_id, p.name, p.price, w.quantity, p.imageUrl
         FROM wishlist w
         JOIN product p ON w.product_id = p.id
         WHERE w.member_id = ?
@@ -42,13 +42,22 @@ public class WishlistRepository {
     return jdbcTemplate.query(sql, (rs, rowNum) -> mapRowToWishItem(rs), memberId);
   }
 
+  // 찜 목록에 상품 추가
+  public void insert(Long memberId, Long productId) {
+    String sql = "INSERT INTO wishlist (member_id, product_id, quantity) VALUES (?, ?, ?)";
+    jdbcTemplate.update(sql, memberId, productId, 1);  // 최초 수량 1로 설정
+  }
+
+
   private WishItem mapRowToWishItem(ResultSet rs) throws SQLException {
     return new WishItem(
         rs.getLong("member_id"),
         rs.getLong("product_id"),
         rs.getString("name"),
         rs.getInt("price"),
-        rs.getInt("quantity")
+        rs.getInt("quantity"),
+        rs.getString("imageUrl")  // ✅ 추가
     );
   }
+
 }
