@@ -2,8 +2,11 @@ package gift.service;
 
 import gift.dto.WishlistItemRequestDto;
 import gift.dto.WishlistItemResponseDto;
+import gift.entity.Product;
 import gift.entity.WishlistItem;
 import gift.exception.OperationFailedException;
+import gift.repository.MemberRepository;
+import gift.repository.ProductRepository;
 import gift.repository.WishlistRepository;
 import org.springframework.stereotype.Service;
 
@@ -12,14 +15,20 @@ import java.util.List;
 @Service
 public class WishlistServiceImpl implements WishlistService {
 
+    private final MemberRepository memberRepository;
+    private final ProductRepository productRepository;
     private final WishlistRepository wishlistRepository;
 
-    public WishlistServiceImpl(WishlistRepository wishlistRepository) {
+    public WishlistServiceImpl(WishlistRepository wishlistRepository, MemberRepository memberRepository, ProductRepository productRepository) {
         this.wishlistRepository = wishlistRepository;
+        this.memberRepository = memberRepository;
+        this.productRepository = productRepository;
     }
 
     @Override
     public void addWishlistItem(Long memberId, WishlistItemRequestDto requestDto) {
+        memberRepository.findMemberByIdOrElseThrow(memberId);
+        productRepository.findProductByIdOrElseThrow(requestDto.productId());
         WishlistItem item = new WishlistItem(null, memberId, requestDto.productId(), requestDto.quantity());
         int result = wishlistRepository.addWishlistItem(item);
         if (result == 0) {
