@@ -27,7 +27,9 @@ public class WishedProductDaoImpl implements WishedProductDao {
                     rs.getString("name"),
                     rs.getLong("price"),
                     rs.getString("image_url"),
-                    rs.getInt("quantity")
+                    rs.getInt("quantity"),
+                    rs.getTimestamp("created_at").toInstant(),
+                    rs.getTimestamp("updated_at").toInstant()
             );
         }
     }
@@ -46,7 +48,7 @@ public class WishedProductDaoImpl implements WishedProductDao {
     @Override
     @Deprecated
     public List<WishedProduct> findAllProduct(Long userId) {
-        String sql = "SELECT w.product_id, p.name, p.price, p.image_url, w.quantity " +
+        String sql = "SELECT w.product_id, p.name, p.price, p.image_url, w.quantity, w.created_at, w.updated_at " +
                      "FROM wished_products w JOIN products p ON w.product_id = p.id " +
                      "WHERE w.user_id = ?";
         return jdbcClient.sql(sql)
@@ -58,7 +60,7 @@ public class WishedProductDaoImpl implements WishedProductDao {
 
     @Override
     public List<WishedProduct> findAllProduct(Long userId, int page, int size) {
-        String sql = "SELECT w.product_id, p.name, p.price, p.image_url, w.quantity " +
+        String sql = "SELECT w.product_id, p.name, p.price, p.image_url, w.quantity, w.created_at, w.updated_at " +
                      "FROM wished_products w JOIN products p ON w.product_id = p.id " +
                      "WHERE w.user_id = ? LIMIT ? OFFSET ?";
         int offset = page * size;
@@ -74,7 +76,7 @@ public class WishedProductDaoImpl implements WishedProductDao {
 
     @Override
     public Optional<WishedProduct> findById(Long userId, Long productId) {
-        String sql = "SELECT w.product_id, p.name, p.price, p.image_url, w.quantity " +
+        String sql = "SELECT w.product_id, p.name, p.price, p.image_url, w.quantity, w.created_at, w.updated_at " +
                      "FROM wished_products w JOIN products p ON w.product_id = p.id " +
                      "WHERE w.user_id = ? AND w.product_id = ?";
         return jdbcClient.sql(sql)
