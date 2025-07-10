@@ -7,7 +7,9 @@ import gift.entity.Product;
 import gift.exception.MemberExceptions;
 import gift.repository.MemberRepositoryInterface;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,5 +74,14 @@ public class MemberService implements MemberServiceInterface {
         memberRepository.addProductToWishListByEmail(email, productId);
 
         return findAllProductsFromWishList(token);
+    }
+
+    @Override
+    public void deleteProductFromWishList(String token, Long productId) {
+        String email = jwtAuth.getEmailFromToken(token);
+        boolean deleted = memberRepository.deleteProductFromWishListByEmail(email, productId);
+        if(!deleted) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
     }
 }

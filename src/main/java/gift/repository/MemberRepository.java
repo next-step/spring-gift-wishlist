@@ -67,6 +67,13 @@ public class MemberRepository implements MemberRepositoryInterface {
         jdbcTemplate.update(sql, email, productId);
     }
 
+    @Override
+    public boolean deleteProductFromWishListByEmail(String email, Long productId) {
+        String sql = "DELETE FROM wishlist WHERE email = ? AND productId = ?";
+        int deleted = jdbcTemplate.update(sql, email, productId);
+        return deleted > 0;
+    }
+
     private Member mapRowToMember(ResultSet rs, int rowNum) throws SQLException {
         Member member = new Member(
                 rs.getLong("id"),

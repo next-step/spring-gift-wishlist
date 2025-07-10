@@ -58,4 +58,12 @@ public class MemberController {
 
         return ResponseEntity.status(HttpStatus.OK).body(products);
     }
+
+    @DeleteMapping("/wishlist/{productId}")
+    public ResponseEntity<Void> deleteProductFromWishlist(@RequestHeader("Authorization") String authHeader,
+                                                          @PathVariable("productId") Long productId) {
+        String token = authHeader.substring(7);
+        memberService.deleteProductFromWishList(token, productId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

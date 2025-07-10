@@ -17,4 +17,6 @@ public interface MemberRepositoryInterface {
     List<Product> findAllProductsFromWishListByEmail(String email);
 
     void addProductToWishListByEmail(String email, Integer productId);
+
+    boolean deleteProductFromWishListByEmail(String email, Long productId);
 }

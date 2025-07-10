@@ -15,4 +15,6 @@ public interface MemberServiceInterface {
     List<ProductResponseDto> findAllProductsFromWishList(String token);
 
     List<ProductResponseDto> addProductToWishListByEmail(String token, WishListProductRequestDto requestDto);
+
+    void deleteProductFromWishList(String token, Long productId);
 }
