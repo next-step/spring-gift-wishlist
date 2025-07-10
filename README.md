@@ -45,3 +45,10 @@ step 2. 피드백
 5. 토큰생성시 currentTimeMillis 값을 하나로 통합 하고 시간변경
 6. ResponseEntity<?>로 받던걸 ResponseEntity<Dto>로 받게 변경
 7. MemberService내에서 JWT토큰이 반환되도록 변경
+
+step 3. 위시 리스트
+- 기본조건
+  - 로그인 후 받은 토큰을 사용하여 사용자별 위시 리스트 기능구현
+1. 위시 리스트에 등록된 상품 목록 조회
+2. 위시 리스트에 상품 추가
+3. 위시 리스트에 상품 삭제
