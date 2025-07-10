@@ -21,13 +21,14 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    @Deprecated
     public List<User> findAll() {
         return userDao.findAll();
     }
 
     @Override
     public CustomPage<User> findAll(int page, int size) {
-        var builder = new CustomPage.Builder<>(
+        var builder = CustomPage.builder(
                 userDao.findAll(page, size),
                 userDao.count())
                 .page(page)

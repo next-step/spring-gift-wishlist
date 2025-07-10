@@ -1,8 +1,6 @@
 package gift.dao.user;
 
 import gift.entity.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -15,7 +13,6 @@ import java.util.Optional;
 
 @Repository
 public class UserDaoImpl implements UserDao {
-    private static final Logger log = LoggerFactory.getLogger(UserDaoImpl.class);
     private final JdbcClient jdbcClient;
 
     private static class UserRowMapper implements RowMapper<User> {
@@ -24,7 +21,9 @@ public class UserDaoImpl implements UserDao {
             return new User(
                     rs.getLong("id"),
                     rs.getString("email"),
-                    rs.getString("password")
+                    rs.getString("password"),
+                    rs.getTimestamp("created_at").toInstant(),
+                    rs.getTimestamp("updated_at").toInstant()
             );
         }
     }
@@ -34,6 +33,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    @Deprecated
     public List<User> findAll() {
         String sql = "SELECT * FROM users";
         return jdbcClient.sql(sql)
@@ -80,11 +80,11 @@ public class UserDaoImpl implements UserDao {
                 .param(user.getEmail())
                 .param(user.getPassword())
                 .update(keyHolder);
-
-        if (keyHolder.getKey() == null) {
+        if (keyHolder.getKeys() == null || keyHolder.getKeys().get("ID") == null) {
             throw new DataRetrievalFailureException("상품 저장 후 키를 반환받지 못했습니다.");
         }
-        return keyHolder.getKey().longValue();
+        Number id = (Number) keyHolder.getKeys().get("ID");
+        return id.longValue();
     }
 
     @Override

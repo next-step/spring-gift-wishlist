@@ -1,31 +1,46 @@
 CREATE TABLE IF NOT EXISTS  roles (
-    name VARCHAR(20) NOT NULL,
-    PRIMARY KEY (name)
+                        name VARCHAR(20) NOT NULL,
+                        PRIMARY KEY (name)
 );
 
 CREATE TABLE IF NOT EXISTS users (
-    id BIGINT AUTO_INCREMENT,
-    email VARCHAR(255) NOT NULL UNIQUE ,
-    password VARCHAR(255) NOT NULL,
-    PRIMARY KEY (id)
+                       id BIGINT AUTO_INCREMENT,
+                       email VARCHAR(255) NOT NULL UNIQUE ,
+                       password VARCHAR(255) NOT NULL,
+                       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                       PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS user_roles (
-    user_id BIGINT NOT NULL,
-    role_name BIGINT NOT NULL,
-    PRIMARY KEY (user_id, role_name),
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (role_name) REFERENCES roles(name) ON DELETE CASCADE
+                            user_id BIGINT NOT NULL,
+                            role_name VARCHAR(20) NOT NULL,
+                            PRIMARY KEY (user_id, role_name),
+                            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+                            FOREIGN KEY (role_name) REFERENCES roles(name) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS products (
-    id BIGINT AUTO_INCREMENT,
-    name VARCHAR(15) NOT NULL,
-    price BIGINT NOT NULL,
-    image_url VARCHAR(255) NOT NULL,
-    owner_id BIGINT NOT NULL,
-    PRIMARY KEY (id),
-    FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
+                          id BIGINT AUTO_INCREMENT,
+                          name VARCHAR(15) NOT NULL,
+                          price BIGINT NOT NULL,
+                          image_url VARCHAR(255) NOT NULL,
+                          owner_id BIGINT NOT NULL,
+                          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                          PRIMARY KEY (id),
+                          FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS wished_products (
+                                 user_id BIGINT NOT NULL,
+                                 product_id BIGINT NOT NULL,
+                                 quantity INT NOT NULL DEFAULT 1,
+                                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                                 PRIMARY KEY (user_id, product_id),
+                                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+                                 FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
 );
 
 
@@ -51,3 +66,10 @@ INSERT INTO products (name, price, image_url, owner_id) VALUES
       ('Product 08', 8000, 'https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OHx8c25lYWtlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60"', 1),
       ('Product 09', 9000, 'https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OHx8c25lYWtlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60"', 1),
       ('Product 10', 10000, 'https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OHx8c25lYWtlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60"', 1);
+
+INSERT INTO wished_products (user_id, product_id, quantity) VALUES
+      (1, 1, 1),
+      (1, 2, 2),
+      (1, 3, 3),
+      (1, 4, 4),
+      (1, 5, 5);

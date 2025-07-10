@@ -1,20 +1,61 @@
 package gift.common.model;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
-public record CustomPage<T> (
-    List<T> contents,
-    Integer page,
-    Integer size,
-    Integer totalElements,
-    Integer totalPages
-) {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class CustomPage<T> {
+    private final List<T> contents;
+    private final Integer page;
+    private final Integer size;
+    private final Integer totalElements;
+    private final Integer totalPages;
+    private final Map<String, Object> extras;
+
+    private CustomPage(List<T> contents, Integer page, Integer size, Integer totalElements, Integer totalPages, Map<String, Object> extras) {
+        this.contents = contents;
+        this.page = page;
+        this.size = size;
+        this.totalElements = totalElements;
+        this.totalPages = totalPages;
+        this.extras = extras;
+    }
+
+    public List<T> getContents() {
+        return contents;
+    }
+
+    public Integer getPage() {
+        return page;
+    }
+
+    public Integer getSize() {
+        return size;
+    }
+
+    public Integer getTotalElements() {
+        return totalElements;
+    }
+
+    public Integer getTotalPages() {
+        return totalPages;
+    }
+
+    @JsonAnyGetter
+    public Map<String, Object> getExtras() {
+        return extras;
+    }
+
     public static class Builder<T> {
-        final private List<T> contents;
-        final private Integer totalElements;
+        private final List<T> contents;
+        private final Integer totalElements;
         private Integer page = 0;
-        private Integer size = 5; // 기본값 설정
+        private Integer size = 5;
+        private Map<String, Object> extras = null;
 
         public Builder(List<T> contents, Integer totalElements) {
             if (contents == null || totalElements == null) {
@@ -34,6 +75,14 @@ public record CustomPage<T> (
             return this;
         }
 
+        public Builder<T> extra(String key, Object value) {
+            if (this.extras == null) {
+                this.extras = new java.util.HashMap<>();
+            }
+            this.extras.put(key, value);
+            return this;
+        }
+
         public CustomPage<T> build() {
             if (this.page < 0 || this.size <= 0) {
                 throw new IllegalArgumentException("페이지 번호는 0 이상이어야 하고, 크기는 1 이상이어야 합니다!");
@@ -45,11 +94,12 @@ public record CustomPage<T> (
             }
 
             return new CustomPage<>(
-                this.contents,
-                this.page,
-                this.size,
-                this.totalElements,
-                totalPages
+                    this.contents,
+                    this.page,
+                    this.size,
+                    this.totalElements,
+                    totalPages,
+                    this.extras
             );
         }
     }
@@ -60,11 +110,13 @@ public record CustomPage<T> (
 
     public static <F, T> CustomPage<T> convert(CustomPage<F> page, Function<F, T> converter) {
         return new CustomPage<>(
-            page.contents().stream().map(converter).toList(),
-            page.page(),
-            page.size(),
-            page.totalElements(),
-            page.totalPages()
+                page.getContents().stream().map(converter).toList(),
+                page.getPage(),
+                page.getSize(),
+                page.getTotalElements(),
+                page.getTotalPages(),
+                page.getExtras()
+
         );
     }
 }

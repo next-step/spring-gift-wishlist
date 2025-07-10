@@ -18,10 +18,16 @@ import java.util.Set;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository userRoleRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, RoleRepository userRoleRepository) {
+    public UserServiceImpl(
+            UserRepository userRepository,
+            RoleRepository userRoleRepository,
+            PasswordEncoder passwordEncoder
+    ) {
         this.userRepository = userRepository;
         this.userRoleRepository = userRoleRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     void validateUser(User user) {
@@ -71,7 +77,7 @@ public class UserServiceImpl implements UserService {
         if (userRepository.findByEmail(user.getEmail()).isPresent()){
             throw new DuplicateKeyException("이미 존재하는 이메일입니다: " + user.getEmail());
         }
-        user.setPassword(PasswordEncoder.encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = userRepository.save(user);
         for (UserRole role : user.getRoles()) {
             userRoleRepository.save(savedUser.getId(), role);
@@ -98,8 +104,13 @@ public class UserServiceImpl implements UserService {
             existingUser.setEmail(user.getEmail());
         }
 
-        if (user.getRoles() != null && !user.getRoles().isEmpty()) {
-            userRoleRepository.sync(user.getId(), user.getRoles());
+        if (user.getRoles() != null) {
+            if (user.getRoles().isEmpty()) {
+                throw new IllegalArgumentException("사용자의 역할은 비어있을 수 없습니다.");
+            }
+            if(!userRoleRepository.sync(user.getId(), user.getRoles())) {
+                throw new IllegalStateException("사용자의 역할을 업데이트하는데 실패했습니다. 사용자 ID: " + user.getId());
+            }
         }
         User updatedUser = userRepository.save(existingUser);
 

@@ -46,8 +46,8 @@ public class ProductViewController {
         @Min(value = 1, message = "페이지 크기는 양수여야 합니다.") Integer size
     ) {
         CustomPage<Product> currentPage = productService.getBy(page, size);
-        int start = Math.max(0, currentPage.page() - 2);
-        int end = Math.min(currentPage.totalPages() - 1, currentPage.page() + 2);
+        int start = Math.max(0, currentPage.getPage() - 2);
+        int end = Math.min(currentPage.getTotalPages() - 1, currentPage.getPage() + 2);
 
         model.addAttribute("title", "관리자 상품 목록");
         model.addAttribute("pageInfo", currentPage);

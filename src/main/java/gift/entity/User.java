@@ -1,14 +1,17 @@
 package gift.entity;
 
+import java.time.Instant;
+import java.util.Objects;
 import java.util.Set;
 
-public class User {
+public class User extends AbstractEntity {
     private Long id;
     private String email;
     private String password;
     private Set<UserRole> roles;
 
     public User(Long id, String email, String password) {
+        super();
         this.id = id;
         this.email = email;
         this.password = password;
@@ -16,6 +19,23 @@ public class User {
     }
 
     public User(Long id, String email, String password, Set<UserRole> roles) {
+        super();
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.roles = roles;
+    }
+
+    public User(Long id, String email, String password, Instant createdAt, Instant updatedAt) {
+        super(createdAt, updatedAt);
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.roles = null;
+    }
+
+    public User(Long id, String email, String password, Set<UserRole> roles, Instant createdAt, Instant updatedAt) {
+        super(createdAt, updatedAt);
         this.id = id;
         this.email = email;
         this.password = password;
@@ -60,6 +80,20 @@ public class User {
                 "id=" + id +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
+                ", updatedAt=" + getUpdatedAt() +
+                ", createdAt=" + getCreatedAt() +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User user)) return false;
+        return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getClass(), id);
     }
 }

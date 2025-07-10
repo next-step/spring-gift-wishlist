@@ -17,13 +17,20 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final TokenProvider tokenProvider;
+    private final PasswordEncoder passwordEncoder;
 
 
-
-    public AuthServiceImpl(UserRepository userRepository, RoleRepository roleRepository, TokenProvider tokenProvider) {
+    public AuthServiceImpl(
+            UserRepository userRepository,
+            RoleRepository roleRepository,
+            TokenProvider tokenProvider,
+            PasswordEncoder passwordEncoder
+        ) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.tokenProvider = tokenProvider;
+        this.passwordEncoder = passwordEncoder;
+
     }
 
     private void validateParameters(String email, String password) {
@@ -41,7 +48,7 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByEmail(email).orElseThrow(
                 () -> new UnauthorizedException("이메일 또는 비밀번호가 일치하지 않습니다.")
         );
-        if (!PasswordEncoder.matches(password, user.getPassword())) {
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new UnauthorizedException("이메일 또는 비밀번호가 일치하지 않습니다.");
         }
         Set<UserRole> roles = roleRepository.findByUserId(user.getId());
@@ -59,7 +66,7 @@ public class AuthServiceImpl implements AuthService {
             throw new DuplicateKeyException("이미 사용 중인 이메일입니다: " + email);
         }
 
-        User user = new User(null, email,  PasswordEncoder.encode(password));
+        User user = new User(null, email,  passwordEncoder.encode(password));
         User savedUser = userRepository.save(user);
         if (savedUser == null || savedUser.getId() == null) {
             throw new IllegalStateException("사용자 저장에 실패했습니다.");
