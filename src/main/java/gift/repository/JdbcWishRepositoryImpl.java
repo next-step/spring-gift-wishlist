@@ -46,10 +46,11 @@ public class JdbcWishRepositoryImpl implements WishRepository {
 
     // 위시리스트에서 상품 삭제
     @Override
-    public void removeWishById(Long wishId) {
-        String sql = "DELETE FROM wish WHERE id = ?";
-        jdbcTemplate.update(sql, wishId);
+    public void removeByMemberIdAndWishId(Long memberId, Long wishId) {
+        String sql = "DELETE FROM wish WHERE id = ? AND member_id = ?";
+        jdbcTemplate.update(sql, wishId, memberId);
     }
+
 
     // 사용자별 위시리스트 조회
     @Override

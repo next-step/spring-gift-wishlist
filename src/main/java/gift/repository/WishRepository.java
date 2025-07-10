@@ -12,5 +12,6 @@ public interface WishRepository {
 
     List<Wish> getWishlistByMemberId(Long memberId);
 
-    void removeWishById(Long wishId);
+    void removeByMemberIdAndWishId(Long memberId, Long wishId);
+
 }
