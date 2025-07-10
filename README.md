@@ -25,3 +25,6 @@ step 3
   - step 1
     - input에 validation 기능 추가
 
+  - step 2
+    - 회원가입 구현
+    - 로그인 구현 (token 활용)

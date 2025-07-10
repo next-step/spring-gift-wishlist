@@ -1,29 +1,20 @@
 package gift;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.product.dto.ProductRequestDto;
 import gift.product.dto.ProductResponseDto;
 import gift.product.entity.Product;
 import gift.exception.GlobalExceptionHandler.ApiResponse;
-import org.assertj.core.api.ListAssert;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.context.annotation.Bean;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
-
-import java.net.http.HttpHeaders;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -114,6 +105,30 @@ public class ProductTest {
     }
 
     @Test
+    public void 카카오_이름_상품_추가() throws Exception {
+
+        //given
+        Product product = new Product();
+        product.setName("카카오");
+        product.setPrice(10000);
+        product.setImageUrl("image.jpg");
+        ProductRequestDto dto = ProductRequestDto.fromEntity(product);
+
+        //when & then
+        assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
+                .isThrownBy(() ->
+                        restClient.post()
+                                .body(dto)
+                                .retrieve()
+                                .toEntity(String.class)
+                )
+                .withMessageContaining("카카오가 포함된 문구는 담당 MD와 협의한 경우에만 사용할 수 있다.");
+
+
+
+    }
+
+    @Test
     public void 빈_값_상품_추가()  throws Exception {
 
         //given
@@ -135,6 +150,8 @@ public class ProductTest {
 
 
     }
+
+
 
     @Test
     public void 전체_상품_조회()  throws Exception {
@@ -159,8 +176,6 @@ public class ProductTest {
         var response = restClient.get()
                 .retrieve()
                 .toEntity(new ParameterizedTypeReference<List<ProductResponseDto>>() {});
-
-
 
         //then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
