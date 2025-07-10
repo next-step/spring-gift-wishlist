@@ -12,6 +12,6 @@ public record GetProductResDto(
 
   public static GetProductResDto from(Product product) {
     return new GetProductResDto(product.id(), product.name(), product.price(),
-        product.description(),product.imageUrl());
+        product.description(), product.imageUrl());
   }
 }

@@ -13,10 +13,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestClient;
 
+@ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class ProductApiE2ETest {
+class ProductApiTextBasedTest {
 
   @LocalServerPort
   int port;
@@ -41,7 +43,7 @@ class ProductApiE2ETest {
   }
 
   @Test
-  void 상품등록_유효하지않은_이름으로_요청시_400_응답반환() {
+  void 상품등록_빈_이름으로_요청시_400_응답반환() {
     var request = new CreateProductReqDto(
         "   ",
         1000,
@@ -53,6 +55,22 @@ class ProductApiE2ETest {
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     assertThat(response.getBody()).contains("상품명은 필수값입니다");
+  }
+
+  @Test
+  void 상품등록_카카오포함된_이름으로_요청시_400_응답반환() {
+    var request = new CreateProductReqDto(
+        "카카오 초콜릿",
+        1000,
+        "설명입니다",
+        "https://example.com/image.jpg"
+    );
+
+    var response = createProductWithErrorResponse(request);
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    System.out.println(response.getBody());
+    assertThat(response.getBody()).contains("상품명에 다음 키워드를 포함할 수 없습니다");
   }
 
   @Test

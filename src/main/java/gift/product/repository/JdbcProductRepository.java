@@ -8,7 +8,6 @@ import java.util.Objects;
 import java.util.Optional;
 import javax.sql.DataSource;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -16,7 +15,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
-public class JdbcProductRepository implements ProductRepository{
+public class JdbcProductRepository implements ProductRepository {
+
   private final NamedParameterJdbcTemplate jdbcTemplate;
   private final SimpleJdbcInsert jdbcInsert;
 
@@ -27,9 +27,15 @@ public class JdbcProductRepository implements ProductRepository{
         .usingGeneratedKeyColumns("id");
   }
 
+  public JdbcProductRepository(NamedParameterJdbcTemplate jdbcTemplate,
+      SimpleJdbcInsert jdbcInsert) {
+    this.jdbcTemplate = jdbcTemplate;
+    this.jdbcInsert = jdbcInsert;
+  }
+
   @Override
   public Long save(Product product) {
-    Objects.requireNonNull(product,"상품은 null이 될 수 없습니다.");
+    Objects.requireNonNull(product, "상품은 null이 될 수 없습니다.");
     SqlParameterSource params = new BeanPropertySqlParameterSource(product);
     Number key = jdbcInsert.executeAndReturnKey(params);
     return key.longValue();
@@ -37,7 +43,7 @@ public class JdbcProductRepository implements ProductRepository{
 
   @Override
   public Optional<Product> findById(Long id) {
-    Objects.requireNonNull(id,"ID은 null이 될 수 없습니다.");
+    Objects.requireNonNull(id, "ID은 null이 될 수 없습니다.");
     String sql = "SELECT * FROM product WHERE id = :id";
     try {
       Map<String, Object> params = Map.of("id", id);
@@ -62,7 +68,7 @@ public class JdbcProductRepository implements ProductRepository{
     );
 
     MapSqlParameterSource params = new MapSqlParameterSource()
-        .addValue("limit", pageSize+1)
+        .addValue("limit", pageSize + 1)
         .addValue("offset", offset);
 
     return jdbcTemplate.query(sql, params, productRowMapper());
@@ -70,18 +76,20 @@ public class JdbcProductRepository implements ProductRepository{
 
   @Override
   public void update(Long id, Product updateProduct) {
-    Objects.requireNonNull(id,"ID는 null일 수 없습니다");
-    Objects.requireNonNull(updateProduct,"상품은 null일 수 없습니다");
+    Objects.requireNonNull(id, "ID는 null일 수 없습니다");
+    Objects.requireNonNull(updateProduct, "상품은 null일 수 없습니다");
 
-    String sql = "UPDATE product SET name = :name, price = :price, description = :description, image_url = :imageUrl " +
-        "WHERE id = :id";
+    String sql =
+        "UPDATE product SET name = :name, price = :price, description = :description, image_url = :imageUrl "
+            +
+            "WHERE id = :id";
 
     SqlParameterSource params = new MapSqlParameterSource()
-        .addValue("id",id)
-        .addValue("name",updateProduct.name())
-        .addValue("price",updateProduct.price())
-        .addValue("description",updateProduct.description())
-        .addValue("imageUrl",updateProduct.imageUrl());
+        .addValue("id", id)
+        .addValue("name", updateProduct.name())
+        .addValue("price", updateProduct.price())
+        .addValue("description", updateProduct.description())
+        .addValue("imageUrl", updateProduct.imageUrl());
 
     int affected = jdbcTemplate.update(sql, params);
     if (affected == 0) {
@@ -91,18 +99,19 @@ public class JdbcProductRepository implements ProductRepository{
 
   @Override
   public void deleteById(Long id) {
-    Objects.requireNonNull(id,"ID는 null일 수 없습니다");
+    Objects.requireNonNull(id, "ID는 null일 수 없습니다");
 
     String sql = "DELETE FROM product WHERE id = :id";
     SqlParameterSource params = new MapSqlParameterSource()
-        .addValue("id",id);
+        .addValue("id", id);
 
     int affected = jdbcTemplate.update(sql, params);
     if (affected == 0) {
       throw new IllegalArgumentException("삭제 실패");
     }
   }
-  private RowMapper<Product> productRowMapper(){
+
+  private RowMapper<Product> productRowMapper() {
     return (rs, rowNum) -> Product.withId(
         rs.getLong("id"),
         rs.getString("name"),

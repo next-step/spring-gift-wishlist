@@ -2,13 +2,14 @@ package gift.product.service;
 
 import gift.global.common.dto.PageRequest;
 import gift.global.common.dto.PagedResult;
-import gift.global.exception.ErrorCode;
 import gift.product.domain.Product;
 import gift.product.dto.CreateProductReqDto;
 import gift.product.dto.GetProductResDto;
 import gift.product.dto.UpdateProductReqDto;
+import gift.product.exception.ProductErrorCode;
 import gift.product.exception.ProductNotFoundException;
 import gift.product.repository.ProductRepository;
+import gift.product.validation.ProductValidator;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,24 +19,30 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductService {
 
   private final ProductRepository productRepository;
+  private final ProductValidator productValidator;
 
-  public ProductService(ProductRepository productRepository) {
+  public ProductService(ProductRepository productRepository, ProductValidator productValidator) {
     this.productRepository = productRepository;
+    this.productValidator = productValidator;
   }
 
-  public PagedResult<GetProductResDto> getAllByPage(PageRequest pageRequest) throws IllegalArgumentException {
+  public PagedResult<GetProductResDto> getAllByPage(PageRequest pageRequest)
+      throws IllegalArgumentException {
     List<Product> pagedProductList = productRepository.findAllByPage(pageRequest.offset(),
-        pageRequest.pageSize(),pageRequest.sortInfo());
-    return PagedResult.of(pagedProductList, pageRequest.offset(), pageRequest.pageSize()).map(GetProductResDto::from);
+        pageRequest.pageSize(), pageRequest.sortInfo());
+    return PagedResult.of(pagedProductList, pageRequest.offset(), pageRequest.pageSize())
+        .map(GetProductResDto::from);
   }
 
   public GetProductResDto getProductById(Long id) throws ProductNotFoundException {
     Product product = productRepository.findById(id)
-        .orElseThrow(() -> new ProductNotFoundException(ErrorCode.PRODUCT_NOT_FOUND));
+        .orElseThrow(() -> new ProductNotFoundException(ProductErrorCode.PRODUCT_NOT_FOUND));
     return GetProductResDto.from(product);
   }
+
   @Transactional
   public Long createProduct(CreateProductReqDto dto) {
+    productValidator.validateProductName(dto.name());
     Product newProduct = Product.of(
         dto.name(),
         dto.price(),
@@ -44,10 +51,12 @@ public class ProductService {
     );
     return productRepository.save(newProduct);
   }
+
   @Transactional
   public void updateProduct(Long id, UpdateProductReqDto dto) throws ProductNotFoundException {
-    if(productRepository.findById(id).isEmpty()){
-      throw new ProductNotFoundException(ErrorCode.PRODUCT_NOT_FOUND);
+    productValidator.validateProductName(dto.name());
+    if (productRepository.findById(id).isEmpty()) {
+      throw new ProductNotFoundException(ProductErrorCode.PRODUCT_NOT_FOUND);
     }
     Product newProduct = Product.withId(
         id,
@@ -58,10 +67,11 @@ public class ProductService {
     );
     productRepository.update(id, newProduct);
   }
+
   @Transactional
   public void deleteProduct(Long id) throws ProductNotFoundException {
-    if(productRepository.findById(id).isEmpty()){
-      throw new ProductNotFoundException(ErrorCode.PRODUCT_NOT_FOUND);
+    if (productRepository.findById(id).isEmpty()) {
+      throw new ProductNotFoundException(ProductErrorCode.PRODUCT_NOT_FOUND);
     }
     productRepository.deleteById(id);
   }

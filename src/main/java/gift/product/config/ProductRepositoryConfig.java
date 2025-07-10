@@ -1,4 +1,4 @@
-package gift.global.config;
+package gift.product.config;
 
 import gift.product.repository.InMemoryProductRepository;
 import gift.product.repository.JdbcProductRepository;
@@ -16,8 +16,9 @@ public class ProductRepositoryConfig {
   public ProductRepository jdbcProductRepository(DataSource dataSource) {
     return new JdbcProductRepository(dataSource);
   }
+
   @Bean
-  @Profile("default")
+  @Profile({"default","test"})
   public ProductRepository inMemoryProductRepository() {
     return new InMemoryProductRepository();
   }
