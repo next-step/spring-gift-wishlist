@@ -1,4 +1,4 @@
-package gift.exception;
+package gift.exception.old;
 
 public class MemberNotFoundException extends RuntimeException {
 

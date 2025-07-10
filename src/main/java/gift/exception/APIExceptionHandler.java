@@ -22,15 +22,20 @@ public class APIExceptionHandler {
         return ResponseEntity.badRequest().body(errors);
     }
 
-    @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<String> reponseStatusExceptionHandler(ResponseStatusException e){
-        HttpStatusCode httpStatusCode = e.getStatusCode();
-        return ResponseEntity.status(httpStatusCode).body(e.getReason());
-    }
+//    @ExceptionHandler(ResponseStatusException.class)
+//    public ResponseEntity<String> reponseStatusExceptionHandler(ResponseStatusException e){
+//        HttpStatusCode httpStatusCode = e.getStatusCode();
+//        return ResponseEntity.status(httpStatusCode).body(e.getReason());
+//    }
+//
+//    @ExceptionHandler(LoggedInRequiredException.class)
+//    public ResponseEntity<String> LoggedInRequired(LoggedInRequiredException e){
+//        return ResponseEntity.badRequest().body(e.getMessage());
+//    }
 
-    @ExceptionHandler(LoggedInRequiredException.class)
-    public ResponseEntity<String> LoggedInRequired(LoggedInRequiredException e){
-        return ResponseEntity.badRequest().body(e.getMessage());
+    @ExceptionHandler(MyException.class)
+    public ResponseEntity<String> myExceptionHandler(MyException e){
+        return ResponseEntity.status(e.getErrorCode().getStatusCode()).body(e.getErrorCode().getMessage());
     }
 
 }

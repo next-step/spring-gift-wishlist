@@ -2,8 +2,8 @@ package gift.filter;
 
 import gift.dto.MemberRequestDto;
 import gift.entity.Member;
-import gift.exception.MemberNotFoundException;
-import gift.exception.RequiredFieldException;
+import gift.exception.ErrorCode;
+import gift.exception.MyException;
 import gift.service.JwtAuthService;
 import gift.service.MemberService;
 import jakarta.servlet.Filter;
@@ -48,11 +48,13 @@ public class LoginFilter implements Filter {
             String password = "password";
 
             if(email == null || password == null){
-                throw new RequiredFieldException("비밀번호와 이메일은 필수로 입력해야 합니다.");
+                throw new MyException(ErrorCode.EMAIL_PASSWORD_REQUIRED);
+                //throw new RequiredFieldException("비밀번호와 이메일은 필수로 입력해야 합니다.");
             }
 
             if(!memberService.checkMember(new MemberRequestDto(email, password))){
-                throw new MemberNotFoundException("해당하는 회원을 찾을 수 없습니다.");
+                throw new MyException(ErrorCode.MEMBER_NOT_FOUND);
+                //throw new MemberNotFoundException("해당하는 회원을 찾을 수 없습니다.");
             }
 
             Member member = memberService.getMemberByEmail(email).get();

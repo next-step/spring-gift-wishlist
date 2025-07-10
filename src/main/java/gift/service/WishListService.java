@@ -4,7 +4,8 @@ import gift.dto.wish.WishRequestDto;
 import gift.dto.wish.WishResponseDto;
 import gift.entity.Product;
 import gift.entity.WishList;
-import gift.exception.ProductNotFoundException;
+import gift.exception.ErrorCode;
+import gift.exception.MyException;
 import gift.repository.ProductRepository;
 import gift.repository.WishListRepository;
 import java.util.List;
@@ -27,7 +28,8 @@ public class WishListService {
     public WishResponseDto addToWishList(Long memberId, WishRequestDto requestDto){
         Optional<Product> productOptional = productRepository.findById(requestDto.productId());
         if(productOptional.isEmpty()) {
-            throw new ProductNotFoundException("해당 상품은 존재하지 않는 상품입니다.");
+            throw new MyException(ErrorCode.PRODUCT_NOT_FOUND);
+            //throw new ProductNotFoundException("해당 상품은 존재하지 않는 상품입니다.");
         }
 
         //이미 장바구니에 해당 상품이 있는 경우에는 수량만 업데이트

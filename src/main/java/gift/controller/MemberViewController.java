@@ -2,7 +2,8 @@ package gift.controller;
 
 import gift.entity.Member;
 import gift.dto.MemberRequestDto;
-import gift.exception.MemberNotFoundException;
+import gift.exception.ErrorCode;
+import gift.exception.MyException;
 import gift.service.MemberService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -47,8 +48,9 @@ public class MemberViewController {
         }
         Optional<Member> member = memberService.getMemberByEmail(email);
         if(member.isEmpty()){
-            String errMsg = "email이 " + email +"인 회원은 존재하지 않습니다.";
-            throw new MemberNotFoundException(errMsg);
+            throw new MyException(ErrorCode.MEMBER_NOT_FOUND);
+            //String errMsg = "email이 " + email +"인 회원은 존재하지 않습니다.";
+            //throw new MemberNotFoundException(errMsg);
         }
         model.addAttribute("member", member.get());
         return "members/memberinfo";

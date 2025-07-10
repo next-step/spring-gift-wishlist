@@ -1,6 +1,8 @@
 package gift.service;
 
 import gift.dto.MemberRequestDto;
+import gift.exception.ErrorCode;
+import gift.exception.MyException;
 import groovy.util.logging.Slf4j;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -42,7 +44,8 @@ public class JwtAuthService {
     public void checkValidation(String bearerToken) {
 
         if(!bearerToken.startsWith("Bearer ")){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다.");
+            throw new MyException(ErrorCode.JWT_VALIDATION_FAIL);
+            //throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다.");
         }
 
         try{
@@ -52,7 +55,8 @@ public class JwtAuthService {
         catch (Exception e){
             //Authorization 헤더가 유효하지 않거나 토큰이 유효하지 않은 경우 401 Unauthorized 반환
             log.info("토큰검증에 실패했습니다.");
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다.");
+            throw new MyException(ErrorCode.JWT_VALIDATION_FAIL);
+            //throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다.");
         }
     }
 
