@@ -48,6 +48,16 @@ public class WishlistRepository {
     jdbcTemplate.update(sql, memberId, productId, 1);  // 최초 수량 1로 설정
   }
 
+  // 찜 상품 수량 조절
+  public void updateQuantity(Long memberId, Long productId, int quantity) {
+    String sql = "UPDATE wishlist SET quantity = ? WHERE member_id = ? AND product_id = ?";
+    int updated = jdbcTemplate.update(sql, quantity, memberId, productId);
+    if (updated == 0) {
+      throw new RuntimeException("찜 항목이 존재하지 않습니다.");
+    }
+  }
+
+
 
   private WishItem mapRowToWishItem(ResultSet rs) throws SQLException {
     return new WishItem(

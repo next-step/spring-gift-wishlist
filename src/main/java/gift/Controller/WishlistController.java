@@ -1,5 +1,6 @@
 package gift.Controller;
 
+import gift.exception.InvalidQuantityException;
 import gift.model.Member;
 import gift.model.WishItem;
 import gift.service.WishlistService;
@@ -9,7 +10,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/api/wishlist")
@@ -38,5 +42,19 @@ public class WishlistController {
     model.addAttribute("wishItem", wishItem);
     return "wishlist/detail"; // detail.html
   }
+
+  // ✅ 찜 상품 수량 조절
+  @PostMapping("/{productId}/quantity")
+  public String updateQuantity(@PathVariable Long productId,
+      @RequestParam("quantity") int quantity,
+      @LoginMember Member member,
+      RedirectAttributes redirectAttributes) {
+
+    wishlistService.updateQuantity(member.getId(), productId, quantity);
+    redirectAttributes.addFlashAttribute("message", "수량이 변경되었습니다.");
+
+    return "redirect:/api/wishlist";
+  }
+
 }
 

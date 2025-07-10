@@ -1,5 +1,6 @@
 package gift.service;
 
+import gift.exception.InvalidQuantityException;
 import gift.model.WishItem;
 import gift.repository.ProductRepository;
 import gift.repository.WishlistRepository;
@@ -33,6 +34,15 @@ public class WishlistService {
 
     wishlistRepository.insert(memberId, productId);
   }
+
+  // 찜 상품 수량 조절
+  public void updateQuantity(Long memberId, Long productId, int quantity) {
+    if (quantity < 1) {
+      throw new InvalidQuantityException("수량은 1 이상이어야 합니다.");
+    }
+    wishlistRepository.updateQuantity(memberId, productId, quantity);
+  }
+
 
 }
 
