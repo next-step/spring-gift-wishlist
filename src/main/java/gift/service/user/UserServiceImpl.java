@@ -104,8 +104,13 @@ public class UserServiceImpl implements UserService {
             existingUser.setEmail(user.getEmail());
         }
 
-        if (user.getRoles() != null && !user.getRoles().isEmpty()) {
-            userRoleRepository.sync(user.getId(), user.getRoles());
+        if (user.getRoles() != null) {
+            if (user.getRoles().isEmpty()) {
+                throw new IllegalArgumentException("사용자의 역할은 비어있을 수 없습니다.");
+            }
+            if(!userRoleRepository.sync(user.getId(), user.getRoles())) {
+                throw new IllegalStateException("사용자의 역할을 업데이트하는데 실패했습니다. 사용자 ID: " + user.getId());
+            }
         }
         User updatedUser = userRepository.save(existingUser);
 
