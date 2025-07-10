@@ -13,7 +13,7 @@ import jakarta.validation.Payload;
 @Constraint(validatedBy = ProductNamePatternValidator.class)
 public @interface ProductNamePattern {
 
-    String message() default "{gift.validation.ProductNamePattern.message}"; // @NotBlank 양식을 참고함
+    String message() default "( ), [ ], +, -, &, /, _ 외의 특수문자는 사용하실 수 없습니다.";
 
     Class<?>[] groups() default {};
 
