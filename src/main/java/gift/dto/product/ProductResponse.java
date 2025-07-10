@@ -1,4 +1,4 @@
-package gift.dto;
+package gift.dto.product;
 
 /*
  ProductRequest와 ProductResponse 현재 동일한 코드 구조를 가지고 있어 하나의 dto로 합쳐도 되지만,

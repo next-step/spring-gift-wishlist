@@ -1,12 +1,12 @@
-package gift.service;
+package gift.service.product;
 
 import gift.domain.Product;
-import gift.dto.ProductMapper;
-import gift.dto.ProductRequest;
-import gift.dto.ProductResponse;
-import gift.exception.ErrorCode;
-import gift.exception.InvalidProductException;
-import gift.repository.ProductRepository;
+import gift.dto.product.ProductMapper;
+import gift.dto.product.ProductRequest;
+import gift.dto.product.ProductResponse;
+import gift.global.exception.ErrorCode;
+import gift.global.exception.InvalidProductException;
+import gift.repository.product.ProductRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +27,8 @@ public class ProductService {
 
     public Long insert(ProductRequest request) {
         if (request.name().contains("카카오")) {
-            throw new InvalidProductException(ErrorCode.INVALID_KAKAO_NAME);
+            throw new InvalidProductException(ErrorCode.INVALID_KAKAO_NAME,
+                ErrorCode.INVALID_KAKAO_NAME.getErrorMessage());
         }
 
         Long id = productRepository.insert(ProductMapper.toEntity(request));
@@ -38,7 +39,8 @@ public class ProductService {
         productRepository.findById(request.id());
 
         if (request.name().contains("카카오")) {
-            throw new InvalidProductException(ErrorCode.INVALID_KAKAO_NAME);
+            throw new InvalidProductException(ErrorCode.INVALID_KAKAO_NAME,
+                ErrorCode.INVALID_KAKAO_NAME.getErrorMessage());
         }
 
         productRepository.update(request);

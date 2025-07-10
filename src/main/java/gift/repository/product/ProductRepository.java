@@ -1,7 +1,7 @@
-package gift.repository;
+package gift.repository.product;
 
 import gift.domain.Product;
-import gift.dto.ProductRequest;
+import gift.dto.product.ProductRequest;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.List;

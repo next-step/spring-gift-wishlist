@@ -1,9 +1,9 @@
-package gift.controller;
+package gift.controller.product;
 
 import gift.domain.Product;
-import gift.dto.ProductMapper;
-import gift.dto.ProductRequest;
-import gift.service.ProductServiceAdmin;
+import gift.dto.product.ProductMapper;
+import gift.dto.product.ProductRequest;
+import gift.service.product.ProductServiceAdmin;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.stereotype.Controller;
@@ -30,7 +30,7 @@ public class ProductPageController {
     public String findAll(Model model){
         List<Product> list = productServiceAdmin.getProductListAdmin();
         model.addAttribute("productList", list);
-        return "main";
+        return "product/productMain";
     }
 
     // 상품 등록 페이지 이동
@@ -39,7 +39,7 @@ public class ProductPageController {
         Model model
     ){
         model.addAttribute("request", ProductRequest.createForNewProductForm());
-        return "newProduct";
+        return "product/newProduct";
     }
 
     // 상품 등록
@@ -50,7 +50,7 @@ public class ProductPageController {
         ) {
 
         if(bindingResult.hasErrors()){
-            return "newProduct";
+            return "product/newProduct";
         }
 
         Product product = ProductMapper.toEntity(request);
@@ -73,7 +73,7 @@ public class ProductPageController {
         );
 
         model.addAttribute("request", request);
-        return "update";
+        return "product/updateProduct";
     }
 
     // 상품 수정(수정 처리)
@@ -83,7 +83,7 @@ public class ProductPageController {
         BindingResult bindingResult
     ){
         if(bindingResult.hasErrors()){
-            return "update";
+            return "product/updateProduct";
         }
 
         productServiceAdmin.updateAdmin(request);

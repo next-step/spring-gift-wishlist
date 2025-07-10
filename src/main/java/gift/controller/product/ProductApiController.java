@@ -1,9 +1,9 @@
-package gift.controller;
+package gift.controller.product;
 
-import gift.dto.ProductCreateResponse;
-import gift.dto.ProductRequest;
-import gift.dto.ProductResponse;
-import gift.service.ProductService;
+import gift.dto.product.ProductCreateResponse;
+import gift.dto.product.ProductRequest;
+import gift.dto.product.ProductResponse;
+import gift.service.product.ProductService;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;
