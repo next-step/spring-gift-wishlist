@@ -70,14 +70,13 @@ public class ItemService {
 		item.isItemAuthor(userId);
 
 		Item updatedItem = Item.builder()
-				.id(itemId)
 				.userId(userId)
 				.name(req.name())
 				.price(req.price())
 				.imageUrl(req.imageUrl())
 				.build();
 
-		itemRepository.update(updatedItem);
+		itemRepository.update(itemId, updatedItem);
 		return getItem(itemId);
 	}
 
