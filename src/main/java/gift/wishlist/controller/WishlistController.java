@@ -28,4 +28,12 @@ public class WishlistController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(wishResponseDto);
     }
+
+    @GetMapping
+    public ResponseEntity<List<WishResponseDto>> getWishlist(
+            @RequestHeader Long memberId) {
+        List<WishResponseDto> wishResponseDto = wishlistService.getWishesByMemberId(memberId);
+
+        return ResponseEntity.ok(wishResponseDto);
+    }
 }

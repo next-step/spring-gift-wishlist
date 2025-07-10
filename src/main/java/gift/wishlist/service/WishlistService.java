@@ -9,6 +9,11 @@ import gift.wishlist.entity.Wishlist;
 import gift.wishlist.repository.WishlistRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 @Service
 public class WishlistService {
     private final WishlistRepository wishlistRepository;
@@ -37,5 +42,34 @@ public class WishlistService {
                 product.getImageUrl(),
                 wishlist.getQuantity()
         );
+    }
+
+    public List<WishResponseDto> getWishesByMemberId(Long memberId) {
+        List<Wishlist> wishes = wishlistRepository.findAllByMemberId(memberId);
+
+        List<Long> ids = wishes.stream()
+                .map(Wishlist::getMemberId)
+                .toList();
+
+        if(ids.isEmpty()) {return List.of();}
+
+        Map<Long, Product> productMap = productRepository.findAllByIdIn(ids)
+                .stream()
+                .collect(Collectors.toMap(product -> product.getId(), product -> product));
+
+        return wishes.stream()
+                .map(wish -> {
+                    Product product = productMap.get(wish.getProductId());
+                    return new WishResponseDto(
+                            wish.getId(),
+                            product.getId(),
+                            product.getName(),
+                            product.getPrice(),
+                            product.getImageUrl(),
+                            wish.getQuantity()
+                    );
+                } )
+                .toList();
+
     }
 }
