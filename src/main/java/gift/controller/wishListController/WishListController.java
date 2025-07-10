@@ -1,7 +1,6 @@
 package gift.controller.wishListController;
 
-
-import gift.Jwt.TokenUtils;
+import gift.config.LoginUser;
 import gift.dto.wishListDto.AddWishItemDto;
 import gift.dto.wishListDto.ResponseWishItemDto;
 import gift.service.wishListService.WishListService;
@@ -18,20 +17,13 @@ import java.util.List;
 public class WishListController {
 
     private final WishListService wishListService;
-    private final TokenUtils tokenUtils;
 
-    public WishListController(WishListService wishListService, TokenUtils tokenUtils) {
+    public WishListController(WishListService wishListService) {
         this.wishListService = wishListService;
-        this.tokenUtils = tokenUtils;
     }
 
     @PostMapping
-    public ResponseEntity<ResponseWishItemDto> addItem(@RequestBody @Valid AddWishItemDto dto, @RequestHeader("Authorization") String authHeader) {
-        String token = tokenUtils.extractToken(authHeader);
-
-        tokenUtils.validateToken(token);
-
-        String userEmail = tokenUtils.extractEmail(token);
+    public ResponseEntity<ResponseWishItemDto> addItem(@RequestBody @Valid AddWishItemDto dto, @LoginUser String userEmail) {
 
         ResponseWishItemDto addedWishItem = wishListService.addWishItem(dto, userEmail);
 
@@ -39,12 +31,7 @@ public class WishListController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ResponseWishItemDto>> getWishItemList(@RequestHeader("Authorization") String authHeader, @RequestParam(required = false) String name, @RequestParam(required = false) Integer price) {
-        String token = tokenUtils.extractToken(authHeader);
-
-        tokenUtils.validateToken(token);
-
-        String userEmail = tokenUtils.extractEmail(token);
+    public ResponseEntity<List<ResponseWishItemDto>> getWishItemList(@LoginUser String userEmail, @RequestParam(required = false) String name, @RequestParam(required = false) Integer price) {
 
         List<ResponseWishItemDto> wishItemList = wishListService.getItemList(name, price, userEmail);
 
@@ -52,12 +39,7 @@ public class WishListController {
     }
 
     @DeleteMapping
-    public ResponseEntity<ResponseWishItemDto> deleteWishItem(@RequestHeader("Authorization") String authHeader, @RequestParam String name) {
-        String token = tokenUtils.extractToken(authHeader);
-
-        tokenUtils.validateToken(token);
-
-        String userEmail = tokenUtils.extractEmail(token);
+    public ResponseEntity<ResponseWishItemDto> deleteWishItem(@LoginUser String userEmail, @RequestParam String name) {
 
         ResponseWishItemDto deletedWishItem = wishListService.deleteWishItem(name, userEmail);
 
@@ -65,12 +47,7 @@ public class WishListController {
     }
 
     @PutMapping
-    public ResponseEntity<ResponseWishItemDto> updateWishItem(@RequestHeader("Authorization") String authHeader, @RequestParam Integer quantity, @RequestParam String name) {
-        String token = tokenUtils.extractToken(authHeader);
-
-        tokenUtils.validateToken(token);
-
-        String userEmail = tokenUtils.extractEmail(token);
+    public ResponseEntity<ResponseWishItemDto> updateWishItem(@LoginUser String userEmail, @RequestParam Integer quantity, @RequestParam String name) {
 
         ResponseWishItemDto updatedWishItem = wishListService.updateWishItem(quantity, name, userEmail);
 
