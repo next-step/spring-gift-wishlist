@@ -11,15 +11,22 @@
     <td th:text="${p.id}">1</td>
     <td th:text="${p.name}">이름</td>
     <td th:text="${p.price}">가격</td>
-    <td th:text="${p.imageUrl}">URL</td>
+    <td><img th:src="${p.imageUrl}" width="100" /></td>
     <td>
-      <a th:href="@{'/user/products/' + ${p.id} + '/edit'}">수정</a>
-      <form th:action="@{'/user/products/' + ${p.id} + '/delete'}" method="post" style = "display: inline">
-        <button type = "submit">장바구니 삭제</button>
-        </form>
+      <form th:action="@{'/user/wishes/' + ${p.id} + '/wish'}" method="post" style="display:inline">
+        <button type="submit">위시 추가</button>
+      </form>
+
+      <form th:action="@{'/user/wishes/' + ${p.id} + '/delete'}" method="post" style="display:inline">
+        <button type="submit">위시 제거</button>
+      </form>
     </td>
   </tr>
 </table>
 
+<br>
+<a href="/user/wishes">
+  <button>내 위시리스트 보기</button>
+</a>
 </body>
 </html>

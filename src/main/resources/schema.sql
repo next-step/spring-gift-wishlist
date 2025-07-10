@@ -13,3 +13,11 @@ CREATE TABLE members (
      address varchar(255) not null,
      role varchar(20) DEFAULT 'USER'
 );
+
+create table wish(
+    member_id varchar(50),
+    product_id int,
+    primary key (member_id, product_id),
+    foreign key (member_id) references members(id),
+    foreign key (product_id) references products(id)
+);
