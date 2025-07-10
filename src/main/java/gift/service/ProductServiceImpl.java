@@ -51,7 +51,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ResponseDto findById(Long id) {
         Product product = productRepository.findById(id).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NO_CONTENT));
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         return new ResponseDto(product);
     }
