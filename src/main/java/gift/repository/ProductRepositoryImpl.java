@@ -28,7 +28,8 @@ public class ProductRepositoryImpl implements ProductRepository {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = connection.prepareStatement(sql,
+                    Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, product.getName());
             ps.setString(2, product.getImageUrl());
             return ps;
@@ -36,7 +37,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 
         Number key = keyHolder.getKey();
 
-        if(key != null) {
+        if (key != null) {
             product.setId(key.longValue());
         }
 

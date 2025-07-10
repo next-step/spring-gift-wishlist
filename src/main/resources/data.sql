@@ -1,1 +1,3 @@
-insert into product (name, imageUrl) values ('테스트 상품', 'https://example.com/image.jpg');
+insert into product (name, imageUrl) values ('hehe', 'https://example.com/image.jpg');
+
+insert into member (email, password) values ('aran@email.com', '1234');

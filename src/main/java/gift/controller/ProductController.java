@@ -29,9 +29,6 @@ public class ProductController {
     // 1. 상품 추가
     @PostMapping
     public ResponseEntity<ResponseDto> createProduct(@Valid @RequestBody RequestDto dto) {
-        if(dto.getName().contains("카카오")) {
-            throw new IllegalArgumentException("상품명에 '카카오'를 포함하려면 담당 MD와의 협의가 필요합니다.");
-        }
 
         ResponseDto response = productService.create(dto);
 
@@ -50,13 +47,13 @@ public class ProductController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ResponseDto> updateProduct(@Valid
-            @PathVariable Long id,
+    @PathVariable Long id,
             @RequestBody RequestDto dto
     ) {
         ResponseDto response = productService.update(id, dto);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
-     }
+    }
 
     // 4. 상품 삭제
     @DeleteMapping("/{id}")
