@@ -1,9 +1,14 @@
 package gift.utils;
 
+import org.springframework.util.CollectionUtils;
+
 import java.util.List;
 
-public class JwtParser {
+public final class JwtParser {
     public static boolean isValidTokenType(List<String> token){
+        if(CollectionUtils.isEmpty(token)) {
+            return false;
+        }
         return token.getFirst().split(" ")[0].equals("Bearer");
     }
 
