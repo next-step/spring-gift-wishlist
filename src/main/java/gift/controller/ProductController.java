@@ -1,5 +1,7 @@
-package gift;
+package gift.controller;
 
+import gift.domain.Product;
+import gift.repository.ProductRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,9 +11,9 @@ import java.util.*;
 @RequestMapping("/api/products")
 
 public class ProductController {
-    private final ProductStorage products;
+    private final ProductRepository products;
 
-    public ProductController(ProductStorage products) { this.products = products; }
+    public ProductController(ProductRepository products) { this.products = products; }
 
     @GetMapping
     public List<Product> getProducts() {
