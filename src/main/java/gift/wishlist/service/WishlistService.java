@@ -8,7 +8,6 @@ import gift.wishlist.dto.WishlistAddDto;
 import gift.wishlist.dto.WishlistResponseDto;
 import gift.wishlist.exception.WishlistNotFoundException;
 import gift.wishlist.repository.WishlistRepository;
-import jakarta.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -24,7 +23,7 @@ public class WishlistService {
         this.itemRepository = itemRepository;
     }
 
-    public WishlistResponseDto add(Long memberId, @Valid WishlistAddDto wishlistAddDto) {
+    public WishlistResponseDto add(Long memberId, WishlistAddDto wishlistAddDto) {
         // 추가할 상품이 존재하는지 검증
         Item item = itemRepository.findById(wishlistAddDto.itemId())
             .orElseThrow(() -> new ItemNotFoundException(wishlistAddDto.itemId()));
