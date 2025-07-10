@@ -21,7 +21,9 @@ public class UserDaoImpl implements UserDao {
             return new User(
                     rs.getLong("id"),
                     rs.getString("email"),
-                    rs.getString("password")
+                    rs.getString("password"),
+                    rs.getTimestamp("created_at").toInstant(),
+                    rs.getTimestamp("updated_at").toInstant()
             );
         }
     }
@@ -78,11 +80,11 @@ public class UserDaoImpl implements UserDao {
                 .param(user.getEmail())
                 .param(user.getPassword())
                 .update(keyHolder);
-
-        if (keyHolder.getKey() == null) {
+        if (keyHolder.getKeys() == null || keyHolder.getKeys().get("ID") == null) {
             throw new DataRetrievalFailureException("상품 저장 후 키를 반환받지 못했습니다.");
         }
-        return keyHolder.getKey().longValue();
+        Number id = (Number) keyHolder.getKeys().get("ID");
+        return id.longValue();
     }
 
     @Override
