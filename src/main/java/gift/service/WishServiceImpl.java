@@ -1,7 +1,9 @@
 package gift.service;
 
 import gift.dto.CreateWishRequestDto;
+import gift.dto.ProductResponseDto;
 import gift.dto.WishResponseDto;
+import gift.entity.Product;
 import gift.entity.Wish;
 import gift.repository.WishRepository;
 import org.springframework.stereotype.Service;
@@ -19,9 +21,9 @@ public class WishServiceImpl implements WishService{
 
     @Override
     public WishResponseDto createWish(CreateWishRequestDto requestDto, Long memberId) {
+        ProductResponseDto productResponseDto = productService.findProductById(requestDto.productId());
         Wish newWish = new Wish(null,requestDto.productId(), memberId, requestDto.quantity());
         Wish savedWish = wishRepository.createWish(newWish);
-        return new WishResponseDto(productService.findProductById(savedWish.getProductId()),
-                savedWish.getQuantity());
+        return new WishResponseDto(productResponseDto, savedWish.getQuantity());
     }
 }
