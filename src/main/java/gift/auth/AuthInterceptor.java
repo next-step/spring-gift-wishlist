@@ -40,7 +40,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             throw new AuthenticationException("유효하지 않은 토큰입니다.");
         }
 
-        request.setAttribute("userId", Long.parseLong(jwtTokenProvider.getSubject(token)));
+        request.setAttribute("memberId", Long.parseLong(jwtTokenProvider.getSubject(token)));
         return true;
     }
 
