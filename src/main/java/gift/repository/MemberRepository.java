@@ -46,6 +46,17 @@ public class MemberRepository {
                 .optional();
     }
 
+    public Optional<Member> findMemberById(Long id) {
+        String sql = """
+            SELECT * FROM MEMBERS WHERE id = :id
+            """;
+
+        return jdbcClient.sql(sql)
+                .param("id", id)
+                .query(memberRowMapper())
+                .optional();
+    }
+
     private RowMapper<Member> memberRowMapper() {
         return new RowMapper<Member>() {
             public Member mapRow(ResultSet rs, int rowNum) throws SQLException {
