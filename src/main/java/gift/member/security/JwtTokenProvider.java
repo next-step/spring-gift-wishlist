@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtTokenProvider {
 
-    String secretKey = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";
-    Key key = Keys.hmacShaKeyFor(secretKey.getBytes());
+    private final String secretKey = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";
+    private final Key key = Keys.hmacShaKeyFor(secretKey.getBytes());
 
     public String generateToken(Long memberId, String email, String role) {
         return Jwts.builder()
