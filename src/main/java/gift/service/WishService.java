@@ -1,7 +1,9 @@
 package gift.service;
 
 import gift.domain.Product;
+import gift.domain.Wish;
 import gift.dto.CreateWishRequest;
+import gift.dto.CreateWishResponse;
 import gift.dto.WishResponse;
 import gift.repository.MemberRepository;
 import gift.repository.ProductRepository;
@@ -28,14 +30,30 @@ public class WishService {
         return productRepository.findAll();
     }
 
-    public void addWishProduct(CreateWishRequest request) {
-        wishRepository.save(request);
+    public CreateWishResponse addWishProduct(CreateWishRequest request) {
+        Wish wish = wishRepository.save(request);
+        return new CreateWishResponse(wish.getId(), wish.getMemberId(), wish.getProductId(), wish.getQuantity());
     }
 
     public List<WishResponse> getMeberWishList(Long memberId) {
+        findMemberOrThrow(memberId);
+        return wishRepository.findAllByMember(memberId);
+    }
+
+    public void delete(Long wishId) {
+        findByIdOrThrow(wishId);
+        wishRepository.delete(wishId);
+    }
+
+    private void findByIdOrThrow(Long wishId) {
+        if (wishRepository.findById(wishId).isEmpty()) {
+            throw new NoSuchElementException("존재하지 않는 위시리스트 상품입니다.");
+        }
+    }
+
+    private void findMemberOrThrow(Long memberId) {
         if (memberRepository.findById(memberId).isEmpty()) {
             throw new NoSuchElementException("존재하지 않는 멤버입니다.");
         }
-        return wishRepository.findAllByMember(memberId);
     }
 }

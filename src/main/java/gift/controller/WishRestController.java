@@ -4,6 +4,7 @@ import gift.config.JwtTokenProvider;
 import gift.config.UnAuthorizationException;
 import gift.domain.Product;
 import gift.dto.CreateWishRequest;
+import gift.dto.CreateWishResponse;
 import gift.dto.WishResponse;
 import gift.service.WishService;
 import org.springframework.http.HttpEntity;
@@ -35,13 +36,13 @@ public class WishRestController {
     }
 
     @PostMapping()
-    public HttpEntity<Void> addWishList(@RequestBody CreateWishRequest request,
-                                        @RequestHeader("Authorization") String authHeader) {
+    public HttpEntity<CreateWishResponse> addWishList(@RequestBody CreateWishRequest request,
+                                                      @RequestHeader("Authorization") String authHeader) {
         if (!jwtTokenProvider.validateToken(authHeader)) {
             throw new UnAuthorizationException("인증되지 않은 사용자입니다.");
         }
-        service.addWishProduct(request);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        CreateWishResponse response = service.addWishProduct(request);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping("/{memberId}")
@@ -51,5 +52,14 @@ public class WishRestController {
         }
         List<WishResponse> wishList = service.getMeberWishList(memberId);
         return new ResponseEntity<>(wishList, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{wishId}")
+    HttpEntity<Void> deleteProduct(@RequestHeader("Authorization") String authHeader, @PathVariable Long wishId) {
+        if (!jwtTokenProvider.validateToken(authHeader)) {
+            throw new UnAuthorizationException("인증되지 않은 사용자입니다.");
+        }
+        service.delete(wishId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

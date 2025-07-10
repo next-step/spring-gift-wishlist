@@ -99,7 +99,7 @@ class WishRestControllerTest {
                 .retrieve()
                 .toBodilessEntity();
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     }
 
     @Test
@@ -147,6 +147,7 @@ class WishRestControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
     }
+
     @Test
     @DisplayName("위시 리스트에 등록된 상품 조회 실패(조회하는 멤버가 없음)")
     void 위시리스트에_등록된_상품_조회_실패() {
@@ -184,7 +185,115 @@ class WishRestControllerTest {
         //위시 리스트에 등록된 상품 조회
         assertThatThrownBy(() ->
                 client.get()
-                        .uri("http://localhost:" + port + "/api/wishes/{id}", registerResponse.getBody().id() - 500)
+                        .uri("http://localhost:" + port + "/api/wishes/{memberId}", registerResponse.getBody().id() - 500)
+                        .header("Authorization", "Bearer " + token)
+                        .retrieve()
+                        .toBodilessEntity()
+        ).isInstanceOf(HttpClientErrorException.NotFound.class);
+    }
+
+    @Test
+    @DisplayName("위시 리스트에 등록된 상품 삭제 성공")
+    void 위시리스트에_등록된_상품_삭제() {
+        //상품 추가
+        String url = "http://localhost:" + port + "/api/products";
+        ResponseEntity<CreateProductResponse> productResponse = client.post()
+                .uri(url)
+                .body(new CreateProductRequest("product1", 1000, "exam.url"))
+                .retrieve()
+                .toEntity(CreateProductResponse.class);
+        assertThat(productResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        url = "http://localhost:" + port + "/api/members/register";
+
+        // 회원가입 및 로그인
+        ResponseEntity<CreateMemberResponse> registerResponse = client.post()
+                .uri(url)
+                .body(new CreateMemberRequest("test@exam.com", "1234"))
+                .retrieve()
+                .toEntity(CreateMemberResponse.class);
+
+        url = "http://localhost:" + port + "/api/members/login";
+        ResponseEntity<LoginMemberResponse> loginResponse = client.post()
+                .uri(url)
+                .body(new LoginMemberRequest("test@exam.com", "1234"))
+                .retrieve()
+                .toEntity(LoginMemberResponse.class);
+
+        String body = loginResponse.getBody().toString();
+        int start = body.indexOf("token=") + "token=".length();
+        int end = body.indexOf("]", start);
+        String token = body.substring(start, end);
+
+        url = "http://localhost:" + port + "/api/wishes";
+        ResponseEntity<CreateWishResponse> addWishResponse = client.post()
+                .uri(url)
+                .header("Authorization", "Bearer " + token)
+                .body(new CreateWishRequest(registerResponse.getBody().id(), productResponse.getBody().id(), 1))
+                .retrieve()
+                .toEntity(CreateWishResponse.class);
+
+        url = "http://localhost:" + port + "/api/wishes/{memberId}";
+        ResponseEntity<Void> response = client.delete()
+                .uri(url, addWishResponse.getBody().id())
+                .header("Authorization", "Bearer " + token)
+                .retrieve()
+                .toBodilessEntity();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+
+    @Test
+    @DisplayName("위시 리스트에 등록된 상품 삭제 실패(조회하는 위시리스트 상품이 없음)")
+    void 위시리스트에_등록된_상품_삭제_실패_존재하지않는_위시상품() {
+        //상품 추가
+        String url = "http://localhost:" + port + "/api/products";
+        ResponseEntity<CreateProductResponse> productResponse = client.post()
+                .uri(url)
+                .body(new CreateProductRequest("product1", 1000, "exam.url"))
+                .retrieve()
+                .toEntity(CreateProductResponse.class);
+        assertThat(productResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        url = "http://localhost:" + port + "/api/members/register";
+
+        // 회원가입 및 로그인
+        ResponseEntity<CreateMemberResponse> registerResponse = client.post()
+                .uri(url)
+                .body(new CreateMemberRequest("test@exam.com", "1234"))
+                .retrieve()
+                .toEntity(CreateMemberResponse.class);
+
+        url = "http://localhost:" + port + "/api/members/login";
+        ResponseEntity<LoginMemberResponse> loginResponse = client.post()
+                .uri(url)
+                .body(new LoginMemberRequest("test@exam.com", "1234"))
+                .retrieve()
+                .toEntity(LoginMemberResponse.class);
+
+        String body = loginResponse.getBody().toString();
+        int start = body.indexOf("token=") + "token=".length();
+        int end = body.indexOf("]", start);
+        String token = body.substring(start, end);
+
+        url = "http://localhost:" + port + "/api/wishes";
+        ResponseEntity<CreateWishResponse> addWishResponse = client.post()
+                .uri(url)
+                .header("Authorization", "Bearer " + token)
+                .body(new CreateWishRequest(registerResponse.getBody().id(), productResponse.getBody().id(), 1))
+                .retrieve()
+                .toEntity(CreateWishResponse.class);
+
+        url = "http://localhost:" + port + "/api/wishes/{memberId}";
+        ResponseEntity<Void> response = client.delete()
+                .uri(url, addWishResponse.getBody().id())
+                .header("Authorization", "Bearer " + token)
+                .retrieve()
+                .toBodilessEntity();
+
+        assertThatThrownBy(() ->
+                client.delete()
+                        .uri("http://localhost:" + port + "/api/wishes/{memberId}", addWishResponse.getBody().id())
                         .header("Authorization", "Bearer " + token)
                         .retrieve()
                         .toBodilessEntity()

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class WishJdbcRepository implements WishRepository {
@@ -32,6 +33,15 @@ public class WishJdbcRepository implements WishRepository {
     }
 
     @Override
+    public Optional<Wish> findById(Long id) {
+        String sql = "select * from wish where id = :id";
+        return client.sql(sql)
+                .param("id", id)
+                .query(Wish.class)
+                .optional();
+    }
+
+    @Override
     public List<WishResponse> findAllByMember(Long memberId) {
         String sql = "select wish.id, product.name as productName, product.price, wish.quantity " +
                 "from wish " +
@@ -42,5 +52,13 @@ public class WishJdbcRepository implements WishRepository {
                 .param("id", memberId)
                 .query(WishResponse.class)
                 .list();
+    }
+
+    @Override
+    public void delete(Long wishId) {
+        String sql = "delete from wish where id = :wishId";
+        client.sql(sql)
+                .param("wishId", wishId)
+                .update();
     }
 }
