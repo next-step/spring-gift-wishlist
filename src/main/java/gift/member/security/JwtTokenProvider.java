@@ -1,5 +1,6 @@
 package gift.member.security;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import java.security.Key;
@@ -34,5 +35,15 @@ public class JwtTokenProvider {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public Long getMemberIdFromToken(String token) {
+        Claims claims = Jwts.parser()
+            .setSigningKey(key)
+            .build()
+            .parseClaimsJws(token)
+            .getBody();
+
+        return Long.valueOf(claims.getSubject());
     }
 }
