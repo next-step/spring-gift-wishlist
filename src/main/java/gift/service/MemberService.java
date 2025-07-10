@@ -41,6 +41,16 @@ public class MemberService {
         return new MemberResponse(token);
     }
 
+    public Member authenticate(MemberRequest request) {
+        Member member = memberRepository.findByEmail(request.email())
+                .orElseThrow(() -> new LoginException("이메일 또는 비밀번호가 일치하지 않습니다."));
+
+        if (!member.getPassword().equals(request.password())) {
+            throw new LoginException("이메일 또는 비밀번호가 일치하지 않습니다.");
+        }
+        return member;
+    }
+
     public List<MemberInfoResponse> getAllMembers() {
         return memberRepository.findAll().stream()
                 .map(MemberInfoResponse::from)
