@@ -1,5 +1,7 @@
 package gift.interceptor;
 
+import java.util.Set;
+
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -13,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class UserAuthInterceptor implements HandlerInterceptor {
 
     private final TokenProvider tokenProvider;
+    private final Set<String> MEMBERS = Set.of("ROLE_USER", "ROLE_ADMIN");
 
     public UserAuthInterceptor(TokenProvider tokenProvider) {
         this.tokenProvider = tokenProvider;
@@ -33,7 +36,7 @@ public class UserAuthInterceptor implements HandlerInterceptor {
         }
 
         String role = tokenProvider.getRole(token);
-        if (!role.equals("ROLE_USER") && !role.equals("ROLE_ADMIN")) {
+        if (!MEMBERS.contains(role)) {
             throw new AuthorizationRequiredException("인증이 필요한 요청입니다.");
         }
 

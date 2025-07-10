@@ -25,7 +25,7 @@ public class AdminAuthInterceptor implements HandlerInterceptor {
         Object handler
     ) throws Exception {
         String token = request.getHeader("Authorization");
-        if (!StringUtils.hasText(token) || !tokenProvider.getRole(token).equals("ROLE_ADMIN")) {
+        if (!StringUtils.hasText(token) || !"ROLE_ADMIN".equals(tokenProvider.getRole(token))) {
             throw new AuthorizationRequiredException("인증이 필요한 요청입니다.");
         }
 
