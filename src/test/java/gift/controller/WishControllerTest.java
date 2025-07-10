@@ -9,12 +9,10 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
-import java.util.List;
-
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class WishControllerTest {
@@ -55,10 +53,12 @@ public class WishControllerTest {
 
         ResponseEntity<WishesResponseDto> responseEntity = getWishList(token);
 
-        assertThat(responseEntity.getBody().wishes()).isNotNull();
-        assertThat(responseEntity.getBody().wishes().size()).isGreaterThan(0);
-        assertThat(responseEntity.getBody().wishes().getLast().count()).isEqualTo(123);
-        assertThat(responseEntity.getBody().wishes().getLast().productResponseDto().id()).isEqualTo(1);
+        assertAll(
+                () -> assertThat(responseEntity.getBody().wishes()).isNotNull(),
+                () -> assertThat(responseEntity.getBody().wishes().size()).isGreaterThan(0),
+                () -> assertThat(responseEntity.getBody().wishes().getLast().count()).isEqualTo(123),
+                () -> assertThat(responseEntity.getBody().wishes().getLast().productResponseDto().id()).isEqualTo(1)
+        );
     }
 
     private String registerMemberAndGetToken(String email, String password) {
