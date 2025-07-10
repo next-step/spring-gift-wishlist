@@ -58,3 +58,19 @@
 
 - Authorization 헤더가 유효하지 않거나 토큰이 유효하지 않은 경우 401 Unauthorized를 반환
 - 잘못된 로그인, 비밀번호 찾기, 비밀번호 변경 요청은 403 Forbidden을 반환
+
+## STEP3 위시 리스트
+
+기능목록
+1. 위시 리스트에 등록된 상품 조회
+   - GET /api/members/wishlist
+2. 위시 리스트에 상품 추가
+   - POST /api/members/wishlist
+3. 위시 리스트에 등록된 상품 삭제
+   - DELETE /api/members/wishlist/{productId}
+<br>
+
+추가사항
+- 위시 리스트 저장을 위한 wishlist 테이블 생성
+  - 테이블 속성: memberId, productId ...
+- 위시 리스트 상품 추가를 위해 기존 Product 관련 Dto 및 Entity 활용
