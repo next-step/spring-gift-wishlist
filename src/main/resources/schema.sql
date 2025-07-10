@@ -16,3 +16,13 @@ create table member
    primary key (id)
 );
 
+create table wish
+(
+   id bigint auto_increment,
+    member_id bigint,
+    product_id bigint,
+   primary key (id),
+    foreign key (member_id) references member,
+    foreign key (product_id) references product
+);
+

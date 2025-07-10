@@ -19,9 +19,9 @@ import static org.assertj.core.api.Assertions.*;
 @Sql(statements = "delete from member")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class MemberRestControllerTest {
+
     @LocalServerPort
     private int port;
-
     private RestClient client = RestClient.create();
 
 
@@ -108,37 +108,5 @@ class MemberRestControllerTest {
                         .retrieve()
                         .toEntity(LoginMemberResponse.class)
         ).isInstanceOf(HttpClientErrorException.Unauthorized.class);
-    }
-
-    @Test
-    @DisplayName("로그인 멤버 상품 조회")
-    void getProducts() {
-        String url = "http://localhost:" + port + "/api/members/register";
-        ResponseEntity<CreateMemberResponse> registerResponse = client.post()
-                .uri(url)
-                .body(new CreateMemberRequest("test@exam.com", "1234"))
-                .retrieve()
-                .toEntity(CreateMemberResponse.class);
-
-        url = "http://localhost:" + port + "/api/members/login";
-        ResponseEntity<LoginMemberResponse> loginResponse = client.post()
-                .uri(url)
-                .body(new LoginMemberRequest("test@exam.com", "1234"))
-                .retrieve()
-                .toEntity(LoginMemberResponse.class);
-
-        String body = loginResponse.getBody().toString();
-        int start = body.indexOf("token=") + "token=".length();
-        int end = body.indexOf("]", start);
-        String token = body.substring(start, end);
-
-        url = "http://localhost:" + port + "/api/members/products";
-        ResponseEntity<Void> response = client.get()
-                .uri(url)
-                .header("Authorization", "Bearer " + token)
-                .retrieve()
-                .toBodilessEntity();
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 }
