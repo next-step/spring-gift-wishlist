@@ -164,21 +164,20 @@
 
 ### ✅ 진행 체크리스트
 
-- [ ] 테이블(`wish_items`) 생성 & 마이그레이션
-- [ ] `WishRepository` 구현 (JdbcClient)
-- [ ] `WishService` 비즈니스 로직
+- [x] 테이블(`wish_items`) 생성 & 마이그레이션
+- [x] `WishRepository` 구현 (JdbcClient)
+- [x] `WishService` 비즈니스 로직
   - 상품 추가(중복 시 수량 +1)
   - 목록 조회
   - 삭제 / 수량 0 처리
-- [ ] `WishController` REST API
+- [x] `WishController` REST API
   - `GET /api/wishes`
   - `POST /api/wishes`
   - `DELETE /api/wishes/{productId}`
-- [ ] `@LoginMember`ArgumentResolver로 인증 회원 주입
-- [ ] MockMvc • 통합 테스트 작성
+- [x] `@LoginMember`ArgumentResolver로 인증 회원 주입
+- [x] MockMvc • 통합 테스트 작성
 - [ ] 위시 리스트 UI 화면 구현 (Thymeleaf)
   - `/wishes` : 로그인 사용자의 장바구니 찜 목록
-- [ ] README 갱신 & 예제 스크린샷 추가
 
 ### 🗄️ DB 스키마
 
