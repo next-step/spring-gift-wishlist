@@ -36,13 +36,18 @@ public class WishlistController {
     }
 
     @GetMapping("/{wishlistId}")
-    public ResponseEntity<WishlistResponseDto> findWishlist(@PathVariable Long wishlistId) {
+    public ResponseEntity<WishlistResponseDto> findWishlist(
+        @PathVariable Long wishlistId,
+        @LoginMember AuthenticatedMember member
+    ) {
         WishlistResponseDto wishlistResponseDto = wishlistService.findWishlist(wishlistId);
         return ResponseEntity.status(HttpStatus.OK).body(wishlistResponseDto);
     }
 
     @GetMapping
-    public ResponseEntity<List<WishlistResponseDto>> findAllWishlists() {
+    public ResponseEntity<List<WishlistResponseDto>> findAllWishlists(
+        @LoginMember AuthenticatedMember member
+    ) {
         List<WishlistResponseDto> wishlistResponseDtos = wishlistService.findAll();
         return ResponseEntity.status(HttpStatus.OK).body(wishlistResponseDtos);
     }
