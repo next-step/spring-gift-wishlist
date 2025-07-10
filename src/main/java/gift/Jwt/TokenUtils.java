@@ -1,5 +1,6 @@
 package gift.Jwt;
 
+import gift.entity.UserRole;
 import gift.exception.userException.NeedAuthorizedException;
 import gift.exception.userException.UnauthorizedException;
 import io.jsonwebtoken.Claims;
@@ -29,14 +30,21 @@ public class TokenUtils {
         return claims.get("email", String.class);
     }
 
-    public boolean hasRole(String token, String expectedRole) {
+    public boolean hasRole(String token, UserRole expectedRole) {
         Claims claims = jwtUtil.getClaims(token);
-        String role = claims.get("role", String.class);
-        return expectedRole.equals(role);
+        String roleStr = claims.get("role", String.class);
+
+        try {
+            UserRole role = UserRole.valueOf(roleStr);
+            return expectedRole == role;
+        } catch (IllegalArgumentException | NullPointerException e) {
+            return false;
+        }
     }
 
+
     public boolean requireAdmin(String token) {
-        if (!hasRole(token, "ADMIN")) {
+        if (!hasRole(token, UserRole.ADMIN)) {
             throw new NeedAuthorizedException();
         }
         return true;

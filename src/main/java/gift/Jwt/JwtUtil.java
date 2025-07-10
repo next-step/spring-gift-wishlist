@@ -2,8 +2,11 @@ package gift.Jwt;
 
 import gift.entity.User;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -32,14 +35,21 @@ public class JwtUtil {
                 .compact();
     }
 
+
+
     public boolean validate(String token) {
         try {
             Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
             return true;
-        } catch (Exception e) {
-            return false;
+        } catch (ExpiredJwtException e) {
+            System.out.println("토큰이 만료되었습니다.");
+        } catch (SignatureException e) {
+            System.out.println("유효하지 않은 토큰 입니다.");
         }
+
+        return false;
     }
+
 
     public Claims getClaims(String token) {
         return Jwts.parser()
