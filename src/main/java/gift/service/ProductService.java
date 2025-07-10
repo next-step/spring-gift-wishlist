@@ -10,12 +10,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ProductService {
+
     private final ProductRepository productRepository;
 
-    public ProductService(ProductRepository productRepository){
+    public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
-
 
 
     private Product toEntity(ProductRequestDto dto) {
@@ -23,17 +23,21 @@ public class ProductService {
     }
 
     private ProductResponseDto toDto(Product product) {
-        return new ProductResponseDto(product.getId(), product.getName(), product.getPrice(), product.getImageUrl());
+        return new ProductResponseDto(product.getId(), product.getName(), product.getPrice(),
+                product.getImageUrl());
     }
 
     public List<ProductResponseDto> findAllProduct() {
         return productRepository.findAll().stream()
-                .map(p -> new ProductResponseDto(p.getId(), p.getName(), p.getPrice(), p.getImageUrl()))
+                .map(p -> new ProductResponseDto(p.getId(), p.getName(), p.getPrice(),
+                        p.getImageUrl()))
                 .toList();
     }
 
 
-    public ProductResponseDto addProduct(ProductRequestDto productRequestDto){
+
+    public ProductResponseDto addProduct(ProductRequestDto productRequestDto) {
+
         validateNameContent(productRequestDto.getName());
         Product product = toEntity(productRequestDto);
         Product savedProduct = productRepository.save(product);
@@ -41,30 +45,35 @@ public class ProductService {
     }
 
 
-    public ProductResponseDto findProduct(Long id){
+    public ProductResponseDto findProduct(Long id) {
         Product product = productRepository.findById(id);
-        if(product==null){
+        if (product == null) {
             throw new NoSuchElementException("product does not exist.");
         }
-        return new ProductResponseDto(product.getId(), product.getName(),product.getPrice(),product.getImageUrl());
+        return new ProductResponseDto(product.getId(), product.getName(), product.getPrice(),
+                product.getImageUrl());
     }
 
-    public ProductResponseDto updateProduct(Long id, ProductRequestDto productRequestDto){
+
+    public ProductResponseDto updateProduct(Long id, ProductRequestDto productRequestDto) {
+
         validateNameContent(productRequestDto.getName());
         Product product = productRepository.findById(id);
-        if(product==null){
+        if (product == null) {
             throw new NoSuchElementException("product does not exist.");
         }
         //db저장
-        product.updateProduct(productRequestDto.getName(),productRequestDto.getPrice(),productRequestDto.getImageUrl());
-        Product updateProduct = productRepository.update(id,product);
+        product.updateProduct(productRequestDto.getName(), productRequestDto.getPrice(),
+                productRequestDto.getImageUrl());
+        Product updateProduct = productRepository.update(id, product);
 
-        return new ProductResponseDto(updateProduct.getId(),updateProduct.getName(),updateProduct.getPrice(),updateProduct.getImageUrl());
+        return new ProductResponseDto(updateProduct.getId(), updateProduct.getName(),
+                updateProduct.getPrice(), updateProduct.getImageUrl());
     }
 
-    public void deleteProduct(Long id){
+    public void deleteProduct(Long id) {
         Product product = productRepository.findById(id);
-        if(product==null){
+        if (product == null) {
             throw new NoSuchElementException("Product does not exist.");
         }
         productRepository.deleteById(id);

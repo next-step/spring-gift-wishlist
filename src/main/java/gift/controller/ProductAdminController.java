@@ -23,6 +23,7 @@ public class ProductAdminController {
 
 
 
+
     public ProductAdminController(ProductAdminService productAdminService) {
         this.productAdminService = productAdminService;
     }
@@ -47,7 +48,7 @@ public class ProductAdminController {
             Model model
     ) {
         if (bindingResult.hasErrors()) {
-            // 검증 오류가 있으면 다시 입력 폼으로
+
             return "product/form";
         }
         productAdminService.save(dto);
@@ -57,7 +58,8 @@ public class ProductAdminController {
     @GetMapping("/{id}/edit")
     public String showEditForm(@PathVariable Long id, Model model) {
         Product product = productAdminService.findById(id);
-        ProductAdminRequestDto dto = new ProductAdminRequestDto(product.getName(), product.getPrice(),
+        ProductAdminRequestDto dto = new ProductAdminRequestDto(product.getName(),
+                product.getPrice(),
                 product.getImageUrl());
         model.addAttribute("product", dto);
         model.addAttribute("id", id);

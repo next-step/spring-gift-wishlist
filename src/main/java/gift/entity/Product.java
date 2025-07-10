@@ -1,6 +1,7 @@
 package gift.entity;
 
 public class Product {
+
     private Long id;
     private String name;
     private int price;
@@ -13,7 +14,8 @@ public class Product {
         this.price = price;
         this.imageUrl = imageUrl;
     }
-    public Product( String name, int price, String imageUrl) {
+
+    public Product(String name, int price, String imageUrl) {
 
         this.name = name;
         this.price = price;
@@ -53,9 +55,9 @@ public class Product {
     }
 
 
-    public void updateProduct(String name, int price, String imageUrl){
-        this.name=name;
-        this.price=price;
-        this.imageUrl=imageUrl;
+    public void updateProduct(String name, int price, String imageUrl) {
+        this.name = name;
+        this.price = price;
+        this.imageUrl = imageUrl;
     }
 }

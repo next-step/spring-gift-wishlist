@@ -10,3 +10,8 @@ VALUES
   ('사탕', 15000, 'https://image.idus.com/image/files/487d4064de8d4a7ebe3464ee39ef1e2c.jpg'),
   ('과자', 12000, 'https://i.namu.wiki/i/SkNgraT_xMbXwr48anSyTdndvgYf7M-uxlYZnXv0zG9zaEfuFm0ycnsa7sPmOZBo_rboakmFaFcu8sM4Ajzl6A.webp');
 
+CREATE TABLE members (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL
+);
