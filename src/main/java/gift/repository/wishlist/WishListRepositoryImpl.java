@@ -2,9 +2,12 @@ package gift.repository.wishlist;
 
 import gift.entity.Wish;
 import java.util.List;
+import java.util.Optional;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.server.ResponseStatusException;
 
 @Repository
 public class WishListRepositoryImpl implements WishListRepository {
@@ -40,5 +43,17 @@ public class WishListRepositoryImpl implements WishListRepository {
             .list();
 
         return wishList;
+    }
+
+    @Override
+    public int delete(Long productId, Long memberId) {
+        String sql = "delete from wishlist where product_id = :productId and member_id = :memberId";
+
+        int deleteRow = jdbcClient.sql(sql)
+            .param("productId", productId)
+            .param("memberId", memberId)
+            .update();
+
+        return deleteRow;
     }
 }

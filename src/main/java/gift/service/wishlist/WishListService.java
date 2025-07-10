@@ -7,4 +7,6 @@ public interface WishListService {
     public void create(Long productId, Long memberId);
 
     List<ProductResponseDto> findAll(Long memberId);
+
+    void delete(Long productId, Long memberId);
 }

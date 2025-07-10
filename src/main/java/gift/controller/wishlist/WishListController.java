@@ -39,4 +39,14 @@ public class WishListController {
     ) {
         return new ResponseEntity<>(wishListService.findAll(member.getId()), HttpStatus.OK);
     }
+
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<Void> delete(
+        @PathVariable Long productId,
+        @LoginMember Member member
+    ) {
+        wishListService.delete(productId, member.getId());
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
