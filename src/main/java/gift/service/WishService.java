@@ -48,4 +48,12 @@ public class WishService {
 
         wishRepository.addWish(memberId, wishRequestDto.productId());
     }
+
+    public void deleteWish(Long memberId, Long productId){
+        if (!wishRepository.existWish(memberId, productId)) {
+            throw new ResourceNotFoundException("해당 상품이 위시리스트에 존재하지 않습니다.");
+        }
+
+        wishRepository.deleteWish(memberId, productId);
+    }
 }

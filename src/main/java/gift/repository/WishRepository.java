@@ -38,6 +38,17 @@ public class WishRepository {
                 .update();
     }
 
+    public void deleteWish(Long memberId, Long productId) {
+        String sql = """
+                DELETE FROM WISHLIST WHERE member_id = :member_id AND product_id = :product_id
+                """;
+
+        jdbcClient.sql(sql)
+                .param("member_id", memberId)
+                .param("product_id", productId)
+                .update();
+    }
+
     public boolean existWish(Long memberId, Long productId) {
         String sql = """
                 SELECT COUNT(*) FROM WISHLIST WHERE member_id = :member_id AND  product_id = :product_id
@@ -51,6 +62,7 @@ public class WishRepository {
 
         return count > 0;
     }
+
     private RowMapper<Wish> wishRowMapper() {
         return (rs, rowNum) -> new Wish(
                 rs.getLong("id"),
