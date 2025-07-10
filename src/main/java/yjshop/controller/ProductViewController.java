@@ -1,8 +1,8 @@
-package gift.controller.view;
+package yjshop.controller;
 
-import gift.entity.Product;
-import gift.exception.ProductNotFoundException;
-import gift.service.ProductService;
+import yjshop.entity.Product;
+import yjshop.exception.ProductNotFoundException;
+import yjshop.service.ProductService;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Controller;
@@ -27,7 +27,7 @@ public class ProductViewController {
     public String getProducts(Model model) {
         List<Product> productList = productService.findAll();
         model.addAttribute("productList", productList);
-        return "view/home";
+        return "/yjshop/home";
     }
 
     //특정 상품을 조회(id)
@@ -42,7 +42,7 @@ public class ProductViewController {
             throw new ProductNotFoundException(errorMsg);
         }
         model.addAttribute("product", product.get());
-        return "view/productinfo";
+        return "/yjshop/productinfo";
     }
 
     //특정 상품을 검색(상품명을 통한 검색)
@@ -58,7 +58,7 @@ public class ProductViewController {
 
         List<Product> product = productService.searchProduct(name);
         model.addAttribute("productList", product);
-        return "view/home";
+        return "/yjshop/home";
     }
 
 }

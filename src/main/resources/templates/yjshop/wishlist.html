@@ -1,5 +1,5 @@
 
-<html layout:decorate="~{view/layout}">
+<html layout:decorate="~{yjshop/layout}">
 
 <div layout:fragment="content">
 
@@ -50,16 +50,16 @@
     <td th:text="${responseDto.price}"></td>
 
     <td>
-      <form th:action="@{/view/wishlist/add/{wishListId}(wishListId=${responseDto.wishListId})}" method="post">
+      <form th:action="@{/view/my/wishlist/add/{wishListId}(wishListId=${responseDto.wishListId})}" method="post">
         <button type="submit">+</button>
       </form>
-      <form th:action="@{/view/wishlist/subtract/{wishListId}(wishListId=${responseDto.wishListId})}" method="post">
+      <form th:action="@{/view/my/wishlist/subtract/{wishListId}(wishListId=${responseDto.wishListId})}" method="post">
         <button type="submit">-</button>
       </form>
-      <form th:action="@{/view/payment}" method="get">
+      <form th:action="@{/view/my/payment}" method="get">
         <button type="submit">바로 구매하기</button>
       </form>
-      <form th:action="@{/view/wishlist/delete/{wishListId}(wishListId=${responseDto.wishListId})}" method="post">
+      <form th:action="@{/view/my/wishlist/delete/{wishListId}(wishListId=${responseDto.wishListId})}" method="post">
         <button type="submit">비우기</button>
       </form>
     </td>

@@ -1,4 +1,4 @@
-<html layout:decorate="~{view/layout}">
+<html layout:decorate="~{yjshop/layout}">
 
 <div layout:fragment="content">
 <table>
@@ -50,13 +50,13 @@
     <td><img th:src="${product.imageUrl}" width="100px" alt = "상품 이미지"></td>
     <td>
 
-      <form th:action="@{/wishlist}" method="post">
+      <form th:action="@{/view/my/wishlist}" method="post">
         <input type="hidden" name="productId" th:value="${product.id}">
         <input type="number" name="quantity" placeholder="수량">
         <button type="submit">장바구니 담기</button>
       </form>
 
-      <form th:action="@{/view/payment}" method="get">
+      <form th:action="@{/view/my/payment}" method="get">
         <button type="submit">바로 구매하기</button>
       </form>
 
