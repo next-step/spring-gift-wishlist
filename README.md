@@ -35,6 +35,7 @@
   - 알아봐야합니다...!
   - STEP2에서는 해결할 수 있도록!
 
+
 ## STEP-02 회원 로그인
 ### *(현재 단순 로그인 API 구현 완료 - 물품에 대한 파일 분리는 정리 필요)* 
 ### 요구사항 구현 방식
@@ -68,3 +69,4 @@
 - repository
   - ProductRepository
   - UserRepository
+

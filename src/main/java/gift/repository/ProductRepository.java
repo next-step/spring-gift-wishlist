@@ -33,7 +33,7 @@ public class ProductRepository {
     public ProductRequestDto save(ProductRequestDto productRequestDto) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbc.sql("""
-                    INSERT INTO product (name, price, image_url)
+                    INSERT INTO productDto (name, price, image_url)
                     VALUES (:name, :price, :image_url)
                    """)
                 .param("name", productRequestDto.getName())
@@ -47,7 +47,7 @@ public class ProductRepository {
 
     public void update(ProductRequestDto productRequestDto) {
         jdbc.sql("""
-                    Update product
+                    Update productDto
                     set name = :name, price = :price, image_url = :image_url
                     where id = :id
                 """)
@@ -59,7 +59,7 @@ public class ProductRepository {
     }
 
     public void delete(Long id) {
-        jdbc.sql("DELETE FROM product WHERE id = :id")
+        jdbc.sql("DELETE FROM productDto WHERE id = :id")
                 .param("id", id)
                 .update();
     }
