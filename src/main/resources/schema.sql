@@ -13,6 +13,7 @@ CREATE TABLE users (
 );
 
 CREATE TABLE refresh_token(
-    email VARCHAR(255) PRIMARY KEY,
-    refresh_token TEXT NOT NULL
+    user_id BIGINT PRIMARY KEY ,
+    refresh_token TEXT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
