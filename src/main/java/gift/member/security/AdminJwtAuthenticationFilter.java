@@ -1,7 +1,8 @@
 package gift.member.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import gift.exception.wish.AdminAccessDeniedException;
+import gift.exception.wish.InvalidAuthorizationException;
+import gift.exception.wish.InvalidTokenException;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -33,33 +34,20 @@ public class AdminJwtAuthenticationFilter implements Filter {
 
         String authorizationHeader = httpServletRequest.getHeader(AUTHORIZATION_HEADER);
 
-        String token =
-            (authorizationHeader != null && authorizationHeader.startsWith(BEARER_PREFIX))
-                ? authorizationHeader.substring(BEARER_PREFIX.length())
-                : null;
-
-        if (token == null) {
-            httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "토큰 없음 또는 잘못된 형식");
-            return;
+        if (authorizationHeader == null || !authorizationHeader.startsWith(BEARER_PREFIX)) {
+            throw new InvalidAuthorizationException();
         }
 
-        try {
-            Claims claims = Jwts.parser()
-                .setSigningKey(jwtTokenProvider.key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        String token = authorizationHeader.substring(BEARER_PREFIX.length());
 
-            String role = claims.get("role", String.class);
+        if (!jwtTokenProvider.validateToken(token)) {
+            throw new InvalidTokenException("유효하지 않은 토큰입니다.");
+        }
 
-            if (!"ROLE_ADMIN".equals(role)) {
-                httpServletResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "권한이 없습니다.");
-                return;
-            }
+        String role = jwtTokenProvider.getRoleFromToken(token);
 
-        } catch (Exception e) {
-            httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "토큰 검증 실패");
-            return;
+        if (!"ROLE_ADMIN".equals(role)) {
+            throw new AdminAccessDeniedException();
         }
 
         filterChain.doFilter(httpServletRequest, httpServletResponse);
