@@ -44,6 +44,16 @@ public class TokenProvider {
         }
     }
 
+    public Long getMemberIdFromToken(String token){
+        Claims claims = Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+
+        return Long.parseLong(claims.getSubject());
+    }
+
     public String getRoleFromToken(String token){
         Claims claims = Jwts.parser()
                 .verifyWith(secretKey)
