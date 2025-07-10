@@ -15,7 +15,7 @@ public class AuthInterceptor implements HandlerInterceptor {
     private static final String AUTHORIZATION_SCHEME = "Bearer";
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER_PREFIX = AUTHORIZATION_SCHEME + " ";
-    
+
     private final JwtTokenProvider jwtTokenProvider;
 
     public AuthInterceptor(JwtTokenProvider jwtTokenProvider) {
@@ -40,7 +40,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             throw new AuthenticationException("유효하지 않은 토큰입니다.");
         }
 
-        request.setAttribute("userEmail", jwtTokenProvider.getPayload(token));
+        request.setAttribute("userEmail", jwtTokenProvider.getSubject(token));
         return true;
     }
 

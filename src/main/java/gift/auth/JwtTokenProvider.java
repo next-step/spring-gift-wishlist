@@ -42,7 +42,7 @@ public class JwtTokenProvider {
         }
     }
 
-    public String getPayload(String token) {
+    public String getSubject(String token) {
         return Jwts.parser()
                 .verifyWith(key)
                 .build()
