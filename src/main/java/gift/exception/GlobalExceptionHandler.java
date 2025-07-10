@@ -25,4 +25,10 @@ public class GlobalExceptionHandler {
         ErrorResponseDto errorResponseDto = new ErrorResponseDto("EMAIL_ALREADY_EXISTS", ex.getMessage());
         return new ResponseEntity<>(errorResponseDto, HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(DuplicateWishException.class)
+    public ResponseEntity<ErrorResponseDto> handleDuplicateWishException(DuplicateWishException ex) {
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto("DUPLICATE_WISHLIST", ex.getMessage());
+        return new ResponseEntity<>(errorResponseDto, HttpStatus.CONFLICT);
+    }
 }

@@ -1,4 +1,8 @@
 package gift.dto;
 
-public record WishRequestDto (Long productId) {
+import jakarta.validation.constraints.NotNull;
+
+public record WishRequestDto (
+        @NotNull Long productId
+) {
 }
