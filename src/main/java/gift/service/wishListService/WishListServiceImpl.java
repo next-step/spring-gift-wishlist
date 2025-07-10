@@ -62,4 +62,15 @@ public class WishListServiceImpl implements WishListService{
 
         return new ResponseWishItemDto(deletedItem.name(),deletedItem.imageUrl(),deletedItem.price(),deletedItem.quantity());
     }
+
+    @Override
+    public ResponseWishItemDto updateWishItem(Integer quantity, String name, String userEmail) {
+        WishItem updateItem = wishListRepository.updateWishItem(quantity, name, userEmail);
+
+        if (updateItem == null) {
+            throw new ItemNotFoundException();
+        }
+
+        return new ResponseWishItemDto(updateItem.name(), updateItem.imageUrl(), updateItem.price(), updateItem.quantity());
+    }
 }

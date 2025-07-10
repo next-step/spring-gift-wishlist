@@ -157,5 +157,41 @@ public class WishListRepositoryImpl implements WishListRepository {
         return new WishItem(item.getId(), item.getName(), item.getImageUrl(), item.getPrice(),quantity);
     }
 
+    @Override
+    public WishItem updateWishItem(Integer quantity, String name, String userEmail) {
+        User user = userRepository.findUserByEmail(userEmail);
+
+        if (user == null) {
+            throw new UserNotFoundException();
+        }
+
+        Item item = jdbcTemplate.queryForObject(
+                "SELECT id, name, price, image_url FROM items WHERE name =? LIMIT 1",
+                new Object[]{name},
+                (rs,rowNum) -> new Item(
+                        rs.getLong("id"),
+                        rs.getString("name"),
+                        rs.getInt("price"),
+                        rs.getString("image_url")
+                )
+        );
+
+        if (item == null) {
+            throw new ItemNotFoundException(name);
+        }
+
+        var wishListSql = "SELECT COUNT(*) FROM wish_items WHERE user_id =? AND item_id=?";
+        Integer count = jdbcTemplate.queryForObject(wishListSql, new Object[]{user.id(), item.getId()}, Integer.class);
+
+        if (count == null || count == 0) {
+            throw new ItemNotFoundException("해당 상품은 위시 리스트에 없습니다: " + name);
+        }
+
+        var updateSql = "UPDATE wish_items SET quantity=? WHERE user_id=? AND item_id=?";
+        jdbcTemplate.update(updateSql, quantity, user.id(), item.getId());
+
+        return new WishItem(item.getId(), item.getName(), item.getImageUrl(), item.getPrice(), quantity);
+    }
+
 
 }

@@ -13,4 +13,7 @@ public interface WishListRepository {
     List<WishItem> getWishItems(String name, Integer price, String userEmail);
 
     WishItem deleteItem(String name, String userEmail);
+
+    WishItem updateWishItem(Integer quantity, String name, String userEmail);
+
 }

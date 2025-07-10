@@ -63,4 +63,17 @@ public class WishListController {
 
         return new ResponseEntity<>(deletedWishItem, HttpStatus.NO_CONTENT);
     }
+
+    @PutMapping
+    public ResponseEntity<ResponseWishItemDto> updateWishItem(@RequestHeader("Authorization") String authHeader, @RequestParam Integer quantity, @RequestParam String name) {
+        String token = tokenUtils.extractToken(authHeader);
+
+        tokenUtils.validateToken(token);
+
+        String userEmail = tokenUtils.extractEmail(token);
+
+        ResponseWishItemDto updatedWishItem = wishListService.updateWishItem(quantity, name, userEmail);
+
+        return new ResponseEntity<>(updatedWishItem, HttpStatus.ACCEPTED);
+    }
 }
