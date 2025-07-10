@@ -1,8 +1,8 @@
 package gift;
 
 
-import gift.dto.request.ProductRequestDto;
-import gift.dto.response.ProductResponseDto;
+import gift.product.dto.request.ProductRequestDto;
+import gift.product.dto.response.ProductResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -25,4 +25,26 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleProductNotFoundException(ProductNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
+
+    @ExceptionHandler(InvalidLoginException.class)
+    public ResponseEntity<?> handleInvalidLoginException(InvalidLoginException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+    }
+
+    @ExceptionHandler(MemberNotFoundByIdException.class)
+    public ResponseEntity<?> handleMemberNotFoundByIdException(MemberNotFoundByIdException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(MemberNotFoundByEmailException.class)
+    public ResponseEntity<?> handleMemberNotFoundByEmailException(MemberNotFoundByEmailException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(EmailExistsException.class)
+    public ResponseEntity<?> handleEmailExistsException(EmailExistsException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
+
+
 }
