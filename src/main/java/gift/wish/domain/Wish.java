@@ -4,11 +4,13 @@ public class Wish {
     private Long id;
     private Long memberId;
     private Long productId;
+    private Integer quantity;
 
-    public Wish(Long id, Long memberId, Long productId) {
+    public Wish(Long id, Long memberId, Long productId, Integer quantity) {
         this.id = id;
         this.memberId = memberId;
         this.productId = productId;
+        this.quantity = quantity;
     }
 
     public Long getId() {
@@ -17,9 +19,5 @@ public class Wish {
 
     public Long getMemberId() {
         return memberId;
-    }
-
-    public Long getProductId() {
-        return productId;
     }
 }

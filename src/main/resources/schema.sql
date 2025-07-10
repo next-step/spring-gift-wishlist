@@ -18,6 +18,7 @@ CREATE TABLE wish (
     id BIGINT NOT NULL AUTO_INCREMENT,
     member_id BIGINT NOT NULL,
     product_id BIGINT NOT NULL,
+    quantity INT NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (member_id) REFERENCES member(id) ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE CASCADE,
