@@ -1,13 +1,11 @@
-package gift.service;
+package gift.product.service;
 
-import gift.dto.ProductRequestDto;
-import gift.dto.ProductResponseDto;
-import gift.entity.Product;
-import gift.exception.BusinessException;
-import gift.exception.ErrorCode;
+import gift.product.dto.ProductRequestDto;
+import gift.product.dto.ProductResponseDto;
+import gift.product.entity.Product;
 import gift.exception.KakaoApprovalException;
 import gift.exception.ProductNotFoundException;
-import gift.repository.ProductRepository;
+import gift.product.repository.ProductRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;

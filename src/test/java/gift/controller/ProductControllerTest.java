@@ -6,11 +6,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import gift.dto.ProductRequestDto;
-import gift.dto.ProductResponseDto;
+import gift.product.controller.ProductApiController;
+import gift.product.dto.ProductRequestDto;
+import gift.product.dto.ProductResponseDto;
 import gift.exception.BusinessException;
 import gift.exception.ErrorCode;
-import gift.service.ProductService;
+import gift.product.service.ProductService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;

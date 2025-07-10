@@ -1,6 +1,4 @@
-package gift.entity;
-
-import gift.dto.ProductResponseDto;
+package gift.product.entity;
 
 
 public class Product {
