@@ -1,6 +1,6 @@
 package gift.auth.controller;
 
-import gift.user.domain.User;
+import gift.auth.dto.UserSignupResponseDto;
 import gift.auth.dto.UserLoginRequestDto;
 import gift.auth.service.AuthService;
 import gift.auth.dto.UserSingupRequestDto;
@@ -22,11 +22,11 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> singup(@RequestBody UserSingupRequestDto userSignupRequestDto) {
-        User user = authService.signUp(userSignupRequestDto);
+        UserSignupResponseDto userSignupResponseDto = authService.signUp(userSignupRequestDto);
 
         return ResponseEntity
-                .created(URI.create("/api/auth/" + user.getId()))
-                .build();
+                .created(URI.create("/api/auth/" + userSignupResponseDto.getUser().getId()))
+                .body(userSignupResponseDto.getToken());
     }
 
     @PostMapping("/login")
