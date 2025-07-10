@@ -22,7 +22,7 @@ public class AuthService {
     }
 
     public TokenResponse signup(SignUpRequest signUpRequest) {
-        authRepository.save(SignUpRequest.toEntity(signUpRequest));
+        authRepository.save(signUpRequest.toEntity());
         return new TokenResponse(tokenService.generateToken(signUpRequest.email()));
     }
 
@@ -30,7 +30,7 @@ public class AuthService {
         User user = authRepository.findByEmail(
                 loginRequest.email()).orElseThrow(() -> new NoUserException(NO_USER.getErrorMessage())
         );
-        if(!user.validatePassword(loginRequest.password())){
+        if(!user.isPasswordMatched(loginRequest.password())){
             throw new InValidPasswordException(INVALID_PASSWORD.getErrorMessage());
         }
         return new TokenResponse(tokenService.generateToken(loginRequest.email()));
