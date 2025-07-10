@@ -28,7 +28,7 @@ public class JwtProvider {
     public String createToken(Member member) {
         return Jwts.builder()
             .subject(member.getId().toString())
-            .claim("email", member.getName())
+            .claim("name", member.getName().getValue())
             .expiration(Date.from(Instant.now().plusSeconds(tokenValidityTime)))
             .signWith(key)
             .compact();

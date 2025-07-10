@@ -1,5 +1,6 @@
 package gift.member.service;
 
+import gift.global.exception.MemberEmailNotExistsException;
 import gift.member.dto.MemberLoginRequestDto;
 import gift.member.dto.MemberLoginResponseDto;
 import gift.member.dto.MemberRegisterRequestDto;
@@ -8,7 +9,7 @@ import gift.member.entity.Member;
 import gift.global.exception.InvalidPasswordException;
 import gift.global.exception.MemberEmailAlreadyExistsException;
 import gift.member.repository.MemberRepository;
-import gift.member.util.JwtProvider;
+import gift.global.security.JwtProvider;
 import gift.member.vo.Email;
 import gift.member.vo.Name;
 import gift.member.vo.Password;
@@ -44,6 +45,10 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberLoginResponseDto findByEmail(MemberLoginRequestDto requestDto) {
         Member member = memberRepository.findByEmail(requestDto.email());
+
+        if (member == null) {
+            throw new MemberEmailNotExistsException();
+        }
 
         if (!member.getPassword().matches(requestDto.password())) {
             throw new InvalidPasswordException();
