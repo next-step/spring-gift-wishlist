@@ -7,26 +7,24 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
-public class RequestDto {
-    @NotNull
+public class ProductPatchRequestDto {
     @Size(min = 1, max = 15)
     @NoSpecialChar
     @BannedWord(words = {"카카오"})
     private String name;
-    @NotNull(message = "가격은 필수 입력값입니다.")
     @PositiveOrZero
     private Integer price;
     private String imageUrl;
 
-    public RequestDto() {}
+    public ProductPatchRequestDto() {}
 
-    public RequestDto(Product product) {
+    public ProductPatchRequestDto(Product product) {
         this.name = product.getName();
         this.price = product.getPrice();
         this.imageUrl = product.getImageUrl();
     }
 
-    public RequestDto(String name, Integer price, String imageUrl) {
+    public ProductPatchRequestDto(String name, Integer price, String imageUrl) {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
@@ -39,6 +37,7 @@ public class RequestDto {
     public Integer getPrice() {
         return price;
     }
+
     public String getImageUrl() {
         return imageUrl;
     }
