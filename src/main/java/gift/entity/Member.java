@@ -10,8 +10,7 @@ public class Member {
     }
 
     public Member(Long id, String email, String password) {
-        this.id = id;
-        this.email = email;
+        this(email,password);
         this.password = password;
     }
 

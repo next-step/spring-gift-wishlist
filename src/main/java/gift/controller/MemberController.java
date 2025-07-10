@@ -1,7 +1,9 @@
 package gift.controller;
 
-import gift.dto.MemberRequestDto;
-import gift.dto.MemberResponseDto;
+import gift.dto.MemberLoginRequestDto;
+import gift.dto.MemberLoginResponseDto;
+import gift.dto.MemberRegisterRequestDto;
+import gift.dto.MemberRegisterResponseDto;
 import gift.service.MemberService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -23,21 +25,21 @@ public class MemberController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<MemberResponseDto> registerMember(
-            @RequestBody @Valid MemberRequestDto requestDto) {
+    public ResponseEntity<MemberRegisterResponseDto> registerMember(
+            @RequestBody @Valid MemberRegisterRequestDto requestDto) {
 
         String token = memberService.register(requestDto);
-        MemberResponseDto responseDto = new MemberResponseDto(token);
+        MemberRegisterResponseDto responseDto = new MemberRegisterResponseDto(token);//받아온 토큰으로 REsponseDto를 만들어줘
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
 
     }
 
     @PostMapping("/login")
-    public ResponseEntity<MemberResponseDto> loginMember(
-            @RequestBody @Valid MemberRequestDto requestDto) {
+    public ResponseEntity<MemberLoginResponseDto> loginMember(
+            @RequestBody @Valid MemberLoginRequestDto requestDto) {
 
         String token = memberService.login(requestDto);
-        MemberResponseDto responseDto = new MemberResponseDto(token);
+        MemberLoginResponseDto responseDto = new MemberLoginResponseDto(token);
 
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
