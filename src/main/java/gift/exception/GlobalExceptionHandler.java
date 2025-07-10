@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EmailDuplicateException.class)
     public ResponseEntity<String> handleEmailDuplicateException(EmailDuplicateException ex) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 
 
