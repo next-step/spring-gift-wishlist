@@ -57,7 +57,7 @@ public class MemberController {
         MemberTokenResponse tokenResponse = memberService.register(registerRequest);
         addTokenCookie(response, tokenResponse.token());
 
-        return "/redirect:/products";
+        return "redirect:/products";
     }
 
     @PostMapping("/logout")
