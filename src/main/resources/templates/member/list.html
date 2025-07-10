@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>회원 목록</title>
+</head>
+<body>
+<h2>회원 목록</h2>
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>이름</th>
+        <th>이메일</th>
+        <th>권한</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="member : ${members}">
+        <td th:text="${member.id}">1</td>
+        <td th:text="${member.name}">홍길동</td>
+        <td th:text="${member.email}">test@example.com</td>
+        <td th:text="${member.role}">USER</td>
+        <td>
+            <a th:href="@{/admin/members/{id}/update(id=${member.id})}">수정</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+<form th:action="@{/admin/members/logout}" method="post">
+    <button type="submit">로그아웃</button>
+</form>
+</html>

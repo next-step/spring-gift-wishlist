@@ -5,3 +5,12 @@ create table product
     price BIGINT NOT NULL,
     image_url VARCHAR(255)
 );
+
+CREATE TABLE member
+(
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role VARCHAR(50)  NOT NULL
+);
