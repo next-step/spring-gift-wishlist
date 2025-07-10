@@ -17,10 +17,10 @@ import java.util.*;
 
 @Controller
 @RequestMapping("/api/admin")
-public class ProductAdminController {
+public class ProductAdminViewController {
     private final ProductService productService;
 
-    public ProductAdminController(ProductService productService) {
+    public ProductAdminViewController(ProductService productService) {
         this.productService = productService;
     }
 
