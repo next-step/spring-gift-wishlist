@@ -1,5 +1,6 @@
 package gift.filter;
 
+import gift.util.BearerAuthUtil;
 import gift.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -8,22 +9,21 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-/**
- * API 요청(Authorization 헤더)용 JWT 필터
- */
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class JwtHeaderFilter extends JwtFilter {
 
-    public JwtHeaderFilter(JwtUtil jwtUtil) {
+    private final BearerAuthUtil bearerAuthUtil;
+
+    public JwtHeaderFilter(JwtUtil jwtUtil, BearerAuthUtil bearerAuthUtil) {
         super(jwtUtil);
+        this.bearerAuthUtil = bearerAuthUtil;
     }
 
     @Override
     protected boolean shouldFilter(HttpServletRequest request) {
         String uri = request.getRequestURI();
         String ctx = request.getContextPath();
-        // /api/members/** 경로는 인증 제외
         if (uri.startsWith(ctx + "/api/members")) {
             return false;
         }
@@ -33,6 +33,7 @@ public class JwtHeaderFilter extends JwtFilter {
     @Override
     protected String resolveToken(HttpServletRequest request) {
         String header = request.getHeader("Authorization");
+
         if (header != null && header.startsWith("Bearer ")) {
             return header.substring(7).trim();
         }

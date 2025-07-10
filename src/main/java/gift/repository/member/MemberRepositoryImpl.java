@@ -27,7 +27,7 @@ public class MemberRepositoryImpl implements MemberRepository {
     public MemberRepositoryImpl(DataSource ds) {
         this.ds = ds;
         this.insert = new SimpleJdbcInsert(ds)
-                .withTableName("members")
+                .withTableName("member")
                 .usingGeneratedKeyColumns("id");
     }
 
@@ -50,7 +50,7 @@ public class MemberRepositoryImpl implements MemberRepository {
     @Override
     public Member updateMember(Member member) {
         String sql = """
-                UPDATE members
+                UPDATE member
                    SET email = ?, password_hash = ?, role = ?
                  WHERE id = ?
                 """;
@@ -74,7 +74,7 @@ public class MemberRepositoryImpl implements MemberRepository {
 
     @Override
     public Optional<Member> findByEmail(String email) {
-        String sql = "SELECT id, email, password_hash, role, created_at FROM members WHERE email = ?";
+        String sql = "SELECT id, email, password_hash, role, created_at FROM member WHERE email = ?";
         try (Connection conn = ds.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -92,7 +92,7 @@ public class MemberRepositoryImpl implements MemberRepository {
 
     @Override
     public List<Member> findAll() {
-        String sql = "SELECT id, email, password_hash, role, created_at FROM members";
+        String sql = "SELECT id, email, password_hash, role, created_at FROM member";
         try (Connection conn = ds.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql);
                 ResultSet rs = ps.executeQuery()) {
@@ -109,7 +109,7 @@ public class MemberRepositoryImpl implements MemberRepository {
 
     @Override
     public Optional<Member> findById(Long id) {
-        String sql = "SELECT id, email, password_hash, role, created_at FROM members WHERE id = ?";
+        String sql = "SELECT id, email, password_hash, role, created_at FROM member WHERE id = ?";
         try (Connection conn = ds.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -127,7 +127,7 @@ public class MemberRepositoryImpl implements MemberRepository {
 
     @Override
     public void deleteById(Long id) {
-        String sql = "DELETE FROM members WHERE id = ?";
+        String sql = "DELETE FROM member WHERE id = ?";
         try (Connection conn = ds.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
 

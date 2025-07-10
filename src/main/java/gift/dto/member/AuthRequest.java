@@ -1,7 +1,7 @@
 package gift.dto.member;
 
 import static gift.entity.member.value.MemberEmail.EMAIL_REGEX;
-import static gift.entity.member.value.MemberPassword.PASSWORD_LENGTH;
+import static gift.entity.member.value.MemberPasswordHash.PASSWORD_LENGTH;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

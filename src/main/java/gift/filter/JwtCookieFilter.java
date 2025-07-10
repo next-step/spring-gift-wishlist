@@ -10,9 +10,6 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-/**
- * 관리자 페이지(Cookie)용 JWT 필터
- */
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE + 1)
 public class JwtCookieFilter extends JwtFilter {
@@ -25,7 +22,6 @@ public class JwtCookieFilter extends JwtFilter {
     protected boolean shouldFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
         String ctx = request.getContextPath();
-        // 로그인, API, 정적 리소스는 필터 제외
         if (path.startsWith(ctx + "/admin/login") ||
                 path.startsWith(ctx + "/api/") ||
                 path.startsWith(ctx + "/css/") ||
