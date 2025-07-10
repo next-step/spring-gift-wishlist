@@ -11,4 +11,6 @@ public interface WishlistRepository {
     List<Wishlist> findAllByOrderByCreatedAtDesc();
 
     Optional<Wishlist> findById(Long id);
+
+    void remove(Long id);
 }

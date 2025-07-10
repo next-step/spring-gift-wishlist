@@ -79,4 +79,10 @@ public class JdbcWishlistRepository implements WishlistRepository {
             return Optional.empty();
         }
     }
+
+    @Override
+    public void remove(Long id) {
+        String sql = "DELETE FROM wishlist WHERE id = ?";
+        jdbcTemplate.update(sql, id);
+    }
 }

@@ -84,4 +84,10 @@ public class WishlistService {
             wishlist.getCreatedAt()
         );
     }
+
+    public void deleteWishlist(Long wishlistId) {
+        Wishlist wishlist = wishlistRepository.findById(wishlistId)
+            .orElseThrow(() -> new WishlistNotFoundException(wishlistId));
+        wishlistRepository.remove(wishlist.getId());
+    }
 }
