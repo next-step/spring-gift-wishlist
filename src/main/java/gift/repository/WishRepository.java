@@ -30,9 +30,9 @@ public class WishRepository {
 
     public List<WishItem> findAllByMemberId(Long memberId) {
         String sql = """
-                SELECT * FROM wi.member_id, p.name, p.price, p.image_url, wi.quantity 
-                FROM wish_items wi 
-                JOIN products p
+                SELECT wi.member_id, wi.product_id, p.name, p.price, p.image_url, wi.quantity 
+                FROM wish_items AS wi 
+                JOIN products AS p
                 ON wi.product_id = p.id
                 WHERE wi.member_id = ?
                 """;
