@@ -1,6 +1,6 @@
 package gift.entity.product;
 
-import gift.dto.ProductResponse;
+import gift.dto.product.ProductResponse;
 import gift.entity.product.value.ProductId;
 import gift.entity.product.value.ProductImageUrl;
 import gift.entity.product.value.ProductName;
@@ -35,13 +35,7 @@ public class Product {
     }
 
     public static Product of(Long id, String name, int price, String imageUrl) {
-        return new Product(
-                new ProductId(id),
-                new ProductName(name),
-                new ProductPrice(price),
-                new ProductImageUrl(imageUrl),
-                false
-        );
+        return of(id, name, price, imageUrl, false);
     }
 
     public static Product of(String name, int price, String imageUrl) {

@@ -4,10 +4,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public record ErrorResponse(
-        String code,
+        ErrorCode code,
         String message,
         List<FieldErrorDetail> fieldErrors,
-        LocalDateTime timestamp
-) {
+        LocalDateTime timestamp) {
 
 }
