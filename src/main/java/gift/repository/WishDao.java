@@ -26,10 +26,10 @@ public class WishDao implements WishRepository{
     @Override
     public Wish createWish(Wish newWish) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        String sql = "insert into wishes(productId, memberEmail, quantity) values (:productId, :memberEmail, :quantity);";
+        String sql = "insert into wishes(productId, memberId, quantity) values (:productId, :memberId, :quantity);";
         client.sql(sql)
                 .param("productId", newWish.getProductId())
-                .param("memberEmail", newWish.getMemberId())
+                .param("memberId", newWish.getMemberId())
                 .param("quantity", newWish.getQuantity())
                 .update(keyHolder);
 

@@ -20,7 +20,7 @@ public class TokenServiceImpl implements TokenService {
                     .build()
                     .parseSignedClaims(token)
                     .getPayload();
-            Member find = new Member(null, claims.get("email", String.class), null,
+            Member find = new Member(claims.get("id", Long.class), claims.get("email", String.class), null,
                     claims.get("role", String.class));
             return Optional.of(find);
 
@@ -33,6 +33,7 @@ public class TokenServiceImpl implements TokenService {
     public String createAccessToken(Member member) {
         return Jwts.builder()
                 .setSubject(member.getId().toString())
+                .claim("id", member.getId())
                 .claim("email", member.getEmail())
                 .claim("role", member.getRole())
                 .signWith(Keys.hmacShaKeyFor(key.getBytes()))
