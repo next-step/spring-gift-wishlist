@@ -56,7 +56,7 @@ public class ValidHeaderInterceptor implements HandlerInterceptor {
         Role requiredRole = validHeader.role();
         if (requiredRole != Role.NONE) {
             Role tokenRole = Role.valueOf(claims.get("role", String.class));
-            if (!tokenRole.equals(requiredRole) || !member.getRole().equals(requiredRole) || !member.getRole().equals(tokenRole)) {
+            if (!tokenRole.equals(requiredRole)) {
                 throw new WrongPermissionException();
             }
         }
