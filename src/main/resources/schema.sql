@@ -23,7 +23,7 @@ CREATE TABLE WISHLIST
     item_id     BIGINT      NOT NULL,
     created_at  DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
-    UNIQUE KEY unique_member_item (member_id, item_id),
+    UNIQUE (member_id, item_id),
     FOREIGN KEY (member_id) REFERENCES MEMBER(id) ON DELETE CASCADE,
     FOREIGN KEY (item_id) REFERENCES ITEM(id) ON DELETE CASCADE
 );
