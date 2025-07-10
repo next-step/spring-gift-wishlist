@@ -2,12 +2,15 @@ package gift.auth;
 
 import gift.member.domain.Member;
 import gift.member.repository.MemberRepository;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 @Component
@@ -22,31 +25,60 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String authHeader = request.getHeader("Authorization");
+        boolean isApiRequest = request.getRequestURI().startsWith("/api");
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return makeResponse(response, "인증 헤더가 없거나 형식이 올바르지 않습니다.");
+        String token = extractToken(request, isApiRequest);
+
+        if (token == null) {
+            return handleAuthError(response, isApiRequest, "인증 정보가 없습니다. 다시 로그인해주세요");
         }
 
-        String token = authHeader.substring(7);
         if (!jwtUtil.validateToken(token)) {
-            return makeResponse(response, "유효하지 않은 토큰입니다.");
+            return handleAuthError(response, isApiRequest, "인증 정보가 유효하지 않거나 만료되었습니다. 다시 로그인해주세요.");
         }
 
         String email = jwtUtil.getEmail(token);
         Optional<Member> member = memberRepository.findByEmail(email);
-        if(member.isEmpty()) {
-            return makeResponse(response, "사용자를 찾을 수 없습니다.");
+        if (member.isEmpty()) {
+            return handleAuthError(response, isApiRequest, "사용자를 찾을 수 없습니다.");
         }
 
         request.setAttribute("member", member.get());
+
         return true;
     }
 
-    private static boolean makeResponse(HttpServletResponse response, String msg) throws IOException {
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write(msg);
+    private String extractToken(HttpServletRequest request, boolean isApiRequest) {
+        if (isApiRequest) {
+            String authHeader = request.getHeader("Authorization");
+            if(authHeader != null && authHeader.startsWith("Bearer ")) {
+                return authHeader.substring(7);
+            }
+        }
+        else {
+            Cookie[] cookies = request.getCookies();
+            if(cookies != null) {
+                for (Cookie cookie : request.getCookies()) {
+                    if ("jwt-token".equals(cookie.getName())) {
+                        return cookie.getValue();
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private boolean handleAuthError(HttpServletResponse response, boolean isApiRequest, String msg) throws IOException {
+        if (isApiRequest) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json;charset=UTF-8");
+            String jsonMsg = String.format("{\"error\": \"%s\"}", msg);
+            response.getWriter().write(jsonMsg);
+        }
+        else {
+            String encodedMsg = URLEncoder.encode(msg, StandardCharsets.UTF_8);
+            response.sendRedirect("/members/login?error=true&message=" + encodedMsg);
+        }
         return false;
     }
 }

@@ -1,6 +1,5 @@
 package gift.member.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.common.ControllerTestTemplate;
 import gift.member.dto.MemberLoginRequest;
 import gift.member.dto.MemberRegisterRequest;
@@ -56,21 +55,21 @@ public class MemberApiControllerTest extends ControllerTestTemplate {
         String jsonResponse = loginResult.getResponse().getContentAsString();
         String token = objectMapper.readValue(jsonResponse, MemberTokenResponse.class).token();
 
-        getWithToken("/admin/products", token)
+        getWithToken("/api/products", token)
                 .andExpect(status().isOk());
     }
 
     @Test
     @DisplayName("토큰 없이 product list 조회 - 401")
     void accessResourceWithoutToken() throws Exception{
-        getWithoutToken("/admin/products")
+        getWithoutToken("/api/products")
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     @DisplayName("유효하지 않은 토큰으로 product list 조회 - 401")
     void accessResourceWithNotValidToken() throws Exception{
-        getWithToken("/admin/products", "testToken")
+        getWithToken("/api/products", "testToken")
                 .andExpect(status().isUnauthorized());
     }
 
