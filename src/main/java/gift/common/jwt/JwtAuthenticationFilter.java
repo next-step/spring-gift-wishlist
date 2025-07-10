@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
@@ -20,22 +19,23 @@ import java.util.Arrays;
 import java.util.List;
 
 @Component
-@Profile("!test")
 @ConditionalOnProperty(
-    name = "jwt.enabled", 
-    havingValue = "true", 
-    matchIfMissing = true
+        name = "jwt.enabled",
+        havingValue = "true",
+        matchIfMissing = true
 )
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
     private static final List<String> SKIP_PATHS = Arrays.asList(
-        "/health",
-        "/actuator",
-        "/css/",
-        "/js/",
-        "/images/",
-        "/favicon.ico"
+            "/health",
+            "/actuator",
+            "/css/",
+            "/js/",
+            "/images/",
+            "/favicon.ico",
+            "/api/members/register",
+            "/api/members/login"
     );
     private final JwtTokenPort jwtTokenPort;
     private final ObjectMapper objectMapper;
@@ -46,10 +46,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, 
-                                    HttpServletResponse response, 
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        
+
         String requestURI = request.getRequestURI();
         log.info("JWT 필터 처리: {}", requestURI);
 
@@ -61,36 +61,35 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             String token = jwtTokenPort.resolveToken(request);
-            
-            if (token != null) {
-                JwtTokenProvider.TokenValidationResult validationResult = jwtTokenPort.validateToken(token);
-                
-                if (validationResult.isValid()) {
-                    Long memberId = jwtTokenPort.getMemberIdFromToken(token);
-                    String email = jwtTokenPort.getEmailFromToken(token);
-                    String tokenType = jwtTokenPort.getTokenTypeFromToken(token);
-                    String role = jwtTokenPort.getRoleFromToken(token);
-
-                    request.setAttribute("memberId", memberId);
-                    request.setAttribute("email", email);
-                    request.setAttribute("tokenType", tokenType);
-                    request.setAttribute("role", role);
-                    request.setAttribute("authenticated", true);
-                    
-                    log.info("JWT 인증 성공: {} (ID: {}), role: {}", email, memberId, role);
-                } else {
-                    log.info("유효하지 않은 JWT 토큰: {}", validationResult.getErrorMessage());
-                    sendUnauthorizedResponse(response, validationResult.getErrorMessage());
-                    return;
-                }
-            } else {
-                log.info("Authorization 헤더에 JWT 토큰이 없음");
+            if (token == null) {
+                log.warn("Authorization 헤더에 JWT 토큰이 없음");
                 sendUnauthorizedResponse(response, "인증이 필요합니다. Authorization 헤더에 JWT 토큰을 포함해주세요.");
                 return;
             }
-            
+
+            JwtTokenProvider.TokenValidationResult validationResult = jwtTokenPort.validateToken(token);
+
+            if (validationResult.isNotValid()) {
+                log.warn("유효하지 않은 JWT 토큰: {}", validationResult.getErrorMessage());
+                sendUnauthorizedResponse(response, validationResult.getErrorMessage());
+                return;
+            }
+
+            Long memberId = jwtTokenPort.getMemberIdFromToken(token);
+            String email = jwtTokenPort.getEmailFromToken(token);
+            String tokenType = jwtTokenPort.getTokenTypeFromToken(token);
+            String role = jwtTokenPort.getRoleFromToken(token);
+
+            request.setAttribute("memberId", memberId);
+            request.setAttribute("email", email);
+            request.setAttribute("tokenType", tokenType);
+            request.setAttribute("role", role);
+            request.setAttribute("authenticated", true);
+
+            log.info("JWT 인증 성공: {} (ID: {}), role: {}", email, memberId, role);
+
         } catch (Exception e) {
-            log.info("JWT 인증 중 오류 발생", e);
+            log.error("JWT 인증 중 오류 발생", e);
             sendUnauthorizedResponse(response, "인증 오류: " + e.getMessage());
             return;
         }
@@ -104,7 +103,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         response.setCharacterEncoding("UTF-8");
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
-            HttpStatus.UNAUTHORIZED, message);
+                HttpStatus.UNAUTHORIZED, message);
         problemDetail.setTitle("Unauthorized");
 
         response.getWriter().write(objectMapper.writeValueAsString(problemDetail));

@@ -1,12 +1,12 @@
-package gift.common.jwt;
+package gift.common.config;
 
+import gift.common.jwt.JwtTokenPort;
+import gift.common.jwt.JwtTokenProvider;
 import gift.member.domain.model.Role;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
-@Profile("test")
 public class MockJwtTokenProvider implements JwtTokenPort {
 
     @Override

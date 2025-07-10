@@ -1,7 +1,6 @@
 package gift.common.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
@@ -20,7 +19,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestControllerAdvice
-@Order(1)
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(UnauthorizedException.class)
