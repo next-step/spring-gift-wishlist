@@ -18,9 +18,9 @@ public class JwtUtil {
     private final long timeoutMs;
 
     public JwtUtil(@Value("${jwt.secret}") String secretKey,
-                   @Value("${jwt.tokenTimeoutSec}") long timeOut_s) {
+                   @Value("${jwt.tokenTimeoutSec}") long timeOutSec) {
         this.secretKey = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
-        this.timeoutMs = timeOut_s * 1000;
+        this.timeoutMs = timeOutSec * 1000;
     }
 
     public String generateToken(Member member) {

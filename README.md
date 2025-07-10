@@ -48,7 +48,6 @@
 - [x] JWT 인증 필터(인터셉터) 적용
 - [x] 인증 예외 처리 구현
 - [x] 테스트 코드 JWT 인증 추가
-- [ ] 회원 관련 페이지 구현
 
 ### 2단계 - 코드 리뷰 반영
 
@@ -59,6 +58,14 @@
 - [x] Interceptor: authHeader 토큰 문제 수정
 - [x] Member register, login 테스트 코드 작성
 - [x] 테스트 코드 메소드 추출, 불필요한 코드 제거
+
+### 3단계 - 위시 리스트
+
+- [ ] 회원 login, register 페이지 구현
+- [ ] 상품 목록 조회, 장바구니 등록 domain, repository 설계
+- [ ] 상품 목록 조회, 장바구니 등록 service, controller 설계
+- [ ] 위시 리스트 페이지 구현
+- [ ] 암호화 적용하기
 
 # spring-gift-product (이전 구현)
 
