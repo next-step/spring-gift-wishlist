@@ -30,7 +30,9 @@ public class UserUpdateTest extends AbstractUserTest {
             fieldWithPath("id").description("사용자 ID").type(JsonFieldType.NUMBER),
             fieldWithPath("email").description("사용자 이메일"),
             fieldWithPath("password").description("인코딩된 사용자 비밀번호"),
-            fieldWithPath("roles").description("사용자 역할 목록")
+            fieldWithPath("roles").description("사용자 역할 목록"),
+            fieldWithPath("createdAt").description("사용자 생성 시간").type(JsonFieldType.STRING),
+            fieldWithPath("updatedAt").description("사용자 수정 시간").type(JsonFieldType.STRING)
     };
 
     private static final FieldDescriptor[] USER_UPDATE_RESPONSE = {

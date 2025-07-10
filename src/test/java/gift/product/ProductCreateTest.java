@@ -28,7 +28,9 @@ public class ProductCreateTest extends AbstractProductTest {
             fieldWithPath("id").description("제품 ID").type(JsonFieldType.NUMBER),
             fieldWithPath("name").description("제품 이름").type(JsonFieldType.STRING),
             fieldWithPath("price").description("제품 가격").type(JsonFieldType.NUMBER),
-            fieldWithPath("imageUrl").description("제품 이미지 URL").type(JsonFieldType.STRING)
+            fieldWithPath("imageUrl").description("제품 이미지 URL").type(JsonFieldType.STRING),
+            fieldWithPath("createdAt").description("제품 생성 시간").type(JsonFieldType.STRING),
+            fieldWithPath("updatedAt").description("제품 수정 시간").type(JsonFieldType.STRING)
     };
 
     @Test

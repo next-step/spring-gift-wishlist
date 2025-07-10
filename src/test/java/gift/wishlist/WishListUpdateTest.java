@@ -35,7 +35,9 @@ public class WishListUpdateTest extends AbstractWishlistTest {
             fieldWithPath("price").description("제품 가격").type(JsonFieldType.NUMBER),
             fieldWithPath("imageUrl").description("제품 이미지 URL").type(JsonFieldType.STRING),
             fieldWithPath("quantity").description("위시리스트에 추가된 제품의 수량").type(JsonFieldType.NUMBER).optional(),
-            fieldWithPath("subtotal").description("위시리스트에 추가된 제품의 총액").type(JsonFieldType.NUMBER).optional()
+            fieldWithPath("subtotal").description("위시리스트에 추가된 제품의 총액").type(JsonFieldType.NUMBER).optional(),
+            fieldWithPath("createdAt").description("제품 생성 시간").type(JsonFieldType.STRING),
+            fieldWithPath("updatedAt").description("제품 수정 시간").type(JsonFieldType.STRING)
     };
 
     private void addProductToWishlist(Long productId) {

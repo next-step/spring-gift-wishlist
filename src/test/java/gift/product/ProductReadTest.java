@@ -18,7 +18,9 @@ public class ProductReadTest extends AbstractProductTest {
             fieldWithPath("id").description("제품 ID").type(JsonFieldType.NUMBER),
             fieldWithPath("name").description("제품 이름").type(JsonFieldType.STRING),
             fieldWithPath("price").description("제품 가격").type(JsonFieldType.NUMBER),
-            fieldWithPath("imageUrl").description("제품 이미지 URL").type(JsonFieldType.STRING)
+            fieldWithPath("imageUrl").description("제품 이미지 URL").type(JsonFieldType.STRING),
+            fieldWithPath("createdAt").description("제품 생성 시간").type(JsonFieldType.STRING).optional(),
+            fieldWithPath("updatedAt").description("제품 업데이트 시간").type(JsonFieldType.STRING).optional()
     };
 
     static final FieldDescriptor [] PRODUCT_READ_PAGE_RESPONSE = {
@@ -30,7 +32,9 @@ public class ProductReadTest extends AbstractProductTest {
             fieldWithPath("contents[].id").description("제품 ID").type(JsonFieldType.NUMBER).optional(),
             fieldWithPath("contents[].name").description("제품 이름").type(JsonFieldType.STRING).optional(),
             fieldWithPath("contents[].price").description("제품 가격").type(JsonFieldType.NUMBER).optional(),
-            fieldWithPath("contents[].imageUrl").description("제품 이미지 URL").type(JsonFieldType.STRING).optional()
+            fieldWithPath("contents[].imageUrl").description("제품 이미지 URL").type(JsonFieldType.STRING).optional(),
+            fieldWithPath("contents[].createdAt").description("제품 생성 시간").type(JsonFieldType.STRING).optional(),
+            fieldWithPath("contents[].updatedAt").description("제품 업데이트 시간").type(JsonFieldType.STRING).optional()
     };
 
 
