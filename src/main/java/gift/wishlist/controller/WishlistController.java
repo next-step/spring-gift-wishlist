@@ -1,9 +1,9 @@
 package gift.wishlist.controller;
 
+import gift.common.annotation.LoginMember;
 import gift.wishlist.dto.WishlistRequestDto;
 import gift.wishlist.dto.WishlistResponseDto;
 import gift.wishlist.service.WishlistService;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,9 +24,8 @@ public class WishlistController {
     @PostMapping
     public ResponseEntity<WishlistResponseDto> addProductToWishlist(
             @RequestBody WishlistRequestDto requestDto,
-            HttpServletRequest request) {
+            @LoginMember Long memberId) {
 
-        Long memberId = (Long) request.getAttribute("memberId");
         WishlistResponseDto responseDto = wishlistService.addProductToWishlist(memberId, requestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
