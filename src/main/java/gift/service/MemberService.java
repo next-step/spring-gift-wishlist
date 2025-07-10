@@ -1,6 +1,9 @@
 package gift.service;
 
 import gift.dto.LoginRequest;
+import gift.exception.EmailAlreadyExistsException;
+import gift.exception.InvalidPasswordException;
+import gift.exception.MemberNotFoundException;
 import gift.util.PasswordUtil;
 import gift.dto.RegisterRequest;
 import gift.dto.TokenResponse;
@@ -23,7 +26,7 @@ public class MemberService {
 
     public TokenResponse save(RegisterRequest request) {
         if (memberRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("이미 가입된 이메일입니다: " + request.getEmail());
+            throw new EmailAlreadyExistsException(request.getEmail());
         }
 
         String encryptedPassword = PasswordUtil.encode(request.getPassword());
@@ -37,12 +40,12 @@ public class MemberService {
     }
 
     public TokenResponse login(LoginRequest request) {
-        Member member = memberRepository.findByEmail(request.email()).orElseThrow(() ->
-            new IllegalArgumentException("존재하지 않는 사용자입니다: " + request.email()));
+        Member member = memberRepository.findByEmail(request.getEmail()).orElseThrow(() ->
+            new MemberNotFoundException(request.getEmail()));
         ;
 
-        if (!PasswordUtil.matches(request.password(), member.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        if (!PasswordUtil.matches(request.getPassword(), member.getPassword())) {
+            throw new InvalidPasswordException();
         }
 
         String accessToken = generateAccessToken(member);

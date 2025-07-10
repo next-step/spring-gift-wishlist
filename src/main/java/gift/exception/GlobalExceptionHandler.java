@@ -35,13 +35,32 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
-  
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<?> handleIllegalArgument(IllegalArgumentException e) {
+        return createErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ResponseEntity<?> handleEmailExists(EmailAlreadyExistsException e) {
+        return createErrorResponse(HttpStatus.CONFLICT, e.getMessage());
+    }
+
+    @ExceptionHandler(MemberNotFoundException.class)
+    public ResponseEntity<?> handleMemberNotFound(MemberNotFoundException e) {
+        return createErrorResponse(HttpStatus.NOT_FOUND, e.getMessage());
+    }
+
+    @ExceptionHandler(InvalidPasswordException.class)
+    public ResponseEntity<?> handleInvalidPassword(InvalidPasswordException e) {
+        return createErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+
+    public ResponseEntity<?> createErrorResponse(HttpStatus status, String message) {
         Map<String, Object> body = new HashMap<>();
-        body.put("statusCode", HttpStatus.CONFLICT);
-        body.put("message", e.getMessage());
+        body.put("statusCode", status);
+        body.put("message", message);
         body.put("timestamp", LocalDateTime.now());
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
+        return ResponseEntity.status(status).body(body);
     }
 }
