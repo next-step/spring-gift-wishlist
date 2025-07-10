@@ -17,6 +17,8 @@ import gift.dto.product.ProductForm;
 import gift.entity.product.Product;
 import gift.fixture.ProductFixture;
 import gift.service.product.ProductService;
+import gift.util.BearerAuthUtil;
+import gift.util.JwtUtil;
 import gift.util.RoleUtil;
 import java.util.List;
 import java.util.Optional;
@@ -46,7 +48,9 @@ class AdminProductControllerTest {
     @MockitoBean
     private ProductService productService;
     @MockitoBean
-    private gift.util.JwtUtil jwtUtil;
+    private JwtUtil jwtUtil;
+    @MockitoBean
+    private BearerAuthUtil bearerAuthUtil;
     @Autowired
     private ObjectMapper objectMapper;
 

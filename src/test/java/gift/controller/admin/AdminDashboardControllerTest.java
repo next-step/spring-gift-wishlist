@@ -6,6 +6,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import gift.util.BearerAuthUtil;
+import gift.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,7 +35,9 @@ class AdminDashboardControllerTest {
     private Claims claims;
 
     @MockitoBean
-    private gift.util.JwtUtil jwtUtil;
+    private JwtUtil jwtUtil;
+    @MockitoBean
+    private BearerAuthUtil bearerAuthUtil;
 
     /**
      * 테스트용 RequestPostProcessor로 authClaims 어트리뷰트를 설정

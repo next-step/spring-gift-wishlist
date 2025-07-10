@@ -10,6 +10,8 @@ import gift.dto.member.AuthRequest;
 import gift.dto.member.AuthResponse;
 import gift.service.member.MemberService;
 import gift.util.BasicAuthUtil;
+import gift.util.BearerAuthUtil;
+import gift.util.JwtUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,7 +43,9 @@ class AuthControllerTest {
     private MemberService memberService;
 
     @MockitoBean
-    private gift.util.JwtUtil jwtUtil;
+    private JwtUtil jwtUtil;
+    @MockitoBean
+    private BearerAuthUtil bearerAuthUtil;
 
     @Test
     @DisplayName("POST /api/members/register - 회원가입 성공 (201)")
@@ -85,7 +89,7 @@ class AuthControllerTest {
     @DisplayName("POST /api/members/login - 인증 실패 시 401")
     void loginFailureUnauthorized() throws Exception {
         String basicHeader = "Basic aW52YWxpZDppbnZhbGlk"; // invalid:invalid
-        
+
         Mockito.when(memberService.login("invalid", "invalid"))
                 .thenThrow(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized"));
 

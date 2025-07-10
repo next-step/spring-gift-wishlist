@@ -13,6 +13,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import gift.dto.member.AuthRequest;
 import gift.dto.member.AuthResponse;
 import gift.service.member.MemberService;
+import gift.util.BearerAuthUtil;
+import gift.util.JwtUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,14 +32,14 @@ import org.springframework.test.web.servlet.MockMvc;
 @DisplayName("AdminAuthController 단위 테스트")
 class AdminAuthControllerTest {
 
+    @MockitoBean
+    private JwtUtil jwtUtil;
+    @MockitoBean
+    private BearerAuthUtil bearerAuthUtil;
     @Autowired
     private MockMvc mockMvc;
-
     @MockitoBean
     private MemberService authService;
-
-    @MockitoBean
-    private gift.util.JwtUtil jwtUtil;
 
     @Test
     @DisplayName("GET /admin/login - 로그인 폼 표시 및 에러 없음")

@@ -14,6 +14,8 @@ import gift.dto.product.ProductRequest;
 import gift.entity.product.Product;
 import gift.fixture.ProductFixture;
 import gift.service.product.ProductService;
+import gift.util.BearerAuthUtil;
+import gift.util.JwtUtil;
 import gift.util.RoleUtil;
 import java.util.List;
 import java.util.Optional;
@@ -50,7 +52,9 @@ class ProductControllerTest {
     private ProductService productService;
 
     @MockitoBean
-    private gift.util.JwtUtil jwtUtil;
+    private JwtUtil jwtUtil;
+    @MockitoBean
+    private BearerAuthUtil bearerAuthUtil;
 
     @Test
     @DisplayName("GET /api/products - 일반 사용자, 숨김 제외 리스트 반환")

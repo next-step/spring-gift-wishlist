@@ -19,6 +19,7 @@ import gift.entity.member.Member;
 import gift.entity.member.value.Role;
 import gift.fixture.MemberFixture;
 import gift.service.member.MemberService;
+import gift.util.BearerAuthUtil;
 import gift.util.JwtUtil;
 import java.util.List;
 import java.util.Optional;
@@ -43,6 +44,8 @@ class AdminMemberControllerTest {
     private MemberService memberService;
     @MockitoBean
     private JwtUtil jwtUtil;
+    @MockitoBean
+    private BearerAuthUtil bearerAuthUtil;
 
     @Nested
     @DisplayName("GET /admin/members")
