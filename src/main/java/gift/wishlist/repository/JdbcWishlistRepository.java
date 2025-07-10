@@ -4,6 +4,7 @@ import gift.wishlist.Wishlist;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -41,6 +42,20 @@ public class JdbcWishlistRepository implements WishlistRepository {
             wishlist.getMemberId(),
             wishlist.getItemId(),
             createdAt
+        );
+    }
+
+    @Override
+    public List<Wishlist> findAllByOrderByCreatedAtDesc() {
+        String sql = "SELECT id, member_id, item_id, created_at FROM wishlist ORDER BY created_at DESC";
+
+        return jdbcTemplate.query(sql,
+            (rs, rowNum) -> new Wishlist(
+                rs.getLong("id"),
+                rs.getLong("member_id"),
+                rs.getLong("item_id"),
+                rs.getTimestamp("created_at").toLocalDateTime()
+            )
         );
     }
 }

@@ -8,6 +8,8 @@ import gift.wishlist.dto.WishlistAddDto;
 import gift.wishlist.dto.WishlistResponseDto;
 import gift.wishlist.repository.WishlistRepository;
 import jakarta.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -38,5 +40,29 @@ public class WishlistService {
             item.getImageUrl(),
             savedWishlist.getCreatedAt()
         );
+    }
+
+    public List<WishlistResponseDto> findAll() {
+        List<Wishlist> wishlists = wishlistRepository.findAllByOrderByCreatedAtDesc();
+
+        List<WishlistResponseDto> wishlistResponseDtos = new ArrayList<>();
+
+        for (Wishlist wishlist : wishlists) {
+            Item item = itemRepository.findById(wishlist.getItemId())
+                .orElseThrow(() -> new ItemNotFoundException(wishlist.getId()));
+            WishlistResponseDto dto = new WishlistResponseDto(
+                wishlist.getId(),
+                wishlist.getMemberId(),
+                wishlist.getItemId(),
+                item.getName(),
+                item.getPrice(),
+                item.getImageUrl(),
+                wishlist.getCreatedAt()
+            );
+            wishlistResponseDtos.add(dto);
+        }
+
+        return wishlistResponseDtos;
+
     }
 }
