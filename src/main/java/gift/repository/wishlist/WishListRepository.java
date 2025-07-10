@@ -1,6 +1,5 @@
 package gift.repository.wishlist;
 
-import gift.dto.wishlist.WishRequestDto;
 import gift.entity.Wish;
 import java.util.List;
 
