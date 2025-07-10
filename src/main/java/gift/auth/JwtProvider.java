@@ -1,6 +1,6 @@
 package gift.auth;
 
-import gift.user.User;
+import gift.user.domain.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;

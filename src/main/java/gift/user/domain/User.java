@@ -1,4 +1,4 @@
-package gift.user;
+package gift.user.domain;
 
 import java.util.UUID;
 

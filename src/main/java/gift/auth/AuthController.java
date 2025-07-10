@@ -1,9 +1,9 @@
 package gift.auth;
 
-import gift.user.User;
-import gift.user.UserDao;
-import gift.user.UserRequestDto;
-import gift.user.UserService;
+import gift.user.domain.User;
+import gift.user.dto.UserLoginRequestDto;
+import gift.user.service.UserService;
+import gift.user.dto.UserSingupRequestDto;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +21,8 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> singup(@RequestBody UserRequestDto userRequestDto) {
-        User user = userService.signUp(userRequestDto);
+    public ResponseEntity<?> singup(@RequestBody UserSingupRequestDto userSignupRequestDto) {
+        User user = userService.signUp(userSignupRequestDto);
 
         return ResponseEntity
                 .created(URI.create("/api/auth/" + user.getId()))
@@ -30,9 +30,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody UserRequestDto userRequestDto) {
+    public ResponseEntity<?> login(@RequestBody UserLoginRequestDto userLoginRequestDto) {
         try {
-            String token = userService.login(userRequestDto);
+            String token = userService.login(userLoginRequestDto);
             return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, "Bearer"+token).body(token);
         }
         catch(IllegalArgumentException e) {

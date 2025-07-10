@@ -1,6 +1,10 @@
-package gift.user;
+package gift.user.service;
 
 import gift.auth.JwtProvider;
+import gift.user.domain.User;
+import gift.user.dto.UserLoginRequestDto;
+import gift.user.dto.UserSingupRequestDto;
+import gift.user.repository.UserDao;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -15,16 +19,16 @@ public class UserService {
         this.jwtProvider = jwtProvider;
     }
 
-    public User signUp(UserRequestDto userRequestDto) {
+    public User signUp(UserSingupRequestDto userSignupRequestDto) {
         UUID id = UUID.randomUUID();
-        User user = new User(id, userRequestDto.getEmail(), userRequestDto.getPassword());
+        User user = new User(id, userSignupRequestDto.getEmail(), userSignupRequestDto.getPassword());
         return userDao.save(user);
     }
 
-    public String login(UserRequestDto userRequestDto) {
-        User user = userDao.findByEmail(userRequestDto.getEmail());
+    public String login(UserLoginRequestDto userLoginRequestDto) {
+        User user = userDao.findByEmail(userLoginRequestDto.getEmail());
 
-        if(!user.getPassword().equals(userRequestDto.getPassword())) {
+        if(!user.getPassword().equals(userLoginRequestDto.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
         return jwtProvider.createToken(user);

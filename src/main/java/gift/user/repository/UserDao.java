@@ -1,10 +1,10 @@
-package gift.user;
+package gift.user.repository;
 
+import gift.user.domain.User;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.UUID;
 
 @Repository
