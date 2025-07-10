@@ -6,14 +6,16 @@ import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import javax.crypto.SecretKey;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 @Component
 public class JwtUtil {
 
-    private final String secret = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";
-    private SecretKey secretKey= Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+    private final SecretKey secretKey;
 
+    public JwtUtil(@Value("${spring.jwt.secret}") String secret) {
+        this.secretKey =Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));;
+    }
 
     private SecretKey getSecretKey(){
         return secretKey;
