@@ -1,6 +1,8 @@
 package gift.service;
 
 import gift.domain.Wish;
+import gift.exception.AlreadyWishedException;
+import gift.exception.UnauthorizedWishAccessException;
 import gift.repository.WishRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +25,7 @@ public class WishService {
      */
     public Wish addWish(Long memberId, Long productId) {
         if (wishRepository.isWished(memberId, productId)) {
-            throw new IllegalStateException("이미 찜한 상품입니다.");
+            throw new AlreadyWishedException();
         }
         return wishRepository.addWish(memberId, productId);
     }
@@ -34,8 +36,17 @@ public class WishService {
      * 다른 사용자의 찜 항목은 삭제할 수 없음 (wishId + memberId 조건 사용)
      */
     public void removeWish(Long wishId, Long memberId) {
-        wishRepository.removeByMemberIdAndWishId(memberId, wishId);
+
+        wishRepository.findById(wishId).ifPresent(wish -> {
+            if (!wish.getMemberId().equals(memberId)) {
+                throw new UnauthorizedWishAccessException("다른 사용자의 위시리스트 항목은 삭제할 수 없습니다.");
+            }
+            wishRepository.removeByMemberIdAndWishId(memberId, wishId);
+        });
+
+        // 존재하지 않으면 무시 (멱등성 보장)
     }
+
 
     /**
      * 사용자별 위시리스트 조회

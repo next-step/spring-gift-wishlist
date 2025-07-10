@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class JdbcWishRepositoryImpl implements WishRepository {
@@ -42,6 +43,15 @@ public class JdbcWishRepositoryImpl implements WishRepository {
 
         String sql = "SELECT * FROM wish WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper(), id.longValue());
+    }
+
+
+    // wishId 로 Wish 조회
+    @Override
+    public Optional<Wish> findById(Long wishId) {
+        String sql = "SELECT * FROM wish WHERE id = ?";
+        List<Wish> result = jdbcTemplate.query(sql, rowMapper(), wishId);
+        return result.stream().findAny();
     }
 
     // 위시리스트에서 상품 삭제
