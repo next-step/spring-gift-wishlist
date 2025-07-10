@@ -30,8 +30,8 @@ public class MemberRepository {
     }
 
     public void save(Member member) {
-        jdbcClient.sql("INSERT INTO member (email, password) VALUES (?, ?)")
-                .params(member.getEmail(), member.getPassword())
+        jdbcClient.sql("INSERT INTO member (email, password, role) VALUES (?, ?, ?)")
+                .params(member.getEmail(), member.getPassword(), member.getRole())
                 .update();
     }
 }
