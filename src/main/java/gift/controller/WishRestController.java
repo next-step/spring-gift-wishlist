@@ -1,7 +1,5 @@
 package gift.controller;
 
-import gift.config.JwtTokenProvider;
-import gift.config.UnAuthorizationException;
 import gift.domain.Product;
 import gift.dto.*;
 import gift.service.WishService;
@@ -16,57 +14,39 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/wishes")
 public class WishRestController {
-    private final JwtTokenProvider jwtTokenProvider;
     private final WishService service;
 
 
-    public WishRestController(JwtTokenProvider jwtTokenProvider, WishService service) {
-        this.jwtTokenProvider = jwtTokenProvider;
+    public WishRestController(WishService service) {
         this.service = service;
     }
 
     @GetMapping("/products")
-    public HttpEntity<List<Product>> getProducts(@RequestHeader("Authorization") String authHeader) {
-        if (!jwtTokenProvider.validateToken(authHeader)) {
-            throw new UnAuthorizationException("인증되지 않은 사용자입니다.");
-        }
+    public HttpEntity<List<Product>> getProducts() {
         List<Product> productList = service.productList();
         return new ResponseEntity<>(productList, HttpStatus.OK);
     }
 
     @PostMapping()
-    public HttpEntity<CreateWishResponse> addWishList(@Validated @RequestBody CreateWishRequest request,
-                                                      @RequestHeader("Authorization") String authHeader) {
-        if (!jwtTokenProvider.validateToken(authHeader)) {
-            throw new UnAuthorizationException("인증되지 않은 사용자입니다.");
-        }
+    public HttpEntity<CreateWishResponse> addWishList(@Validated @RequestBody CreateWishRequest request) {
         CreateWishResponse response = service.addWishProduct(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping("/{memberId}")
-    public HttpEntity<List<WishResponse>> getWishList(@RequestHeader("Authorization") String authHeader, @PathVariable Long memberId) {
-        if (!jwtTokenProvider.validateToken(authHeader)) {
-            throw new UnAuthorizationException("인증되지 않은 사용자입니다.");
-        }
+    public HttpEntity<List<WishResponse>> getWishList(@PathVariable Long memberId) {
         List<WishResponse> wishList = service.getMeberWishList(memberId);
         return new ResponseEntity<>(wishList, HttpStatus.OK);
     }
 
     @DeleteMapping("/{wishId}")
-    HttpEntity<Void> deleteProduct(@RequestHeader("Authorization") String authHeader, @PathVariable Long wishId) {
-        if (!jwtTokenProvider.validateToken(authHeader)) {
-            throw new UnAuthorizationException("인증되지 않은 사용자입니다.");
-        }
+    HttpEntity<Void> deleteProduct(@PathVariable Long wishId) {
         service.delete(wishId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PatchMapping("/{wishId}")
-    HttpEntity<UpdateWishResponse> updateQuantity(@RequestHeader("Authorization") String authHeader, @Validated @RequestBody UpdateWishRequest request, @PathVariable Long wishId) {
-        if (!jwtTokenProvider.validateToken(authHeader)) {
-            throw new UnAuthorizationException("인증되지 않은 사용자입니다.");
-        }
+    HttpEntity<UpdateWishResponse> updateQuantity(@Validated @RequestBody UpdateWishRequest request, @PathVariable Long wishId) {
         UpdateWishResponse response = service.updateQuantity(request, wishId);
         return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
     }
