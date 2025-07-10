@@ -36,7 +36,7 @@ public class AdminAuthController {
     public String login(@ModelAttribute MemberRequest request, HttpServletResponse response) {
         try {
             Member member = memberService.authenticate(request);
-            String token = jwtTokenProvider.createToken(member.getEmail());
+            String token = jwtTokenProvider.createToken(member.getId().toString());
 
             Cookie cookie = new Cookie("auth_token", token);
             cookie.setPath("/");

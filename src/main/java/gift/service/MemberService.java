@@ -30,7 +30,7 @@ public class MemberService {
         Member member = new Member(request.email(), encodedPassword);
         Member savedMember = memberRepository.save(member);
 
-        String token = jwtTokenProvider.createToken(savedMember.getEmail());
+        String token = jwtTokenProvider.createToken(savedMember.getId().toString());
         return new TokenResponse(token);
     }
 
@@ -42,7 +42,7 @@ public class MemberService {
             throw new LoginException("이메일 또는 비밀번호가 일치하지 않습니다.");
         }
 
-        String token = jwtTokenProvider.createToken(member.getEmail());
+        String token = jwtTokenProvider.createToken(member.getId().toString());
         return new TokenResponse(token);
     }
 
