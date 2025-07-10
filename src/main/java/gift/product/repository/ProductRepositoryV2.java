@@ -2,6 +2,7 @@ package gift.product.repository;
 
 import gift.domain.Product;
 import gift.global.exception.CustomDatabaseException;
+import gift.util.UUIDParser;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
@@ -23,12 +24,13 @@ public class ProductRepositoryV2 implements ProductRepository{
 
     @Override
     public UUID save(Product product) {
-        String sql = "insert into product (id, name, price, image_url) values (:id, :name, :price, :image_url)";
+        String sql = "insert into product (id, name, price, image_url, member_id) values (:id, :name, :price, :image_url, :member_id)";
         int update = client.sql(sql)
                 .param("id", uuidToBytes(product.getId()))
                 .param("name", product.getName())
                 .param("price", product.getPrice())
                 .param("image_url", product.getImageURL())
+                .param("member_id", UUIDParser.uuidToBytes(product.getMemberId()))
                 .update();
         if (update == 0) throw new CustomDatabaseException("상품 저장 실패");
 
@@ -89,13 +91,24 @@ public class ProductRepositoryV2 implements ProductRepository{
 
     }
 
+    @Override
+    public List<Product> findByMemberId(UUID memberId) {
+        String sql = "select * from product where member_id = :member_id";
+
+        return client.sql(sql)
+                .param("member_id", uuidToBytes(memberId))
+                .query(getProductRowMapper())
+                .list();
+    }
+
     private RowMapper<Product> getProductRowMapper() {
         return (rs, rowNum) -> {
             UUID id = bytesToUUID(rs.getBytes("id"));
             String name = rs.getString("name");
             int price = rs.getInt("price");
             String imageUrl = rs.getString("image_url");
-            return new Product(id, name, price, imageUrl);
+            UUID memberId = bytesToUUID(rs.getBytes("member_id"));
+            return new Product(id, name, price, imageUrl, memberId);
         };
     }
 

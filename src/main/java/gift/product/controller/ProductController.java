@@ -1,5 +1,8 @@
 package gift.product.controller;
 
+import gift.global.annotation.OnlyForAdmin;
+import gift.member.annotation.MyAuthenticalPrincipal;
+import gift.member.dto.AuthMember;
 import gift.product.dto.ProductCreateRequest;
 import gift.product.dto.ProductResponse;
 import gift.product.dto.ProductUpdateRequest;
@@ -24,9 +27,9 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> addProduct(@Valid @RequestBody ProductCreateRequest dto) {
+    public ResponseEntity<Void> addProduct(@Valid @RequestBody ProductCreateRequest dto, @MyAuthenticalPrincipal AuthMember authMember) {
 
-        UUID savedId = productService.save(dto);
+        UUID savedId = productService.save(dto, authMember.getEmail());
 
         return ResponseEntity.status(HttpStatus.CREATED).location(
                 LocationGenerator.generate(savedId)
@@ -41,6 +44,14 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @GetMapping("/mine")
+    public ResponseEntity<List<ProductResponse>> getMyProducts(@MyAuthenticalPrincipal AuthMember authMember) {
+
+        List<ProductResponse> response = productService.findByMember(authMember);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> getProduct(@PathVariable UUID id) {
 
@@ -50,16 +61,17 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable UUID id) {
-        productService.deleteProduct(id);
+    public ResponseEntity<Void> deleteProduct(@PathVariable UUID id, @MyAuthenticalPrincipal AuthMember authMember) {
+        productService.deleteProduct(id, authMember);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateProduct(@PathVariable UUID id, @Valid @RequestBody ProductUpdateRequest dto) {
+    public ResponseEntity<Void> updateProduct(@PathVariable UUID id, @Valid @RequestBody ProductUpdateRequest dto,
+                                              @MyAuthenticalPrincipal AuthMember authMember) {
 
-        productService.updateProduct(id, dto);
+        productService.updateProduct(id, dto, authMember);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

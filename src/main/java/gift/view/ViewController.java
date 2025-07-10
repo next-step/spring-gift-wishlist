@@ -16,6 +16,20 @@ public class ViewController {
         return "login";
     }
 
+    @GetMapping("/products")
+    public String products() {
+        return "my-product";
+    }
+
+    @GetMapping("/products/{id}")
+    public String editProduct(@PathVariable UUID id, Model model){
+
+        model.addAttribute("productId", id);
+
+        return "edit-my-product";
+    }
+
+
     @OnlyForAdmin
     @GetMapping("/admin/products")
     public String adminProducts(){
@@ -30,11 +44,11 @@ public class ViewController {
 
     @OnlyForAdmin
     @GetMapping("/admin/products/{id}")
-    public String editProduct(@PathVariable UUID id, Model model){
+    public String editProductForAdmin(@PathVariable UUID id, Model model){
 
         model.addAttribute("productId", id);
 
-        return "edit-product";
+        return "edit-admin-product";
     }
 
     @OnlyForAdmin
