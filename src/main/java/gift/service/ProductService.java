@@ -39,7 +39,6 @@ public class ProductService {
                     productDto.getUsableKakao(), productDto.getImageUrl());
         }
         productRepository.save(product);
-        System.out.println("productId:" +product.getId());
         productDto.setId(product.getId());
     }
 
