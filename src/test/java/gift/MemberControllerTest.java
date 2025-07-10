@@ -221,4 +221,26 @@ public class MemberControllerTest {
         assertThat(products.get(1).getName()).isEqualTo("포스틱");
         assertThat(products.get(1).getPrice()).isEqualTo(1500);
     }
+
+    @Test
+    void 위시_리스트_상품_삭제_정상_테스트(){
+        System.out.println("Delete Product to WishList success test");
+        var url = "http://localhost:" + port + "/api/members/wishlist/" + 1;
+        var response = client.delete()
+                .uri(url)
+                .header("Authorization", "Bearer " + testJWTToken)
+                .retrieve()
+                .toEntity(Void.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+
+        assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
+                .isThrownBy(
+                        () -> client.delete()
+                                .uri(url)
+                                .header("Authorization", "Bearer " + testJWTToken)
+                                .retrieve()
+                                .toEntity(Void.class)
+                );
+    }
 }
