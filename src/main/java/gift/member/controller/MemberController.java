@@ -27,7 +27,7 @@ public class MemberController {
 
     @GetMapping("/login")
     public String loginForm(Model model) {
-        model.addAttribute(MemberLoginRequest.getEmpty());
+        model.addAttribute("member", MemberLoginRequest.getEmpty());
 
         return "/members/login";
     }

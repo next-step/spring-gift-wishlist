@@ -5,7 +5,7 @@
 
 <div layout:fragment="content">
     <head>
-        <title>로그인</title>
+        <title>회원가입</title>
         <style>
             .form-container { max-width: 400px; margin: 40px auto; padding: 30px; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
             h1 { text-align: center; margin-bottom: 20px; }
@@ -15,21 +15,21 @@
             .btn-primary { width: 100%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 1em; }
             .message { text-align: center; margin-top: 15px; }
         </style>
-        <div class="form-container">
-            <h1>로그인</h1>
-            <form th:action="@{/members/login}" th:object="${member}" method="post">
-                <div class="form-group">
-                    <label for="email">이메일</label>
-                    <input type="email" id="email" th:field="*{email}" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">비밀번호</label>
-                    <input type="password" id="password" th:field="*{password}" required>
-                </div>
-                <button type="submit" class="btn-primary">로그인</button>
-                <p class="message">계정이 없으신가요? <a href="/members/register">회원가입</a></p>
-            </form>
-        </div>
     </head>
+    <div class="form-container">
+        <h1>회원가입</h1>
+        <form th:action="@{/members/register}" th:object="${member}" method="post">
+            <div class="form-group">
+                <label for="email">이메일</label>
+                <input type="email" id="email" th:field="*{email}" required>
+            </div>
+            <div class="form-group">
+                <label for="password">비밀번호</label>
+                <input type="password" id="password" th:field="*{password}" required>
+            </div>
+            <button type="submit" class="btn-primary">회원가입</button>
+            <p class="message">계정이 있으신가요? <a href="/members/login">로그인</a></p>
+        </form>
+    </div>
 </div>
-<html>
+</html>

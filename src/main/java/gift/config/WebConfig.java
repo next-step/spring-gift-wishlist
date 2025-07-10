@@ -27,6 +27,8 @@ public class WebConfig implements WebMvcConfigurer {
                 .excludePathPatterns(
                         "/api/members/register",
                         "/api/members/login",
+                        "/members/register",
+                        "/members/login",
                         "/h2-console/**"
                         //"/admin/**" // 추후 제거 필요.
                         //"/api/products/**" // 추후 제거 필요.
