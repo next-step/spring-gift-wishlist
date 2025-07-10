@@ -1,5 +1,7 @@
 package gift.wishlist.entity;
 
+import gift.wishlist.dto.WishRequestDto;
+
 public class Wishlist {
     private Long id;
     private Long memberId;
@@ -18,6 +20,7 @@ public class Wishlist {
         this.productId = productId;
         this.quantity = quantity;
     }
+
 
     public Long getId() {return this.id;}
     public Long getMemberId() {return this.memberId;}
