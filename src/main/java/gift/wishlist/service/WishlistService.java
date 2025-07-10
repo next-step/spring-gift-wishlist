@@ -50,7 +50,7 @@ public class WishlistService {
 
         for (Wishlist wishlist : wishlists) {
             Item item = itemRepository.findById(wishlist.getItemId())
-                .orElseThrow(() -> new ItemNotFoundException(wishlist.getId()));
+                .orElseThrow(() -> new ItemNotFoundException(wishlist.getItemId()));
             WishlistResponseDto dto = new WishlistResponseDto(
                 wishlist.getId(),
                 wishlist.getMemberId(),
