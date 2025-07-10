@@ -13,20 +13,20 @@ import javax.crypto.SecretKey;
 @PropertySource("classpath:secure.properties")
 public class JwtAuth {
 
-    @Value("${jwt.secret}")
-    private String secretKey;
+    @Value("${jwt.key}")
+    private String jwtKey;
 
     public String createJwtToken(Member member){
         String accessToken = Jwts.builder()
                 .setSubject(member.getEmail())
                 .claim("email", member.getEmail())
-                .signWith(getKeyFromSecretKey(secretKey))
+                .signWith(getSecretKeyFromJWTKey(jwtKey))
                 .compact();
         return accessToken;
     }
 
     public String getEmailFromToken(String token) {
-        SecretKey key = getKeyFromSecretKey(secretKey);
+        SecretKey key = getSecretKeyFromJWTKey(jwtKey);
         Claims claims = Jwts.parser()
                 .verifyWith(key)
                 .build()
@@ -38,7 +38,7 @@ public class JwtAuth {
     public boolean validateToken(String token) {
         try {
             Claims claims = Jwts.parser()
-                    .verifyWith(getKeyFromSecretKey(secretKey))
+                    .verifyWith(getSecretKeyFromJWTKey(jwtKey))
                     .build()
                     .parseSignedClaims(token)
                     .getPayload();
@@ -55,7 +55,7 @@ public class JwtAuth {
         return false;
     }
 
-    private SecretKey getKeyFromSecretKey(String secretKey) {
-        return Keys.hmacShaKeyFor(secretKey.getBytes());
+    private SecretKey getSecretKeyFromJWTKey(String jwtKey) {
+        return Keys.hmacShaKeyFor(jwtKey.getBytes());
     }
 }
