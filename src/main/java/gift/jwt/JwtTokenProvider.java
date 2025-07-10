@@ -1,7 +1,9 @@
 package gift.jwt;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -21,7 +23,8 @@ public class JwtTokenProvider {
 
     public String createToken(String userId, String role) {
         Date now = new Date();
-        Key key = new SecretKeySpec(secretKey.getBytes(), SignatureAlgorithm.HS256.getJcaName());
+        byte[] keyBytes = Base64.getDecoder().decode(secretKey);
+        Key key = Keys.hmacShaKeyFor(keyBytes);
 
         return Jwts.builder()
                 .setSubject(userId)
@@ -35,7 +38,7 @@ public class JwtTokenProvider {
     public boolean validateToken(String token) {
         try {
             byte[] keyBytes = Base64.getDecoder().decode(secretKey);
-            Key key = new SecretKeySpec(keyBytes, SignatureAlgorithm.HS256.getJcaName());
+            Key key = Keys.hmacShaKeyFor(keyBytes);
 
             Jwts.parserBuilder()
                     .setSigningKey(key)
@@ -46,5 +49,18 @@ public class JwtTokenProvider {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public String getUserIdFromToken(String token) {
+        byte[] keyBytes = Base64.getDecoder().decode(secretKey);
+        Key key = Keys.hmacShaKeyFor(keyBytes);
+
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.getSubject();
     }
 }

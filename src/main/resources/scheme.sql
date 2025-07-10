@@ -13,3 +13,12 @@ CREATE TABLE users (
     password VARCHAR(255) NOT NULL,
     role VARCHAR(50) NOT NULL
 );
+
+CREATE TABLE wish (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    userid BIGINT NOT NULL,
+    productid BIGINT NOT NULL,
+    CONSTRAINT fk_wishlist_user FOREIGN KEY (userid) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_wishlist_product FOREIGN KEY (productid) REFERENCES product(id) ON DELETE CASCADE,
+    CONSTRAINT uc_user_product UNIQUE (userid, productid)
+);

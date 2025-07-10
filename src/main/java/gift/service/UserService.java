@@ -22,4 +22,10 @@ public class UserService {
         User user = userOpt.orElseThrow(() -> new RuntimeException("없음"));
         return jwtTokenProvider.createToken(user.getUserid(),user.getPassword());
     }
+
+    public User findByUserId(String userId) {
+        Optional<User> userOpt = userDao.findUserByUserid(userId);
+        User user = userOpt.orElseThrow(() -> new RuntimeException("<UNK>"));
+        return user;
+    }
 }
