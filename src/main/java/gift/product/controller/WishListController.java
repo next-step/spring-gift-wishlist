@@ -29,4 +29,10 @@ public class WishListController {
 	public Long createWishList(@RequestAttribute Long userId, @RequestBody CreateWishListRequest request) {
 		return wishListService.createWishList(userId, request);
 	}
+
+	@DeleteMapping("/{itemId}")
+	@Authenticated
+	public void deleteWishList(@RequestAttribute Long userId, @PathVariable Long itemId) {
+		wishListService.deleteWishList(userId, itemId);
+	}
 }
