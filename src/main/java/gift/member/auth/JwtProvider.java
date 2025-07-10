@@ -54,4 +54,15 @@ public class JwtProvider {
             throw new CustomException(ErrorCode.WRONG_HEADER_TOKEN);
         }
     }
+
+    public Long getMemberId(String token) {
+        Claims claims = parseToken(token);
+        try {
+            return Long.parseLong(claims.getSubject());
+        } catch (NumberFormatException e) {
+            throw new CustomException(ErrorCode.WRONG_HEADER_TOKEN);
+        }
+    }
+
+
 }
