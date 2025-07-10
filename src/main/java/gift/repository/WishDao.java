@@ -1,6 +1,8 @@
 package gift.repository;
 
+import gift.entity.Product;
 import gift.entity.Wish;
+import java.util.List;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -38,4 +40,14 @@ public class WishDao implements WishRepository{
 
         return savedWish;
     }
+
+    @Override
+    public List<Wish> findMemberWishes(Long memberId) {
+        String sql = "select * from wishes where memberId = :memberId;";
+        return client.sql(sql)
+                .param("memberId", memberId)
+                .query(getWishRowMapper)
+                .list();
+    }
+
 }

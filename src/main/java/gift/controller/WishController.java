@@ -2,11 +2,14 @@ package gift.controller;
 
 import gift.annotation.LoginMember;
 import gift.dto.CreateWishRequestDto;
+import gift.dto.ProductResponseDto;
 import gift.dto.WishResponseDto;
 import gift.entity.Member;
 import gift.service.WishService;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,4 +30,10 @@ public class WishController {
             @LoginMember Member member) {
         return new ResponseEntity<>(wishService.createWish(requestDto, member.getId()), HttpStatus.CREATED);
     }
+
+    @GetMapping
+    public ResponseEntity<List<WishResponseDto>> findMemberWishes(@LoginMember Member member) {
+        return new ResponseEntity<>(wishService.findMemberWishes(member.getId()), HttpStatus.OK);
+    }
+
 }
