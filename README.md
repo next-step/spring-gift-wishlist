@@ -87,3 +87,4 @@
   - [x] 위시리스트에서 항목을 삭제하는 API 구현
 - [ ] 로그인한 사용자의 토큰을 이용하여 컨트롤러에 memberId 주입
   - [x] TokenProvider에 토큰에서 memberId를 추출하는 getMemberIdFromToken 구현
+  - [x] 커스텀 어노테이션 @LoginMember 구현
