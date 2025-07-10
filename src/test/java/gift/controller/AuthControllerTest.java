@@ -16,9 +16,11 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.web.client.RestClient;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class AuthControllerTest {
 
     @LocalServerPort
@@ -26,16 +28,27 @@ public class AuthControllerTest {
 
     private RestClient client;
 
+    private final String TEST_EMAIL = "testuser1@domain.com";
+    private final String TEST_PASSWORD = "password";
+
     @BeforeEach
     void setUp() {
         String baseUrl = "http://localhost:" + port + "/api/auth";
         client = RestClient.builder().baseUrl(baseUrl).build();
+
+        AuthRequest request = new AuthRequest(TEST_EMAIL, TEST_PASSWORD);
+        client.post()
+            .uri("/register")
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(request)
+            .retrieve()
+            .toBodilessEntity();
     }
 
     @Test
     @DisplayName("회원가입 성공 테스트")
     void testRegisterSuccess() {
-        AuthRequest request = new AuthRequest("testuser1@domain.com", "password");
+        AuthRequest request = new AuthRequest("testuser2@domain.com", "password");
 
         CustomResponseBody<AuthResponse> response = client.post()
             .uri("/register")
@@ -45,24 +58,15 @@ public class AuthControllerTest {
             .body(new ParameterizedTypeReference<>() {
             });
 
-        assertResponse(response, CustomResponseCode.CREATED);
-        assertThat(response.data().token()).isNotBlank();
+        assertThat(response).isNotNull();
+        assertThat(response.status()).isEqualTo(CustomResponseCode.CREATED.getCode());
+        assertThat(response.data()).isNull();
     }
 
     @Test
     @DisplayName("로그인 성공 테스트")
     void testLoginSuccess() {
-        AuthRequest request = new AuthRequest("testuser2@domain.com", "password");
-
-        CustomResponseBody<AuthResponse> registerResponse = client.post()
-            .uri("/register")
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(request)
-            .retrieve()
-            .body(new ParameterizedTypeReference<>() {
-            });
-
-        assertResponse(registerResponse, CustomResponseCode.CREATED);
+        AuthRequest request = new AuthRequest(TEST_EMAIL, TEST_PASSWORD);
 
         CustomResponseBody<AuthResponse> loginResponse = client.post()
             .uri("/login")
@@ -72,7 +76,9 @@ public class AuthControllerTest {
             .body(new ParameterizedTypeReference<>() {
             });
 
-        assertResponse(loginResponse, CustomResponseCode.LOGIN_SUCCESS);
+        assertThat(loginResponse).isNotNull();
+        assertThat(loginResponse.status()).isEqualTo(CustomResponseCode.LOGIN_SUCCESS.getCode());
+        assertThat(loginResponse.data()).isNotNull();
         assertThat(loginResponse.data().token()).isNotBlank();
     }
 
