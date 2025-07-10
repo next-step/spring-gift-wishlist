@@ -1,9 +1,9 @@
 package gift.wishlist.dto;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public record WishlistAddDto(
-    @NotBlank(message = "itemId는 필수입니다.")
+    @NotNull(message = "itemId는 필수입니다.")
     Long itemId
 ) {
 
