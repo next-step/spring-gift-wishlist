@@ -21,7 +21,8 @@ public class JdbcWishlistRepository implements WishlistRepository {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleInsert = new SimpleJdbcInsert(jdbcTemplate)
             .withTableName("wishlist")
-            .usingGeneratedKeyColumns("id");
+            .usingGeneratedKeyColumns("id")
+            .usingColumns("member_id", "item_id");
     }
 
     @Override
