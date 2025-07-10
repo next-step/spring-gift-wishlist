@@ -8,10 +8,10 @@ import gift.wish.dto.WishPageResponseDto;
 
 public interface WishService {
 
-    public WishCreateResponseDto addWish(Member member, WishCreateRequestDto wishCreateRequestDto);
+    WishCreateResponseDto addWish(Member member, WishCreateRequestDto wishCreateRequestDto);
 
-    public WishPageResponseDto getWishes(Member member, WishGetRequestDto wishGetRequestDto);
+    WishPageResponseDto getWishes(Member member, WishGetRequestDto wishGetRequestDto);
 
-    public void deleteWish(Member member, Long wishId);
+    void deleteWish(Member member, Long wishId);
 
 }
