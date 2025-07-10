@@ -2,12 +2,15 @@ package gift.controller;
 
 
 import gift.dto.request.ProductRequest;
+import gift.dto.request.ProductUpdateRequest;
 import gift.dto.response.ProductResponse;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 
@@ -24,7 +27,12 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<ProductResponse> register(@RequestBody @Valid ProductRequest request) {
         ProductResponse response = productService.register(request);
-        return ResponseEntity.created(null).body(response);
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(response.id())
+                .toUri();
+        return ResponseEntity.created(location).body(response);
     }
 
     @GetMapping("/{productId}")
@@ -37,9 +45,10 @@ public class ProductController {
         return ResponseEntity.ok(productService.getAllProducts());
     }
 
-    @PutMapping("/{productId}")
-    public ResponseEntity<ProductResponse> updateProduct(@PathVariable Long productId, @RequestBody  @Valid ProductRequest request) {
-        return ResponseEntity.ok(productService.updateProduct(productId, request));
+    @PatchMapping("/{productId}")
+    public ResponseEntity<ProductResponse> updateProduct(@PathVariable Long productId, @RequestBody @Valid ProductUpdateRequest request){
+        ProductResponse response = productService.updateProduct(productId,request);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{productId}")

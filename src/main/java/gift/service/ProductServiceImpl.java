@@ -2,6 +2,7 @@ package gift.service;
 
 import gift.domain.Product;
 import gift.dto.request.ProductRequest;
+import gift.dto.request.ProductUpdateRequest;
 import gift.dto.response.ProductResponse;
 import gift.exception.ProductNotFoundException;
 import gift.repository.ProductRepository;
@@ -40,7 +41,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductResponse updateProduct(Long productId, ProductRequest request) {
+    public ProductResponse updateProduct(Long productId, ProductUpdateRequest request) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(()->new ProductNotFoundException(productId));
 
