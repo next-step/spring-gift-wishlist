@@ -1,6 +1,6 @@
 package gift.wish.service;
 
-import gift.exception.wish.InvalidSortException;
+import gift.exception.wish.InvalidPageException;
 import gift.exception.wish.WishlistAccessDeniedException;
 import gift.member.entity.Member;
 import gift.wish.dto.WishCreateRequestDto;
@@ -47,16 +47,20 @@ public class WishServiceImpl implements WishService {
         Integer size = wishGetRequestDto.size();
         String sort = wishGetRequestDto.sort();
 
+        if (size <= 0) {
+            throw new InvalidPageException("허용되지 않은 페이지 크기입니다.");
+        }
+
         String[] sortParts = sort.split(",");
         String sortField = sortParts[0];
         String sortOrder = (sortParts.length > 1) ? sortParts[1] : "ASC";
         sortOrder = sortOrder.toUpperCase();
 
         if (!sortField.equals("createdDate")) {
-            throw new InvalidSortException("허용되지 않은 정렬 필드입니다.");
+            throw new InvalidPageException("허용되지 않은 정렬 필드입니다.");
         }
         if (!sortOrder.equals("ASC") && !sortOrder.equals("DESC")) {
-            throw new InvalidSortException("허용되지 않은 정렬 방향입니다.");
+            throw new InvalidPageException("허용되지 않은 정렬 방향입니다.");
         }
 
         Integer offset = page * size;

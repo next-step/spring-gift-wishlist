@@ -6,7 +6,7 @@ import gift.exception.product.ProductNotFoundException;
 import gift.exception.product.UnapprovedProductException;
 import gift.exception.wish.AdminAccessDeniedException;
 import gift.exception.wish.InvalidAuthorizationException;
-import gift.exception.wish.InvalidSortException;
+import gift.exception.wish.InvalidPageException;
 import gift.exception.wish.InvalidTokenException;
 import gift.exception.wish.WishNotFoundException;
 import gift.exception.wish.WishlistAccessDeniedException;
@@ -26,8 +26,8 @@ public class GlobalRestExceptionHandler {
     }
 
     // 400
-    // 400 유효성 검사 실패 - 협의되지 않은 '카카오', 정렬
-    @ExceptionHandler({UnapprovedProductException.class, InvalidSortException.class})
+    // 400 유효성 검사 실패 - 협의되지 않은 '카카오', 페이지 설정
+    @ExceptionHandler({UnapprovedProductException.class, InvalidPageException.class})
     public ResponseEntity<String> handleBadRequestException(RuntimeException ex) {
         return new ResponseEntity<>("오류: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
