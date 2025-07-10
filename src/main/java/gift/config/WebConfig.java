@@ -29,6 +29,7 @@ public class WebConfig implements WebMvcConfigurer {
                         "/api/members/login",
                         "/members/register",
                         "/members/login",
+                        "/",
                         "/h2-console/**"
                         //"/admin/**" // 추후 제거 필요.
                         //"/api/products/**" // 추후 제거 필요.
