@@ -48,7 +48,7 @@ public class WishServiceImpl implements WishService{
     private void throwIfMemberWishFindByProductId(Long productId, Long memberId) {
         wishRepository.findMemberWishByProductId(productId, memberId)
                 .ifPresent(wish -> {
-                    throw new CustomException(ErrorCode.AlreadyRegistered);
+                    throw new CustomException(ErrorCode.AlreadyMadeWish);
                 });
     }
 
