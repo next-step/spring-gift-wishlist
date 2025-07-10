@@ -1,5 +1,7 @@
 package gift.common.exception;
 
+import gift.common.security.exception.InvalidTokenException;
+import gift.common.security.exception.MissingTokenException;
 import gift.item.exception.ItemNotFoundException;
 import gift.member.exception.DuplicateEmailException;
 import gift.member.exception.InvalidLoginException;
@@ -55,9 +57,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
 
-    @ExceptionHandler(InvalidLoginException.class)
-    public ResponseEntity<ErrorResponseDto> handleInvalidLoginException(
-        InvalidLoginException e,
+
+    @ExceptionHandler({
+        InvalidTokenException.class,
+        MissingTokenException.class,
+        InvalidLoginException.class
+    })
+    public ResponseEntity<ErrorResponseDto> handleUnauthorizedExceptions(
+        RuntimeException e,
         HttpServletRequest request
     ) {
         ErrorResponseDto errorResponse = new ErrorResponseDto(
