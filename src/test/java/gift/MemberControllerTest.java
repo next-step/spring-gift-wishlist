@@ -3,6 +3,7 @@ package gift;
 import gift.dto.MemberRequestDto;
 import gift.dto.MemberResponseDto;
 import gift.dto.ProductResponseDto;
+import gift.dto.WishListProductRequestDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -195,5 +196,29 @@ public class MemberControllerTest {
         assertThat(products.get(0).getId()).isEqualTo(1);
         assertThat(products.get(0).getName()).isEqualTo("초코송이");
         assertThat(products.get(0).getPrice()).isEqualTo(1000);
+    }
+
+    @Test
+    void 위시_리스트_상품_추가_정상_테스트(){
+        System.out.println("Add Product to WishList success test");
+        var url = "http://localhost:" + port + "/api/members/wishlist";
+        WishListProductRequestDto wishListProductRequestDto = new WishListProductRequestDto(2L, "포스틱", 1500);
+        var response = client.post()
+                .uri(url)
+                .header("Authorization", "Bearer " + testJWTToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(wishListProductRequestDto)
+                .retrieve()
+                .toEntity(new ParameterizedTypeReference<List<ProductResponseDto>>() {});
+
+        List<ProductResponseDto> products = response.getBody();
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(products).isNotNull();
+        assertThat(products).isInstanceOf(List.class);
+
+        assertThat(products.get(1).getId()).isEqualTo(2);
+        assertThat(products.get(1).getName()).isEqualTo("포스틱");
+        assertThat(products.get(1).getPrice()).isEqualTo(1500);
     }
 }
