@@ -58,6 +58,7 @@
 - [x] JWT 관련 deprecated 메소드 사용 제거
 - [x] Interceptor: authHeader 토큰 문제 수정
 - [x] Member register, login 테스트 코드 작성
+- [x] 테스트 코드 메소드 추출, 불필요한 코드 제거
 
 # spring-gift-product (이전 구현)
 
