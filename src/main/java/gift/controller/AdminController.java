@@ -2,7 +2,7 @@ package gift.controller;
 
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
-import gift.exception.MdApprovalException;
+import gift.exception.product.MdApprovalException;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -46,9 +46,8 @@ public class AdminController {
         }
         try {
             productService.saveProduct(dto);
-        } catch (MdApprovalException e) {
-            bindingResult.rejectValue("name", "md.not.approved", e.getMessage());
-            return "admin/product-add";
+        } catch (Exception e) {
+            return handleException(e, bindingResult, dto, model, "admin/product-add", null);
         }
         return "redirect:/admin";
     }
@@ -69,9 +68,8 @@ public class AdminController {
         }
         try {
             productService.updateProduct(id, dto);
-        } catch (MdApprovalException e) {
-            bindingResult.rejectValue("name", "md.not.approved", e.getMessage());
-            return "admin/product-edit";
+        } catch (Exception e) {
+            return handleException(e, bindingResult, dto, model, "admin/product-edit", id);
         }
         return "redirect:/admin";
     }
@@ -80,5 +78,22 @@ public class AdminController {
     public String deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
         return "redirect:/admin";
+    }
+
+    private void handleMdApprovalException(MdApprovalException e, BindingResult bindingResult) {
+        bindingResult.rejectValue("name", "md.not.approved", e.getMessage());
+    }
+
+    private String handleException(Exception e, BindingResult bindingResult, ProductRequestDto dto, Model model, String errorView, Long id) {
+        if (e instanceof MdApprovalException) {
+            handleMdApprovalException((MdApprovalException) e, bindingResult);
+        } else if (e instanceof IllegalArgumentException) {
+            bindingResult.rejectValue("name", "invalid.name", e.getMessage());
+        }
+        model.addAttribute("product", dto);
+        if (id != null) {
+            model.addAttribute("id", id);
+        }
+        return errorView;
     }
 }

@@ -1,4 +1,4 @@
-package gift.exception;
+package gift.exception.product;
 
 public class MdApprovalException extends RuntimeException {
     public MdApprovalException(String message) {

@@ -1,5 +1,6 @@
 package gift.repository;
 
+import gift.domain.product.MdApprovalStatus;
 import gift.entity.Product;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -19,19 +20,19 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public List<Product> findAllProducts() {
-        String sql = "SELECT id, name, price, image_url, md_approved FROM product";
+        String sql = "SELECT id, name, price, image_url, md_approved FROM products";
         return jdbcTemplate.query(sql, (rs, rowNum) -> new Product(
                 rs.getLong("id"),
                 rs.getString("name"),
                 rs.getLong("price"),
                 rs.getString("image_url"),
-                rs.getBoolean("md_approved")
+                rs.getBoolean("md_approved") ? MdApprovalStatus.approved() : MdApprovalStatus.notApproved()
         ));
     }
 
     @Override
     public Product saveProduct(Product product) {
-        String sql = "INSERT INTO product (name, price, image_url) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO products (name, price, image_url) VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
@@ -51,30 +52,31 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public Product findProductById(Long id) {
-        String sql = "SELECT id, name, price, image_url FROM product WHERE id = ?";
+        String sql = "SELECT id, name, price, image_url, md_approved FROM products WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, new Object[]{id}, (rs, rowNum) -> new Product(
                 rs.getLong("id"),
                 rs.getString("name"),
                 rs.getLong("price"),
-                rs.getString("image_url")
+                rs.getString("image_url"),
+                rs.getBoolean("md_approved") ? MdApprovalStatus.approved() : MdApprovalStatus.notApproved()
         ));
     }
 
     @Override
     public void updateProduct(Long id, String name, Long price, String imageUrl) {
-        String sql = "UPDATE product SET name = ?, price = ?, image_url = ? WHERE id = ?";
+        String sql = "UPDATE products SET name = ?, price = ?, image_url = ? WHERE id = ?";
         jdbcTemplate.update(sql, name, price, imageUrl, id);
     }
 
     @Override
     public void deleteProduct(Long id) {
-        String sql = "DELETE FROM product WHERE id = ?";
+        String sql = "DELETE FROM products WHERE id = ?";
         jdbcTemplate.update(sql, id);
     }
 
     @Override
     public boolean findMdApprovedById(Long id) {
-        String sql = "SELECT md_approved FROM product WHERE id = ?";
+        String sql = "SELECT md_approved FROM products WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, new Object[]{id}, Boolean.class);
     }
 }

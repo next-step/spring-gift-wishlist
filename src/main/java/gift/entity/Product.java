@@ -1,33 +1,27 @@
 package gift.entity;
 
-public class Product {
+import gift.domain.product.MdApprovalStatus;
+import gift.domain.product.ProductName;
 
+public class Product {
     private Long id;
-    private String name;
+    private ProductName name;
     private Long price;
     private String imageUrl;
-    private boolean mdApproved;
-
-    public Product(Long id, String name, Long price, String imageUrl) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.imageUrl = imageUrl;
-        this.mdApproved = false;
-    }
+    private MdApprovalStatus mdApproval;
 
     public Product(String name, Long price, String imageUrl) {
-        this.name = name;
+        this.name = new ProductName(name);
         this.price = price;
         this.imageUrl = imageUrl;
     }
 
-    public Product(long id, String name, long price, String imageUrl, boolean mdApproved) {
+    public Product(long id, String name, long price, String imageUrl, MdApprovalStatus mdApproved) {
         this.id = id;
-        this.name = name;
+        this.name = new ProductName(name);
         this.price = price;
         this.imageUrl = imageUrl;
-        this.mdApproved = mdApproved;
+        this.mdApproval = mdApproved;
     }
 
     public Long getId() {
@@ -35,7 +29,7 @@ public class Product {
     }
 
     public String getName() {
-        return name;
+        return name.getValue();
     }
 
     public Long getPrice() {
@@ -50,5 +44,5 @@ public class Product {
         this.id = productId;
     }
 
-    public boolean getMdApproved() { return mdApproved; }
+    public boolean isApproved() { return mdApproval.isApproved(); }
 }
