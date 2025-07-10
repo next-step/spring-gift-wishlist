@@ -67,5 +67,5 @@
 - Member AdminPage 기능 구현
 - Admin Page 디자인 개선
 - AuthorizationFilter 가독성 향상
-- token 검증 method의 token 가져오기 역할 분담 (to JwtTokenFilter)
+- 토큰 추출 수행위치 변경 (`JwtTokenProvider` -> `JwtTokenFilter`)
 - BCryptEncryptor의 불필요한 `@Component` 제거

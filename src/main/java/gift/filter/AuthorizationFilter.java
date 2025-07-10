@@ -5,7 +5,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.List;
 
 // 2. using extracted token, checking if the user has the right permissions to access the requested resource
 public class AuthorizationFilter implements Filter {
@@ -18,87 +17,38 @@ public class AuthorizationFilter implements Filter {
         String role = (String) httpRequest.getAttribute("role");
 
         String uri = httpRequest.getRequestURI();
-        String method = httpRequest.getMethod();
+        String method = httpRequest.getMethod().toUpperCase();
 
-        if (uri.startsWith("/api/products")) {
-            // GET : public, POST : seller or MD, PATCH/DELETE : MD only
-            if (method.equals("POST")) {
-                if (role == null || role.isEmpty()) {
-                    httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
-                    return;
-                } else if (!role.equals("ROLE_SELLER") && !role.equals("ROLE_MD")) {
-                    httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied");
-                    return;
-                }
-            } else if (method.equals("PATCH") || method.equals("DELETE")) {
-                if (role == null || role.isEmpty()) {
-                    httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
-                    return;
-                } else if (!role.equals("ROLE_MD")) {
-                    httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied");
-                    return;
-                }
+        boolean authorized = true;
+
+        if (uri.startsWith("/api/products")) { // GET : public, POST : seller or MD, PATCH/DELETE : MD only
+            switch (method) {
+                case "POST" -> authorized = (role != null && (role.equals("ROLE_SELLER") || role.equals("ROLE_MD")));
+                case "PATCH", "DELETE" -> authorized = (role != null && role.equals("ROLE_MD"));
             }
-        } else if (uri.startsWith("/admin/products")) {
-            // GET : MD or CS, POST/PATCH/DELETE : MD only
-            if (method.equals("GET")) {
-                if (role == null || role.isEmpty()) {
-                    httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
-                    return;
-                } else if (!role.equals("ROLE_MD") && !role.equals("ROLE_CS")) {
-                    httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied");
-                    return;
-                }
-            } else if (method.equals("POST") || method.equals("PATCH") || method.equals("DELETE")) {
-                if (role == null || role.isEmpty()) {
-                    httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
-                    return;
-                } else if (!role.equals("ROLE_MD")) {
-                    httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied");
-                    return;
-                }
+        } else if (uri.startsWith("/admin/products/new")) { // only MD can access this endpoint
+            authorized = (role != null && role.equals("ROLE_MD"));
+        } else if (uri.startsWith("/admin/products")) { // GET : MD or CS, POST/PATCH/DELETE : MD only
+            switch (method) {
+                case "GET" -> authorized = (role != null && (role.equals("ROLE_MD") || role.equals("ROLE_CS")));
+                case "POST", "PATCH", "DELETE" -> authorized = (role != null && role.equals("ROLE_MD"));
             }
-        } else if (uri.startsWith("/admin/products/new")) {
-            // only MD can access this endpoint
-            if (true) {
-                if (role == null || role.isEmpty()) {
-                    httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
-                    return;
-                } else if (!role.equals("ROLE_MD")) {
-                    httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied");
-                    return;
-                }
+        } else if (uri.startsWith("/admin/members/new")) { // only ADMIN can access this endpoint
+            authorized = (role != null && role.equals("ROLE_ADMIN"));
+        } else if (uri.startsWith("/admin/members")) { // GET : ADMIN or CS, POST/PATCH/DELETE : ADMIN only
+            switch (method) {
+                case "GET" -> authorized = (role != null && (role.equals("ROLE_ADMIN") || role.equals("ROLE_CS")));
+                case "POST", "PATCH", "DELETE" -> authorized = (role != null && role.equals("ROLE_ADMIN"));
             }
-        } else if (uri.startsWith("/admin/members")) {
-            // GET : ADMIN or CS, POST/PATCH/DELETE : ADMIN only
-            if (method.equals("GET")) {
-                if (role == null || role.isEmpty()) {
-                    httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
-                    return;
-                } else if (!role.equals("ROLE_ADMIN") && !role.equals("ROLE_CS")) {
-                    httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied");
-                    return;
-                }
-            } else if (method.equals("POST") || method.equals("PATCH") || method.equals("DELETE")) {
-                if (role == null || role.isEmpty()) {
-                    httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
-                    return;
-                } else if (!role.equals("ROLE_ADMIN")) {
-                    httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied");
-                    return;
-                }
+        }
+
+        if (!authorized) {
+            if (role == null || role.isEmpty()) {
+                httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+            } else {
+                httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied");
             }
-        } else if (uri.startsWith("/admin/members/new")) {
-            // only ADMIN can access this endpoint
-            if (true) {
-                if (role == null || role.isEmpty()) {
-                    httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
-                    return;
-                } else if (!role.equals("ROLE_ADMIN")) {
-                    httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied");
-                    return;
-                }
-            }
+            return;
         }
 
         chain.doFilter(request, response);
