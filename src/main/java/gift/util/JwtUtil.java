@@ -1,7 +1,6 @@
 package gift.util;
 
-import com.fasterxml.jackson.databind.ser.Serializers.Base;
-import gift.entity.Member;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -32,16 +31,27 @@ public class JwtUtil {
         key = Keys.hmacShaKeyFor(bytes);
     }
 
-    public String createToken(String email) {
+    public String createToken(Long id, String email) {
         Date now = new Date();
         Date expiredDate = new Date(now.getTime() + tokenTime);
 
         return Jwts.builder()
             .setSubject(email)
+            .claim("id", id)
             .claim("email", email)
             .setIssuedAt(now)
             .setExpiration(expiredDate)
             .signWith(key)
             .compact();
+    }
+
+    public Long getMemberIdFromToken(String token) {
+        Claims claims = Jwts.parser()
+            .setSigningKey(key)
+            .build()
+            .parseClaimsJws(token)
+            .getBody();
+
+        return claims.get("id", Long.class);
     }
 }

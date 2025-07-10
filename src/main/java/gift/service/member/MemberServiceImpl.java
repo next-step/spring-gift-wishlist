@@ -1,10 +1,11 @@
-package gift.service;
+package gift.service.member;
 
-import gift.dto.MemberPasswordChangeDto;
-import gift.dto.MemberRequestDto;
-import gift.dto.MemberResponseDto;
+import gift.dto.member.MemberPasswordChangeDto;
+import gift.dto.member.MemberRequestDto;
+import gift.dto.member.MemberResponseDto;
+import gift.dto.member.MemberResponseDto2;
 import gift.entity.Member;
-import gift.repository.MemberRepository;
+import gift.repository.member.MemberRepository;
 import gift.util.JwtUtil;
 import gift.util.Sha256Util;
 import org.springframework.http.HttpStatus;
@@ -34,13 +35,14 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.create(
             new Member(requestDto.email(), sha256Util.encrypt(requestDto.password())));
 
-        String accessToken = jwtUtil.createToken(member.getEmail());
+        String accessToken = jwtUtil.createToken(member.getId(), member.getEmail());
 
         return new MemberResponseDto(accessToken);
     }
 
     @Override
     public MemberResponseDto login(MemberRequestDto requestDto) {
+        // TODO: 이후에 '이메일:생성 가능 아이디'가 1:N인지, 1:1인지 따로 조건이 없으므로 변경 필요할 수 있음. (현재는 1:1이라고 가정)
         Member member = memberRepository.findByEmail(requestDto.email())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
 
@@ -48,7 +50,7 @@ public class MemberServiceImpl implements MemberService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
 
-        String accessToken = jwtUtil.createToken(requestDto.email());
+        String accessToken = jwtUtil.createToken(member.getId(), member.getEmail());
 
         return new MemberResponseDto(accessToken);
     }
@@ -76,5 +78,13 @@ public class MemberServiceImpl implements MemberService {
 
         memberRepository.resetPassword(
             new Member(requestDto.email(), sha256Util.encrypt(requestDto.password())));
+    }
+
+    @Override
+    public MemberResponseDto2 findById(Long id) {
+        Member member = memberRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
+
+        return new MemberResponseDto2(member.getId(), member.getEmail(), member.getPassword());
     }
 }
