@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>유저 목록</title>
+    <style>
+        h1 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 40px;
+        }
+
+        table {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 80%;
+            border-collapse: collapse;
+            margin: 20px auto;
+            padding: 8px;
+        }
+
+        th, td {
+            border: 1px solid;
+            padding: 12px 15px;
+            text-align: center;
+        }
+
+        a {
+            display: inline-block;
+            padding: 8px 12px;
+            margin: 0 5px;
+        }
+    </style>
+</head>
+<body>
+<h1>유저 목록</h1>
+<table>
+    <tr>
+        <th>유저 id</th>
+        <th>유저 이메일</th>
+        <th>유저 관리</th>
+    </tr>
+    <tr th:each="member : ${members}">
+        <td th:text="${member.id}">유저 id</td>
+        <td th:text="${member.email}">유저 이메일</td>
+        <td>
+            <a th:href="@{/admin/members/{id}/edit(id=${member.id})}">유저 수정</a>
+            <form th:action="@{/admin/members/{id}(id=${member.id})}" th:method="delete">
+                <button type="submit">유저 삭제</button>
+            </form>
+        </td>
+    </tr>
+</table>
+<br>
+<a th:href="@{/admin/members/add}" style="display: flex; justify-content: center; align-items: center">유저 추가</a>
+</body>
+</html>

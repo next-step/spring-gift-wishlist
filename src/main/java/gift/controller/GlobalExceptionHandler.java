@@ -10,12 +10,27 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import gift.exception.ApprovalRequiredException;
+import gift.exception.AuthorizationRequiredException;
+import gift.exception.LoginException;
 import gift.exception.ProductCreateException;
+import gift.exception.ProductDeleteException;
 import gift.exception.ProductNotFoundException;
 import gift.exception.ProductUpdateException;
+import gift.exception.RegisterException;
+import io.jsonwebtoken.JwtException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(AuthorizationRequiredException.class)
+    public ProblemDetail handleAuthorizationRequiredException(AuthorizationRequiredException e) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, e.getMessage());
+    }
+
+    @ExceptionHandler(JwtException.class)
+    public ProblemDetail handleJwtException() { // 예외 메시지를 사용하는 대신, 일반화된 메시지 사용
+        return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "토큰 검증에 실패했습니다.");
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ProblemDetail handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
@@ -29,6 +44,16 @@ public class GlobalExceptionHandler {
         error.setProperty("errors", messages); // `detail`엔 String만 담을 수 있기 때문에, 별도의 필드 사용
 
         return error;
+    }
+
+    @ExceptionHandler(RegisterException.class)
+    public ProblemDetail handleSignupException(RegisterException e) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+
+    @ExceptionHandler(LoginException.class)
+    public ProblemDetail handleSigninException(LoginException e) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, e.getMessage());
     }
 
     @ExceptionHandler(ApprovalRequiredException.class)
@@ -48,6 +73,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ProductUpdateException.class)
     public ProblemDetail handleProductUpdateException(ProductUpdateException e) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+    }
+
+    @ExceptionHandler(ProductDeleteException.class)
+    public ProblemDetail handleProductDeleteException(ProductDeleteException e) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
 }

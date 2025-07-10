@@ -3,6 +3,7 @@ package gift.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.jdbc.core.DataClassRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -13,20 +14,12 @@ import gift.domain.Product;
 @Repository
 public class ProductRepository {
 
-    private final JdbcClient client;
+    private final JdbcClient jdbcClient;
+    private final RowMapper<Product> rowMapper;
 
-    public ProductRepository(JdbcClient client) {
-        this.client = client;
-    }
-
-    private static RowMapper<Product> getMemberRowMapper() {
-        return (rs, rowNum) -> {
-            var id = rs.getLong("id");
-            var name = rs.getString("name");
-            var price = rs.getInt("price");
-            var imageUrl = rs.getString("imageUrl");
-            return Product.of(id, name, price, imageUrl);
-        };
+    public ProductRepository(JdbcClient jdbcClient) {
+        this.jdbcClient = jdbcClient;
+        this.rowMapper = new DataClassRowMapper<>(Product.class);
     }
 
     public List<Product> findAll() {
@@ -35,8 +28,8 @@ public class ProductRepository {
         FROM product
         """;
 
-        return client.sql(sql)
-            .query(getMemberRowMapper())
+        return jdbcClient.sql(sql)
+            .query(rowMapper)
             .list();
     }
 
@@ -47,10 +40,19 @@ public class ProductRepository {
         WHERE id = :id
         """;
 
-        return client.sql(sql)
+        return jdbcClient.sql(sql)
             .param("id", id)
-            .query(getMemberRowMapper())
+            .query(rowMapper)
             .optional();
+    }
+
+    public boolean existsById(Long id) {
+        var sql = "SELECT COUNT(*) FROM product WHERE id = :id";
+
+        return jdbcClient.sql(sql)
+            .param("id", id)
+            .query(Long.class)
+            .single() > 0;
     }
 
     public Long save(Product product) {
@@ -60,7 +62,7 @@ public class ProductRepository {
         """;
         var keyHolder = new GeneratedKeyHolder();
 
-        client.sql(sql)
+        jdbcClient.sql(sql)
             .param("name", product.getName())
             .param("price", product.getPrice())
             .param("imageUrl", product.getImageUrl())
@@ -73,15 +75,6 @@ public class ProductRepository {
         return keyHolder.getKey().longValue();
     }
 
-    public boolean existsById(Long id) {
-        var sql = "SELECT COUNT(*) FROM product WHERE id = :id";
-
-        return client.sql(sql)
-            .param("id", id)
-            .query(Long.class)
-            .single() > 0;
-    }
-
     public int update(Product product) {
         var sql = """
         UPDATE product
@@ -89,7 +82,7 @@ public class ProductRepository {
         WHERE id = :id
         """;
 
-        return client.sql(sql)
+        return jdbcClient.sql(sql)
             .param("id", product.getId())
             .param("name", product.getName())
             .param("price", product.getPrice())
@@ -100,7 +93,7 @@ public class ProductRepository {
     public int delete(Long id) {
         var sql = "DELETE FROM product WHERE id = :id";
 
-        return client.sql(sql)
+        return jdbcClient.sql(sql)
             .param("id", id)
             .update();
     }

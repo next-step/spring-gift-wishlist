@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>유저 추가 폼</title>
+</head>
+<body>
+<h2 style="text-align: center">유저 추가</h2>
+<form th:action="@{/admin/members}" method="post" style="display: flex; justify-content: center; align-items: center">
+    <ul>
+        <li>
+            <label for="email">유저 이메일:</label>
+            <input type="text" id="email" name="email"/>
+        </li>
+        <li>
+            <label for="password">유저 비밀번호:</label>
+            <input type="text" id="password" name="password"/>
+        </li>
+        <li class="button">
+            <button type="submit">저장</button>
+        </li>
+    </ul>
+</form>
+</body>
+</html>
