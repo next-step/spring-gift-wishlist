@@ -1,5 +1,6 @@
 package gift.controller;
 
+import gift.DTO.WishRequestDTO;
 import gift.annotation.LoginUser;
 import gift.repository.WishDao;
 import gift.model.User;
@@ -18,13 +19,13 @@ public class WishController {
     }
 
     @PostMapping("/wish/add")
-    public void addWish(@RequestBody Long productId, @LoginUser User user){
-        wishDao.addWish(user.getId(),productId);
+    public void addWish(@RequestBody WishRequestDTO request, @LoginUser User user){
+        wishDao.addWish(user.getId(), request.getProductid());
     }
 
     @DeleteMapping("/wish/delete")
-    public void deleteWish(@RequestBody Long productId,@LoginUser User user){
-        wishDao.deleteWish(user.getId(), productId);
+    public void deleteWish(@RequestBody WishRequestDTO request,@LoginUser User user){
+        wishDao.deleteWish(user.getId(), request.getProductid());
 
     }
 }
