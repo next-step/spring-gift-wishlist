@@ -12,6 +12,10 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @Component
 public class AuthInterceptor implements HandlerInterceptor {
 
+    private static final String AUTHORIZATION_SCHEME = "Bearer";
+    private static final String AUTHORIZATION_HEADER = "Authorization";
+    private static final String BEARER_PREFIX = AUTHORIZATION_SCHEME + " ";
+    
     private final JwtTokenProvider jwtTokenProvider;
 
     public AuthInterceptor(JwtTokenProvider jwtTokenProvider) {
@@ -41,9 +45,9 @@ public class AuthInterceptor implements HandlerInterceptor {
     }
 
     private String extractTokenFromHeader(HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            return authHeader.substring(7);
+        String authHeader = request.getHeader(AUTHORIZATION_HEADER);
+        if (authHeader != null && authHeader.startsWith(BEARER_PREFIX)) {
+            return authHeader.substring(BEARER_PREFIX.length());
         }
         return null;
     }
