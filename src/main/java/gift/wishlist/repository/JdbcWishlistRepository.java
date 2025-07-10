@@ -35,7 +35,7 @@ public class JdbcWishlistRepository implements WishlistRepository {
         Long generatedValue = simpleInsert.executeAndReturnKey(params).longValue();
         wishlist.setId(generatedValue);
 
-        String sql = "SELECT created_at FROM WISHLIST WHERE id = ?";
+        String sql = "SELECT created_at FROM wishlist WHERE id = ?";
         LocalDateTime createdAt = jdbcTemplate.queryForObject(sql, LocalDateTime.class,
             generatedValue);
 
