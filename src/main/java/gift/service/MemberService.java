@@ -7,7 +7,9 @@ import gift.exception.LoginFailedException;
 import gift.exception.MemberAlreadyExistsException;
 import gift.repository.MemberRepository;
 import gift.util.JwtUtil;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MemberService {
@@ -20,13 +22,16 @@ public class MemberService {
         this.jwtUtil = jwtUtil;
     }
 
+    @Transactional
     public LoginResponse register(MemberRequest request) {
         memberRepository.findByEmail(request.email())
                 .ifPresent(m -> {
                     throw new MemberAlreadyExistsException("이미 가입된 이메일입니다.");
                 });
 
-        Member member = new Member(request.email(), request.password());
+        String encodedPassword = BCrypt.hashpw(request.password(), BCrypt.gensalt());
+        Member member = new Member(request.email(), encodedPassword);
+
         memberRepository.save(member);
         String token = jwtUtil.generateToken(member.getEmail());
         return new LoginResponse(token);
@@ -36,7 +41,7 @@ public class MemberService {
         Member member = memberRepository.findByEmail(request.email())
                 .orElseThrow(() -> new LoginFailedException("이메일 또는 비밀번호가 유효하지 않습니다."));
 
-        if (!member.getPassword().equals(request.password())) {
+        if (!BCrypt.checkpw(request.password(), member.getPassword())) {
             throw new LoginFailedException("이메일 또는 비밀번호가 유효하지 않습니다.");
         }
 
