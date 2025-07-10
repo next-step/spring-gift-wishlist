@@ -74,3 +74,8 @@
 | 로그인  | POST   | `/api/members/login`          | `{"email": "...", "password": "..."}`            | `200 OK`      | `{"token":"<JWT 토큰 문자열>"}`                  |
 
   
+# 3단계 - 위시 리스트
+
+## 기능 목록
+
+- [x] `schema.sql`에 위시리스트 테이블 CREATE문 추가
