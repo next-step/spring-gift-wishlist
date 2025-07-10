@@ -19,4 +19,13 @@ public class WishDao {
                 ))
                 .update();
     }
+
+    public void deleteWish(Long userId, Long productId) {
+        jdbcClient.sql("DELETE FROM wish WHERE userid = :userid AND productid = :productid")
+                .params(Map.of(
+                        "userid", userId,
+                        "productid", productId
+                ))
+                .update();
+    }
 }
