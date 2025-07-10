@@ -2,15 +2,9 @@ package gift.controller;
 
 import gift.domain.Member;
 import gift.exception.UnauthorizedException;
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import gift.service.MemberService;
-
-import java.util.Base64;
-import java.util.StringTokenizer;
 
 @RestController
 @RequestMapping("/api/members")
