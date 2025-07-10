@@ -35,9 +35,9 @@ public class MemeberAdminController {
     }
 
     @PostMapping("/new")
-    public String addMember(@Valid @ModelAttribute RegisterRequest request, BindingResult bindingResult,
-        Model model) {
-        if(bindingResult.hasErrors()){
+    public String addMember(@Valid @ModelAttribute RegisterRequest request,
+        BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
             model.addAttribute("registerRequest", request);
             return "member/create-form";
         }
