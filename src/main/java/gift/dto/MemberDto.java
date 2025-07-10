@@ -10,6 +10,8 @@ public class MemberDto {
 
     private String password;
 
+    public MemberDto() {}
+
     public MemberDto(Member member) {
     }
 
