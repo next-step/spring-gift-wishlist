@@ -5,6 +5,6 @@ import gift.domain.Member;
 public interface TokenProvider {
 
     String createToken(Member member);
-    Long getUserId(String token);
+    Long getMemberId(String token);
     String getRole(String token);
 }

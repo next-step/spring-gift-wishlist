@@ -85,7 +85,7 @@ public class MemberService {
 
     @Transactional
     public void update(Long id, UpdateMemberRequest request) {
-        checkUserExistence(id);
+        checkMemberExistence(id);
 
         Member newMember = Member.of(id, request.email(), null);
         int count = memberRepository.update(newMember);
@@ -96,7 +96,7 @@ public class MemberService {
 
     @Transactional
     public void delete(Long id) {
-        checkUserExistence(id);
+        checkMemberExistence(id);
 
         int count = memberRepository.delete(id);
         if (count != 1) {
@@ -104,7 +104,7 @@ public class MemberService {
         }
     }
 
-    private void checkUserExistence(Long id) {
+    private void checkMemberExistence(Long id) {
         if (!memberRepository.existsById(id)) {
             throw new MemberNotFoundException("해당 유저가 존재하지 않습니다.");
         }

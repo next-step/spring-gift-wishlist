@@ -5,25 +5,25 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import gift.interceptor.AdminAuthInterceptor;
-import gift.interceptor.UserAuthInterceptor;
+import gift.interceptor.MemberAuthInterceptor;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
-    private final UserAuthInterceptor userAuthInterceptor;
+    private final MemberAuthInterceptor memberAuthInterceptor;
     private final AdminAuthInterceptor adminAuthInterceptor;
 
     public WebMvcConfig(
-        UserAuthInterceptor userAuthInterceptor,
+        MemberAuthInterceptor memberAuthInterceptor,
         AdminAuthInterceptor adminAuthInterceptor
     ) {
-        this.userAuthInterceptor = userAuthInterceptor;
+        this.memberAuthInterceptor = memberAuthInterceptor;
         this.adminAuthInterceptor = adminAuthInterceptor;
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(userAuthInterceptor)
+        registry.addInterceptor(memberAuthInterceptor)
             .addPathPatterns("/api/products/**");
 
         registry.addInterceptor(adminAuthInterceptor)

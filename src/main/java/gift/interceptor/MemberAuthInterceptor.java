@@ -12,12 +12,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-public class UserAuthInterceptor implements HandlerInterceptor {
+public class MemberAuthInterceptor implements HandlerInterceptor {
 
     private final TokenProvider tokenProvider;
     private final Set<String> MEMBERS = Set.of("ROLE_USER", "ROLE_ADMIN");
 
-    public UserAuthInterceptor(TokenProvider tokenProvider) {
+    public MemberAuthInterceptor(TokenProvider tokenProvider) {
         this.tokenProvider = tokenProvider;
     }
 

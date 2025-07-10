@@ -30,7 +30,7 @@ public class JwtProvider implements TokenProvider {
             .compact();
     }
 
-    public Long getUserId(String token) {
+    public Long getMemberId(String token) {
         return Long.parseLong(
             Jwts.parser()
                 .verifyWith(secretKey) // 검증

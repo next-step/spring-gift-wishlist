@@ -41,7 +41,7 @@ public class MemberAdminController {
     }
 
     @PostMapping
-    public String addUser(
+    public String addMember(
         @Valid @ModelAttribute RegisterRequest request
     ) {
         memberService.signup(request);
@@ -59,7 +59,7 @@ public class MemberAdminController {
     }
 
     @PutMapping("/{id}")
-    public String updateUser(
+    public String updateMember(
         @PathVariable Long id,
         @Valid @ModelAttribute UpdateMemberRequest request
     ) {
@@ -68,7 +68,7 @@ public class MemberAdminController {
     }
 
     @DeleteMapping("/{id}")
-    public String deleteUser(
+    public String deleteMember(
         @PathVariable Long id
     ) {
         memberService.delete(id);
