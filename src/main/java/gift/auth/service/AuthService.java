@@ -1,6 +1,7 @@
 package gift.auth.service;
 
 import gift.auth.JwtProvider;
+import gift.auth.dto.UserSignupResponseDto;
 import gift.user.domain.User;
 import gift.auth.dto.UserLoginRequestDto;
 import gift.auth.dto.UserSingupRequestDto;
@@ -19,10 +20,11 @@ public class AuthService {
         this.jwtProvider = jwtProvider;
     }
 
-    public User signUp(UserSingupRequestDto userSignupRequestDto) {
+    public UserSignupResponseDto signUp(UserSingupRequestDto userSignupRequestDto) {
         UUID id = UUID.randomUUID();
         User user = new User(id, userSignupRequestDto.getEmail(), userSignupRequestDto.getPassword());
-        return userDao.save(user);
+
+        return new UserSignupResponseDto(userDao.save(user), jwtProvider.createToken(user));
     }
 
     public String login(UserLoginRequestDto userLoginRequestDto) {
