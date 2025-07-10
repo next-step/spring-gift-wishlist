@@ -36,6 +36,7 @@ public class WishController {
     }
 
     // /api/wishes?page=0&size=10&sort=createdDate,desc
+    // TODO: sort 추가
     @GetMapping
     public ResponseEntity<WishPageResponseDto> getWishes(@LoginMember Member member,
         @RequestParam(defaultValue = "0") Integer page,
@@ -46,7 +47,7 @@ public class WishController {
 
     @DeleteMapping("/{wishId}")
     public ResponseEntity<Void> deleteWish(@LoginMember Member member, @PathVariable Long wishId) {
-        wishService.deleteWish(wishId);
+        wishService.deleteWish(member, wishId);
         return ResponseEntity.noContent().build();
     }
 

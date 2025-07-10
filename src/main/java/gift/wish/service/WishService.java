@@ -11,6 +11,6 @@ public interface WishService {
 
     public WishPageResponseDto getWishes(Member member, Integer page, Integer size);
 
-    public void deleteWish(Long wishId);
+    public void deleteWish(Member member, Long wishId);
 
 }
