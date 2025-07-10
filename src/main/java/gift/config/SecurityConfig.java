@@ -11,7 +11,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    
+
     private static final String[] PERMIT_URL_ARRAY = {
             "/api/members/register",
             "/api/members/login"
@@ -20,13 +20,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
-                .authorizeHttpRequests()
-                .requestMatchers(PERMIT_URL_ARRAY).permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .formLogin().disable()
-                .httpBasic().disable();
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(PERMIT_URL_ARRAY).permitAll()
+                        .anyRequest().authenticated()
+                )
+                .formLogin(form -> form.disable())
+                .httpBasic(httpBasic -> httpBasic.disable());
 
         return http.build();
     }
