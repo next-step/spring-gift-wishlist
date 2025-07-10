@@ -16,7 +16,6 @@ public class Item {
 
 	private String imageUrl;
 
-	@Builder
 	public Item(Long id, Long userId, String name, Integer price, String imageUrl) {
 		validateKakaoKeyword(name);
 
@@ -25,6 +24,11 @@ public class Item {
 		this.name = name;
 		this.price = price;
 		this.imageUrl = imageUrl;
+	}
+
+	@Builder
+	public Item(Long userId, String name, Integer price, String imageUrl) {
+		this(null, userId, name, price, imageUrl);
 	}
 
 	private void validateKakaoKeyword(String name){
