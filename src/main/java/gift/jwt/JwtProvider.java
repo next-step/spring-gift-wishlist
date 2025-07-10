@@ -18,4 +18,18 @@ public class JwtProvider {
                 .compact();
     }
 
+    public Long validateToken(String token) {
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            return Long.parseLong(claims.getSubject());
+        } catch (Exception e) {
+            throw new RuntimeException("토큰 유효성 검사 실패");
+        }
+    }
+
 }
