@@ -51,7 +51,7 @@ public class ProductDao {
                     .param("id", id)
                     .update();
         }
-        if (productPatchRequestDto.getPrice() != 0) {
+        if (productPatchRequestDto.getPrice() != null) {
             jdbcClient.sql("UPDATE PRODUCTS SET price = :price WHERE id = :id")
                     .param("price", productPatchRequestDto.getPrice())
                     .param("id", id)
