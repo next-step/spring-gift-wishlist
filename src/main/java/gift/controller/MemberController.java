@@ -3,6 +3,7 @@ package gift.controller;
 import gift.dto.LoginRequestDto;
 import gift.dto.MemberRequestDto;
 import gift.dto.TokenResponseDto;
+import gift.service.JwtService;
 import gift.service.MemberService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -14,9 +15,11 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
 
     private final MemberService memberService;
+    private final JwtService jwtService;
 
-    public MemberController(MemberService memberService) {
+    public MemberController(MemberService memberService, JwtService jwtService) { 
         this.memberService = memberService;
+        this.jwtService = jwtService;
     }
 
     // 회원 가입
