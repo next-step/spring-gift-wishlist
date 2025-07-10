@@ -1,8 +1,7 @@
-function openUpdateModal(id, name, price, imageUrl) {
+function openUpdateModal(id, email, role) {
     document.getElementById('update-id').value = id;
-    document.getElementById('update-name').value = name;
-    document.getElementById('update-price').value = price;
-    document.getElementById('update-image-url').value = imageUrl;
+    document.getElementById('update-email').value = email;
+    document.getElementById('update-role').value = role;
     document.getElementById('updateModal').style.display = 'block';
     document.getElementById('updateErrorMessage').style.display = 'none';
 }
@@ -16,30 +15,29 @@ function closeModal() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  const body = document.body;
-  const showCreateModal = body.dataset.showCreateModal === 'true';
-  const showUpdateModal = body.dataset.showUpdateModal === 'true';
+    const body = document.body;
+    const showCreateModal = body.dataset.showCreateModal === 'true';
+    const showUpdateModal = body.dataset.showUpdateModal === 'true';
 
-  if (showCreateModal) {
-    document.getElementById('createModal').style.display = 'block';
-  }
-  if (showUpdateModal) {
-    document.getElementById('updateModal').style.display = 'block';
-  }
+    if (showCreateModal) {
+        document.getElementById('createModal').style.display = 'block';
+    }
+    if (showUpdateModal) {
+        document.getElementById('updateModal').style.display = 'block';
+    }
 });
 
 document.querySelector('.create-btn').addEventListener('click', function () {
-  document.getElementById('createModal').style.display = 'block';
+    document.getElementById('createModal').style.display = 'block';
 });
 
 document.querySelectorAll('.update-btn').forEach(btn => {
-  btn.addEventListener('click', function () {
-    const id = this.dataset.id;
-    const name = this.dataset.name;
-    const price = this.dataset.price;
-    const imageUrl = this.dataset.imageUrl;
-    openUpdateModal(id,name,price,imageUrl);
-  });
+    btn.addEventListener('click', function () {
+        const id = this.dataset.id;
+        const email = this.dataset.email;
+        const role = this.dataset.role;
+        openUpdateModal(id,email,role);
+    });
 });
 
 document.querySelectorAll('.delete-btn').forEach(btn => {

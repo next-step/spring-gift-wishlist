@@ -17,6 +17,13 @@ public class GlobalExceptionHandler {
                 .body(e.getMessage());
     }
 
+    @ExceptionHandler(LoginFailedException.class)
+    public ResponseEntity<String> loginFailedException(LoginFailedException e) {
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(e.getMessage());
+    }
+
     @ExceptionHandler(EmptyResultDataAccessException.class)
     public ResponseEntity<String> emptyResultDataAccessException(EmptyResultDataAccessException e) {
         return ResponseEntity
@@ -27,9 +34,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<String> methodArgumentNotValidException(MethodArgumentNotValidException e) {
         String errorMessage = String.join("\n" ,
-                e.getBindingResult().getAllErrors().stream()
+                e.getBindingResult()
+                        .getAllErrors()
+                        .stream()
                         .map(error -> error.getDefaultMessage())
                         .toList());
+
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(errorMessage);
