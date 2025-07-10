@@ -6,9 +6,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import gift.api.domain.MemberRole;
+import gift.api.dto.MemberRequestDto;
 import gift.api.dto.ProductRequestDto;
 import gift.api.dto.ProductResponseDto;
+import gift.api.dto.TokenResponseDto;
 import java.util.List;
+import java.util.Objects;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
@@ -26,28 +32,51 @@ public class ProductE2ETest {
     @LocalServerPort
     private int port;
 
-    RestClient restclient;
+    private RestClient restClient;
 
     @Autowired
-    JdbcClient jdbcClient;
+    private JdbcClient jdbcClient;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    private String authToken;
 
     @BeforeEach
     void setUp() {
-        restclient = RestClient.builder()
+        restClient = RestClient.builder()
                 .baseUrl("http://localhost:" + port)
                 .build();
+
+        String email = "test@test.com";
+        String password = "password";
+        jdbcClient.sql(
+                        "INSERT INTO member(email, password, role) VALUES (:email, :password, :role)")
+                .param("email", email)
+                .param("password", passwordEncoder.encode(password))
+                .param("role", MemberRole.USER.name())
+                .update();
+
+        TokenResponseDto tokenResponse = restClient.post()
+                .uri("/api/members/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new MemberRequestDto(email, password))
+                .retrieve()
+                .body(TokenResponseDto.class);
+
+        this.authToken = Objects.requireNonNull(tokenResponse).token();
     }
 
     @AfterEach
     void tearDown() {
-        jdbcClient.sql("DELETE FROM product")
-                .update();
+        jdbcClient.sql("delete from product").update();
+        jdbcClient.sql("delete from member").update();
     }
 
     @Test
     void 상품_전체_조회_테스트() {
-        List<?> productList = restclient.get()
+        List<?> productList = restClient.get()
                 .uri("/api/products")
+                .header("Authorization", authToken)
                 .retrieve()
                 .body(List.class);
 
@@ -59,14 +88,17 @@ public class ProductE2ETest {
     void 특정_상품_조회_테스트() {
         ProductRequestDto request = new ProductRequestDto("Product 2", 500L,
                 "https://image.com/2.jpg");
-        ProductResponseDto created = restclient.post()
+        ProductResponseDto created = restClient.post()
                 .uri("/api/products")
+                .header("Authorization", authToken)
+                .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
                 .retrieve()
                 .body(ProductResponseDto.class);
 
-        ProductResponseDto found = restclient.get()
+        ProductResponseDto found = restClient.get()
                 .uri("/api/products/" + created.id())
+                .header("Authorization", authToken)
                 .retrieve()
                 .body(ProductResponseDto.class);
 
@@ -79,8 +111,10 @@ public class ProductE2ETest {
         ProductRequestDto request = new ProductRequestDto("Product 1", 100L,
                 "https://image.com/1.jpg");
 
-        ProductResponseDto response = restclient.post()
+        ProductResponseDto response = restClient.post()
                 .uri("/api/products")
+                .header("Authorization", authToken)
+                .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
                 .retrieve()
                 .body(ProductResponseDto.class);
@@ -98,16 +132,20 @@ public class ProductE2ETest {
     void 상품_수정_테스트() {
         ProductRequestDto request = new ProductRequestDto("Product 3", 200L,
                 "https://image.com/3.jpg");
-        ProductResponseDto created = restclient.post()
+        ProductResponseDto created = restClient.post()
                 .uri("/api/products")
+                .header("Authorization", authToken)
+                .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
                 .retrieve()
                 .body(ProductResponseDto.class);
 
         ProductRequestDto updated = new ProductRequestDto("UpdatedProd3", 999L,
                 "https://updated.com/3.jpg");
-        ProductResponseDto result = restclient.put()
+        ProductResponseDto result = restClient.put()
                 .uri("/api/products/" + created.id())
+                .header("Authorization", authToken)
+                .contentType(MediaType.APPLICATION_JSON)
                 .body(updated)
                 .retrieve()
                 .body(ProductResponseDto.class);
@@ -120,20 +158,24 @@ public class ProductE2ETest {
     void 상품_삭제_테스트() {
         ProductRequestDto request = new ProductRequestDto("Product 4", 300L,
                 "https://image.com/4.jpg");
-        ProductResponseDto created = restclient.post()
+        ProductResponseDto created = restClient.post()
                 .uri("/api/products")
+                .header("Authorization", authToken)
+                .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
                 .retrieve()
                 .body(ProductResponseDto.class);
 
-        restclient.delete()
+        restClient.delete()
                 .uri("/api/products/" + created.id())
+                .header("Authorization", authToken)
                 .retrieve()
                 .toBodilessEntity();
 
         HttpClientErrorException exception = assertThrows(HttpClientErrorException.class, () -> {
-            restclient.get()
+            restClient.get()
                     .uri("/api/products/" + created.id())
+                    .header("Authorization", authToken)
                     .retrieve()
                     .body(ProductResponseDto.class);
         });
@@ -147,8 +189,10 @@ public class ProductE2ETest {
                 "https://image.com/longname.jpg");
 
         HttpClientErrorException exception = assertThrows(HttpClientErrorException.class, () -> {
-            restclient.post()
+            restClient.post()
                     .uri("/api/products")
+                    .header("Authorization", authToken)
+                    .contentType(MediaType.APPLICATION_JSON)
                     .body(request)
                     .retrieve()
                     .body(ProductResponseDto.class);
@@ -163,8 +207,10 @@ public class ProductE2ETest {
         ProductRequestDto request = new ProductRequestDto("()[]+-&/_ 이건 됨", 100L,
                 "https://image.com/success.jpg");
 
-        ProductResponseDto response = restclient.post()
+        ProductResponseDto response = restClient.post()
                 .uri("/api/products")
+                .header("Authorization", authToken)
+                .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
                 .retrieve()
                 .body(ProductResponseDto.class);
@@ -183,8 +229,10 @@ public class ProductE2ETest {
                 "https://image.com/bad.jpg");
 
         HttpClientErrorException exception = assertThrows(HttpClientErrorException.class, () -> {
-            restclient.post()
+            restClient.post()
                     .uri("/api/products")
+                    .header("Authorization", authToken)
+                    .contentType(MediaType.APPLICATION_JSON)
                     .body(request)
                     .retrieve()
                     .body(ProductResponseDto.class);
@@ -201,8 +249,10 @@ public class ProductE2ETest {
                 "https://image.com/bad.jpg");
 
         HttpClientErrorException exception = assertThrows(HttpClientErrorException.class, () -> {
-            restclient.post()
+            restClient.post()
                     .uri("/api/products")
+                    .header("Authorization", authToken)
+                    .contentType(MediaType.APPLICATION_JSON)
                     .body(request)
                     .retrieve()
                     .body(ProductResponseDto.class);
@@ -219,8 +269,10 @@ public class ProductE2ETest {
                 "https://image.com/invalid.jpg");
 
         HttpClientErrorException exception = assertThrows(HttpClientErrorException.class, () -> {
-            restclient.post()
+            restClient.post()
                     .uri("/api/products")
+                    .header("Authorization", authToken)
+                    .contentType(MediaType.APPLICATION_JSON)
                     .body(request)
                     .retrieve()
                     .body(ProductResponseDto.class);
