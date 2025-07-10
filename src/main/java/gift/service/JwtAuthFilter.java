@@ -20,31 +20,27 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
+        throws ServletException, IOException {
+
         String authHeader = request.getHeader("Authorization");
+        String token = jwtService.extractTokenFromBearer(authHeader);
+
+        // 특정 URI만 필터링
         if (requiresAuth(request.getRequestURI())) {
-            if (!StringUtils.hasText(authHeader) || !authHeader.startsWith("Bearer ")) {
-                response.setCharacterEncoding("UTF-8");
-                response.setContentType("text/plain;charset=UTF-8");
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("인증이 필요합니다.");
-                return;
-            }
-            String token = jwtService.extractTokenFromBearer(authHeader);
-            if (!jwtService.validateToken(token)) {
-                response.setCharacterEncoding("UTF-8");
-                response.setContentType("text/plain;charset=UTF-8");
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("유효하지 않은 토큰입니다.");
+            if (!StringUtils.hasText(token) || !jwtService.validateToken(token)) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 에러 발생
+                response.getWriter().write("Unauthorized: 유효하지 않은 토큰입니다.");
                 return;
             }
         }
+
         filterChain.doFilter(request, response);
     }
 
-    // 인증이 필요한 경로만 필터 적용 
     private boolean requiresAuth(String uri) {
-        return uri.startsWith("/admin") || uri.startsWith("/api/products");
+        return uri.startsWith("/api/products") || uri.startsWith("/admin");
     }
-} 
+}

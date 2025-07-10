@@ -5,6 +5,7 @@ import gift.dto.MemberRequestDto;
 import gift.dto.MemberResponseDto;
 import gift.dto.TokenResponseDto;
 import gift.entity.Member;
+import gift.entity.MemberRole;
 import gift.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +32,7 @@ public class MemberService {
         }
 
         // 회원 생성
-        Member member = new Member(requestDto.getEmail(), requestDto.getPassword());
+        Member member = new Member(null, requestDto.getEmail(), requestDto.getPassword(), MemberRole.USER);
         Member savedMember = memberRepository.save(member);
 
         // JWT 토큰 생성

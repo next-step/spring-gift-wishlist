@@ -6,11 +6,15 @@ public class Member {
     private String password;
     private MemberRole role;
 
-    public Member(String email, String password, MemberRole role) {
+    public Member() {}
+
+    public Member(Long id, String email, String password, MemberRole role) {
+        this.id = id;
         this.email = email;
         this.password = password;
         this.role = role;
     }
+
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -22,5 +26,5 @@ public class Member {
     public void setPassword(String password) { this.password = password; }
 
     public MemberRole getRole() { return role; }
-    public void setRole(MemberRole role) { this.role = role; }
-} 
+}
+    
