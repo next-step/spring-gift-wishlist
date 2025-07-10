@@ -14,7 +14,7 @@ CREATE TABLE MEMBER
     email       VARCHAR(50)     NOT NULL,
     password    VARCHAR(255)    NOT NULL,
     PRIMARY KEY (id)
-)
+);
 
 CREATE TABLE WISHLIST
 (
@@ -26,4 +26,4 @@ CREATE TABLE WISHLIST
     UNIQUE KEY unique_member_item (member_id, item_id),
     FOREIGN KEY (member_id) REFERENCES MEMBER(id) ON DELETE CASCADE,
     FOREIGN KEY (item_id) REFERENCES ITEM(id) ON DELETE CASCADE
-)
+);
