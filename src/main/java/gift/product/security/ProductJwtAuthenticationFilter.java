@@ -1,7 +1,5 @@
 package gift.product.security;
 
-import gift.exception.wish.InvalidAuthorizationException;
-import gift.exception.wish.InvalidTokenException;
 import gift.member.security.JwtTokenProvider;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -35,13 +33,16 @@ public class ProductJwtAuthenticationFilter implements Filter {
         String authorizationHeader = httpServletRequest.getHeader(AUTHORIZATION_HEADER);
 
         if (authorizationHeader == null || !authorizationHeader.startsWith(BEARER_PREFIX)) {
-            throw new InvalidAuthorizationException();
+            httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+                "Authorization 헤더가 없거나 형식이 잘못되었습니다.");
+            return;
         }
 
         String token = authorizationHeader.substring(BEARER_PREFIX.length());
 
         if (!jwtTokenProvider.validateToken(token)) {
-            throw new InvalidTokenException("유효하지 않은 토큰입니다.");
+            httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "유효하지 않은 토큰입니다.");
+            return;
         }
 
         filterChain.doFilter(httpServletRequest, httpServletResponse);

@@ -12,10 +12,6 @@ public class JwtTokenProvider {
     String secretKey = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";
     Key key = Keys.hmacShaKeyFor(secretKey.getBytes());
 
-    public JwtTokenProvider() {
-
-    }
-
     public String generateToken(Long memberId, String email, String role) {
         return Jwts.builder()
             .setSubject(memberId.toString())

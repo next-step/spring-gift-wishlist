@@ -1,8 +1,5 @@
 package gift.member.security;
 
-import gift.exception.wish.AdminAccessDeniedException;
-import gift.exception.wish.InvalidAuthorizationException;
-import gift.exception.wish.InvalidTokenException;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -35,19 +32,23 @@ public class AdminJwtAuthenticationFilter implements Filter {
         String authorizationHeader = httpServletRequest.getHeader(AUTHORIZATION_HEADER);
 
         if (authorizationHeader == null || !authorizationHeader.startsWith(BEARER_PREFIX)) {
-            throw new InvalidAuthorizationException();
+            httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+                "Authorization 헤더가 없거나 형식이 잘못되었습니다.");
+            return;
         }
 
         String token = authorizationHeader.substring(BEARER_PREFIX.length());
 
         if (!jwtTokenProvider.validateToken(token)) {
-            throw new InvalidTokenException("유효하지 않은 토큰입니다.");
+            httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "유효하지 않은 토큰입니다.");
+            return;
         }
 
         String role = jwtTokenProvider.getRoleFromToken(token);
 
         if (!"ROLE_ADMIN".equals(role)) {
-            throw new AdminAccessDeniedException();
+            httpServletResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "관리자 권한이 없습니다.");
+            return;
         }
 
         filterChain.doFilter(httpServletRequest, httpServletResponse);

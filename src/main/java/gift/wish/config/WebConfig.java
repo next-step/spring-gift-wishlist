@@ -2,7 +2,7 @@ package gift.wish.config;
 
 import gift.member.repository.MemberRepository;
 import gift.member.security.JwtTokenProvider;
-import gift.wish.argumentresolver.LoginMembberArgumentResolver;
+import gift.wish.argumentresolver.LoginMemberArgumentResolver;
 import java.util.List;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -23,7 +23,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addArgumentResolvers(
         List<HandlerMethodArgumentResolver> argumentResolvers
     ) {
-        argumentResolvers.add(new LoginMembberArgumentResolver(memberRepository, jwtTokenProvider));
+        argumentResolvers.add(new LoginMemberArgumentResolver(memberRepository, jwtTokenProvider));
     }
 
 }

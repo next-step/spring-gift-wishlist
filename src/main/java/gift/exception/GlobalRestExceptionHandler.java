@@ -4,10 +4,8 @@ import gift.exception.member.LoginFailedException;
 import gift.exception.member.MemberNotFoundException;
 import gift.exception.product.ProductNotFoundException;
 import gift.exception.product.UnapprovedProductException;
-import gift.exception.wish.AdminAccessDeniedException;
 import gift.exception.wish.InvalidAuthorizationException;
 import gift.exception.wish.InvalidPageException;
-import gift.exception.wish.InvalidTokenException;
 import gift.exception.wish.WishNotFoundException;
 import gift.exception.wish.WishlistAccessDeniedException;
 import org.springframework.http.HttpStatus;
@@ -33,7 +31,7 @@ public class GlobalRestExceptionHandler {
     }
 
     // 401 인증 실패
-    @ExceptionHandler({InvalidAuthorizationException.class, InvalidTokenException.class})
+    @ExceptionHandler(InvalidAuthorizationException.class)
     public ResponseEntity<String> handleUnauthorizedException(RuntimeException ex) {
         return new ResponseEntity<>("오류: " + ex.getMessage(), HttpStatus.UNAUTHORIZED);
     }
@@ -47,7 +45,7 @@ public class GlobalRestExceptionHandler {
     }
 
     // 403 권한 없음
-    @ExceptionHandler({AdminAccessDeniedException.class, WishlistAccessDeniedException.class})
+    @ExceptionHandler(WishlistAccessDeniedException.class)
     public ResponseEntity<String> handleForbiddenException(RuntimeException ex) {
         return new ResponseEntity<>("오류: " + ex.getMessage(), HttpStatus.FORBIDDEN);
     }
