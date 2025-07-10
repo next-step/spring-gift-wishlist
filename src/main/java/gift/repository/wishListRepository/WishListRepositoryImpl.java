@@ -125,5 +125,37 @@ public class WishListRepositoryImpl implements WishListRepository {
         );
     }
 
+    @Override
+    public WishItem deleteItem(String name, String userEmail) {
+        User user = userRepository.findUserByEmail(userEmail);
+
+        if (user == null) {
+            throw new UserNotFoundException();
+        }
+
+        Item item = jdbcTemplate.queryForObject(
+                "SELECT id, name, price, image_url FROM items WHERE name =?",
+                new Object[]{name},
+                (rs, rowNum) -> new Item(
+                        rs.getLong("id"),
+                        rs.getString("name"),
+                        rs.getInt("price"),
+                        rs.getString("image_url")
+                )
+        );
+
+        if (item == null) {
+            throw new ItemNotFoundException(name);
+        }
+
+        var quantitySql = "SELECT w.quantity FROM wish_items w WHERE w.user_id=? AND w.item_id=?";
+        Integer quantity = jdbcTemplate.queryForObject(quantitySql, new Object[]{user.id(), item.getId()}, Integer.class);
+
+        var sql = "DELETE FROM wish_items WHERE user_id=? AND item_id=?";
+        jdbcTemplate.update(sql, user.id(), item.getId());
+
+        return new WishItem(item.getId(), item.getName(), item.getImageUrl(), item.getPrice(),quantity);
+    }
+
 
 }

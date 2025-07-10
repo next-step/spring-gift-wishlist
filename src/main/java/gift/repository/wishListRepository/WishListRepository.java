@@ -11,4 +11,6 @@ public interface WishListRepository {
     List<WishItem> getAllWishItems(String userEmail);
 
     List<WishItem> getWishItems(String name, Integer price, String userEmail);
+
+    WishItem deleteItem(String name, String userEmail);
 }

@@ -1,12 +1,9 @@
 package gift.controller.wishListController;
 
 
-import gift.Jwt.JwtUtil;
 import gift.Jwt.TokenUtils;
-import gift.dto.itemDto.ItemCreateDto;
 import gift.dto.wishListDto.AddWishItemDto;
 import gift.dto.wishListDto.ResponseWishItemDto;
-import gift.service.itemService.ItemService;
 import gift.service.wishListService.WishListService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -54,4 +51,16 @@ public class WishListController {
         return new ResponseEntity<>(wishItemList, HttpStatus.OK);
     }
 
+    @DeleteMapping
+    public ResponseEntity<ResponseWishItemDto> deleteWishItem(@RequestHeader("Authorization") String authHeader, @RequestParam String name) {
+        String token = tokenUtils.extractToken(authHeader);
+
+        tokenUtils.validateToken(token);
+
+        String userEmail = tokenUtils.extractEmail(token);
+
+        ResponseWishItemDto deletedWishItem = wishListService.deleteWishItem(name, userEmail);
+
+        return new ResponseEntity<>(deletedWishItem, HttpStatus.NO_CONTENT);
+    }
 }
