@@ -1,5 +1,8 @@
 package gift.service;
 
+import gift.exception.token.TokenExpiredException;
+import gift.exception.token.TokenTypeException;
+import gift.utils.JwtParser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -9,7 +12,10 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.List;
 import java.util.function.Function;
+
+import static gift.status.TokenErrorStatus.INVALID_TOKEN_TYPE;
 
 @Service
 public class TokenService {
@@ -19,12 +25,11 @@ public class TokenService {
     @Value("${jwt-access-token-expire-time}")
     private Integer accessTokenTTL;
 
-    public boolean isTokenValid(String token, String email){
-        return extractEmail(token).equals(email);
-    }
-
-    public boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
+    public boolean isTokenExpired(List<String> tokens) throws TokenExpiredException {
+        if(!JwtParser.isValidTokenType(tokens)){
+            throw new TokenTypeException(INVALID_TOKEN_TYPE.getErrorMessage());
+        }
+        return extractExpiration(JwtParser.getToken(tokens)).before(new Date());
     }
 
     public String generateToken(String email) {
