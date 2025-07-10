@@ -72,5 +72,5 @@
 
 추가사항
 - 위시 리스트 저장을 위한 wishlist 테이블 생성
-  - 테이블 속성: memberId, productId ...
+  - 테이블 속성: email, productId ...
 - 위시 리스트 상품 추가를 위해 기존 Product 관련 Dto 및 Entity 활용

@@ -1,23 +1,27 @@
 package gift.controller;
 
+import gift.auth.JwtAuth;
 import gift.dto.MemberRequestDto;
 import gift.dto.MemberResponseDto;
+import gift.dto.ProductResponseDto;
+import gift.exception.MemberExceptions;
 import gift.service.MemberService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/members")
 public class MemberController {
     private final MemberService memberService;
+    private final JwtAuth jwtAuth;
 
-    public MemberController(MemberService memberService) {
+    public MemberController(MemberService memberService, JwtAuth jwtAuth) {
         this.memberService = memberService;
+        this.jwtAuth = jwtAuth;
     }
 
     @PostMapping("/membership")
@@ -30,5 +34,21 @@ public class MemberController {
     public ResponseEntity<MemberResponseDto> login(@Valid @RequestBody MemberRequestDto requestDto) {
         MemberResponseDto responseDto = memberService.login(requestDto);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
+
+    @GetMapping("/wishlist")
+    public ResponseEntity<List<ProductResponseDto>> getWishlist(@RequestHeader("Authorization") String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new MemberExceptions.InvalidAuthorizationHeaderException();
+        }
+
+        String token = authHeader.substring(7);
+        if (!jwtAuth.validateToken(token)) {
+            throw new MemberExceptions.InvalidTokenException();
+        }
+
+        List<ProductResponseDto> products = memberService.findAllProductsFromWishList(token);
+
+        return ResponseEntity.status(HttpStatus.OK).body(products);
     }
 }

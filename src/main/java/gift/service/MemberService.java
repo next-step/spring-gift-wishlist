@@ -3,11 +3,16 @@ package gift.service;
 import gift.auth.JwtAuth;
 import gift.dto.MemberRequestDto;
 import gift.dto.MemberResponseDto;
+import gift.dto.ProductResponseDto;
 import gift.entity.Member;
+import gift.entity.Product;
 import gift.exception.MemberExceptions;
 import gift.repository.MemberRepositoryInterface;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class MemberService implements MemberServiceInterface {
@@ -46,5 +51,19 @@ public class MemberService implements MemberServiceInterface {
 
         String token = jwtAuth.createJwtToken(member);
         return new MemberResponseDto(token);
+    }
+
+    @Override
+    public List<ProductResponseDto> findAllProductsFromWishList(String token) {
+        String email = jwtAuth.getEmailFromToken(token);
+        List<Product> products = memberRepository.findAllProductsFromWishListByEmail(email);
+        List<ProductResponseDto> productResponseDtoList = new ArrayList<>();
+        for (Product product : products) {
+            productResponseDtoList.add(new ProductResponseDto(product.getId(),
+                                                            product.getName(),
+                                                            product.getPrice(),
+                                                            product.getImageUrl()));
+        }
+        return productResponseDtoList;
     }
 }
