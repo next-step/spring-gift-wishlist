@@ -16,4 +16,6 @@ public interface MemberRepository {
     void updateMember(Member member);
 
     void deleteMember(Long memberId);
+
+    Boolean existsByEmail(String email);
 }

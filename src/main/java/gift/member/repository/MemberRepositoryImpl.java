@@ -82,4 +82,10 @@ public class MemberRepositoryImpl implements MemberRepository {
 
         jdbcTemplate.update(sql, memberId);
     }
+
+    @Override
+    public Boolean existsByEmail(String email) {
+        String sql = "SELECT EXISTS(SELECT 1 FROM members WHERE email = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, email);
+    }
 }

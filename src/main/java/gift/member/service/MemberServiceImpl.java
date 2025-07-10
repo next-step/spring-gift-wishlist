@@ -1,12 +1,13 @@
 package gift.member.service;
 
+import gift.exception.member.EmailAlreadyExistsException;
+import gift.exception.member.MemberNotFoundException;
 import gift.member.dto.AdminMemberCreateRequestDto;
 import gift.member.dto.AdminMemberGetResponseDto;
 import gift.member.dto.AdminMemberUpdateRequestDto;
 import gift.member.dto.RegisterRequestDto;
 import gift.member.dto.TokenResponseDto;
 import gift.member.entity.Member;
-import gift.exception.member.MemberNotFoundException;
 import gift.member.repository.MemberRepository;
 import gift.member.security.JwtTokenProvider;
 import java.util.List;
@@ -25,6 +26,10 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public TokenResponseDto registerMember(RegisterRequestDto registerRequestDto) {
+        if (memberRepository.existsByEmail(registerRequestDto.email())) {
+            throw new EmailAlreadyExistsException("이미 사용 중인 이메일입니다.");
+        }
+
         Member member = new Member(registerRequestDto.email(), registerRequestDto.password(),
             registerRequestDto.name(), registerRequestDto.role());
         memberRepository.saveMember(member);

@@ -1,5 +1,6 @@
 package gift.exception;
 
+import gift.exception.member.EmailAlreadyExistsException;
 import gift.exception.member.LoginFailedException;
 import gift.exception.member.MemberNotFoundException;
 import gift.exception.product.ProductNotFoundException;
@@ -24,8 +25,9 @@ public class GlobalRestExceptionHandler {
     }
 
     // 400
-    // 400 유효성 검사 실패 - 협의되지 않은 '카카오', 페이지 설정
-    @ExceptionHandler({UnapprovedProductException.class, InvalidPageException.class})
+    // 400 유효성 검사 실패 - 협의되지 않은 '카카오', 이미 존재하는 이메일, 페이지 설정
+    @ExceptionHandler({UnapprovedProductException.class, EmailAlreadyExistsException.class,
+        InvalidPageException.class})
     public ResponseEntity<String> handleBadRequestException(RuntimeException ex) {
         return new ResponseEntity<>("오류: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
     }

@@ -1,5 +1,6 @@
 package gift.member.controller;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import gift.member.builder.MemberBuilder;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -98,5 +100,21 @@ class MemberControllerTest {
 
         Member result = queryMemberById(2);
         assertThatMemberEquals(request, result);
+    }
+
+    @Test
+    void 회원가입_BAD_REQUEST_이미존재하는이메일() {
+        // given
+        var request = MemberBuilder.aMember()
+            .withEmail("one@email.com")
+            .build();
+
+        // when & then
+        assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
+            .isThrownBy(
+                () -> exchange(HttpMethod.POST, baseUrl() + "/register", request,
+                    new ParameterizedTypeReference<TokenResponseDto>() {
+                    })
+            );
     }
 }

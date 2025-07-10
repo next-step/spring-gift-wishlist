@@ -20,8 +20,7 @@ public class RegisterController {
     public RegisterController(MemberService memberService) {
         this.memberService = memberService;
     }
-
-    // TODO: 같은 이메일을 입력할 경우, 예외 처리 해야겠네.
+    
     @PostMapping("/register")
     public ResponseEntity<TokenResponseDto> registerMember(
         @Valid @RequestBody RegisterRequestDto registerRequestDto) {
