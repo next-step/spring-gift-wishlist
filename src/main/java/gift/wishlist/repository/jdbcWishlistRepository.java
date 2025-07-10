@@ -84,6 +84,45 @@ public class jdbcWishlistRepository implements  WishlistRepository {
         );
     }
 
+    @Override
+    public WishlistResponseDto deleteProductFromWishlist(Long memberId, Long productId) {
+
+        String selectSql = """
+                SELECT
+                    p.id AS product_id,
+                    p.name AS product_name,
+                    p.price,
+                    p.image_url,
+                    w.quantity
+                FROM wishlist w
+                JOIN product p ON w.product_id = p.id
+                WHERE w.member_id = ? AND w.product_id = ?
+        """;
+
+        List<WishlistResponseDto> result = jdbcTemplate.query(
+                selectSql,
+                new Object[]{memberId, productId},
+                (rs, rowNum) -> new WishlistResponseDto(
+                        rs.getLong("product_id"),
+                        rs.getString("product_name"),
+                        rs.getInt("quantity"),
+                        rs.getInt("price"),
+                        rs.getString("image_url")
+                )
+        );
+
+        if (result.isEmpty()) {
+            throw new IllegalArgumentException("위시리스트에 해당 상품이 존재하지 않습니다.");
+        }
+
+        WishlistResponseDto toReturn = result.get(0);
+
+        // 삭제 쿼리
+        String deleteSql = "DELETE FROM wishlist WHERE member_id = ? AND product_id = ?";
+        jdbcTemplate.update(deleteSql, memberId, productId);
+
+        return toReturn;
+    }
 
     private RowMapper<Wishlist> wishlistRowMapper() {
         return (rs, rowNum) -> new Wishlist(

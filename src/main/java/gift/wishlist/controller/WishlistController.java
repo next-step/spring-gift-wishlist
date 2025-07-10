@@ -20,6 +20,7 @@ public class WishlistController {
         this.wishlistService = wishlistService;
     }
 
+    // 위시 리스트에 상품 추가 API
     @PostMapping
     public ResponseEntity<WishlistResponseDto> addProductToWishlist(
             @RequestBody WishlistRequestDto requestDto,
@@ -30,12 +31,25 @@ public class WishlistController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
+    // 위시 리스트 상품 목록 조회 API
     @GetMapping
     public ResponseEntity<List<WishlistResponseDto>> getWishlist(@LoginMember Long memberId) {
         List<WishlistResponseDto> productsOfWishlist = wishlistService.getWishlist(memberId);
 
         return ResponseEntity.ok(productsOfWishlist);
     }
+
+    // 위시 리스트에 있는 상품 삭제 API
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<WishlistResponseDto> deleteProductFromWishlist(
+            @PathVariable Long productId,
+            @LoginMember Long memberId
+    ) {
+        WishlistResponseDto responseDto = wishlistService.deleteProductFromWishlist(memberId, productId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
+
 
 
 }
