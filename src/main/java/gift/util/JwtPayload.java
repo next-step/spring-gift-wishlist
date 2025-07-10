@@ -1,11 +1,13 @@
 package gift.util;
 
-import gift.entity.Member;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 
-public record JwtPayload(Claims claims) {
-    public Member toMember() {
+public class JwtPayload {
+
+    private final Long id;
+
+    public JwtPayload(Claims claims) {
         String idString = claims.get("sub", String.class);
         String email = claims.get("email", String.class);
 
@@ -13,7 +15,10 @@ public record JwtPayload(Claims claims) {
             throw new JwtException("NOT valid Token");
         }
 
-        Long id = Long.parseLong(idString);
-        return new Member(id, email, "");
+        id = Long.parseLong(idString);
+    }
+
+    public Long getId() {
+        return id;
     }
 }
