@@ -5,6 +5,7 @@ import gift.dto.wish.WishResponseDto;
 import gift.entity.LoggedInMember;
 import gift.entity.Member;
 import gift.service.WishListService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +39,7 @@ public class WishListController {
     //TODO: 위시리스트에 상품을 추가
     @PostMapping("/add")
     public ResponseEntity<WishResponseDto> addToWishList(
-            @RequestBody WishRequestDto wishRequestDto, //상품ID, 수량
+            @RequestBody @Valid WishRequestDto wishRequestDto, //상품ID, 수량
             @LoggedInMember Member member
     ){
         Long memberId = member.getMemberId();
