@@ -14,19 +14,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductService {
 
     private final ProductRepository productRepository;
-    private final ProductStatusService productStatusService;
 
-    public ProductService(ProductRepository productRepository,
-            ProductStatusService productStatusService) {
+    public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
-        this.productStatusService = productStatusService;
     }
 
     @Transactional
     public ProductResponseDto saveProduct(ProductRequestDto productRequestDto) {
         Product product = new Product(null, productRequestDto.name(),
                 productRequestDto.price(), productRequestDto.imageUrl(),
-                productStatusService.getProductStatus(productRequestDto.name()));
+                ProductStatus.getProductStatus(productRequestDto.name()));
 
         Product savedProduct = productRepository.saveProduct(product);
 
@@ -47,7 +44,7 @@ public class ProductService {
                 productRequestDto.name(),
                 productRequestDto.price(),
                 productRequestDto.imageUrl(),
-                productStatusService.getProductStatus(productRequestDto.name())
+                ProductStatus.getProductStatus(productRequestDto.name())
         );
 
         productRepository.updateProduct(product);

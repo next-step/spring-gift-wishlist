@@ -49,4 +49,30 @@ public class GlobalExceptionHandler {
         return ResponseEntity.of(pd).build();
     }
 
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ResponseEntity<ProblemDetail> handleEmailAlreadyExistsException(
+            EmailAlreadyExistsException ex) {
+
+        ProblemDetail pd = ProblemDetail.forStatus(HttpStatus.CONFLICT);
+
+        pd.setType(URI.create("/errors/email-already-exists"));
+        pd.setTitle("이미 존재하는 이메일입니다.");
+        pd.setDetail(ex.getMessage());
+
+        return ResponseEntity.of(pd).build();
+    }
+
+    @ExceptionHandler(LoginFailedException.class)
+    public ResponseEntity<ProblemDetail> handleLoginFailedException(
+            LoginFailedException ex) {
+
+        ProblemDetail pd = ProblemDetail.forStatus(HttpStatus.FORBIDDEN);
+
+        pd.setType(URI.create("/errors/login-failed"));
+        pd.setTitle("로그인에 실패하였습니다.");
+        pd.setDetail(ex.getMessage());
+
+        return ResponseEntity.of(pd).build();
+    }
+
 }
