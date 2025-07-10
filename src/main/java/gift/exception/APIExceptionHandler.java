@@ -28,4 +28,9 @@ public class APIExceptionHandler {
         return ResponseEntity.status(httpStatusCode).body(e.getReason());
     }
 
+    @ExceptionHandler(LoggedInRequiredException.class)
+    public ResponseEntity<String> LoggedInRequired(LoggedInRequiredException e){
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
 }

@@ -1,0 +1,80 @@
+package gift.interceptor;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import gift.dto.MemberRequestDto;
+import gift.entity.Member;
+import gift.exception.MemberNotFoundException;
+import gift.exception.RequiredFieldException;
+import gift.service.JwtAuthService;
+import gift.service.MemberService;
+import groovy.util.logging.Slf4j;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StreamUtils;
+
+@Component
+@Slf4j
+public class LoginFilter implements Filter {
+
+    private static final Logger log = LoggerFactory.getLogger(LoginFilter.class);
+    private final MemberService memberService;
+    private final JwtAuthService jwtAuthService;
+
+    public LoginFilter(MemberService memberService, JwtAuthService jwtAuthService){
+        this.memberService = memberService;
+        this.jwtAuthService = jwtAuthService;
+    }
+
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+
+        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+
+        String url = httpServletRequest.getRequestURI();
+        String Method = httpServletRequest.getMethod();
+
+        //로그인 요청에 대해서만 동작하는 필터임...
+        if(url.equals("/api/members/login") && Method.equals("POST")){
+
+            log.info("로그인 요청이 들어옴,,,");
+
+//            String email = request.getParameter("email");
+//            String password = httpServletRequest.getParameter("password");
+//
+//            System.out.println("password = " + password);
+//            System.out.println("email = " + email);
+//
+//            if(email == null || password == null){
+//                throw new RequiredFieldException("비밀번호와 이메일은 필수로 입력해야 합니다.");
+//            }
+//
+//            if(!memberService.checkMember(new MemberRequestDto(email, password))){
+//                throw new MemberNotFoundException("해당하는 회원을 찾을 수 없습니다.");
+//            }
+//
+//            Member member = memberService.getMemberByEmail(email).get();
+//            String token = jwtAuthService.createJwt(email, member.getMemberId());
+
+            String token = jwtAuthService.createJwt("abc@gmail.com", 1L);
+            httpServletResponse.addHeader("Authorization", "Bearer "+ token);
+            log.info("토큰 생성 완료");
+        }
+
+        //다음 필터가 있다면 동작해라
+        chain.doFilter(request, response);
+    }
+}

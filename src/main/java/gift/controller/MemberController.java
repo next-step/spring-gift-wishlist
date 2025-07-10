@@ -5,6 +5,7 @@ import gift.dto.MemberRequestDto;
 import gift.entity.Member;
 import gift.service.JwtAuthService;
 import gift.service.MemberService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import java.util.Optional;
 import org.springframework.http.HttpStatus;
@@ -29,26 +30,24 @@ public class MemberController {
 
     //TODO: 회원가입 기능 -> 토큰을 반환
     @PostMapping("/register")
-    public ResponseEntity<Object> register(@RequestBody @Valid MemberRequestDto memberRequestDto){
+    public ResponseEntity<JwtResponseDto> register(
+            @RequestBody @Valid MemberRequestDto memberRequestDto,
+            HttpServletResponse response
+    ){
         Member member = memberService.register(memberRequestDto);
-        String token = jwtAuthService.createJwt(member.getEmail(), member.getMemberId());
-        return new ResponseEntity<>(new JwtResponseDto("Bearer " + token), HttpStatus.CREATED);
+        String token = "Bearer " + jwtAuthService.createJwt(member.getEmail(), member.getMemberId());
+        response.addHeader("Authorization", token);
+        return new ResponseEntity<>(new JwtResponseDto(token), HttpStatus.CREATED);
     }
 
     //TODO: 로그인 기능 -> 토큰을 반환
     @PostMapping("/login")
-    public ResponseEntity<Object> login(
-            @RequestBody @Valid MemberRequestDto memberRequestDto
+    public ResponseEntity<JwtResponseDto> login(
+            @RequestBody @Valid MemberRequestDto memberRequestDto,
+            HttpServletResponse response
     ){
-        //서버에 저장된 id-pw 쌍과 일치하는지 확인
-        if(!memberService.checkMember(memberRequestDto)){
-            //잘못된 로그인에 대해서는 403을 반환
-            return new ResponseEntity<>("아이디 또는 비밀번호가 잘못되었습니다.", HttpStatus.FORBIDDEN);
-        }
-        //서버에 저장된 id-pw 쌍과 일치한다면 토큰을 발급
-        Member member = memberService.getMemberByEmail(memberRequestDto.email()).get();
-        String token = jwtAuthService.createJwt(member.getEmail(), member.getMemberId());
-        return ResponseEntity.ok().body(new JwtResponseDto("Bearer " + token));
+        String token = response.getHeader("Authorization");
+        return ResponseEntity.ok().body(new JwtResponseDto(token));
     }
 
 }
