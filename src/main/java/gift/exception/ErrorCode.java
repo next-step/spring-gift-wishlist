@@ -4,7 +4,8 @@ import org.springframework.http.HttpStatus;
 
 public enum ErrorCode {
 
-    Notfound(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다"),
+    ProductNotfound(HttpStatus.NOT_FOUND, "게시물을 찾을 수 없습니다"),
+    WishNotfound(HttpStatus.NOT_FOUND, "위시를 찾을 수 없습니다"),
     Unauthorized(HttpStatus.UNAUTHORIZED, "비밀번호가 틀렸습니다"),
     AlreadyRegistered(HttpStatus.FORBIDDEN, "이미 가입한 이메일입니다"),
     AlreadyMadeWish(HttpStatus.FORBIDDEN, "이미 위시로 등록한 상품입니다"),

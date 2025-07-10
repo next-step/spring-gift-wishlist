@@ -2,8 +2,8 @@ package gift.service;
 
 import gift.dto.CreateWishRequestDto;
 import gift.dto.ProductResponseDto;
+import gift.dto.UpdateWishQuantityRequstDto;
 import gift.dto.WishResponseDto;
-import gift.entity.Product;
 import gift.entity.Wish;
 import gift.exception.CustomException;
 import gift.exception.ErrorCode;
@@ -45,12 +45,33 @@ public class WishServiceImpl implements WishService{
         return wishesList;
     }
 
+    @Override
+    public WishResponseDto updateMemberWishQuantityByProductId(
+            UpdateWishQuantityRequstDto requestDto,
+            Long memberId) {
+        findMemberWishByProductIdOrElseThrow(requestDto.productId(), memberId);
+        Wish updatedWish = wishRepository.updateMemberWishQuantityByProductId(
+                requestDto.quantity(),
+                requestDto.productId(),
+                memberId);
+        Long productId = updatedWish.getProductId();
+        ProductResponseDto productResponseDto = productService.findProductById(productId);
+        return new WishResponseDto(productResponseDto, updatedWish.getQuantity());
+    }
+
     private void throwIfMemberWishFindByProductId(Long productId, Long memberId) {
         wishRepository.findMemberWishByProductId(productId, memberId)
                 .ifPresent(wish -> {
                     throw new CustomException(ErrorCode.AlreadyMadeWish);
                 });
     }
+
+    private Wish findMemberWishByProductIdOrElseThrow(Long productId, Long memberId) {
+        return wishRepository.findMemberWishByProductId(productId, memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.WishNotfound));
+    }
+
+
 
 
 }

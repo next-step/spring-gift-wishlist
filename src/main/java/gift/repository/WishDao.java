@@ -61,4 +61,16 @@ public class WishDao implements WishRepository{
                 .optional();
     }
 
+    @Override
+    public Wish updateMemberWishQuantityByProductId(Long quantity, Long productId, Long memberId) {
+        String sql = "update wishes set quantity = :quantity where productId = :productId and memberId = :memberId;";
+        client.sql(sql)
+                .param("quantity", quantity)
+                .param("productId", productId)
+                .param("memberId", memberId)
+                .update();
+
+        return findMemberWishByProductId(productId, memberId).get();
+    }
+
 }
