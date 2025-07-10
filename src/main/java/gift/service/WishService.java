@@ -51,4 +51,12 @@ public class WishService {
                 wishRequestDto.quantity()
         );
     }
+
+    public void removeWishItemForMember(Member member, Long productId) {
+        if (productRepository.findById(productId).isEmpty()) {
+            throw new NoSuchElementException("상품을 찾을 수 없습니다.");
+        }
+
+        wishRepository.delete(member.getId(),productId);
+    }
 }

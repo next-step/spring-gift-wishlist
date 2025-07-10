@@ -57,4 +57,12 @@ public class WishRepository {
                 .update();
     }
 
+    public void delete(Long memberId, Long productId) {
+        String sql = "DELETE FROM wish_items WHERE member_id = ? AND product_id = ?";
+        jdbcClient.sql(sql)
+                .param(memberId)
+                .param(productId)
+                .update();
+    }
+
 }

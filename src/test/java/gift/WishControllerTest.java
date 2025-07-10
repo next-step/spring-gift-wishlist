@@ -8,7 +8,6 @@ import gift.exception.InvalidAuthorizationHeaderException;
 import gift.exception.MissingAuthorizationHeaderException;
 import gift.repository.MemberRepository;
 import gift.repository.ProductRepository;
-import gift.repository.WishRepository;
 import gift.service.WishService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,6 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc
@@ -262,6 +262,55 @@ public class WishControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error")
                         .value("요청 JSON 형식이 잘못되었습니다."));
+    }
+
+    @Test
+    @DisplayName("DELETE /api/wishes – 정상 ⇒ No Content")
+    void delete_success_noContent() throws Exception {
+        var sampleProduct = new Product("초콜릿", 1000, "https://image.com/choco.png");
+        Product saved = productRepository.save(sampleProduct);
+        var sampleWishRequestDto = new WishRequestDto(saved.getId(), 2);
+        wishService.addWishItemForMember(member, sampleWishRequestDto);
+
+        mockMvc.perform(delete("/api/wishes/{productId}", saved.getId())
+                        .header("Authorization", "Bearer dummy-token"))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test @DisplayName("DELETE /api/wishes – 없는 상품 ⇒ Not Found")
+    void delete_nonexistent_notFound() throws Exception {
+        mockMvc.perform(delete("/api/wishes/{productId}", 999L)
+                        .header("Authorization", "Bearer dummy-token"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.error")
+                        .value("상품을 찾을 수 없습니다."));
+    }
+
+    @Test @DisplayName("DELETE /api/wishes – 헤더 누락 ⇒ Unauthorized")
+    void delete_withoutAuth_unauthorized() throws Exception {
+        var sampleProduct = new Product("초콜릿", 1000, "https://image.com/choco.png");
+        Product saved = productRepository.save(sampleProduct);
+        var sampleWishRequestDto = new WishRequestDto(saved.getId(), 2);
+        wishService.addWishItemForMember(member, sampleWishRequestDto);
+
+        mockMvc.perform(delete("/api/wishes/{productId}", saved.getId()))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.error")
+                        .value("Authorization 헤더가 필요합니다."));
+    }
+
+    @Test @DisplayName("DELETE /api/wishes – 잘못된 프리픽스 ⇒ Unauthorized")
+    void delete_badPrefix_unauthorized() throws Exception {
+        var sampleProduct = new Product("초콜릿", 1000, "https://image.com/choco.png");
+        Product saved = productRepository.save(sampleProduct);
+        var sampleWishRequestDto = new WishRequestDto(saved.getId(), 2);
+        wishService.addWishItemForMember(member, sampleWishRequestDto);
+
+        mockMvc.perform(delete("/api/wishes/{productId}", saved.getId())
+                        .header("Authorization", "Basic abc123"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.error")
+                        .value("Authorization 헤더 형식이 올바르지 않습니다."));
     }
 
 }
