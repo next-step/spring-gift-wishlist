@@ -124,6 +124,63 @@ public class jdbcWishlistRepository implements  WishlistRepository {
         return toReturn;
     }
 
+    @Override
+    public WishlistResponseDto updateProductQuantity(Long memberId, WishlistRequestDto requestDto) {
+        Long productId = requestDto.productId();
+        int newQuantity = requestDto.quantity();
+
+        // 위시리스트에 상품이 존재하는지 확인
+        String selectSql = """
+            SELECT p.id AS product_id, p.name AS product_name, p.price, p.image_url, w.quantity
+            FROM wishlist w
+            JOIN product p ON w.product_id = p.id
+            WHERE w.member_id = ? AND w.product_id = ?
+        """;
+
+        List<WishlistResponseDto> exist = jdbcTemplate.query(
+                selectSql,
+                new Object[]{memberId, productId},
+                (rs, rowNum) -> new WishlistResponseDto(
+                    rs.getLong("product_id"),
+                    rs.getString("product_name"),
+                    rs.getInt("quantity"),
+                    rs.getInt("price"),
+                    rs.getString("image_url")
+                )
+        );
+
+        if (exist.isEmpty()) {
+            throw new IllegalArgumentException("위시리스트에 해당 상품이 존재하지 않습니다.");
+        }
+
+        if (newQuantity == 0) {
+            // 수량을 0으로 수정하면 삭제 처리
+            String deleteSql = "DELETE FROM wishlist WHERE member_id = ? AND product_id = ?";
+            jdbcTemplate.update(deleteSql, memberId, productId);
+
+            return null;
+        } else {
+            // 수량 업데이트
+            String updateSql = "UPDATE wishlist SET quantity = ? WHERE member_id = ? AND product_id = ?";
+            jdbcTemplate.update(updateSql, newQuantity, memberId, productId);
+
+            // 업데이트된 데이터 다시 조회 & 반환
+            WishlistResponseDto updated = jdbcTemplate.queryForObject(
+                    selectSql,
+                    new Object[]{memberId, productId},
+                    (rs, rowNum) -> new WishlistResponseDto(
+                            rs.getLong("product_id"),
+                            rs.getString("product_name"),
+                            rs.getInt("quantity"),
+                            rs.getInt("price"),
+                            rs.getString("image_url")
+                    )
+            );
+
+            return updated;
+        }
+    }
+
     private RowMapper<Wishlist> wishlistRowMapper() {
         return (rs, rowNum) -> new Wishlist(
                 rs.getLong("id"),

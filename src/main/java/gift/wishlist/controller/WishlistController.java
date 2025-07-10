@@ -50,6 +50,18 @@ public class WishlistController {
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
+    // 위시 리스트의 상품 수량 수정 API
+    @PatchMapping
+    public ResponseEntity<WishlistResponseDto> updateProductQuantity(
+            @LoginMember Long memberId,
+            @RequestBody WishlistRequestDto requestDto
+    ) {
+        WishlistResponseDto responseDto = wishlistService.updateProductQuantity(memberId, requestDto);
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
+
+
 
 
 }

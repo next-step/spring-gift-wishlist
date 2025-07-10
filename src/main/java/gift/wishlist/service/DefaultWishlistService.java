@@ -30,4 +30,9 @@ public class DefaultWishlistService implements WishlistService {
     public WishlistResponseDto deleteProductFromWishlist(Long memberId, Long productId) {
         return wishlistRepository.deleteProductFromWishlist(memberId, productId);
     }
+
+    @Override
+    public WishlistResponseDto updateProductQuantity(Long memberId, WishlistRequestDto requestDto) {
+        return wishlistRepository.updateProductQuantity(memberId, requestDto);
+    }
 }
