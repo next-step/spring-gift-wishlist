@@ -43,7 +43,7 @@ public class ProductService {
     @Transactional(readOnly = true)
     public List<ProductResponseDto> findApprovedProducts() {
         return productRepository.findAllProducts().stream()
-                .filter(product -> product.getStatus() == Product.Status.APPROVED)
+                .filter(Product::isApproved)
                 .map(ProductResponseDto::new)
                 .toList();
     }
