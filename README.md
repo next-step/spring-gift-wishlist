@@ -92,7 +92,7 @@ Content-Type: application/json
 ```
 ```json
 {
-   "message": "회원가입이 완료되었습니다."
+   "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJ0ZXN0QGVtYWlsLmNvbSJ9.7eR29_0..."
 }
 ```
 2. 로그인 api 구현(`POST /api/members/login`)
@@ -129,3 +129,11 @@ Content-Type: application/json
    "message": "회원이 존재하지 않습니다." // or "비밀번호가 일치하지 않습니다."
 }
 ```
+---
+# [step3] 위시 리스트
+
+## 구현 기능 목록
+- [ ] 위시리스트에 상품 추가
+- [ ] 위시리스트에서 상품 삭제
+- [ ] 위시리스트에 담긴 상품 목록 조회
+- [ ] 위시리스트 테스트 
