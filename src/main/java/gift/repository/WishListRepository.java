@@ -6,7 +6,9 @@ import gift.domain.Wish;
 import java.util.List;
 
 public interface WishListRepository {
-    void save(Wish wish);
+    void saveWish(Wish wish);
 
     List<WishSummary> findAllWishSummaryByMemberId(Long memberId);
+
+    void deleteWish(Wish wish);
 }

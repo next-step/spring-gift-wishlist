@@ -14,6 +14,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.Mockito.doThrow;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -23,8 +24,6 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 
 @WebMvcTest(WishListController.class)
@@ -91,5 +90,15 @@ public class WishListControllerTest {
                                 .contentType(APPLICATION_JSON)
                                 .content(requestBody))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    void 로그인한_사용자가_상품_삭제_시_204반환() throws Exception {
+        Long productId = 101L;
+
+        mockMvc.perform(
+                        delete("/wishes/{productId}", productId)
+                                .header("Authorization", "Bearer mock-token"))
+                .andExpect(status().isNoContent());
     }
 }

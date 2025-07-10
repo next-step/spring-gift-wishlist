@@ -20,8 +20,8 @@ public class WishListJdbcRepository implements WishListRepository {
     }
 
     @Override
-    public void save(Wish wish) {
-        String sql = "INSERT INTO wishlist (member_id, product_id) VALUES (?, ?)";
+    public void saveWish(Wish wish) {
+        String sql = "insert into wishlist (member_id, product_id) values (?, ?)";
         jdbcTemplate.update(sql, wish.getMemberId(), wish.getProductId());
     }
 
@@ -36,6 +36,17 @@ public class WishListJdbcRepository implements WishListRepository {
                 """;
 
         return jdbcTemplate.query(sql, wishSummaryRowMapper(), memberId);
+    }
+
+    @Override
+    public void deleteWish(Wish wish) {
+        String sql = """
+                delete
+                from wishlist
+                where member_id = ? and product_id = ?
+                """;
+
+        jdbcTemplate.update(sql, wish.getMemberId(), wish.getProductId());
     }
 
     private RowMapper<WishSummary> wishSummaryRowMapper() {

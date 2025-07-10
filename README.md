@@ -30,11 +30,12 @@
 
 ## 3️⃣ 3단계 - 위시 리스트
 ### 개발 예정 기능 목록
-- [ ] 위시 리스트 API
+- [x] 위시 리스트 API
   - [x] 위시 리스트에 등록된 상품 조회 API (`GET /api/wishes`)
   - [x] 위시 리스트에 상품 등록 API (`POST /api/wishes`)
-  - [ ] 위시 리시트 상품 삭제 API (`DELETE /api/wishes/{productId}`)
-    - [ ] 존재하지 않는 상품일 경우 예외 처리 (`404 Not Found`)
+    - [x] 존재하지 않는 상품일 경우 예외 처리 (`404 Not Found`) 
+  - [x] 위시 리시트 상품 삭제 API (`DELETE /api/wishes/{productId}`)
+    - [x] 존재하지 않는 상품일 경우 예외 처리 (`404 Not Found`)
 
 ## 4️⃣ 기술 스택
 - Java 17

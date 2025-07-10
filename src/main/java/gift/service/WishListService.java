@@ -30,6 +30,12 @@ public class WishListService {
     public void saveWish(Long memberId, Long productId) {
         Product findProduct = productRepository.findProductByIdOrElseThrow(productId);
 
-        wishListRepository.save(new Wish(memberId, findProduct.getId()));
+        wishListRepository.saveWish(new Wish(memberId, findProduct.getId()));
+    }
+
+    public void deleteWish(Long memberId, Long productId) {
+        Product findProduct = productRepository.findProductByIdOrElseThrow(productId);
+
+        wishListRepository.deleteWish(new Wish(memberId, findProduct.getId()));
     }
 }

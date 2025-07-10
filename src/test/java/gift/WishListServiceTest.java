@@ -26,7 +26,7 @@ public class WishListServiceTest {
     private WishListService wishListService;
 
     @Test
-    void 존재하지_않은_상품_ID로_등록_시_404반환() {
+    void 존재하지_않는_상품_ID로_등록_시_404반환() {
         // given
         Long memberId = 1L;
         Long productId = 9999L;
@@ -36,6 +36,19 @@ public class WishListServiceTest {
 
         // when & then
         assertThatThrownBy(() -> wishListService.saveWish(memberId, productId))
+                .isInstanceOf(ResponseStatusException.class)
+                .hasMessageContaining(HttpStatus.NOT_FOUND.name());
+    }
+
+    @Test
+    void 존재하지_않는_상품_ID_삭제_시_404반환() {
+        Long memberId = 1L;
+        Long productId = 9999L;
+
+        given(productRepository.findProductByIdOrElseThrow(productId))
+                .willThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 ID의 상품을 찾을 수 없습니다."));
+
+        assertThatThrownBy(() -> wishListService.deleteWish(memberId, productId))
                 .isInstanceOf(ResponseStatusException.class)
                 .hasMessageContaining(HttpStatus.NOT_FOUND.name());
     }
