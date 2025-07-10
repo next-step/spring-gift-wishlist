@@ -41,4 +41,8 @@ public class TokenUtils {
         }
         return true;
     }
+
+    public Claims getClaims(String token) {
+        return jwtUtil.getClaims(token);
+    }
 }
