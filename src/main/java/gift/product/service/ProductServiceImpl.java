@@ -66,7 +66,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void updateProductById(Long productId, ProductUpdateRequestDto productUpdateRequestDto) {
+    public void updateProduct(Long productId, ProductUpdateRequestDto productUpdateRequestDto) {
         findProductById(productId);
 
         Boolean mdConfirmed =
@@ -82,13 +82,13 @@ public class ProductServiceImpl implements ProductService {
             productUpdateRequestDto.price(), productUpdateRequestDto.imageUrl(),
             mdConfirmed);
 
-        productRepository.updateProductById(product);
+        productRepository.updateProduct(product);
     }
 
     @Override
-    public void deleteProductById(Long productId) {
+    public void deleteProduct(Long productId) {
         findProductById(productId);
 
-        productRepository.deleteProductById(productId);
+        productRepository.deleteProduct(productId);
     }
 }

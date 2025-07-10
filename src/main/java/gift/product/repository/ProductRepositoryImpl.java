@@ -51,7 +51,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public void updateProductById(Product product) {
+    public void updateProduct(Product product) {
 
         String sql = "UPDATE products SET name = ?, price = ?, imageUrl = ?, mdConfirmed = ? WHERE productId = ?";
 
@@ -62,7 +62,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 
 
     @Override
-    public void deleteProductById(Long productId) {
+    public void deleteProduct(Long productId) {
 
         String sql = "DELETE FROM products WHERE productId = ?";
 

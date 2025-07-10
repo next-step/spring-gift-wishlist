@@ -13,7 +13,7 @@ public interface MemberRepository {
 
     Member findMemberById(Long memberId);
 
-    void updateMemberById(Member member);
+    void updateMember(Member member);
 
-    void deleteMemberById(Long memberId);
+    void deleteMember(Long memberId);
 }

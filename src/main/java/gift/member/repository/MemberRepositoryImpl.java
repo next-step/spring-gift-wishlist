@@ -67,7 +67,7 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
-    public void updateMemberById(Member member) {
+    public void updateMember(Member member) {
 
         String sql = "UPDATE members SET email = ?, password = ?, name = ?, role = ? WHERE memberId = ?";
 
@@ -76,7 +76,7 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
-    public void deleteMemberById(Long memberId) {
+    public void deleteMember(Long memberId) {
 
         String sql = "DELETE FROM members WHERE memberId = ?";
 

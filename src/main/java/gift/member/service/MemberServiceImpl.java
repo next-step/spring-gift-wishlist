@@ -83,7 +83,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void updateMemberById(Long memberId,
+    public void updateMember(Long memberId,
         AdminMemberUpdateRequestDto adminMemberUpdateRequestDto) {
         findMemberById(memberId);
 
@@ -91,13 +91,13 @@ public class MemberServiceImpl implements MemberService {
             adminMemberUpdateRequestDto.email(), adminMemberUpdateRequestDto.password(),
             adminMemberUpdateRequestDto.name(), adminMemberUpdateRequestDto.role());
 
-        memberRepository.updateMemberById(member);
+        memberRepository.updateMember(member);
     }
 
     @Override
-    public void deleteMemberById(Long memberId) {
+    public void deleteMember(Long memberId) {
         findMemberById(memberId);
 
-        memberRepository.deleteMemberById(memberId);
+        memberRepository.deleteMember(memberId);
     }
 }

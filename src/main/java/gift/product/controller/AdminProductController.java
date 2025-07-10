@@ -101,7 +101,7 @@ public class AdminProductController {
         }
 
         try {
-            productService.updateProductById(productId, productUpdateRequestDto);
+            productService.updateProduct(productId, productUpdateRequestDto);
             return "redirect:/admin/products";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
@@ -114,7 +114,7 @@ public class AdminProductController {
     public String deleteProductById(@PathVariable Long productId, Model model) {
 
         try {
-            productService.deleteProductById(productId);
+            productService.deleteProduct(productId);
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());
         }
