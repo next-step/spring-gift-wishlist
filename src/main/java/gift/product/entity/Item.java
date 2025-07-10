@@ -1,9 +1,6 @@
 package gift.product.entity;
 
 
-import lombok.Builder;
-
-
 public class Item {
 
 	private final Long id;
@@ -26,9 +23,35 @@ public class Item {
 		this.imageUrl = imageUrl;
 	}
 
-	@Builder
-	public Item(Long userId, String name, Integer price, String imageUrl) {
-		this(null, userId, name, price, imageUrl);
+	public static ItemBuilder builder() {
+		return new ItemBuilder();
+	}
+
+	public static class ItemBuilder {
+		private Long userId;
+		private String name;
+		private Integer price;
+		private String imageUrl;
+
+		public ItemBuilder userId(Long userId){
+			this.userId = userId;
+			return this;
+		}
+		public ItemBuilder name(String name){
+			this.name = name;
+			return this;
+		}
+		public ItemBuilder price(Integer price){
+			this.price = price;
+			return this;
+		}
+		public ItemBuilder imageUrl(String imageUrl){
+			this.imageUrl = imageUrl;
+			return this;
+		}
+		public Item build() {
+			return new Item(null, userId, name, price, imageUrl);
+		}
 	}
 
 	private void validateKakaoKeyword(String name){
