@@ -67,6 +67,7 @@ public class ProductViewController {
             redirectAttributes.addFlashAttribute("updateError", errorMessage.toString());
             redirectAttributes.addFlashAttribute("showUpdateModal", true);
             redirectAttributes.addFlashAttribute("updateFormData", product);
+            redirectAttributes.addFlashAttribute("updateId", id);
             return "redirect:/products";
         }
         try {
@@ -75,6 +76,7 @@ public class ProductViewController {
             redirectAttributes.addFlashAttribute("updateError", e.getMessage());
             redirectAttributes.addFlashAttribute("showUpdateModal", true);
             redirectAttributes.addFlashAttribute("updateFormData", product);
+            redirectAttributes.addFlashAttribute("updateId", id);
         }
         return "redirect:/products";
     }

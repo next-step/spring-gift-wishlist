@@ -48,7 +48,7 @@
 </div>
 <div id="updateModal" class="modal" style="display: none;">
     <form id="updateForm" th:action="@{/products/update}" method="post">
-        <input type="hidden" name="id" id="update-id">
+        <input type="hidden" name="id" id="update-id" th:value="${updateId}">
         <label>이름<input type="text" name="name" id="update-name" th:value="${updateFormData != null  ? updateFormData.name : ''}"></label>
         <label>가격<input type="number" name="price" id="update-price" th:value="${updateFormData != null  ? updateFormData.price : ''}"></label>
         <label>이미지 URL<input type="text" name="imageUrl" id="update-image-url" th:value="${updateFormData != null  ? updateFormData.imageUrl : ''}"></label>
