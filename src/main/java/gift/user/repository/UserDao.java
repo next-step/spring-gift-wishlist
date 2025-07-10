@@ -57,7 +57,7 @@ public class UserDao {
         }
         if (userPatchRequestDto.getPassword() != null) {
             jdbcClient.sql("UPDATE USERS SET password = :password WHERE id = :id")
-                    .param("email", userPatchRequestDto.getPassword())
+                    .param("password", userPatchRequestDto.getPassword())
                     .param("id", id)
                     .update();
         }
