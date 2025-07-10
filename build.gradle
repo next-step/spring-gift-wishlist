@@ -21,8 +21,9 @@ dependencies {
 
     implementation 'org.springframework.security:spring-security-crypto'
     implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
-    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.12.6'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+
 
 
     implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -36,4 +37,13 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+configurations.all {
+    resolutionStrategy.eachDependency { details ->
+        if (details.requested.group == 'io.jsonwebtoken') {
+            if (details.requested.name == 'jjwt') {
+                details.useVersion '0.12.6'
+            }
+        }
+    }
 }
