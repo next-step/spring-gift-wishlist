@@ -48,14 +48,19 @@ public class ValidHeaderInterceptor implements HandlerInterceptor {
         Claims claims = jwtProvider.parseToken(token);
         
         String email = claims.get("email", String.class);
+        Role tokenRole = Role.valueOf(claims.get("role", String.class));
+        
         Member member = memberRepository.findMemberByEmail(email);
+        
+        if(!member.getRole().equals(tokenRole)) {
+            throw new WrongHeaderException();
+        }
         
         request.setAttribute("member", member);
         
         
         Role requiredRole = validHeader.role();
         if (requiredRole != Role.NONE) {
-            Role tokenRole = Role.valueOf(claims.get("role", String.class));
             if (!tokenRole.equals(requiredRole)) {
                 throw new WrongPermissionException();
             }
