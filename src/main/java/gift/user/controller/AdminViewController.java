@@ -51,7 +51,7 @@ public class AdminViewController {
   }
 
   @PostMapping
-  public String createUser(@RequestParam String email, @RequestParam String password
+  public String createUser(UserRequestDto userRequestDto
       , HttpServletRequest req, HttpServletResponse res)
       throws Exception {
 
@@ -59,8 +59,7 @@ public class AdminViewController {
       return null;
     }
 
-    UserRequestDto dto = new UserRequestDto(email, password);
-    userService.saveUser(dto);
+    userService.saveUser(userRequestDto);
     return "redirect:/api/admin";
   }
 
