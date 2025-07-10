@@ -1,6 +1,6 @@
-package gift.user;
+package gift.user.dto;
 
-public class UserRequestDto {
+public class UserLoginRequestDto {
     private String email;
     private String password;
 
