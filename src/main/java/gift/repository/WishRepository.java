@@ -2,6 +2,7 @@ package gift.repository;
 
 import gift.domain.Wish;
 import gift.dto.CreateWishRequest;
+import gift.dto.UpdateWishRequest;
 import gift.dto.WishResponse;
 
 import java.util.List;
@@ -16,4 +17,6 @@ public interface WishRepository {
     void delete(Long wishId);
 
     Optional<Wish> findById(Long id);
+
+    void update(UpdateWishRequest request, Long wishId);
 }

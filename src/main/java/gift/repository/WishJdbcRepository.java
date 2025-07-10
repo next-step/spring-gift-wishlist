@@ -2,6 +2,7 @@ package gift.repository;
 
 import gift.domain.Wish;
 import gift.dto.CreateWishRequest;
+import gift.dto.UpdateWishRequest;
 import gift.dto.WishResponse;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -52,6 +53,15 @@ public class WishJdbcRepository implements WishRepository {
                 .param("id", memberId)
                 .query(WishResponse.class)
                 .list();
+    }
+
+    @Override
+    public void update(UpdateWishRequest request, Long wishId) {
+        String sql = "update wish set quantity = :quantity where id = :id";
+        client.sql(sql)
+                .param("quantity", request.quantity())
+                .param("id", wishId)
+                .update();
     }
 
     @Override
