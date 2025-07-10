@@ -24,6 +24,8 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+
 
 @WebMvcTest(WishListController.class)
 public class WishListControllerTest {
@@ -51,7 +53,7 @@ public class WishListControllerTest {
     }
 
     @Test
-    void 로그인한_시용자가_위시리스트_조회시_200반환() throws Exception {
+    void 로그인한_시용자가_위시리스트_조회_시_200반환() throws Exception {
         mockMvc.perform(get("/wishes")
                         .header("Authorization", "Bearer mock-token")
                         .accept(APPLICATION_JSON))
@@ -59,7 +61,7 @@ public class WishListControllerTest {
     }
 
     @Test
-    void 로그인하지_않은_사용자가_위시리스트_조회시_401반환() throws Exception {
+    void 로그인하지_않은_사용자가_위시리스트_조회_시_401반환() throws Exception {
         doThrow(new UnauthorizedException("인증되지 않은 사용자입니다", "wishlist-api"))
                 .when(loginMemberArgumentResolver)
                 .resolveArgument(
@@ -72,5 +74,22 @@ public class WishListControllerTest {
         mockMvc.perform(get("/wishes")
                         .accept(APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void 로그인한_사용자가_위시리스트에_상품_등록_시_201반환() throws Exception {
+        // given
+        String requestBody = """
+                {
+                    "productId": 101
+                }
+                """;
+        // when & then
+        mockMvc.perform(
+                        post("/wishes")
+                                .header("Authorization", "Bearer mock-token")
+                                .contentType(APPLICATION_JSON)
+                                .content(requestBody))
+                .andExpect(status().isCreated());
     }
 }
