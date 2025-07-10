@@ -2,12 +2,9 @@ package gift.repository.wishlist;
 
 import gift.entity.Wish;
 import java.util.List;
-import java.util.Optional;
-import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.server.ResponseStatusException;
 
 @Repository
 public class WishListRepositoryImpl implements WishListRepository {

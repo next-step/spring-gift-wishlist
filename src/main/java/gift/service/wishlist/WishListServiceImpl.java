@@ -3,16 +3,13 @@ package gift.service.wishlist;
 import gift.dto.product.ProductResponseDto;
 import gift.entity.Product;
 import gift.entity.Wish;
+import gift.exception.ResourceNotFoundException;
 import gift.repository.product.ProductRepository;
 import gift.repository.wishlist.WishListRepository;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import org.springframework.boot.autoconfigure.graphql.GraphQlProperties.Http;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException.NotFound;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class WishListServiceImpl implements WishListService {
@@ -39,7 +36,7 @@ public class WishListServiceImpl implements WishListService {
 
         for (Wish wish : wishList) {
             Product product = productRepository.findById(wish.getProductId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException());
 
             responseDtoList.add(
                 new ProductResponseDto(product.getId(), product.getName(), product.getPrice(),
@@ -56,7 +53,7 @@ public class WishListServiceImpl implements WishListService {
         int deleteRow = wishListRepository.delete(productId, memberId);
 
         if (deleteRow <= 0) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new ResourceNotFoundException();
         }
     }
 }
