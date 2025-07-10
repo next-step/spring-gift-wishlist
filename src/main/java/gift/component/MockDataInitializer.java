@@ -1,7 +1,7 @@
 package gift.component;
 
 import gift.domain.Member;
-import gift.domain.WishList;
+import gift.domain.Wish;
 import gift.enums.Role;
 import gift.repository.MemberRepository;
 import gift.repository.WishListRepository;
@@ -27,14 +27,14 @@ public class MockDataInitializer implements CommandLineRunner {
         memberRepository.registerMember(new Member("test3@email.com", bCryptEncryptor.encode("1234"), Role.ROLE_USER));
         memberRepository.registerMember(new Member("admin@email.com", bCryptEncryptor.encode("5678"), Role.ROLE_ADMIN));
 
-        wishListRepository.save(new WishList(1L, 2L));
-        wishListRepository.save(new WishList(1L, 2L));
-        wishListRepository.save(new WishList(1L, 3L));
-        wishListRepository.save(new WishList(1L, 1L));
-        wishListRepository.save(new WishList(1L, 1L));
-        wishListRepository.save(new WishList(1L, 1L));
+        wishListRepository.save(new Wish(1L, 2L));
+        wishListRepository.save(new Wish(1L, 2L));
+        wishListRepository.save(new Wish(1L, 3L));
+        wishListRepository.save(new Wish(1L, 1L));
+        wishListRepository.save(new Wish(1L, 1L));
+        wishListRepository.save(new Wish(1L, 1L));
 
-        wishListRepository.save(new WishList(2L, 1L));
-        wishListRepository.save(new WishList(2L, 3L));
+        wishListRepository.save(new Wish(2L, 1L));
+        wishListRepository.save(new Wish(2L, 3L));
     }
 }

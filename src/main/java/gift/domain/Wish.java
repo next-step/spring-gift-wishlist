@@ -2,7 +2,7 @@ package gift.domain;
 
 import java.time.LocalDateTime;
 
-public class WishList {
+public class Wish {
     private Long id;
     private Long memberId;
     private Long productId;
@@ -16,7 +16,7 @@ public class WishList {
         return productId;
     }
 
-    public WishList(Long memberId, Long productId) {
+    public Wish(Long memberId, Long productId) {
         this.memberId = memberId;
         this.productId = productId;
     }

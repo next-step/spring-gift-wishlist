@@ -1,5 +1,6 @@
 package gift.service;
 
+import gift.domain.Wish;
 import gift.dto.WishSummaryResponseDto;
 import gift.repository.WishListRepository;
 import org.springframework.stereotype.Service;
@@ -20,5 +21,9 @@ public class WishListService {
                 .stream()
                 .map(WishSummaryResponseDto::from)
                 .toList();
+    }
+
+    public void saveWish(Long memberId, Long productId) {
+        wishListRepository.save(new Wish(memberId, productId));
     }
 }

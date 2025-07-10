@@ -1,7 +1,7 @@
 package gift.repository;
 
 import gift.domain.WishSummary;
-import gift.domain.WishList;
+import gift.domain.Wish;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -20,9 +20,9 @@ public class WishListJdbcRepository implements WishListRepository {
     }
 
     @Override
-    public void save(WishList wishList) {
+    public void save(Wish wish) {
         String sql = "INSERT INTO wishlist (member_id, product_id) VALUES (?, ?)";
-        jdbcTemplate.update(sql, wishList.getMemberId(), wishList.getProductId());
+        jdbcTemplate.update(sql, wish.getMemberId(), wish.getProductId());
     }
 
     @Override

@@ -1,12 +1,12 @@
 package gift.repository;
 
 import gift.domain.WishSummary;
-import gift.domain.WishList;
+import gift.domain.Wish;
 
 import java.util.List;
 
 public interface WishListRepository {
-    void save(WishList wishList);
+    void save(Wish wish);
 
     List<WishSummary> findAllWishSummaryByMemberId(Long memberId);
 }
