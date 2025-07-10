@@ -4,14 +4,17 @@ import gift.member.entity.Member;
 import gift.wish.annotation.LoginMember;
 import gift.wish.dto.WishCreateRequestDto;
 import gift.wish.dto.WishCreateResponseDto;
+import gift.wish.dto.WishPageResponseDto;
 import gift.wish.service.WishService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -31,16 +34,22 @@ public class WishController {
         return new ResponseEntity<>(wishService.addWish(member, wishCreateRequestDto),
             HttpStatus.CREATED);
     }
-//
-//    @GetMapping
-//    public ResponseEntity<> getWishes() {
-//
-//    }
+
+    // /api/wishes?page=0&size=10&sort=createdDate,desc
+    @GetMapping
+    public ResponseEntity<WishPageResponseDto> getWishes(@LoginMember Member member,
+        @RequestParam(defaultValue = "0") Integer page,
+        @RequestParam(defaultValue = "10") Integer size) {
+
+        return new ResponseEntity<>(wishService.getWishes(member, page, size), HttpStatus.OK);
+    }
 
     @DeleteMapping("/{wishId}")
-    public ResponseEntity<Void> deleteWish(@PathVariable Long wishId) {
+    public ResponseEntity<Void> deleteWish(@LoginMember Member member, @PathVariable Long wishId) {
         wishService.deleteWish(wishId);
         return ResponseEntity.noContent().build();
     }
 
 }
+
+// TODO: 수량 변경 필요?
