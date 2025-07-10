@@ -79,3 +79,5 @@
 ## 기능 목록
 
 - [x] `schema.sql`에 위시리스트 테이블 CREATE문 추가
+- [ ] 위시리스트 API 구현
+  - [x] Wishlist 엔티티 구현
