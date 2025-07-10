@@ -2,6 +2,8 @@ package gift.controller;
 
 import gift.dto.WishlistItemRequestDto;
 import gift.dto.WishlistItemResponseDto;
+import gift.entity.Member;
+import gift.resolver.LoginMember;
 import gift.service.WishlistService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -20,24 +22,24 @@ public class WishlistController {
         this.wishlistService = wishlistService;
     }
 
-    @GetMapping("/{memberId}")
+    @GetMapping
     public ResponseEntity<List<WishlistItemResponseDto>> findAllWishlistItemsByMemberId(
-            @PathVariable Long memberId
+            @LoginMember Member member
     ) {
-        List<WishlistItemResponseDto> items = wishlistService.findAllWishlistItemsByMemberId(memberId);
+        List<WishlistItemResponseDto> items = wishlistService.findAllWishlistItemsByMemberId(member.id());
         return new ResponseEntity<>(items, HttpStatus.OK);
     }
 
-    @PostMapping("/{memberId}")
+    @PostMapping
     public ResponseEntity<Void> addWishlistItem(
-            @PathVariable Long memberId,
+            @LoginMember Member member,
             @Valid @RequestBody WishlistItemRequestDto requestDto
     ) {
-        wishlistService.addWishlistItem(memberId, requestDto);
+        wishlistService.addWishlistItem(member.id(), requestDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PutMapping("/update/{itemId}")
+    @PutMapping("/{itemId}")
     public ResponseEntity<Void> updateWishlistItemById(
             @PathVariable Long itemId,
             @RequestParam Long quantity

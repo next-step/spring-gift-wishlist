@@ -28,4 +28,13 @@ public class JwtProvider {
                 .signWith(key)
                 .compact();
     }
+
+    public Long getMemberId(String token) {
+        return Long.valueOf(Jwts.parser()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject());
+    }
 }
