@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>찜한 상품 상세</title>
+</head>
+<body>
+<h2>찜한 상품 정보</h2>
+<div th:if="${wishItem != null}">
+  <p>상품명: <span th:text="${wishItem.productName}"></span></p>
+  <p>가격: <span th:text="${wishItem.price}"></span>원</p>
+  <p>수량: <span th:text="${wishItem.quantity}"></span></p>
+</div>
+<div th:if="${wishItem == null}">
+  <p>찜한 상품이 없습니다.</p>
+</div>
+</body>
+</html>
