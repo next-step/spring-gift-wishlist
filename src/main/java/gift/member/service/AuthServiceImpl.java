@@ -3,7 +3,7 @@ package gift.member.service;
 import gift.member.dto.LoginRequestDto;
 import gift.member.dto.TokenResponseDto;
 import gift.member.entity.Member;
-import gift.member.exception.LoginFailedException;
+import gift.exception.member.LoginFailedException;
 import gift.member.repository.MemberRepository;
 import gift.member.security.JwtTokenProvider;
 import org.springframework.dao.EmptyResultDataAccessException;

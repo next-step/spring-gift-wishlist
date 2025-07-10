@@ -1,4 +1,4 @@
-package gift.member.exception;
+package gift.exception.member;
 
 public class LoginFailedException extends RuntimeException {
 

@@ -1,9 +1,9 @@
 package gift.wish.argumentresolver;
 
+import gift.exception.wish.InvalidAuthorizationException;
 import gift.member.repository.MemberRepository;
 import gift.member.security.JwtTokenProvider;
 import gift.wish.annotation.LoginMember;
-import gift.wish.exception.UnauthorizedException;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -35,17 +35,13 @@ public class LoginMembberArgumentResolver implements HandlerMethodArgumentResolv
         String authorizationHeader = webRequest.getHeader("Authorization");
 
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            throw new UnauthorizedException("Authorization 헤더가 없거나 형식이 잘못되었습니다.");
+            throw new InvalidAuthorizationException();
         }
 
         String token = authorizationHeader.substring(7);
 
         Long memberId = jwtTokenProvider.getMemberIdFromToken(token);
 
-        try {
-            return memberRepository.findMemberById(memberId);
-        } catch (UnauthorizedException e) {
-            throw new UnauthorizedException("회원이 존재하지 않습니다.");
-        }
+        return memberRepository.findMemberById(memberId);
     }
 }

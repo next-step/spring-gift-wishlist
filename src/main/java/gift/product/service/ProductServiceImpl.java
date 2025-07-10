@@ -5,7 +5,7 @@ import gift.product.dto.ProductUpdateRequestDto;
 import gift.product.dto.ProductCreateResponseDto;
 import gift.product.dto.ProductGetResponseDto;
 import gift.product.entity.Product;
-import gift.product.exception.UnapprovedProductException;
+import gift.exception.product.UnapprovedProductException;
 import gift.product.repository.ProductRepository;
 import java.util.List;
 import java.util.stream.Collectors;

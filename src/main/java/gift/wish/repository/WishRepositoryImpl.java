@@ -2,7 +2,7 @@ package gift.wish.repository;
 
 import gift.member.entity.Member;
 import gift.wish.entity.Wish;
-import gift.wish.exception.WishNotFoundException;
+import gift.exception.wish.WishNotFoundException;
 import java.util.List;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;

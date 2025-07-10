@@ -1,7 +1,7 @@
 package gift.member.repository;
 
 import gift.member.entity.Member;
-import gift.member.exception.MemberNotFoundException;
+import gift.exception.member.MemberNotFoundException;
 import java.util.List;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;

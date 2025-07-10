@@ -6,7 +6,7 @@ import gift.member.dto.AdminMemberUpdateRequestDto;
 import gift.member.dto.RegisterRequestDto;
 import gift.member.dto.TokenResponseDto;
 import gift.member.entity.Member;
-import gift.member.exception.MemberNotFoundException;
+import gift.exception.member.MemberNotFoundException;
 import gift.member.repository.MemberRepository;
 import gift.member.security.JwtTokenProvider;
 import java.util.List;
@@ -45,7 +45,8 @@ public class MemberServiceImpl implements MemberService {
         try {
             memberRepository.findMemberByEmail(registerRequestDto.email());
         } catch (EmptyResultDataAccessException e) {
-            throw new MemberNotFoundException("이메일이 존재하지 않습니다.");
+            throw new MemberNotFoundException(
+                "이메일이 존재하지 않습니다. email =" + registerRequestDto.email());
         }
     }
 

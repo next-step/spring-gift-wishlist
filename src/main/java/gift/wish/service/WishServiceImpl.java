@@ -1,12 +1,12 @@
 package gift.wish.service;
 
+import gift.exception.wish.WishlistAccessDeniedException;
 import gift.member.entity.Member;
 import gift.wish.dto.WishCreateRequestDto;
 import gift.wish.dto.WishCreateResponseDto;
 import gift.wish.dto.WishGetResponseDto;
 import gift.wish.dto.WishPageResponseDto;
 import gift.wish.entity.Wish;
-import gift.wish.exception.ForbiddenException;
 import gift.wish.repository.WishRepository;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -61,7 +61,7 @@ public class WishServiceImpl implements WishService {
 
         // TODO: 위시 데이터에 존재하는 회원 ID와 제공한 회원 ID 비교, 실패 시 예외 처리(다른 사용자)
         if (!member.getMemberId().equals(wish.getMemberId())) {
-            throw new ForbiddenException("다른 사용자의 위시리스트에 접근할 수 업습니다.");
+            throw new WishlistAccessDeniedException("다른 사용자의 위시리스트에 접근할 수 업습니다.");
         }
 
         wishRepository.deleteWish(wishId);
