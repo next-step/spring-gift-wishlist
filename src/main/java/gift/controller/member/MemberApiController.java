@@ -51,10 +51,10 @@ public class MemberApiController {
 
     // member 조회: 관리자용 기능
     @GetMapping("/{memberId}")
-    public ResponseEntity<MemberResponse> getMember(
+    public ResponseEntity<Member> getMember(
         @PathVariable Long memberId
     ){
-        MemberResponse member = memberService.findById(memberId);
+        Member member = memberService.findById(memberId);
         return ResponseEntity.status(HttpStatus.OK)
             .body(member);
     }

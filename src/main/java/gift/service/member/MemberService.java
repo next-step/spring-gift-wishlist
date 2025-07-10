@@ -9,6 +9,7 @@ import gift.global.exception.ErrorCode;
 import gift.global.exception.InvalidMemberException;
 import gift.global.jwt.JwtUtil;
 import gift.repository.member.MemberRepository;
+import java.util.List;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -62,9 +63,14 @@ public class MemberService {
         }
     }
 
-    public MemberResponse findById(Long memberId) {
-        Member member = memberRepository.findById(memberId);
-        return new MemberResponse(member.getEmail(), member.getPassword());
+    // 관리자용 메서드
+    public Member findById(Long memberId) {
+        return memberRepository.findById(memberId);
+    }
+
+    // 관리자용 메서드
+    public List<Member> findAll(){
+        return memberRepository.findAll();
     }
 
     public void update(Long memberId, MemberRequest request) {
@@ -76,6 +82,7 @@ public class MemberService {
         memberRepository.update(member);
     }
 
+    // 관리자용 메서드
     public void deleteById(Long memberId) {
         memberRepository.findById(memberId);
 

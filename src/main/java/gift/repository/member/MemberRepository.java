@@ -4,6 +4,7 @@ import gift.domain.Member;
 import gift.dto.member.MemberRequest;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -34,6 +35,12 @@ public class MemberRepository {
         String sql = "select * from members where email = ?";
 
         return jdbcTemplate.queryForObject(sql, rowMapper, email);
+    }
+
+    public List<Member> findAll(){
+        String sql = "select * from members";
+
+        return jdbcTemplate.query(sql, rowMapper);
     }
 
     public Long insert(Member member){
