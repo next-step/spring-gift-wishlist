@@ -63,9 +63,11 @@
 
 - [x] 회원 login, register 페이지 구현
 - [x] cookie 기반 토큰 인터셉터 처리 로직 구현
-- [ ] 상품 목록 조회, 장바구니 등록 domain, repository 설계
-- [ ] 상품 목록 조회, 장바구니 등록 service, controller 설계
+- [x] 위시 리스트 domain, repository 설계
+- [ ] 위시 리스트 service, controller 설계
 - [ ] 위시 리스트 페이지 구현
+- [ ] 회원 수정, 삭제에 필요한 service, repository 추가 구현
+- [ ] 회원 수정, 삭제 페이지 구현
 - [ ] 암호화 적용하기
 
 # spring-gift-product (이전 구현)

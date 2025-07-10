@@ -49,23 +49,27 @@ public class JDBCProductRepository implements ProductRepository{
     }
 
     @Override
-    public void update(Long id, String name, int price, String imageUrl) {
-        client.sql("update product set name = :name, price = :price, image_url = :imageUrl where id = :id")
+    public boolean update(Long id, String name, int price, String imageUrl) {
+        int affected = client.sql("update product set name = :name, price = :price, image_url = :imageUrl where id = :id")
                 .param("name", name)
                 .param("price", price)
                 .param("imageUrl", imageUrl)
                 .param("id", id)
                 .update();
+
+        return affected > 0;
     }
 
     @Override
-    public void deleteById(Long id) {
-        client.sql("delete from product where id = :id")
+    public boolean deleteById(Long id) {
+        int affected = client.sql("delete from product where id = :id")
                 .param("id", id)
                 .update();
+
+        return affected > 0;
     }
 
-    private final RowMapper<Product> productRowMapper = (rs, rowNum) -> new Product(
+    private static final RowMapper<Product> productRowMapper = (rs, rowNum) -> new Product(
             rs.getLong("id"),
             rs.getString("name"),
             rs.getInt("price"),

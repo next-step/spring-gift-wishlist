@@ -13,3 +13,13 @@ CREATE TABLE member (
     role VARCHAR(50) NOT NULL,
     PRIMARY KEY (id)
 );
+
+CREATE TABLE wish (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    member_id BIGINT NOT NULL,
+    product_id BIGINT NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (member_id) REFERENCES member(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE CASCADE,
+    UNIQUE (member_id, product_id)
+);
