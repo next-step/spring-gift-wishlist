@@ -1,13 +1,32 @@
 package gift.entity;
 
-public class WishedProduct {
+import java.time.Instant;
+
+public class WishedProduct extends AbstractEntity {
     private Long id;
     private String name;
     private Long price;
     private String imageUrl;
     private Integer quantity;
 
-    public WishedProduct(Long id, String name, Long price, String imageUrl, Integer quantity) {
+    public WishedProduct(Long id, String name, Long price, String imageUrl) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.imageUrl = imageUrl;
+        this.quantity = 1; // Default quantity to 1
+    }
+
+    public WishedProduct(
+            Long id,
+            String name,
+            Long price,
+            String imageUrl,
+            Integer quantity,
+            Instant createdAt,
+            Instant updatedAt
+    ) {
+        super(createdAt, updatedAt);
         this.id = id;
         this.name = name;
         this.price = price;

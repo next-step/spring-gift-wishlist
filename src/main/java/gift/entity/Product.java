@@ -1,15 +1,35 @@
 package gift.entity;
 
-public class Product {
+import javax.swing.*;
+import java.time.Instant;
+import java.util.Objects;
+
+public class Product extends AbstractEntity {
     private Long id;
     private String name;
     private Long price;
     private String imageUrl;
     private Long ownerId;
 
-    public Product() { }
-
     public Product(Long id, String name, Long price, String imageUrl, Long ownerId) {
+        super();
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.imageUrl = imageUrl;
+        this.ownerId = ownerId;
+    }
+
+    public Product(
+            Long id,
+            String name,
+            Long price,
+            String imageUrl,
+            Long ownerId,
+            Instant createdAt,
+            Instant updatedAt
+    ) {
+        super(createdAt, updatedAt);
         this.id = id;
         this.name = name;
         this.price = price;
@@ -64,6 +84,9 @@ public class Product {
                 ", name='" + name + '\'' +
                 ", price=" + price +
                 ", imageUrl='" + imageUrl + '\'' +
+                ", ownerId=" + ownerId +
+                ", createdAt=" + getCreatedAt() +
+                ", updatedAt=" + getUpdatedAt() +
                 '}';
     }
 
@@ -71,12 +94,11 @@ public class Product {
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (!(obj instanceof Product objProd)) return false;
-
-        return id != null && id.equals(objProd.id) &&
-               name != null && name.equals(objProd.name) &&
-               price != null && price.equals(objProd.price) &&
-               imageUrl != null && imageUrl.equals(objProd.imageUrl);
+        return Objects.equals(id, objProd.id);
     }
 
-
+    @Override
+    public int hashCode() {
+        return Objects.hash(getClass(), id);
+    }
 }
