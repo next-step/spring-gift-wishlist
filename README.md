@@ -36,6 +36,8 @@
     - [x] 존재하지 않는 상품일 경우 예외 처리 (`404 Not Found`) 
   - [x] 위시 리시트 상품 삭제 API (`DELETE /api/wishes/{productId}`)
     - [x] 존재하지 않는 상품일 경우 예외 처리 (`404 Not Found`)
+- [x] 인증 처리
+  - [x] `@LoginMember` 어노테이션 + `LoginMemberArgumentResolver`를 구현하여 토큰에서 사용자 정보 추출 및 사용자 정보 컨트롤러에 주입
 
 ## 4️⃣ 기술 스택
 - Java 17
