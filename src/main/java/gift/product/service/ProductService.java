@@ -1,7 +1,8 @@
 package gift.product.service;
 
 import gift.product.domain.Product;
-import gift.product.dto.RequestDto;
+import gift.product.dto.ProductPatchRequestDto;
+import gift.product.dto.ProductSaveRequestDto;
 import gift.product.repository.ProductDao;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,9 +19,9 @@ public class ProductService {
     }
 
     @Transactional
-    public Product saveProduct(RequestDto requestDto) {
+    public Product saveProduct(ProductSaveRequestDto productSaveRequestDto) {
         UUID id = UUID.randomUUID();
-        Product product = new Product(id, requestDto.getName(), requestDto.getPrice(), requestDto.getImageUrl());
+        Product product = new Product(id, productSaveRequestDto.getName(), productSaveRequestDto.getPrice(), productSaveRequestDto.getImageUrl());
         return productdao.save(product);
     }
 
@@ -35,9 +36,9 @@ public class ProductService {
     }
 
     @Transactional
-    public Product updateProduct(UUID id, RequestDto requestDto) {
+    public Product updateProduct(UUID id, ProductPatchRequestDto productPatchRequestDto) {
         productdao.findById(id);
-        return productdao.update(id, requestDto);
+        return productdao.update(id, productPatchRequestDto);
     }
 
     @Transactional

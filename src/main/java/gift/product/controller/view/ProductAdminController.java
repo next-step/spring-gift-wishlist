@@ -1,7 +1,8 @@
 package gift.product.controller.view;
 
 import gift.product.domain.Product;
-import gift.product.dto.RequestDto;
+import gift.product.dto.ProductPatchRequestDto;
+import gift.product.dto.ProductSaveRequestDto;
 import gift.product.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -29,16 +30,16 @@ public class ProductAdminController {
 
     @GetMapping("/product/add")
     public String addForm(Model model) {
-        model.addAttribute("requestDto", new RequestDto());
+        model.addAttribute("requestDto", new ProductSaveRequestDto());
         return "addForm";
     }
 
     @PostMapping("/product/add")
-    public String saveProduct(@Valid @ModelAttribute RequestDto requestDto, BindingResult bindingResult) {
+    public String saveProduct(@Valid @ModelAttribute ProductSaveRequestDto productSaveRequestDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "addForm";
         }
-        productService.saveProduct(requestDto);
+        productService.saveProduct(productSaveRequestDto);
         return "redirect:/api/admin/product/list";
     }
 
@@ -51,17 +52,17 @@ public class ProductAdminController {
     @GetMapping("/product/{id}/update")
     public String updateForm(@PathVariable UUID id, Model model) {
         Product product = productService.findById(id);
-        RequestDto requestDto = new RequestDto(product);
-        model.addAttribute("requestDto", requestDto);
+        ProductPatchRequestDto productPatchRequestDto = new ProductPatchRequestDto(product);
+        model.addAttribute("productPatchRequestDto", productPatchRequestDto);
         return "updateForm";
     }
 
     @PatchMapping("/product/{id}/update")
-    public String updateProduct(@PathVariable UUID id, @Valid @ModelAttribute RequestDto requestDto, BindingResult bindingResult) {
+    public String updateProduct(@PathVariable UUID id, @Valid @ModelAttribute ProductPatchRequestDto productPatchRequestDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "updateForm";
         }
-        productService.updateProduct(id, requestDto);
+        productService.updateProduct(id, productPatchRequestDto);
         return "redirect:/api/admin/product/list";
     }
 

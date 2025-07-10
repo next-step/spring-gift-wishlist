@@ -1,7 +1,8 @@
 package gift.product.controller.api;
 
 import gift.product.domain.Product;
-import gift.product.dto.RequestDto;
+import gift.product.dto.ProductPatchRequestDto;
+import gift.product.dto.ProductSaveRequestDto;
 import gift.product.dto.ResponseDto;
 import gift.product.service.ProductService;
 import jakarta.validation.Valid;
@@ -31,8 +32,8 @@ public class ProductController {
     }
 
     @PostMapping("/product/add")
-    public ResponseEntity<ResponseDto> saveProduct(@RequestBody @Valid RequestDto requestDto) {
-        Product product =  productService.saveProduct(requestDto);
+    public ResponseEntity<ResponseDto> saveProduct(@RequestBody @Valid ProductSaveRequestDto productSaveRequestDto) {
+        Product product =  productService.saveProduct(productSaveRequestDto);
         return ResponseEntity
                 .created(URI.create("/api/product/" + product.getId()))
                 .body(new ResponseDto(product));
@@ -45,8 +46,8 @@ public class ProductController {
     }
 
     @PatchMapping("/product/{id}/update")
-    public ResponseEntity<ResponseDto> updateProduct(@PathVariable UUID id, @RequestBody @Valid RequestDto requestDto) {
-        Product product = productService.updateProduct(id, requestDto);
+    public ResponseEntity<ResponseDto> updateProduct(@PathVariable UUID id, @RequestBody @Valid ProductPatchRequestDto productPatchRequestDto) {
+        Product product = productService.updateProduct(id, productPatchRequestDto);
         return ResponseEntity.ok(new ResponseDto(product));
     }
 
