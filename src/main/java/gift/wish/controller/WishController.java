@@ -7,6 +7,7 @@ import gift.wish.dto.WishCreateResponseDto;
 import gift.wish.dto.WishGetRequestDto;
 import gift.wish.dto.WishPageResponseDto;
 import gift.wish.service.WishService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,7 +31,7 @@ public class WishController {
 
     @PostMapping
     public ResponseEntity<WishCreateResponseDto> addWish(@LoginMember Member member,
-        @RequestBody WishCreateRequestDto wishCreateRequestDto) {
+        @Valid @RequestBody WishCreateRequestDto wishCreateRequestDto) {
 
         return new ResponseEntity<>(wishService.addWish(member, wishCreateRequestDto),
             HttpStatus.CREATED);
