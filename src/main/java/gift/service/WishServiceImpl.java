@@ -10,14 +10,18 @@ import org.springframework.stereotype.Service;
 public class WishServiceImpl implements WishService{
     private final WishRepository wishRepository;
 
-    public WishServiceImpl(WishRepository wishRepository) {
+    private final ProductService productService;
+
+    public WishServiceImpl(WishRepository wishRepository, ProductService productService) {
         this.wishRepository = wishRepository;
+        this.productService = productService;
     }
 
     @Override
     public WishResponseDto createWish(CreateWishRequestDto requestDto, Long memberId) {
         Wish newWish = new Wish(null,requestDto.productId(), memberId, requestDto.quantity());
         Wish savedWish = wishRepository.createWish(newWish);
-        return new WishResponseDto(savedWish.getProductId(), savedWish.getQuantity());
+        return new WishResponseDto(productService.findProductById(savedWish.getProductId()),
+                savedWish.getQuantity());
     }
 }
