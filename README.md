@@ -81,3 +81,4 @@
 - [x] `schema.sql`에 위시리스트 테이블 CREATE문 추가
 - [ ] 위시리스트 API 구현
   - [x] Wishlist 엔티티 구현
+  - [x] 3-Layer 기본 구조 구현
