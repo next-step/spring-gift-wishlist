@@ -6,11 +6,11 @@ import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class UserJdbcClientRepositoryImpl implements UserJdbcClientRepository{
+public class UserRepositoryImpl implements UserRepository {
 
   private final JdbcClient jdbcClient;
 
-  public UserJdbcClientRepositoryImpl(JdbcClient jdbcClient) {
+  public UserRepositoryImpl(JdbcClient jdbcClient) {
     this.jdbcClient = jdbcClient;
   }
 
