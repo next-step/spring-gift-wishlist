@@ -1,15 +1,11 @@
 package gift.controller;
 
-import gift.GlobalExceptionHandler;
 import gift.model.Product;
 import gift.repository.ProductDao;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -41,8 +37,8 @@ public class AdminProductController {
         }
         if (!product.getName().contains("카카오")) {
             product.setMdApproved(true);
-            model.addAttribute("infoMessage", "카카오가 포함된 상품은 MD 승인 후 사용 가능합니다.");
         }
+        System.out.println(product.getMdApproved());
         productDao.insertProduct(product);
         return "redirect:/admin/products";
     }
