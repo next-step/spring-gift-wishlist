@@ -25,7 +25,6 @@ public class MemberRepositoryImpl implements MemberRepository {
 
     @Override
     public int addMember(Member member) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
         int result = jdbcClient.sql("insert into member (email, password, name, role) values (:email, :password, :name, :role)")
                 .param("email", member.email())
                 .param("password", member.password())

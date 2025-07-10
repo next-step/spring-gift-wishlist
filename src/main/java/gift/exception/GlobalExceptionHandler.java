@@ -1,6 +1,7 @@
 package gift.exception;
 
 import gift.dto.ErrorResponseDto;
+import gift.dto.WishlistItemRequestDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponse;
@@ -68,5 +69,10 @@ public class GlobalExceptionHandler {
                 ex.getMessage()
         );
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(responseDto);
+    }
+
+    @ExceptionHandler(WishlistItemNotFoundException.class)
+    public ResponseEntity<Void> handleWishlistItemNotFound(WishlistItemNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 }
