@@ -19,7 +19,7 @@ public interface ItemRepository {
 	List<Item> findAll();
 
 	// 수정
-	void update(Item item);
+	void update(Long id, Item item);
 
 	// 삭제
 	void deleteById(Long id);

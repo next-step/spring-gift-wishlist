@@ -24,7 +24,7 @@ public class ItemRepositoryImpl implements ItemRepository {
 	@Override
 	public Long save(Item item) {
 
-		final String sql = "INSERT INTO item (name, price, image_url) VALUES (?, ?, ?)";
+		final String sql = "INSERT INTO item (name, price, image_url, user_id) VALUES (?, ?, ?, ?)";
 
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -33,6 +33,7 @@ public class ItemRepositoryImpl implements ItemRepository {
 			ps.setString(1, item.getName());
 			ps.setInt(2, item.getPrice());
 			ps.setString(3, item.getImageUrl());
+			ps.setLong(4, item.getUserId());
 			return ps;
 		}, keyHolder);
 
@@ -47,6 +48,7 @@ public class ItemRepositoryImpl implements ItemRepository {
 		try {
 			Item item = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> new Item(
 				rs.getLong("ID"),
+				rs.getLong("USER_ID"),
 				rs.getString("NAME"),
 				rs.getInt("PRICE"),
 				rs.getString("IMAGE_URL")
@@ -64,6 +66,7 @@ public class ItemRepositoryImpl implements ItemRepository {
 
 		return jdbcTemplate.query(sql, (rs, rowNum) -> new Item(
 			rs.getLong("id"),
+			rs.getLong("USER_ID"),
 			rs.getString("name"),
 			rs.getInt("price"),
 			rs.getString("image_url")
@@ -73,10 +76,10 @@ public class ItemRepositoryImpl implements ItemRepository {
 
 
 	@Override
-	public void update(Item item) {
+	public void update(Long itemId, Item item) {
 		final String sql = "update item set name = ?, price = ?, image_url = ? where id = ?";
 
-		jdbcTemplate.update(sql, item.getName(), item.getPrice(), item.getImageUrl(), item.getId());
+		jdbcTemplate.update(sql, item.getName(), item.getPrice(), item.getImageUrl(), itemId);
 	}
 
 

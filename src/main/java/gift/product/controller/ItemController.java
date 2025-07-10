@@ -1,6 +1,7 @@
 package gift.product.controller;
 
 
+import gift.product.commons.annotations.Authenticated;
 import gift.product.service.ItemService;
 import gift.product.dto.GetItemResponse;
 import gift.product.dto.ItemRequest;
@@ -21,9 +22,10 @@ public class ItemController {
 
 
 	// 게시글 생성
+	@Authenticated
 	@PostMapping()
-	public Long createItem(@Valid @RequestBody ItemRequest req) {
-		return itemService.createItem(req);
+	public Long createItem(@Valid @RequestBody ItemRequest req, @RequestAttribute("userId") Long userId) {
+		return itemService.createItem(req, userId);
 	}
 
 	// 게시글 전체 조회
@@ -39,17 +41,16 @@ public class ItemController {
 	}
 
 	// 게시글 수정
+	@Authenticated
 	@PutMapping("/{itemId}")
-	public GetItemResponse updateItem(@PathVariable Long itemId, @Valid @RequestBody ItemRequest req) {
-		if(req.name() == null || req.price() == null || req.imageUrl() == null)
-			throw new RuntimeException("요청 데이터가 잘못됐습니다.");
-
-		return itemService.updateItem(itemId, req);
+	public GetItemResponse updateItem(@PathVariable Long itemId, @Valid @RequestBody ItemRequest req, @RequestAttribute("userId") Long userId) {
+		return itemService.updateItem(itemId, userId, req);
 	}
 
 	// 게시글 삭제
+	@Authenticated
 	@DeleteMapping("/{itemId}")
-	public void deleteItem(@PathVariable Long itemId) {
-		itemService.deleteItem(itemId);
+	public void deleteItem(@PathVariable Long itemId, @RequestAttribute("userId") Long userId) {
+		itemService.deleteItem(itemId, userId);
 	}
 }
