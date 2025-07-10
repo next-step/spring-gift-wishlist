@@ -46,7 +46,7 @@ public class UserControllerTest {
     String requestBody = """
            {
           "email" : "admin@email.com",
-          "password" : "password"
+          "password" : "Password123!"
         }
         """;
 
