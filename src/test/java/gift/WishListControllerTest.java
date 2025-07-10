@@ -53,7 +53,7 @@ public class WishListControllerTest {
 
     @Test
     void 로그인한_시용자가_위시리스트_조회_시_200반환() throws Exception {
-        mockMvc.perform(get("/wishes")
+        mockMvc.perform(get("/api/wishes")
                         .header("Authorization", "Bearer mock-token")
                         .accept(APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -70,7 +70,7 @@ public class WishListControllerTest {
                         org.mockito.ArgumentMatchers.any()
                 );
 
-        mockMvc.perform(get("/wishes")
+        mockMvc.perform(get("/api/wishes")
                         .accept(APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
     }
@@ -85,7 +85,7 @@ public class WishListControllerTest {
                 """;
         // when & then
         mockMvc.perform(
-                        post("/wishes")
+                        post("/api/wishes")
                                 .header("Authorization", "Bearer mock-token")
                                 .contentType(APPLICATION_JSON)
                                 .content(requestBody))
@@ -97,7 +97,7 @@ public class WishListControllerTest {
         Long productId = 101L;
 
         mockMvc.perform(
-                        delete("/wishes/{productId}", productId)
+                        delete("/api/wishes/{productId}", productId)
                                 .header("Authorization", "Bearer mock-token"))
                 .andExpect(status().isNoContent());
     }
