@@ -29,7 +29,7 @@ public class MemberService {
         }
 
         String encodedPassword = passwordEncoder.encode(dto.getPassword());
-        Member member = new Member(null, dto.getEmail(), encodedPassword);
+        Member member = new Member(null, dto.getEmail(), encodedPassword, "USER");
         memberRepository.save(member);
     }
 

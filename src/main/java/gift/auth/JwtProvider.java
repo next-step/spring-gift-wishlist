@@ -18,6 +18,7 @@ public class JwtProvider {
         return Jwts.builder()
                 .subject(Long.toString(member.getId()))
                 .claim("email", member.getEmail())
+                .claim("role", member.getRole())
                 .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
                 .compact();
     }

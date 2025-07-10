@@ -16,13 +16,14 @@ public class MemberRepository {
     }
 
     public Optional<Member> findByEmail(String email) {
-        return jdbcClient.sql("SELECT id, email, password FROM member WHERE email = ?")
+        return jdbcClient.sql("SELECT id, email, password, role FROM member WHERE email = ?\n")
                 .param(email)
                 .query((rs, rowNum) ->
                         new Member(
                                 rs.getLong("id"),
                                 rs.getString("email"),
-                                rs.getString("password")
+                                rs.getString("password"),
+                                rs.getString("role")
                         )
                 )
                 .optional();
