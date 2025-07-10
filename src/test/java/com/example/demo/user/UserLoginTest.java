@@ -6,8 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import com.example.demo.dto.UserDataInfo;
 import com.example.demo.dto.UserRequestDto;
 import com.example.demo.jwt.Jwt;
-import com.example.demo.jwt.PasswordHasher;
+import com.example.demo.security.PasswordHasher;
+import com.example.demo.service.UserService;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
@@ -27,12 +29,11 @@ class UserLoginTest {
   private int port;
 
   private RestClient client = RestClient.builder().build();
-
+  @Autowired
+  private UserService userService;
   @Test
   void 로그인_후_me_요청시_회원정보가_반환된다() {
     UserRequestDto dto = new UserRequestDto("example@example.com", "abcd1234!", "admin");
-    System.out.println("테스트에서 실제 입력된 비번: " + dto.getPassword());
-    System.out.println("해시값: " + PasswordHasher.hash(dto.getPassword()));
     String loginUrl = "http://localhost:" + port + "/login";
     ResponseEntity<Jwt> loginResponse = client.post()
                                               .uri(loginUrl)
