@@ -61,6 +61,12 @@ public class MemberRepository implements MemberRepositoryInterface {
         return wishlistProduct;
     }
 
+    @Override
+    public void addProductToWishListByEmail(String email, Integer productId) {
+        String sql = "INSERT INTO wishlist (email, productId) VALUES (?, ?)";
+        jdbcTemplate.update(sql, email, productId);
+    }
+
     private Member mapRowToMember(ResultSet rs, int rowNum) throws SQLException {
         Member member = new Member(
                 rs.getLong("id"),

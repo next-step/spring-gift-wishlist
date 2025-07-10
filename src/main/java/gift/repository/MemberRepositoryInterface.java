@@ -15,4 +15,6 @@ public interface MemberRepositoryInterface {
     Optional<Member> findByEmailAndPassword(String email, String password);
 
     List<Product> findAllProductsFromWishListByEmail(String email);
+
+    void addProductToWishListByEmail(String email, Integer productId);
 }

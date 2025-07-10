@@ -1,8 +1,6 @@
 package gift.service;
 
-import gift.dto.MemberRequestDto;
-import gift.dto.MemberResponseDto;
-import gift.dto.ProductResponseDto;
+import gift.dto.*;
 
 import java.util.List;
 
@@ -15,4 +13,6 @@ public interface MemberServiceInterface {
     MemberResponseDto login(MemberRequestDto requestDto);
 
     List<ProductResponseDto> findAllProductsFromWishList(String token);
+
+    List<ProductResponseDto> addProductToWishListByEmail(String token, WishListProductRequestDto requestDto);
 }

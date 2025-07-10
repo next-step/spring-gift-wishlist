@@ -1,9 +1,7 @@
 package gift.service;
 
 import gift.auth.JwtAuth;
-import gift.dto.MemberRequestDto;
-import gift.dto.MemberResponseDto;
-import gift.dto.ProductResponseDto;
+import gift.dto.*;
 import gift.entity.Member;
 import gift.entity.Product;
 import gift.exception.MemberExceptions;
@@ -65,5 +63,14 @@ public class MemberService implements MemberServiceInterface {
                                                             product.getImageUrl()));
         }
         return productResponseDtoList;
+    }
+
+    @Override
+    public List<ProductResponseDto> addProductToWishListByEmail(String token, WishListProductRequestDto requestDto) {
+        String email = jwtAuth.getEmailFromToken(token);
+        Integer productId = requestDto.getId();
+        memberRepository.addProductToWishListByEmail(email, productId);
+
+        return findAllProductsFromWishList(token);
     }
 }

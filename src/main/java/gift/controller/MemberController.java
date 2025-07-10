@@ -1,9 +1,7 @@
 package gift.controller;
 
 import gift.auth.JwtAuth;
-import gift.dto.MemberRequestDto;
-import gift.dto.MemberResponseDto;
-import gift.dto.ProductResponseDto;
+import gift.dto.*;
 import gift.exception.MemberExceptions;
 import gift.service.MemberService;
 import jakarta.validation.Valid;
@@ -48,6 +46,15 @@ public class MemberController {
         }
 
         List<ProductResponseDto> products = memberService.findAllProductsFromWishList(token);
+
+        return ResponseEntity.status(HttpStatus.OK).body(products);
+    }
+
+    @PostMapping("/wishlist")
+    public ResponseEntity<List<ProductResponseDto>> addProductToWishlist(@RequestHeader("Authorization") String authHeader,
+                                                                  @Valid @RequestBody WishListProductRequestDto productRequestDto) {
+        String token = authHeader.substring(7);
+        List<ProductResponseDto> products = memberService.addProductToWishListByEmail(token, productRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(products);
     }
