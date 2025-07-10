@@ -36,7 +36,7 @@ public class AuthenticationService implements AuthService {
         memberRepository.saveMember(member);
 
         // 토큰 생성
-        String token = jwtUtil.generateToken(member.getEmail(), member.getRole().name());
+        String token = jwtUtil.generateToken(member.getEmail(), member.getId(), member.getRole().name());
         return new TokenResponseDto(token);
     }
 
@@ -52,7 +52,7 @@ public class AuthenticationService implements AuthService {
         }
 
         // 토큰 생성
-        String token = jwtUtil.generateToken(member.getEmail(), member.getRole().name());
+        String token = jwtUtil.generateToken(member.getEmail(), member.getId(), member.getRole().name());
         return new TokenResponseDto(token);
     }
 }

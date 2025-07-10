@@ -16,8 +16,9 @@ public class JwtUtil {
 
     private final SecretKey key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secretKey));
 
-    public String generateToken(String subject, String role) {
+    public String generateToken(String subject, Long memberId, String role) {
         return Jwts.builder()
+                .claim("member_id", memberId)
                 .subject(subject)
                 .claim("role", role)
                 .issuedAt(new Date())
@@ -32,6 +33,10 @@ public class JwtUtil {
 
     public String getRole(String token) {
         return parseClaims(token).get("role", String.class);
+    }
+
+    public Long getMemberId(String token) {
+        return parseClaims(token).get("member_id", Long.class);
     }
 
     // 토큰 유효성 검사
