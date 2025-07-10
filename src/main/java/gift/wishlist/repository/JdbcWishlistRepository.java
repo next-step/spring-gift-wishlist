@@ -69,7 +69,7 @@ public class JdbcWishlistRepository implements WishlistRepository {
                     rs.getLong("member_id"),
                     rs.getLong("item_id"),
                     rs.getTimestamp("created_at").toLocalDateTime()
-                ), id
+                ), id, memberId
             );
             return Optional.ofNullable(wishlist);
         } catch (DataAccessException e) {
