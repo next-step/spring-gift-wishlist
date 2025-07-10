@@ -3,6 +3,7 @@ package gift.repository;
 import gift.entity.Product;
 import gift.entity.Wish;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -48,6 +49,16 @@ public class WishDao implements WishRepository{
                 .param("memberId", memberId)
                 .query(getWishRowMapper)
                 .list();
+    }
+
+    @Override
+    public Optional<Wish> findMemberWishByProductId(Long productId, Long memberId) {
+        String sql = "select * from wishes where productId = :productId and memberId = :memberId;";
+        return client.sql(sql)
+                .param("productId", productId)
+                .param("memberId", memberId)
+                .query(getWishRowMapper)
+                .optional();
     }
 
 }
