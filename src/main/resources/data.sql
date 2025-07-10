@@ -12,4 +12,4 @@ INSERT INTO member (email, password) VALUES ('def@pusan.ac.kr', '12345678');
 
 INSERT INTO wishlist (email, productId) VALUES ('abc@pusan.ac.kr', 1);
 INSERT INTO wishlist (email, productId) VALUES ('abc@pusan.ac.kr', 2);
-INSERT INTO wishlist (email, productId) VALUES ('abcd@pusan.ac.kr', 2);
+INSERT INTO wishlist (email, productId) VALUES ('abcd@pusan.ac.kr', 1);

@@ -2,15 +2,19 @@ package gift;
 
 import gift.dto.MemberRequestDto;
 import gift.dto.MemberResponseDto;
+import gift.dto.ProductResponseDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
+
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
@@ -22,6 +26,8 @@ public class MemberControllerTest {
     private int port;
 
     private RestClient client = RestClient.builder().build();
+
+    private String testJWTToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhYmNkQHB1c2FuLmFjLmtyIiwiZW1haWwiOiJhYmNkQHB1c2FuLmFjLmtyIn0.WGDriDkB5paOlUxALdjM4cZqo8ZE2YZ0yN8nwu5VjRk";
 
     @Test
     void 회원가입_잘못된_이메일_입력_테스트(){
@@ -168,5 +174,26 @@ public class MemberControllerTest {
                 .toEntity(MemberResponseDto.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    void 위시_리스트_조회_테스트(){
+        System.out.println("Get WishList Product test");
+        var url = "http://localhost:" + port + "/api/members/wishlist";
+        var response = client.get()
+                .uri(url)
+                .header("Authorization", "Bearer " + testJWTToken)
+                .retrieve()
+                .toEntity(new ParameterizedTypeReference<List<ProductResponseDto>>() {});
+
+        List<ProductResponseDto> products = response.getBody();
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(products).isNotNull();
+        assertThat(products).isInstanceOf(List.class);
+
+        assertThat(products.get(0).getId()).isEqualTo(1);
+        assertThat(products.get(0).getName()).isEqualTo("초코송이");
+        assertThat(products.get(0).getPrice()).isEqualTo(1000);
     }
 }
