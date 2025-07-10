@@ -38,12 +38,4 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
-configurations.all {
-    resolutionStrategy.eachDependency { details ->
-        if (details.requested.group == 'io.jsonwebtoken') {
-            if (details.requested.name == 'jjwt') {
-                details.useVersion '0.12.6'
-            }
-        }
-    }
-}
+
