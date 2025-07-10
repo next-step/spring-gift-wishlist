@@ -1,6 +1,9 @@
 package gift.controller.api;
 
 import gift.dto.ErrorResponse;
+import gift.exception.EmailAlreadyExistsException;
+import gift.exception.InvalidTokenException;
+import gift.exception.LoginFailedException;
 import gift.exception.ProductNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -10,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-@RestControllerAdvice(assignableTypes = ApiExceptionHandler.class)
+@RestControllerAdvice("gift.controller.api")
 public class ApiExceptionHandler {
 
     @ExceptionHandler(ProductNotFoundException.class)
@@ -45,4 +48,21 @@ public class ApiExceptionHandler {
         return new ErrorResponse("서버 내부 오류가 발생했습니다.");
     }
 
+    @ExceptionHandler(LoginFailedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse handleLoginFailed(LoginFailedException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleEmailExists(EmailAlreadyExistsException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(InvalidTokenException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorResponse handleInvalidToken(InvalidTokenException e) {
+        return new ErrorResponse(e.getMessage());
+    }
 }
