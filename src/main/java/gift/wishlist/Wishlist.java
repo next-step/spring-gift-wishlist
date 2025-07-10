@@ -16,10 +16,10 @@ public class Wishlist {
         this.createdAt = createdAt;
     }
 
-    public Wishlist(Long memberId, Long itemId, LocalDateTime createdAt) {
+    // 위시리스트 생성용
+    public Wishlist(Long memberId, Long itemId) {
         this.memberId = memberId;
         this.itemId = itemId;
-        this.createdAt = createdAt;
     }
 
     public Long getId() {
