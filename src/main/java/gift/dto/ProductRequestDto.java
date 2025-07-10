@@ -1,5 +1,7 @@
 package gift.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
@@ -13,12 +15,14 @@ public class ProductRequestDto {
     )
     private String name;
 
+    @Positive(message = "가격은 양수여야 합니다.")
     @NotNull
     private Long price;
 
     @NotBlank
     private String imageUrl;
 
+    @JsonProperty("kakaoWordAllow")
     private boolean kakaoWordAllow = false;
 
 
@@ -34,6 +38,7 @@ public class ProductRequestDto {
         return imageUrl;
     }
 
+    @JsonIgnore
     @AssertTrue(message = "'카카오'라는단어는담당 MD와 협의한 경우에만 사용할 수 있습니다.")
     public boolean isKakaoWordAllowed(){
         if (!kakaoWordAllow && name.contains("카카오")){
@@ -50,5 +55,8 @@ public class ProductRequestDto {
     }
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+    public void setKakaoWordAllow(boolean kakaoWordAllow) {
+        this.kakaoWordAllow = kakaoWordAllow;
     }
 }
