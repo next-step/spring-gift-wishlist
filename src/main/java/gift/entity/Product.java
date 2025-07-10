@@ -1,6 +1,5 @@
 package gift.entity;
 
-import javax.swing.*;
 import java.time.Instant;
 import java.util.Objects;
 

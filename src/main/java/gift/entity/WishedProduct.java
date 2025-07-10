@@ -9,14 +9,6 @@ public class WishedProduct extends AbstractEntity {
     private String imageUrl;
     private Integer quantity;
 
-    public WishedProduct(Long id, String name, Long price, String imageUrl) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.imageUrl = imageUrl;
-        this.quantity = 1; // Default quantity to 1
-    }
-
     public WishedProduct(
             Long id,
             String name,
