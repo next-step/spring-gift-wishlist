@@ -7,6 +7,7 @@ import gift.dto.WishRequest;
 import gift.dto.WishResponse;
 import gift.service.WishService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,7 +42,9 @@ public class WishController {
     ) {
 
         Wish wish = wishService.addWish(member.getId(), request.productId());
-        return ResponseEntity.ok(WishResponse.from(wish));
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(WishResponse.from(wish));
     }
 
     @DeleteMapping("/{wishId}")

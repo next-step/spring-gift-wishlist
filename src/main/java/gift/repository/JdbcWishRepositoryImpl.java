@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,9 +36,12 @@ public class JdbcWishRepositoryImpl implements WishRepository {
     // 위시리스트에 상품 추가
     @Override
     public Wish addWish(Long memberId, Long productId) {
+        LocalDateTime now = LocalDateTime.now();
+
         MapSqlParameterSource params = new MapSqlParameterSource()
                 .addValue("member_id", memberId)
-                .addValue("product_id", productId);
+                .addValue("product_id", productId)
+                .addValue("created_date", now);;
 
         Number id = wishInserter.executeAndReturnKey(params);
 
