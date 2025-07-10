@@ -47,7 +47,7 @@ public class MemberApiTest {
     @Test
     void 회원가입하면_201_반환() {
         String url = "http://localhost:" + port + "/api/members/register";
-        MemberRequest memberRequest = new MemberRequest("test@test", "test");
+        MemberRequest memberRequest = new MemberRequest(null, "test@test", "test");
 
         var response = restClient.post()
             .uri(url)
@@ -62,7 +62,7 @@ public class MemberApiTest {
     void 중복_이메일로_회원가입하면_403(){
         // dummy 계정 생성
         String url = "http://localhost:" + port + "/api/members/register";
-        MemberRequest memberRequest = new MemberRequest("test1@test1", "test1");
+        MemberRequest memberRequest = new MemberRequest(null, "test1@test1", "test1");
 
         var response = restClient.post()
             .uri(url)
@@ -76,7 +76,7 @@ public class MemberApiTest {
 
         // 중복 요청
         String url2 = "http://localhost:" + port + "/api/members/register";
-        MemberRequest memberRequest2 = new MemberRequest("test1@test1", "test1");
+        MemberRequest memberRequest2 = new MemberRequest(null, "test1@test1", "test1");
 
         var response2 = restClient.post()
             .uri(url2)
