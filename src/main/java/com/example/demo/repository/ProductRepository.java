@@ -4,7 +4,7 @@ import com.example.demo.entity.Product;
 import java.util.List;
 import java.util.Optional;
 
-public interface ProductJdbcClientRepository {
+public interface ProductRepository {
 
   Product addProduct(Product product);
 
