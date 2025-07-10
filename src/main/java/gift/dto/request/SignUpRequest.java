@@ -8,7 +8,7 @@ public record SignUpRequest(
         String email,
         String password
 ) {
-        public static User toEntity(SignUpRequest signUpRequest) {
-                return new User(signUpRequest.email(), signUpRequest.password());
+        public User toEntity() {
+                return new User(this.email(), this.password());
         }
 }
