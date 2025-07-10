@@ -7,6 +7,7 @@ import gift.exception.common.HttpException;
 import gift.exception.unauthorized.WrongHeaderException;
 import gift.repository.member.MemberRepository;
 import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -32,16 +33,8 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
         NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws HttpException {
-        String authorizationHeader = webRequest.getHeader("Authorization");
-        
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            throw new WrongHeaderException();
-        }
-        
-        String token = authorizationHeader.substring(7); // "Bearer " 제거
-        Claims claims = jwtProvider.parseToken(token);
-        
-        String email = claims.get("email", String.class);
+        HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
+        String email = (String) request.getAttribute("email");
         Member member = memberRepository.findMemberByEmail(email);
         
         return member.getId();

@@ -1,6 +1,6 @@
 package gift.config;
 
-import gift.config.interceptor.AdminCheckInterceptor;
+import gift.config.interceptor.ValidHeaderInterceptor;
 import gift.config.resolver.LoginUserArgumentResolver;
 import java.util.List;
 import org.springframework.context.annotation.Configuration;
@@ -10,18 +10,18 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
-    private final AdminCheckInterceptor adminCheckInterceptor;
+    private final ValidHeaderInterceptor validHeaderInterceptor;
     private final LoginUserArgumentResolver loginUserArgumentResolver;
     
-    public WebMvcConfig(AdminCheckInterceptor adminCheckInterceptor,
+    public WebMvcConfig(ValidHeaderInterceptor validHeaderInterceptor,
         LoginUserArgumentResolver loginUserArgumentResolver) {
-        this.adminCheckInterceptor = adminCheckInterceptor;
+        this.validHeaderInterceptor = validHeaderInterceptor;
         this.loginUserArgumentResolver = loginUserArgumentResolver;
     }
     
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(adminCheckInterceptor);
+        registry.addInterceptor(validHeaderInterceptor);
     }
     
     @Override

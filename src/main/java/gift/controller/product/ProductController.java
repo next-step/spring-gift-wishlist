@@ -1,9 +1,10 @@
 package gift.controller.product;
 
-import gift.config.annotation.AdminCheck;
+import gift.config.annotation.ValidHeader;
 import gift.dto.api.product.AddProductRequestDto;
 import gift.dto.api.product.ModifyProductRequestDto;
 import gift.dto.api.product.ProductResponseDto;
+import gift.entity.Role;
 import gift.service.auth.AuthService;
 import gift.service.product.ProductService;
 import jakarta.validation.Valid;
@@ -32,7 +33,7 @@ public class ProductController {
     }
     
     @PostMapping
-    @AdminCheck
+    @ValidHeader(role = Role.ADMIN)
     public ResponseEntity<ProductResponseDto> addProduct(
         @RequestBody @Valid AddProductRequestDto requestDto
     ) {
@@ -55,7 +56,7 @@ public class ProductController {
     }
     
     @PutMapping("/{productId}")
-    @AdminCheck
+    @ValidHeader(role = Role.ADMIN)
     public ResponseEntity<ProductResponseDto> modifyProductWithId(
         @PathVariable(name="productId") Long id,
         @RequestBody @Valid ModifyProductRequestDto requestDto
@@ -65,7 +66,7 @@ public class ProductController {
     }
     
     @PatchMapping("/{productId}")
-    @AdminCheck
+    @ValidHeader(role = Role.ADMIN)
     public ResponseEntity<ProductResponseDto> modifyProductInfoWithId(
         @PathVariable(name="productId") Long id,
         @RequestBody @Valid ModifyProductRequestDto requestDto
@@ -76,7 +77,7 @@ public class ProductController {
     }
     
     @DeleteMapping("/{productId}")
-    @AdminCheck
+    @ValidHeader(role = Role.ADMIN)
     public ResponseEntity<Void> deleteProductWithId(
         @PathVariable(name="productId") Long id
     ) {

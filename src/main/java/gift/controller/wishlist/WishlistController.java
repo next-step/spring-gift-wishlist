@@ -1,6 +1,7 @@
 package gift.controller.wishlist;
 
 import gift.config.annotation.CurrentUser;
+import gift.config.annotation.ValidHeader;
 import gift.dto.api.wishlist.WishlistRequestDto;
 import gift.dto.api.wishlist.WishlistResponseDto;
 import gift.service.wishlist.WishlistService;
@@ -27,6 +28,7 @@ public class WishlistController {
     }
     
     @GetMapping
+    @ValidHeader
     public ResponseEntity<List<WishlistResponseDto>> findMyWishlist(
         @CurrentUser Long userId
     ) {
@@ -35,6 +37,7 @@ public class WishlistController {
     }
     
     @PostMapping
+    @ValidHeader
     public ResponseEntity<WishlistResponseDto> addToMyWishlist(
         @CurrentUser Long userId,
         @RequestBody WishlistRequestDto requestDto
@@ -44,6 +47,7 @@ public class WishlistController {
     }
     
     @DeleteMapping("/{productId}")
+    @ValidHeader
     public ResponseEntity<Void> deleteToMyWishlist(
         @CurrentUser Long userId,
         @PathVariable(name = "productId") Long id
@@ -54,6 +58,7 @@ public class WishlistController {
     
     
     @PatchMapping
+    @ValidHeader
     public ResponseEntity<?> modifyProductCntFromMyWishlist(
         @CurrentUser Long userId,
         @RequestBody WishlistRequestDto requestDto
