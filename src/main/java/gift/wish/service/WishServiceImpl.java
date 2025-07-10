@@ -1,11 +1,14 @@
 package gift.wish.service;
 
+import gift.exception.wish.InvalidSortException;
 import gift.exception.wish.WishlistAccessDeniedException;
 import gift.member.entity.Member;
 import gift.wish.dto.WishCreateRequestDto;
 import gift.wish.dto.WishCreateResponseDto;
+import gift.wish.dto.WishGetRequestDto;
 import gift.wish.dto.WishGetResponseDto;
 import gift.wish.dto.WishPageResponseDto;
+import gift.wish.entity.Page;
 import gift.wish.entity.Wish;
 import gift.wish.repository.WishRepository;
 import java.util.List;
@@ -28,16 +31,34 @@ public class WishServiceImpl implements WishService {
         Wish wish = new Wish(member.getMemberId(), wishCreateRequestDto.productId());
         wishRepository.addWish(wish);
 
-        // TODO: wishes 테이블에서 조회해서 반환하도록 수정 필요
+        // TODO: wishes 테이블에서 조회해서 반환하도록 수정 필요 -> keyHolder? 라는 게 있던데
         return new WishCreateResponseDto(wish.getWishId(), wish.getMemberId(), wish.getProductId(),
             wish.getCreateDate());
     }
 
     @Override
-    public WishPageResponseDto getWishes(Member member, Integer page, Integer size) {
-        int offset = page * size;
+    public WishPageResponseDto getWishes(Member member, WishGetRequestDto wishGetRequestDto) {
+        Integer page = wishGetRequestDto.page();
+        Integer size = wishGetRequestDto.size();
+        String sort = wishGetRequestDto.sort();
 
-        List<Wish> wishes = wishRepository.getWishes(member, size, offset);
+        String[] sortParts = sort.split(",");
+        String sortField = sortParts[0];
+        String sortOrder = (sortParts.length > 1) ? sortParts[1] : "ASC";
+        sortOrder = sortOrder.toUpperCase();
+
+        if (!sortField.equals("createdDate")) {
+            throw new InvalidSortException("허용되지 않은 정렬 필드입니다.");
+        }
+        if (!sortOrder.equals("ASC") && !sortOrder.equals("DESC")) {
+            throw new InvalidSortException("허용되지 않은 정렬 방향입니다.");
+        }
+
+        Integer offset = page * size;
+
+        Page pageInfo = new Page(size, offset, sortField, sortOrder);
+
+        List<Wish> wishes = wishRepository.getWishes(member, pageInfo);
 
         Long total = wishRepository.countWishesByMemberId(member.getMemberId());
 
@@ -56,12 +77,12 @@ public class WishServiceImpl implements WishService {
 
     @Override
     public void deleteWish(Member member, Long wishId) {
-        // TODO: 위시 ID 검색(WishRepository.findByWishId), 실패 시 예외 처리(존재하지 않은 위시)
+        // TODO: 위시 ID 검색(WishRepository.findByWishId), 실패 시 예외 처리(존재하지 않은 위시) -> 테스트 필요
         Wish wish = wishRepository.findByWishId(wishId);
 
-        // TODO: 위시 데이터에 존재하는 회원 ID와 제공한 회원 ID 비교, 실패 시 예외 처리(다른 사용자)
+        // TODO: 위시 데이터에 존재하는 회원 ID와 제공한 회원 ID 비교, 실패 시 예외 처리(다른 사용자) -> 테스트 필요
         if (!member.getMemberId().equals(wish.getMemberId())) {
-            throw new WishlistAccessDeniedException("다른 사용자의 위시리스트에 접근할 수 업습니다.");
+            throw new WishlistAccessDeniedException("다른 사용자의 위시리스트에 접근할 수 없습니다.");
         }
 
         wishRepository.deleteWish(wishId);

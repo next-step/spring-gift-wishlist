@@ -1,8 +1,9 @@
 package gift.wish.repository;
 
-import gift.member.entity.Member;
-import gift.wish.entity.Wish;
 import gift.exception.wish.WishNotFoundException;
+import gift.member.entity.Member;
+import gift.wish.entity.Page;
+import gift.wish.entity.Wish;
 import java.util.List;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -24,12 +25,12 @@ public class WishRepositoryImpl implements WishRepository {
     }
 
     @Override
-    public List<Wish> getWishes(Member member, Integer size, Integer offset) {
-        String sql = "SELECT wishId, productId, createdDate FROM wishes WHERE memberId = ? LIMIT ? OFFSET ?";
+    public List<Wish> getWishes(Member member, Page page) {
+        String sql = "SELECT wishId, productId, createdDate FROM wishes WHERE memberId = ? ORDER BY ? ? LIMIT ? OFFSET ?";
         return jdbcTemplate.query(sql,
             (rs, RowNum) -> new Wish(rs.getLong("wishId"), rs.getLong("productId"),
-                rs.getTimestamp("createdDate").toLocalDateTime()), member.getMemberId(), size,
-            offset);
+                rs.getTimestamp("createdDate").toLocalDateTime()), member.getMemberId(),
+            page.getSortField(), page.getSortOrder(), page.getSize(), page.getOffset());
     }
 
     @Override

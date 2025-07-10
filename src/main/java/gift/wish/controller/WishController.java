@@ -4,6 +4,7 @@ import gift.member.entity.Member;
 import gift.wish.annotation.LoginMember;
 import gift.wish.dto.WishCreateRequestDto;
 import gift.wish.dto.WishCreateResponseDto;
+import gift.wish.dto.WishGetRequestDto;
 import gift.wish.dto.WishPageResponseDto;
 import gift.wish.service.WishService;
 import org.springframework.http.HttpStatus;
@@ -36,13 +37,17 @@ public class WishController {
     }
 
     // /api/wishes?page=0&size=10&sort=createdDate,desc
-    // TODO: sort 추가
+    // TODO: sort 추가 -> 테스트 필요
     @GetMapping
     public ResponseEntity<WishPageResponseDto> getWishes(@LoginMember Member member,
         @RequestParam(defaultValue = "0") Integer page,
-        @RequestParam(defaultValue = "10") Integer size) {
+        @RequestParam(defaultValue = "10") Integer size,
+        @RequestParam(defaultValue = "createdDate,desc") String sort) {
 
-        return new ResponseEntity<>(wishService.getWishes(member, page, size), HttpStatus.OK);
+        WishGetRequestDto wishGetRequestDto = new WishGetRequestDto(page, size, sort);
+
+        return new ResponseEntity<>(wishService.getWishes(member, wishGetRequestDto),
+            HttpStatus.OK);
     }
 
     @DeleteMapping("/{wishId}")
