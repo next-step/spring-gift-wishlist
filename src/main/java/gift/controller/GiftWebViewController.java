@@ -1,8 +1,8 @@
 package gift.controller;
 
-import gift.dto.request.CreateGiftRequest;
-import gift.dto.request.ModifyGiftRequest;
-import gift.dto.response.ResponseGift;
+import gift.dto.request.GiftCreateRequest;
+import gift.dto.request.GiftModifyRequest;
+import gift.dto.response.GiftResponse;
 import gift.repository.GiftRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,9 +32,9 @@ public class GiftWebViewController {
     }
 
     @PostMapping("/addItem")
-    public String addItem(@ModelAttribute CreateGiftRequest createGiftRequest, RedirectAttributes redirectAttributes){
-        ResponseGift responseGift = ResponseGift.from(giftRepository.save(CreateGiftRequest.toEntity(createGiftRequest)));
-        redirectAttributes.addAttribute("giftId", responseGift.id());
+    public String addItem(@ModelAttribute GiftCreateRequest giftCreateRequest, RedirectAttributes redirectAttributes){
+        GiftResponse giftResponse = GiftResponse.from(giftRepository.save(giftCreateRequest.toEntity()));
+        redirectAttributes.addAttribute("giftId", giftResponse.id());
         return "redirect:/gift/{giftId}";
     }
 
@@ -53,10 +53,10 @@ public class GiftWebViewController {
     @PostMapping("gift/{id}/edit")
     public String edit(
             @PathVariable Long id,
-            @ModelAttribute ModifyGiftRequest item,
+            @ModelAttribute GiftModifyRequest item,
             RedirectAttributes redirectAttributes
     ) {
-        giftRepository.modify(id, ModifyGiftRequest.toEntity(item));
+        giftRepository.modify(id, item.toEntity());
         redirectAttributes.addAttribute("giftId", id);
         return "redirect:/gift/{giftId}";
     }

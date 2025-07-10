@@ -1,22 +1,17 @@
 package gift.service;
 
-import gift.dto.request.CreateGiftRequest;
-import gift.dto.request.ModifyGiftRequest;
-import gift.dto.response.ResponseGift;
+import gift.dto.request.GiftCreateRequest;
+import gift.dto.request.GiftModifyRequest;
+import gift.dto.response.GiftResponse;
 import gift.entity.Gift;
 import gift.exception.gift.InValidSpecialCharException;
 import gift.exception.gift.NoGiftException;
-import gift.exception.token.TokenExpiredException;
-import gift.exception.token.TokenTypeException;
 import gift.repository.GiftRepository;
-import gift.utils.JwtParser;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 import static gift.status.GiftErrorStatus.*;
-import static gift.status.TokenErrorStatus.INVALID_TOKEN_TYPE;
-import static gift.status.TokenErrorStatus.TOKEN_EXPIRED;
 
 @Service
 public class GiftService {
@@ -28,55 +23,37 @@ public class GiftService {
         this.tokenService = tokenService;
     }
 
-    public ResponseGift addGift(CreateGiftRequest createGiftRequest, List<String> token) {
-        if(!JwtParser.isValidTokenType(token)){
-            throw new TokenTypeException(INVALID_TOKEN_TYPE.getErrorMessage());
-        }
-        if(tokenService.isTokenExpired(JwtParser.getToken(token))) {
-            throw new TokenExpiredException(TOKEN_EXPIRED.getErrorMessage());
-        }
-        Gift gift = CreateGiftRequest.toEntity(createGiftRequest);
+    public GiftResponse addGift(GiftCreateRequest giftCreateRequest, List<String> token) {
+        tokenService.isTokenExpired(token);
+
+        Gift gift = giftCreateRequest.toEntity();
         if(!gift.isGiftNameValid()){
             throw new InValidSpecialCharException(WRONG_CHARACTER.getErrorMessage());
         }
-
         gift.isKakaoMessageInclude();
-
-        return ResponseGift.from(giftRepository.save(gift));
+        return GiftResponse.from(giftRepository.save(gift));
     }
 
-    public ResponseGift getGiftById(Long id) {
-        return ResponseGift.from(
+    public GiftResponse getGiftById(Long id) {
+        return GiftResponse.from(
                 giftRepository.findById(id).orElseThrow(() -> new NoGiftException(NO_GIFT.getErrorMessage()))
         );
     }
 
-    public List<ResponseGift> getAllGifts() {
+    public List<GiftResponse> getAllGifts() {
         return giftRepository
                 .findAll()
                 .stream()
-                .map(ResponseGift::from)
+                .map(GiftResponse::from)
                 .toList();
     }
 
-    public ResponseGift updateGift(Long id, ModifyGiftRequest modifyGiftRequest, List<String> token) {
-        if(!JwtParser.isValidTokenType(token)){
-            throw new TokenTypeException(INVALID_TOKEN_TYPE.getErrorMessage());
-        }
-        if(tokenService.isTokenExpired(JwtParser.getToken(token))) {
-            throw new TokenExpiredException(TOKEN_EXPIRED.getErrorMessage());
-        }
+    public GiftResponse updateGift(Long id, GiftModifyRequest giftModifyRequest) {
         giftRepository.findById(id).orElseThrow(() -> new NoGiftException(NO_GIFT.getErrorMessage()));
-        return ResponseGift.from(giftRepository.modify(id, ModifyGiftRequest.toEntity(modifyGiftRequest)));
+        return GiftResponse.from(giftRepository.modify(id, giftModifyRequest.toEntity()));
     }
 
-    public void deleteGift(Long id, List<String> token) {
-        if(!JwtParser.isValidTokenType(token)){
-            throw new TokenTypeException(INVALID_TOKEN_TYPE.getErrorMessage());
-        }
-        if(tokenService.isTokenExpired(JwtParser.getToken(token))) {
-            throw new TokenExpiredException(TOKEN_EXPIRED.getErrorMessage());
-        }
+    public void deleteGift(Long id) {
         giftRepository.deleteById(id);
     }
 }
