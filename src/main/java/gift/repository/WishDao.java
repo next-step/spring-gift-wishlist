@@ -1,8 +1,10 @@
 package gift.repository;
 
+import gift.model.Wish;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -27,5 +29,14 @@ public class WishDao {
                         "productid", productId
                 ))
                 .update();
+    }
+
+    public List<Wish> getAllWish(Long userId) {
+        return jdbcClient.sql("SELECT * FROM wish WHERE userid = :userid")
+                .params(Map.of(
+                        "userid", userId
+                ))
+                .query(Wish.class)
+                .list();
     }
 }
