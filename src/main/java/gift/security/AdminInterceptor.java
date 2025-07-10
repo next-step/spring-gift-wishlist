@@ -16,25 +16,21 @@ public class AdminInterceptor implements HandlerInterceptor {
     this.jwtTokenProvider = jwtTokenProvider;
   }
 
+
   public boolean isAdmin(HttpServletRequest req, HttpServletResponse res)
       throws Exception {
 
     String token = req.getHeader("Authorization");
 
+
     if (token != null && token.startsWith("Bearer ")) {
       token = token.substring(7);
-
-      try {
-        jwtTokenProvider.validateToken(token);
-        String role = jwtTokenProvider.getRole(token);
-
-        if (role.equals("ADMIN")) {
-          return true;
-        }
-      } catch (Exception e) {
-        throw new Exception(e.getMessage());
-      }
     }
+
+    if(isValidAdminToken(token)) {
+      return true;
+    }
+
     res.setStatus(HttpStatus.UNAUTHORIZED.value());
     return false;
   }
@@ -43,5 +39,16 @@ public class AdminInterceptor implements HandlerInterceptor {
   public boolean preHandle(HttpServletRequest req, HttpServletResponse res,
       Object handler) throws Exception {
     return isAdmin(req, res);
+  }
+
+  private boolean isValidAdminToken(String token) throws Exception {
+    try {
+      jwtTokenProvider.validateToken(token);
+      String role = jwtTokenProvider.getRole(token);
+      return role.equals("ADMIN");
+    }
+    catch (Exception e) {
+      throw new Exception(e.getMessage());
+    }
   }
 }
