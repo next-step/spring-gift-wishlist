@@ -7,4 +7,17 @@ public class WishList {
     private Long memberId;
     private Long productId;
     private LocalDateTime createdAt;
+
+    public Long getMemberId() {
+        return memberId;
+    }
+
+    public Long getProductId() {
+        return productId;
+    }
+
+    public WishList(Long memberId, Long productId) {
+        this.memberId = memberId;
+        this.productId = productId;
+    }
 }

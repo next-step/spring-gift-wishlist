@@ -10,4 +10,6 @@ public interface MemberRepository {
     boolean existsByEmail(String email);
 
     Optional<Member> findMemberByEmail(String email);
+
+    Optional<Member> findMemberById(Long id);
 }
