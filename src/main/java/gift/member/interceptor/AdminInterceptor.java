@@ -39,6 +39,9 @@ public class AdminInterceptor implements HandlerInterceptor {
             response.getWriter().println("관리자 권한이 없습니다.");
             return false;
         }
+
+        Long memberId = tokenProvider.getMemberIdFromToken(token);
+        request.setAttribute("memberId", memberId);
         return true;
     }
 }

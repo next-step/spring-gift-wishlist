@@ -88,3 +88,4 @@
 - [ ] 로그인한 사용자의 토큰을 이용하여 컨트롤러에 memberId 주입
   - [x] TokenProvider에 토큰에서 memberId를 추출하는 getMemberIdFromToken 구현
   - [x] 커스텀 어노테이션 @LoginMember 구현
+  - [x] AdminInterceptor에서 토큰 검증 후 memberId를 request의 속성에 추가되도록 추가 구현
