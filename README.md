@@ -47,3 +47,10 @@
 - [x] 로그인 실패시 Http Status UnAuthorized로
 - [x] 로그인 테스트 케이스 추가
 - [x] 회원가입 성공시 Http Status 201 반환하도록
+
+### Step3 [ 07/10 ]
+- [x] MemberService에서 Http Header에 token 붙여 반환
+- [ ] 위시리스트 기능 구현
+  - [ ] 상품 목록 조회
+  - [ ] 상품 추가
+  - [ ] 상품 삭제
