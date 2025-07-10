@@ -17,8 +17,10 @@ CREATE TABLE member
 
 CREATE TABLE wishlist
 (
-    id        bigint auto_increment primary key,
+    id         bigint auto_increment primary key,
     member_id  bigint,
     product_id bigint,
-    quantity  bigint
+    quantity   bigint,
+    foreign key (member_id) references member (id) on delete cascade,
+    foreign key (product_id) references product (id) on delete cascade
 );
