@@ -1,5 +1,6 @@
 package gift.config;
 
+import gift.service.MemberService;
 import gift.util.JwtTokenProvider;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -11,13 +12,15 @@ import java.util.List;
 public class WebConfig implements WebMvcConfigurer {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final MemberService memberService;
 
-    public WebConfig(JwtTokenProvider jwtTokenProvider) {
+    public WebConfig(JwtTokenProvider jwtTokenProvider, MemberService memberService) {
         this.jwtTokenProvider = jwtTokenProvider;
+        this.memberService = memberService;
     }
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new LoginMemberArgumentResolver(jwtTokenProvider));
+        resolvers.add(new LoginMemberArgumentResolver(jwtTokenProvider, memberService));
     }
 }
