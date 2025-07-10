@@ -5,6 +5,7 @@ import gift.dto.MemberInfoResponse;
 import gift.dto.MemberRequest;
 import gift.dto.TokenResponse;
 import gift.entity.Member;
+import gift.exception.EmailAlreadyExistsException;
 import gift.exception.LoginException;
 import gift.repository.MemberRepository;
 import java.util.List;
@@ -63,6 +64,11 @@ public class MemberService {
     }
 
     public void saveMember(MemberRequest request) {
+        memberRepository.findByEmail(request.email())
+                .ifPresent(member -> {
+                    throw new EmailAlreadyExistsException("이미 사용 중인 이메일입니다.");
+                });
+
         Member member = new Member(request.email(), request.password());
         memberRepository.save(member);
     }
