@@ -42,8 +42,8 @@ public class WishlistService {
         );
     }
 
-    public List<WishlistResponseDto> findAll() {
-        List<Wishlist> wishlists = wishlistRepository.findAllByOrderByCreatedAtDesc();
+    public List<WishlistResponseDto> findAll(Long memberId) {
+        List<Wishlist> wishlists = wishlistRepository.findByMemberIdOrderByCreatedAtDesc(memberId);
 
         List<WishlistResponseDto> wishlistResponseDtos = new ArrayList<>();
 
@@ -66,8 +66,8 @@ public class WishlistService {
 
     }
 
-    public WishlistResponseDto findWishlist(Long wishlistId) {
-        Wishlist wishlist = wishlistRepository.findById(wishlistId)
+    public WishlistResponseDto findWishlist(Long wishlistId, long memberId) {
+        Wishlist wishlist = wishlistRepository.findByIdAndMemberId(wishlistId, memberId)
             .orElseThrow(() -> new WishlistNotFoundException(wishlistId));
 
         Item item = itemRepository.findById(wishlist.getItemId())
@@ -84,8 +84,8 @@ public class WishlistService {
         );
     }
 
-    public void deleteWishlist(Long wishlistId) {
-        Wishlist wishlist = wishlistRepository.findById(wishlistId)
+    public void deleteWishlist(Long wishlistId, Long memberId) {
+        Wishlist wishlist = wishlistRepository.findByIdAndMemberId(wishlistId, memberId)
             .orElseThrow(() -> new WishlistNotFoundException(wishlistId));
         wishlistRepository.remove(wishlist.getId());
     }

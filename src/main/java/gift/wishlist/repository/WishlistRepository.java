@@ -8,9 +8,9 @@ public interface WishlistRepository {
 
     Wishlist save(Wishlist wishlist);
 
-    List<Wishlist> findAllByOrderByCreatedAtDesc();
-
-    Optional<Wishlist> findById(Long id);
+    List<Wishlist> findByMemberIdOrderByCreatedAtDesc(Long memberId);
+    
+    Optional<Wishlist> findByIdAndMemberId(Long id, Long memberId);
 
     void remove(Long id);
 }

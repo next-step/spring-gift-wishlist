@@ -1,7 +1,6 @@
 package gift.wishlist.repository;
 
 import gift.wishlist.Wishlist;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -47,8 +46,8 @@ public class JdbcWishlistRepository implements WishlistRepository {
     }
 
     @Override
-    public List<Wishlist> findAllByOrderByCreatedAtDesc() {
-        String sql = "SELECT id, member_id, item_id, created_at FROM wishlist ORDER BY created_at DESC";
+    public List<Wishlist> findByMemberIdOrderByCreatedAtDesc(Long memberId) {
+        String sql = "SELECT id, member_id, item_id, created_at FROM wishlist WHERE member_id = ? ORDER BY created_at DESC";
 
         return jdbcTemplate.query(sql,
             (rs, rowNum) -> new Wishlist(
@@ -56,13 +55,12 @@ public class JdbcWishlistRepository implements WishlistRepository {
                 rs.getLong("member_id"),
                 rs.getLong("item_id"),
                 rs.getTimestamp("created_at").toLocalDateTime()
-            )
-        );
+            ), memberId);
     }
 
     @Override
-    public Optional<Wishlist> findById(Long id) {
-        String sql = "SELECT id, member_id, item_id, created_at FROM wishlist WHERE id = ?";
+    public Optional<Wishlist> findByIdAndMemberId(Long id, Long memberId) {
+        String sql = "SELECT id, member_id, item_id, created_at FROM wishlist WHERE id = ? AND member_id = ?";
 
         try {
             Wishlist wishlist = jdbcTemplate.queryForObject(sql,

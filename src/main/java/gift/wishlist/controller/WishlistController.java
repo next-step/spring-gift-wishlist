@@ -41,7 +41,10 @@ public class WishlistController {
         @PathVariable Long wishlistId,
         @LoginMember AuthenticatedMember member
     ) {
-        WishlistResponseDto wishlistResponseDto = wishlistService.findWishlist(wishlistId);
+        WishlistResponseDto wishlistResponseDto = wishlistService.findWishlist(
+            wishlistId,
+            member.id()
+        );
         return ResponseEntity.status(HttpStatus.OK).body(wishlistResponseDto);
     }
 
@@ -49,7 +52,7 @@ public class WishlistController {
     public ResponseEntity<List<WishlistResponseDto>> findAllWishlists(
         @LoginMember AuthenticatedMember member
     ) {
-        List<WishlistResponseDto> wishlistResponseDtos = wishlistService.findAll();
+        List<WishlistResponseDto> wishlistResponseDtos = wishlistService.findAll(member.id());
         return ResponseEntity.status(HttpStatus.OK).body(wishlistResponseDtos);
     }
 
@@ -58,7 +61,7 @@ public class WishlistController {
         @PathVariable Long wishlistId,
         @LoginMember AuthenticatedMember member
     ) {
-        wishlistService.deleteWishlist(wishlistId);
+        wishlistService.deleteWishlist(wishlistId, member.id());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
