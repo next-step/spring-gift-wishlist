@@ -70,16 +70,19 @@ public class JwtUtil {
         token = URLEncoder.encode(token, StandardCharsets.UTF_8).replaceAll("\\+", "%20");
         Cookie cookie = new Cookie(AUTHORIZATION_HEADER, token);
         cookie.setPath("/");
+        cookie.setHttpOnly(true); // JavaScript에서 접근할 수 없도록 설정
         res.addCookie(cookie);
     }
 
     // 2. 쿠키에서 토큰을 가져오는 메서드
     public String getTokenFromRequest(HttpServletRequest req) {
+        // Authorization 헤더에서 Bearer 토큰을 가져옵니다.
         String bearerToken = req.getHeader(AUTHORIZATION_HEADER);
         if (bearerToken != null && bearerToken.startsWith(BEARER_PREFIX)) {
             return bearerToken;
         }
-        
+
+        // 쿠키에서 토큰을 가져옵니다.
         Cookie[] cookies = req.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
