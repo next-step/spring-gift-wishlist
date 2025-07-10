@@ -1,10 +1,13 @@
 package gift.user.repository;
 
 import gift.user.domain.User;
+import gift.user.dto.UserPatchRequestDto;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Repository
@@ -26,9 +29,40 @@ public class UserDao {
         return user;
     }
 
+    public List<User> findAll() {
+        return jdbcClient.sql("SELECT * FROM USERS")
+                .query(User.class)
+                .list();
+    }
+    public User findById(UUID id) {
+        return jdbcClient.sql("SELECT * FROM USERS WHERE id = :id")
+                .param("id", id)
+                .query(User.class)
+                .single();
+    }
     public User findByEmail(String email) throws EmptyResultDataAccessException {
         return jdbcClient.sql("SELECT * FROM USERS WHERE email = :email")
                 .param("email", email)
+                .query(User.class)
+                .single();
+    }
+
+    @Transactional
+    public User update(UUID id, UserPatchRequestDto userPatchRequestDto) {
+        if (userPatchRequestDto.getEmail() != null) {
+            jdbcClient.sql("UPDATE USERS SET email = :email WHERE id = :id")
+                    .param("email", userPatchRequestDto.getEmail())
+                    .param("id", id)
+                    .update();
+        }
+        if (userPatchRequestDto.getPassword() != null) {
+            jdbcClient.sql("UPDATE USERS SET password = :password WHERE id = :id")
+                    .param("email", userPatchRequestDto.getPassword())
+                    .param("id", id)
+                    .update();
+        }
+        return jdbcClient.sql("SELECT * FROM USERS WHERE id = :id")
+                .param("id", id)
                 .query(User.class)
                 .single();
     }
