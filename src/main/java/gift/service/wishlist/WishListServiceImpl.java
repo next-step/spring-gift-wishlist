@@ -4,11 +4,13 @@ import gift.dto.product.ProductResponseDto;
 import gift.dto.wishlist.WishRequestDto;
 import gift.entity.Product;
 import gift.entity.Wish;
+import gift.exception.UnAuthenicatedException;
 import gift.repository.product.ProductRepository;
 import gift.repository.wishlist.WishListRepository;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -26,9 +28,9 @@ public class WishListServiceImpl implements WishListService {
     }
 
     @Override
-    public void create(WishRequestDto requestDto) {
+    public void create(WishRequestDto requestDto, Long memberId) {
         Wish wish = wishListRepository.create(
-            new Wish(requestDto.productId(), requestDto.memberId()));
+            new Wish(requestDto.productId(), memberId));
     }
 
     @Override

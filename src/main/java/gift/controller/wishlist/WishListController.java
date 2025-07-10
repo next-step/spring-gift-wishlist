@@ -28,7 +28,7 @@ public class WishListController {
         @RequestBody WishRequestDto requestDto,
         @LoginMember Member member
     ) {
-        wishListService.create(requestDto);
+        wishListService.create(requestDto, member.getId());
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
