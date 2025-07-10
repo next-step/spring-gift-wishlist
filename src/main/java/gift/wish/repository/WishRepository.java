@@ -17,7 +17,5 @@ public interface WishRepository {
 
     public Long countWishesByMemberId(Long memberId);
 
-//    public void existsByMemberandProduct();
-
-
+    public Boolean existsByMemberAndProduct(Long memberId, Long productId);
 }

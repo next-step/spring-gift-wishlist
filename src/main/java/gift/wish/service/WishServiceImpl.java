@@ -26,7 +26,12 @@ public class WishServiceImpl implements WishService {
 
     @Override
     public WishCreateResponseDto addWish(Member member, WishCreateRequestDto wishCreateRequestDto) {
-        // TODO: 이미 추가한 상품인지 확인하기(WishRepository.existsByMemberAndProduct) 실패 시 예외 처리(이미 존재하는 위시)
+        // TODO: 이미 추가한 상품인지 확인하기(WishRepository.existsByMemberAndProduct) 실패 시 예외 처리(이미 존재하는 위시) -> 이후 수량 관련해서 추가.
+        Boolean exists = wishRepository.existsByMemberAndProduct(member.getMemberId(),
+            wishCreateRequestDto.productId());
+        if (exists) {
+            throw new IllegalStateException("이미 위시리스트에 추가하셨습니다.");
+        }
 
         Wish wish = new Wish(member.getMemberId(), wishCreateRequestDto.productId());
         wishRepository.addWish(wish);

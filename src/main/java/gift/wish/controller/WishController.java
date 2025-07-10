@@ -55,7 +55,6 @@ public class WishController {
         wishService.deleteWish(member, wishId);
         return ResponseEntity.noContent().build();
     }
-
 }
 
 // TODO: 수량 변경 필요?

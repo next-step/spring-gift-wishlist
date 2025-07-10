@@ -26,11 +26,13 @@ public class WishRepositoryImpl implements WishRepository {
 
     @Override
     public List<Wish> getWishes(Member member, Page page) {
-        String sql = "SELECT wishId, productId, createdDate FROM wishes WHERE memberId = ? ORDER BY ? ? LIMIT ? OFFSET ?";
+        String sql = String.format(
+            "SELECT wishId, productId, createdDate FROM wishes WHERE memberId = ? ORDER BY %s %s LIMIT ? OFFSET ?",
+            page.getSortField(), page.getSortOrder());
         return jdbcTemplate.query(sql,
             (rs, RowNum) -> new Wish(rs.getLong("wishId"), rs.getLong("productId"),
                 rs.getTimestamp("createdDate").toLocalDateTime()), member.getMemberId(),
-            page.getSortField(), page.getSortOrder(), page.getSize(), page.getOffset());
+            page.getSize(), page.getOffset());
     }
 
     @Override
@@ -42,7 +44,6 @@ public class WishRepositoryImpl implements WishRepository {
     @Override
     public Wish findByWishId(Long wishId) {
         String sql = "SELECT wishId, memberId, productId, createdDate FROM wishes WHERE wishId = ?";
-
         try {
             return jdbcTemplate.queryForObject(sql,
                 (rs, rowNum) -> new Wish(rs.getLong("wishId"), rs.getLong("memberId"),
@@ -56,9 +57,12 @@ public class WishRepositoryImpl implements WishRepository {
     @Override
     public Long countWishesByMemberId(Long memberId) {
         String sql = "SELECT COUNT(wishId) FROM wishes WHERE memberId = ?";
-
         return jdbcTemplate.queryForObject(sql, Long.class, memberId);
     }
 
-
+    @Override
+    public Boolean existsByMemberAndProduct(Long memberId, Long productId) {
+        String sql = "SELECT EXISTS(SELECT 1 FROM wishes WHERE memberId = ? AND productId = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, memberId, productId);
+    }
 }
