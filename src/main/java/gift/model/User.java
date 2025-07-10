@@ -2,7 +2,6 @@ package gift.model;
 
 import java.time.LocalDateTime;
 
-
 public class User {
     private Long id;
     private String email;
@@ -11,11 +10,17 @@ public class User {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public User(String email, String name) {
+    public User(String email, String password, String name) {
         this.email = email;
+        this.password = password;
         this.name = name;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
+    }
+
+    public User(String email, String name) {
+        this.email = email;
+        this.name = name;
     }
 
     //Getters and Setters
