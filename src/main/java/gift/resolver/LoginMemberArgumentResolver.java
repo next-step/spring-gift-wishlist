@@ -1,7 +1,6 @@
 package gift.resolver;
 
 import gift.domain.Member;
-import gift.domain.Role;
 import gift.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;
@@ -20,7 +19,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(LoginMember.class);
+        return parameter.hasParameterAnnotation(LoginMember.class) && Member.class.isAssignableFrom(parameter.getParameterType());
     }
 
     @Override
