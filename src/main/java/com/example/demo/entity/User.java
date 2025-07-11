@@ -5,7 +5,7 @@ import com.example.demo.security.PasswordHasher;
 public class User {
   private Long id;
   private String email;
-  private String password; // 해시된 상태로만 유지됨
+  private String password;
   private String role;
 
   public User() {}
