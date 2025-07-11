@@ -6,18 +6,18 @@ public class Member {
     private String email;
     private String password;
 
+    // BeanPropertyRowMapper가 객체를 생성하기 위해선 삭제하면 안됨
     public Member() {
-
     }
 
-    public Member(Long id, String email, String password) {
+    private Member(Long id, String email, String password) {
         this.id = id;
         this.email = email;
         this.password = password;
     }
 
-    public Member(String email, String password) {
-        this(null, email, password);
+    public static Member from(String email, String password) {
+        return new Member(null, email, password);
     }
 
     public Member assignId(Long id) {
