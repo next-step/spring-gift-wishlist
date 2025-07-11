@@ -37,4 +37,13 @@ public class JwtTokenProvider {
             return false;
         }
     }
+
+    public String getEmailFromToken(String token) {
+        return Jwts.parser()
+                .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+    }
 }

@@ -1,12 +1,7 @@
 package gift.controller;
 
 import gift.config.JwtTokenProvider;
-import gift.config.UnAuthorizationException;
-import gift.domain.Product;
-import gift.dto.CreateMemberRequest;
-import gift.dto.CreateMemberResponse;
-import gift.dto.LoginMemberRequest;
-import gift.dto.LoginMemberResponse;
+import gift.dto.*;
 import gift.service.MemberService;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -42,12 +37,4 @@ public class MemberRestController {
         return new ResponseEntity<>(new LoginMemberResponse(token), HttpStatus.OK);
     }
 
-    @GetMapping("/products")
-    public HttpEntity<List<Product>> getProducts(@RequestHeader("Authorization") String authHeader) {
-        if (!jwtTokenProvider.validateToken(authHeader)) {
-            throw new UnAuthorizationException("인증되지 않은 사용자입니다.");
-        }
-        List<Product> productList = service.productList();
-        return new ResponseEntity<>(productList, HttpStatus.OK);
-    }
 }
