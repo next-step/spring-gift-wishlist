@@ -7,8 +7,8 @@ public record WishItem(
 ) {
 
   public WishItem {
-    validateId(id);
-    validateId(id);
+    validateId(memberId);
+    validateId(productId);
   }
 
   public static WishItem of(Long memberId, Long productId) {
