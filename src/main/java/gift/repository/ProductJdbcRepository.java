@@ -1,8 +1,6 @@
 package gift.repository;
 
 import gift.entity.Product;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -22,17 +20,12 @@ public class ProductJdbcRepository implements ProductRepository {
 
 
     private RowMapper<Product> productRowMapper() {
-        return new RowMapper<>() {
-            @Override
-            public Product mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new Product(
-                    rs.getLong("productId"),
-                    rs.getString("name"),
-                    rs.getInt("price"),
-                    rs.getString("imageURL")
-                );
-            }
-        };
+        return (rs, rowNum) -> new Product(
+            rs.getLong("productId"),
+            rs.getString("name"),
+            rs.getInt("price"),
+            rs.getString("imageURL")
+        );
     }
 
 
