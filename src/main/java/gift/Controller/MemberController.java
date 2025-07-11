@@ -64,11 +64,8 @@ public class MemberController {
 
   @PostMapping("/login")
   public ResponseEntity<Void> login(@ModelAttribute MemberRequestDto req) {
-    String token = memberService.login(req.getEmail(), req.getPassword());
-
-    return ResponseEntity
-        .ok()
-        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-        .build();
+    HttpHeaders headers = memberService.login(req.getEmail(), req.getPassword());
+    return new ResponseEntity<>(headers, HttpStatus.OK);
   }
+
 }
