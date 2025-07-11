@@ -8,7 +8,7 @@ public interface WishListRepository {
 
     WishItem addWishItem(Long itemId, String itemName, String imageUrl, Integer price, Integer quantity, Long userId);
 
-    List<WishItem> getAllWishItems(String userEmail);
+    List<WishItem> getAllWishItems(Long userId);
 
     List<WishItem> getWishItems(String name, Integer price, String userEmail);
 

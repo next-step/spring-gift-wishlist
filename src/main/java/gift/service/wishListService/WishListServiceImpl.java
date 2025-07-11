@@ -1,5 +1,6 @@
 package gift.service.wishListService;
 
+import gift.dto.itemDto.ItemDto;
 import gift.dto.wishListDto.AddWishItemDto;
 import gift.dto.wishListDto.ResponseWishItemDto;
 import gift.entity.Item;
@@ -55,24 +56,64 @@ public class WishListServiceImpl implements WishListService{
 
     @Override
     public List<ResponseWishItemDto> getItemList(String name, Integer price, String userEmail) {
-        List<WishItem> wishItems;
-        List<ResponseWishItemDto> result = new ArrayList<>();
-
-        if (name == null && price == null) {
-            wishItems = wishListRepository.getAllWishItems(userEmail);
-        } else {
-            wishItems = wishListRepository.getWishItems(name, price, userEmail);
+        User user = userService.findUserByEmail(userEmail);
+        if (user == null) {
+            throw new UserNotFoundException();
         }
 
+        List<WishItem> wishItems = wishListRepository.getAllWishItems(user.id());
         if (wishItems.isEmpty()) {
             throw new ItemNotFoundException();
         }
 
-        for (WishItem wishItem : wishItems) {
-            result.add(ResponseWishItemDto.from(wishItem));
+        List<ResponseWishItemDto> result = new ArrayList<>();
+
+        if (name == null && price == null) {
+            for (WishItem wishItem : wishItems) {
+                Item item = itemService.findItemById(wishItem.itemId());
+                if (item == null) {
+                    throw new ItemNotFoundException();
+                }
+
+                WishItem addWishItem = itemToWishItem(wishItem, item);
+                result.add(ResponseWishItemDto.from(addWishItem));
+            }
+        } else {
+            for (WishItem wishItem : wishItems) {
+                Item item = itemService.findItemById(wishItem.itemId());
+                if (item == null) {
+                    continue;
+                }
+
+                if (isValid(item,name,price)) {
+                    WishItem addWishItem = itemToWishItem(wishItem, item);
+                    result.add(ResponseWishItemDto.from(addWishItem));
+                }
+            }
+
+            if (result.isEmpty()) {
+                throw new ItemNotFoundException();
+            }
         }
 
         return result;
+    }
+    private boolean isValid(Item item, String name, Integer price) {
+        boolean nameMatches = (name == null || item.getName().equals(name));
+        boolean priceMatches = (price == null || item.getPrice().equals(price));
+
+        return nameMatches && priceMatches;
+    }
+
+    private WishItem itemToWishItem(WishItem base, Item item) {
+        return new WishItem(
+                base.id(),
+                base.itemId(),
+                item.getName(),
+                item.getImageUrl(),
+                item.getPrice(),
+                base.quantity()
+        );
     }
 
     @Override

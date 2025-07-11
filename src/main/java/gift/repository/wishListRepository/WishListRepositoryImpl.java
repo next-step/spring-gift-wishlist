@@ -21,13 +21,9 @@ import java.util.List;
 @Repository
 public class WishListRepositoryImpl implements WishListRepository {
 
-    private final UserRepository userRepository;
-    private final ItemRepository itemRepository;
     private final JdbcTemplate jdbcTemplate;
 
-    public WishListRepositoryImpl(UserRepository userRepository, ItemRepository itemRepository, JdbcTemplate jdbcTemplate) {
-        this.userRepository = userRepository;
-        this.itemRepository = itemRepository;
+    public WishListRepositoryImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -58,31 +54,25 @@ public class WishListRepositoryImpl implements WishListRepository {
 
         Long id = keyHolder.getKey().longValue();
 
-        return new WishItem(id, itemName, imageUrl, price, quantity);
+        return new WishItem(id, itemId, itemName, imageUrl, price, quantity);
     }
 
-    @Override
-    public List<WishItem> getAllWishItems(String userEmail) {
-        String sql = """
-        SELECT
-            i.id AS item_id,
-            i.name,
-            i.image_url,
-            i.price,
-            w.quantity
-        FROM wish_items w
-        JOIN users u ON w.user_id = u.id
-        JOIN items i ON w.item_id = i.id
-        WHERE u.email = ?
-    """;
+    private final RowMapper<WishItem> wishItemRowMapper = (rs, rowNum) -> new WishItem(
+            rs.getLong("id"),
+            rs.getLong("item_id"),
+            null,
+            null,
+            null,
+            rs.getInt("quantity")
+    );
 
-        return jdbcTemplate.query(sql, new Object[]{userEmail}, (rs, rowNum) -> new WishItem(
-                rs.getLong("item_id"),
-                rs.getString("name"),
-                rs.getString("image_url"),
-                rs.getInt("price"),
-                rs.getInt("quantity")
-        ));
+    @Override
+    public List<WishItem> getAllWishItems(Long userId) {
+        var findSql = "SELECT id, user_id, item_id, quantity FROM wish_items WHERE user_id = ?";
+
+        jdbcTemplate.queryForObject(findSql, new Object[]{userId}, Long.class);
+
+        return jdbcTemplate.query(findSql, new Object[]{userId}, wishItemRowMapper);
     }
 
     @Override
