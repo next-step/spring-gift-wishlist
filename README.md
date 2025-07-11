@@ -35,7 +35,7 @@
 ## 구현할 기능 목록 (3단계 - 위시 리스트)
 
 - [ ] 위시 리스트 기능 구현
-    - [ ] 위시 리스트에 상품 추가 API (`POST /api/wishes`)
+    - [x] 위시 리스트에 상품 추가 API (`POST /api/wishes`)
     - [ ] 위시 리스트 목록 조회 API (`GET /api/wishes`)
     - [ ] 위시 리스트 상품 삭제 API (`DELETE /api/wishes/{wishId}`)
 - [ ] `@LoginMember` 어노테이션 및 `HandlerMethodArgumentResolver` 구현
