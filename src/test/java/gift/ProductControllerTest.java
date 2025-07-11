@@ -9,13 +9,15 @@ import gift.dto.MemberResponseDto;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.dto.UpdateProductRequestDto;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
@@ -26,10 +28,36 @@ public class ProductControllerTest {
 
     private RestClient client = RestClient.builder().build();
     private String url;
+    private String accessToken;
 
     @BeforeEach
     void setUp() {
-        url = "http://localhost:" + port + "/api";
+        url = "http://localhost:" + port + "/api/products";
+        MemberRequestDto memberRequestDto = new MemberRequestDto("test@example.com", "password");
+        String memberUrl = "http://localhost:" + port + "/api/members";
+
+        client.post()
+                .uri(memberUrl + "/register")
+                .body(memberRequestDto)
+                .retrieve()
+                .toBodilessEntity();
+
+        var loginResponse = client.post()
+                .uri(memberUrl + "/login")
+                .body(memberRequestDto)
+                .retrieve()
+                .toEntity(MemberResponseDto.class);
+
+        this.accessToken = loginResponse.getBody().token();
+    }
+
+    @Autowired
+    private JdbcClient jdbcClient;
+
+    @AfterEach
+    void rollback() {
+        jdbcClient.sql("DELETE FROM members")
+                .update();
     }
 
     @Test
@@ -42,7 +70,8 @@ public class ProductControllerTest {
         );
 
         var response = client.post()
-                .uri(url + "/products")
+                .uri(url)
+                .header("Authorization", "Bearer " + this.accessToken)
                 .body(productRequestDto)
                 .retrieve()
                 .toEntity(ProductResponseDto.class);
@@ -65,7 +94,8 @@ public class ProductControllerTest {
 
         assertThatThrownBy(() ->
                 client.post()
-                        .uri(url + "/products")
+                        .uri(url)
+                        .header("Authorization", "Bearer " + this.accessToken)
                         .body(productRequestDto)
                         .retrieve()
                         .toBodilessEntity()
@@ -82,7 +112,8 @@ public class ProductControllerTest {
         );
 
         var response = client.post()
-                .uri(url + "/products")
+                .uri(url)
+                .header("Authorization", "Bearer " + this.accessToken)
                 .body(productRequestDto)
                 .retrieve()
                 .toEntity(ProductResponseDto.class);
@@ -104,7 +135,8 @@ public class ProductControllerTest {
         );
 
         var response = client.post()
-                .uri(url + "/products")
+                .uri(url)
+                .header("Authorization", "Bearer " + this.accessToken)
                 .body(productRequestDto)
                 .retrieve()
                 .toEntity(ProductResponseDto.class);
@@ -122,51 +154,11 @@ public class ProductControllerTest {
 
         assertThatThrownBy(() ->
                 client.put()
-                        .uri(url + "/products/" + productId)
+                        .uri(url + "/" + productId)
+                        .header("Authorization", "Bearer " + this.accessToken)
                         .body(updateProductRequestDto)
                         .retrieve()
                         .toBodilessEntity()
         ).isInstanceOf(HttpClientErrorException.BadRequest.class);
-    }
-
-    @Test
-    void 정상_회원가입() {
-        var memberRequestDto = new MemberRequestDto(
-                "test@example.com",
-                "test123");
-        var response = client.post()
-                .uri(url + "/members/register")
-                .body(memberRequestDto)
-                .retrieve()
-                .toEntity(MemberResponseDto.class);
-        assertAll(
-                () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED),
-                () -> assertThat(response.getBody()).isNotNull(),
-                () -> assertThat(response.getBody().token()).isNotBlank()
-        );
-    }
-
-    @Test
-    void 비밀번호_잘못된_로그인() {
-        var registerRequestDto = new MemberRequestDto(
-                "test@example.com",
-                "test123");
-        var response = client.post()
-                .uri(url + "/members/register")
-                .body(registerRequestDto)
-                .retrieve()
-                .toEntity(MemberResponseDto.class);
-
-        var loginRequestDto = new MemberRequestDto(
-                "test@example.com",
-                "wrong_password");
-
-        assertThatThrownBy(() ->
-                client.post()
-                        .uri(url+ "/members/login")
-                        .body(loginRequestDto)
-                        .retrieve()
-                        .toBodilessEntity()
-        ).isInstanceOf(HttpClientErrorException.Forbidden.class);
     }
 }
