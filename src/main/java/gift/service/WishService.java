@@ -42,4 +42,8 @@ public class WishService {
                      .toList();
     }
 
+    public void deleteWish(Long wishId) {
+
+        wishRepository.deleteWish(wishId);
+    }
 }

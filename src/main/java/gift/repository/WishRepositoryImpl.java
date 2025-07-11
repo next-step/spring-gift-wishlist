@@ -39,4 +39,13 @@ public class WishRepositoryImpl implements WishRepository {
                      .query(Wish.class)
                      .list();
     }
+
+    @Override
+    public void deleteWish(Long wishId) {
+        var sql = "DELETE FROM wish WHERE id = :id";
+
+        client.sql(sql)
+              .param("id", wishId)
+              .update();
+    }
 }
