@@ -11,3 +11,11 @@ CREATE TABLE USERS (
     password varchar(255),
     salt varchar(64)
 );
+
+CREATE TABLE WISHLISTS (
+    id BIGINT PRIMARY KEY,
+    user_id CHAR(36),
+    product_id CHAR(36),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (product_id) REFERENCES products(id)
+);

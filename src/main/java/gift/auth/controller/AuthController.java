@@ -34,6 +34,6 @@ public class AuthController {
         String token = authService.login(userLoginRequestDto);
         return ResponseEntity
                 .ok()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer"+token).body(token);
+                .header(HttpHeaders.AUTHORIZATION, "Bearer "+token).body(token);
     }
 }

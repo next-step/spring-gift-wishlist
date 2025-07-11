@@ -46,7 +46,7 @@ public class UserService {
     }
 
     @Transactional
-    public User updateUser(UUID id, UserPatchRequestDto userPatchRequestDto) {
+    public User updateUser(UUID id, UserPatchRequestDto userPatchRequestDto) throws Exception {
         if(userDao.findById(id).isEmpty()) {
             throw new EmptyResultDataAccessException(1);
         }
@@ -54,7 +54,9 @@ public class UserService {
             userDao.updateEmail(id, userPatchRequestDto.getEmail());
         }
         if(userPatchRequestDto.getPassword() != null) {
-            userDao.updatePassword(id, userPatchRequestDto.getPassword());
+            byte[] salt = Base64.getDecoder().decode(userDao.findById(id).get().getSalt());
+            String hashedPassword = PasswordUtil.encryptPassword(userPatchRequestDto.getPassword(), salt);
+            userDao.updatePassword(id, hashedPassword);
         }
         return userDao.findById(id).get();
     }

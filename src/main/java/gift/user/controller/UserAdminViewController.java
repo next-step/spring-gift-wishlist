@@ -62,7 +62,7 @@ public class UserAdminViewController {
     }
 
     @PatchMapping("/{id}/update")
-    public String update(@PathVariable UUID id, @Valid @ModelAttribute UserPatchRequestDto userPatchRequestDto, BindingResult bindingResult) {
+    public String update(@PathVariable UUID id, @Valid @ModelAttribute UserPatchRequestDto userPatchRequestDto, BindingResult bindingResult) throws Exception {
         if (bindingResult.hasErrors()) {
             return "userUpdateForm";
         }
