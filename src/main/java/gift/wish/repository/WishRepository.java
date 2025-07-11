@@ -1,6 +1,5 @@
 package gift.wish.repository;
 
-import gift.member.entity.Member;
 import gift.wish.entity.Page;
 import gift.wish.entity.Wish;
 import java.util.List;
@@ -9,7 +8,7 @@ public interface WishRepository {
 
     void addWish(Wish wish);
 
-    List<Wish> getWishes(Member member, Page page);
+    List<Wish> getWishes(Long memberId, Page page);
 
     void deleteWish(Long wishId);
 

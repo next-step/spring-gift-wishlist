@@ -2,23 +2,25 @@ package gift.wish.argumentresolver;
 
 import gift.exception.wish.InvalidAuthorizationException;
 import gift.exception.wish.InvalidTokenException;
-import gift.member.repository.MemberRepository;
 import gift.member.security.JwtTokenProvider;
+import gift.member.service.MemberService;
 import gift.wish.annotation.LoginMember;
 import org.springframework.core.MethodParameter;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+@Component
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private final MemberRepository memberRepository;
+    private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public LoginMemberArgumentResolver(MemberRepository memberRepository,
+    public LoginMemberArgumentResolver(MemberService memberService,
         JwtTokenProvider jwtTokenProvider) {
-        this.memberRepository = memberRepository;
+        this.memberService = memberService;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -47,6 +49,6 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
 
         Long memberId = jwtTokenProvider.getMemberIdFromToken(token);
 
-        return memberRepository.findMemberById(memberId);
+        return memberService.findMemberById(memberId).memberId();
     }
 }

@@ -1,7 +1,6 @@
 package gift.wish.repository;
 
 import gift.exception.wish.WishNotFoundException;
-import gift.member.entity.Member;
 import gift.wish.entity.Page;
 import gift.wish.entity.Wish;
 import java.util.List;
@@ -25,13 +24,13 @@ public class WishRepositoryImpl implements WishRepository {
     }
 
     @Override
-    public List<Wish> getWishes(Member member, Page page) {
+    public List<Wish> getWishes(Long memberId, Page page) {
         String sql = String.format(
             "SELECT wishId, productId, createdDate FROM wishes WHERE memberId = ? ORDER BY %s %s LIMIT ? OFFSET ?",
             page.getSortField(), page.getSortOrder());
         return jdbcTemplate.query(sql,
             (rs, RowNum) -> new Wish(rs.getLong("wishId"), rs.getLong("productId"),
-                rs.getTimestamp("createdDate").toLocalDateTime()), member.getMemberId(),
+                rs.getTimestamp("createdDate").toLocalDateTime()), memberId,
             page.getSize(), page.getOffset());
     }
 

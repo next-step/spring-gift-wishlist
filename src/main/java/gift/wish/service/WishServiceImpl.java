@@ -2,7 +2,6 @@ package gift.wish.service;
 
 import gift.exception.wish.InvalidPageException;
 import gift.exception.wish.WishlistAccessDeniedException;
-import gift.member.entity.Member;
 import gift.wish.dto.WishCreateRequestDto;
 import gift.wish.dto.WishCreateResponseDto;
 import gift.wish.dto.WishGetRequestDto;
@@ -25,15 +24,15 @@ public class WishServiceImpl implements WishService {
     }
 
     @Override
-    public WishCreateResponseDto addWish(Member member, WishCreateRequestDto wishCreateRequestDto) {
+    public WishCreateResponseDto addWish(Long memberId, WishCreateRequestDto wishCreateRequestDto) {
         // TODO: 이미 추가한 상품인지 확인하기(WishRepository.existsByMemberAndProduct) 실패 시 예외 처리(이미 존재하는 위시) -> 이후 수량 관련해서 추가.
-        Boolean exists = wishRepository.existsByMemberAndProduct(member.getMemberId(),
+        Boolean exists = wishRepository.existsByMemberAndProduct(memberId,
             wishCreateRequestDto.productId());
         if (exists) {
             throw new IllegalStateException("이미 위시리스트에 추가하셨습니다.");
         }
 
-        Wish wish = new Wish(member.getMemberId(), wishCreateRequestDto.productId());
+        Wish wish = new Wish(memberId, wishCreateRequestDto.productId());
         wishRepository.addWish(wish);
 
         // TODO: wishes 테이블에서 조회해서 반환하도록 수정 필요 -> keyHolder? 라는 게 있던데
@@ -43,7 +42,7 @@ public class WishServiceImpl implements WishService {
 
     // TODO: 상품 이름도 같이 반환할 수 있는 방법이 뭐가 있을까?
     @Override
-    public WishPageResponseDto getWishes(Member member, WishGetRequestDto wishGetRequestDto) {
+    public WishPageResponseDto getWishes(Long memberId, WishGetRequestDto wishGetRequestDto) {
         Integer page = wishGetRequestDto.page();
         Integer size = wishGetRequestDto.size();
         String sort = wishGetRequestDto.sort();
@@ -68,9 +67,9 @@ public class WishServiceImpl implements WishService {
 
         Page pageInfo = new Page(size, offset, sortField, sortOrder);
 
-        List<Wish> wishes = wishRepository.getWishes(member, pageInfo);
+        List<Wish> wishes = wishRepository.getWishes(memberId, pageInfo);
 
-        Long total = wishRepository.countWishesByMemberId(member.getMemberId());
+        Long total = wishRepository.countWishesByMemberId(memberId);
 
         List<WishGetResponseDto> content = wishes.stream()
             .map(wish -> new WishGetResponseDto(
@@ -86,10 +85,10 @@ public class WishServiceImpl implements WishService {
     }
 
     @Override
-    public void deleteWish(Member member, Long wishId) {
+    public void deleteWish(Long memberId, Long wishId) {
         Wish wish = wishRepository.findByWishId(wishId);
 
-        if (!member.getMemberId().equals(wish.getMemberId())) {
+        if (!memberId.equals(wish.getMemberId())) {
             throw new WishlistAccessDeniedException("다른 사용자의 위시리스트에 접근할 수 없습니다.");
         }
 

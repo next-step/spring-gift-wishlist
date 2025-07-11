@@ -1,6 +1,5 @@
 package gift.wish.controller;
 
-import gift.member.entity.Member;
 import gift.wish.annotation.LoginMember;
 import gift.wish.dto.WishCreateRequestDto;
 import gift.wish.dto.WishCreateResponseDto;
@@ -30,29 +29,29 @@ public class WishController {
     }
 
     @PostMapping
-    public ResponseEntity<WishCreateResponseDto> addWish(@LoginMember Member member,
+    public ResponseEntity<WishCreateResponseDto> addWish(@LoginMember Long memberId,
         @Valid @RequestBody WishCreateRequestDto wishCreateRequestDto) {
 
-        return new ResponseEntity<>(wishService.addWish(member, wishCreateRequestDto),
+        return new ResponseEntity<>(wishService.addWish(memberId, wishCreateRequestDto),
             HttpStatus.CREATED);
     }
 
     // /api/wishes?page=0&size=10&sort=createdDate,desc
     @GetMapping
-    public ResponseEntity<WishPageResponseDto> getWishes(@LoginMember Member member,
+    public ResponseEntity<WishPageResponseDto> getWishes(@LoginMember Long memberId,
         @RequestParam(defaultValue = "0") Integer page,
         @RequestParam(defaultValue = "10") Integer size,
         @RequestParam(defaultValue = "createdDate,desc") String sort) {
 
         WishGetRequestDto wishGetRequestDto = new WishGetRequestDto(page, size, sort);
 
-        return new ResponseEntity<>(wishService.getWishes(member, wishGetRequestDto),
+        return new ResponseEntity<>(wishService.getWishes(memberId, wishGetRequestDto),
             HttpStatus.OK);
     }
 
     @DeleteMapping("/{wishId}")
-    public ResponseEntity<Void> deleteWish(@LoginMember Member member, @PathVariable Long wishId) {
-        wishService.deleteWish(member, wishId);
+    public ResponseEntity<Void> deleteWish(@LoginMember Long memberId, @PathVariable Long wishId) {
+        wishService.deleteWish(memberId, wishId);
         return ResponseEntity.noContent().build();
     }
 }
