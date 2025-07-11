@@ -3,8 +3,6 @@ package gift.repository.product;
 import gift.entity.Product;
 import gift.exception.ProductNotFoundException;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -18,6 +16,13 @@ import org.springframework.stereotype.Repository;
 public class ProductJdbcRepositoryImpl implements ProductRepository {
 
   private final JdbcTemplate jdbcTemplate;
+  private static final RowMapper<Product> productRowMapper = (rs, rowNum) ->
+      new Product(
+          rs.getLong("id"),
+          rs.getString("name"),
+          rs.getLong("price"),
+          rs.getString("imageUrl")
+      );
 
   public ProductJdbcRepositoryImpl(JdbcTemplate jdbcTemplate) {
     this.jdbcTemplate = jdbcTemplate;
@@ -26,14 +31,14 @@ public class ProductJdbcRepositoryImpl implements ProductRepository {
   @Override
   public List<Product> findAllProduct() {
     String sql = "select * from products";
-    return jdbcTemplate.query(sql, productRowMapper());
+    return jdbcTemplate.query(sql, productRowMapper);
   }
 
   @Override
   public Optional<Product> findProductById(Long id) {
     String sql = "select * from products where id=?";
     try {
-      Product result = jdbcTemplate.queryForObject(sql, productRowMapper(), id);
+      Product result = jdbcTemplate.queryForObject(sql, productRowMapper, id);
       return Optional.of(result);
     } catch (EmptyResultDataAccessException e) {
       return Optional.empty();
@@ -86,18 +91,18 @@ public class ProductJdbcRepositoryImpl implements ProductRepository {
     return deletedProduct;
   }
 
-  private static RowMapper<Product> productRowMapper() {
-    return new RowMapper<Product>() {
-      @Override
-      public Product mapRow(ResultSet rs, int rowNum) throws SQLException {
-        Product product = new Product(
-            rs.getLong("id"),
-            rs.getString("name"),
-            rs.getLong("price"),
-            rs.getString("imageUrl")
-        );
-        return product;
-      }
-    };
-  }
+//  private static RowMapper<Product> productRowMapper() {
+//    return new RowMapper<Product>() {
+//      @Override
+//      public Product mapRow(ResultSet rs, int rowNum) throws SQLException {
+//        Product product = new Product(
+//            rs.getLong("id"),
+//            rs.getString("name"),
+//            rs.getLong("price"),
+//            rs.getString("imageUrl")
+//        );
+//        return product;
+//      }
+//    };
+//  }
 }

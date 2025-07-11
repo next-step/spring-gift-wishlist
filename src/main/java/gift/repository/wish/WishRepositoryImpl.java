@@ -3,8 +3,6 @@ package gift.repository.wish;
 import gift.entity.Wish;
 import gift.exception.ProductNotFoundException;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,6 +16,14 @@ public class WishRepositoryImpl implements WishRepository {
 
   private JdbcTemplate jdbcTemplate;
 
+  private static final RowMapper<Wish> wishRowMapper = (rs, rowNum) ->
+      new Wish(
+          rs.getLong("id"),
+          rs.getLong("member_id"),
+          rs.getLong("product_id"),
+          rs.getLong("quantity")
+      );
+
   public WishRepositoryImpl(JdbcTemplate jdbcTemplate) {
     this.jdbcTemplate = jdbcTemplate;
   }
@@ -25,7 +31,7 @@ public class WishRepositoryImpl implements WishRepository {
   @Override
   public List<Wish> findByMemberId(Long memberId) {
     String sql = "SELECT * FROM WISHLIST WHERE member_id = ?";
-    return jdbcTemplate.query(sql, wishRowMapper(), memberId);
+    return jdbcTemplate.query(sql, wishRowMapper, memberId);
   }
 
   @Override
@@ -49,8 +55,7 @@ public class WishRepositoryImpl implements WishRepository {
     wish.setId(generatedId);
     return wish;
   }
-
-
+  
   @Override
   public Optional<Wish> updateQuantity(Long memberId, Wish wish) {
     String sql = "update wishlist set quantity=? where member_id=? and product_id=?";
@@ -60,7 +65,7 @@ public class WishRepositoryImpl implements WishRepository {
       return Optional.empty();
     }
     String selectSql = "SELECT * FROM wishlist WHERE member_id = ? AND product_id = ?";
-    Wish updatedWish = jdbcTemplate.queryForObject(selectSql, wishRowMapper(), wish.getMemberId(),
+    Wish updatedWish = jdbcTemplate.queryForObject(selectSql, wishRowMapper, wish.getMemberId(),
         wish.getProductId());
     return Optional.of(updatedWish);
   }
@@ -73,20 +78,5 @@ public class WishRepositoryImpl implements WishRepository {
       throw new ProductNotFoundException("삭제할 것이 없습니다");
     }
     return deletedProduct;
-  }
-
-  private static RowMapper<Wish> wishRowMapper() {
-    return new RowMapper<Wish>() {
-      @Override
-      public Wish mapRow(ResultSet rs, int rowNum) throws SQLException {
-        Wish wish = new Wish(
-            rs.getLong("id"),
-            rs.getLong("member_id"),
-            rs.getLong("product_id"),
-            rs.getLong("quantity")
-        );
-        return wish;
-      }
-    };
   }
 }
