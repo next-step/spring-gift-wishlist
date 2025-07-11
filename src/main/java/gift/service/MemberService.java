@@ -1,6 +1,6 @@
 package gift.service;
 
-import gift.JwtTokenProvider;
+import gift.jwt.JwtTokenProvider;
 import gift.dto.MemberDto;
 import gift.entity.Member;
 import gift.repository.MemberRepository;
@@ -23,7 +23,7 @@ public class MemberService {
             throw new IllegalArgumentException("이미 가입된 이메일입니다.");
         }
 
-        Member member = Member.createMember(dto.getEmail(), dto.getPassword());
+        Member member = Member.of(dto.getEmail(), dto.getPassword());
         Member saved = memberRepository.save(member);
 
         return new MemberDto(saved);
