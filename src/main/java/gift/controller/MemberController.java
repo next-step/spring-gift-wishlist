@@ -30,19 +30,18 @@ public class MemberController {
 
     @PostMapping("/register")
     public ResponseEntity<TokenResponseDto> registerMember(@Valid @RequestBody MemberRequestDto memberRequestDto) {
-        String token = memberService.saveMember(memberRequestDto);
-
+        memberService.saveMember(memberRequestDto);
+        String token = jwtUtil.generateToken(memberRequestDto);
         return ResponseEntity.ok(new TokenResponseDto(token));
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> loginMember(@Valid @RequestBody MemberRequestDto memberRequestDto) {
-        String token;
-        try{
-            token = memberService.existMember(memberRequestDto);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+
+        if(!memberService.existMember(memberRequestDto)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("아이디 또는 비밀번호가 올바르지 않습니다.");
         }
+        String token = jwtUtil.generateToken(memberRequestDto);
         return ResponseEntity.ok(new TokenResponseDto(token));
     }
 }

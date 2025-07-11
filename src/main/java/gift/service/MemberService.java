@@ -6,9 +6,9 @@ import gift.entity.Member;
 
 public interface MemberService {
 
-    String saveMember(MemberRequestDto memberRequestDto);
+    void saveMember(MemberRequestDto memberRequestDto);
 
-    String existMember(MemberRequestDto memberRequestDto);
+    boolean existMember(MemberRequestDto memberRequestDto);
 
     Member findByEmail(String email);
 }
