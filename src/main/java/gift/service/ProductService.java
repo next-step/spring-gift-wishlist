@@ -4,9 +4,7 @@ import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.dto.ProductStatusPatchRequestDto;
 import gift.entity.Product;
-import gift.exception.NotFoundByIdException;
 import gift.repository.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,10 +22,7 @@ public class ProductService {
 
     public Long saveProduct(ProductRequestDto productRequestDto) {
         return productRepository.saveProduct(
-            productRequestDto.name(),
-            productRequestDto.price(),
-            productRequestDto.imageUrl(),
-            Product.inferStatus(productRequestDto)
+                productRequestDto.toEntity()
         );
     }
 
@@ -37,14 +32,18 @@ public class ProductService {
 
     public void updateProduct(Long id, ProductRequestDto productUpdateDto) {
         productRepository.updateProduct(
-                new Product(id, productUpdateDto)
+                new Product(
+                        id,
+                        productUpdateDto.name(),
+                        productUpdateDto.price(),
+                        productUpdateDto.imageUrl())
         );
     }
 
     @Transactional(readOnly = true)
     public List<ProductResponseDto> findApprovedProducts() {
         return productRepository.findAllProducts().stream()
-                .filter(product -> product.status() == Product.Status.APPROVED)
+                .filter(Product::isApproved)
                 .map(ProductResponseDto::new)
                 .toList();
     }
@@ -60,7 +59,7 @@ public class ProductService {
     public ProductResponseDto findProductById(Long id) {
         return productRepository.findProductById(id)
                 .map(ProductResponseDto::new)
-                .orElseThrow(() -> new NotFoundByIdException("Not Found by id: " + id));
+                .orElseThrow(() -> new IllegalArgumentException("Not Found by id: " + id));
     }
 
     public void updateProductStatus(Long productId, ProductStatusPatchRequestDto statusPatchRequestDto) {

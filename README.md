@@ -1,15 +1,11 @@
 # spring-gift-wishlist
-> 회원 로그인
+> 위시 리스트
 ## 기능 요구 사항
-* 회원
-  * DB Table 생성
-  * Repository 생성
-* 회원가입
-  * password hashing 해서 저장
-  * token 생성
-* 로그인
-  * email, password 비교
-  * token 생성
-* 테스트 코드 구현
-  * Product Controller를 위한 e2e 테스트
-  * Member Controller를 위한 e2e 테스트
+* 위시 리스트 구현
+  * db 위시 리스트 table 구현
+  * 등록된 상품 조회
+  * 상품 추가
+  * 상품 삭제
+* 사용자 정보 받기
+  * Authorization 필드의 JWT 토큰 해석하기
+  * 전처리에 연결

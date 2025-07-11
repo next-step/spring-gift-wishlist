@@ -1,7 +1,6 @@
 package gift.repository;
 
 import gift.entity.Product;
-import gift.exception.NotFoundByIdException;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
@@ -55,17 +54,17 @@ public class DatabaseProductRepository implements ProductRepository {
                 .update();
 
         if (numOfUpdatedRows == 0)
-            throw new NotFoundByIdException("Not Found id: " + id);
+            throw new IllegalArgumentException("Not Found id: " + id);
     }
 
     @Override
-    public Long saveProduct(String name, Integer price, String imageUrl, Product.Status status) {
+    public Long saveProduct(Product product) {
         GeneratedKeyHolder generatedKeyHolder = new GeneratedKeyHolder();
         jdbcClient.sql(SAVE_PRODUCT)
-                .param("name", name)
-                .param("price", price)
-                .param("imageUrl", imageUrl)
-                .param("status", status.name())
+                .param("name", product.getName())
+                .param("price", product.getPrice())
+                .param("imageUrl", product.getImageUrl())
+                .param("status", product.getStatus().name())
                 .update(generatedKeyHolder);
         return generatedKeyHolder.getKey().longValue();
     }
@@ -92,14 +91,14 @@ public class DatabaseProductRepository implements ProductRepository {
     @Override
     public void updateProduct(Product product) {
         int numOfUpdatedRows = jdbcClient.sql(UPDATE_PRODUCT)
-                .param("id", product.id())
-                .param("name", product.name())
-                .param("price", product.price())
-                .param("imageUrl", product.imageUrl())
-                .param("status", product.status().name())
+                .param("id", product.getId())
+                .param("name", product.getName())
+                .param("price", product.getPrice())
+                .param("imageUrl", product.getImageUrl())
+                .param("status", product.getStatus().name())
                 .update();
         if (numOfUpdatedRows == 0)
-            throw new NotFoundByIdException("Not Found id: " + product.id());
+            throw new IllegalArgumentException("Not Found id: " + product.getId());
     }
 
     @Override

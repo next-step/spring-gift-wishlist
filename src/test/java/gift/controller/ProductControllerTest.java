@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -33,7 +34,7 @@ public class ProductControllerTest {
 
     @ParameterizedTest
     @MethodSource("invalidProducts")
-    void Validation_테스트(ProductRequestDto productRequestDto, String message) {
+    void Validation_테스트(ProductRequestDto productRequestDto, List<String> messages) {
         String url = "http://localhost:" + port + "/api/products";
         RestClient.ResponseSpec responseSpec = client.post()
                 .uri(url)
@@ -45,7 +46,10 @@ public class ProductControllerTest {
                     responseSpec.toEntity(String.class);
                 });
 
-        assertThat(exception.getResponseBodyAsString()).contains(message);
+        boolean anyMatch = messages.stream()
+                .anyMatch(exception.getMessage()::contains);
+
+        assertThat(anyMatch).isTrue();
     }
 
     Stream<Arguments> invalidProducts() {
@@ -54,17 +58,17 @@ public class ProductControllerTest {
                         "1234567890123456",
                         123,
                         "http://~/~"
-                ), "length"),
+                ), List.of("length", "길이")),
                 Arguments.of(new ProductRequestDto(
                         "$#",
                         123,
                         "http://~/~"
-                ), "special"),
+                ), List.of("special")),
                 Arguments.of(new ProductRequestDto(
                         "1234567890",
                         -1,
                         "http://~/~"
-                ), "price")
+                ), List.of("price"))
         );
     }
 
@@ -123,8 +127,12 @@ public class ProductControllerTest {
         RestClient.ResponseSpec response = client.get()
                 .uri(url)
                 .retrieve();
-        ResponseEntity<ProductResponseDto> entity = response.toEntity(ProductResponseDto.class);
 
-        assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        HttpClientErrorException.BadRequest exception = assertThrows(HttpClientErrorException.BadRequest.class,
+                () -> {
+                    response.toEntity(String.class);
+                });
+
+        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 }
