@@ -36,19 +36,8 @@ public class ValidHeaderInterceptor implements HandlerInterceptor {
             return true;
         }
         
-        
-        String authHeader = request.getHeader("Authorization");
-        
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            throw new WrongHeaderException();
-        }
-        
-        
-        String token = authHeader.substring(7);
-        Claims claims = jwtProvider.parseToken(token);
-        
-        String email = claims.get("email", String.class);
-        Role tokenRole = Role.valueOf(claims.get("role", String.class));
+        String email = (String) request.getAttribute("email");
+        Role tokenRole = (Role) request.getAttribute("role");
         
         Member member = memberRepository.findMemberByEmail(email);
         
@@ -57,7 +46,6 @@ public class ValidHeaderInterceptor implements HandlerInterceptor {
         }
         
         request.setAttribute("member", member);
-        
         
         Role requiredRole = validHeader.role();
         if (requiredRole != Role.NONE) {
