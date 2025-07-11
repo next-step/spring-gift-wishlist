@@ -30,4 +30,13 @@ public class WishController {
     }
     @GetMapping("/wish/list")
     public List<Wish> getWishList(@LoginUser User user){return wishService.getAllWish(user.getId());}
+
+    @PatchMapping("/wish/inc")
+    public void incrementWish(@RequestBody WishRequestDTO request, @LoginUser User user){
+        wishService.increaseWish(user.getId(), request.getProductid());
+    }
+    @PatchMapping("wish/dec")
+    public void decrementWish(@RequestBody WishRequestDTO request, @LoginUser User user){
+        wishService.decreaseWish(user.getId(), request.getProductid());
+    }
 }

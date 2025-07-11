@@ -29,4 +29,10 @@ public class WishService {
     public List<Wish> getAllWish(Long id) {
         return wishDao.getAllWish(id);
     }
+    public void increaseWish(Long id, Long productid) {
+        wishDao.incrementWish(id, productid);
+    }
+    public void decreaseWish(Long id, Long productid) {
+        wishDao.decrementWish(id, productid);
+    }
 }
