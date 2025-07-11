@@ -7,6 +7,7 @@ import gift.dto.WishRequest;
 import gift.dto.WishResponse;
 import gift.entity.User;
 import gift.service.WishService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,7 +30,7 @@ public class WishController {
 
     @PostMapping
     public ResponseEntity<CustomResponseBody<WishResponse>> addWish(
-        @RequestBody WishRequest request,
+        @RequestBody @Valid WishRequest request,
         @CurrentUser User user
     ) {
         WishResponse response = wishService.addWish(user.getId(), request.productId());
