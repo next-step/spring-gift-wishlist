@@ -8,6 +8,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class WishRepositoryImpl implements WishRepository {
@@ -48,15 +49,12 @@ public class WishRepositoryImpl implements WishRepository {
     }
 
     @Override
-    public boolean existsWishById(Long id) {
-        String sql = "SELECT COUNT(*) FROM wish WHERE id = :id";
-
-        Integer count = jdbcClient.sql(sql)
+    public Optional<Wish> findWishById(Long id) {
+        String sql = "SELECT id, member_id, product_id FROM wish WHERE id = :id";
+        return jdbcClient.sql(sql)
                 .param("id", id)
-                .query(Integer.class)
-                .single();
-
-        return count != null && count > 0;
+                .query(wishRowMapper())
+                .optional();
     }
 
     @Override

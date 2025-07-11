@@ -3,7 +3,7 @@ package gift.service;
 import gift.dto.WishResponseDto;
 import gift.entity.Product;
 import gift.entity.Wish;
-import gift.exception.DuplicateWishException;
+import gift.exception.AccessDeniedException;
 import gift.exception.ProductNotFoundException;
 import gift.exception.WishNotFoundException;
 import gift.repository.WishRepository;
@@ -25,7 +25,7 @@ public class WishServiceImpl implements WishService {
     @Override
     public WishResponseDto createWish(Long memberId, Long productId) {
         if (wishRepository.existsWishByMemberIdAndProductId(memberId, productId)) {
-            throw new DuplicateWishException(memberId, productId);
+            throw new IllegalStateException("이미 위시리스트에 등록된 상품입니다.");
         }
 
         Product product = productRepository.findProductById(productId)
@@ -50,11 +50,14 @@ public class WishServiceImpl implements WishService {
     }
 
     @Override
-    public void deleteWishById(Long id) {
-        if (!wishRepository.existsWishById(id)) {
-            throw new WishNotFoundException(id);
+    public void deleteWish(Long memberId, Long wishId) {
+        Wish wish = wishRepository.findWishById(wishId)
+                .orElseThrow(() -> new WishNotFoundException(wishId));
+
+        if (!wish.getMemberId().equals(memberId)) {
+            throw new AccessDeniedException("이 위시를 삭제할 권한이 없습니다.");
         }
 
-        wishRepository.deleteWishById(id);
+        wishRepository.deleteWishById(wishId);
     }
 }

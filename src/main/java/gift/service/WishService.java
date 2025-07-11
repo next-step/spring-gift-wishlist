@@ -7,5 +7,5 @@ import java.util.List;
 public interface WishService {
     WishResponseDto createWish(Long memberId, Long productId);
     List<WishResponseDto> findAllWishesByMemberId(Long memberId);
-    void deleteWishById(Long id);
+    void deleteWish(Long memberId, Long wishId);
 }

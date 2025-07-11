@@ -57,9 +57,16 @@ class WishServiceTest {
     @Test
     @DisplayName("위시 ID로 삭제 시, deleteWishById가 수행된다. ")
     void shouldDeleteWish() {
-        when(wishRepository.existsWishById(5L)).thenReturn(true);
-        wishService.deleteWishById(5L);
-        verify(wishRepository).deleteWishById(5L);
+        Long memberId = 1L;
+        Long wishId   = 5L;
+        Wish wish     = new Wish(wishId, memberId, 2L);
+
+        when(wishRepository.findWishById(wishId))
+                .thenReturn(Optional.of(wish));
+
+        wishService.deleteWish(memberId, wishId);
+
+        verify(wishRepository).deleteWishById(wishId);
     }
 
     @Test
