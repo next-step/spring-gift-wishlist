@@ -23,15 +23,12 @@ public class E2ETest {
     @LocalServerPort
     private int port;
 
-    private String baseUrl;
-
     RestClient restClient;
 
     @BeforeEach
     void setUp() {
-        baseUrl = "http://localhost:" + port + "/api/products";
         restClient = RestClient.builder()
-            .baseUrl(baseUrl)
+            .baseUrl("http://localhost:" + port + "/api/products")
             .build();
     }
 

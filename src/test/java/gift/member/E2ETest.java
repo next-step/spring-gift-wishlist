@@ -24,8 +24,6 @@ public class E2ETest {
     @LocalServerPort
     private int port;
 
-    private String baseUrl;
-
     RestClient restClient;
 
     @Autowired
@@ -33,9 +31,8 @@ public class E2ETest {
 
     @BeforeEach
     void setUp() {
-        baseUrl = "http://localhost:" + port + "/api/members";
         restClient = RestClient.builder()
-            .baseUrl(baseUrl)
+            .baseUrl("http://localhost:" + port + "/api/members")
             .build();
     }
 

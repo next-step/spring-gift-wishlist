@@ -6,7 +6,7 @@ public record WishResponseDto(
     Long id,
     Long memberId,
     Long productId,
-    int amount
+    Integer amount
 ) {
     public static WishResponseDto from(Wish wish) {
         return new WishResponseDto(
