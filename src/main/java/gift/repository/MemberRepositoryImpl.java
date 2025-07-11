@@ -39,4 +39,12 @@ public class MemberRepositoryImpl implements MemberRepository {
                 .optional();
     }
 
+    @Override
+    public Optional<Member> findById(Long id){
+        return jdbcClient.sql("select * from members where id = :id")
+                .param("id",id)
+                .query(Member.class)
+                .optional();
+    }
+
 }

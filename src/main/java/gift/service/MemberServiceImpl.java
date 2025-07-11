@@ -5,6 +5,7 @@ import gift.domain.Member;
 import gift.dto.request.MemberRequest;
 import gift.dto.response.MemberResponse;
 import gift.exception.DuplicateMemberException;
+import gift.exception.MemberNotFoundException;
 import gift.repository.MemberRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -44,5 +45,11 @@ public class MemberServiceImpl implements MemberService{
         }
         String token = jwtProvider.createToken(member.getId(), member.getEmail());
         return new MemberResponse(token);
+    }
+
+    @Override
+    public Member findById(Long id){
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new MemberNotFoundException());
     }
 }

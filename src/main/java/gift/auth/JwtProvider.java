@@ -41,4 +41,15 @@ public class JwtProvider {
             return false;
         }
     }
+
+    public Long getMemberId(String token){
+        return Long.valueOf(
+            Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getSubject()
+        );
+    }
 }

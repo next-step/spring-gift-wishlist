@@ -46,4 +46,25 @@ public class WebControllerAdvice {
                 .status(HttpStatus.CONFLICT)
                 .body(Map.of("message",e.getMessage()));
     }
+
+    @ExceptionHandler(DuplicateWishException.class)
+    public ResponseEntity<Map<String,String>> handleDuplicateWish (DuplicateWishException e){
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(Map.of("message",e.getMessage()));
+    }
+
+    @ExceptionHandler(MemberNotFoundException.class)
+    public ResponseEntity<Map<String,String>> handleDuplicateWish (MemberNotFoundException e){
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(Map.of("message",e.getMessage()));
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<Map<String,String>> handleDuplicateWish (UnauthorizedException e){
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(Map.of("message",e.getMessage()));
+    }
 }
