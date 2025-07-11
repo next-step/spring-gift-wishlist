@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import gift.dto.MemberRequestDto;
 import gift.dto.TokenResponseDto;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +13,11 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
+@Sql(scripts = "/cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class MemberTest {
 
@@ -28,10 +29,10 @@ public class MemberTest {
     @Autowired
     private JdbcClient jdbcClient;
 
-    @AfterEach
-    void cleanUp() {
-        jdbcClient.sql("TRUNCATE TABLE member RESTART IDENTITY").update();
-    }
+//    @AfterEach
+//    void cleanUp() {
+//        jdbcClient.sql("TRUNCATE TABLE member RESTART IDENTITY").update();
+//    }
 
     @Test
     void 회원가입_성공() {
