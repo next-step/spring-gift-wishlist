@@ -3,6 +3,7 @@ package gift.config;
 import gift.resolver.CurrentRoleArgumentResolver;
 import gift.resolver.LoginMemberArgumentResolver;
 import gift.service.member.MemberService;
+import gift.util.BearerAuthUtil;
 import gift.util.JwtUtil;
 import java.util.List;
 import org.springframework.context.annotation.Bean;
@@ -16,10 +17,12 @@ public class WebConfig implements WebMvcConfigurer {
 
     private final JwtUtil jwtUtil;
     private final MemberService memberService;
+    private final BearerAuthUtil bearerAuthUtil;
 
-    public WebConfig(JwtUtil jwtUtil, MemberService memberService) {
+    public WebConfig(JwtUtil jwtUtil, MemberService memberService, BearerAuthUtil bearerAuthUtil) {
         this.jwtUtil = jwtUtil;
         this.memberService = memberService;
+        this.bearerAuthUtil = bearerAuthUtil;
     }
 
     @Bean
@@ -30,6 +33,6 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(new CurrentRoleArgumentResolver());
-        resolvers.add(new LoginMemberArgumentResolver(jwtUtil, memberService));
+        resolvers.add(new LoginMemberArgumentResolver(jwtUtil, bearerAuthUtil, memberService));
     }
 }

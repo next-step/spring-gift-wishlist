@@ -3,10 +3,12 @@ package gift.resolver;
 import gift.annotation.LoginMember;
 import gift.entity.member.Member;
 import gift.entity.member.value.Role;
+import gift.exception.custom.MemberNotFoundException;
 import gift.service.member.MemberService;
+import gift.util.BearerAuthUtil;
 import gift.util.JwtUtil;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -17,9 +19,12 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
 
     private final JwtUtil jwtUtil;
     private final MemberService memberService;
+    private final BearerAuthUtil bearerAuthUtil;
 
-    public LoginMemberArgumentResolver(JwtUtil jwtUtil, MemberService memberService) {
+    public LoginMemberArgumentResolver(JwtUtil jwtUtil, BearerAuthUtil bearerAuthUtil,
+            MemberService memberService) {
         this.jwtUtil = jwtUtil;
+        this.bearerAuthUtil = bearerAuthUtil;
         this.memberService = memberService;
     }
 
@@ -30,22 +35,15 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
     }
 
     @Override
-    public Object resolveArgument(
-            @NotNull MethodParameter parameter,
+    public Object resolveArgument(MethodParameter parameter,
             ModelAndViewContainer mavContainer,
             NativeWebRequest webRequest,
             WebDataBinderFactory binderFactory) {
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
-        String header = request.getHeader("Authorization");
-        if (header == null || !header.startsWith("Bearer ")) {
-            throw new IllegalArgumentException("Missing or invalid Authorization header");
-        }
-        String token = header.substring(7);
-        if (!jwtUtil.validate(token)) {
-            throw new IllegalArgumentException("Invalid JWT token");
-        }
-        Long memberId = jwtUtil.getMemberId(token);
+        Claims claims = bearerAuthUtil.extractAndValidate(request.getHeader("Authorization"));
+        Long memberId = Long.valueOf(claims.getSubject());
+        Role role = Role.valueOf(claims.get("role", String.class));
         return memberService.getMemberById(memberId, Role.ADMIN)
-                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+                .orElseThrow(() -> new MemberNotFoundException(memberId));
     }
 }
