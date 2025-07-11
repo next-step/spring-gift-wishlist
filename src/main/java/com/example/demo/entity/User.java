@@ -17,6 +17,13 @@ public class User {
     this.role = role;
   }
 
+  public User(String email, String hashedPassword, String role) {
+    this.email = email;
+    this.password = hashedPassword;
+    this.role = role;
+  }
+
+
   public static User createWithRawPassword(Long id, String email, String rawPassword, String role) {
     return new User(id, email, PasswordHasher.hash(rawPassword), role);
   }
