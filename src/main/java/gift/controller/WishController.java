@@ -1,34 +1,40 @@
 package gift.controller;
 
-import gift.dto.wishRequestDto;
-import gift.dto.wishResponseDto;
-import org.apache.coyote.Response;
+import gift.dto.WishRequestDto;
+import gift.dto.WishResponseDto;
+import gift.service.WishService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/wish")
 public class WishController {
 
-    private final WishListService wishListService;
+    private final WishService wishService;
 
-    public WishController(WishListService wishListService) {
-        this.wishListService = wishListService;
+    public WishController(WishService wishService) {
+        this.wishService = wishService;
     }
 
     @GetMapping("/list")
-    public ResponseEntity<wishResponseDto> findAllWishes() {
+    public ResponseEntity<List<WishResponseDto>> findAllWishes() {
+        return ResponseEntity.ok(wishService.findAllWishes());
     }
 
     @PostMapping("/add")
-    public ResponseEntity<wishResponseDto> addWish(@RequestBody wishRequestDto requestDto) {
+    public ResponseEntity<WishResponseDto> addWish(@RequestBody WishRequestDto requestDto) {
+        return ResponseEntity.created(wishService.addWish(requestDto));
     }
 
     @PatchMapping("/patch")
-    public ResponseEntity<wishResponseDto> updateWish(@RequestBody wishRequestDto requestDto) {
+    public ResponseEntity<WishResponseDto> updateWish(@RequestBody WishRequestDto requestDto) {
+        return ResponseEntity.ok(wishService.updateWish(requestDto));
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteWish(@RequestBody wishRequestDto requestDto) {
+    public ResponseEntity<Void> deleteWish(@RequestBody WishRequestDto requestDto) {
+        return ResponseEntity.noContent().build();
     }
 }
