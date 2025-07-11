@@ -1,4 +1,4 @@
-package gift.repository;
+package gift.repository.member;
 
 import gift.entity.Member;
 import java.util.Optional;
@@ -14,4 +14,6 @@ public interface MemberRepository {
     public boolean existsByEmail(String email);
 
     void resetPassword(Member member);
+
+    public Optional<Member> findById(Long id);
 }

@@ -5,6 +5,8 @@ public class Member {
     String email;
     String password;
 
+    public Member() {}
+
     public Member(String email, String password) {
         this.email = email;
         this.password = password;
@@ -15,6 +17,8 @@ public class Member {
         this.email = email;
         this.password = password;
     }
+
+    public Long getId() { return this.id; }
 
     public String getEmail() {
         return this.email;
