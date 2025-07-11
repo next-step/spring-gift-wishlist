@@ -3,8 +3,6 @@ package gift.repository.wish;
 import gift.entity.member.value.MemberId;
 import gift.entity.wish.Wish;
 import gift.exception.custom.WishNotFoundException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,17 +18,7 @@ public class WishRepositoryImpl implements WishRepository {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insert;
-    private final RowMapper<Wish> rowMapper = new RowMapper<>() {
-        @Override
-        public Wish mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-            long id = resultSet.getLong("id");
-            long memberId = resultSet.getLong("member_id");
-            long productId = resultSet.getLong("product_id");
-            int amount = resultSet.getInt("amount");
-            Wish wish = Wish.of(memberId, productId, amount);
-            return wish.withId(id);
-        }
-    };
+    private final RowMapper<Wish> rowMapper = new WishRowMapper();
 
     public WishRepositoryImpl(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
@@ -50,7 +38,7 @@ public class WishRepositoryImpl implements WishRepository {
         String sql = "SELECT * FROM wish WHERE id = ?";
         List<Wish> results = jdbcTemplate.query(sql, rowMapper, id);
         if (results.isEmpty()) {
-            return null;  // 또는 throw new WishNotFoundException(id);
+            throw new WishNotFoundException(id);
         }
         return results.getFirst();
     }
