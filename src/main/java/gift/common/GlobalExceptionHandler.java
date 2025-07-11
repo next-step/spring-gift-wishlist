@@ -4,6 +4,7 @@ import gift.common.exceptions.JwtValidationException;
 import gift.common.exceptions.LogInFailedException;
 import gift.common.exceptions.MemberAlreadyExistsException;
 import gift.common.exceptions.NullTokenException;
+import gift.common.exceptions.WishAlreadyExistsException;
 import java.util.stream.Collectors;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -115,6 +116,20 @@ public class GlobalExceptionHandler {
                 ex.getMessage()
             ),
             HttpStatus.UNAUTHORIZED
+        );
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(value = WishAlreadyExistsException.class)
+    public ResponseEntity<ErrorResult> handleWishAlreadyExistsException(
+        WishAlreadyExistsException ex
+    ) {
+        return new ResponseEntity<>(
+            new ErrorResult(
+                HttpStatus.CONFLICT,
+                ex.getMessage()
+            ),
+            HttpStatus.CONFLICT
         );
     }
 }

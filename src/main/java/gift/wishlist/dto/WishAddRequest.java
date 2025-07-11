@@ -1,5 +1,5 @@
 package gift.wishlist.dto;
 
-public record WishlistAddRequest(Long productId, Long quantity) {
+public record WishAddRequest(Long productId, Integer quantity) {
 
 }
