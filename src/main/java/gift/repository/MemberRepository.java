@@ -37,7 +37,7 @@ public class MemberRepository {
         Number key = keyHolder.getKey();
 
         if (key != null) {
-            return member.withId(key.longValue(), member.getEmail(), member.getPassword());
+            return Member.withId(key.longValue(), member.getEmail(), member.getPassword());
         }
 
         return member;
@@ -51,7 +51,7 @@ public class MemberRepository {
                 .findFirst();
     }
 
-    private static final RowMapper<Member> MEMBER_ROW_MAPPER = (rs, rowNum) -> Member.createMember(
+    private static final RowMapper<Member> MEMBER_ROW_MAPPER = (rs, rowNum) -> Member.of(
             rs.getString("email"),
             rs.getString("password")
     );

@@ -1,4 +1,4 @@
-package gift.validation;
+package gift.ExceptionHandler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -7,6 +7,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.http.HttpStatus;
+
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -34,6 +36,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleIllegalAccess(IllegalAccessException e) {
         Map<String, String> error = new HashMap<>();
         error.put("message", e.getMessage());
-        return ResponseEntity.status(401).body(error);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+    }
+
+    @ExceptionHandler(UnAuthorizationException.class)
+    public ResponseEntity<Map<String, String>> handleUnAuthorization(UnAuthorizationException e) {
+        Map<String, String> error = new HashMap<>();
+        error.put("message", e.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
 }
