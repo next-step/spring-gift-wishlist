@@ -112,4 +112,12 @@ public class ItemRepositoryJdbcTemplate implements ItemRepository {
 
         return findById(id);
     }
+
+    @Override
+    public Item findItemByName(String name) {
+        var sql = "SELECT id, name, price, image_url FROM items WHERE name = ?";
+        Item item = jdbcTemplate.queryForObject(sql, new Object[]{name}, itemRowMapper);
+
+        return item;
+    }
 }

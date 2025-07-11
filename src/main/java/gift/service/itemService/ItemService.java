@@ -6,7 +6,9 @@ import gift.dto.itemDto.ItemResponseDto;
 import gift.dto.itemDto.ItemUpdateDto;
 import gift.dto.wishListDto.AddWishItemDto;
 import gift.dto.wishListDto.ResponseWishItemDto;
+import gift.entity.Item;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
@@ -24,4 +26,6 @@ public interface ItemService {
     void deleteById(Long id);
 
     List<ItemResponseDto> getAllItems();
+
+    Item findItemByName(@NotNull String name);
 }

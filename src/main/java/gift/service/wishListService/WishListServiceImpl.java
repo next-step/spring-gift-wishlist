@@ -36,7 +36,7 @@ public class WishListServiceImpl implements WishListService{
             throw new UserNotFoundException();
         }
 
-        Item item = itemService.findByName(dto.name());
+        Item item = itemService.findItemByName(dto.name());
         if (item == null) {
             throw new ItemNotFoundException(dto.name());
         }
