@@ -22,15 +22,19 @@ public class WishlistRepository {
 
     public Wishlist saveWish(Long memberId, Long productId, int quantity) {
         String sql = """
-            INSERT INTO wishlist (member_id, product_id, quantity)
+            MERGE INTO wishlist (member_id, product_id, quantity)
+            KEY(member_id, product_id)
             VALUES (?, ?, ?)
-            ON DUPLICATE KEY UPDATE quantity = quantity + VALUES (quantity)
-        """;
+            """;
+
+        Optional<Wishlist> wish = findWishByMemberIdAndProductId(memberId, productId);
+        int newQuantity = wish.map(w -> w.getQuantity() + quantity).orElse(quantity);
 
         jdbcClient.sql(sql)
                 .param(memberId)
                 .param(productId)
-                .param(quantity);
+                .param(newQuantity)
+                .update();
 
         return findWishByMemberIdAndProductId(memberId, productId)
                 .orElseThrow(() -> new IllegalStateException("저장 작업 후 데이터를 찾지 못했습니다."));
@@ -39,7 +43,7 @@ public class WishlistRepository {
 
     public Optional<Wishlist> findWishByMemberIdAndProductId(Long memberId, Long productId) {
         String sql = """
-                SELECT wishlist_id, member_id, product_id, quantity
+                SELECT id, member_id, product_id, quantity
                 FROM wishlist
                 WHERE member_id = ?
                 AND product_id = ?
@@ -53,7 +57,7 @@ public class WishlistRepository {
 
     public List<Wishlist> findAllByMemberId(Long memberId) {
         String sql = """
-                SELECT wishlist_id, member_id, product_id, quantity
+                SELECT id, member_id, product_id, quantity
                 FROM wishlist
                 WHERE member_id = ?
                 """;
