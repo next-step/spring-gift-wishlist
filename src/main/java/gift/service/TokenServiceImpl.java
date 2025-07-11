@@ -11,9 +11,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class TokenServiceImpl implements TokenService {
 
-    private String key = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E";
-
     private final MemberRepository memberRepository;
+    private String key = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E";
 
     public TokenServiceImpl(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
@@ -27,7 +26,8 @@ public class TokenServiceImpl implements TokenService {
                     .build()
                     .parseSignedClaims(token)
                     .getPayload();
-            Optional<Member> find = memberRepository.findMemberByEmail(claims.get("email", String.class));
+            Optional<Member> find = memberRepository.findMemberByEmail(
+                    claims.get("email", String.class));
             return find;
 
         } catch (Exception e) {

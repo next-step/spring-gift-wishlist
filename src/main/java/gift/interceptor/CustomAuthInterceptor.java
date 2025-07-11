@@ -12,8 +12,10 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
 public class CustomAuthInterceptor implements HandlerInterceptor {
+
     private final TokenService tokenService;
-    public CustomAuthInterceptor(TokenService tokenService){
+
+    public CustomAuthInterceptor(TokenService tokenService) {
         this.tokenService = tokenService;
     }
 
@@ -21,13 +23,14 @@ public class CustomAuthInterceptor implements HandlerInterceptor {
     public boolean preHandle(
             HttpServletRequest request,
             HttpServletResponse response,
-            Object handler){
-        if (request.getRequestURI().startsWith("/api/products") && request.getMethod().equals("GET")){
+            Object handler) {
+        if (request.getRequestURI().startsWith("/api/products") && request.getMethod()
+                .equals("GET")) {
             return true;
         }
         String token = request.getHeader("Authorization");
-        Optional<Member> find =  tokenService.isValidateToken(token);
-        if (find.isEmpty()){
+        Optional<Member> find = tokenService.isValidateToken(token);
+        if (find.isEmpty()) {
             throw new CustomException(ErrorCode.NotLogin);
         }
         request.setAttribute("login", find.get());

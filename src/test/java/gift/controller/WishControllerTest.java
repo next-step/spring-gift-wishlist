@@ -26,10 +26,9 @@ import org.springframework.web.client.RestClient;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class WishControllerTest {
 
+    String token;
     @LocalServerPort
     private int port;
-
-    String token;
     private RestClient client = RestClient.builder().build();
 
     @Autowired

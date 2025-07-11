@@ -11,7 +11,8 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class WishDao implements WishRepository{
+public class WishDao implements WishRepository {
+
     private final JdbcClient client;
 
     private final RowMapper<Wish> getWishRowMapper = (rs, rowNum) -> {

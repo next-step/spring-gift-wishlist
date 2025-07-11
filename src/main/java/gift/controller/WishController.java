@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/wishes")
 public class WishController {
+
     private final WishService wishService;
 
     public WishController(WishService wishService) {
@@ -32,7 +33,8 @@ public class WishController {
     public ResponseEntity<WishResponseDto> createWish(
             @RequestBody CreateWishRequestDto requestDto,
             @LoginMember Member member) {
-        return new ResponseEntity<>(wishService.createWish(requestDto, member.getId()), HttpStatus.CREATED);
+        return new ResponseEntity<>(wishService.createWish(requestDto, member.getId()),
+                HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -51,7 +53,9 @@ public class WishController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        return new ResponseEntity<>(wishService.updateMemberWishQuantityByProductId(requestDto.quantity(), productId,member.getId()),
+        return new ResponseEntity<>(
+                wishService.updateMemberWishQuantityByProductId(requestDto.quantity(), productId,
+                        member.getId()),
                 HttpStatus.OK);
     }
 

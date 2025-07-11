@@ -37,7 +37,8 @@ public class AdminProductController {
 
     private final MemberService memberService;
 
-    public AdminProductController(ProductService productService, TokenService tokenService, MemberService memberService) {
+    public AdminProductController(ProductService productService, TokenService tokenService,
+            MemberService memberService) {
         this.productService = productService;
         this.tokenService = tokenService;
         this.memberService = memberService;
@@ -65,7 +66,7 @@ public class AdminProductController {
             Model model,
             @CookieValue(defaultValue = "") String token) {
         Optional<Member> optionalMember = tokenService.isValidateToken(token);
-        if (optionalMember.isEmpty()){
+        if (optionalMember.isEmpty()) {
             return "redirect:/admin/boards/login";
         }
         List<ProductResponseDto> products = productService.findAllProducts();
@@ -78,7 +79,7 @@ public class AdminProductController {
             Model model,
             @CookieValue(defaultValue = "") String token) {
         Optional<Member> optionalMember = tokenService.isValidateToken(token);
-        if (optionalMember.isEmpty()){
+        if (optionalMember.isEmpty()) {
             return "redirect:/admin/boards/login";
         }
         return "createForm";
@@ -90,7 +91,7 @@ public class AdminProductController {
             Model model,
             @CookieValue(defaultValue = "") String token) {
         Optional<Member> optionalMember = tokenService.isValidateToken(token);
-        if (optionalMember.isEmpty()){
+        if (optionalMember.isEmpty()) {
             return "redirect:/admin/boards/login";
         }
         model.addAttribute("id", id);
@@ -102,7 +103,7 @@ public class AdminProductController {
             @Valid @ModelAttribute CreateProductRequestDto requestDto,
             @CookieValue(defaultValue = "") String token) {
         Optional<Member> optionalMember = tokenService.isValidateToken(token);
-        if (optionalMember.isEmpty()){
+        if (optionalMember.isEmpty()) {
             return "redirect:/admin/boards/login";
         }
         if (requestDto.name().contains("카카오") && !optionalMember.get().isAdmin()) {
@@ -117,7 +118,7 @@ public class AdminProductController {
             @Valid @ModelAttribute CreateProductRequestDto requestDto,
             @CookieValue(defaultValue = "") String token) {
         Optional<Member> optionalMember = tokenService.isValidateToken(token);
-        if (optionalMember.isEmpty()){
+        if (optionalMember.isEmpty()) {
             return "redirect:/admin/boards/login";
         }
         if (requestDto.name().contains("카카오") && !optionalMember.get().isAdmin()) {
@@ -132,7 +133,7 @@ public class AdminProductController {
             @PathVariable Long id,
             @CookieValue(defaultValue = "") String token) {
         Optional<Member> optionalMember = tokenService.isValidateToken(token);
-        if (optionalMember.isEmpty()){
+        if (optionalMember.isEmpty()) {
             return "redirect:/admin/boards/login";
         }
         productService.deleteProductById(id);

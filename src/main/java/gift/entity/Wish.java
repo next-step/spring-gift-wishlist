@@ -1,6 +1,7 @@
 package gift.entity;
 
 public class Wish {
+
     private Long id;
     private Long productId;
     private Long memberId;

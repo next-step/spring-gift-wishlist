@@ -13,6 +13,14 @@ public class CustomConfig implements WebMvcConfigurer {
 
     private final LoginMemberArgumentResolver loginMemberArgumentResolver;
     private final CustomAuthInterceptor customAuthInterceptor;
+
+    public CustomConfig(
+            LoginMemberArgumentResolver loginMemberArgumentResolver,
+            CustomAuthInterceptor customAuthInterceptor) {
+        this.loginMemberArgumentResolver = loginMemberArgumentResolver;
+        this.customAuthInterceptor = customAuthInterceptor;
+    }
+
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(loginMemberArgumentResolver);
@@ -22,13 +30,7 @@ public class CustomConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(customAuthInterceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/api/members/register","/api/members/login","/admin/boards/**");
-    }
-
-    public CustomConfig(
-            LoginMemberArgumentResolver loginMemberArgumentResolver,
-            CustomAuthInterceptor customAuthInterceptor) {
-        this.loginMemberArgumentResolver = loginMemberArgumentResolver;
-        this.customAuthInterceptor = customAuthInterceptor;
+                .excludePathPatterns("/api/members/register", "/api/members/login",
+                        "/admin/boards/**");
     }
 }

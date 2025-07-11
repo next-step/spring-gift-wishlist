@@ -12,7 +12,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
-public class WishServiceImpl implements WishService{
+public class WishServiceImpl implements WishService {
+
     private final WishRepository wishRepository;
 
     private final ProductService productService;
@@ -25,8 +26,9 @@ public class WishServiceImpl implements WishService{
     @Override
     public WishResponseDto createWish(CreateWishRequestDto requestDto, Long memberId) {
         throwIfMemberWishFindByProductId(requestDto.productId(), memberId);
-        ProductResponseDto productResponseDto = productService.findProductById(requestDto.productId());
-        Wish newWish = new Wish(null,requestDto.productId(), memberId, requestDto.quantity());
+        ProductResponseDto productResponseDto = productService.findProductById(
+                requestDto.productId());
+        Wish newWish = new Wish(null, requestDto.productId(), memberId, requestDto.quantity());
         Wish savedWish = wishRepository.createWish(newWish);
         return new WishResponseDto(productResponseDto, savedWish.getQuantity());
     }
@@ -38,7 +40,8 @@ public class WishServiceImpl implements WishService{
         for (Wish wish : wishes) {
             Long productId = wish.getProductId();
             ProductResponseDto productResponseDto = productService.findProductById(productId);
-            WishResponseDto responseDto = new WishResponseDto(productResponseDto, wish.getQuantity());
+            WishResponseDto responseDto = new WishResponseDto(productResponseDto,
+                    wish.getQuantity());
             wishesList.add(responseDto);
         }
         return wishesList;
