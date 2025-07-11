@@ -25,13 +25,15 @@ public class WishRestController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> addWish(LoginMember member, @RequestBody CreateWishRequest request) {
+    public ResponseEntity<Object> addWish(LoginMember member,
+            @RequestBody CreateWishRequest request) {
         wishService.addWish(member.getId(), request.productId);
-         return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping
-    public ResponseEntity<Object> deleteWish(LoginMember member, @RequestBody CreateWishRequest request) {
+    public ResponseEntity<Object> deleteWish(LoginMember member,
+            @RequestBody CreateWishRequest request) {
         wishService.removeWish(member.getId(), request.productId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

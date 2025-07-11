@@ -13,10 +13,12 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
+
     private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public LoginMemberArgumentResolver(MemberService memberService, JwtTokenProvider jwtTokenProvider){
+    public LoginMemberArgumentResolver(MemberService memberService,
+            JwtTokenProvider jwtTokenProvider) {
         this.memberService = memberService;
         this.jwtTokenProvider = jwtTokenProvider;
     }
@@ -33,7 +35,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
 
         String token = checkAuthorization(webRequest);
 
-        if(!jwtTokenProvider.validateToken(token)) {
+        if (!jwtTokenProvider.validateToken(token)) {
             throw new UnAuthorizationException("유효하지 않은 토큰입니다.");
         }
 

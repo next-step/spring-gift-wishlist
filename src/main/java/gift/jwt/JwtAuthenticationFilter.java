@@ -16,7 +16,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberRepository memberRepository; // DB에서 id 조회용
 
-    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, MemberRepository memberRepository) {
+    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider,
+            MemberRepository memberRepository) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.memberRepository = memberRepository;
     }
