@@ -17,6 +17,8 @@ import gift.exception.ProductDeleteException;
 import gift.exception.ProductNotFoundException;
 import gift.exception.ProductUpdateException;
 import gift.exception.RegisterException;
+import gift.exception.WishlistAddException;
+import gift.exception.WishlistDeleteException;
 import io.jsonwebtoken.JwtException;
 
 @RestControllerAdvice
@@ -80,4 +82,14 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleProductDeleteException(ProductDeleteException e) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
+
+    @ExceptionHandler(WishlistAddException.class)
+    public ProblemDetail handleWishlistAddException(WishlistAddException e) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+    }
+
+    @ExceptionHandler(WishlistDeleteException.class)
+    public ProblemDetail handleWishlistDeleteException(WishlistDeleteException e) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
 }
