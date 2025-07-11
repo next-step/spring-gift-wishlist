@@ -1,6 +1,10 @@
 package gift.service;
 
+import gift.dto.WishListResponseDto;
+import gift.dto.WishResponseDto;
+import gift.dto.WishWithProductDto;
 import gift.entity.Member;
+import gift.entity.Product;
 import gift.entity.Wish;
 import gift.exception.product.ProductNotFoundException;
 import gift.exception.wish.WishAlreadyExistsException;
@@ -8,6 +12,9 @@ import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class WishServiceImpl implements WishService {
@@ -33,5 +40,28 @@ public class WishServiceImpl implements WishService {
 
         Wish wish = new Wish(member.getId(), productId);
         wishRepository.saveWish(wish);
+    }
+
+    public WishListResponseDto getWishList(Member member) {
+        List<WishWithProductDto> wishesWithProduct = wishRepository
+                .findByMemberIdWithProduct(member.getId());
+
+        List<WishResponseDto> wishResponses = wishesWithProduct.stream()
+                .map(this::mapToWishResponseDto)
+                .collect(Collectors.toList());
+
+        return new WishListResponseDto(wishResponses, wishResponses.size());
+    }
+
+    private WishResponseDto mapToWishResponseDto(WishWithProductDto wishWithProduct) {
+        Product product = wishWithProduct.getProduct();
+        return new WishResponseDto(
+                wishWithProduct.getWishId(),
+                product.getId(),
+                product.getName(),
+                product.getPrice(),
+                product.getImageUrl(),
+                wishWithProduct.getCreatedAt()
+        );
     }
 }

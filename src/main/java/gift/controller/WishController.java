@@ -1,6 +1,7 @@
 package gift.controller;
 
 import gift.annotation.LoginMember;
+import gift.dto.WishListResponseDto;
 import gift.dto.WishRequestDto;
 import gift.entity.Member;
 import gift.service.WishService;
@@ -26,5 +27,11 @@ public class WishController {
             @LoginMember Member member) {
         wishService.addWish(member, request.getProductId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @GetMapping
+    public ResponseEntity<WishListResponseDto> getWishList(@LoginMember Member member) {
+        WishListResponseDto response = wishService.getWishList(member);
+        return ResponseEntity.ok(response);
     }
 }
