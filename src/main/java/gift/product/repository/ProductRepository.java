@@ -33,9 +33,8 @@ public class ProductRepository {
             .update(keyHolder);
 
         Long id = keyHolder.getKey().longValue();
-        product.setId(id);
 
-        return product;
+        return product.setId(id);
     }
 
     public Product findById(Long id) {

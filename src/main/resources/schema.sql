@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS product CASCADE;
+DROP TABLE IF EXISTS wishlist CASCADE;
 DROP TABLE IF EXISTS member CASCADE;
 
 CREATE TABLE product (
@@ -14,3 +15,12 @@ CREATE TABLE member (
     password VARCHAR(255) NOT NULL,
     user_role VARCHAR(10) NOT NULL
 );
+
+CREATE TABLE wishlist (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    product_id BIGINT NOT NULL,
+    member_id BIGINT NOT NULL,
+    quantity INT NOT NULL,
+    FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE CASCADE,
+    FOREIGN KEY (member_id) REFERENCES member(id) ON DELETE CASCADE
+)
