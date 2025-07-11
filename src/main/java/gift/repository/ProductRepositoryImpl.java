@@ -13,18 +13,19 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class ProductRepositoryImpl implements ProductRepository {
 
     private final JdbcClient jdbcClient;
-    private static final RowMapper<ProductResponseDto> getProductRowMapper() {
+    private static final RowMapper<Product> getProductRowMapper() {
         return (rs, rowNum) -> {
             var id = rs.getLong("id");
             var name = rs.getString("name");
             var price = rs.getInt("price");
             var imageUrl = rs.getString("image_url");
-            return new ProductResponseDto(id, name, price, imageUrl);
+            return new Product(id, name, price, imageUrl);
         };
     }
 
@@ -33,27 +34,27 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public ProductResponseDto createProduct(ProductRequestDto productRequestDto) {
+    public Product createProduct(Product product) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         var sql = "INSERT INTO product(name, price, image_url) VALUES (:name, :price, :imageUrl);";
         jdbcClient.sql(sql)
-                .param("name", productRequestDto.name())
-                .param("price", productRequestDto.price())
-                .param("imageUrl", productRequestDto.imageUrl())
+                .param("name", product.getName())
+                .param("price", product.getPrice())
+                .param("imageUrl", product.getImageUrl())
                 .update(keyHolder);
 
-        return new ProductResponseDto(keyHolder.getKey().longValue(), productRequestDto.name(), productRequestDto.price(), productRequestDto.imageUrl());
+        return new Product(keyHolder.getKey().longValue(), product.getName(), product.getPrice(), product.getImageUrl());
     }
 
     @Override
-    public PageResult<ProductResponseDto> findAllProducts(PageRequestDto pageRequestDto) {
+    public PageResult<Product> findAllProducts(PageRequestDto pageRequestDto) {
         int page = Math.max(pageRequestDto.page(), 0);
         int size = pageRequestDto.size();
         int offset = page * size;
 
         String sql = "SELECT id, name, price, image_url FROM product LIMIT :limit OFFSET :offset";
 
-        List<ProductResponseDto> content = jdbcClient.sql(sql)
+        List<Product> content = jdbcClient.sql(sql)
                 .param("limit", size)
                 .param("offset", offset)
                 .query(getProductRowMapper())
@@ -69,31 +70,30 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public ProductResponseDto findProductById(Long id) {
+    public Optional<Product> findProductById(Long id) {
         String sql = "SELECT id, name, price, image_url FROM product WHERE id = :id";
 
         return jdbcClient.sql(sql)
                 .param("id", id)
                 .query(getProductRowMapper())
-                .optional()
-                .orElseThrow(() -> new ProductNotFoundException(id));
+                .optional();
     }
 
     @Override
-    public ProductResponseDto updateProduct(Long id, ProductRequestDto productRequestDto) {
+    public Product updateProduct(Long id, Product product) {
         String sql = "UPDATE product SET name = :name, price = :price, image_url = :imageUrl WHERE id = :id";
 
         int updated = jdbcClient.sql(sql)
-                .param("name", productRequestDto.name())
-                .param("price", productRequestDto.price())
-                .param("imageUrl", productRequestDto.imageUrl())
+                .param("name", product.getName())
+                .param("price", product.getPrice())
+                .param("imageUrl", product.getImageUrl())
                 .param("id", id)
                 .update();
 
         if (updated == 0)
             throw new ProductNotFoundException(id);
 
-        return new ProductResponseDto(id, productRequestDto.name(), productRequestDto.price(), productRequestDto.imageUrl());
+        return new Product(id, product.getName(), product.getPrice(), product.getImageUrl());
     }
 
     @Override
@@ -106,14 +106,5 @@ public class ProductRepositoryImpl implements ProductRepository {
 
         if (deleted == 0)
             throw new ProductNotFoundException(id);
-    }
-
-    private ProductResponseDto toResponseDto(Product product) {
-        return new ProductResponseDto(
-                product.getId(),
-                product.getName(),
-                product.getPrice(),
-                product.getImageUrl()
-        );
     }
 }

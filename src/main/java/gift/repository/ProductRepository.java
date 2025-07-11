@@ -2,17 +2,18 @@ package gift.repository;
 
 import gift.dto.PageRequestDto;
 import gift.dto.PageResult;
-import gift.dto.ProductRequestDto;
-import gift.dto.ProductResponseDto;
+import gift.entity.Product;
+
+import java.util.Optional;
 
 public interface ProductRepository {
-    ProductResponseDto createProduct(ProductRequestDto productRequestDto);
+    Product createProduct(Product product);
 
-    PageResult<ProductResponseDto> findAllProducts(PageRequestDto pageRequestDto);
+    PageResult<Product> findAllProducts(PageRequestDto pageRequestDto);
 
-    ProductResponseDto findProductById(Long id);
+    Optional<Product> findProductById(Long id);
 
-    ProductResponseDto updateProduct(Long id, ProductRequestDto productRequestDto);
+    Product updateProduct(Long id, Product product);
 
     void deleteProduct(Long id);
 }
