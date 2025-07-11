@@ -20,7 +20,7 @@ CREATE TABLE wishlist
 (
     id        BIGINT AUTO_INCREMENT,
     memberId  BIGINT NOT NULL,
-    productId BIGINT,
+    productId BIGINT NOT NULL,
     PRIMARY KEY (id),
     UNIQUE (memberId, productId)
 );
