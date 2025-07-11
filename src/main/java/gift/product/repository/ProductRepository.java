@@ -51,7 +51,7 @@ public class ProductRepository {
         String sql = "SELECT * FROM product WHERE id IN (:ids)";
 
         return jdbcClient.sql(sql)
-                .param(ids)
+                .param("ids", ids)
                 .query(getProductRowMapper())
                 .list();
     }
