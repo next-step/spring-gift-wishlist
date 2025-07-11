@@ -79,4 +79,11 @@ public class ProductRepositoryImpl implements ProductRepository {
         String sql = "SELECT md_approved FROM products WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, new Object[]{id}, Boolean.class);
     }
+
+    @Override
+    public boolean existsById(Long id) {
+        String sql = "SELECT COUNT(*) FROM products WHERE id = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, id);
+        return count != null && count > 0;
+    }
 }

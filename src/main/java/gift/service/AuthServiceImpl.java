@@ -14,6 +14,8 @@ import gift.util.PasswordUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 public class AuthServiceImpl implements AuthService {
     private final MemberRepository memberRepository;
@@ -55,5 +57,9 @@ public class AuthServiceImpl implements AuthService {
 
         String token = jwtUtil.generateToken(member.getEmail().getValue(), member.getId(), member.getRole().name());
         return new LoginResponseDto(token);
+    }
+
+    public Optional<Member> findByEmail(String email) {
+        return memberRepository.findByEmail(email);
     }
 }

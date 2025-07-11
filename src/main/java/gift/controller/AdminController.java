@@ -46,7 +46,7 @@ public class AdminController {
         }
         try {
             productService.saveProduct(dto);
-        } catch (Exception e) {
+        } catch (MdApprovalException | IllegalArgumentException e) {
             return handleException(e, bindingResult, dto, model, "admin/product-add", null);
         }
         return "redirect:/admin";
@@ -68,7 +68,7 @@ public class AdminController {
         }
         try {
             productService.updateProduct(id, dto);
-        } catch (Exception e) {
+        } catch (MdApprovalException | IllegalArgumentException e) {
             return handleException(e, bindingResult, dto, model, "admin/product-edit", id);
         }
         return "redirect:/admin";
