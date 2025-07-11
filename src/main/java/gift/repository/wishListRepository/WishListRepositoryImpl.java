@@ -9,8 +9,11 @@ import gift.repository.itemRepository.ItemRepository;
 import gift.repository.userRepository.UserRepository;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -41,26 +44,21 @@ public class WishListRepositoryImpl implements WishListRepository {
     };
 
     @Override
-    public WishItem addWishItem(String name, Integer quantity, String userEmail) {
+    public WishItem addWishItem(Long itemId, String itemName, String imageUrl, Integer price, Integer quantity, Long userId) {
+        var insertSql = "INSERT INTO wish_items (user_id, item_id, quantity) VALUES (?,?,?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        User user = userRepository.findUserByEmail(userEmail);
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(insertSql, PreparedStatement.RETURN_GENERATED_KEYS);
+            ps.setLong(1, userId);
+            ps.setLong(2, itemId);
+            ps.setInt(3, quantity);
+            return ps;
+        }, keyHolder);
 
-        if (user == null) {
-            throw new UserNotFoundException(userEmail);
-        }
+        Long id = keyHolder.getKey().longValue();
 
-        Item item = jdbcTemplate.queryForObject(
-                "SELECT id, name, price, image_url FROM items WHERE name = ? LIMIT 1", new Object[]{name}, itemRowMapper
-        );
-
-        if (item == null) {
-            throw new ItemNotFoundException(name);
-        }
-
-        String insertSql = "INSERT INTO wish_items (user_id, item_id, quantity) VALUES (?, ?, ?)";
-        jdbcTemplate.update(insertSql, user.id(), item.getId(), quantity);
-
-        return new WishItem(item.getId(), item.getName(), item.getImageUrl(), item.getPrice(), quantity);
+        return new WishItem(id, itemName, imageUrl, price, quantity);
     }
 
     @Override

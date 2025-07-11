@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface WishListRepository {
 
-    WishItem addWishItem(String name, Integer quantity, String userEmail);
+    WishItem addWishItem(Long itemId, String itemName, String imageUrl, Integer price, Integer quantity, Long userId);
 
     List<WishItem> getAllWishItems(String userEmail);
 
@@ -15,5 +15,4 @@ public interface WishListRepository {
     WishItem deleteItem(String name, String userEmail);
 
     WishItem updateWishItem(Integer quantity, String name, String userEmail);
-
 }
