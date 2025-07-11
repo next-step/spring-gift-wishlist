@@ -1,9 +1,9 @@
-package gift.dto;
+package gift.dto.product;
 
 import jakarta.validation.constraints.*;
 
 
-public class ProductDto {
+public class ProductRequestDto {
     private Long id;
     private boolean usableKakao;
 
@@ -21,14 +21,15 @@ public class ProductDto {
 
     @AssertTrue(message = "'카카오'가 포함된 상품명은 담당 MD와 협의가 필요합니다.")
     private boolean isKakaoPolicyCompliant() {
-        if (name == null || !name.contains("카카오")) {
-            return true;
+        if (name != null && name.contains("카카오")) {
+            return usableKakao;
         }
-        return usableKakao;
+
+        return true;
     }
 
-    public ProductDto() {}
-    public ProductDto(Long id, String name, int price, String imageUrl) {
+    public ProductRequestDto() {}
+    public ProductRequestDto(Long id, String name, int price, String imageUrl) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -36,13 +37,13 @@ public class ProductDto {
     }
 
     public Long getId() {return id;}
-    public void setId(Long id) {this.id = id;}
+    public  void setId(Long id) {this.id = id;}
     public String getName() {return name;}
-    public void setName(String name) {this.name = name;}
+    public  void setName(String name) {this.name = name;}
     public int getPrice() {return price;}
-    public void setPrice(int price) {this.price = price;}
+    public  void setPrice(int price) {this.price = price;}
     public String getImageUrl() {return imageUrl;}
-    public void setImageUrl(String imageUrl) {this.imageUrl = imageUrl;}
+    public  void setImageUrl(String imageUrl) {this.imageUrl = imageUrl;}
     public boolean getUsableKakao() {return usableKakao;}
     public void setUsableKakao(boolean usableKakao) {this.usableKakao = usableKakao;}
 }
