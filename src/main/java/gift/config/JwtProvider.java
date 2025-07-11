@@ -36,4 +36,14 @@ public class JwtProvider {
 
         return claims.get("role", String.class);
     }
+
+    public Long getId(String token) {
+        Claims claims = Jwts.parser()
+                .verifyWith(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)))
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+
+        return Long.parseLong(claims.getSubject());
+    }
 }
