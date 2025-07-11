@@ -1,6 +1,6 @@
 package com.example.demo.exception.handler;
 
-import com.example.demo.controller.UserController;
+import com.example.demo.controller.user.UserController;
 import com.example.demo.dto.ErrorResponseDto;
 import com.example.demo.exception.InvalidLoginException;
 import com.example.demo.exception.UserNotFoundException;

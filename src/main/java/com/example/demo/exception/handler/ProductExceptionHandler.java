@@ -1,6 +1,6 @@
 package com.example.demo.exception.handler;
 
-import com.example.demo.controller.ProductController;
+import com.example.demo.controller.product.ProductController;
 import com.example.demo.dto.ErrorResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
