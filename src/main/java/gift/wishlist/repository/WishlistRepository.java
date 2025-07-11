@@ -74,6 +74,12 @@ public class WishlistRepository {
             .update();
     }
 
+    public void deleteAll() {
+        String sql = "DELETE FROM wishlist";
+
+        jdbcClient.sql(sql).update();
+    }
+
     private RowMapper<Wishlist> wishlistRowMapper() {
         return ((rs, rowNum) ->
             new Wishlist(
