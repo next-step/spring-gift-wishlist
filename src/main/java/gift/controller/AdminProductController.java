@@ -37,6 +37,8 @@ public class AdminProductController {
 
     private final MemberService memberService;
 
+    private final String BOARD_PAGE = "/admin/boards";
+
     public AdminProductController(ProductService productService, TokenService tokenService,
             MemberService memberService) {
         this.productService = productService;
@@ -58,7 +60,7 @@ public class AdminProductController {
         cookie.setPath("/");
 
         response.addCookie(cookie);
-        return "redirect:/admin/boards";
+        return "redirect:"+BOARD_PAGE;
     }
 
     @GetMapping
@@ -67,7 +69,7 @@ public class AdminProductController {
             @CookieValue(defaultValue = "") String token) {
         Optional<Member> optionalMember = tokenService.isValidateToken(token);
         if (optionalMember.isEmpty()) {
-            return "redirect:/admin/boards/login";
+            return "redirect:"+BOARD_PAGE+"/login";
         }
         List<ProductResponseDto> products = productService.findAllProducts();
         model.addAttribute("products", products);
@@ -80,7 +82,7 @@ public class AdminProductController {
             @CookieValue(defaultValue = "") String token) {
         Optional<Member> optionalMember = tokenService.isValidateToken(token);
         if (optionalMember.isEmpty()) {
-            return "redirect:/admin/boards/login";
+            return "redirect:"+BOARD_PAGE+"/login";
         }
         return "createForm";
     }
@@ -92,7 +94,7 @@ public class AdminProductController {
             @CookieValue(defaultValue = "") String token) {
         Optional<Member> optionalMember = tokenService.isValidateToken(token);
         if (optionalMember.isEmpty()) {
-            return "redirect:/admin/boards/login";
+            return "redirect:"+BOARD_PAGE+"/login";
         }
         model.addAttribute("id", id);
         return "updateForm";
@@ -104,7 +106,7 @@ public class AdminProductController {
             @CookieValue(defaultValue = "") String token) {
         Optional<Member> optionalMember = tokenService.isValidateToken(token);
         if (optionalMember.isEmpty()) {
-            return "redirect:/admin/boards/login";
+            return "redirect:"+BOARD_PAGE+"/login";
         }
         if (requestDto.name().contains("카카오") && !optionalMember.get().isAdmin()) {
             throw new CustomException(ErrorCode.NamingForbidden);
@@ -119,13 +121,13 @@ public class AdminProductController {
             @CookieValue(defaultValue = "") String token) {
         Optional<Member> optionalMember = tokenService.isValidateToken(token);
         if (optionalMember.isEmpty()) {
-            return "redirect:/admin/boards/login";
+            return "redirect:"+BOARD_PAGE+"/login";
         }
         if (requestDto.name().contains("카카오") && !optionalMember.get().isAdmin()) {
             throw new CustomException(ErrorCode.NamingForbidden);
         }
         productService.updateProductById(id, requestDto);
-        return "redirect:/admin/boards";
+        return "redirect:"+BOARD_PAGE;
     }
 
     @DeleteMapping("/{id}")
@@ -134,10 +136,10 @@ public class AdminProductController {
             @CookieValue(defaultValue = "") String token) {
         Optional<Member> optionalMember = tokenService.isValidateToken(token);
         if (optionalMember.isEmpty()) {
-            return "redirect:/admin/boards/login";
+            return "redirect:"+BOARD_PAGE+"/login";
         }
         productService.deleteProductById(id);
-        return "redirect:/admin/boards";
+        return "redirect:"+BOARD_PAGE;
     }
 
 }
