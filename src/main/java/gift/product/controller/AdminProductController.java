@@ -1,8 +1,8 @@
 package gift.product.controller;
 
 import gift.product.dto.ProductCreateRequestDto;
-import gift.product.dto.ProductUpdateRequestDto;
 import gift.product.dto.ProductGetResponseDto;
+import gift.product.dto.ProductUpdateRequestDto;
 import gift.product.service.ProductService;
 import jakarta.validation.Valid;
 import java.util.List;

@@ -1,9 +1,9 @@
 package gift.product.service;
 
 import gift.product.dto.ProductCreateRequestDto;
-import gift.product.dto.ProductUpdateRequestDto;
 import gift.product.dto.ProductCreateResponseDto;
 import gift.product.dto.ProductGetResponseDto;
+import gift.product.dto.ProductUpdateRequestDto;
 import java.util.List;
 
 public interface ProductService {

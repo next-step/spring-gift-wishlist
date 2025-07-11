@@ -20,7 +20,7 @@ public class RegisterController {
     public RegisterController(MemberService memberService) {
         this.memberService = memberService;
     }
-    
+
     @PostMapping("/register")
     public ResponseEntity<TokenResponseDto> registerMember(
         @Valid @RequestBody RegisterRequestDto registerRequestDto) {
