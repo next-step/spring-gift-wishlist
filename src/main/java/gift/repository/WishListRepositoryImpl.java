@@ -28,4 +28,21 @@ public class WishListRepositoryImpl implements WishListRepository {
         String sql = "insert into wish_list (member_id, product_id, quantity) values (?, ?, ?)";
         jdbcClient.sql(sql).param(memberId).param(productId).param(quantity).update();
     }
+
+    @Override
+    public boolean isWishListExistByMemberIdAndWishListId(Long memberId, Long wishListId) {
+        String sql = "select count(*) from wish_list where member_id = ? and id = ?";
+
+        return jdbcClient.sql(sql)
+                .param(memberId)
+                .param(wishListId)
+                .query(Long.class)
+                .single() > 0L;
+    }
+
+    @Override
+    public void deleteWishList(Long wishListId) {
+        String sql = "delete from wish_list where id = ?";
+        jdbcClient.sql(sql).param(wishListId).update();
+    }
 }

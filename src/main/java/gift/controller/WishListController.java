@@ -5,13 +5,12 @@ import gift.dto.WishListRequestDto;
 import gift.dto.WishListResponseDto;
 import gift.entity.Member;
 import gift.service.WishListService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @RestController
@@ -34,5 +33,12 @@ public class WishListController {
     public ResponseEntity<String> addWishList(@LoginMember Member member, WishListRequestDto wishListRequestDto) {
         wishListService.addWishList(member.getId(), wishListRequestDto);
         return ResponseEntity.ok("위시리스트에 상품이 담겼습니다.");
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteWishList(@LoginMember Member member, @PathVariable Long id) throws AccessDeniedException {
+        wishListService.deleteWishList(member.getId(), id);
+        return ResponseEntity.ok("위시리스트에 상품이 삭제되었습니다.");
+
     }
 }
