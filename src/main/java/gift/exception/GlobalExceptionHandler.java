@@ -15,11 +15,6 @@ import org.springframework.web.servlet.ModelAndView;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<String> handleAuthenticationException(AuthenticationException ex) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
-    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
@@ -31,53 +26,52 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 
+    @ExceptionHandler(AuthenticationException.class)
+    public Object handleAuthenticationException(AuthenticationException ex, HttpServletRequest request) {
+        if (isApiRequest(request)) {
+            return createErrorResponse(HttpStatus.UNAUTHORIZED, ex.getMessage());
+        }
+        return new ModelAndView("redirect:/members/login");
+    }
+
     @ExceptionHandler(AuthorizationException.class)
     public Object handleAuthorizationException(AuthorizationException ex, HttpServletRequest request) {
         if (isApiRequest(request)) {
             return createErrorResponse(HttpStatus.FORBIDDEN, ex.getMessage());
         }
-        ModelAndView modelAndView = new ModelAndView("error/403");
-        modelAndView.addObject("errorMessage", ex.getMessage());
-        return modelAndView;
+        return createErrorModelAndView("error/403", ex.getMessage());
     }
 
     @ExceptionHandler(LoginException.class)
     public ResponseEntity<String> handleLoginException(LoginException ex) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
+        return createErrorResponse(HttpStatus.FORBIDDEN, ex.getMessage());
     }
 
     @ExceptionHandler(ItemNotFoundException.class)
     public Object handleItemNotFoundException(ItemNotFoundException ex, HttpServletRequest request) {
-        if (request.getRequestURI().startsWith("/api/")) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        if (isApiRequest(request)) {
+            return createErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage());
         }
-        ModelAndView modelAndView = new ModelAndView("error/404");
-        modelAndView.addObject("errorMessage", ex.getMessage());
-        return modelAndView;
+        return createErrorModelAndView("error/404", ex.getMessage());
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public Object handleDataIntegrityViolationException(DataIntegrityViolationException ex,
-        HttpServletRequest request) {
-        String message = "이미 존재하는 이름입니다. 다른 이름을 사용해주세요.";
-        if (request.getRequestURI().startsWith("/api/")) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(message);
+    public Object handleDataIntegrityViolationException(HttpServletRequest request) {
+        String message = "이미 존재하는 이름 또는 이메일입니다. 다른 값을 사용해주세요.";
+        if (isApiRequest(request)) {
+            return createErrorResponse(HttpStatus.CONFLICT, message);
         }
-        ModelAndView modelAndView = new ModelAndView("error/409");
-        modelAndView.addObject("errorMessage", message);
-        return modelAndView;
+        return createErrorModelAndView("error/409", message);
     }
 
     @ExceptionHandler(Exception.class)
     public Object handleGlobalException(Exception ex, HttpServletRequest request) {
-        System.err.println("Unhandled exception occurred: " + ex.getMessage());
+        System.err.println("Unhandled exception occurred: " + ex.getClass().getName() + " | " + ex.getMessage());
         String message = "서버 내부 오류가 발생했습니다. 관리자에게 문의하세요.";
-        if (request.getRequestURI().startsWith("/api/")) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
+        if (isApiRequest(request)) {
+            return createErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, message);
         }
-        ModelAndView modelAndView = new ModelAndView("error/500");
-        modelAndView.addObject("errorMessage", message);
-        return modelAndView;
+        return createErrorModelAndView("error/500", message);
     }
 
     private boolean isApiRequest(HttpServletRequest request) {
