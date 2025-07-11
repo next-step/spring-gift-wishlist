@@ -1,4 +1,4 @@
-package gift;
+package gift.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
