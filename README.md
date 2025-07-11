@@ -92,3 +92,4 @@
   - [x] HandlerMethodArgumentResolver를 구현한 LoginMemberArgumentResolver 추가
   - [x] WebConfig에 AuthenticationInterceptor,loginMemberArgumentResolver 적용
   - [x] WishlistController의 각 메서드 파라미터에 @LoginMember 어노테이션 적용하여 구현
+- [ ] 유효성 검사 및 예외처리 적용

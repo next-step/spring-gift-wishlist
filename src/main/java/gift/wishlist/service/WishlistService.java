@@ -73,6 +73,6 @@ public class WishlistService {
     }
 
     public void deleteWish(Long memberId, Long wishId) {
-        wishlistRepository.deleteWishByMemberIdAndProductId(memberId, wishId);
+        wishlistRepository.deleteWishByMemberIdAndWishId(memberId, wishId);
     }
 }

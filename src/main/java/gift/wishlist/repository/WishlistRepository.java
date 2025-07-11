@@ -1,6 +1,8 @@
 package gift.wishlist.repository;
 
 
+import gift.exception.WishNotFoundByMemberIdAndProductId;
+import gift.exception.WishNotFoundByMemberIdAndWishId;
 import gift.wishlist.entity.Wishlist;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +39,7 @@ public class WishlistRepository {
                 .update();
 
         return findWishByMemberIdAndProductId(memberId, productId)
-                .orElseThrow(() -> new IllegalStateException("저장 작업 후 데이터를 찾지 못했습니다."));
+                .orElseThrow(() -> new WishNotFoundByMemberIdAndProductId(memberId, productId));
 
     }
 
@@ -67,7 +69,7 @@ public class WishlistRepository {
                 .list();
     }
 
-    public void deleteWishByMemberIdAndProductId(Long memberId, Long wishId) {
+    public void deleteWishByMemberIdAndWishId(Long memberId, Long wishId) {
         String sql = """
                 DELETE FROM wishlist
                 WHERE id = ?
@@ -80,7 +82,7 @@ public class WishlistRepository {
                 .update();
 
         if(affectedRows == 0){
-            throw new IllegalArgumentException("삭제할 위시리스트가 존재하지 않습니다.");
+            throw new WishNotFoundByMemberIdAndWishId(memberId, wishId);
         }
     }
 
