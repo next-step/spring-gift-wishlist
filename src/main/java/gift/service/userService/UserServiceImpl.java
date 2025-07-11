@@ -60,6 +60,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User findUserByEmail(String userEmail) {
+        User user = userRepository.findUserByEmail(userEmail);
+
+        if (user == null) {
+            throw new UserNotFoundException();
+        }
+
+        return user;
+    }
+
+    @Override
     public List<UserResponseDto> getUserList(String email,boolean isAdmin) {
 
         if (!isAdmin) {
