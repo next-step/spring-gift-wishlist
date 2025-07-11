@@ -90,3 +90,4 @@
   - [x] 커스텀 어노테이션 @LoginMember 구현
   - [x] AuthenticationInterceptor에서 토큰 검증 후 memberId를 request의 속성에 추가되도록 추가 구현
   - [x] HandlerMethodArgumentResolver를 구현한 LoginMemberArgumentResolver 추가
+  - [x] WebConfig에 AuthenticationInterceptor,loginMemberArgumentResolver 적용
