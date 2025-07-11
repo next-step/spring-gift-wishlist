@@ -25,7 +25,7 @@ public class UserRepositoryImpl implements UserRepository {
 
   @Override
   public void saveUser(User user) {
-    String sql = "INSERT INTO users (email, password, role) VALUES (:email, :password:, :role)";
+    String sql = "INSERT INTO users (email, password, role) VALUES (:email, :password, :role)";
 
     jdbcClient.sql(sql)
         .param("email", user.getEmail())
@@ -41,5 +41,15 @@ public class UserRepositoryImpl implements UserRepository {
     jdbcClient.sql(sql)
         .param("email", email)
         .update();
+  }
+
+  @Override
+  public boolean existsByEmail(String email) {
+    String sql = "SELECT COUNT(*) FROM users WHERE email = :email";
+    Long count = jdbcClient.sql(sql)
+                           .param("email", email)
+                           .query(Long.class)
+                           .single();
+    return count > 0;
   }
 }
