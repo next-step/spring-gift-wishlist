@@ -1,9 +1,11 @@
 package gift.controller;
 
 import gift.config.JwtUtil;
+import gift.config.LoginMember;
 import gift.dto.MemberRequest;
 import gift.dto.MemberResponse;
 import gift.dto.TokenResponse;
+import gift.entity.Member;
 import gift.service.MemberService;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -42,11 +44,10 @@ public class MemberController {
     }
 
     @PutMapping
-    public ResponseEntity<TokenResponse> updateMember(@RequestBody MemberRequest memberRequest) {
-        if (!jwtUtil.validateToken(memberRequest.token())) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-
+    public ResponseEntity<TokenResponse> updateMember(
+        @RequestBody MemberRequest memberRequest,
+        @LoginMember Member member
+    ) {
         TokenResponse response = memberService.updateMember(memberRequest);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -54,12 +55,8 @@ public class MemberController {
     @DeleteMapping("/{email}")
     public ResponseEntity<Void> deleteMember(
         @PathVariable String email,
-        @RequestBody MemberRequest request
+        @LoginMember Member member
     ) {
-        if (!jwtUtil.validateToken(request.token())) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-
         memberService.deleteMember(email);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -67,22 +64,16 @@ public class MemberController {
     @GetMapping("/{email}")
     public ResponseEntity<MemberResponse> getMember(
         @PathVariable String email,
-        @RequestBody MemberRequest request
+        @LoginMember Member member
     ) {
-        if (!jwtUtil.validateToken(request.token())) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-
         MemberResponse response = memberService.getMember(email);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<List<MemberResponse>> getAllMembers(@RequestBody MemberRequest request) {
-        if (!jwtUtil.validateToken(request.token())) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-
+    public ResponseEntity<List<MemberResponse>> getAllMembers(
+        @LoginMember Member member
+    ) {
         List<MemberResponse> responses = memberService.getAllMembers();
         return new ResponseEntity<>(responses, HttpStatus.OK);
     }

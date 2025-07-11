@@ -13,3 +13,11 @@ CREATE TABLE members (
     role VARCHAR(255) NOT NULL,
     PRIMARY KEY(id)
 );
+
+CREATE TABLE wishItems (
+    id BIGINT AUTO_INCREMENT,
+    productId BIGINT NOT NULL,
+    quantity BIGINT NOT NULL,
+    memberId BIGINT NOT NULL,
+    PRIMARY KEY(id)
+);
