@@ -34,7 +34,7 @@ public class ProductService {
         Optional<Product> product = productRepository.findById(id);
         if (product.isEmpty()) {
             throw new IllegalArgumentException(
-                "id: " + id + ". error getProduct(). 해당 ID의 상품이 존재하지 않습니다.");
+                "id: " + id + ". 해당 ID의 상품이 존재하지 않습니다.");
         }
         return product.get();
     }

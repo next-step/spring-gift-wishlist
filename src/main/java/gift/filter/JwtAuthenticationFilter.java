@@ -1,5 +1,6 @@
 package gift.filter;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -22,14 +23,25 @@ public class JwtAuthenticationFilter implements Filter {
 
         String uri = request.getRequestURI();
 
-        // admin 경로만 토큰 검사
-        if (uri.startsWith("/admin/members")) {
+        // admin, wishlist 경로 토큰 검사. 로그인이 되어야 이용 가능한 기능
+        if (uri.startsWith("/admin/members") || uri.startsWith("/api/wishes")) {
+
             String token = request.getHeader("Authorization");
-            if (token == null || !isValidToken(token)) {
+
+            if (token == null) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("Unauthorized Token");
+                response.getWriter().write("Token is missing");
                 return;
             }
+
+            Claims claims = validateToken(token);
+            if (claims == null) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Invalid Token");
+                return;
+            }
+
+            request.setAttribute("loginMemberEmail", claims.get("email", String.class));
 
             chain.doFilter(req, res);
         } else {
@@ -38,15 +50,16 @@ public class JwtAuthenticationFilter implements Filter {
         }
     }
 
-    private boolean isValidToken(String token) {
+    private Claims validateToken(String token) {
         try {
-            Jwts.parser()
+            Claims claims = Jwts.parser()
                 .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes()))
                 .build()
-                .parseClaimsJws(token); // 파싱되면 유효한 토큰
-            return true;
+                .parseClaimsJws(token)
+                .getBody(); // 파싱되면 유효한 토큰
+            return claims;
         } catch (JwtException | IllegalArgumentException e) {
-            return false;
+            return null;
         }
     }
 

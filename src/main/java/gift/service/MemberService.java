@@ -4,6 +4,7 @@ import gift.dto.LoginRequest;
 import gift.exception.EmailAlreadyExistsException;
 import gift.exception.InvalidPasswordException;
 import gift.exception.MemberNotFoundException;
+import gift.model.Product;
 import gift.util.PasswordUtil;
 import gift.dto.RegisterRequest;
 import gift.dto.TokenResponse;
@@ -12,6 +13,7 @@ import gift.repository.MemberRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -42,7 +44,6 @@ public class MemberService {
     public TokenResponse login(LoginRequest request) {
         Member member = memberRepository.findByEmail(request.getEmail()).orElseThrow(() ->
             new MemberNotFoundException(request.getEmail()));
-        ;
 
         if (!PasswordUtil.matches(request.getPassword(), member.getPassword())) {
             throw new InvalidPasswordException();
@@ -64,5 +65,14 @@ public class MemberService {
     public List<Member> getAllMembers() {
         return memberRepository.findAll();
     }
+
+    public Member findByEmail(String email) {
+        Optional<Member> member = memberRepository.findByEmail(email);
+        if (member.isEmpty()) {
+            throw new MemberNotFoundException(email);
+        }
+        return member.get();
+    }
+
 
 }

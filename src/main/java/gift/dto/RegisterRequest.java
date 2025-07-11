@@ -15,11 +15,8 @@ public class RegisterRequest {
     public RegisterRequest() {
     }
 
-    public void setEmail(String email) {
+    public RegisterRequest(String email, String password) {
         this.email = email;
-    }
-
-    public void setPassword(String password) {
         this.password = password;
     }
 
