@@ -1,6 +1,7 @@
 package gift.entity;
 
 import gift.dto.ProductRequestDTO;
+import gift.dto.ProductResponseDTO;
 
 public class Product {
     private Long id;
@@ -44,5 +45,9 @@ public class Product {
         this.name = dto.getName();
         this.price = dto.getPrice();
         this.imageUrl = dto.getImageUrl();
+    }
+
+    public ProductResponseDTO getProductResponseDTO() {
+        return new ProductResponseDTO(this.id, this.name, this.price, this.imageUrl);
     }
 }
