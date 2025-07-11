@@ -1,6 +1,7 @@
 package gift.Controller;
 
 import gift.Entity.Member;
+import gift.LoginResult;
 import gift.dto.MemberRequest;
 import gift.service.MemberService;
 import org.springframework.stereotype.Controller;
@@ -27,8 +28,10 @@ public class LoginViewController {
     public String login(@ModelAttribute MemberRequest memberRequest,
                         Model model) {
         try{
-            String token = memberService.login(memberRequest.getId(), memberRequest.getPassword());
-            model.addAttribute("token", token);
+            LoginResult result = memberService.login(memberRequest.getId(), memberRequest.getPassword());
+
+            model.addAttribute("token", result.getToken());
+            model.addAttribute("member", result.getMember());
             return "redirect:/user/products";
         }catch (Exception e){
             model.addAttribute("member", new Member());

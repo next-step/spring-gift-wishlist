@@ -1,17 +1,16 @@
 package gift.dto;
 
 import gift.Entity.Product;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public class WishDto {
+public class WishDao {
     private final JdbcClient client;
 
-    public WishDto(JdbcClient client) {
+    public WishDao(JdbcClient client) {
         this.client = client;
     }
 

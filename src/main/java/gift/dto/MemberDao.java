@@ -1,7 +1,6 @@
 package gift.dto;
 
 import gift.Entity.Member;
-import gift.Entity.Product;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
@@ -10,11 +9,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class MemberDto {
+public class MemberDao {
 
     private final JdbcClient client;
 
-    public MemberDto(JdbcClient client) {
+    public MemberDao(JdbcClient client) {
         this.client = client;
     }
 

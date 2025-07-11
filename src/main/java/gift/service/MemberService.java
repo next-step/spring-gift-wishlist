@@ -1,23 +1,24 @@
 package gift.service;
 
 import gift.Entity.Member;
-import gift.dto.MemberDto;
+import gift.LoginResult;
+import gift.dto.MemberDao;
 import gift.Jwt.JwtUtil;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
 
-    private final MemberDto memberDto;
+    private final MemberDao memberDao;
     private final JwtUtil jwtUtil;
 
-    public MemberService(MemberDto memberDto, JwtUtil jwtUtil) {
-        this.memberDto = memberDto;
+    public MemberService(MemberDao memberDao, JwtUtil jwtUtil) {
+        this.memberDao = memberDao;
         this.jwtUtil = jwtUtil;
     }
 
     public void register(Member member) {
-        if (memberDto.findById(member.getId()).isPresent()) {
+        if (memberDao.findById(member.getId()).isPresent()) {
             throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
         }
 
@@ -25,17 +26,22 @@ public class MemberService {
             member.setRole("USER");
         }
 
-        memberDto.insertMember(member);
+        memberDao.insertMember(member);
     }
 
-    public String login(String id, String rawPassword) {
-        Member member = memberDto.findById(id)
+    public LoginResult login(String id, String rawPassword) {
+        // 아이디를 탐색하고 없다면 오류메시지를 던짐
+        Member member = memberDao.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("아이디 또는 비밀번호가 일치하지 않습니다."));
 
+        // 비밀번호를 탐색하고 일치하지 않다면 오류메시지를 던짐
         if (!rawPassword.equals(member.getPassword())) {
             throw new IllegalArgumentException("아이디 또는 비밀번호가 일치하지 않습니다.");
         }
 
-        return jwtUtil.createToken(member);
+        // 위 조건들을 모두 통과하면 토큰을 만듦
+        String token = jwtUtil.createToken(member);
+        //토큰과 멤버를 반환
+        return new LoginResult(token, member);
     }
 }

@@ -1,7 +1,7 @@
 package gift.admin;
 
 import gift.Entity.Product;
-import gift.dto.ProductDto;
+import gift.dto.ProductDao;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -15,18 +15,18 @@ import java.util.*;
 @RequestMapping("/admin/products")
 public class AdminController {
 
-    private final ProductDto productDto;
+    private final ProductDao productDao;
     private final ProductService productservice;
 
-    public AdminController( ProductService productservice, ProductDto productDto) {
+    public AdminController( ProductService productservice, ProductDao productDao) {
         this.productservice = productservice;
-        this.productDto = productDto;
+        this.productDao = productDao;
     }
 
     // 상품 목록 페이지
     @GetMapping
     public String list(Model model) {
-        List<Product> products = productDto.showProducts();
+        List<Product> products = productDao.showProducts();
         model.addAttribute("products", products);
         return "admin/list";
     }
@@ -51,7 +51,7 @@ public class AdminController {
             return "admin/form";
         }
 
-        productDto.insertProduct(product);
+        productDao.insertProduct(product);
         return "redirect:/admin/products";
     }
 
@@ -59,7 +59,7 @@ public class AdminController {
     // 메소드 이름 중 첫 글자는 소문자로 시작하도록 통일
     @GetMapping("/{id}/edit")
     public String editProduct(@PathVariable Long id, Model model) {
-        Product product = productDto.selectProduct(id);
+        Product product = productDao.selectProduct(id);
         model.addAttribute("product", product);
         model.addAttribute("formType", "edit");
         return "admin/form";
@@ -75,7 +75,7 @@ public class AdminController {
             return "admin/form";
         }
 
-        productDto.updateProduct(id, product);
+        productDao.updateProduct(id, product);
         return "redirect:/admin/products";
     }
 
@@ -83,7 +83,7 @@ public class AdminController {
     // 메소드 이름 중 첫 글자는 소문자로 시작하도록 통일
     @PostMapping("/{id}/delete")
     public String deleteProduct(@PathVariable Long id) {
-        productDto.deleteProduct(id);
+        productDao.deleteProduct(id);
         return "redirect:/admin/products";
     }
 

@@ -8,10 +8,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class ProductDto {
+public class ProductDao {
     private final JdbcClient client;
 
-    public ProductDto(JdbcClient client) {
+    public ProductDao(JdbcClient client) {
         this.client = client;
     }
 
