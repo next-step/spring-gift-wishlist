@@ -30,7 +30,7 @@ public class WishList {
         return quantity;
     }
 
-    // todo: update 메서드 정의
+
     public void update(int quantity){
         this.quantity += quantity;
 
