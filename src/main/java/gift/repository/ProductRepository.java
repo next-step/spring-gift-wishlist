@@ -10,4 +10,5 @@ public interface ProductRepository {
     void updateProduct(Long id, String name, Long price, String ImageUrl);
     void deleteProduct(Long id);
     boolean findMdApprovedById(Long id);
+    boolean existsById(Long id);
 }

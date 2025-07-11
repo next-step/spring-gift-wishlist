@@ -2,6 +2,9 @@ package gift.exception;
 
 import gift.exception.member.EmailAlreadyExistsException;
 import gift.exception.member.LoginFailedException;
+import gift.exception.product.ProductNotFoundException;
+import gift.exception.wish.WishAlreadyExistsException;
+import gift.exception.wish.WishNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -46,5 +49,26 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(Map.of("error", ex.getMessage()));
+    }
+
+    @ExceptionHandler(WishAlreadyExistsException.class)
+    public ResponseEntity<Map<String, String>> handleWishAlreadyExistsException(WishAlreadyExistsException e) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", e.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(WishNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleWishNotFoundException(WishNotFoundException e) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleProductNotFoundException(ProductNotFoundException e) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 }
