@@ -49,4 +49,13 @@ public class WishlistRepository {
             .param("productId", productId)
             .update();
     }
+
+    public int deleteProductFromWishlist(Long memberId, Long productId) {
+        String sql = "DELETE FROM wishlist WHERE memberId = :memberId AND productId = :productId";
+
+        return jdbcClient.sql(sql)
+            .param("memberId", memberId)
+            .param("productId", productId)
+            .update();
+    }
 }

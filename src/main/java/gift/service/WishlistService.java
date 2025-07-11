@@ -9,6 +9,7 @@ import gift.dto.AddWishlistRequest;
 import gift.dto.ProductResponse;
 import gift.exception.ProductNotFoundException;
 import gift.exception.WishlistAddException;
+import gift.exception.WishlistDeleteException;
 import gift.repository.ProductRepository;
 import gift.repository.WishlistRepository;
 
@@ -53,5 +54,13 @@ public class WishlistService {
             .map(ProductResponse::from)
             .orElseThrow(() -> new ProductNotFoundException("해당 상품이 존재하지 않습니다."));
         // 43L에서 상품 id의 유효성을 이미 검증했지만, productRepository.findById()의 리턴이 optional이므로..
+    }
+
+    @Transactional
+    public void deleteProductFromWishlist(Long memberId, Long productId) {
+        int count = wishlistRepository.deleteProductFromWishlist(memberId, productId);
+        if (count != 1) {
+            throw new WishlistDeleteException("위시리스트 상품 삭제를 실패했습니다.");
+        }
     }
 }
