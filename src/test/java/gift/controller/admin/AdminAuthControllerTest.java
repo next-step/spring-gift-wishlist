@@ -1,4 +1,3 @@
-// src/test/java/gift/controller/admin/AdminAuthControllerTest.java
 package gift.controller.admin;
 
 import static org.mockito.BDDMockito.given;
@@ -9,12 +8,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 import gift.dto.member.AuthRequest;
 import gift.dto.member.AuthResponse;
+import gift.filter.AdminCookieFilter;
 import gift.service.member.MemberService;
 import gift.util.BearerAuthUtil;
 import gift.util.JwtUtil;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,7 +41,17 @@ class AdminAuthControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockitoBean
-    private MemberService authService;
+    private MemberService memberService;
+
+    @BeforeEach
+    void setUp() {
+        AdminAuthController controller = new AdminAuthController(memberService);
+        AdminCookieFilter adminCookieFilter = new AdminCookieFilter();
+
+        mockMvc = standaloneSetup(controller)
+                .addFilter(adminCookieFilter, "/admin/*")
+                .build();
+    }
 
     @Test
     @DisplayName("GET /admin/login - 로그인 폼 표시 및 에러 없음")
@@ -65,7 +77,7 @@ class AdminAuthControllerTest {
     void loginSubmitValidationError() throws Exception {
         mockMvc.perform(post("/admin/login")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .param("email", "invalid-email") // assume validation requires email format
+                        .param("email", "invalid-email")
                         .param("password", ""))
                 .andExpect(status().isOk())
                 .andExpect(view().name("admin/login_form"));
@@ -76,7 +88,7 @@ class AdminAuthControllerTest {
     void loginSubmitSuccess() throws Exception {
         AuthRequest form = new AuthRequest("user@x.com", "pwd");
         AuthResponse resp = new AuthResponse("jwt-token");
-        given(authService.login(form.email(), form.password())).willReturn(resp);
+        given(memberService.login(form.email(), form.password())).willReturn(resp);
 
         mockMvc.perform(post("/admin/login")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -91,7 +103,7 @@ class AdminAuthControllerTest {
     @DisplayName("POST /admin/login - 인증 실패 시 에러 모델 추가")
     void loginSubmitAuthFailure() throws Exception {
         AuthRequest form = new AuthRequest("user@x.com", "wrong");
-        given(authService.login(form.email(), form.password()))
+        given(memberService.login(form.email(), form.password()))
                 .willThrow(new IllegalArgumentException("Invalid credentials"));
 
         mockMvc.perform(post("/admin/login")

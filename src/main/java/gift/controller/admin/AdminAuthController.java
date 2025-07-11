@@ -3,8 +3,7 @@ package gift.controller.admin;
 import gift.dto.member.AuthRequest;
 import gift.dto.member.AuthResponse;
 import gift.service.member.MemberService;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,10 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/admin")
 public class AdminAuthController {
 
-    private final MemberService authService;
+    private final MemberService memberService;
 
-    public AdminAuthController(MemberService authService) {
-        this.authService = authService;
+    public AdminAuthController(MemberService memberService) {
+        this.memberService = memberService;
     }
 
     @GetMapping("/login")
@@ -37,9 +36,9 @@ public class AdminAuthController {
 
     @PostMapping("/login")
     public String loginSubmit(
-            @Valid @ModelAttribute("authRequest") AuthRequest form,
+            @Valid @ModelAttribute("authRequest") AuthRequest authRequest,
             BindingResult bindingResult,
-            HttpServletResponse response,
+            HttpServletRequest request,
             Model model
     ) {
         if (bindingResult.hasErrors()) {
@@ -47,15 +46,9 @@ public class AdminAuthController {
         }
 
         try {
-            AuthResponse authResp = authService.login(form.email(), form.password());
-            String token = authResp.token();
-
-            Cookie cookie = new Cookie("AUTH_TOKEN", token);
-            cookie.setHttpOnly(true);
-            cookie.setPath("/");
-            cookie.setMaxAge(60 * 60);
-            response.addCookie(cookie);
-
+            AuthResponse authResp = memberService.login(authRequest.email(),
+                    authRequest.password());
+            request.setAttribute("AUTH_TOKEN", authResp.token());
             return "redirect:/admin/dashboard";
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
@@ -64,13 +57,9 @@ public class AdminAuthController {
     }
 
     @GetMapping("/logout")
-    public String logout(HttpServletResponse response) {
-        Cookie cookie = new Cookie("AUTH_TOKEN", null);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
-
+    public String logout(HttpServletRequest httpServletRequest) {
+        httpServletRequest.setAttribute("LOGOUT", true);
         return "redirect:/admin/login";
     }
+
 }

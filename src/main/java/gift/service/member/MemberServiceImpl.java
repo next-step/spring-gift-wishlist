@@ -1,4 +1,3 @@
-// gift/service/member/MemberServiceImpl.java
 package gift.service.member;
 
 import gift.dto.member.AuthRequest;
@@ -22,9 +21,9 @@ public class MemberServiceImpl implements MemberService {
     private final JwtUtil jwtUtil;
     private final MemberRepository memberRepository;
 
-    public MemberServiceImpl(MemberRepository memberDao, JwtUtil jwtUtil) {
+    public MemberServiceImpl(MemberRepository memberRepository, JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
-        this.memberRepository = memberDao;
+        this.memberRepository = memberRepository;
     }
 
     public static String sha256(String input) {
@@ -42,11 +41,11 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public AuthResponse register(AuthRequest req) {
-        String hash = sha256(req.password());
-        Member m = Member.register(req.email(), hash);
+    public AuthResponse register(AuthRequest authRequest) {
+        String hash = sha256(authRequest.password());
+        Member m = Member.register(authRequest.email(), hash);
         m = memberRepository.register(m);
-        String token = jwtUtil.generateToken(m.getId().id(), m.getRole().name());
+        String token = jwtUtil.generateToken(m.getId().id(), m.getRole());
         return new AuthResponse(token);
     }
 
@@ -57,35 +56,35 @@ public class MemberServiceImpl implements MemberService {
         if (!m.getPassword().password().equals(sha256(rawPassword))) {
             throw new MemberNotFoundException(email);
         }
-        String token = jwtUtil.generateToken(m.getId().id(), m.getRole().name());
+        String token = jwtUtil.generateToken(m.getId().id(), m.getRole());
         return new AuthResponse(token);
     }
 
-    private void checkAdmin(String role) {
-        if (!"ADMIN".equals(role)) {
+    private void checkAdmin(Role role) {
+        if (role == Role.USER) {
             throw new InvalidAuthExeption("관리자 권한이 필요합니다.");
         }
     }
 
     @Override
-    public List<Member> getAllMembers(String role) {
+    public List<Member> getAllMembers(Role role) {
         checkAdmin(role);
         return memberRepository.findAll();
     }
 
     @Override
-    public Optional<Member> getMemberById(Long id, String role) {
+    public Optional<Member> getMemberById(Long id, Role role) {
         checkAdmin(role);
         return memberRepository.findById(id);
     }
 
     @Override
     public Member createMember(
-            String email, String rawPassword, String newRole, String role) {
+            String email, String rawPassword, Role newRole, Role role) {
         checkAdmin(role);
         String hash = sha256(rawPassword);
         Member m = Member.register(email, hash)
-                .withRole(Role.valueOf(newRole));
+                .withRole(newRole);
         return memberRepository.register(m);
     }
 
@@ -94,8 +93,8 @@ public class MemberServiceImpl implements MemberService {
             Long id,
             String email,
             String rawPassword,
-            String newRole,
-            String role) {
+            Role newRole,
+            Role role) {
         checkAdmin(role);
         Member existing = memberRepository.findById(id)
                 .orElseThrow(() -> new MemberNotFoundException(id.toString()));
@@ -104,12 +103,12 @@ public class MemberServiceImpl implements MemberService {
                 : existing.getPassword().password();
         Member updated = existing.withEmail(email)
                 .withPasswordHash(hash)
-                .withRole(Role.valueOf(newRole));
+                .withRole(newRole);
         return memberRepository.updateMember(updated);
     }
 
     @Override
-    public void deleteMember(Long id, String role) {
+    public void deleteMember(Long id, Role role) {
         checkAdmin(role);
         memberRepository.deleteById(id);
     }

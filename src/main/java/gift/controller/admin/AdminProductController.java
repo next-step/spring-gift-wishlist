@@ -1,12 +1,11 @@
 package gift.controller.admin;
 
-import static gift.util.RoleUtil.extractRole;
-
+import gift.annotation.CurrentRole;
 import gift.dto.product.ProductForm;
+import gift.entity.member.value.Role;
 import gift.entity.product.Product;
 import gift.exception.custom.ProductNotFoundException;
 import gift.service.product.ProductService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -32,26 +31,25 @@ public class AdminProductController {
     }
 
     @GetMapping
-    public String list(HttpServletRequest req, Model model) {
-        model.addAttribute("products", productService.getAllProducts(extractRole(req)));
+    public String list(@CurrentRole Role role, Model model) {
+        model.addAttribute("products", productService.getAllProducts(role));
         return "admin/product_list";
     }
 
     @GetMapping("/new")
-    public String createForm(HttpServletRequest req, Model model) {
-        extractRole(req);
+    public String createForm(@CurrentRole Role role, Model model) {
         model.addAttribute("productForm", new ProductForm(null, "", null, ""));
         return "admin/product_form";
     }
 
     @PostMapping("/new")
     public String create(
-            HttpServletRequest req,
+            @CurrentRole Role role,
             @Valid @ModelAttribute ProductForm productForm,
             BindingResult bindingResult,
-            HttpServletResponse response
+            HttpServletResponse httpServletResponse
     ) {
-        String errorView = checkErrors(bindingResult, response);
+        String errorView = checkErrors(bindingResult, httpServletResponse);
         if (errorView != null) {
             return errorView;
         }
@@ -59,18 +57,18 @@ public class AdminProductController {
                 productForm.getName(),
                 productForm.getPrice(),
                 productForm.getImageUrl(),
-                extractRole(req)
+                role
         );
         return "redirect:/admin/products";
     }
 
     @GetMapping("/{id}/edit")
     public String editForm(
-            HttpServletRequest req,
+            @CurrentRole Role role,
             @PathVariable Long id,
             Model model
     ) {
-        Product p = productService.getProductById(id, extractRole(req))
+        Product p = productService.getProductById(id, role)
                 .orElseThrow(() -> new ProductNotFoundException(id));
         ProductForm form = new ProductForm(
                 p.id().id(),
@@ -84,13 +82,13 @@ public class AdminProductController {
 
     @PutMapping("/{id}")
     public String update(
-            HttpServletRequest req,
+            @CurrentRole Role role,
             @PathVariable Long id,
             @Valid @ModelAttribute ProductForm productForm,
             BindingResult bindingResult,
-            HttpServletResponse response
+            HttpServletResponse httpServletResponse
     ) {
-        String errorView = checkErrors(bindingResult, response);
+        String errorView = checkErrors(bindingResult, httpServletResponse);
         if (errorView != null) {
             return errorView;
         }
@@ -99,33 +97,33 @@ public class AdminProductController {
                 productForm.getName(),
                 productForm.getPrice(),
                 productForm.getImageUrl(),
-                extractRole(req)
+                role
         );
         return "redirect:/admin/products";
     }
 
     @DeleteMapping("/{id}")
-    public String delete(HttpServletRequest req, @PathVariable Long id) {
-        productService.deleteProduct(id, extractRole(req));
+    public String delete(@CurrentRole Role role, @PathVariable Long id) {
+        productService.deleteProduct(id, role);
         return "redirect:/admin/products";
     }
 
     @PostMapping("/{id}/unhide")
-    public String unhide(HttpServletRequest req, @PathVariable Long id) {
-        productService.unhideProduct(id, extractRole(req));
+    public String unhide(@CurrentRole Role role, @PathVariable Long id) {
+        productService.unhideProduct(id, role);
         return "redirect:/admin/products";
     }
 
     @PostMapping("/{id}/hide")
-    public String hide(HttpServletRequest req, @PathVariable Long id) {
-        productService.hideProduct(id, extractRole(req));
+    public String hide(@CurrentRole Role role, @PathVariable Long id) {
+        productService.hideProduct(id, role);
         return "redirect:/admin/products";
     }
 
     private String checkErrors(BindingResult bindingResult,
-            HttpServletResponse response) {
+            HttpServletResponse httpServletResponse) {
         if (bindingResult.hasErrors()) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            httpServletResponse.setStatus(HttpStatus.BAD_REQUEST.value());
             return "admin/product_form";
         }
         return null;

@@ -1,4 +1,3 @@
-// src/test/java/gift/service/member/MemberServiceTest.java
 package gift.service.member;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,8 +31,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @DisplayName("MemberServiceImpl 단위 테스트")
 class MemberServiceTest {
 
-    private static final String USER = "USER";
-    private static final String ADMIN = "ADMIN";
+    private static final Role USER = Role.USER;
+    private static final Role ADMIN = Role.ADMIN;
 
     @Mock
     private MemberRepository memberRepo;
@@ -49,7 +48,6 @@ class MemberServiceTest {
 
     @BeforeEach
     void setUp() {
-        // fixture를 사용해 ID=1, USER 역할의 member 생성
         existing = MemberFixture.newRegisteredMember(
                 1L,
                 "user@test.com",
@@ -91,7 +89,6 @@ class MemberServiceTest {
         @Test
         @DisplayName("login: 비밀번호 불일치 예외")
         void loginBadPassword() {
-            // 잘못된 해시로 생성된 fixture
             Member wrong = MemberFixture.newRegisteredMember(
                     2L,
                     "user@test.com",
@@ -166,7 +163,7 @@ class MemberServiceTest {
             );
             given(memberRepo.register(any())).willReturn(newM);
 
-            Member res = service.createMember("a@b.com", "pw", "USER", ADMIN);
+            Member res = service.createMember("a@b.com", "pw", USER, ADMIN);
 
             assertThat(res.getEmail().email()).isEqualTo("a@b.com");
             assertThat(res.getRole()).isEqualTo(Role.USER);
@@ -175,7 +172,7 @@ class MemberServiceTest {
         @Test
         @DisplayName("createMember: 일반 사용자 예외")
         void createMemberAsUserThrows() {
-            assertThatThrownBy(() -> service.createMember("a@b.com", "pw", "USER", USER))
+            assertThatThrownBy(() -> service.createMember("a@b.com", "pw", USER, USER))
                     .isInstanceOf(InvalidAuthExeption.class);
         }
 
@@ -186,7 +183,7 @@ class MemberServiceTest {
             given(memberRepo.findById(1L)).willReturn(Optional.of(existing));
             given(memberRepo.updateMember(any())).willReturn(updated);
 
-            Member res = service.updateMember(1L, "new@t.com", null, "ADMIN", ADMIN);
+            Member res = service.updateMember(1L, "new@t.com", null, ADMIN, ADMIN);
 
             assertThat(res.getEmail().email()).isEqualTo("new@t.com");
             assertThat(res.getRole()).isEqualTo(Role.ADMIN);
@@ -197,7 +194,7 @@ class MemberServiceTest {
         void updateMemberNotFound() {
             given(memberRepo.findById(2L)).willReturn(Optional.empty());
 
-            assertThatThrownBy(() -> service.updateMember(2L, "x", "pw", "USER", ADMIN))
+            assertThatThrownBy(() -> service.updateMember(2L, "x", "pw", USER, ADMIN))
                     .isInstanceOf(MemberNotFoundException.class);
         }
 
