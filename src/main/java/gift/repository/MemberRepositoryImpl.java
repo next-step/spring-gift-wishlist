@@ -49,4 +49,10 @@ public class MemberRepositoryImpl implements MemberRepository {
         }
 
     }
+
+    @Override
+    public void deleteAllMembers() {
+        String sql = "delete from members";
+        jdbcTemplate.update(sql);
+    }
 }

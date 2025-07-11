@@ -10,4 +10,6 @@ public interface MemberRepository {
     Integer countMember(String email, String password);
 
     Member findByEmail(String email);
+
+    void deleteAllMembers();
 }
