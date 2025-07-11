@@ -181,7 +181,6 @@ class MemberServiceV1Test {
 
         given(passwordEncoder.matches(anyString(), anyString()))
                 .willReturn(true);
-
         // when
         memberService.changePassword(member.getEmail(), updateRequest);
 
@@ -246,7 +245,6 @@ class MemberServiceV1Test {
 
         given(passwordEncoder.matches(anyString(), anyString()))
                 .willReturn(true);
-
         // when
         MemberResponse result = memberService.validate(member.getEmail(), member.getPassword());
 

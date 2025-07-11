@@ -46,6 +46,7 @@ class MemberControllerTest {
     private RestClient restClient;
 
     private RestClient loginRestClient;
+  
     @Autowired
     private MemberServiceV1 memberServiceV1;
 

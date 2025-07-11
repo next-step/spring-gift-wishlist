@@ -39,7 +39,6 @@ public class ViewController {
         return "edit-my-product";
     }
 
-
     @OnlyForAdmin
     @GetMapping("/admin/products")
     public String adminProducts(){

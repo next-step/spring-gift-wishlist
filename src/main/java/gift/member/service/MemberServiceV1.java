@@ -78,7 +78,6 @@ public class MemberServiceV1 implements MemberService{
 
         memberRepository.update(new Member(member.getId(), member.getEmail(),
                 password, Role.valueOf(memberUpdateReqForAdmin.getRole())));
-
     }
 
     @Override
