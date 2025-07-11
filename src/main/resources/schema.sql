@@ -14,3 +14,13 @@ CREATE TABLE members (
     password varchar(255) NOT NULL,
     role VARCHAR(30) DEFAULT 'USER' NOT NULL
 );
+
+CREATE TABLE wishlist (
+    id SERIAL PRIMARY KEY,
+    member_id INTEGER NOT NULL,
+    product_id INTEGER NOT NULL,
+    quantity INTEGER NOT NULL,
+    FOREIGN KEY (member_id) REFERENCES members(id),
+    FOREIGN KEY (product_id) REFERENCES products(id),
+    UNIQUE(member_id, product_id)
+)

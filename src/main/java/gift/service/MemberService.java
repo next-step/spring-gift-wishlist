@@ -75,6 +75,20 @@ public class MemberService {
         );
     }
 
+    public MemberResponseDTO getMemberByEmail(String email) {
+        Member member = findByEmail(email);
+        return new MemberResponseDTO(
+                member.getId(),
+                member.getEmail(),
+                member.getRole()
+        );
+    }
+
+    public Member findByEmail(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("해당 Email의 사용자를 찾을 수 없습니다."));
+    }
+
     @Transactional
     public MemberResponseDTO update(Integer id, MemberRequestDTO request) {
         String encodedPassword = passwordEncoder.encode(request.password());
