@@ -90,19 +90,4 @@ public class ProductJdbcRepositoryImpl implements ProductRepository {
     }
     return deletedProduct;
   }
-
-//  private static RowMapper<Product> productRowMapper() {
-//    return new RowMapper<Product>() {
-//      @Override
-//      public Product mapRow(ResultSet rs, int rowNum) throws SQLException {
-//        Product product = new Product(
-//            rs.getLong("id"),
-//            rs.getString("name"),
-//            rs.getLong("price"),
-//            rs.getString("imageUrl")
-//        );
-//        return product;
-//      }
-//    };
-//  }
 }
