@@ -4,6 +4,7 @@ package gift.wishproduct.controller;
 import gift.domain.Member;
 import gift.domain.Product;
 import gift.domain.Role;
+import gift.domain.WishProduct;
 import gift.jwt.JWTUtil;
 import gift.member.repository.MemberRepository;
 import gift.product.repository.ProductRepository;
@@ -20,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClient;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.*;
@@ -73,16 +75,43 @@ class WishProductControllerTest {
     @DisplayName("위시리스트 추가 성공")
     void addWishProductSuccess() {
 
+        // given
         WishProductCreateReq dto = new WishProductCreateReq(productId, 10);
 
+        // when
         ResponseEntity<Void> response = restClient.post()
                 .body(dto)
                 .retrieve()
                 .toEntity(Void.class);
 
+        // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getHeaders().get("location")).isNotNull();
     }
 
+    @Test
+    @DisplayName("위시 리스트 조회 성공")
+    void getMyWishList() {
+
+        // given
+        addWishProduct();
+
+        // when
+        ResponseEntity<List> response = restClient.get()
+                .retrieve()
+                .toEntity(List.class);
+
+        // then
+        assertThat(response.getBody().size()).isEqualTo(1);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+
+    private WishProduct addWishProduct() {
+        WishProduct wishProduct = new WishProduct("스윙칩", 3000, 10,
+                "data:image/~base64", memberId, productId);
+
+        return wishProductRepository.save(wishProduct);
+    }
 
 }

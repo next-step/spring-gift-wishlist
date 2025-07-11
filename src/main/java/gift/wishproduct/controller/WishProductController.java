@@ -1,17 +1,18 @@
 package gift.wishproduct.controller;
 
 
-import gift.domain.WishProduct;
 import gift.member.annotation.MyAuthenticalPrincipal;
 import gift.member.dto.AuthMember;
 import gift.util.LocationGenerator;
 import gift.wishproduct.dto.WishProductCreateReq;
+import gift.wishproduct.dto.WishProductResponse;
 import gift.wishproduct.service.WishProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -35,4 +36,13 @@ public class WishProductController {
                 location(LocationGenerator.generate(savedId))
                 .build();
     }
+
+    @GetMapping()
+    public ResponseEntity<List<WishProductResponse>> getWishList(@MyAuthenticalPrincipal AuthMember authMember) {
+
+        List<WishProductResponse> response = wishProductService.findMyWishProduct(authMember.getEmail());
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
 }

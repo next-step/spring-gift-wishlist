@@ -8,6 +8,7 @@ import gift.global.exception.NotFoundEntityException;
 import gift.member.repository.MemberRepository;
 import gift.product.repository.ProductRepository;
 import gift.wishproduct.dto.WishProductCreateReq;
+import gift.wishproduct.dto.WishProductResponse;
 import gift.wishproduct.repository.WishProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -150,7 +152,29 @@ class WishProductServiceV1Test {
     }
 
     @Test
-    @DisplayName("상품 추")
+    @DisplayName("위시 상품 조회")
+    void getWishProductSuccess() {
+        // given
+        Member member = addMemberCase();
+        Product product = addProductCase(member);
+        WishProduct wishProduct = addWishProduct(product, member, 15);
+
+        given(memberRepository.findByEmail(member.getEmail()))
+                .willReturn(Optional.of(member));
+
+        given(wishProductRepository.findByMemberId(member.getId()))
+                .willReturn(List.of(wishProduct));
+
+        // when
+        List<WishProductResponse> result = wishProductService.findMyWishProduct(member.getEmail());
+
+        // then
+        assertThat(result.size()).isEqualTo(1);
+        verify(memberRepository).findByEmail(member.getEmail());
+        verify(wishProductRepository).findByMemberId(member.getId());
+        verifyNoMoreInteractions(wishProductRepository, memberRepository, productRepository);
+
+    }
 
     private Member addMemberCase() {
         return new Member("ljw2109@naver.com", "Qwer1234!!", Role.REGULAR);

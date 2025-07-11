@@ -7,9 +7,11 @@ import gift.global.exception.NotFoundEntityException;
 import gift.member.repository.MemberRepository;
 import gift.product.repository.ProductRepository;
 import gift.wishproduct.dto.WishProductCreateReq;
+import gift.wishproduct.dto.WishProductResponse;
 import gift.wishproduct.repository.WishProductRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -49,4 +51,17 @@ public class WishProductServiceV1 implements WishProductService {
 
         return wishProduct.getId();
     }
+
+    @Override
+    public List<WishProductResponse> findMyWishProduct(String email) {
+
+        Member findMember = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundEntityException("존재하지 않는 회원입니다."));
+
+        return wishProductRepository.findByMemberId(findMember.getId())
+                .stream().map(WishProductResponse::new)
+                .toList();
+    }
+
+
 }
