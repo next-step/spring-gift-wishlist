@@ -40,4 +40,13 @@ public class WishlistRepository {
             .query(rowMapper)
             .list();
     }
+
+    public int addProductToWishlist(Long memberId, Long productId) {
+        String sql = "INSERT INTO wishlist (memberId, productId) VALUES (:memberId, :productId)";
+
+        return jdbcClient.sql(sql)
+            .param("memberId", memberId)
+            .param("productId", productId)
+            .update();
+    }
 }

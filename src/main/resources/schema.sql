@@ -21,8 +21,10 @@ CREATE TABLE wishlist
     id        BIGINT AUTO_INCREMENT,
     memberId  BIGINT NOT NULL,
     productId BIGINT,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    UNIQUE (memberId, productId)
 );
 
 -- PRIMARY KEY == UNIQUE + NOT NULL
 -- UNIQUE는 NULL을 허용한다! NOT NULL을 함께 써야함!!
+-- UNIQUE는 괄호로 여러 칼럼을 묶어서 지정해줄 수 있다
