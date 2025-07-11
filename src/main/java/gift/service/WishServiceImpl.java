@@ -8,6 +8,7 @@ import gift.entity.Product;
 import gift.entity.Wish;
 import gift.exception.product.ProductNotFoundException;
 import gift.exception.wish.WishAlreadyExistsException;
+import gift.exception.wish.WishNotFoundException;
 import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
 import org.springframework.stereotype.Service;
@@ -63,5 +64,12 @@ public class WishServiceImpl implements WishService {
                 product.getImageUrl(),
                 wishWithProduct.getCreatedAt()
         );
+    }
+
+    public void removeWish(Member member, Long productId) {
+        Wish wish = wishRepository.findByMemberIdAndProductId(member.getId(), productId)
+                .orElseThrow(() -> new WishNotFoundException("위시리스트에서 해당 상품을 찾을 수 없습니다."));
+
+        wishRepository.deleteWish(wish.getId());
     }
 }

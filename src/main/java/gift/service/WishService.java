@@ -6,4 +6,5 @@ import gift.entity.Member;
 public interface WishService {
     void addWish(Member member, Long productId);
     WishListResponseDto getWishList(Member member);
+    void removeWish(Member member, Long productId);
 }

@@ -34,4 +34,12 @@ public class WishController {
         WishListResponseDto response = wishService.getWishList(member);
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<Void> removeWish(
+            @PathVariable Long productId,
+            @LoginMember Member member) {
+        wishService.removeWish(member, productId);
+        return ResponseEntity.noContent().build();
+    }
 }

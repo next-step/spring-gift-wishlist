@@ -4,6 +4,7 @@ import gift.domain.product.MdApprovalStatus;
 import gift.dto.WishWithProductDto;
 import gift.entity.Product;
 import gift.entity.Wish;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -16,6 +17,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class WishRepositoryImpl implements WishRepository {
@@ -84,6 +86,35 @@ public class WishRepositoryImpl implements WishRepository {
                     rs.getLong("product_id"),
                     rs.getTimestamp("created_at").toLocalDateTime(),
                     product
+            );
+        }
+    };
+
+    @Override
+    public void deleteWish(Long id) {
+        String sql = "DELETE FROM wishes WHERE id = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
+    @Override
+    public Optional<Wish> findByMemberIdAndProductId(Long memberId, Long productId) {
+        String sql = "SELECT * FROM wishes WHERE member_id = ? AND product_id = ?";
+        try {
+            Wish wish = jdbcTemplate.queryForObject(sql, wishRowMapper, memberId, productId);
+            return Optional.of(wish);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    private final RowMapper<Wish> wishRowMapper = new RowMapper<Wish>() {
+        @Override
+        public Wish mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new Wish(
+                    rs.getLong("id"),
+                    rs.getLong("member_id"),
+                    rs.getLong("product_id"),
+                    rs.getTimestamp("created_at").toLocalDateTime()
             );
         }
     };
