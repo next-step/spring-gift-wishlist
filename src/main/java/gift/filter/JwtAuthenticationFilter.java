@@ -1,9 +1,9 @@
 package gift.filter;
 
-import gift.JwtUtil;
+import gift.exception.UnAuthenticatedException;
+import gift.util.JwtUtil;
 import gift.entity.Role;
-import gift.exception.ForbiddenException;
-import gift.exception.UnauthorizedException;
+import gift.exception.UnAuthorizedException;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -41,7 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (authHeader == null) {
             Cookie[] cookies = request.getCookies();
             if (cookies == null) {
-                throw new UnauthorizedException("인증 정보가 없습니다. (쿠키 없음)");
+                throw new UnAuthenticatedException("인증 정보가 없습니다. (쿠키 없음)");
             }
 
             Optional<String> accessTokenCookie = Arrays.stream(cookies)
@@ -50,19 +50,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 .findFirst();
 
             if (accessTokenCookie.isEmpty()) {
-                throw new UnauthorizedException("인증 정보가 없습니다. (토큰 쿠키 없음)");
+                throw new UnAuthenticatedException("인증 정보가 없습니다. (토큰 쿠키 없음)");
             }
             jwt = accessTokenCookie.get().substring(BEARER_PREFIX.length());
         }
 
         if (jwt == null) {
-            throw new UnauthorizedException("인증 헤더가 없거나 'Bearer' 타입이 아닙니다.");
+            throw new UnAuthenticatedException("인증 헤더가 없거나 'Bearer' 타입이 아닙니다.");
         }
 
         Claims claims = jwtUtil.getClaims(jwt);
         String roleString = claims.get("role", String.class);
         if (roleString == null || !Role.valueOf(roleString).equals(Role.ADMIN)) {
-            throw new ForbiddenException("해당 리소스에 접근할 권한이 없습니다.");
+            throw new UnAuthorizedException("해당 리소스에 접근할 권한이 없습니다.");
         }
 
         filterChain.doFilter(request, response);
