@@ -21,19 +21,21 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public String saveMember(MemberRequestDto memberRequestDto) {
+    public void saveMember(MemberRequestDto memberRequestDto) {
         memberRepository.saveMember(memberRequestDto.getEmail(), memberRequestDto.getPassword(), memberRequestDto.getRole());
-        return jwtUtil.generateToken(memberRequestDto);
     }
 
     @Override
-    public String existMember(MemberRequestDto memberRequestDto) {
+    public boolean existMember(MemberRequestDto memberRequestDto) {
         int membercount = memberRepository.countMember(memberRequestDto.getEmail(), memberRequestDto.getPassword());
         if(membercount < 1) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "아이디 또는 비밀번호가 올바르지 않습니다.");
+            return false;
         }
-        return jwtUtil.generateToken(memberRequestDto);
+        return true;
     }
 
-
+    @Override
+    public Member findByEmail (String email) {
+        return memberRepository.findByEmail(email);
+    }
 }

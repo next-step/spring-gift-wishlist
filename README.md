@@ -1,14 +1,17 @@
 # spring-gift-wishlist
 
-| method | url                   | 기능       |
-|--------|-----------------------|----------|
-| GET    | /api/products         | 상품 전체 조회 |
-| POST   | /api/products         | 상품 생성    |
-| PATCH  | /api/products/{id}    | 상품 수정    |
-| DELETE | /api/products/{id}    | 상품 삭제    |
-| GET    | /admin                | 관리자 페이지  |
-| POST   | /api/members/register | 회원가입     |
-| POST   | /api/members/login    | 로그인      |
+| method | url                  | 기능         |
+|--------|----------------------|------------|
+| GET    | /api/products        | 상품 전체 조회   |
+| POST   | /api/products        | 상품 생성      |
+| PATCH  | /api/products/{id}   | 상품 수정      |
+| DELETE | /api/products/{id}   | 상품 삭제      |
+| GET    | /admin               | 관리자 페이지    |
+| POST   | /api/members/register | 회원가입       |
+| POST   | /api/members/login   | 로그인        |
+| GET    | /api/wish-list    | 위시리스트 조회   |
+| POST   | /api/wish-list    | 위시리스트 상품등록 |
+| DELETE   | /api/wish-list    | 위시리스트 상품삭제 |
 
 step 0. 기본 코드 준비
 
@@ -45,3 +48,12 @@ step 2. 피드백
 5. 토큰생성시 currentTimeMillis 값을 하나로 통합 하고 시간변경
 6. ResponseEntity<?>로 받던걸 ResponseEntity<Dto>로 받게 변경
 7. MemberService내에서 JWT토큰이 반환되도록 변경
+8. jwt토큰을 service에서 주지말고 controller에서 주게 변경
+9. MemberControllerTest에서 중복되는 sql문을 BeforeEach로 대체
+
+step 3. 위시 리스트
+- 기본조건
+  - 로그인 후 받은 토큰을 사용하여 사용자별 위시 리스트 기능구현
+1. 위시 리스트에 등록된 상품 목록 조회
+2. 위시 리스트에 상품 추가
+3. 위시 리스트에 상품 삭제
