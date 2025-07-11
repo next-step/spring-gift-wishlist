@@ -146,9 +146,9 @@
 
 이전 단계에서 로그인 후 받은 토큰을 사용하여 사용자별 위시 리스트 기능을 구현한다.
 
-- [ ] 위시 리스트에 등록된 상품 목록을 조회할 수 있다.
-- [ ] 위시 리스트에 상품을 추가할 수 있다.
-- [ ] 위시 리스트에 담긴 상품을 삭제할 수 있다.
+- [x] 위시 리스트에 등록된 상품 목록을 조회할 수 있다.
+- [x] 위시 리스트에 상품을 추가할 수 있다.
+- [x] 위시 리스트에 담긴 상품을 삭제할 수 있다.
 
 #### 🛠 구현할 기능 목록
 
@@ -160,8 +160,8 @@
 | /api/wishes/{wishId}	                             | DELETE	 | 위시 리스트 상품 삭제	            | 회원의 위시 리스트에서 상품을 삭제한다.            |
 | /api/wishes?page=0&size=10&sort=createdDate,desc	 | GET	    | 위시 리스트 상품 조회 (페이지네이션 적용) | 	회원의 위시 리스트에 있는 상품을 페이지 단위로 조회한다. |
 
-- [ ] 위시 리스트 상품 추가
-    - [ ] **Request**
+- [x] 위시 리스트 상품 추가
+    - [x] **Request**
         ```http
         POST /api/wishes HTTP/1.1
         Authorization: Bearer {JWT_TOKEN}
@@ -174,7 +174,7 @@
         }
         ```
 
-    - [ ] **Response**: 예상
+    - [x] **Response**: 예상
         ```http
         HTTP/1.1 201
         Content-Type: application/json
@@ -188,12 +188,12 @@
         }
         ```
 
-    - [ ] **예외**:
+    - [x] **예외**:
         - token이 존재하지 않을 때: `401 Unauthorized`
         - productId가 존재하지 않을 때: `400 Bad Request`
 
-- [ ] 위시 리스트 상품 조회
-    - [ ] **Request**
+- [x] 위시 리스트 상품 조회
+    - [x] **Request**
         ```http
         GET /api/wishes?page=0&size=10&createdDate,desc HTTP/1.1
         Authorization: Bearer {JWT_TOKEN}
@@ -201,7 +201,7 @@
         host: localhost:8080
         ```
 
-    - [ ] **Response**: 예상
+    - [x] **Response**: 예상
         ```http
         HTTP/1.1 200
         Content-Type: application/json
@@ -231,11 +231,12 @@
         }
         ```
 
-    - [ ] **예외**:
+    - [x] **예외**:
         - token이 존재하지 않을 때: `401 Unauthorized`
+        - URL이 유효하지 않을 때: `400 Bad Request`
 
-- [ ] 위시 리스트 상품 삭제
-    - [ ] **Request**
+- [x] 위시 리스트 상품 삭제
+    - [x] **Request**
         ```http
         DELETE /api/wishes/{wishId} HTTP/1.1
         Authorization: Bearer {JWT_TOKEN}
@@ -243,10 +244,11 @@
         host: localhost:8080
         ```
 
-    - [ ] **Response**
+    - [x] **Response**
         ```http
         HTTP/1.1 204
         ```
 
-    - [ ] **예외**:
+    - [x] **예외**:
         - token이 존재하지 않을 때: `401 Unauthorized`
+        - wishId가 존재하지 않을 때: `404 Not Found`
