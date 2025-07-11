@@ -1,5 +1,6 @@
 package gift.auth;
 
+import gift.exception.UnauthorizedException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,15 +25,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")){
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
+            throw new UnauthorizedException();
         }
 
         String token = authHeader.substring(7);
 
-        if(!jwtProvider.validate(token)){
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
+        try {
+            jwtProvider.authenticate(token);
+        } catch (Exception e) {
+            throw new UnauthorizedException();
         }
 
         filterChain.doFilter(request,response);

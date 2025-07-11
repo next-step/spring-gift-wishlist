@@ -1,5 +1,6 @@
 package gift.auth;
 
+import gift.exception.UnauthorizedException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -30,26 +31,18 @@ public class JwtProvider {
                 .compact();
     }
 
-    public boolean validate(String token) {
-        try {
-            Jwts.parser()
-                    .verifyWith(key)
-                    .build()
-                    .parseSignedClaims(token);
-            return true;
+    public Long authenticate(String token){
+        try{
+            return Long.valueOf(
+                    Jwts.parser()
+                            .verifyWith(key)
+                            .build()
+                            .parseSignedClaims(token)
+                            .getPayload()
+                            .getSubject()
+            );
         } catch (JwtException | IllegalArgumentException e) {
-            return false;
+            throw new UnauthorizedException();
         }
-    }
-
-    public Long getMemberId(String token){
-        return Long.valueOf(
-            Jwts.parser()
-                .verifyWith(key)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload()
-                .getSubject()
-        );
     }
 }

@@ -39,7 +39,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
 
         String token = authHeader.substring(7);
 
-        Long memberId = jwtProvider.getMemberId(token);
+        Long memberId = jwtProvider.authenticate(token);
 
         return memberService.findById(memberId);
     }
