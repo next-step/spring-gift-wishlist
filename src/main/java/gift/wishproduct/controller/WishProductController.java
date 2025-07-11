@@ -7,6 +7,7 @@ import gift.member.dto.AuthMember;
 import gift.util.LocationGenerator;
 import gift.wishproduct.dto.WishProductCreateReq;
 import gift.wishproduct.service.WishProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class WishProductController {
 
     @PostMapping()
     public ResponseEntity<Void> addWishProduct(@MyAuthenticalPrincipal AuthMember authMember,
-            @RequestBody WishProductCreateReq wishProductCreateReq) {
+            @Valid @RequestBody WishProductCreateReq wishProductCreateReq) {
 
         UUID savedId = wishProductService.save(wishProductCreateReq, authMember.getEmail());
 
@@ -33,6 +34,5 @@ public class WishProductController {
         return ResponseEntity.status(HttpStatus.CREATED).
                 location(LocationGenerator.generate(savedId))
                 .build();
-
     }
 }
