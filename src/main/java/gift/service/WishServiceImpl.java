@@ -1,9 +1,7 @@
 package gift.service;
 
 import gift.dto.CreateWishRequestDto;
-import gift.dto.DeleteWishRequestDto;
 import gift.dto.ProductResponseDto;
-import gift.dto.UpdateWishQuantityRequstDto;
 import gift.dto.WishResponseDto;
 import gift.entity.Wish;
 import gift.exception.CustomException;
@@ -48,15 +46,16 @@ public class WishServiceImpl implements WishService{
 
     @Override
     public WishResponseDto updateMemberWishQuantityByProductId(
-            UpdateWishQuantityRequstDto requestDto,
+            Long quantity,
+            Long productId,
             Long memberId) {
-        findMemberWishByProductIdOrElseThrow(requestDto.productId(), memberId);
+        findMemberWishByProductIdOrElseThrow(productId, memberId);
         Wish updatedWish = wishRepository.updateMemberWishQuantityByProductId(
-                requestDto.quantity(),
-                requestDto.productId(),
+                quantity,
+                productId,
                 memberId);
-        Long productId = updatedWish.getProductId();
-        ProductResponseDto productResponseDto = productService.findProductById(productId);
+        Long updatedProductId = updatedWish.getProductId();
+        ProductResponseDto productResponseDto = productService.findProductById(updatedProductId);
         return new WishResponseDto(productResponseDto, updatedWish.getQuantity());
     }
 
