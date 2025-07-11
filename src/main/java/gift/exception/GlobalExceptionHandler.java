@@ -43,7 +43,7 @@ public class GlobalExceptionHandler {
     public String handleUnprocessableEntity(EncryptFailedException e) { return e.getMessage(); }
 
     // UNAUTHORIZED 응답하는 예외처리 핸들러
-    @ExceptionHandler(LoginFailedException.class)
+    @ExceptionHandler({LoginFailedException.class, TokenUnauthorizedException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public String handleUnauthorized(LoginFailedException e) { return e.getMessage(); }
+    public String handleUnauthorized(RuntimeException e) { return e.getMessage(); }
 }

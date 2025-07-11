@@ -124,7 +124,9 @@ public class AuthService {
 
         // JWT 생성 후 반환
         return new TokenResponseDto(Jwts.builder()
-                .setSubject(user.email())
+                .subject(user.email())
+                .claim("id", user.id())
+                .claim("role", user.role())
                 .signWith(Keys.hmacShaKeyFor(jwtKey.getBytes()))
                 .compact());
     }

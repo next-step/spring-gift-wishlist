@@ -38,4 +38,5 @@ base64로 인코딩하던 이메일과 비밀번호를 이메일 : AES, 비밀�
 2. AdminControllerTest, AuthControllerTest 추가
 3. WishController에 위시리스트 구현을 위한 API 정의 및 Dto, Entity 정의
 4. 오타 수정 및 Controller, Service 레이어 정의
-5. Repository 레이어 정의 및 Dto 재정의
+5. DB, Repository 레이어 정의 및 Dto 재정의
+6. 토큰 검증 Resolver 및 커스텀 어노테이션 추가, 이에 따른 커스텀 예외 추가
