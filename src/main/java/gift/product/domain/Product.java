@@ -36,7 +36,7 @@ public class Product {
         return imageURL;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Product setId(Long id) {
+        return new Product(id, name, price, imageURL);
     }
 }
