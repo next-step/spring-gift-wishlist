@@ -48,4 +48,12 @@ public class WishlistService {
             .map(w -> new WishResponse(w.getMemberId(), w.getProductId(), w.getQuantity()))
             .collect(Collectors.toList());
     }
+
+    public void deleteWishlist(LoginMemberDto memberDto, Long productId) {
+        Long memberId = memberService.findByEmail(memberDto.getEmail()).getId();
+        if (wishlistRepository.findByMemberIdAndProductId(memberId, productId).isEmpty()) {
+            throw new IllegalArgumentException("삭제할 위시리스트가 존재하지 않습니다.");
+        }
+        wishlistRepository.delete(memberId, productId);
+    }
 }

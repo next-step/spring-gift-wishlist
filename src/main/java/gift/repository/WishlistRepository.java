@@ -61,4 +61,9 @@ public class WishlistRepository {
             return new Wishlist(id, memberId, productId, quantity);
         });
     }
+
+    public void delete(Long memberId, Long productId) {
+        String sql = "DELETE FROM WISHLIST WHERE memberId = ? and productId = ?";
+        jdbcTemplate.update(sql, memberId, productId);
+    }
 }
