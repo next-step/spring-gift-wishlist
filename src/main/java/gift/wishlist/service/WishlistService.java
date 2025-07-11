@@ -48,7 +48,7 @@ public class WishlistService {
         List<Wishlist> wishes = wishlistRepository.findAllByMemberId(memberId);
 
         List<Long> ids = wishes.stream()
-                .map(Wishlist::getMemberId)
+                .map(Wishlist::getProductId)
                 .toList();
 
         if(ids.isEmpty()) {return List.of();}
