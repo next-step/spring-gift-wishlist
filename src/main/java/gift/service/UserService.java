@@ -1,6 +1,5 @@
 package gift.service;
 
-import gift.common.PasswordEncoder;
 import gift.common.exception.InvalidUserException;
 import gift.common.exception.UserAlreadyExistsException;
 import gift.common.exception.UserNotFoundException;
@@ -32,13 +31,13 @@ public class UserService {
         if (getUser.isPresent()) {
             throw new UserAlreadyExistsException();
         }
-        User user = new User(request.email(), PasswordEncoder.encode(request.password()), Role.USER);
+        User user = new User(request.email(), request.password(), Role.USER);
         return userRepository.save(user);
     }
 
     public TokenResponse login(LoginRequest request) {
         User user = getUserByEmail(request.email());
-        if (!PasswordEncoder.matches(request.password(), user.getPassword())) {
+        if (!request.password().equals(user.getPassword())) {
             throw new InvalidUserException();
         }
         return TokenResponse.from(jwtTokenProvider.createToken(user));
@@ -50,10 +49,10 @@ public class UserService {
 
     public void changePassword(ChangePasswordRequest request) {
         User user = getUserByEmail(request.email());
-        if (!PasswordEncoder.matches(request.oldPassword(), user.getPassword())) {
+        if (!request.oldPassword().equals(user.getPassword())) {
             throw new InvalidUserException();
         }
-        user.changePassword(PasswordEncoder.encode(request.newPassword()));
+        user.changePassword(request.newPassword());
         userRepository.update(user);
     }
 

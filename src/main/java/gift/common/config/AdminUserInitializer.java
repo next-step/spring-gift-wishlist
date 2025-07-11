@@ -1,6 +1,5 @@
 package gift.common.config;
 
-import gift.common.PasswordEncoder;
 import gift.domain.Role;
 import gift.domain.User;
 import gift.repository.UserRepository;
@@ -18,6 +17,6 @@ public class AdminUserInitializer implements ApplicationRunner {
     }
     @Override
     public void run(ApplicationArguments args) {
-        userRepository.save(new User("admin@admin.com", PasswordEncoder.encode("1234"), Role.ADMIN));
+        userRepository.save(new User("admin@admin.com", "1234", Role.ADMIN));
     }
 }
