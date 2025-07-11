@@ -18,6 +18,6 @@ CREATE TABLE wishes (
     memberId BIGINT NOT NULL,
     productId BIGINT NOT NULL,
     CONSTRAINT unique_member_product UNIQUE (memberId, productId),
-    FOREIGN KEY (memberId) REFERENCES members(id) ON DELETE CASCADE,
-    FOREIGN KEY (productId) REFERENCES products(id) ON DELETE CASCADE
+    FOREIGN KEY (memberId) REFERENCES members(id),
+    FOREIGN KEY (productId) REFERENCES products(id)
 );
