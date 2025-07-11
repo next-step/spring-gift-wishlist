@@ -2,6 +2,7 @@ package gift.service;
 
 import gift.common.code.CustomResponseCode;
 import gift.common.exception.CustomException;
+import gift.dto.WishRequest;
 import gift.dto.WishResponse;
 import gift.entity.Product;
 import gift.entity.Wish;
@@ -29,16 +30,17 @@ public class WishServiceImpl implements WishService {
 
     @Override
     @Transactional
-    public WishResponse addWish(Long userId, Long productId) {
-        Product product = productRepository.findById(productId)
+    public WishResponse addWish(Long userId, WishRequest request) {
+        Product product = productRepository.findById(request.productId())
             .orElseThrow(() -> new CustomException(CustomResponseCode.NOT_FOUND));
 
-        boolean exists = wishRepository.existsByUserIdAndProductId(userId, productId);
+        boolean exists = wishRepository.existsByUserIdAndProductId(userId, request.productId());
         if (exists) {
             throw new CustomException(CustomResponseCode.ALREADY_EXISTS);
         }
 
-        Wish savedWish = wishRepository.save(new Wish(null, userId, productId));
+        Wish savedWish = wishRepository.save(
+            new Wish(null, userId, request.productId(), request.quantity()));
 
         return WishResponse.from(savedWish, product);
     }

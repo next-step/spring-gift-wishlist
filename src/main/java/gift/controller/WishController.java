@@ -33,7 +33,7 @@ public class WishController {
         @RequestBody @Valid WishRequest request,
         @CurrentUser User user
     ) {
-        WishResponse response = wishService.addWish(user.getId(), request.productId());
+        WishResponse response = wishService.addWish(user.getId(), request);
         return ResponseEntity
             .status(CustomResponseCode.CREATED.getHttpStatus())
             .body(CustomResponseBody.of(CustomResponseCode.CREATED, response));

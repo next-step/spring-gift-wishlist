@@ -20,7 +20,8 @@ public class WishRepositoryJDBCImpl implements WishRepository {
     private static final RowMapper<Wish> ROW_MAPPER = (rs, rowNum) -> new Wish(
         rs.getLong("id"),
         rs.getLong("user_id"),
-        rs.getLong("product_id")
+        rs.getLong("product_id"),
+        rs.getInt("quantity")
     );
 
     @Override
@@ -28,11 +29,12 @@ public class WishRepositoryJDBCImpl implements WishRepository {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcClient.sql("""
-                    INSERT INTO wish (user_id, product_id)
-                    VALUES (:userId, :productId)
+                    INSERT INTO wish (user_id, product_id, quantity)
+                    VALUES (:userId, :productId, :quantity)
                 """)
             .param("userId", wish.getUserId())
             .param("productId", wish.getProductId())
+            .param("quantity", wish.getQuantity())
             .update(keyHolder);
 
         Long generatedId = keyHolder.getKey().longValue();
