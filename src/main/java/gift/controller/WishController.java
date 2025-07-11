@@ -47,8 +47,8 @@ public class WishController {
     // 상품 삭제
     @DeleteMapping("/{wishId}")
     public ResponseEntity<Void> deleteWish(@PathVariable Long wishId) {
-
-        wishService.deleteWish(wishId);
+        // memberId 임시 지정
+        wishService.deleteWish(1L, wishId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

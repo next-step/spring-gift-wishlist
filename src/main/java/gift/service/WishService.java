@@ -4,6 +4,8 @@ import gift.dto.ProductResponseDto;
 import gift.dto.WishResponseDto;
 import gift.entity.Product;
 import gift.entity.Wish;
+import gift.exception.PermissionDeniedException;
+import gift.exception.WishNotFoundException;
 import gift.repository.WishRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -42,7 +44,14 @@ public class WishService {
                      .toList();
     }
 
-    public void deleteWish(Long wishId) {
+    @Transactional
+    public void deleteWish(Long memberId, Long wishId) {
+        Wish wish = wishRepository.findWish(wishId)
+                                  .orElseThrow(() -> new WishNotFoundException(wishId));
+
+        if (!memberId.equals(wish.getMemberId())) {
+            throw new PermissionDeniedException("해당 상품을 삭제할 권한이 없습니다.");
+        }
 
         wishRepository.deleteWish(wishId);
     }

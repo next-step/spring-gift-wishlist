@@ -2,6 +2,7 @@ package gift.repository;
 
 import gift.entity.Wish;
 import java.util.List;
+import java.util.Optional;
 
 public interface WishRepository {
 
@@ -10,4 +11,6 @@ public interface WishRepository {
     List<Wish> findAllWishes(Long memberId);
 
     void deleteWish(Long wishId);
+
+    Optional<Wish> findWish(Long wishId);
 }

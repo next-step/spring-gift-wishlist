@@ -43,8 +43,12 @@
 
 - [x] 위시리스트 기능
     - [x] 상품 추가
+        - [x] productId 유효성 검증
     - [x] 상품 목록 조회
+        - [x] productId 유효성 검증
     - [x] 상품 삭제
+        - [x] wishId 유효성 검증
+        - [x] memberId 일치 검증
 - [ ] 인증/인가
     - [ ] ArgumentResolver
         - [ ] 토큰 유효성 검증

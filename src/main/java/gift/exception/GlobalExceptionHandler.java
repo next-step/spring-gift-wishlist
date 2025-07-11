@@ -75,4 +75,30 @@ public class GlobalExceptionHandler {
         return ResponseEntity.of(pd).build();
     }
 
+    @ExceptionHandler(WishNotFoundException.class)
+    public ResponseEntity<ProblemDetail> handleWishNotFoundException(
+            WishNotFoundException ex) {
+
+        ProblemDetail pd = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
+
+        pd.setType(URI.create("/errors/wish-not-found"));
+        pd.setTitle("상품을 찾을 수 없습니다.");
+        pd.setDetail(ex.getMessage());
+
+        return ResponseEntity.of(pd).build();
+    }
+
+    @ExceptionHandler(PermissionDeniedException.class)
+    public ResponseEntity<ProblemDetail> handlePermissionDeniedException(
+            PermissionDeniedException ex) {
+
+        ProblemDetail pd = ProblemDetail.forStatus(HttpStatus.FORBIDDEN);
+
+        pd.setType(URI.create("/errors/access-denied"));
+        pd.setTitle("권한이 없습니다.");
+        pd.setDetail(ex.getMessage());
+
+        return ResponseEntity.of(pd).build();
+    }
+
 }

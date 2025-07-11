@@ -2,6 +2,7 @@ package gift.repository;
 
 import gift.entity.Wish;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -47,5 +48,15 @@ public class WishRepositoryImpl implements WishRepository {
         client.sql(sql)
               .param("id", wishId)
               .update();
+    }
+
+    @Override
+    public Optional<Wish> findWish(Long wishId) {
+        var sql = "SELECT * FROM wish WHERE id = :id";
+
+        return client.sql(sql)
+                     .param("id", wishId)
+                     .query(Wish.class)
+                     .optional();
     }
 }
