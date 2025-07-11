@@ -3,6 +3,7 @@ package gift.controller;
 import gift.annotation.LoginMember;
 import gift.dto.CreateProductRequestDto;
 import gift.dto.CreateWishRequestDto;
+import gift.dto.DeleteWishRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.dto.UpdateWishQuantityRequstDto;
 import gift.dto.WishResponseDto;
@@ -14,6 +15,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,7 +52,7 @@ public class WishController {
             @LoginMember Member member) {
 
         if (requestDto.quantity().equals(0L)) {
-            //wishService.deleteMemberWishByProductId(member.getId());
+            wishService.deleteMemberWishByProductId(requestDto.productId(), member.getId());
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
@@ -58,4 +60,11 @@ public class WishController {
                 HttpStatus.OK);
     }
 
+    @DeleteMapping
+    public ResponseEntity<Void> deleteMemberWishByProductId(
+            @Valid @RequestBody DeleteWishRequestDto requestDto,
+            @LoginMember Member member) {
+        wishService.deleteMemberWishByProductId(requestDto.productId(), member.getId());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

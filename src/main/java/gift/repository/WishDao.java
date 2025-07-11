@@ -73,4 +73,12 @@ public class WishDao implements WishRepository{
         return findMemberWishByProductId(productId, memberId).get();
     }
 
+    @Override
+    public void deleteMemberWishByProductId(Long productId, Long memberId) {
+        String sql = "delete from wishes where productId = :productId and memberId = :memberId;";
+        client.sql(sql)
+                .param("productId", productId)
+                .param("memberId", memberId)
+                .update();
+    }
 }

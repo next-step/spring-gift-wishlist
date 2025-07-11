@@ -1,6 +1,7 @@
 package gift.service;
 
 import gift.dto.CreateWishRequestDto;
+import gift.dto.DeleteWishRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.dto.UpdateWishQuantityRequstDto;
 import gift.dto.WishResponseDto;
@@ -59,6 +60,12 @@ public class WishServiceImpl implements WishService{
         return new WishResponseDto(productResponseDto, updatedWish.getQuantity());
     }
 
+    @Override
+    public void deleteMemberWishByProductId(Long productId, Long memberId) {
+        findMemberWishByProductIdOrElseThrow(productId, memberId);
+        wishRepository.deleteMemberWishByProductId(productId, memberId);
+    }
+
     private void throwIfMemberWishFindByProductId(Long productId, Long memberId) {
         wishRepository.findMemberWishByProductId(productId, memberId)
                 .ifPresent(wish -> {
@@ -70,8 +77,4 @@ public class WishServiceImpl implements WishService{
         return wishRepository.findMemberWishByProductId(productId, memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.WishNotfound));
     }
-
-
-
-
 }

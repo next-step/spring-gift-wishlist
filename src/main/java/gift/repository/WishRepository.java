@@ -12,4 +12,5 @@ public interface WishRepository {
     List<Wish> findMemberWishes(Long memberId);
     Optional<Wish> findMemberWishByProductId(Long productId, Long memberId);
     Wish updateMemberWishQuantityByProductId(Long quantity, Long productId, Long memberId);
+    void deleteMemberWishByProductId(Long productId, Long memberId);
 }
