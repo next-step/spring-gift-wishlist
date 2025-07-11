@@ -43,7 +43,10 @@
     - 상품 전체 조회: `GET /api/wishes`
     - 상품 추가: `POST /api/wishes`
     - 상품 삭제: `DELETE /api/wishes/{id}`
-- 토큰 인증
+- 토큰에서 맴버 객체 추출
   - 위시 리스트 기능은 로그인 후 사용이 가능하다.
     - @LoginMember 어노테이션 생성
     - LoginMemberArgumentResolver 클래스 구현
+    - WebConfig 클래스 구현
+- 토큰 생성, 검증, 추출하는 기능 추가
+  - JwtTokenProvider 클래스 구현
