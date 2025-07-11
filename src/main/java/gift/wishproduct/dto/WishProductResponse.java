@@ -13,7 +13,7 @@ public class WishProductResponse {
     private String imageUrl;
 
     public WishProductResponse(WishProduct wishProduct) {
-        this.id = wishProduct.getProductId();
+        this.id = wishProduct.getId();
         this.productName = wishProduct.getProductName();
         this.price = wishProduct.getPrice();
         this.quantity = wishProduct.getQuantity();

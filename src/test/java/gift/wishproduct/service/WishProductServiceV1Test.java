@@ -4,6 +4,7 @@ import gift.domain.Member;
 import gift.domain.Product;
 import gift.domain.Role;
 import gift.domain.WishProduct;
+import gift.global.exception.BadRequestEntityException;
 import gift.global.exception.NotFoundEntityException;
 import gift.member.repository.MemberRepository;
 import gift.product.repository.ProductRepository;
@@ -175,6 +176,59 @@ class WishProductServiceV1Test {
         verifyNoMoreInteractions(wishProductRepository, memberRepository, productRepository);
 
     }
+
+    @Test
+    @DisplayName("위시 상품 삭제 성공")
+    void deleteWishProductSuccess() {
+        Member member = addMemberCase();
+        Product product = addProductCase(member);
+        WishProduct wishProduct = addWishProduct(product, member, 15);
+
+        // given
+
+        given(wishProductRepository.findById(wishProduct.getId()))
+                .willReturn(Optional.of(wishProduct));
+
+        given(memberRepository.findByEmail(member.getEmail()))
+                .willReturn(Optional.of(member));
+
+        // when
+        wishProductService.deleteById(wishProduct.getId(), member.getEmail());
+
+
+        // then
+        verify(memberRepository).findByEmail(member.getEmail());
+        verify(wishProductRepository).findById(wishProduct.getId());
+        verify(wishProductRepository).deleteById(wishProduct.getId());
+        verifyNoMoreInteractions(wishProductRepository, memberRepository, productRepository);
+    }
+
+    @Test
+    @DisplayName("위시 상품 삭제 성공 - 자신의 위시 상품이 아님")
+    void deleteWishProductFail() {
+        Member member = addMemberCase();
+        Product product = addProductCase(member);
+        WishProduct wishProduct = addWishProduct(product, member, 15);
+
+        // given
+
+        given(wishProductRepository.findById(wishProduct.getId()))
+                .willReturn(Optional.of(wishProduct));
+
+        given(memberRepository.findByEmail(member.getEmail()))
+                .willReturn(Optional.of(new Member("temp@naver.com", "Qwer1234!!", Role.REGULAR)));
+
+        // when
+        assertThatThrownBy(()->wishProductService.deleteById(wishProduct.getId(), member.getEmail()))
+                .isInstanceOf(BadRequestEntityException.class);
+
+
+        // then
+        verify(memberRepository).findByEmail(member.getEmail());
+        verify(wishProductRepository).findById(wishProduct.getId());
+        verifyNoMoreInteractions(wishProductRepository, memberRepository, productRepository);
+    }
+
 
     private Member addMemberCase() {
         return new Member("ljw2109@naver.com", "Qwer1234!!", Role.REGULAR);

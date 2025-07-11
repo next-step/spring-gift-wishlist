@@ -45,4 +45,13 @@ public class WishProductController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteWishProduct(@MyAuthenticalPrincipal AuthMember authMember, @PathVariable UUID id) {
+
+        wishProductService.deleteById(id, authMember.getEmail());
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+
+    }
+
 }

@@ -69,8 +69,10 @@
                         alert('수량이 수정되었습니다.');
                         fetchWishProducts();
                     },
-                    error: function () {
-                        alert('수량 수정 실패');
+                    error: (jqXHR) => {
+                        let msg = "위시 상품 수정 실패";
+                        if (jqXHR.responseJSON?.message) msg = jqXHR.responseJSON.message;
+                        alert(msg);
                     }
                 });
             });
@@ -84,8 +86,10 @@
                         success: function () {
                             fetchWishProducts();
                         },
-                        error: function () {
-                            alert('상품 삭제 실패');
+                        error: (jqXHR) => {
+                            let msg = "위시 상품 삭제 실패";
+                            if (jqXHR.responseJSON?.message) msg = jqXHR.responseJSON.message;
+                            alert(msg);
                         }
                     });
                 }

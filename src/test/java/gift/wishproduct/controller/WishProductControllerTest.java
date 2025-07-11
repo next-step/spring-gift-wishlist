@@ -19,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
 import java.util.List;
@@ -104,6 +105,30 @@ class WishProductControllerTest {
         // then
         assertThat(response.getBody().size()).isEqualTo(1);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    @DisplayName("위시 상품 삭제 성공")
+    void deleteWishProductSuccess() {
+        WishProduct wishProduct = addWishProduct();
+
+        ResponseEntity<Void> response = restClient.delete()
+                .uri("/{id}", wishProduct.getId())
+                .retrieve()
+                .toEntity(Void.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    }
+
+    @Test
+    @DisplayName("위시 상품 삭제 실패 - 존재하지 않는 위시 상품")
+    void deleteWishProductFail() {
+
+        assertThatThrownBy(()->restClient.delete()
+                .uri("/{id}", UUID.randomUUID())
+                .retrieve()
+                .toEntity(Void.class)
+        ).isInstanceOf(HttpClientErrorException.NotFound.class);
     }
 
 
