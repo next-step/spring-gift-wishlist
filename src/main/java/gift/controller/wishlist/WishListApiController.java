@@ -7,6 +7,7 @@ import gift.service.wishlist.WishListService;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,6 +50,17 @@ public class WishListApiController {
     ){
         // 본인 위시리스트 중 특정 productId의 수량을 변경하는 요청
         wishListService.update(memberId, wishListRequest);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    // quantity 수정과 별개로, 위시리스트 테이블에 저장된 레코드 자체를 삭제
+    @DeleteMapping
+    public ResponseEntity<?> deleteWishList(
+        @RequestAttribute(RequestAttributes.MEMBER_ID) Long memberId,
+        @RequestBody WishListRequest wishListRequest
+    ){
+        wishListService.delete(memberId, wishListRequest);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

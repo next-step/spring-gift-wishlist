@@ -58,4 +58,10 @@ public class WishListRepository {
         String sql = "update wishlists set quantity = ? where id =?";
         jdbcTemplate.update(sql, quantity, wishListId);
     }
+
+    // 삭제
+    public void deleteById(Long wishListId){
+        String sql = "delete from wishlists where id =?";
+        jdbcTemplate.update(sql, wishListId);
+    }
 }

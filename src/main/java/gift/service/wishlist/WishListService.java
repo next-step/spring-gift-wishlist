@@ -64,7 +64,12 @@ public class WishListService {
             wishListRepository.insertWishList(memberId, wishListRequest.productId(),
                 wishListRequest.quantity());
         }
+    }
 
+    public void delete(Long memberId, WishListRequest wishListRequest){
+        WishList wishList = wishListRepository.findWishListByUpdateRequest(memberId,
+            wishListRequest.productId());
 
+        wishListRepository.deleteById(wishList.getId());
     }
 }
