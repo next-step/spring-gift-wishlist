@@ -50,10 +50,15 @@ public class WishListService {
 
     public void update(Long memberId, WishListRequest wishListRequest) {
         try {
-            Long wishListId = wishListRepository.findWishListByUpdateRequest(memberId,
-                wishListRequest.productId()).getId();
+            WishList wishList = wishListRepository.findWishListByUpdateRequest(memberId,
+                wishListRequest.productId());
 
-            wishListRepository.updateWishList(wishListId, wishListRequest.quantity());
+            // 만약 수정 후 quantity 값이 음수라면 0으로 보정
+            int requestQuantity = wishList.getQuantity() + wishListRequest.quantity();
+            if(requestQuantity<0)    requestQuantity=0;
+
+            // update 호출할 때 계산된 quantity 값을 전달해야 함.
+            wishListRepository.updateWishList(wishList.getId(), requestQuantity);
         } catch (DataAccessException e) {
             // 만약 찾는 위시리스트가 없으면 생성부터 해야 함.
             wishListRepository.insertWishList(memberId, wishListRequest.productId(),

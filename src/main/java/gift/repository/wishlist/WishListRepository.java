@@ -55,11 +55,7 @@ public class WishListRepository {
 
     // 수정
     public void updateWishList(Long wishListId, int quantity) {
-        String sql = "update wishlists set quantity = quantity + ? where id =?";
+        String sql = "update wishlists set quantity = ? where id =?";
         jdbcTemplate.update(sql, quantity, wishListId);
     }
-
-    // 삭제
-
-
 }

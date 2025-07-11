@@ -41,8 +41,7 @@ public class WishListApiController {
     // wishlist 수정(추가, 삭제)
     // 수량을 변경할 productId와 수량을 requestBody에 넣어서 전달받음
     // 레코드가 없으면 생성 후 수량 반영
-    // 수량은 음수도 받을 수 있고, 수정 후 수량이 0이 되면 해당 레코드는 db에서 삭제해야 함.
-    // -> service 계층에서 처리
+    // 수량은 음수도 받을 수 있고, 수정 후 수량이 음수가 되면 0으로 수정해서 저장하고 있음.
     @PostMapping("/update")
     public ResponseEntity<?> updateWishList(
         @RequestAttribute(RequestAttributes.MEMBER_ID) Long memberId,
@@ -53,8 +52,5 @@ public class WishListApiController {
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-
-
-    // wishlist 삭제: 레코드 자체를 삭제
 
 }
