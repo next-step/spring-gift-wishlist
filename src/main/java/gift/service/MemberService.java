@@ -18,6 +18,10 @@ public class MemberService {
         return memberRepository.findByEmail(email);
     }
 
+    public Optional<Member> findById(Long id) {
+        return memberRepository.findById(id);
+    }
+
     public Member register(Member member) {
         if (memberRepository.findByEmail(member.getEmail()).isPresent()) {
             throw new IllegalArgumentException("이미 가입된 이메일입니다.");
