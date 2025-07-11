@@ -31,7 +31,7 @@ public class WishListJdbcRepository implements WishListRepository {
                 select p.name as product_name, count(*) as count
                 from wishlist w
                 join product p on w.product_id = p.id
-                where w.member_id = 1
+                where w.member_id = ?
                 group by p.name, w.product_id;
                 """;
 
