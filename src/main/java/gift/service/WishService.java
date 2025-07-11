@@ -1,5 +1,6 @@
 package gift.service;
 
+import gift.dto.ProductResponseDto;
 import gift.dto.WishCreateResponseDto;
 import gift.dto.WishResponseDto;
 import gift.entity.Product;
@@ -17,11 +18,11 @@ import java.util.stream.Collectors;
 public class WishService {
 
     private final WishRepository wishRepository;
-    private final ProductRepository productRepository;
+    private final ProductService productService;
 
-    public WishService(WishRepository wishRepository,  ProductRepository productRepository) {
+    public WishService(WishRepository wishRepository,  ProductService productService) {
         this.wishRepository = wishRepository;
-        this.productRepository = productRepository;
+        this.productService = productService;
     }
 
     public List<WishResponseDto> getWishlist(Long memberId) {
@@ -29,9 +30,11 @@ public class WishService {
 
         return wishes.stream()
                 .map(wish -> {
-                    Product product = productRepository.findById(wish.getProductId())
-                            .orElseThrow(() -> new ProductNotExistException(wish.getProductId()));
-                    return new WishResponseDto(product.getId(), product.getName(), product.getPrice(), product.getImageUrl());
+                    ProductResponseDto productResponseDto = productService.find(wish.getProductId());
+                    return new WishResponseDto(
+                        wish.getId(),
+                        productResponseDto
+                    );
                 })
                 .collect(Collectors.toList());
     }

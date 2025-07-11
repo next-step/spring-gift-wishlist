@@ -1,5 +1,5 @@
 package gift.dto;
 
 public record WishResponseDto(
-        Long id, String name, Integer price, String imageUrl) {
+        Long id, ProductResponseDto product) {
 }
