@@ -50,6 +50,16 @@ public class MemberRepository {
         }
     }
 
+    public Optional<Member> findById(Long id) {
+        String sql = "SELECT id, email, password FROM members WHERE id = ?";
+        try {
+            Member member = jdbcTemplate.queryForObject(sql, memberRowMapper, id);
+            return Optional.of(member);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
     public List<Member> findAll() {
         String sql = "SELECT id, email, password FROM members";
         return jdbcTemplate.query(sql, memberRowMapper);
