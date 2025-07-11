@@ -7,6 +7,7 @@ import gift.entity.Member;
 import gift.entity.MemberRole;
 import gift.exception.EmailAlreadyExistsException;
 import gift.exception.LoginFailedException;
+import gift.exception.MemberNotFoundException;
 import gift.repository.MemberRepository;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
@@ -50,5 +51,12 @@ public class MemberService {
         }
 
         return new TokenResponseDto(jwtProvider.generateToken(member.getId(), member.getRole()));
+    }
+
+    @Transactional(readOnly = true)
+    public Member getMemberById(Long id) {
+
+        return memberRepository.findMemberById(id)
+                               .orElseThrow(() -> new MemberNotFoundException(id));
     }
 }

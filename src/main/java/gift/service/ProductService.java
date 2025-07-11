@@ -74,7 +74,7 @@ public class ProductService {
         productRepository.updateProductStatus(productId, newStatus);
     }
 
-    private Product findProductOrThrow(Long productId) {
+    Product findProductOrThrow(Long productId) {
         return productRepository.findProduct(productId)
                                 .orElseThrow(() -> new ProductNotFoundException(productId));
     }
