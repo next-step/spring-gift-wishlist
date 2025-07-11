@@ -34,7 +34,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
                                   NativeWebRequest webRequest,
                                   WebDataBinderFactory binderFactory) throws Exception {
 
-        // 1. HTTP 요청에서 JWT 토큰 추출
+
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         String bearerToken = request.getHeader("Authorization");
 
@@ -48,10 +48,10 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
             throw new IllegalArgumentException("유효하지 않은 JWT 토큰입니다.");
         }
 
-        // 2. JWT 토큰에서 사용자 이메일 추출
+
         String email = jwtUtil.extractEmail(token);
 
-        // 3. 이메일로 사용자 정보 조회
+
         Member member = memberService.findByEmail(email);
 
         if (member == null) {

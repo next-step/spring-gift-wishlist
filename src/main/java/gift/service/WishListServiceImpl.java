@@ -1,5 +1,6 @@
 package gift.service;
 
+import gift.dto.WishListRequestDto;
 import gift.dto.WishListResponseDto;
 import gift.entity.WishList;
 import gift.repository.WishListRepository;
@@ -25,5 +26,11 @@ public class WishListServiceImpl implements WishListService {
                 .map(wishList -> new WishListResponseDto(wishList.getId(),wishList.getProductId(),wishList.getQuantity()))
                 .toList();
         return wishListResponseDtoList;
+    }
+
+    @Override
+    public void addWishList(Long memberId, WishListRequestDto wishListRequestDto) {
+        wishListRepository.addWishList(memberId, wishListRequestDto.getProductId(), wishListRequestDto.getQuantity());
+
     }
 }

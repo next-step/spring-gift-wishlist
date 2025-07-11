@@ -1,12 +1,14 @@
 package gift.controller;
 
 import gift.LoginMember;
+import gift.dto.WishListRequestDto;
 import gift.dto.WishListResponseDto;
 import gift.entity.Member;
 import gift.service.WishListService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,5 +28,11 @@ public class WishListController {
     public ResponseEntity<List<WishListResponseDto>> getWishList(@LoginMember Member member) {
         List<WishListResponseDto> wishList = wishListService.getWishListByMemberId(member.getId());
         return ResponseEntity.ok(wishList);
+    }
+
+    @PostMapping
+    public ResponseEntity<String> addWishList(@LoginMember Member member, WishListRequestDto wishListRequestDto) {
+        wishListService.addWishList(member.getId(), wishListRequestDto);
+        return ResponseEntity.ok("위시리스트에 상품이 담겼습니다.");
     }
 }

@@ -22,4 +22,10 @@ public class WishListRepositoryImpl implements WishListRepository {
         List<WishList> wishLists = jdbcClient.sql(sql).param(memberId).query(WishList.class).list();
         return wishLists;
     }
+
+    @Override
+    public void addWishList(Long memberId ,Long productId, Integer quantity) {
+        String sql = "insert into wish_list (member_id, product_id, quantity) values (?, ?, ?)";
+        jdbcClient.sql(sql).param(memberId).param(productId).param(quantity).update();
+    }
 }
