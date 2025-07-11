@@ -2,6 +2,7 @@ package gift;
 
 import gift.product.dto.*;
 import gift.product.commons.utils.JwtUtil;
+import gift.product.entity.WishList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,15 +40,6 @@ public class E2ETest {
 	@Test
 	@DisplayName("인증인가 적용된 상품 e2e 테스트")
 	void userAndItemE2ETest() {
-//		// 회원가입
-//		CreateUserRequest createUserRequest = new CreateUserRequest("test@t", "1", "testUser");
-//		Long userId = restClient.post()
-//			.uri("/users/register")
-//			.body(createUserRequest)
-//			.retrieve()
-//			.body(Long.class);
-//
-//		assertThat(userId).isEqualTo(3L);
 
 		// 로그인
 		LoginRequest loginRequest = new LoginRequest("s@s", "1");
@@ -106,6 +98,31 @@ public class E2ETest {
 			.body(List.class);
 
 		assertThat(items.size()).isEqualTo(15);
+
+		// 위시리스트 추가
+		CreateWishListRequest wishListRequest = new CreateWishListRequest(2L);
+		Long createdWishListId = restClient.post()
+			.uri("/wishlists")
+			.header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+			.body(wishListRequest)
+			.retrieve()
+			.body(Long.class);
+
+		assertThat(createdWishListId).isEqualTo(2L);
+
+		// 위시리스트 삭제 후 목록조회
+		restClient.delete()
+			.uri("/wishlists/" + createdWishListId)
+			.header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+			.retrieve()
+			.toBodilessEntity();
+
+		List myWishList = restClient.get()
+			.uri("/wishlists")
+			.header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+			.retrieve()
+			.body(List.class);
+		assertThat(myWishList.size()).isEqualTo(1);
 	}
 
 	@Test
