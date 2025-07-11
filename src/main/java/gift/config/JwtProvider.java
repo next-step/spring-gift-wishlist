@@ -31,4 +31,15 @@ public class JwtProvider {
                 .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
                 .compact();
     }
+
+    public Long extractMemberId(String token) {
+        String subject = Jwts.parser()
+                .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+
+        return Long.parseLong(subject);
+    }
 }

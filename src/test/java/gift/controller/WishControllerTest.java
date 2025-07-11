@@ -1,6 +1,7 @@
 package gift.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gift.config.JwtProvider;
 import gift.dto.WishRequestDto;
 import gift.dto.PageRequestDto;
 import gift.entity.Member;
@@ -27,20 +28,27 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class WishControllerTest {
 
-    @Autowired MockMvc mockMvc;
-    @Autowired WishRepository wishRepository;
-    @Autowired ProductRepository productRepository;
-    @Autowired MemberRepository memberRepository;
-    @Autowired ObjectMapper objectMapper;
+    @Autowired
+    MockMvc mockMvc;
+    @Autowired
+    WishRepository wishRepository;
+    @Autowired
+    ProductRepository productRepository;
+    @Autowired
+    MemberRepository memberRepository;
+    @Autowired
+    ObjectMapper objectMapper;
+    @Autowired
+    JwtProvider jwtProvider;
 
     private Long memberId;
     private Long productId;
+    private String jwtToken;
 
     @BeforeEach
     void setUp() {
         wishRepository.findAllWishByMemberId(memberId != null ? memberId : 1L)
                 .forEach(w -> wishRepository.deleteWishById(w.getId()));
-
         memberRepository.findAllMembers()
                 .forEach(m -> memberRepository.deleteMember(m.getId()));
         productRepository.findAllProducts(new PageRequestDto(0, Integer.MAX_VALUE))
@@ -56,17 +64,22 @@ class WishControllerTest {
 
         memberId = savedMember.getId();
         productId = savedProduct.getId();
+        jwtToken = jwtProvider.generateToken(savedMember);
     }
 
     @Test
     @DisplayName("위시를 추가하면, 해당 상품 정보가 담긴 응답을 반환한다.")
     void shouldAddWish() throws Exception {
         // given
+        String realToken = jwtProvider.generateToken(
+                memberRepository.findMemberById(memberId).get()
+        );
+
         var dto = new WishRequestDto(productId);
 
         // when & then
         mockMvc.perform(post("/api/wishes")
-                        .header("Authorization", "Bearer fakeToken")
+                        .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isOk())
@@ -79,13 +92,13 @@ class WishControllerTest {
     void shouldGetWishes() throws Exception {
         var dto = new WishRequestDto(productId);
         mockMvc.perform(post("/api/wishes")
-                        .header("Authorization", "Bearer fakeToken")
+                        .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isOk());
 
         mockMvc.perform(get("/api/wishes")
-                        .header("Authorization", "Bearer fakeToken"))
+                        .header("Authorization", "Bearer " + jwtToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].productName").value("하리보 젤리"));
@@ -97,7 +110,7 @@ class WishControllerTest {
         var savedWish = wishRepository.createWish(new Wish(null, memberId, productId));
 
         mockMvc.perform(delete("/api/wishes/" + savedWish.getId())
-                        .header("Authorization", "Bearer fakeToken"))
+                        .header("Authorization", "Bearer " + jwtToken))
                 .andExpect(status().isNoContent());
     }
 }

@@ -11,14 +11,16 @@ import java.util.List;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
+    private final JwtProvider jwtProvider;
     private final MemberService memberService;
 
-    public WebConfig(MemberService memberService) {
+    public WebConfig(JwtProvider jwtProvider, MemberService memberService) {
+        this.jwtProvider = jwtProvider;
         this.memberService = memberService;
     }
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new LoginMemberArgumentResolver(memberService));
+        resolvers.add(new LoginMemberArgumentResolver(jwtProvider, memberService));
     }
 }

@@ -1,6 +1,9 @@
 package gift.resolver;
 
 import gift.annotation.LoginMember;
+import gift.config.JwtProvider;
+import gift.dto.AuthenticatedMemberDto;
+import gift.dto.MemberResponseDto;
 import gift.entity.Member;
 import gift.exception.UnauthorizedException;
 import gift.service.MemberService;
@@ -11,9 +14,11 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
+    private final JwtProvider jwtProvider;
     private final MemberService memberService;
 
-    public LoginMemberArgumentResolver(MemberService memberService) {
+    public LoginMemberArgumentResolver(JwtProvider jwtProvider, MemberService memberService) {
+        this.jwtProvider = jwtProvider;
         this.memberService = memberService;
     }
 
@@ -30,10 +35,19 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
         }
 
         String token = authHeader.substring(7);  // "Bearer " 이후
-        if (!"fakeToken".equals(token)) {
+        Long memberId;
+        try {
+            memberId = jwtProvider.extractMemberId(token);
+        } catch (Exception e) {
             throw new UnauthorizedException("유효하지 않은 토큰입니다.");
         }
 
-        return new Member(1L, "솨야", "wish@test.com", "pw", null);
+        MemberResponseDto memberResponseDto = memberService.findMemberById(memberId);
+
+        return new AuthenticatedMemberDto(
+                memberResponseDto.id(),
+                memberResponseDto.email(),
+                memberResponseDto.role()
+        );
     }
 }
