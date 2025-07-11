@@ -18,8 +18,6 @@ public class WishListRepositoryImpl implements WishListRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-
-
     @Override
     public WishItem addWishItem(Long itemId, String itemName, String imageUrl, Integer price, Integer quantity, Long userId) {
         var insertSql = "INSERT INTO wish_items (user_id, item_id, quantity) VALUES (?,?,?)";
@@ -94,6 +92,5 @@ public class WishListRepositoryImpl implements WishListRepository {
         jdbcTemplate.update(deleteSql, userId, itemId);
 
     }
-
 
 }

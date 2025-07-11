@@ -1,6 +1,5 @@
 package gift.service.wishListService;
 
-import gift.dto.itemDto.ItemDto;
 import gift.dto.wishListDto.AddWishItemDto;
 import gift.dto.wishListDto.ResponseWishItemDto;
 import gift.entity.Item;
@@ -10,7 +9,6 @@ import gift.exception.itemException.ItemNotFoundException;
 import gift.exception.userException.UserNotFoundException;
 import gift.repository.wishListRepository.WishListRepository;
 import gift.service.itemService.ItemService;
-import gift.service.itemService.ItemServiceImplV2;
 import gift.service.userService.UserService;
 import org.springframework.stereotype.Service;
 
