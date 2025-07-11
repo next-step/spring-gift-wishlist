@@ -181,5 +181,12 @@ public class WishListRepositoryImpl implements WishListRepository {
         return new WishItem(item.getId(), item.getName(), item.getImageUrl(), item.getPrice(), quantity);
     }
 
+    @Override
+    public void deleteWishItem(Long userId, Long itemId) {
+        var deleteSql = "DELETE FROM wish_items WHERE user_id = ? AND item_id = ?";
+        jdbcTemplate.update(deleteSql, userId, itemId);
+
+    }
+
 
 }
