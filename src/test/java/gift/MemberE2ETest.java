@@ -33,24 +33,38 @@ public class MemberE2ETest {
 
     @Test
     void 회원가입() {
-        //given
+        // given
         final String name = "홍길동";
         final String email = "hong" + System.currentTimeMillis() + "@email.com";
         final String password = "password";
         MemberRequestDto request = new MemberRequestDto(name, email, password);
 
-        //when
+        // when
         MemberResponseDto response = restClient.post()
                 .uri("/api/members/register")
                 .body(request)
                 .retrieve()
                 .body(MemberResponseDto.class);
 
-        //then
-        assertThat(response.id()).isNotNull();
-        assertThat(response.name()).isEqualTo(name);
-        assertThat(response.email()).isEqualTo(email);
-        assertThat(response.password()).isEqualTo(password);
+        // then
+        MemberLoginRequestDto loginRequest = new MemberLoginRequestDto(email, password);
+        MemberLoginResponseDto loginResponse = restClient.post()
+                .uri("/api/members/login")
+                .body(loginRequest)
+                .retrieve()
+                .body(MemberLoginResponseDto.class);
+
+        String token = loginResponse.token();
+
+        MemberResponseDto myInfo = restClient.get()
+                .uri("/api/members/myInfo")
+                .header("Authorization", "Bearer " + token)
+                .retrieve()
+                .body(MemberResponseDto.class);
+
+        assertThat(myInfo).isNotNull();
+        assertThat(myInfo.name()).isEqualTo(name);
+        assertThat(myInfo.email()).isEqualTo(email);
     }
 
     @Test
