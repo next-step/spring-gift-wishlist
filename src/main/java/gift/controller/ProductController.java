@@ -78,7 +78,7 @@ public class ProductController {
     public ResponseEntity<Void> deleteProductById(
             @PathVariable Long id
     ) {
-        productService.deleteProductById(id);
+        productService.softDeleteProductById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

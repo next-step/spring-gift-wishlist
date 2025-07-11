@@ -89,12 +89,14 @@ public class ProductAdminPageController {
             @PathVariable Long id,
             Model model
     ) {
-        Product product = productService.getProductById(id);
+        Product product = productService.getProductWhetherDeletedById(id);
         UpdateProductRequest dto = UpdateProductRequest.from(product);
         Boolean validated = product.getValidated();
+        Boolean deleted = product.getDeleted();
         model.addAttribute("productId", id);
         model.addAttribute("product", dto);
         model.addAttribute("validated", validated);
+        model.addAttribute("deleted", deleted); // 상품이 삭제된 경우, 이후 이 페이지에서 추가 수정은 일어나지 않음
         return "admin/product-form";
     }
 
@@ -107,13 +109,21 @@ public class ProductAdminPageController {
             RedirectAttributes redirectAttributes
     ) {
         if (bindingResult.hasErrors()) {
+            Product originalProduct = productService.getProductWhetherDeletedById(id);
             model.addAttribute("productId", id);
-            model.addAttribute("product", request);
-            String errorMessages = bindingResult.getFieldErrors().stream()
-                    .map(error -> "- " + error.getDefaultMessage())
-                    .collect(Collectors.joining("\n"));
-            model.addAttribute("message", "Invalid input. Check again.\n" + errorMessages);
-            model.addAttribute("validated", productService.getProductById(id).getValidated());
+            model.addAttribute("validated", originalProduct.getValidated());
+            if (originalProduct.getDeleted()) {
+                model.addAttribute("message", "This product has been deleted and cannot be modified.");
+                model.addAttribute("product", UpdateProductRequest.from(originalProduct));
+                model.addAttribute("deleted", true);
+            } else {
+                String errorMessages = bindingResult.getFieldErrors().stream()
+                        .map(error -> "- " + error.getDefaultMessage())
+                        .collect(Collectors.joining("\n"));
+                model.addAttribute("message", "Invalid input. Check again.\n" + errorMessages);
+                model.addAttribute("product", request);
+                model.addAttribute("deleted", false);
+            }
             return "admin/product-form";
         }
         Product updated = productService.updateProductById(
@@ -131,7 +141,7 @@ public class ProductAdminPageController {
             @PathVariable Long id,
             RedirectAttributes redirectAttributes
     ) {
-        productService.deleteProductById(id);
+        productService.softDeleteProductById(id);
         redirectAttributes.addFlashAttribute("message", "Product deleted");
         return "redirect:/admin/products";
     }

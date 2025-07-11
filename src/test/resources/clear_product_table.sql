@@ -1,1 +1,1 @@
-TRUNCATE TABLE product RESTART IDENTITY;
+delete from product;

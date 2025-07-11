@@ -1,6 +1,5 @@
-package gift;
+package gift.controller;
 
-import gift.controller.LoginAdminPageController;
 import gift.service.MemberService;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;

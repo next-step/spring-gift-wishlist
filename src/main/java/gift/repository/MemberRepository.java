@@ -56,4 +56,26 @@ public class MemberRepository {
             .optional();
     }
 
+    public Optional<Member> findById(Long id) {
+        return jdbcClient.sql("select * from member where identify_number = :id")
+            .param("id", id)
+            .query(memberRowMapper)
+            .optional();
+    }
+
+    public boolean updateMember(Member member) {
+        return jdbcClient.sql("update member set email = :email, password = :password, authority = :authority where identify_number = :id")
+            .param("id", member.getIdentifyNumber())
+            .param("email", member.getEmail())
+            .param("password", member.getPassword())
+            .param("authority", member.getAuthority().name())
+            .update() == 1;
+    }
+
+    public boolean deleteMember(Long id) {
+        return jdbcClient.sql("delete from member where identify_number = :id")
+            .param("id", id)
+            .update() == 1;
+    }
+
 }

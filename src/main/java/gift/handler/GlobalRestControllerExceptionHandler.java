@@ -1,5 +1,6 @@
 package gift.handler;
 
+import com.sun.jdi.request.DuplicateRequestException;
 import gift.exception.InvalidCredentialsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,11 @@ public class GlobalRestControllerExceptionHandler {
         Map<String, String> error = new HashMap<>();
         error.put("message", ex.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+    }
+
+    @ExceptionHandler(DuplicateRequestException.class)
+    public ResponseEntity<String> handleDuplicateRequest(DuplicateRequestException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body("Duplicate request: " + ex.getMessage());
     }
 
     @ExceptionHandler(ResponseStatusException.class)

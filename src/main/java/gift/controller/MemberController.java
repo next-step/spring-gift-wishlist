@@ -1,10 +1,11 @@
 package gift.controller;
 
-import gift.dto.CreateMemberRequest;
+import gift.dto.RegisterMemberRequest;
 import gift.dto.LoginMemberRequest;
-import gift.dto.CreateMemberResponse;
+import gift.dto.RegisterMemberResponse;
 import gift.dto.LoginMemberResponse;
 import gift.service.MemberService;
+import gift.util.BCryptEncryptor;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,19 +25,19 @@ public class MemberController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<CreateMemberResponse> createMember (
-            @Valid @RequestBody CreateMemberRequest createMemberRequest
+    public ResponseEntity<RegisterMemberResponse> createMember (
+            @Valid @RequestBody RegisterMemberRequest registerMemberRequest
     ) {
-        memberService.createMember(createMemberRequest.email(), createMemberRequest.password());
+        memberService.createMember(registerMemberRequest.email(), registerMemberRequest.password());
 
         String token = memberService.login(
-            createMemberRequest.email(),
-            createMemberRequest.password()
+            registerMemberRequest.email(),
+            registerMemberRequest.password()
         );
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(new CreateMemberResponse(token));
+                .body(new RegisterMemberResponse(token));
     }
 
     @PostMapping("/login")

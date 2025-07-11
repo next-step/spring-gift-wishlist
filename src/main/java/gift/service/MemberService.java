@@ -1,6 +1,7 @@
 package gift.service;
 
 import gift.entity.Member;
+import gift.entity.Role;
 import gift.exception.InvalidCredentialsException;
 import gift.repository.MemberRepository;
 import gift.token.JwtTokenProvider;
@@ -45,5 +46,39 @@ public class MemberService {
         return memberRepository.getMemberList();
     }
 
-    
+    public Member getMemberById(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Member not found"));
+    }
+
+    public Member updateSelectivelyMember(Long id, String email, String password, Role authority) {
+        Member member = getMemberById(id);
+        if (!password.isEmpty()) {
+            password = BCryptEncryptor.encrypt(password);
+        }
+        throwNotFoundIfTrue(!memberRepository.updateMember(member.applyPatch(email, password, authority)));
+        return member;
+    }
+
+    public void deleteMember(Long id) {
+        throwNotFoundIfTrue(!memberRepository.deleteMember(id));
+    }
+
+    private void throwNotFoundIfTrue(boolean condition) {
+        if (condition) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    public Member getMemberFromToken(String token) {
+        if (token == null || !jwtTokenProvider.validateToken(token)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token");
+        }
+        String username = jwtTokenProvider.getUsername(token);
+        Optional<Member> optionalMember = memberRepository.findByEmail(username);
+        if (optionalMember.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token");
+        }
+        return optionalMember.get();
+    }
 }
