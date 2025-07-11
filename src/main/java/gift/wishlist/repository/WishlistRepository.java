@@ -1,6 +1,7 @@
 package gift.wishlist.repository;
 
 import gift.wishlist.domain.Wishlist;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -49,6 +50,19 @@ public class WishlistRepository {
             .query(wishlistRowMapper())
             .stream()
             .findFirst();
+    }
+
+    public List<Wishlist> findByMemberId(Long memberId) {
+        String sql = """
+            SELECT *
+            FROM wishlist
+            WHERE member_id = ?
+            """;
+
+        return jdbcClient.sql(sql)
+            .param(memberId)
+            .query(wishlistRowMapper())
+            .list();
     }
 
     private RowMapper<Wishlist> wishlistRowMapper() {

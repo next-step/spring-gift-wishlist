@@ -5,6 +5,7 @@ import gift.wishlist.domain.Wishlist;
 import gift.wishlist.dto.WishAddRequest;
 import gift.wishlist.dto.WishResponse;
 import gift.wishlist.repository.WishlistRepository;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +40,14 @@ public class WishlistService {
                 )
             )
         );
+    }
+
+    @Transactional(readOnly = true)
+    public List<WishResponse> getWishes(Long memberId) {
+        return wishlistRepository.findByMemberId(memberId)
+            .stream()
+            .map(this::convertToDTO)
+            .toList();
     }
 
     private WishResponse convertToDTO(Wishlist wishlist) {

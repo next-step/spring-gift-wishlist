@@ -4,8 +4,10 @@ import gift.common.annotation.LogInMember;
 import gift.wishlist.dto.WishAddRequest;
 import gift.wishlist.dto.WishResponse;
 import gift.wishlist.service.WishlistService;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,5 +30,12 @@ public class WishlistController {
     ) {
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(wishlistService.addWish(wishAddRequest, memberId));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<WishResponse>> findAll(
+        @LogInMember Long memberId
+    ) {
+        return ResponseEntity.ok(wishlistService.getWishes(memberId));
     }
 }
