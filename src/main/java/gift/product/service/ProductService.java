@@ -3,7 +3,7 @@ package gift.product.service;
 import gift.exception.EntityNotFoundException;
 import gift.exception.MdApprovalRequiredException;
 import gift.product.dto.ProductCreateRequestDto;
-import gift.product.dto.ProductResponseDto;
+import gift.product.dto.ProductItemDto;
 import gift.product.dto.ProductUpdateRequestDto;
 import gift.product.entity.Product;
 import gift.product.repository.ProductRepository;
@@ -22,15 +22,15 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public ProductResponseDto createProduct(ProductCreateRequestDto requestDto) {
+    public ProductItemDto createProduct(ProductCreateRequestDto requestDto) {
         checkRestrictedWords(requestDto.name());
 
         Long newProductId = productRepository.save(requestDto);
-        return new ProductResponseDto(new Product(newProductId, requestDto));
+        return new ProductItemDto(new Product(newProductId, requestDto));
     }
 
     @Transactional
-    public ProductResponseDto updateProduct(Long id, ProductUpdateRequestDto requestDto) {
+    public ProductItemDto updateProduct(Long id, ProductUpdateRequestDto requestDto) {
         checkRestrictedWords(requestDto.name());
 
         Product product = productRepository.findById(id)
@@ -52,14 +52,14 @@ public class ProductService {
         productRepository.delete(id);
     }
 
-    public List<ProductResponseDto> getProducts() {
+    public List<ProductItemDto> getProducts() {
         return productRepository.findAll().stream()
-                .map(ProductResponseDto::new)
+                .map(ProductItemDto::new)
                 .toList();
     }
 
-    public ProductResponseDto getProduct(Long id) {
-        return new ProductResponseDto(
+    public ProductItemDto getProduct(Long id) {
+        return new ProductItemDto(
                 productRepository.findById(id)
                         .orElseThrow(() -> new EntityNotFoundException(PRODUCT_NOT_FOUND_MESSAGE)));
     }
