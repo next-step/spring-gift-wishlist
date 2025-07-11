@@ -1,6 +1,5 @@
 package gift.config.interceptor;
 
-import gift.auth.JwtProvider;
 import gift.config.annotation.ValidHeader;
 import gift.entity.Member;
 import gift.entity.Role;
@@ -8,7 +7,6 @@ import gift.exception.common.HttpException;
 import gift.exception.forbidden.WrongPermissionException;
 import gift.exception.unauthorized.WrongHeaderException;
 import gift.repository.member.MemberRepository;
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
@@ -17,11 +15,10 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
 public class ValidHeaderInterceptor implements HandlerInterceptor {
-    private final JwtProvider jwtProvider;
+    
     private final MemberRepository memberRepository;
     
-    public ValidHeaderInterceptor(JwtProvider jwtProvider, MemberRepository memberRepository) {
-        this.jwtProvider = jwtProvider;
+    public ValidHeaderInterceptor(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
     
