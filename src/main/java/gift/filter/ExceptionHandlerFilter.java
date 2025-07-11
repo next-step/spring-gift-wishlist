@@ -1,12 +1,13 @@
 package gift.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gift.exception.ForbiddenException;
-import gift.exception.UnauthorizedException;
+import gift.exception.UnAuthenticatedException;
+import gift.exception.UnAuthorizedException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -17,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 public class ExceptionHandlerFilter extends OncePerRequestFilter {
     private static final List<String> EXCLUDE_PATHS = Arrays.asList(
         "/css", "/js", "/favicon.ico", "/error"
@@ -34,9 +36,9 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
 
         try {
             filterChain.doFilter(request, response);
-        } catch (UnauthorizedException e) {
+        } catch (UnAuthenticatedException e) {
             setErrorResponse(response, HttpStatus.UNAUTHORIZED, e.getMessage());
-        } catch (ForbiddenException e) {
+        } catch (UnAuthorizedException e) {
             setErrorResponse(response, HttpStatus.FORBIDDEN, e.getMessage());
         } catch (Exception e) {
             setErrorResponse(response, HttpStatus.INTERNAL_SERVER_ERROR, "토큰 검사 중 오류가 발생했습니다.");
@@ -55,7 +57,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
         try {
             response.getWriter().write(objectMapper.writeValueAsString(error));
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("IOException 발생", e);
         }
     }
 }
