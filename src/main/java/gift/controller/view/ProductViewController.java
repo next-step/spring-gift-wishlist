@@ -31,7 +31,7 @@ public class ProductViewController {
     @GetMapping("/new")
     public ModelAndView createForm() {
         Map<String, Object> model = new HashMap<>();
-        model.put("product", new ProductRequestDto(null, null, null, null));
+        model.put("product", new ProductRequestDto(null, null, null));
         return new ModelAndView("product/create", model);
     }
 

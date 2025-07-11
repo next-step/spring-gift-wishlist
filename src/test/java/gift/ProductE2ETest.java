@@ -36,7 +36,7 @@ class ProductE2ETest {
 
     @Test
     void 상품을_등록하고_조회() {
-        ProductRequestDto request = new ProductRequestDto(null, "녹차", 3500, "green_tea.jpg");
+        ProductRequestDto request = new ProductRequestDto("녹차", 3500, "green_tea.jpg");
 
         restClient.post()
                 .uri("/api/products")
@@ -60,17 +60,17 @@ class ProductE2ETest {
 
     @Test
     void 상품을_수정하고_조회() {
-        ProductRequestDto request = new ProductRequestDto(null, "아이스 카페라떼", 7000, "ice_cafe_latte.jpg");
+        ProductRequestDto request = new ProductRequestDto("아이스 카페라떼", 7000, "ice_cafe_latte.jpg");
 
         restClient.put()
-                .uri("/api/products/2")
+                .uri("/api/products/1")
                 .header("Authorization", "Bearer " + token)
                 .body(request)
                 .retrieve()
                 .toBodilessEntity();
 
         ProductResponseDto response = restClient.get()
-                .uri("/api/products/2")
+                .uri("/api/products/1")
                 .header("Authorization", "Bearer " + token)
                 .retrieve()
                 .body(ProductResponseDto.class);
@@ -101,7 +101,7 @@ class ProductE2ETest {
 
     @Test
     void 상품_등록_유효성_검사_실패() {
-        ProductRequestDto invalidRequest = new ProductRequestDto(null, "@카카오@", 10, "kakao.jpg");
+        ProductRequestDto invalidRequest = new ProductRequestDto("@카카오@", 10, "kakao.jpg");
 
         HttpClientErrorException exception = assertThrows(HttpClientErrorException.class, () -> {
             restClient.post()
@@ -126,7 +126,7 @@ class ProductE2ETest {
         String email = "hong" + System.currentTimeMillis() + "@email.com";
         String password = "password";
 
-        MemberRequestDto joinRequest = new MemberRequestDto(null, name, email, password);
+        MemberRequestDto joinRequest = new MemberRequestDto(name, email, password);
 
         restClient.post()
                 .uri("/api/members/register")

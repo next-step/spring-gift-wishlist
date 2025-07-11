@@ -33,7 +33,7 @@ public class MemberE2ETest {
         final String name = "홍길동";
         final String email = "hong" + System.currentTimeMillis() + "@email.com"; // 중복 방지
         final String password = "password";
-        MemberRequestDto request = new MemberRequestDto(null, name, email, password);
+        MemberRequestDto request = new MemberRequestDto(name, email, password);
 
         //when
         MemberResponseDto response = restClient.post()
@@ -56,7 +56,7 @@ public class MemberE2ETest {
         final String email = "honggildong@email.com";
         final String password = "password";
 
-        MemberRequestDto joinRequest = new MemberRequestDto(null, name, email, password);
+        MemberRequestDto joinRequest = new MemberRequestDto(name, email, password);
 
         MemberResponseDto joinResponse = restClient.post()
                 .uri("/api/members/register")
@@ -109,7 +109,7 @@ public class MemberE2ETest {
         String password = "password";
         String token = 회원가입_후_토큰_발급(originalName, originalEmail, password);
 
-        MemberRequestDto updateRequest = new MemberRequestDto(null, "이순신", "lee@email.com", "new-password");
+        MemberRequestDto updateRequest = new MemberRequestDto("이순신", "lee@email.com", "new-password");
 
         // when
         MemberResponseDto updatedInfo = restClient.put()
@@ -145,7 +145,7 @@ public class MemberE2ETest {
 
     private String 회원가입_후_토큰_발급(String name, String email, String password) {
         // 회원가입
-        MemberRequestDto joinRequest = new MemberRequestDto(null, name, email, password);
+        MemberRequestDto joinRequest = new MemberRequestDto(name, email, password);
 
         restClient.post()
                 .uri("/api/members/register")
