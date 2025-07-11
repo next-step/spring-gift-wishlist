@@ -2,6 +2,7 @@ package gift.controller.web;
 
 import gift.dto.ItemRequest;
 import gift.dto.ItemResponse;
+import gift.login.Authenticated;
 import gift.service.ItemService;
 import gift.entity.Member;
 import gift.login.Login;
@@ -48,6 +49,7 @@ public class AdminItemController {
         return "admin/items/form";
     }
 
+    @Authenticated
     @PostMapping
     public String createItem(
         @Valid @ModelAttribute("item") ItemRequest itemRequest,
@@ -70,6 +72,8 @@ public class AdminItemController {
         model.addAttribute("item", item);
         return "admin/items/detail";
     }
+
+    @Authenticated
     @GetMapping("/{id}/edit")
     public String editItemForm(@PathVariable("id") Long id, Model model) {
         ItemResponse item = itemService.getItemById(id);
@@ -79,6 +83,7 @@ public class AdminItemController {
         return "admin/items/form";
     }
 
+    @Authenticated
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public String updateItem(
         @PathVariable("id") Long id,
@@ -95,6 +100,7 @@ public class AdminItemController {
         return "redirect:/admin/items/" + id;
     }
 
+    @Authenticated
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public String deleteItem(
         @PathVariable("id") Long id,

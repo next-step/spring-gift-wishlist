@@ -2,26 +2,24 @@ package gift.repository;
 
 import gift.entity.Member;
 import gift.entity.Role;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
+import javax.sql.DataSource;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class MemberRepository {
 
-    private final JdbcTemplate jdbcTemplate;
+    private final JdbcClient jdbcClient;
     private final SimpleJdbcInsert simpleJdbcInsert;
 
-    public MemberRepository(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+    public MemberRepository(DataSource dataSource) {
+        this.jdbcClient = JdbcClient.create(dataSource);
+        this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
             .withTableName("members")
             .usingGeneratedKeyColumns("id");
     }
@@ -45,12 +43,10 @@ public class MemberRepository {
     }
 
     public Optional<Member> findByEmail(String email) {
-        String sql = "SELECT id, email, password, role FROM members WHERE email = ?";
-        try {
-            Member member = jdbcTemplate.queryForObject(sql, memberRowMapper, email);
-            return Optional.of(member);
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
+        String sql = "SELECT id, email, password, role FROM members WHERE email = :email";
+        return jdbcClient.sql(sql)
+            .param("email", email)
+            .query(memberRowMapper)
+            .optional();
     }
 }
