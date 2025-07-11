@@ -36,6 +36,7 @@ public class WishlistService {
 
         return new WishResponseDto(
                 wishlist.getId(),
+                wishlist.getMemberId(),
                 product.getId(),
                 product.getName(),
                 product.getPrice(),
@@ -62,6 +63,7 @@ public class WishlistService {
                     Product product = productMap.get(wish.getProductId());
                     return new WishResponseDto(
                             wish.getId(),
+                            wish.getMemberId(),
                             product.getId(),
                             product.getName(),
                             product.getPrice(),
