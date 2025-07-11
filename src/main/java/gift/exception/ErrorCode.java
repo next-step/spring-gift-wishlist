@@ -17,7 +17,9 @@ public enum ErrorCode {
   INVALID_PASSWORD("INVALID_PASSWORD","회원가입 비밀번호 형식이 다릅니다.",HttpStatus.BAD_REQUEST),
   INVALID_LOGIN("INVALID_LOGIN", "이메일 또는 비밀번호가 일치하지 않습니다.",HttpStatus.FORBIDDEN),
   USER_NOT_FOUND("USER_NOT_FOUND","존재하지 않는 사용자입니다.",HttpStatus.NOT_FOUND),
-  PRODUCT_NOT_FOUND("PRODUCT_NOT_FOUND","존재하지 않는 상품입니다.",HttpStatus.NOT_FOUND);
+  PRODUCT_NOT_FOUND("PRODUCT_NOT_FOUND","존재하지 않는 상품입니다.",HttpStatus.NOT_FOUND),
+
+  INVALID_JWT("INVALID_JWT","유효하지 않은 토큰입니다.",HttpStatus.UNAUTHORIZED);
 
   private final String code;
   private final String message;
