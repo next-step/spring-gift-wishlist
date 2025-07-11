@@ -3,7 +3,7 @@ package gift.auth.controller;
 import gift.auth.domain.CustomUserDetails;
 import gift.auth.dto.LoginRequestDto;
 import gift.auth.dto.LoginResponseDto;
-import gift.auth.dto.MemberRegisterRequestDto;
+import gift.auth.dto.RegisterMemberRequestDto;
 import gift.auth.dto.RefreshTokenRequestDto;
 import gift.auth.dto.RegisterMemberResponseDto;
 import gift.auth.service.AuthService;
@@ -26,7 +26,7 @@ public class AuthController {
 
   @PostMapping("/register")
   public ResponseEntity<RegisterMemberResponseDto> registerMember(
-      @RequestBody MemberRegisterRequestDto dto) {
+      @RequestBody RegisterMemberRequestDto dto) {
     RegisterMemberResponseDto responseDto = authService.registerMember(dto);
     return ResponseEntity.ok(responseDto);
   }

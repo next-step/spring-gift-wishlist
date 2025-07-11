@@ -4,7 +4,7 @@ import gift.auth.domain.MemberAuth;
 import gift.auth.domain.TokenResponse;
 import gift.auth.dto.LoginRequestDto;
 import gift.auth.dto.LoginResponseDto;
-import gift.auth.dto.MemberRegisterRequestDto;
+import gift.auth.dto.RegisterMemberRequestDto;
 import gift.auth.dto.RefreshTokenRequestDto;
 import gift.auth.dto.RegisterMemberResponseDto;
 import gift.auth.repository.MemberAuthRepository;
@@ -32,7 +32,7 @@ public class AuthService {
   }
 
   @Transactional
-  public RegisterMemberResponseDto registerMember(MemberRegisterRequestDto dto) {
+  public RegisterMemberResponseDto registerMember(RegisterMemberRequestDto dto) {
     String email = dto.email();
     if (memberAuthRepository.findByEmail(email).isPresent()) {
       throw new IllegalArgumentException("중복된 이메일의 사용자가 존재합니다.");
