@@ -1,17 +1,26 @@
 package gift.config;
 
 import gift.jwt.JwtAuthInterceptor;
+import gift.jwt.JwtProvider;
+import gift.service.MemberService;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
     private final JwtAuthInterceptor jwtAuthInterceptor;
+    private final JwtProvider jwtProvider;
+    private final MemberService memberService;
 
-    public WebConfig(JwtAuthInterceptor jwtAuthInterceptor) {
+    public WebConfig(JwtAuthInterceptor jwtAuthInterceptor,  JwtProvider jwtProvider, MemberService memberService) {
         this.jwtAuthInterceptor = jwtAuthInterceptor;
+        this.jwtProvider = jwtProvider;
+        this.memberService = memberService;
     }
 
     @Override
@@ -19,5 +28,10 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(jwtAuthInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns(AuthConstants.ALLOWLIST);
+    }
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(new LoginMemberArgumentResolver(jwtProvider, memberService));
     }
 }
