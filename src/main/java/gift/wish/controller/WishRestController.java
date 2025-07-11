@@ -1,13 +1,16 @@
 package gift.wish.controller;
 
+import gift.product.dto.ProductResponseDto;
 import gift.security.LoginUser;
 import gift.user.domain.User;
 import gift.wish.dto.WishResponseDto;
 import gift.wish.service.WishService;
 import gift.wish.dto.WishRequestDto;
 import jakarta.validation.Valid;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,5 +33,12 @@ public class WishRestController {
     return ResponseEntity.status(HttpStatus.CREATED).body(wishResponseDto);
   }
 
+  @GetMapping("/api/wishes")
+  public ResponseEntity<List<ProductResponseDto>> getWishes(
+      @LoginUser User user
+  ) {
+    List<ProductResponseDto> products = wishService.getWishes(user.getId());
+    return ResponseEntity.ok(products);
+  }
 
 }

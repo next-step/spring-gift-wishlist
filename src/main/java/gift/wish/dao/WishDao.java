@@ -1,6 +1,9 @@
 package gift.wish.dao;
 
+import gift.product.dto.ProductResponseDto;
+import gift.user.domain.Role;
 import gift.wish.dto.WishResponseDto;
+import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
@@ -33,5 +36,14 @@ public class WishDao {
             rs.getLong("productId")
         ))
         .single();
+  }
+
+  public List<Long> findProductIdsByMemberId(Long memberId) {
+    String sql = "SELECT productId FROM wishes WHERE memberId = ?";
+
+    return jdbcClient.sql(sql)
+        .param(memberId)
+        .query(Long.class)
+        .list();
   }
 }
