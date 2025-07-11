@@ -32,4 +32,8 @@ public class WishService {
                 .map(wish -> productService.findProductById(wish.getProductId()))
                 .collect(Collectors.toList());
     }
+
+    public void deleteWish(Long memberId, Long productId) {
+        wishRepository.deleteByMemberIdAndProductId(memberId, productId);
+    }
 }

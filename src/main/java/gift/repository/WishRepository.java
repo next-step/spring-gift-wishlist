@@ -8,4 +8,6 @@ public interface WishRepository {
     Wish save(Wish wish);
 
     List<Wish> findByMemberId(Long memberId);
+
+    void deleteByMemberIdAndProductId(Long memberId, Long productId);
 }

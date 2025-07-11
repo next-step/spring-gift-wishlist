@@ -43,4 +43,10 @@ public class JdbcWishRepository implements WishRepository {
         String sql = "SELECT member_id, product_id FROM wishes WHERE member_id = ?";
         return jdbcTemplate.query(sql, wishRowMapper, memberId);
     }
+
+    @Override
+    public void deleteByMemberIdAndProductId(Long memberId, Long productId) {
+        String sql = "DELETE FROM wishes WHERE member_id = ? AND product_id = ?";
+        jdbcTemplate.update(sql, memberId, productId);
+    }
 }
