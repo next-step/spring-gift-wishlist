@@ -1,6 +1,7 @@
 package gift;
 
 import gift.dto.*;
+import gift.utils.E2ETestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,7 +28,7 @@ public class WishE2ETest {
                 .baseUrl("http://localhost:" + port)
                 .build();
 
-        token = 회원가입_후_토큰_발급();
+        token = new E2ETestUtils(restClient).회원가입_후_토큰_발급();
     }
 
     @Test

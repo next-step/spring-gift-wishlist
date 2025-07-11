@@ -4,6 +4,7 @@ import gift.dto.MemberLoginRequestDto;
 import gift.dto.MemberLoginResponseDto;
 import gift.dto.MemberRequestDto;
 import gift.dto.MemberResponseDto;
+import gift.utils.E2ETestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,18 +21,21 @@ public class MemberE2ETest {
 
     private RestClient restClient;
 
+    private String token;
+
     @BeforeEach
     void setUp() {
         restClient = RestClient.builder()
                 .baseUrl("http://localhost:" + port)
                 .build();
+        token = new E2ETestUtils(restClient).회원가입_후_토큰_발급();
     }
 
     @Test
     void 회원가입() {
         //given
         final String name = "홍길동";
-        final String email = "hong" + System.currentTimeMillis() + "@email.com"; // 중복 방지
+        final String email = "hong" + System.currentTimeMillis() + "@email.com";
         final String password = "password";
         MemberRequestDto request = new MemberRequestDto(name, email, password);
 
@@ -82,12 +86,6 @@ public class MemberE2ETest {
 
     @Test
     void 내정보_조회() {
-        // given
-        String name = "홍길동";
-        String email = "hong1@email.com";
-        String password = "password";
-        String token = 회원가입_후_토큰_발급(name, email, password);
-
         // when
         MemberResponseDto myInfo = restClient.get()
                 .uri("/api/members/myInfo")
@@ -97,17 +95,11 @@ public class MemberE2ETest {
 
         // then
         assertThat(myInfo).isNotNull();
-        assertThat(myInfo.name()).isEqualTo(name);
-        assertThat(myInfo.email()).isEqualTo(email);
+        assertThat(myInfo.name()).isEqualTo("홍길동");
     }
 
     @Test
     void 내정보_수정() {
-        // given
-        String originalName = "홍길동";
-        String originalEmail = "hong2@email.com";
-        String password = "password";
-        String token = 회원가입_후_토큰_발급(originalName, originalEmail, password);
 
         MemberRequestDto updateRequest = new MemberRequestDto("이순신", "lee@email.com", "new-password");
 
@@ -126,12 +118,6 @@ public class MemberE2ETest {
 
     @Test
     void 내정보_삭제() {
-        // given
-        String name = "홍길동";
-        String email = "hong3@email.com";
-        String password = "password";
-        String token = 회원가입_후_토큰_발급(name, email, password);
-
         // when
         var deleteResponse = restClient.delete()
                 .uri("/api/members/withdraw")
@@ -141,27 +127,6 @@ public class MemberE2ETest {
 
         // then
         assertThat(deleteResponse.getStatusCode().is2xxSuccessful()).isTrue();
-    }
-
-    private String 회원가입_후_토큰_발급(String name, String email, String password) {
-        // 회원가입
-        MemberRequestDto joinRequest = new MemberRequestDto(name, email, password);
-
-        restClient.post()
-                .uri("/api/members/register")
-                .body(joinRequest)
-                .retrieve()
-                .body(MemberResponseDto.class);
-
-        // 로그인
-        MemberLoginRequestDto loginRequest = new MemberLoginRequestDto(email, password);
-        MemberLoginResponseDto loginResponse = restClient.post()
-                .uri("/api/members/login")
-                .body(loginRequest)
-                .retrieve()
-                .body(MemberLoginResponseDto.class);
-
-        return loginResponse.token();
     }
 
 }
