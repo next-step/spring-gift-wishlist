@@ -1,14 +1,17 @@
 # spring-gift-wishlist
 
-| method | url                   | 기능       |
-|--------|-----------------------|----------|
-| GET    | /api/products         | 상품 전체 조회 |
-| POST   | /api/products         | 상품 생성    |
-| PATCH  | /api/products/{id}    | 상품 수정    |
-| DELETE | /api/products/{id}    | 상품 삭제    |
-| GET    | /admin                | 관리자 페이지  |
-| POST   | /api/members/register | 회원가입     |
-| POST   | /api/members/login    | 로그인      |
+| method | url                  | 기능         |
+|--------|----------------------|------------|
+| GET    | /api/products        | 상품 전체 조회   |
+| POST   | /api/products        | 상품 생성      |
+| PATCH  | /api/products/{id}   | 상품 수정      |
+| DELETE | /api/products/{id}   | 상품 삭제      |
+| GET    | /admin               | 관리자 페이지    |
+| POST   | /api/members/register | 회원가입       |
+| POST   | /api/members/login   | 로그인        |
+| GET    | /api/wish-list    | 위시리스트 조회   |
+| POST   | /api/wish-list    | 위시리스트 상품등록 |
+| DELETE   | /api/wish-list    | 위시리스트 상품삭제 |
 
 step 0. 기본 코드 준비
 
