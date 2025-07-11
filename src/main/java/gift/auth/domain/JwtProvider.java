@@ -89,4 +89,12 @@ public class JwtProvider {
     }
   }
 
+  public long getAccessTokenExpirationTime() {
+    return ACCESS_TOKEN_VALIDITY / 1000;
+  }
+
+  public long getRefreshTokenExpirationTime() {
+    return REFRESH_TOKEN_VALIDITY / 1000;
+  }
+
 }
