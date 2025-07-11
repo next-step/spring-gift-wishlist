@@ -1,6 +1,7 @@
 package gift.repository;
 
 import gift.entity.Member;
+import gift.entity.MemberRole;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -26,17 +27,19 @@ public class MemberRepository {
         member.setId(rs.getLong("id"));
         member.setEmail(rs.getString("email"));
         member.setPassword(rs.getString("password"));
+        member.setRole(MemberRole.valueOf(rs.getString("role")));
         return member;
     };
 
     public Member save(Member member) {
-        String sql = "INSERT INTO member (email, password) VALUES (?, ?)";
+        String sql = "INSERT INTO member (email, password, role) VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(sql, new String[]{"id"});
             ps.setString(1, member.getEmail());
             ps.setString(2, member.getPassword());
+            ps.setString(3, member.getRole().name());
             return ps;
         }, keyHolder);
 
@@ -46,19 +49,19 @@ public class MemberRepository {
     }
 
     public Optional<Member> findById(Long id) {
-        String sql = "SELECT id, email, password FROM member WHERE id = ?";
+        String sql = "SELECT id, email, password, role FROM member WHERE id = ?";
         List<Member> results = jdbcTemplate.query(sql, memberRowMapper, id);
         return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
     }
 
     public Optional<Member> findByEmail(String email) {
-        String sql = "SELECT id, email, password FROM member WHERE email = ?";
+        String sql = "SELECT id, email, password, role FROM member WHERE email = ?";
         List<Member> results = jdbcTemplate.query(sql, memberRowMapper, email);
         return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
     }
 
     public List<Member> findAll() {
-        String sql = "SELECT id, email, password FROM member ORDER BY id";
+        String sql = "SELECT id, email, password, role FROM member ORDER BY id";
         return jdbcTemplate.query(sql, memberRowMapper);
     }
 
@@ -74,7 +77,7 @@ public class MemberRepository {
     }
 
     public void update(Long id, Member member) {
-        String sql = "UPDATE member SET email = ?, password = ? WHERE id = ?";
-        jdbcTemplate.update(sql, member.getEmail(), member.getPassword(), id);
+        String sql = "UPDATE member SET email = ?, password = ?, role = ? WHERE id = ?";
+        jdbcTemplate.update(sql, member.getEmail(), member.getPassword(), member.getRole().name(), id);
     }
 } 

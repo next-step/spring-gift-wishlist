@@ -32,7 +32,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (requiresAuth(request.getRequestURI())) {
             if (!StringUtils.hasText(token) || !jwtService.validateToken(token)) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 에러 발생
-                response.getWriter().write("Unauthorized: 유효하지 않은 토큰입니다.");
+                response.setCharacterEncoding("UTF-8");
+                response.setContentType("text/plain; charset=UTF-8");
+                response.getWriter().write("Unauthorized: 인증이 필요합니다.");
                 return;
             }
         }
