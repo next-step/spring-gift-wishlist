@@ -1,8 +1,11 @@
 package gift.service;
 
+import gift.dto.ProductResponse;
 import gift.dto.WishRequest;
 import gift.entity.Wish;
 import gift.repository.WishRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,5 +24,12 @@ public class WishService {
 
         Wish wish = new Wish(memberId, request.productId());
         wishRepository.save(wish);
+    }
+
+    public List<ProductResponse> getWishes(Long memberId) {
+        List<Wish> wishes = wishRepository.findByMemberId(memberId);
+        return wishes.stream()
+                .map(wish -> productService.findProductById(wish.getProductId()))
+                .collect(Collectors.toList());
     }
 }
