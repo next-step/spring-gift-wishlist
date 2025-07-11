@@ -28,7 +28,7 @@ public class WishRepositoryImpl implements WishRepository{
     @Override
     public List<Wish> findAllWishes(Long memberId) {
 
-        String sql = "select * from wishes where memberId = ?";
+        String sql = "select * from wishes where member_id = ?";
 
         return jdbcClient
                 .sql(sql)
@@ -52,8 +52,8 @@ public class WishRepositoryImpl implements WishRepository{
     public Wish saveWish(Long memberId, Long productId) {
 
         final Map<String, Object> params = Map.of(
-                "memberId", memberId,
-                "productId", productId
+                "member_id", memberId,
+                "product_id", productId
         );
 
         Number key = jdbcInsert.executeAndReturnKey(params);
@@ -76,12 +76,12 @@ public class WishRepositoryImpl implements WishRepository{
 
     @Override
     public boolean isInWishList(Long memberId, Long productId) {
-        String sql = "select * from wishes where memberId = :memberId and productId = :productId";
+        String sql = "select * from wishes where member_id = :member_id and product_id = :product_id";
 
         return jdbcClient
                 .sql(sql)
-                .param("memberId", memberId)
-                .param("productId", productId)
+                .param("member_id", memberId)
+                .param("product_id", productId)
                 .query(Wish.class)
                 .optional()
                 .isPresent();
