@@ -21,7 +21,7 @@ public class JwtProvider {
     this.jwtProperties = jwtProperties;
     this.key = Keys.hmacShaKeyFor(jwtProperties.secretKey().getBytes());
     this.ACCESS_TOKEN_VALIDITY = jwtProperties.accessTokenValidity();
-    this.REFRESH_TOKEN_VALIDITY= jwtProperties.refreshTokenValidity();
+    this.REFRESH_TOKEN_VALIDITY = jwtProperties.refreshTokenValidity();
     this.ISSUER = jwtProperties.issuer();
   }
 
@@ -70,11 +70,11 @@ public class JwtProvider {
 
   public String getEmail(String token) {
     return Jwts.parser()
-            .verifyWith(key)
-            .build()
-            .parseSignedClaims(token)
-            .getPayload()
-            .get("email",String.class);
+        .verifyWith(key)
+        .build()
+        .parseSignedClaims(token)
+        .getPayload()
+        .get("email", String.class);
   }
 
   public boolean validateToken(String token) {

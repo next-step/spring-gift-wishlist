@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -52,7 +50,8 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(IllegalArgumentException.class)
-  public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException exception) {
+  public ResponseEntity<ErrorResponse> handleIllegalArgumentException(
+      IllegalArgumentException exception) {
     return createErrorResponse(GlobalErrorCode.INVALID_ARGUMENT_ERROR, exception);
   }
 
@@ -67,7 +66,7 @@ public class GlobalExceptionHandler {
     logger.error("Exception occurred: {}", exception.getMessage());
     return ResponseEntity
         .status(errorCode.getStatus())
-        .body(ErrorResponse.from(errorCode,exception.getMessage()));
+        .body(ErrorResponse.from(errorCode, exception.getMessage()));
   }
 
   private static ResponseEntity<ErrorResponse> createErrorResponse(GlobalErrorCode errorCode,

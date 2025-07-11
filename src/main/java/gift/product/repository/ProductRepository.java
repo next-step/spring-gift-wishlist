@@ -11,6 +11,8 @@ public interface ProductRepository {
 
   Optional<Product> findById(Long id);
 
+  List<Product> findAllByIds(List<Long> ids);
+
   List<Product> findAll();
 
   List<Product> findAllByPage(int offset, int pageSize, SortInfo sortInfo);

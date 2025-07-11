@@ -54,6 +54,19 @@ public class JdbcProductRepository implements ProductRepository {
   }
 
   @Override
+  public List<Product> findAllByIds(List<Long> ids) {
+    if (ids.isEmpty()) {
+      return List.of();
+    }
+
+    String sql = "SELECT * FROM product WHERE id IN (:ids)";
+    MapSqlParameterSource params = new MapSqlParameterSource()
+        .addValue("ids", ids);
+
+    return jdbcTemplate.query(sql, params, productRowMapper());
+  }
+
+  @Override
   public List<Product> findAll() {
     String sql = "SELECT * FROM product";
     return jdbcTemplate.query(sql, productRowMapper());

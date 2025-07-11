@@ -2,8 +2,8 @@ package gift.product.strategy;
 
 import gift.global.common.dto.SortInfo;
 import gift.global.common.strategy.SortStrategy;
-import gift.product.exception.InvalidProductSortFieldException;
 import gift.product.domain.Product;
+import gift.product.exception.InvalidProductSortFieldException;
 import gift.product.exception.ProductErrorCode;
 import java.util.Comparator;
 import java.util.Map;

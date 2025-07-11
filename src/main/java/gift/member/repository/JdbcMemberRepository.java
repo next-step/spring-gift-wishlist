@@ -16,7 +16,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class JdbcMemberRepository implements MemberRepository{
+public class JdbcMemberRepository implements MemberRepository {
 
   private final NamedParameterJdbcTemplate jdbcTemplate;
   private final SimpleJdbcInsert jdbcInsert;
@@ -37,7 +37,7 @@ public class JdbcMemberRepository implements MemberRepository{
 
   @Override
   public Long save(Member member) {
-    Objects.requireNonNull(member,"member는 null일 수 없습니다.");
+    Objects.requireNonNull(member, "member는 null일 수 없습니다.");
     SqlParameterSource params = new BeanPropertySqlParameterSource(member);
     Number key = jdbcInsert.executeAndReturnKey(params);
     return key.longValue();
@@ -67,7 +67,7 @@ public class JdbcMemberRepository implements MemberRepository{
 
     SqlParameterSource params = new MapSqlParameterSource()
         .addValue("id", id)
-        .addValue("name",updatedMember.name());
+        .addValue("name", updatedMember.name());
 
     int affected = jdbcTemplate.update(sql, params);
     if (affected == 0) {
