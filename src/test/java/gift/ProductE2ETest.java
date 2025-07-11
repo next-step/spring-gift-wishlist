@@ -1,10 +1,6 @@
 package gift;
 
-import gift.dto.MemberLoginRequestDto;
-import gift.dto.MemberLoginResponseDto;
-import gift.dto.MemberRequestDto;
-import gift.dto.ProductRequestDto;
-import gift.dto.ProductResponseDto;
+import gift.dto.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,6 +20,7 @@ class ProductE2ETest {
 
     private RestClient restClient;
     private String token;
+    private ProductResponseDto product;
 
     @BeforeEach
     void setUp() {
@@ -32,6 +29,23 @@ class ProductE2ETest {
                 .build();
 
         token = 회원가입_후_토큰_발급();
+
+        ProductRequestDto request = new ProductRequestDto("테스트 상품", 5000, "test.jpg");
+
+        restClient.post()
+                .uri("/api/products")
+                .header("Authorization", "Bearer " + token)
+                .body(request)
+                .retrieve()
+                .toBodilessEntity();
+
+        ProductResponseDto[] products = restClient.get()
+                .uri("/api/products")
+                .header("Authorization", "Bearer " + token)
+                .retrieve()
+                .body(ProductResponseDto[].class);
+
+        product = products[products.length - 1];
     }
 
     @Test
@@ -63,14 +77,14 @@ class ProductE2ETest {
         ProductRequestDto request = new ProductRequestDto("아이스 카페라떼", 7000, "ice_cafe_latte.jpg");
 
         restClient.put()
-                .uri("/api/products/1")
+                .uri("/api/products/" + product.id())
                 .header("Authorization", "Bearer " + token)
                 .body(request)
                 .retrieve()
                 .toBodilessEntity();
 
         ProductResponseDto response = restClient.get()
-                .uri("/api/products/1")
+                .uri("/api/products/" + product.id())
                 .header("Authorization", "Bearer " + token)
                 .retrieve()
                 .body(ProductResponseDto.class);
@@ -83,14 +97,14 @@ class ProductE2ETest {
     @Test
     void 상품을_삭제한다() {
         restClient.delete()
-                .uri("/api/products/1")
+                .uri("/api/products/" + product.id())
                 .header("Authorization", "Bearer " + token)
                 .retrieve()
                 .toBodilessEntity();
 
         HttpClientErrorException exception = assertThrows(HttpClientErrorException.class, () -> {
             restClient.get()
-                    .uri("/api/products/1")
+                    .uri("/api/products/" + product.id())
                     .header("Authorization", "Bearer " + token)
                     .retrieve()
                     .toBodilessEntity();
