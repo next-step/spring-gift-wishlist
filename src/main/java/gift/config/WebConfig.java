@@ -1,23 +1,34 @@
 package gift.config;
 
 import gift.interceptor.AuthInterceptor;
+import gift.resolver.LoginMemberArgumentResolver;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
     private final AuthInterceptor authInterceptor;
+    private final LoginMemberArgumentResolver loginMemberArgumentResolver;
 
-    public WebConfig(AuthInterceptor authInterceptor) {
+    public WebConfig(AuthInterceptor authInterceptor, LoginMemberArgumentResolver loginMemberArgumentResolver) {
         this.authInterceptor = authInterceptor;
+        this.loginMemberArgumentResolver = loginMemberArgumentResolver;
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authInterceptor)
-                .addPathPatterns("/api/**") // /api/ 로 시작하는 모든 경로에 인터셉터 적용
-                .excludePathPatterns("/api/members/register", "/api/members/login"); // 회원가입, 로그인은 제외
+                .addPathPatterns("/api/**", "/admin/**")
+                .excludePathPatterns("/api/members/register", "/api/members/login");
+    }
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(loginMemberArgumentResolver);
     }
 }
