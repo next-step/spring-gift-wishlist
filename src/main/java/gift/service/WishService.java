@@ -5,6 +5,7 @@ import gift.dto.WishResponseDto;
 import gift.entity.Product;
 import gift.entity.Wish;
 import gift.repository.WishRepository;
+import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,4 +29,17 @@ public class WishService {
 
         return new WishResponseDto(id, ProductResponseDto.from(product));
     }
+
+    @Transactional(readOnly = true)
+    public List<WishResponseDto> getWishlist(long memberId) {
+
+        List<Wish> wishes = wishRepository.findAllWishes(memberId);
+        return wishes.stream()
+                     .map(wish -> {
+                         Product product = productService.findProductOrThrow(wish.getProductId());
+                         return new WishResponseDto(wish.getId(), ProductResponseDto.from(product));
+                     })
+                     .toList();
+    }
+
 }
