@@ -14,7 +14,7 @@ public interface WishListRepository {
 
     WishItem deleteItem(String name, String userEmail);
 
-    WishItem updateWishItem(Integer quantity, String name, String userEmail);
+    WishItem updateWishItem(Integer quantity, Long itemId, Long userId);
 
     void deleteWishItem(Long userId, Long itemId);
 }

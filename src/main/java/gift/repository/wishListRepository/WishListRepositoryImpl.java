@@ -27,17 +27,7 @@ public class WishListRepositoryImpl implements WishListRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    private final RowMapper<Item> itemRowMapper = new RowMapper<>() {
-        @Override
-        public Item mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new Item(
-                    rs.getLong("id"),
-                    rs.getString("name"),
-                    rs.getInt("price"),
-                    rs.getString("image_url")
-            );
-        }
-    };
+
 
     @Override
     public WishItem addWishItem(Long itemId, String itemName, String imageUrl, Integer price, Integer quantity, Long userId) {
@@ -146,40 +136,36 @@ public class WishListRepositoryImpl implements WishListRepository {
     }
 
     @Override
-    public WishItem updateWishItem(Integer quantity, String name, String userEmail) {
-        User user = userRepository.findUserByEmail(userEmail);
+    public WishItem updateWishItem(Integer quantity, Long itemId, Long userId) {
+        var updateSql = "UPDATE wish_items SET quantity = ? WHERE user_id = ? AND item_id = ?";
+        int updatedRows = jdbcTemplate.update(updateSql, quantity, userId, itemId);
 
-        if (user == null) {
-            throw new UserNotFoundException();
+        if (updatedRows == 0) {
+            return null;
         }
 
-        Item item = jdbcTemplate.queryForObject(
-                "SELECT id, name, price, image_url FROM items WHERE name =? LIMIT 1",
-                new Object[]{name},
-                (rs,rowNum) -> new Item(
-                        rs.getLong("id"),
-                        rs.getString("name"),
-                        rs.getInt("price"),
-                        rs.getString("image_url")
-                )
+        var selectSql = "SELECT id, quantity FROM wish_items WHERE user_id = ? AND item_id = ?";
+        WishItem updatedItem = jdbcTemplate.queryForObject(selectSql, new Object[]{userId, itemId}, wishItemPartialRowMapper);
+
+        return new WishItem(
+                updatedItem.id(),
+                itemId,
+                null,
+                null,
+                null,
+                updatedItem.quantity()
         );
-
-        if (item == null) {
-            throw new ItemNotFoundException(name);
-        }
-
-        var wishListSql = "SELECT COUNT(*) FROM wish_items WHERE user_id =? AND item_id=?";
-        Integer count = jdbcTemplate.queryForObject(wishListSql, new Object[]{user.id(), item.getId()}, Integer.class);
-
-        if (count == null || count == 0) {
-            throw new ItemNotFoundException("해당 상품은 위시 리스트에 없습니다: " + name);
-        }
-
-        var updateSql = "UPDATE wish_items SET quantity=? WHERE user_id=? AND item_id=?";
-        jdbcTemplate.update(updateSql, quantity, user.id(), item.getId());
-
-        return new WishItem(item.getId(), item.getName(), item.getImageUrl(), item.getPrice(), quantity);
     }
+
+    private final RowMapper<WishItem> wishItemPartialRowMapper = (rs, rowNum) ->
+            new WishItem(
+                    rs.getLong("id"),
+                    null,
+                    null,
+                    null,
+                    null,
+                    rs.getInt("quantity")
+            );
 
     @Override
     public void deleteWishItem(Long userId, Long itemId) {
