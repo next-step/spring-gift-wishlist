@@ -34,3 +34,18 @@
 -[x] [Exception] 이메일이 이미 사용되는 경우, 해당 이메일이 존재하지 않는 경우, 비밀번호 불일치의 경우에 대한 커스텀 예외 작성 (EmailAlreadyRegisteredException, MemberNotFoundException, PasswordMismatchException)
 -[x] [Exception] 그에 대한 GlobalExceptionHandler 수정
 -[x] [Test] 테스트 코드 도메인 별 디렉토리 분리
+
+### 3단계 구현사항
+-[x] [SQL] 위시 리스트에 대한 table 정의하는 sql 추가 (schema.sql)
+-[x] [Domain] 위시 리스트 도메인 설계 (WishList Class)
+-[x] [Dto] 위시 리스트 추가, 수정, 결과 반환에 대한 DTO 설계 (차례대로 CreateRequestDto, UpdateRequestDto, ResponseDto 순)
+-[x] [Repository] 위시 리스트 도메인에 대한 DB CRUD 수행하는 인터페이스 및 구현체 작성 (WishListRepository, JdbcTemplateWishListRepository)
+-[x] [Service] 위시 리스트 추가, 전체 조회, 수정, 삭제, 전체 삭제의 역할 담당하는 인터페이스 및 구현체 작성 (WishListService, WishListServiceImpl)
+-[x] [Security] 지정된 경로에 대해서 인증 작업 수행하고 memberId를 얻어 Controller에게 전달하는 Filter 구현 (JwtAuthenticationFilter)
+-[x] [Security] JwtAuthenticationFilter 에 대해 필터 순서 등록하는 FilterConfig 정의
+-[x] [Controller] 위시 리스트 추가, 전체 조회, 수정, 삭제, 전체 삭제의 요청 처리하는 컨트롤러 설계 (WishListController)
+-[x] [Exception] 상품이 존재하지 않는 경우에 대한 커스텀 예외 ProductNotFoundException 정의 (기존 NoSuchElementException 삭제)
+-[x] [Exception] 위시 리스트에 사용자 id와 상품 id에 대응되는 항목이 없을 때 발생하는 WishListItemNotFoundException 정의
+-[x] [Exception] 위 2가지 커스텀 Exception에 대해서 GlobalExcpetionHandler 수정
+-[x] [Refactor : Service] NoSuchElementException -> ProductNotFoundException 변경에 따른 리팩토링
+-[x] [Test] 위시 리스트 도메인에 대한 테스트 코드 작성 (WishListTest)
