@@ -4,7 +4,10 @@ import gift.dto.MemberRequestDto;
 import gift.dto.MemberResponseDto;
 import gift.dto.ProductResponseDto;
 import gift.dto.WishListProductRequestDto;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
@@ -22,6 +25,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOf
 
 @ContextConfiguration(classes = Application.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class MemberControllerTest {
     @LocalServerPort
     private int port;
@@ -31,6 +35,7 @@ public class MemberControllerTest {
     private String testJWTToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhYmNkQHB1c2FuLmFjLmtyIiwiZW1haWwiOiJhYmNkQHB1c2FuLmFjLmtyIn0.WGDriDkB5paOlUxALdjM4cZqo8ZE2YZ0yN8nwu5VjRk";
 
     @Test
+    @Order(1)
     void 회원가입_잘못된_이메일_입력_테스트(){
         System.out.println("Member Register Not Valid Email test");
         MemberRequestDto requestDto = new MemberRequestDto("qwertypusan.ac.kr", "12345678");
@@ -48,6 +53,7 @@ public class MemberControllerTest {
     }
 
     @Test
+    @Order(2)
     void 회원가입_잘못된_비밀번호_입력_테스트(){
         System.out.println("Member Register Not Valid Email test");
         MemberRequestDto requestDto = new MemberRequestDto("abcd@pusan.ac.kr", "1234");
@@ -65,6 +71,7 @@ public class MemberControllerTest {
     }
 
     @Test
+    @Order(3)
     void 회원가입_중복_이메일_테스트(){
         System.out.println("Elready Exist Email Register test");
         MemberRequestDto requestDto = new MemberRequestDto("abc@pusan.ac.kr", "12345678");
@@ -81,6 +88,7 @@ public class MemberControllerTest {
     }
 
     @Test
+    @Order(4)
     void 회원가입_정상_테스트(){
         System.out.println("Member Register Success test");
         MemberRequestDto requestDto = new MemberRequestDto("zxc@pusan.ac.kr", "12345678");
@@ -96,6 +104,7 @@ public class MemberControllerTest {
     }
 
     @Test
+    @Order(5)
     void 로그인_잘못된_이메일_입력_테스트(){
         System.out.println("Member Login Not Valid Email test");
         MemberRequestDto requestDto = new MemberRequestDto("qwertypusan.ac.kr", "12345678");
@@ -113,6 +122,7 @@ public class MemberControllerTest {
     }
 
     @Test
+    @Order(6)
     void 로그인_잘못된_비밀번호_입력_테스트(){
         System.out.println("Member Login Not Valid Email test");
         MemberRequestDto requestDto = new MemberRequestDto("abcd@pusan.ac.kr", "1234");
@@ -130,6 +140,7 @@ public class MemberControllerTest {
     }
 
     @Test
+    @Order(7)
     void 로그인_없는_이메일_시도_테스트(){
         System.out.println("Member Login Not register Email test");
         MemberRequestDto requestDto = new MemberRequestDto("qwerty@pusan.ac.kr", "12345678");
@@ -147,6 +158,7 @@ public class MemberControllerTest {
     }
 
     @Test
+    @Order(8)
     void 로그인_틀린_비밀번호_테스트(){
         System.out.println("Member Login Invalid password test");
         MemberRequestDto requestDto = new MemberRequestDto("abcd@pusan.ac.kr", "12345678888");
@@ -163,6 +175,7 @@ public class MemberControllerTest {
     }
 
     @Test
+    @Order(9)
     void 로그인_정상_테스트(){
         System.out.println("Member Login success test");
         MemberRequestDto requestDto = new MemberRequestDto("abcd@pusan.ac.kr", "12345678");
@@ -178,6 +191,7 @@ public class MemberControllerTest {
     }
 
     @Test
+    @Order(10)
     void 위시_리스트_조회_테스트(){
         System.out.println("Get WishList Product test");
         var url = "http://localhost:" + port + "/api/members/wishlist";
@@ -199,6 +213,7 @@ public class MemberControllerTest {
     }
 
     @Test
+    @Order(11)
     void 위시_리스트_상품_추가_정상_테스트(){
         System.out.println("Add Product to WishList success test");
         var url = "http://localhost:" + port + "/api/members/wishlist";
@@ -223,6 +238,7 @@ public class MemberControllerTest {
     }
 
     @Test
+    @Order(12)
     void 위시_리스트_상품_삭제_정상_테스트(){
         System.out.println("Delete Product to WishList success test");
         var url = "http://localhost:" + port + "/api/members/wishlist/" + 1;
@@ -234,6 +250,21 @@ public class MemberControllerTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
+        assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
+                .isThrownBy(
+                        () -> client.delete()
+                                .uri(url)
+                                .header("Authorization", "Bearer " + testJWTToken)
+                                .retrieve()
+                                .toEntity(Void.class)
+                );
+    }
+
+    @Test
+    @Order(13)
+    void 위시_리스트_없는_상품_삭제_NOT_FOUND_테스트(){
+        System.out.println("Delete Product to WishList NOT FOUND test");
+        var url = "http://localhost:" + port + "/api/members/wishlist/" + 1;
         assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
                 .isThrownBy(
                         () -> client.delete()
