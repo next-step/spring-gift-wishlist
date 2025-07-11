@@ -50,4 +50,8 @@ public class CustomUserDetails implements UserDetails {
   public String getUsername() {
     return email;
   }
+
+  public Long getUserId() {
+    return memberId;
+  }
 }
