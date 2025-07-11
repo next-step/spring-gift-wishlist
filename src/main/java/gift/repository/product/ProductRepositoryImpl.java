@@ -17,8 +17,8 @@ import org.springframework.stereotype.Repository;
 public class ProductRepositoryImpl implements ProductRepository {
 
     private static final String SELECT_BASE = "SELECT id, name, price, image_url, hidden FROM product";
-    private final JdbcTemplate jdbc;
-    private final SimpleJdbcInsert insert;
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert simpleJdbcInsert;
     private final RowMapper<Product> productRowMapper;
 
     public ProductRepositoryImpl(
@@ -26,8 +26,8 @@ public class ProductRepositoryImpl implements ProductRepository {
             DataSource dataSource,
             ProductRowMapper productRowMapper
     ) {
-        this.jdbc = jdbcTemplate;
-        this.insert = new SimpleJdbcInsert(dataSource)
+        this.jdbcTemplate = jdbcTemplate;
+        this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("product")
                 .usingGeneratedKeyColumns("id");
         this.productRowMapper = productRowMapper;
@@ -35,19 +35,19 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public List<Product> findAll() {
-        return jdbc.query(SELECT_BASE, productRowMapper);
+        return jdbcTemplate.query(SELECT_BASE, productRowMapper);
     }
 
     @Override
     public Optional<Product> findById(Long id) {
-        List<Product> list = jdbc.query(
+        List<Product> list = jdbcTemplate.query(
                 SELECT_BASE + " WHERE id = ?", productRowMapper, id);
         return list.stream().findFirst();
     }
 
     @Override
     public boolean existsById(Long id) {
-        Integer count = jdbc.queryForObject(
+        Integer count = jdbcTemplate.queryForObject(
                 "SELECT COUNT(*) FROM product WHERE id = ?", Integer.class, id);
         return count != null && count > 0;
     }
@@ -67,12 +67,12 @@ public class ProductRepositoryImpl implements ProductRepository {
         params.put("price", product.price().price());
         params.put("image_url", product.imageUrl().url());
         params.put("hidden", product.hidden());
-        Number key = insert.executeAndReturnKey(params);
+        Number key = simpleJdbcInsert.executeAndReturnKey(params);
         return product.withId(key.longValue());
     }
 
     private Product updateProduct(Product product) {
-        int updated = jdbc.update(
+        int updated = jdbcTemplate.update(
                 "UPDATE product SET name = ?, price = ?, image_url = ?, hidden = ? WHERE id = ?",
                 product.name().name(),
                 product.price().price(),
@@ -92,7 +92,7 @@ public class ProductRepositoryImpl implements ProductRepository {
         if (id == null || id <= 0) {
             throw new IllegalArgumentException("id는 null이거나 0 이하일 수 없습니다.");
         }
-        int deleted = jdbc.update("DELETE FROM product WHERE id = ?", id);
+        int deleted = jdbcTemplate.update("DELETE FROM product WHERE id = ?", id);
         if (deleted == 0) {
             throw new ProductNotFoundException(id);
         }

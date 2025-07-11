@@ -27,7 +27,7 @@
 * [X] 로그인 사용자 식별
     * JWT 토큰에서 사용자 정보 추출
     * @LoginMember 리졸버 구현
-* [ ] 위시리스트 API 구현
+* [X] 위시리스트 API 구현
     * 조회: GET api/wishes
     * 추가: POST api/wishes + @RequestBody WishRequest
     * 수량 수정: PUT api/wishes/:id + @RequestBody WishRequest
