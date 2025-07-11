@@ -2,13 +2,16 @@ package gift.auth.service;
 
 import gift.auth.JwtProvider;
 import gift.auth.dto.UserSignupResponseDto;
+import gift.common.exception.EmailAlreadyExistsException;
 import gift.common.exception.InvalidPasswordException;
 import gift.user.domain.User;
 import gift.auth.dto.UserLoginRequestDto;
 import gift.auth.dto.UserSingupRequestDto;
 import gift.user.repository.UserDao;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -22,6 +25,10 @@ public class AuthService {
     }
 
     public UserSignupResponseDto signUp(UserSingupRequestDto userSignupRequestDto) {
+        if(userDao.findByEmail(userSignupRequestDto.getEmail()).isPresent()) {
+            throw new EmailAlreadyExistsException("이미 사용 중인 이메일입니다.");
+        }
+
         UUID id = UUID.randomUUID();
         User user = new User(id, userSignupRequestDto.getEmail(), userSignupRequestDto.getPassword());
 
@@ -29,8 +36,11 @@ public class AuthService {
     }
 
     public String login(UserLoginRequestDto userLoginRequestDto) {
-        User user = userDao.findByEmail(userLoginRequestDto.getEmail());
-
+        Optional<User> optionalUser = userDao.findByEmail(userLoginRequestDto.getEmail());
+        if(optionalUser.isEmpty()) {
+            throw new EmptyResultDataAccessException(1);
+        }
+        User user = optionalUser.get();
         if(!user.getPassword().equals(userLoginRequestDto.getPassword())) {
             throw new InvalidPasswordException("비밀번호가 일치하지 않습니다.");
         }

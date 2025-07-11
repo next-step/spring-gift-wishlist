@@ -1,5 +1,6 @@
 package gift.common.exception;
 
+import gift.auth.controller.AuthController;
 import gift.product.controller.api.ProductController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,7 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RestControllerAdvice(assignableTypes = {ProductController.class})
+@RestControllerAdvice(assignableTypes = {ProductController.class, AuthController.class})
 public class RestExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
