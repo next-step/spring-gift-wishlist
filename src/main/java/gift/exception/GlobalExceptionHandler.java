@@ -62,4 +62,11 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(new ErrorResponse(ex.getMessage()));
     }
+
+    @ExceptionHandler(WishAlreadyExistException.class)
+    public ResponseEntity<ErrorResponse> handleWishAlreadyExists(WishAlreadyExistException ex) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse(ex.getMessage()));
+    }
 }
