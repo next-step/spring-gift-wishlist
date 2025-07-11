@@ -45,7 +45,7 @@ public class UserAdminViewController {
     }
 
     @PostMapping("/add")
-    public String add(@Valid @ModelAttribute UserSaveRequestDto userSaveRequestDto, BindingResult bindingResult) {
+    public String add(@Valid @ModelAttribute UserSaveRequestDto userSaveRequestDto, BindingResult bindingResult) throws Exception {
         if (bindingResult.hasErrors()) {
             return "userAddForm";
         }

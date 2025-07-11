@@ -1,6 +1,7 @@
 package gift.auth.service;
 
 import gift.auth.JwtProvider;
+import gift.auth.PasswordUtil;
 import gift.auth.dto.UserSignupResponseDto;
 import gift.common.exception.EmailAlreadyExistsException;
 import gift.common.exception.InvalidPasswordException;
@@ -11,6 +12,7 @@ import gift.user.repository.UserDao;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.Base64;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,18 +26,21 @@ public class AuthService {
         this.jwtProvider = jwtProvider;
     }
 
-    public UserSignupResponseDto signUp(UserSingupRequestDto userSignupRequestDto) {
+    public UserSignupResponseDto signUp(UserSingupRequestDto userSignupRequestDto) throws Exception {
         if(userDao.findByEmail(userSignupRequestDto.getEmail()).isPresent()) {
             throw new EmailAlreadyExistsException("이미 사용 중인 이메일입니다.");
         }
 
         UUID id = UUID.randomUUID();
-        User user = new User(id, userSignupRequestDto.getEmail(), userSignupRequestDto.getPassword());
+        byte[] salt = PasswordUtil.generateSalt();
+        String hashedPassword = PasswordUtil.encryptPassword(userSignupRequestDto.getPassword(), salt);
+
+        User user = new User(id, userSignupRequestDto.getEmail(), hashedPassword, Base64.getEncoder().encodeToString(salt));
 
         return new UserSignupResponseDto(userDao.save(user), jwtProvider.createToken(user));
     }
 
-    public String login(UserLoginRequestDto userLoginRequestDto) {
+    public String login(UserLoginRequestDto userLoginRequestDto) throws Exception {
         Optional<User> optionalUser = userDao.findByEmail(userLoginRequestDto.getEmail());
         if(optionalUser.isEmpty()) {
             throw new EmptyResultDataAccessException(1);

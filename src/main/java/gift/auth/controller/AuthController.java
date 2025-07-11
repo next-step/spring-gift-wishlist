@@ -6,7 +6,6 @@ import gift.auth.service.AuthService;
 import gift.auth.dto.UserSingupRequestDto;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +21,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> singup(@Valid @RequestBody UserSingupRequestDto userSignupRequestDto) {
+    public ResponseEntity<?> singup(@Valid @RequestBody UserSingupRequestDto userSignupRequestDto) throws Exception{
         UserSignupResponseDto userSignupResponseDto = authService.signUp(userSignupRequestDto);
 
         return ResponseEntity
@@ -31,7 +30,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody UserLoginRequestDto userLoginRequestDto) {
+    public ResponseEntity<?> login(@Valid @RequestBody UserLoginRequestDto userLoginRequestDto) throws Exception {
         String token = authService.login(userLoginRequestDto);
         return ResponseEntity
                 .ok()

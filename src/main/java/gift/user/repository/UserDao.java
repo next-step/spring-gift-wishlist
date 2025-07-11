@@ -21,10 +21,11 @@ public class UserDao {
     }
 
     public User save(User user) {
-        jdbcClient.sql("INSERT INTO USERS (id, email, password) VALUES (:id, :email, :password)")
+        jdbcClient.sql("INSERT INTO USERS (id, email, password, salt) VALUES (:id, :email, :password, :salt)")
                 .param("id", user.getId())
                 .param("email", user.getEmail())
                 .param("password", user.getPassword())
+                .param("salt", user.getSalt())
                 .update();
 
         return user;
