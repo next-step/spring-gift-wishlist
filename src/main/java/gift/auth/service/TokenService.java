@@ -11,6 +11,7 @@ public class TokenService {
 
   private final JwtProvider jwtProvider;
   private final MemberAuthRepository memberAuthRepository;
+  private static final String TOKEN_TYPE = "bearer";
 
   public TokenService(JwtProvider jwtProvider, MemberAuthRepository memberAuthRepository) {
     this.jwtProvider = jwtProvider;
@@ -26,7 +27,7 @@ public class TokenService {
     long accessTokenExpiresIn = jwtProvider.getAccessTokenExpirationTime();
     long refreshTokenExpiresIn = jwtProvider.getRefreshTokenExpirationTime();
 
-    return new TokenResponse("bearer", accessToken, accessTokenExpiresIn, refreshToken,
+    return new TokenResponse(TOKEN_TYPE, accessToken, accessTokenExpiresIn, refreshToken,
         refreshTokenExpiresIn);
   }
 
