@@ -26,7 +26,7 @@ public class UserService {
 
     public User findByUserId(String userId) {
         Optional<User> userOpt = userDao.findUserByUserid(userId);
-        User user = userOpt.orElseThrow(() -> new RuntimeException("<UNK>"));
+        User user = userOpt.orElseThrow(() -> new RuntimeException("user 찾을 수 없음"));
         return user;
     }
 
