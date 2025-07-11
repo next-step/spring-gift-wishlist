@@ -1,7 +1,7 @@
 package gift.config;
 
 import gift.service.MemberService;
-import gift.util.JwtTokenProvider;
+import gift.security.JwtTokenProvider;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

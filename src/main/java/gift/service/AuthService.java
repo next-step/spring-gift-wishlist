@@ -3,7 +3,7 @@ package gift.service;
 import gift.dto.AuthResponseDto;
 import gift.dto.MemberRequestDto;
 import gift.entity.Member;
-import gift.util.JwtTokenProvider;
+import gift.security.JwtTokenProvider;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -1,6 +1,5 @@
-package gift.util;
+package gift.security;
 
-import gift.entity.Member;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;

@@ -1,7 +1,7 @@
 package gift.config;
 
 import gift.service.MemberService;
-import gift.util.JwtTokenProvider;
+import gift.security.JwtTokenProvider;
 import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
