@@ -28,4 +28,6 @@ public interface ItemService {
     List<ItemResponseDto> getAllItems();
 
     Item findItemByName(@NotNull String name);
+
+    Item findItemById(Long itemId);
 }

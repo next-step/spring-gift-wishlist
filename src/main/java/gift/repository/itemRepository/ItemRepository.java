@@ -23,4 +23,6 @@ public interface ItemRepository {
     Item updateItem(Long id, String name, int price, String imageUrl);
 
     Item findItemByName(String name);
+
+    Item findItemById(Long itemId);
 }

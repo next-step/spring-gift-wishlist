@@ -113,4 +113,15 @@ public class ItemServiceImpl implements ItemService {
 
         return item;
     }
+
+    @Override
+    public Item findItemById(Long itemId) {
+        Item item = itemRepository.findItemById(itemId);
+
+        if (item == null) {
+            throw new ItemNotFoundException();
+        }
+
+        return item;
+    }
 }

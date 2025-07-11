@@ -2,6 +2,7 @@ package gift.repository.itemRepository;
 
 import gift.entity.Item;
 import gift.repository.userRepository.UserRepository;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -119,5 +120,15 @@ public class ItemRepositoryJdbcTemplate implements ItemRepository {
         Item item = jdbcTemplate.queryForObject(sql, new Object[]{name}, itemRowMapper);
 
         return item;
+    }
+
+    @Override
+    public Item findItemById(Long itemId) {
+        var sql = "SELECT id, name, price, image_url FROM items WHERE id = ?";
+        try {
+            return jdbcTemplate.queryForObject(sql, new Object[]{itemId}, itemRowMapper);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 }
