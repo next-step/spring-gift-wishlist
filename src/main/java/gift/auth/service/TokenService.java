@@ -1,6 +1,6 @@
 package gift.auth.service;
 
-import gift.auth.domain.JwtProvider;
+import gift.auth.domain.JwtUtils;
 import gift.auth.domain.TokenResponse;
 import gift.auth.repository.MemberAuthRepository;
 import java.util.List;
@@ -9,37 +9,37 @@ import org.springframework.stereotype.Component;
 @Component
 public class TokenService {
 
-  private final JwtProvider jwtProvider;
+  private final JwtUtils jwtUtils;
   private final MemberAuthRepository memberAuthRepository;
   private static final String TOKEN_TYPE = "bearer";
 
-  public TokenService(JwtProvider jwtProvider, MemberAuthRepository memberAuthRepository) {
-    this.jwtProvider = jwtProvider;
+  public TokenService(JwtUtils jwtUtils, MemberAuthRepository memberAuthRepository) {
+    this.jwtUtils = jwtUtils;
     this.memberAuthRepository = memberAuthRepository;
   }
 
   public TokenResponse generateBearerTokenResponse(Long memberId, String email) {
-    String accessToken = jwtProvider.createToken(memberId, email, List.of());
-    String refreshToken = jwtProvider.createRefreshToken(memberId);
+    String accessToken = jwtUtils.createToken(memberId, email, List.of());
+    String refreshToken = jwtUtils.createRefreshToken(memberId);
 
     memberAuthRepository.updateRefreshToken(memberId, refreshToken);
 
-    long accessTokenExpiresIn = jwtProvider.getAccessTokenExpirationTime();
-    long refreshTokenExpiresIn = jwtProvider.getRefreshTokenExpirationTime();
+    long accessTokenExpiresIn = jwtUtils.getAccessTokenExpirationTime();
+    long refreshTokenExpiresIn = jwtUtils.getRefreshTokenExpirationTime();
 
     return new TokenResponse(TOKEN_TYPE, accessToken, accessTokenExpiresIn, refreshToken,
         refreshTokenExpiresIn);
   }
 
   public boolean isValidToken(String token) {
-    return jwtProvider.validateToken(token);
+    return jwtUtils.validateToken(token);
   }
 
   public String getEmail(String token) {
-    return jwtProvider.getEmail(token);
+    return jwtUtils.getEmail(token);
   }
 
   public Long getUserId(String token) {
-    return jwtProvider.getUserId(token);
+    return jwtUtils.getUserId(token);
   }
 }

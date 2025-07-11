@@ -9,7 +9,7 @@ import javax.crypto.SecretKey;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JwtProvider {
+public class JwtUtils {
 
   private final JwtProperties jwtProperties;
   private final SecretKey key;
@@ -17,7 +17,7 @@ public class JwtProvider {
   private final long REFRESH_TOKEN_VALIDITY;
   private final String ISSUER;
 
-  public JwtProvider(JwtProperties jwtProperties) {
+  public JwtUtils(JwtProperties jwtProperties) {
     this.jwtProperties = jwtProperties;
     this.key = Keys.hmacShaKeyFor(jwtProperties.secretKey().getBytes());
     this.ACCESS_TOKEN_VALIDITY = jwtProperties.accessTokenValidity();

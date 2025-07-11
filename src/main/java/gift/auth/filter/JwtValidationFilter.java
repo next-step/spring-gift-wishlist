@@ -1,6 +1,6 @@
 package gift.auth.filter;
 
-import gift.auth.domain.JwtProvider;
+import gift.auth.domain.JwtUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,11 +16,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Component
 public class JwtValidationFilter extends OncePerRequestFilter {
 
-  private final JwtProvider jwtProvider;
+  private final JwtUtils jwtUtils;
   private final UserDetailsService userDetailsService;
 
-  public JwtValidationFilter(JwtProvider jwtProvider, UserDetailsService userDetailsService) {
-    this.jwtProvider = jwtProvider;
+  public JwtValidationFilter(JwtUtils jwtUtils, UserDetailsService userDetailsService) {
+    this.jwtUtils = jwtUtils;
     this.userDetailsService = userDetailsService;
   }
 
@@ -31,8 +31,8 @@ public class JwtValidationFilter extends OncePerRequestFilter {
 
     String token = resolveToken(request);
 
-    if (token != null && jwtProvider.validateToken(token)) {
-      String email = jwtProvider.getEmail(token);
+    if (token != null && jwtUtils.validateToken(token)) {
+      String email = jwtUtils.getEmail(token);
       UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
       UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
