@@ -31,3 +31,13 @@
 - [x] 인증/인가 관련 예외 처리
     - [x] 유효하지 않은 토큰(401 Unauthorized), 잘못된 로그인 정보(403 Forbidden) 응답 처리
 - [x] 회원 관리자 화면 구현
+-
+
+## 구현할 기능 목록 (3단계 - 위시 리스트)
+
+- [ ] 위시 리스트 기능 구현
+    - [ ] 위시 리스트에 상품 추가 API (`POST /api/wishes`)
+    - [ ] 위시 리스트 목록 조회 API (`GET /api/wishes`)
+    - [ ] 위시 리스트 상품 삭제 API (`DELETE /api/wishes/{wishId}`)
+- [ ] `@LoginMember` 어노테이션 및 `HandlerMethodArgumentResolver` 구현
+    - [ ] 로그인한 사용자 정보를 Argument Resolver를 통해 컨트롤러에서 받을 수 있도록 구현
