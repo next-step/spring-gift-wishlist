@@ -9,5 +9,7 @@ public interface MemberRepository {
     
     Member registerMember(Member newMember);
     
-    Member findMember(String email);
+    Member findMemberByEmail(String email);
+    
+    Member findMemberById(Long userId);
 }

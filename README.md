@@ -36,3 +36,22 @@
 - ADMIN 회원가입은 개발자가 DB에 끼워넣을 수도 있는 것이기에, 억지로 구현하지 않았다.
 2. 로그인 시 역할도 함께 포함하여 token화 했다.
 - 추후 권한 관련 구현 시 토큰 해독을 통해 역할을 확인하여 권한을 제한 할 수 있다.
+
+## Step 3.  위시 리스트
+1. step 3를 위한 wishlist table 생성
+2. Dto 선언 및 wishlist 상품 추가 구현
+3. wishlist 상품 조회 구현
+4. wishlist 상품 삭제 구현
+4. wishlist 상품 개수 수정 구현 (0으로 입력할 경우 삭제)
+
+| api                       | method | 기능                                         | 완료여부 |
+|---------------------------|--------|--------------------------------------------|----|
+| /api/wishlist             | GET    | 본인의 wishlist 목록 불러오기 (header 필수)           | 완료 |
+| /api/wishlist             | POST   | wishlist에 물건 추가 (header, body 필수)          | 완료 |
+| /api/wishlist/{productId} | DELETE | wishlist에 담겨 있는 물품 삭제 (header 필수)          | 완료 |
+| /api/wishlist             | PATCH | wishlist에 담겨 있는 물품 개수 수정 (header, body 필수) | 완료 |
+
+### 구현간 특이사항 정리
+1. wishlist table은 member와 product table의 id에 의존하는 table로 구성(foreign key 활용)
+2. 구현 간 request body는 {"productId": Long, "productCnt": Long}을 요구함, 본인이 담고자 하는 상품의 id와 수량을 요구
+3. 응답으로 돌려주는건 { 상품 아이디, 상품 이름, 상품 수량 }

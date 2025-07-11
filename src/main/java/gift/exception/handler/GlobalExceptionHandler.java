@@ -4,6 +4,7 @@ package gift.exception.handler;
 import gift.exception.common.HttpException;
 import java.util.stream.Collectors;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,5 +26,16 @@ public class GlobalExceptionHandler {
             .collect(Collectors.joining("\n")); // 여러 메시지가 있을 경우 \n로 연결
         
         return ResponseEntity.badRequest().body(errorMessage);
+    }
+    
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<String> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        String message = ex.getMostSpecificCause().getMessage();
+        
+        if (message.contains("productCnt")) {
+            return ResponseEntity.badRequest().body("상품 수량은 0보다 커야 합니다.");
+        }
+        
+        return ResponseEntity.badRequest().body("데이터 무결성 예외 발생: " + message);
     }
 }

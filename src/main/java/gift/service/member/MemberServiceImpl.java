@@ -31,7 +31,7 @@ public class MemberServiceImpl implements MemberService {
     
     @Override
     public LoginRequestDto findMemberToLogin(MemberRequestDto requestDto) {
-        Member member = memberRepository.findMember(requestDto.email());
+        Member member = memberRepository.findMemberByEmail(requestDto.email());
         return new LoginRequestDto(member);
     }
 }

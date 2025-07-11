@@ -33,6 +33,5 @@ public class JwtProvider {
         } catch(Exception e) {
             throw new WrongHeaderException();
         }
-        
     }
 }

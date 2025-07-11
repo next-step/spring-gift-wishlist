@@ -26,7 +26,7 @@ public class AuthServiceImpl implements AuthService {
     
     @Override
     public MemberResponseDto login(LoginRequestDto requestDto) {
-        Member member = memberRepository.findMember(requestDto.email());
+        Member member = memberRepository.findMemberByEmail(requestDto.email());
         
         if(!member.getPassword().equals(requestDto.password())) {
             throw new WrongIdOrPasswordException();
@@ -35,24 +35,5 @@ public class AuthServiceImpl implements AuthService {
         String accessToken = jwtProvider.createToken(member);
         
         return new MemberResponseDto(accessToken);
-    }
-    
-    @Override
-    public void checkPermissonForAdmin(String authorizationHeader) {
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            throw new WrongHeaderException();
-        }
-        
-        String token = authorizationHeader.substring(7); // "Bearer " 제거
-        Claims claims = jwtProvider.parseToken(token);
-        
-        String email = claims.get("email", String.class);
-        Member member = memberRepository.findMember(email);
-        
-        Role role = Role.valueOf(claims.get("role", String.class));
-        
-        if(!role.equals(Role.ADMIN) || !role.equals(member.getRole())) {
-            throw new WrongPermissionException();
-        }
     }
 }
