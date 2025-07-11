@@ -26,7 +26,7 @@ public class WishController {
     @PostMapping
     public ResponseEntity<Void> addWish(@RequestBody WishRequestDto wishRequestDto, @LoginMember Member member) {
         wishService.addWish(member.getId(), wishRequestDto.getProductId(),wishRequestDto.getQuantity());
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping
