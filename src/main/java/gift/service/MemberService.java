@@ -75,8 +75,6 @@ public class MemberService {
         memberRepository.modifyMember(id, member);
     }
 
-
-
     //멤버를 삭제하는 기능
     public void removeMember(Long id){
         memberRepository.removeMemberById(id);

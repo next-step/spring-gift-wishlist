@@ -55,6 +55,7 @@ public class LoginViewController {
 
         Member member = memberService.register(memberRequestDto);
         request.setAttribute("memberId", member.getMemberId());
+        request.setAttribute("role", member.getRole());
         response.setStatus(HttpServletResponse.SC_CREATED);
         return "redirect:/view/loginform";
     }
@@ -94,12 +95,10 @@ public class LoginViewController {
     //로그아웃 기능 -> 토큰을 만료시킴
     @GetMapping("/my/logout")
     public String logout(HttpServletResponse response){
-
         Cookie logoutcookie = new Cookie("yjtoken", null);
         logoutcookie.setPath("/");
         logoutcookie.setMaxAge(0); //즉시 만료되는 토큰을 발행
         response.addCookie(logoutcookie);
-
         return "redirect:/view/loginform";
     }
 

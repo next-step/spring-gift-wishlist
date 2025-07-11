@@ -1,5 +1,6 @@
 package gift.yjshop.interceptor;
 
+import gift.dto.Role;
 import gift.yjshop.service.AuthServiceJWTandCookie;
 import groovy.util.logging.Slf4j;
 import jakarta.servlet.http.Cookie;
@@ -32,7 +33,8 @@ public class LoginInterceptor implements HandlerInterceptor {
 
             //JWT토큰 발급을 위해 필요한 정보들(memberId)
             Long memberId = Long.parseLong(request.getAttribute("memberId").toString());
-            String token = authServiceJWTandCookie.createJwt(request.getParameter("email"), memberId);
+            Role role = (Role) request.getAttribute("role");
+            String token = authServiceJWTandCookie.createJwt(request.getParameter("email"), memberId, role);
 
             //쿠키 발행
             Cookie tcookie = new Cookie("yjtoken", token);

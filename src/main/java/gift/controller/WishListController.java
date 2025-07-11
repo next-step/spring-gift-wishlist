@@ -65,7 +65,6 @@ public class WishListController {
         return ResponseEntity.ok(myWishList);
     }
 
-
     //동일한 상품을 제거하는 경우 (장바구니 내 물품 수량 조절)
     @PatchMapping("/subtract/{wishListId}")
     public ResponseEntity<List<WishResponseDto>> subtractItem(

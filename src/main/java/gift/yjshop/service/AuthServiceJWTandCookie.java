@@ -1,5 +1,6 @@
 package gift.yjshop.service;
 
+import gift.dto.Role;
 import gift.exception.ErrorCode;
 import gift.exception.MyException;
 import io.jsonwebtoken.Jwts;
@@ -22,11 +23,22 @@ public class AuthServiceJWTandCookie {
                 .get("memberId", Long.class);
     }
 
+    //payload의 정보를 추출하는 함수
+    public Role getMemberRole(String token){
+        return Jwts.parser()
+                .verifyWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .get("role", Role.class);
+    }
+
     //토큰 생성
-    public String createJwt(String email, Long memberId){
+    public String createJwt(String email, Long memberId, Role role){
         return Jwts.builder()
                 .claim("email", email)
                 .claim("memberId", memberId)
+                .claim("role", role)
                 .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
                 .compact();
     }

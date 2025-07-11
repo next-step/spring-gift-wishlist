@@ -28,5 +28,4 @@ public interface MemberRepository {
 
     void removeMemberById(Long id);
 
-
 }

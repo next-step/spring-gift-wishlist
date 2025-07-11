@@ -1,5 +1,6 @@
 package gift.service;
 
+import gift.dto.Role;
 import gift.exception.ErrorCode;
 import gift.exception.MyException;
 import groovy.util.logging.Slf4j;
@@ -28,11 +29,23 @@ public class JwtAuthService {
                 .get("memberId", Long.class);
     }
 
+    //payload의 정보를 추출하는 함수
+    public Role getMemberRole(String bearerToken){
+        String token = bearerToken.split(" ")[1]; //접두사 제거
+        return Jwts.parser()
+                .verifyWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .get("role", Role.class);
+    }
+
     //TODO: 토큰 생성
-    public String createJwt(String email, Long memberId){
+    public String createJwt(String email, Long memberId, Role role){
         return Jwts.builder()
                 .claim("email", email)
                 .claim("memberId", memberId)
+                .claim("role", role)
                 .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
                 .compact();
     }

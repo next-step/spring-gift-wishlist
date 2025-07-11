@@ -8,6 +8,7 @@ create table products(
 
 create table members(
     id bigint auto_increment,
+    role varchar(10) not null,
     email varchar(255) not null,
     password varchar(255) not null,
     primary key (id),

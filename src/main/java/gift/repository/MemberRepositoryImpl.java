@@ -1,5 +1,6 @@
 package gift.repository;
 
+import gift.dto.Role;
 import gift.entity.Member;
 import gift.dto.MemberRequestDto;
 import java.sql.ResultSet;
@@ -28,6 +29,7 @@ public class MemberRepositoryImpl implements MemberRepository{
         simpleJdbcInsert.withTableName("members").usingGeneratedKeyColumns("id");
 
         Map<String, Object> params = new HashMap<>();
+        params.put("role", member.getRole().toString());
         params.put("email", member.getEmail());
         params.put("password", member.getPassword());
 

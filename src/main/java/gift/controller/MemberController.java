@@ -37,7 +37,7 @@ public class MemberController {
             HttpServletResponse response
     ){
         Member member = memberService.register(memberRequestDto);
-        String token = "Bearer " + jwtAuthService.createJwt(member.getEmail(), member.getMemberId());
+        String token = "Bearer " + jwtAuthService.createJwt(member.getEmail(), member.getMemberId(), member.getRole());
         response.addHeader("Authorization", token);
         return new ResponseEntity<>(new JwtResponseDto(token), HttpStatus.CREATED);
     }
@@ -55,7 +55,7 @@ public class MemberController {
         }
         //서버에 저장된 id-pw 쌍과 일치한다면 토큰을 발급
         Member member = memberService.getMemberByEmail(memberRequestDto.email()).get();
-        String token = "Bearer " + jwtAuthService.createJwt(member.getEmail(), member.getMemberId());
+        String token = "Bearer " + jwtAuthService.createJwt(member.getEmail(), member.getMemberId(), member.getRole());
         response.addHeader("Authorization", token);
         return ResponseEntity.ok().body(new JwtResponseDto(token));
     }

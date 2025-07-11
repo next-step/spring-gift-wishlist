@@ -8,12 +8,12 @@ values('애플워치', 123000, 'https://encrypted-tbn1.gstatic.com/shopping?q=tb
 insert into products (name, price, image_url)
 values('맥북프로', 2250000, 'https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcS5oCkTuSJ0409B_5FFITHRaXypcr3-hJHtplxcXiXyYK9y8K7Lx-kgWbVhFaHVUP1NeexGHAsqVg');
 
-insert into members (email, password)
-values('testuser1@kakao.com', '12345678');
+insert into members (role, email, password)
+values('ADMIN','testuser1@kakao.com', '12345678');
 
-insert into members (email, password)
-values('testuser2@naver.com', '12345678');
+insert into members (role, email, password)
+values('ADMIN','testuser2@naver.com', '12345678');
 
-insert into members (email, password)
-values('testuser3@apple.com', '12345678');
+insert into members (role, email, password)
+values('ADMIN','testuser3@apple.com', '12345678');
 
