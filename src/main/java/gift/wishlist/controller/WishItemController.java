@@ -32,8 +32,9 @@ public class WishItemController {
   }
 
   @PostMapping
-  public ResponseEntity<Void> addWishItem(@Valid @RequestBody RegisterWishItemRequestDto dto) {
-    wishItemService.registerWishItem(dto);
+  public ResponseEntity<Void> addWishItem(@LoginUser Long memberId,
+      @Valid @RequestBody RegisterWishItemRequestDto dto) {
+    wishItemService.registerWishItem(memberId, dto);
     return ResponseEntity.ok().build();
   }
 

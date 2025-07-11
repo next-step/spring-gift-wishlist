@@ -25,17 +25,17 @@ public class WishItemService {
   }
 
   @Transactional
-  public Long registerWishItem(RegisterWishItemRequestDto dto) {
-    if (memberRepository.findById(dto.memberId()).isEmpty()) {
+  public Long registerWishItem(Long memberId, RegisterWishItemRequestDto dto) {
+    if (memberRepository.findById(memberId).isEmpty()) {
       throw new IllegalArgumentException("회원이 존재하지 않습니다.");
     }
     if (productRepository.findById(dto.productId()).isEmpty()) {
       throw new IllegalArgumentException("상품이 존재하지 않습니다.");
     }
-    if (wishItemRepository.findByMemberIdAndProductId(dto.memberId(), dto.productId()).isEmpty()) {
+    if (wishItemRepository.findByMemberIdAndProductId(memberId, dto.productId()).isPresent()) {
       throw new IllegalArgumentException("이미 위시리스트에 등록된 상품입니다.");
     }
-    return wishItemRepository.save(WishItem.of(dto.memberId(), dto.productId()));
+    return wishItemRepository.save(WishItem.of(memberId, dto.productId()));
   }
 
   public List<GetWishItemResponseDto> findWishItems(Long memberId) {
