@@ -30,6 +30,8 @@ public class LoginInterceptor implements HandlerInterceptor {
                 return false;
             }
 
+            request.setAttribute("accessToken", token);
+
             return true;
         } catch (Exception e) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
