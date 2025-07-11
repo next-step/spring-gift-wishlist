@@ -42,10 +42,11 @@ public class WishRepository {
                         "w.id as wish_id, " +
                         "w.product_id as product_id, " +
                         "p.name as product_name, " +
+                        "p.price as product_price, " +
                         "p.image_url as product_image_url, " +
                         "w.quantity as quantity " +
                         "from wish as w " +
-                        "join product p on w.product_id = p.id" +
+                        "join product p on w.product_id = p.id " +
                         "where member_id = :memberId")
                 .param("memberId", memberId)
                 .query(wishListResponseRowMapper)
@@ -54,6 +55,7 @@ public class WishRepository {
 
     public boolean updateByIdAndQuantity(Long id, Integer quantity) {
         int affected = client.sql("update wish set quantity = :quantity where id = :id")
+                .param("quantity", quantity)
                 .param("id", id)
                 .update();
 
@@ -88,6 +90,7 @@ public class WishRepository {
             rs.getLong("wish_id"),
             rs.getLong("product_id"),
             rs.getString("product_name"),
+            rs.getInt("product_price"),
             rs.getString("product_image_url"),
             rs.getInt("quantity")
     );

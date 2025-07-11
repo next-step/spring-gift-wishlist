@@ -65,7 +65,7 @@
 - [x] cookie 기반 토큰 인터셉터 처리 로직 구현
 - [x] 위시 리스트 domain, repository 설계
 - [x] 위시 리스트 service, controller 설계
-- [ ] 위시 리스트 페이지 구현
+- [x] 위시 리스트 페이지 구현
 - [ ] 상품 관리 관리자 페이지 접근 권한 검증
 - [ ] 회원 수정, 삭제에 필요한 service, repository 추가 구현
 - [ ] 회원 수정, 삭제 페이지 구현

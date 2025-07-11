@@ -1,19 +1,26 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GiftShop</title>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+
+<th:block layout:fragment="title">선물하기</th:block>
+
+<th:block layout:fragment="css">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Noto Sans KR', sans-serif;
+        .hero-wrapper {
             background: linear-gradient(to bottom, #fff, #fdf6e3);
-            height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 40px 0;
+            min-height: calc(100vh - 75px);
+
+            width: 100vw;
+            position: relative;
+            left: 50%;
+            transform: translateX(-50%);
         }
+        * { box-sizing: border-box; }
 
         .hero {
             text-align: center;
@@ -67,14 +74,15 @@
             }
         }
     </style>
-</head>
-<body>
+</th:block>
 
-<section class="hero">
-    <h1>🎁 마음을 전하는 선물</h1>
-    <p>소중한 사람에게 따뜻한 마음을 전해보세요.</p>
-    <a href="/members/login" class="hero-button">선물하러 가기</a>
-</section>
-
-</body>
+<div layout:fragment="content">
+    <div class="hero-wrapper">
+        <section class="hero">
+            <h1>🎁 마음을 전하는 선물</h1>
+            <p>소중한 사람에게 따뜻한 마음을 전해보세요.</p>
+            <a href="/members/login" class="hero-button">선물하러 가기</a>
+        </section>
+    </div>
+</div>
 </html>

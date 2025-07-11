@@ -4,13 +4,15 @@
 <header th:fragment="header" class="navbar">
     <a href="/products" class="nav-brand">🎁 GiftShop</a>
     <nav class="nav-items">
+        <div class="nav-items">
+            <a href="/products" class="nav-link">상품 목록</a>
+
+            <form th:action="@{/members/logout}" method="post" style="display: inline;">
+                <button type="submit" class="nav-link" style="border:none; background:none; cursor:pointer; padding:0; font-size: 1em;">로그아웃</button>
+            </form>
+            <a href="/members/login" class="nav-link">로그인</a>
+        </div>
     </nav>
 </header>
-
-<style>
-    .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; background-color: #f8f9fa; border-bottom: 1px solid #dee2e6; }
-    .nav-brand { font-size: 1.5em; font-weight: bold; color: #333; }
-    .nav-items { display: flex; align-items: center; gap: 25px; }
-</style>
 </body>
 </html>
