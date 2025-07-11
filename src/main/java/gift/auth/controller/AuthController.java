@@ -4,8 +4,8 @@ import gift.auth.dto.UserSignupResponseDto;
 import gift.auth.dto.UserLoginRequestDto;
 import gift.auth.service.AuthService;
 import gift.auth.dto.UserSingupRequestDto;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +21,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> singup(@RequestBody UserSingupRequestDto userSignupRequestDto) {
+    public ResponseEntity<?> singup(@Valid @RequestBody UserSingupRequestDto userSignupRequestDto) throws Exception{
         UserSignupResponseDto userSignupResponseDto = authService.signUp(userSignupRequestDto);
 
         return ResponseEntity
@@ -30,13 +30,10 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody UserLoginRequestDto userLoginRequestDto) {
-        try {
-            String token = authService.login(userLoginRequestDto);
-            return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, "Bearer"+token).body(token);
-        }
-        catch(IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
-        }
+    public ResponseEntity<?> login(@Valid @RequestBody UserLoginRequestDto userLoginRequestDto) throws Exception {
+        String token = authService.login(userLoginRequestDto);
+        return ResponseEntity
+                .ok()
+                .header(HttpHeaders.AUTHORIZATION, "Bearer "+token).body(token);
     }
 }
