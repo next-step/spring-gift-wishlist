@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -60,17 +62,17 @@ public class WishlistJdbcRepository implements WishlistRepository {
 
     @Override
     public Wishlist save(Wishlist wishlist) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
         String sql = "insert into wishlist (member_id, product_id, created_date) values (:memberId, :productId, :createdDate)";
 
         jdbcClient.sql(sql)
                 .param("memberId", wishlist.getMemberId())
                 .param("productId", wishlist.getProductId())
                 .param("createdDate", wishlist.getCreatedDate())
-                .update();
+                .update(keyHolder, "id");
 
-        Long newId = jdbcClient.sql("select max(id) from wishlist")
-                .query(Long.class)
-                .single();
+        Long newId = keyHolder.getKey().longValue();
 
         return new Wishlist(newId, wishlist.getMemberId(), wishlist.getProductId(),
                 wishlist.getCreatedDate());

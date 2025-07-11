@@ -1,6 +1,5 @@
 package gift.front.controller;
 
-import gift.api.member.domain.MemberRole;
 import gift.api.product.dto.ProductRequestDto;
 import gift.api.product.service.ProductService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,11 +37,6 @@ public class AdminController {
             HttpServletRequest request
     ) {
         String userEmail = (String) request.getAttribute("userEmail");
-        String userRole = (String) request.getAttribute("userRole");
-
-        if (userRole == null || !userRole.equals(MemberRole.ADMIN.name())) {
-            return "redirect:/members/login";
-        }
 
         if (userEmail != null) {
             model.addAttribute("userEmail", userEmail);

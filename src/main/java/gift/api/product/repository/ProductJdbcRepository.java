@@ -7,6 +7,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -52,16 +54,16 @@ public class ProductJdbcRepository implements ProductRepository {
 
     @Override
     public Product createProduct(Product product) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
         jdbcClient.sql(
                         "insert into product (name, price, image_url) values (:name, :price, :image_url)")
                 .param("name", product.getName())
                 .param("price", product.getPrice())
                 .param("image_url", product.getImageUrl())
-                .update();
+                .update(keyHolder, "id");
 
-        Long newId = jdbcClient.sql("select max(id) from product")
-                .query(Long.class)
-                .single();
+        Long newId = keyHolder.getKey().longValue();
 
         return findProductById(newId).get();
     }
@@ -89,7 +91,7 @@ public class ProductJdbcRepository implements ProductRepository {
     }
 
     private String getSortOrder(Sort sort) {
-        if (sort.isSorted()) {
+        if (!sort.isSorted()) {
             return "id ASC";
         }
 
