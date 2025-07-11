@@ -69,5 +69,16 @@ public class MemberService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
-    
+
+    public Member getMemberFromToken(String token) {
+        if (token == null || !jwtTokenProvider.validateToken(token)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token");
+        }
+        String username = jwtTokenProvider.getUsername(token);
+        Optional<Member> optionalMember = memberRepository.findByEmail(username);
+        if (optionalMember.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token");
+        }
+        return optionalMember.get();
+    }
 }

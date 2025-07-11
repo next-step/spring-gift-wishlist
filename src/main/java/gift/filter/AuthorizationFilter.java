@@ -3,6 +3,7 @@ package gift.filter;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import gift.entity.Role;
 
 import java.io.IOException;
 
@@ -23,22 +24,39 @@ public class AuthorizationFilter implements Filter {
 
         if (uri.startsWith("/api/products")) { // GET : public, POST : seller or MD, PATCH/DELETE : MD only
             switch (method) {
-                case "POST" -> authorized = (role != null && (role.equals("ROLE_SELLER") || role.equals("ROLE_MD")));
-                case "PATCH", "DELETE" -> authorized = (role != null && role.equals("ROLE_MD"));
+                case "POST" ->
+                        authorized = (role != null && (role.equals(Role.ROLE_SELLER.name()) || role.equals(Role.ROLE_MD.name())));
+                case "PATCH", "DELETE" ->
+                        authorized = (role != null && role.equals(Role.ROLE_MD.name()));
+            }
+        } else if (uri.startsWith("/api/wishes")) {
+            switch (method) {
+                default ->
+                        authorized = (role != null);
             }
         } else if (uri.startsWith("/admin/products/new")) { // only MD can access this endpoint
-            authorized = (role != null && role.equals("ROLE_MD"));
+            switch (method) {
+                default ->
+                        authorized = (role != null && role.equals(Role.ROLE_MD.name()));
+            }
         } else if (uri.startsWith("/admin/products")) { // GET : MD or CS, POST/PATCH/DELETE : MD only
             switch (method) {
-                case "GET" -> authorized = (role != null && (role.equals("ROLE_MD") || role.equals("ROLE_CS")));
-                case "POST", "PATCH", "DELETE" -> authorized = (role != null && role.equals("ROLE_MD"));
+                case "GET" ->
+                        authorized = (role != null && (role.equals(Role.ROLE_MD.name()) || role.equals(Role.ROLE_CS.name())));
+                case "POST", "PATCH", "DELETE" ->
+                        authorized = (role != null && role.equals(Role.ROLE_MD.name()));
             }
         } else if (uri.startsWith("/admin/members/new")) { // only ADMIN can access this endpoint
-            authorized = (role != null && role.equals("ROLE_ADMIN"));
+            switch (method) {
+                default ->
+                        authorized = (role != null && role.equals(Role.ROLE_ADMIN.name()));
+            }
         } else if (uri.startsWith("/admin/members")) { // GET : ADMIN or CS, POST/PATCH/DELETE : ADMIN only
             switch (method) {
-                case "GET" -> authorized = (role != null && (role.equals("ROLE_ADMIN") || role.equals("ROLE_CS")));
-                case "POST", "PATCH", "DELETE" -> authorized = (role != null && role.equals("ROLE_ADMIN"));
+                case "GET" ->
+                        authorized = (role != null && (role.equals(Role.ROLE_ADMIN.name()) || role.equals(Role.ROLE_CS.name())));
+                case "POST", "PATCH", "DELETE" ->
+                        authorized = (role != null && role.equals(Role.ROLE_ADMIN.name()));
             }
         }
 
