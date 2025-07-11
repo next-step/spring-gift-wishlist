@@ -1,5 +1,7 @@
 package gift.controller;
 
+import gift.annotation.UserValid;
+import gift.dto.UserInfoRequestDto;
 import gift.dto.WishRequestDto;
 import gift.dto.WishResponseDto;
 import gift.service.WishService;
@@ -20,22 +22,25 @@ public class WishController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<WishResponseDto>> findUserWishes() {
-        return ResponseEntity.ok(wishService.findUserWishes());
+    public ResponseEntity<List<WishResponseDto>> findUserWishes(@UserValid UserInfoRequestDto userInfoRequestDto) {
+        System.out.println(userInfoRequestDto.id());
+        return ResponseEntity.ok(wishService.findUserWishes(userInfoRequestDto));
     }
 
     @PostMapping("/add")
-    public ResponseEntity<WishResponseDto> addWish(@RequestBody WishRequestDto requestDto) {
-        return new ResponseEntity<>(wishService.addWish(requestDto), HttpStatus.CREATED);
+    public ResponseEntity<WishResponseDto> addWish(@UserValid UserInfoRequestDto userInfoRequestDto, @RequestBody WishRequestDto wishRequestDto) {
+        return new ResponseEntity<>(wishService.addWish(userInfoRequestDto, wishRequestDto), HttpStatus.CREATED);
     }
 
     @PatchMapping("/patch")
-    public ResponseEntity<Void> updateWish(@RequestBody WishRequestDto requestDto) {
+    public ResponseEntity<Void> updateWish(@UserValid UserInfoRequestDto userInfoRequestDto, @RequestBody WishRequestDto wishrequestDto) {
+        wishService.updateWish(userInfoRequestDto, wishrequestDto);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteWish(@RequestBody WishRequestDto requestDto) {
+    public ResponseEntity<Void> deleteWish(@UserValid UserInfoRequestDto userInfoRequestDto, @RequestBody WishRequestDto wishRequestDto) {
+        wishService.deleteWish(userInfoRequestDto, wishRequestDto);
         return ResponseEntity.noContent().build();
     }
 }

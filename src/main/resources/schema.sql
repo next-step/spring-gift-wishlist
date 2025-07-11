@@ -13,6 +13,6 @@ CREATE TABLE users(id BIGINT AUTO_INCREMENT PRIMARY KEY,
 
 DROP TABLE wishes IF EXISTS;
 CREATE TABLE wishes(id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                    user_id BIGINT FOREIGN KEY REFERENCES users(id) ON DELETE CASCADE,
-                    product_id BIGINT FOREIGN KEY REFERENCES products(id) ON DELETE CASCADE,
+                    user_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
+                    product_id BIGINT REFERENCES products(id) ON DELETE CASCADE,
                     quantity BIGINT);

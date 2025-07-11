@@ -115,12 +115,14 @@ public class AuthService {
             throw new EncryptFailedException();
         }
 
-        // 동일한 회원 정보 체크 후 없을 경우 예외 반환
+        // 동일한 회원 정보 받고 없을 경우 예외 반환
         try{
-            userRepository.checkUser(user);
+            user = userRepository.checkUser(user);
         } catch (Exception e) {
             throw new LoginFailedException();
         }
+
+        System.out.println(user);
 
         // JWT 생성 후 반환
         return new TokenResponseDto(Jwts.builder()

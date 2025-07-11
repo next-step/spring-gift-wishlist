@@ -31,6 +31,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleBadRequest(MethodArgumentNotValidException e) { return e.getBindingResult().getAllErrors().getFirst().getDefaultMessage(); }
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleBadRequest(IllegalArgumentException e) { return e.getMessage(); }
 
     // CONFLICT 응답하는 예외처리 핸들러
     @ExceptionHandler(DuplicateKeyException.class)
@@ -45,5 +48,5 @@ public class GlobalExceptionHandler {
     // UNAUTHORIZED 응답하는 예외처리 핸들러
     @ExceptionHandler({LoginFailedException.class, TokenUnauthorizedException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public String handleUnauthorized(RuntimeException e) { return e.getMessage(); }
+    public String handleUnauthorized(Exception e) { return e.getMessage(); }
 }

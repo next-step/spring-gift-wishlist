@@ -1,6 +1,6 @@
 package gift.resolver;
 
-import gift.annotation.TokenValid;
+import gift.annotation.UserValid;
 import gift.dto.UserInfoRequestDto;
 import gift.exception.TokenUnauthorizedException;
 import io.jsonwebtoken.Claims;
@@ -19,13 +19,13 @@ import io.jsonwebtoken.security.Keys;
 public class TokenResolver implements HandlerMethodArgumentResolver {
     private final String jwtKey;
 
-    public TokenResolver(@Value("${jwt.key}") String jwtKey) {
+    public TokenResolver(@Value("${jwt_key}") String jwtKey) {
         this.jwtKey = jwtKey;
     }
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(TokenValid.class);
+        return parameter.hasParameterAnnotation(UserValid.class);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class TokenResolver implements HandlerMethodArgumentResolver {
         Claims claims;
         try {
             claims = Jwts.parser()
-                .verifyWith(Keys.hmacShaKeyFor(jwtKey.getBytes()))
+                .setSigningKey(Keys.hmacShaKeyFor(jwtKey.getBytes()))
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();

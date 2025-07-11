@@ -45,9 +45,9 @@ public class UserRepository {
         return new User(id, user.email(), user.password(), createdAt, role);
     }
 
-    public void checkUser(User user) {
+    public User checkUser(User user) {
         //못 찾거나 2개 이상 찾을 경우 예외 발생
-        jdbcTemplate.queryForObject("SELECT id, email, password, created_at, role FROM users WHERE email=? AND password=?", userRowMapper(), user.email(), user.password());
+        return jdbcTemplate.queryForObject("SELECT id, email, password, created_at, role FROM users WHERE email=? AND password=?", userRowMapper(), user.email(), user.password());
     }
 
     public List<User> findAllUsers() {
@@ -56,6 +56,10 @@ public class UserRepository {
 
     public User findUserById(Long id) {
         return jdbcTemplate.queryForObject("SELECT id, email, password, created_at, role FROM users WHERE id=?", userRowMapper(), id);
+    }
+
+    public User findUserByEmail(String email) {
+        return jdbcTemplate.queryForObject("SELECT id, email, password, created_at, role FROM users WHERE email=?", userRowMapper(), email);
     }
 
     public boolean deleteUser(Long id) {

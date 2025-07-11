@@ -20,18 +20,18 @@ public class WishService {
     }
 
     public List<WishResponseDto> findUserWishes(UserInfoRequestDto userInfoRequestDto) {
-        return wishRepository.findUserWishes(userInfoRequestDto).stream().map(WishResponseDto::new).collect(Collectors.toList());
+        return wishRepository.findUserWishes(userInfoRequestDto.id()).stream().map(WishResponseDto::new).collect(Collectors.toList());
     }
 
-    public WishResponseDto addWish(WishRequestDto wishRequestDto) {
-       return new WishResponseDto(wishRepository.addWish(new Wish(wishRequestDto)));
+    public WishResponseDto addWish(UserInfoRequestDto userInfoRequestDto, WishRequestDto wishRequestDto) {
+       return new WishResponseDto(wishRepository.addWish(userInfoRequestDto.id(), new Wish(wishRequestDto)));
     }
 
-    public void updateWish(WishRequestDto wishRequestDto) {
-        wishRepository.updateWish(new Wish(wishRequestDto));
+    public void updateWish(UserInfoRequestDto userInfoRequestDto, WishRequestDto wishRequestDto) {
+        wishRepository.updateWish(userInfoRequestDto.id(), new Wish(wishRequestDto));
     }
 
-    public void deleteWish(WishRequestDto wishRequestDto) {
-        wishRepository.deleteWish(new Wish(wishRequestDto));
+    public void deleteWish(UserInfoRequestDto userInfoRequestDto, WishRequestDto wishRequestDto) {
+        wishRepository.deleteWish(userInfoRequestDto.id(), new Wish(wishRequestDto));
     }
 }

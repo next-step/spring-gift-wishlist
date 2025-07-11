@@ -6,8 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 
-// 토큰 읽고 사용자 고유 id, 권한 읽어오는 어노테이션
+// 일반 사용자의 토큰 읽고 사용자 고유 id, 권한 읽어오는 어노테이션
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface TokenValid {
+public @interface UserValid {
 }
