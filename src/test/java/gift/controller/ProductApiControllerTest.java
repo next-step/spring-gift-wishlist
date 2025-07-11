@@ -3,12 +3,17 @@ package gift.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.domain.Product;
 import gift.dto.product.CreateProductRequest;
+import gift.dto.user.CreateUserRequest;
+import gift.dto.user.LoginRequest;
 import gift.service.ProductService;
+import gift.service.UserService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
@@ -33,6 +38,16 @@ class ProductApiControllerTest {
     @Autowired
     ProductService productService;
 
+    @Autowired
+    UserService userService;
+
+    String accessToken;
+
+    @BeforeEach
+    void setUp() {
+        userService.saveUser(new CreateUserRequest("tkddnr@thanks.com", "1234"));
+        accessToken = "Bearer " + userService.login(new LoginRequest("tkddnr@thanks.com", "1234")).accessToken();
+    }
 
     @Test
     @DisplayName("상품 생성을 할 수 있다.")
@@ -44,11 +59,12 @@ class ProductApiControllerTest {
         mvc.perform(post("/api/products")
                 .content(body)
                 .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
         ).andExpect(status().isCreated());
     }
 
     @Test
-    @DisplayName("상품 목록 조회를 할 수 있다.")
+    @DisplayName("로그인 없이 상품 목록 조회를 할 수 있다.")
     void test2() throws Exception {
         //2개의 더미 데이터 생성
         productService.saveProduct(new CreateProductRequest("연필", 1000, 10));
@@ -76,6 +92,7 @@ class ProductApiControllerTest {
         mvc.perform(put("/api/products/" + id)
                 .content(body)
                 .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
         ).andExpect(status().isNoContent());
     }
 
@@ -86,6 +103,7 @@ class ProductApiControllerTest {
         Long id = product.getId();
 
         mvc.perform(delete("/api/products/" + id)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
         ).andExpect(status().isNoContent());
     }
 
@@ -99,6 +117,7 @@ class ProductApiControllerTest {
         mvc.perform(post("/api/products")
                 .content(body)
                 .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
         ).andExpect(status().isBadRequest());
     }
 
@@ -112,6 +131,7 @@ class ProductApiControllerTest {
         mvc.perform(post("/api/products")
                 .content(body)
                 .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
         ).andExpect(status().isCreated());
     }
 
@@ -125,6 +145,7 @@ class ProductApiControllerTest {
         mvc.perform(post("/api/products")
                 .content(body)
                 .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
         ).andExpect(status().isForbidden());
     }
 
@@ -138,6 +159,7 @@ class ProductApiControllerTest {
         mvc.perform(post("/api/products")
                 .content(body)
                 .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
         ).andExpect(status().isBadRequest());
     }
 
@@ -155,11 +177,13 @@ class ProductApiControllerTest {
         mvc.perform(post("/api/products")
                 .content(body1)
                 .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
         ).andExpect(status().isBadRequest());
 
         mvc.perform(post("/api/products")
                 .content(body2)
                 .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
         ).andExpect(status().isBadRequest());
     }
 
@@ -173,6 +197,7 @@ class ProductApiControllerTest {
         mvc.perform(post("/api/products")
                 .content(body)
                 .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
         ).andExpect(status().isBadRequest());
     }
 
@@ -186,6 +211,7 @@ class ProductApiControllerTest {
         mvc.perform(post("/api/products")
                 .content(body)
                 .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
         ).andExpect(status().isBadRequest());
     }
 
@@ -199,6 +225,7 @@ class ProductApiControllerTest {
         mvc.perform(post("/api/products")
                 .content(body)
                 .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
         ).andExpect(status().isBadRequest());
     }
 
@@ -212,6 +239,7 @@ class ProductApiControllerTest {
         mvc.perform(post("/api/products")
                 .content(body)
                 .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
         ).andExpect(status().isBadRequest());
     }
 
@@ -226,6 +254,7 @@ class ProductApiControllerTest {
         mvc.perform(put("/api/products/" + 11)
                 .content(body)
                 .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
         ).andExpect(status().isBadRequest());
     }
 
@@ -233,6 +262,7 @@ class ProductApiControllerTest {
     @DisplayName("없는 아이디의 상품 삭제를 요청할 경우 상태코드 400을 반환한다.")
     void test7() throws Exception {
         mvc.perform(delete("/api/products/" + 11)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
         ).andExpect(status().isBadRequest());
     }
 
