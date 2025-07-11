@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.common.pagination.Page;
 import gift.common.pagination.PageImpl;
 import gift.common.pagination.Pageable;
-import gift.product.application.port.in.*;
+import gift.product.application.port.in.ProductUseCase;
 import gift.product.application.port.in.dto.ProductRequest;
 import gift.product.application.port.in.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -36,15 +36,7 @@ class ProductControllerTest {
     private ObjectMapper objectMapper;
 
     @MockitoBean
-    private AddProductUseCase addProductUseCase;
-    @MockitoBean
-    private GetProductUseCase getProductUseCase;
-    @MockitoBean
-    private GetAllProductsUseCase getAllProductsUseCase;
-    @MockitoBean
-    private UpdateProductUseCase updateProductUseCase;
-    @MockitoBean
-    private DeleteProductUseCase deleteProductUseCase;
+    private ProductUseCase productUseCase;
 
     @Test
     @DisplayName("페이지 상품 조회")
@@ -58,7 +50,7 @@ class ProductControllerTest {
             Pageable.of(0, 20), 
             1000
         );
-        given(getAllProductsUseCase.getProducts(any(Pageable.class))).willReturn(productPage);
+        given(productUseCase.getProducts(any(Pageable.class))).willReturn(productPage);
 
         // when
         MockHttpServletResponse response = mockMvc.perform(get("/api/products")
@@ -85,7 +77,7 @@ class ProductControllerTest {
         // given
         Long productId = 1L;
         ProductResponse productResponse = new ProductResponse(productId, "Test Product", 100, "test.jpg");
-        given(getProductUseCase.getProduct(productId)).willReturn(productResponse);
+        given(productUseCase.getProduct(productId)).willReturn(productResponse);
 
         // when
         MockHttpServletResponse response = mockMvc.perform(get("/api/products/{id}", productId))
@@ -105,7 +97,7 @@ class ProductControllerTest {
         // given
         ProductRequest request = new ProductRequest("New Product", 100, "new.jpg");
         ProductResponse responseDto = new ProductResponse(1L, "New Product", 100, "new.jpg");
-        given(addProductUseCase.addProduct(any(ProductRequest.class))).willReturn(responseDto);
+        given(productUseCase.addProduct(any(ProductRequest.class))).willReturn(responseDto);
 
         // when
         MockHttpServletResponse response = mockMvc.perform(post("/api/products")
@@ -137,7 +129,7 @@ class ProductControllerTest {
 
         // then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
-        verify(updateProductUseCase).updateProduct(productId, request);
+        verify(productUseCase).updateProduct(productId, request);
     }
 
     @Test
@@ -154,6 +146,6 @@ class ProductControllerTest {
 
         // then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
-        verify(deleteProductUseCase).deleteProduct(productId);
+        verify(productUseCase).deleteProduct(productId);
     }
 }

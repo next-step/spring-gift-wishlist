@@ -19,7 +19,7 @@ import java.util.Optional;
 @Adapter
 public class ProductPersistenceAdapter implements ProductPersistencePort {
 
-    private static final RowMapper<Product> PRODUCT_MAPPER = (rs, rowNum) -> Product.of(
+    private static final RowMapper<Product> PRODUCT_ROW_MAPPER = (rs, rowNum) -> Product.of(
             rs.getLong("id"),
             rs.getString("name"),
             rs.getInt("price"),
@@ -33,10 +33,7 @@ public class ProductPersistenceAdapter implements ProductPersistencePort {
 
     public Page<Product> findPage(Pageable pageable) {
 
-        int totalRow = jdbcClient.sql("""
-                        SELECT COUNT(*)
-                        FROM Product;
-                """).query(Integer.class).single();
+        int totalRow = getProductTotalRow();
 
         int start = pageable.getOffset();
 
@@ -50,62 +47,78 @@ public class ProductPersistenceAdapter implements ProductPersistencePort {
                             LIMIT :limit OFFSET :offset
                         """).param("limit", pageable.getSize())
                 .param("offset", start)
-                .query(PRODUCT_MAPPER)
+                .query(PRODUCT_ROW_MAPPER)
                 .list();
 
         return new PageImpl<>(content, pageable, totalRow);
     }//TODO : 추후 id 기준 방식으로 구현해보는 것도 고려 가능
 
+    private int getProductTotalRow() {
+        return jdbcClient.sql("""
+                        SELECT COUNT(*)
+                        FROM Product;
+                """).query(Integer.class).single();
+    }
+
     public Optional<Product> findById(Long id) {
 
-        return id == null ? null : jdbcClient.sql(
+        return id == null ? Optional.empty() : jdbcClient.sql(
                         """
                                 SELECT id, name, price, image_url
                                 FROM PRODUCT
                                 WHERE id = :id
                                 """).param("id", id)
-                .query(PRODUCT_MAPPER)
+                .query(PRODUCT_ROW_MAPPER)
                 .optional();
     }
 
     public Product save(Product product) {
-
-        KeyHolder keyHolder = new GeneratedKeyHolder();
         Long id = product.getId();
         if (id == null) {
-            jdbcClient.sql(
-                            """
-                                    INSERT INTO PRODUCT (name, price, image_url)
-                                    VALUES (:name, :price, :imageUrl)
-                                    """
-                    ).param("name", product.getName())
-                    .param("price", product.getPrice())
-                    .param("imageUrl", product.getImageUrl())
-                    .update(keyHolder);
-
-            id = Objects.requireNonNull(keyHolder.getKey()).longValue();
-        } else {
-            jdbcClient.sql(
-                            """
-                                         UPDATE PRODUCT
-                                         SET name = :name,
-                                             price = :price,
-                                             image_url = :imageUrl
-                                         WHERE id = :id
-                                    """
-                    ).param("id", id)
-                    .param("name", product.getName())
-                    .param("price", product.getPrice())
-                    .param("imageUrl", product.getImageUrl())
-                    .update();
-
+            id = insertProduct(product);
+            return new Product(id,
+                    product.getName(),
+                    product.getPrice(),
+                    product.getImageUrl());
         }
+        updateProduct(product);
 
-        return Product.of(id,
+        return new Product(id,
                 product.getName(),
                 product.getPrice(),
                 product.getImageUrl());
+    }
 
+    private Long insertProduct(Product product) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcClient.sql(
+                        """
+                                INSERT INTO PRODUCT (name, price, image_url)
+                                VALUES (:name, :price, :imageUrl)
+                                """
+                ).param("name", product.getName())
+                .param("price", product.getPrice())
+                .param("imageUrl", product.getImageUrl())
+                .update(keyHolder);
+
+        Number key = (Number) keyHolder.getKeys().get("ID");
+        return Objects.requireNonNull(key).longValue();
+    }
+
+    private void updateProduct(Product product) {
+        jdbcClient.sql(
+                        """
+                                     UPDATE PRODUCT
+                                     SET name = :name,
+                                         price = :price,
+                                         image_url = :imageUrl
+                                     WHERE id = :id
+                                """
+                ).param("id", product.getId())
+                .param("name", product.getName())
+                .param("price", product.getPrice())
+                .param("imageUrl", product.getImageUrl())
+                .update();
     }
 
     public void deleteById(Long id) {
