@@ -1,4 +1,4 @@
-package com.example.demo.repository;
+package com.example.demo.repository.refreshtoken;
 
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;

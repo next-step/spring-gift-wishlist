@@ -1,10 +1,10 @@
-package com.example.demo.service;
+package com.example.demo.service.refreshtoken;
 
-import com.example.demo.repository.RefreshTokenRepository;
+import com.example.demo.repository.refreshtoken.RefreshTokenRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class RefreshTokenServiceImpl implements RefreshTokenService{
+public class RefreshTokenServiceImpl implements RefreshTokenService {
 
   private final RefreshTokenRepository refreshTokenRepository;
 
