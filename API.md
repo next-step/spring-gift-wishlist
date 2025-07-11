@@ -115,6 +115,48 @@
       <td>없음</td>
       <td>없음</td>
     </tr>
+<tr>
+      <td>GET</td>
+      <td>/api/wishlist</td>
+      <td>내 위시리스트 조회</td>
+      <td>(Anyone Validated)</td>
+      <td>없음</td>
+      <td><pre><code>[
+  {
+    "id": "(Long)",
+    "productId": "(Long)",
+    "productName": "(String)",
+    "productImageUrl": "(String)",
+    "deleted": "(Boolean)",
+    "addedAt": "(LocalDateTime)"
+  }
+]</code></pre></td>
+    </tr>
+    <tr>
+      <td>POST</td>
+      <td>/api/wishlist</td>
+      <td>위시리스트에 상품 추가</td>
+      <td>(Anyone Validated)</td>
+      <td><pre><code>{
+  "productId": "(Long, NotNull)"
+}</code></pre></td>
+      <td><pre><code>{
+  "id": "(Long)",
+  "productId": "(Long)",
+  "productName": "(String)",
+  "productImageUrl": "(String)",
+  "deleted": "(Boolean)",
+  "addedAt": "(LocalDateTime)"
+}</code></pre></td>
+    </tr>
+    <tr>
+      <td>DELETE</td>
+      <td>/api/wishlist/{productId}</td>
+      <td>위시리스트에서 상품 삭제</td>
+      <td>(Anyone Validated)</td>
+      <td>없음</td>
+      <td>(No Content)</td>
+    </tr>
   </tbody>
 </table>
 
