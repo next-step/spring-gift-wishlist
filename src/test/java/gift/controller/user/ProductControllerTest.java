@@ -13,6 +13,7 @@ import gift.dto.product.ProductRequest;
 import gift.entity.member.value.Role;
 import gift.entity.product.Product;
 import gift.fixture.ProductFixture;
+import gift.service.member.MemberService;
 import gift.service.product.ProductService;
 import gift.util.BearerAuthUtil;
 import gift.util.JwtUtil;
@@ -50,6 +51,9 @@ class ProductControllerTest {
 
     @MockitoBean
     private ProductService productService;
+
+    @MockitoBean
+    private MemberService memberService;
 
     @MockitoBean
     private JwtUtil jwtUtil;

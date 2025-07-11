@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import gift.service.member.MemberService;
 import gift.util.BearerAuthUtil;
 import gift.util.JwtUtil;
 import io.jsonwebtoken.Claims;
@@ -37,6 +38,9 @@ class AdminDashboardControllerTest {
     private JwtUtil jwtUtil;
     @MockitoBean
     private BearerAuthUtil bearerAuthUtil;
+
+    @MockitoBean
+    private MemberService memberService;
 
     private RequestPostProcessor withAuthClaims(Claims claims) {
         return request -> {

@@ -71,7 +71,7 @@ public class Wish {
     }
 
     public WishId getId() {
-        return new WishId(id.id());
+        return id == null ? null : new WishId(id.id());
     }
 
     public MemberId getMemberId() {
