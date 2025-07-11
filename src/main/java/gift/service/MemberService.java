@@ -4,6 +4,7 @@ import gift.jwt.JwtTokenProvider;
 import gift.dto.MemberDto;
 import gift.entity.Member;
 import gift.repository.MemberRepository;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -36,6 +37,10 @@ public class MemberService {
         member.validatePassword(password);
 
         return jwtTokenProvider.createToken(member.getEmail());
+    }
+
+    public Optional<Member> findByEmail(String email) {
+        return memberRepository.findByEmail(email);
     }
 
 }
