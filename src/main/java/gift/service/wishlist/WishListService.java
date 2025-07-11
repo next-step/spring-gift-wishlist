@@ -61,6 +61,9 @@ public class WishListService {
             wishListRepository.updateWishList(wishList.getId(), requestQuantity);
         } catch (DataAccessException e) {
             // 만약 찾는 위시리스트가 없으면 생성부터 해야 함.
+            // 존재하지 않는 proudctId를 준 경우에는 예외 터지도록.
+            productRepository.findById(wishListRequest.productId());
+
             wishListRepository.insertWishList(memberId, wishListRequest.productId(),
                 wishListRequest.quantity());
         }
