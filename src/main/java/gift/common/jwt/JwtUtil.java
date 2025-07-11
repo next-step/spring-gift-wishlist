@@ -1,5 +1,6 @@
 package gift.common.jwt;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import java.util.Date;
@@ -27,5 +28,18 @@ public class JwtUtil {
             .expiration(expiryDate)
             .signWith(secretKey)
             .compact();
+    }
+
+    public String extractEmail(String token) {
+        Claims claims = getClaims(token);
+        return claims.getSubject();
+    }
+
+    private Claims getClaims(String token) {
+        return Jwts.parser()
+            .verifyWith(secretKey)
+            .build()
+            .parseSignedClaims(token)
+            .getPayload();
     }
 }

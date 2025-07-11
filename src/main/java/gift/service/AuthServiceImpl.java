@@ -48,4 +48,12 @@ public class AuthServiceImpl implements AuthService {
 
         return AuthResponse.from(token);
     }
+
+    @Override
+    public User findByToken(String token) {
+        String email = jwtUtil.extractEmail(token);
+
+        return userRepository.findByEmail(email)
+            .orElseThrow(() -> new CustomException(CustomResponseCode.UNAUTHORIZED));
+    }
 }
