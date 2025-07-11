@@ -8,6 +8,8 @@ import gift.exception.ForbiddenException;
 import gift.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
+
 
 @Service
 public class MemberService {
@@ -46,4 +48,12 @@ public class MemberService {
         String token = jwtProvider.generateToken(saved);
         return new TokenResponseDto(token);
     }
+
+
+    public Member findById(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("해당 ID의 사용자를 찾을 수 없습니다: " + id));
+    }
 }
+
+
