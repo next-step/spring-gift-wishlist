@@ -8,4 +8,5 @@ public interface UserService {
   User login(UserRequestDto dto);
   User findByEmail(String email);
   void deleteByEmail(String email);
+  void signup(UserRequestDto dto);
 }
