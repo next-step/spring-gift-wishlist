@@ -34,11 +34,6 @@ public class InMemoryProductRepository implements ProductRepository {
   }
 
   @Override
-  public List<Product> findAllByIds(List<Long> ids){
-    return ids.stream().map(productMap::get).toList();
-  }
-
-  @Override
   public List<Product> findAll() {
     return productMap.values().stream().toList();
   }
