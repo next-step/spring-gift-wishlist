@@ -1,8 +1,9 @@
 package gift.controller;
 
+import gift.config.LoginMember;
 import gift.dto.WishRequestDto;
 import gift.dto.WishResponseDto;
-import gift.service.ProductService;
+import gift.entity.Member;
 import gift.service.WishService;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -20,35 +21,36 @@ import org.springframework.web.bind.annotation.RestController;
 public class WishController {
 
     private final WishService wishService;
-    private final ProductService productService;
 
-    public WishController(WishService wishService, ProductService productService) {
+    public WishController(WishService wishService) {
         this.wishService = wishService;
-        this.productService = productService;
     }
 
     // 상품 추가
     @PostMapping
     public ResponseEntity<WishResponseDto> addWish(
-            @RequestBody WishRequestDto wishRequestDto) {
+            @RequestBody WishRequestDto wishRequestDto,
+            @LoginMember Member member) {
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                // memberId 임시 지정
-                .body(wishService.addWish(1L, wishRequestDto.productId()));
+                .body(wishService.addWish(member.getId(), wishRequestDto.productId()));
     }
 
     // 상품 목록 조회
     @GetMapping
-    public ResponseEntity<List<WishResponseDto>> getWishlist() {
-        // memberId 임시 지정
-        return ResponseEntity.ok(wishService.getWishlist(1L));
+    public ResponseEntity<List<WishResponseDto>> getWishlist(@LoginMember Member member) {
+
+        return ResponseEntity.ok(wishService.getWishlist(member.getId()));
     }
 
     // 상품 삭제
     @DeleteMapping("/{wishId}")
-    public ResponseEntity<Void> deleteWish(@PathVariable Long wishId) {
-        // memberId 임시 지정
-        wishService.deleteWish(1L, wishId);
+    public ResponseEntity<Void> deleteWish(
+            @PathVariable Long wishId,
+            @LoginMember Member member) {
+        wishService.deleteWish(member.getId(), wishId);
+
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

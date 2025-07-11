@@ -113,4 +113,17 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.of(pd).build();
     }
+
+    @ExceptionHandler(UnAuthenticationException.class)
+    public ResponseEntity<ProblemDetail> handleUnAuthenticationException(
+            UnAuthenticationException ex) {
+
+        ProblemDetail pd = ProblemDetail.forStatus(HttpStatus.UNAUTHORIZED);
+
+        pd.setType(URI.create("/errors/unauthorized"));
+        pd.setTitle("인증에 실패하였습니다.");
+        pd.setDetail(ex.getMessage());
+
+        return ResponseEntity.of(pd).build();
+    }
 }
