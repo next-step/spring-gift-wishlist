@@ -1,7 +1,8 @@
-package gift;
+package gift.util;
 
 import gift.entity.Member;
-import gift.exception.UnauthorizedException;
+import gift.exception.InvalidTokenException;
+import gift.exception.TokenExpiredException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,9 +49,9 @@ public class JwtUtil {
                 .parseSignedClaims(token)
                 .getPayload();
         } catch (ExpiredJwtException e) {
-            throw new UnauthorizedException("토큰이 만료되었습니다.");
+            throw new TokenExpiredException("토큰이 만료되었습니다.");
         } catch (SecurityException | MalformedJwtException | UnsupportedJwtException | IllegalArgumentException e) {
-            throw new UnauthorizedException("유효하지 않은 토큰입니다.");
+            throw new InvalidTokenException("유효하지 않은 토큰입니다.");
         }
     }
 }
