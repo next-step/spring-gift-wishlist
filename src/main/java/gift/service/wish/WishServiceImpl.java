@@ -20,7 +20,6 @@ public class WishServiceImpl implements WishService {
 
   private ProductRepository productRepository;
 
-
   public WishServiceImpl(WishRepository wishRepository, ProductRepository productRepository) {
     this.wishRepository = wishRepository;
     this.productRepository = productRepository;
