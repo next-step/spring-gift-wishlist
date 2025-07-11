@@ -27,13 +27,8 @@ public class ProductControllerImplTest {
 
     private RestClient client = RestClient.builder().build();
 
-    @BeforeEach
-    void setip() {
-        System.out.println("setpup");
-    }
-
     @Test
-    void test1() {  // 아이디로 조회가 되는지를 테스트
+    void findByIdTest() {  // 아이디로 조회가 되는지를 테스트
         var url = "http://localhost:" + port + "/api/products/1";
 
         var response = client.get().uri(url).retrieve().toEntity(Product.class);
@@ -46,7 +41,7 @@ public class ProductControllerImplTest {
     }
 
     @Test
-    void NotFoundHandlerTest() {  // 존재하지 않는 아이디로 조회 시 404가 반환된다
+    void notFoundHandlerTest() {  // 존재하지 않는 아이디로 조회 시 404가 반환된다
         var url = "http://localhost:" + port + "/api/products/3";
 
         Assertions.assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
