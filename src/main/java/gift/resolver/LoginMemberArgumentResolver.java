@@ -4,7 +4,6 @@ import gift.annotation.LoginMember;
 import gift.config.JwtProvider;
 import gift.dto.AuthenticatedMemberDto;
 import gift.dto.MemberResponseDto;
-import gift.entity.Member;
 import gift.exception.UnauthorizedException;
 import gift.service.MemberService;
 import org.springframework.core.MethodParameter;
