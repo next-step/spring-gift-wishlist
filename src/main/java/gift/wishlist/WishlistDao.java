@@ -1,5 +1,6 @@
 package gift.wishlist;
 
+import gift.user.domain.User;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
@@ -15,9 +16,18 @@ public class WishlistDao {
     }
 
     public List<Wishlist> getWishlistByUserId(UUID userId) {
-        return jdbcClient.sql("SELECT * FROM WISHLISTS WHERE user_id = :userId")
+        return jdbcClient.sql("SELECT * FROM WISHLISTS WHERE userId = :userId")
                 .param("userId", userId)
                 .query(Wishlist.class)
                 .list();
+    }
+
+    public Wishlist save(Wishlist wishlist) {
+        jdbcClient.sql("INSERT INTO WISHLISTS (userId, productId) VALUES (:userId, :productId)")
+                .param("userId", wishlist.getUserId())
+                .param("productId", wishlist.getProductId())
+                .update();
+
+        return wishlist;
     }
 }

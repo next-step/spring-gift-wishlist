@@ -13,9 +13,9 @@ CREATE TABLE USERS (
 );
 
 CREATE TABLE WISHLISTS (
-    id BIGINT PRIMARY KEY,
-    user_id CHAR(36),
-    product_id CHAR(36),
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (product_id) REFERENCES products(id)
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    userId CHAR(36),
+    productId CHAR(36),
+    FOREIGN KEY (userId) REFERENCES users(id),
+    FOREIGN KEY (productId) REFERENCES products(id)
 );

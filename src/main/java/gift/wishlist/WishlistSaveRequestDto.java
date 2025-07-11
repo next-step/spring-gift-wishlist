@@ -2,23 +2,15 @@ package gift.wishlist;
 
 import java.util.UUID;
 
-public class Wishlist {
-    private Long id;
+public class WishlistSaveRequestDto {
 
     private UUID userId;
 
     private UUID productId;
 
-    public Wishlist() {}
-
-    public Wishlist(Long id, UUID userId, UUID productId) {
-        this.id = id;
+    public WishlistSaveRequestDto(UUID userId, UUID productId) {
         this.userId = userId;
         this.productId = productId;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public UUID getUserId() {
@@ -35,9 +27,5 @@ public class Wishlist {
 
     public void setProductId(UUID productId) {
         this.productId = productId;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 }

@@ -9,14 +9,17 @@ import java.util.UUID;
 @Service
 public class WishlistService {
     private final WishlistDao wishlistDao;
-    private final JwtProvider jwtProvider;
 
-    public WishlistService(WishlistDao wishlistDao, JwtProvider jwtProvider) {
+    public WishlistService(WishlistDao wishlistDao) {
         this.wishlistDao = wishlistDao;
-        this.jwtProvider = jwtProvider;
     }
 
     public List<Wishlist> getWishlistById(UUID userId) {
         return wishlistDao.getWishlistByUserId(userId);
+    }
+
+    public Wishlist saveWishlist(WishlistSaveRequestDto wishlistSaveRequestDto) {
+        Wishlist wishlist = new Wishlist(null, wishlistSaveRequestDto.getUserId(), wishlistSaveRequestDto.getProductId());
+        return wishlistDao.save(wishlist);
     }
 }
