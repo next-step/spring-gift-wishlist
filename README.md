@@ -64,7 +64,7 @@
   - 메서드 : GET
 
 2. 위시 리스트에 상품 추가
-  - URL : /api/wishes/{productId}
+  - URL : /api/wishes
   - 메서드 : POST
   - 기능 : 상품 목록을 조회한 뒤, 선택한 상품을 위시 리스트에 추가한다.
 
