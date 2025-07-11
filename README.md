@@ -2,28 +2,26 @@
 
 스프링 부트를 활용한 **상품(Product)** 관리 REST API 프로젝트입니다.  
 상품 등록, 조회, 수정, 삭제 기능을 제공합니다.
-  
 <br><br>
+---
+## 추가 구현 기능(07.10)
+- **커스템 예외처리 기능**: InvaildLoginException, UserNotFoundException 추가
+- **비밀번호 암호화**: Spring Security를 사용못하기 때문에 자체 암호화 클래스 PasswordHasher 추가(SHA-256)
+- **User Login 테스트 코드(E2E 테스트)**: JUnit5/RestClient를 통한 테스트 코드 작성.
+- **Jwt 구현**
+- **Login page 구현**: Spring Security를 사용할 수 없기 때문에(제이슨 강사님 강조) 시큐리티에서 제공하는 로그인 페이지를 사용할 수 없으므로 직접 구현
+- **인터셉터 구현**: 이 사용자가 유효한지 인터셉터에서 검증하도록 구현(WebConfig + JwtAuthInterceptor)
+- **refresh_token 테이블 PK 변경**: 사용자가 이메일을 변경했을 때를 고려하여 users 테이블의 id를 PK+FK로 구성.
 
-## 추가 구현 기능(step1)
-- **예외처리**: GlobalExceptionHandler, ErrorResponseDto, validation(Package)추가
-  
 
-## 추가 구현 기능(07.04)
-- **예외처리 기능**: ErrorResponseDto, GlobalExceptionHandler 추가(RFC 7807 기반)
-- **커스텀 어노테이션**
-  - 특정 금칙어가 들어오는 것을 방지.
-  - 공통 Validator를 통해 추가할 때마다 어노테이션을 만들어야하는 불편함을 방지.
-  - 예외처리 발생 시 해당 에러 내용 alert(js)로 출력하게끔 반영.
--  **테스트 코드(E2E 테스트)**: JUnit5/RestClient를 통한 테스트 코드 작성.(Given - When - Then 구조 적용)
+## 오류 해결
+- 
 
-## 오류 해결(07.04)
-- **예외처리 반영 X 오류**: POSTMAN에서 확인 시 잘 걸러내지만 페이지에서는 잘 걸러내지 못하는 오류가 있었다. PageController의 createProduct에서도 Valid를 추가하여 해결. 
+## 추가 예정 기능 
+- Role을 현재 추가만 해놓은 상태인데, 후에 역할별로 들어가는 페이지를 다르게 설정하게끔 유도(인터셉터 이용).
+- 회원가입 기능 구현(현재는 H2 DB에 default로 넣어놓은 사람만 로그인 가능)
 
-## 추가 예정 기능 (step 1 머지 이후 진행)
-- **회원 로그인 기능** : 회원 로그인 기능(admin과 일반 회원과의 차이점 두기) - ex. 관리자 시 관리자화면으로 가지게끔 유도.
-- **추후 업데이트**: 예를 들어 목록 수정은 추가한 사람만, 목록 전체는 관리자만 보기 등.
-
+---
 
 ## 구현 기능
 
@@ -100,4 +98,6 @@ Thymeleaf (관리자 페이지용)
 H2 Database (in-memory)
 
 JUnit5 (E2E 테스트 코드 작성)
+
+Jwt(Spring Security 사용 X): refreshToken accessToken을 이용한 회원 로그인
 

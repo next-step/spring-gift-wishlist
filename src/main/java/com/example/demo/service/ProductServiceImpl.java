@@ -4,19 +4,17 @@ import com.example.demo.dto.ProductRequestDto;
 import com.example.demo.dto.ProductResponseDto;
 import com.example.demo.dto.ProductUpdateDto;
 import com.example.demo.entity.Product;
-import com.example.demo.repository.ProductJdbcClientRepository;
+import com.example.demo.repository.ProductRepository;
 import java.util.List;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class ProductServiceImpl implements ProductService{
 
-  private final ProductJdbcClientRepository productJdbcClientRepository;
+  private final ProductRepository productRepository;
 
-  public ProductServiceImpl(ProductJdbcClientRepository productJdbcClientRepository){
-    this.productJdbcClientRepository = productJdbcClientRepository;
+  public ProductServiceImpl(ProductRepository productRepository){
+    this.productRepository = productRepository;
   }
 
   @Override
@@ -26,43 +24,42 @@ public class ProductServiceImpl implements ProductService{
         dto.getPrice(),
         dto.getImageUrl()
     );
-    Product addProduct = productJdbcClientRepository.addProduct(product);
+    Product addProduct = productRepository.addProduct(product);
     return toDto(addProduct);
   }
 
   @Override
   public ProductResponseDto productFindById(Long id) {
-    Product product = productJdbcClientRepository.productFindById(id)
-            .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다."));
+    Product product = productRepository.productFindById(id)
+                                       .orElseThrow(()-> new IllegalArgumentException("해당 상품이 존재하지 않습니다."));
     return toDto(product);
   }
 
   @Override
   public List<ProductResponseDto> productFindAll() {
-    return productJdbcClientRepository.productFindAll()
-        .stream()
-        .map(this::toDto)
-        .toList();
+    return productRepository.productFindAll()
+                            .stream()
+                            .map(this::toDto)
+                            .toList();
   }
 
   @Override
   public ProductResponseDto productUpdateById(Long id, ProductUpdateDto dto) {
-    Product product = productJdbcClientRepository.productFindById(id)
-        .orElseThrow(() -> new IllegalArgumentException(
+    Product product = productRepository.productFindById(id)
+                                       .orElseThrow(() -> new IllegalArgumentException(
             "해당 ID의 상품이 존재하지 않습니다: " + id));
     String name = dto.getName() != null ? dto.getName() : product.getName();
     int price = dto.getPrice() != null ? dto.getPrice() : product.getPrice();
     String imageUrl = dto.getImageUrl() != null ? dto.getImageUrl() : product.getImageUrl();
     product.update(name, price, imageUrl);
 
-    productJdbcClientRepository.productUpdateById(product);
+    productRepository.productUpdateById(product);
     return toDto(product);
   }
 
   @Override
   public void productDeleteById(Long id) {
-    productJdbcClientRepository.deleteProductById(id);
-
+    productRepository.deleteProductById(id);
   }
 
   private ProductResponseDto toDto(Product product){

@@ -1,6 +1,9 @@
-package com.example.demo.controller;
+package com.example.demo.exception.handler;
 
+import com.example.demo.controller.UserController;
 import com.example.demo.dto.ErrorResponseDto;
+import com.example.demo.exception.InvalidLoginException;
+import com.example.demo.exception.UserNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,8 +13,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RestControllerAdvice
-public class GlobalExceptionHandler {
+@RestControllerAdvice(assignableTypes = {UserController.class})
+public class UserExceptionHandler {
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<ErrorResponseDto> handleValidationErrors(
@@ -57,4 +60,42 @@ public class GlobalExceptionHandler {
         .status(HttpStatus.NOT_FOUND)
         .body(errorResponseDto);
     }
+  
+  @ExceptionHandler(InvalidLoginException.class)
+  public ResponseEntity<ErrorResponseDto> handleInvalidLogin(
+      InvalidLoginException ex,
+      HttpServletRequest request
+  ){
+    ErrorResponseDto errorResponseDto = new ErrorResponseDto(
+        "https://example.com/unauthorized",
+        "Unauthorized",
+        HttpStatus.UNAUTHORIZED.value(),
+        ex.getMessage(),
+        request.getRequestURI(),
+        null
+    );
+
+    return ResponseEntity
+        .status(HttpStatus.UNAUTHORIZED)
+        .body(errorResponseDto);
+  }
+
+  @ExceptionHandler(UserNotFoundException.class)
+  public ResponseEntity<ErrorResponseDto> handleUserNotFound(
+      UserNotFoundException ex,
+      HttpServletRequest request
+  ) {
+    ErrorResponseDto errorResponseDto = new ErrorResponseDto(
+        "https://example.com/user-not-found",
+        "User Not Found",
+        HttpStatus.NOT_FOUND.value(),
+        ex.getMessage(),
+        request.getRequestURI(),
+        null
+    );
+
+    return ResponseEntity
+        .status(HttpStatus.NOT_FOUND)
+        .body(errorResponseDto);
+  }
 }

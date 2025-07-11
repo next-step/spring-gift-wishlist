@@ -8,11 +8,11 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class ProductJdbcClientRepositoryImpl implements ProductJdbcClientRepository {
+public class ProductRepositoryImpl implements ProductRepository {
 
   private final JdbcClient jdbcClient;
 
-  public ProductJdbcClientRepositoryImpl(JdbcClient jdbcClient) {
+  public ProductRepositoryImpl(JdbcClient jdbcClient) {
     this.jdbcClient = jdbcClient;
   }
 
