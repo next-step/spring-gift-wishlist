@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>위시리스트</title>
+</head>
+<body>
+<h1>내 위시리스트</h1>
+
+<table border="1">
+  <tr>
+    <th>ID</th><th>이름</th><th>가격</th><th>이미지</th><th>관리</th>
+  </tr>
+  <tr th:each="p : ${wishProducts}">
+    <td th:text="${p.id}">1</td>
+    <td th:text="${p.name}">이름</td>
+    <td th:text="${p.price}">가격</td>
+    <td>
+      <img th:src="${p.imageUrl}" alt="이미지" width="100">
+    </td>
+    <td>
+      <form th:action="@{'/wishes/' + ${p.id} + '/delete'}" method="post" style="display:inline">
+        <button type="submit">위시 제거</button>
+      </form>
+    </td>
+  </tr>
+</table>
+
+<br>
+<a href="/user/products">← 상품 목록으로 돌아가기</a>
+</body>
+</html>

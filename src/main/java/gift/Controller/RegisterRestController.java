@@ -20,7 +20,7 @@ public class RegisterRestController {
     public ResponseEntity<?> register(@RequestBody @Valid Member member) {
         try {
             memberService.register(member);
-            return ResponseEntity.ok().body(member); // 또는 ID만 응답해도 됨
+            return ResponseEntity.ok().body(member);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

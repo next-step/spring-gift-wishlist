@@ -1,7 +1,7 @@
 package gift.admin;
 
 import gift.Entity.Member;
-import gift.dto.MemberDto;
+import gift.dto.MemberDao;
 import gift.service.MemberService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -15,17 +15,17 @@ import java.util.*;
 @RequestMapping("/admin/members")
 public class AdminMemberController {
 
-    private final MemberDto memberDto;
+    private final MemberDao memberDao;
     private final MemberService memberService;
 
-    public AdminMemberController(MemberDto memberDto, MemberService memberService) {
-        this.memberDto = memberDto;
+    public AdminMemberController(MemberDao memberDao, MemberService memberService) {
+        this.memberDao = memberDao;
         this.memberService = memberService;
     }
 
     @GetMapping
     public String list(Model model) {
-        List<Member> members = memberDto.showallMembers();
+        List<Member> members = memberDao.showallMembers();
         model.addAttribute("members", members);
         return "admin/memberlist";
     }
@@ -49,13 +49,13 @@ public class AdminMemberController {
             return "admin/memberform";
         }
 
-        memberDto.insertMember(member);
+        memberDao.insertMember(member);
         return "redirect:/admin/members";
     }
 
     @GetMapping("/{id}/edit")
     public String editMember(@PathVariable String id, Model model) {
-        Member member = memberDto.findById(id)
+        Member member = memberDao.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 아이디의 회원을 찾을 수 없습니다."));
 
         model.addAttribute("member", member);
@@ -69,7 +69,7 @@ public class AdminMemberController {
                                BindingResult bindingResult,
                                Model model) {
         try {
-            memberDto.updateMember(id, member); // 따로 구현 필요
+            memberDao.updateMember(id, member); // 따로 구현 필요
         } catch (Exception e) {
             bindingResult.reject("updateError", e.getMessage());
             model.addAttribute("formType", "edit");
@@ -83,7 +83,7 @@ public class AdminMemberController {
     // 메소드 이름 중 첫 글자는 소문자로 시작하도록 통일
     @PostMapping("/{id}/delete")
     public String deleteMember(@PathVariable String id) {
-        memberDto.deleteMember(id);
+        memberDao.deleteMember(id);
         return "redirect:/admin/members";
     }
 
