@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.yaml.snakeyaml.events.Event;
 
 import java.util.List;
 
@@ -33,5 +34,11 @@ public class WishController {
         List<WishResponseDto> wishes = wishService.getWishes(member.getId());
 
         return ResponseEntity.status(HttpStatus.OK).body(wishes); // 200
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteWishes(@PathVariable Long id) {
+        wishService.remove(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

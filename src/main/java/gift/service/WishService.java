@@ -25,4 +25,8 @@ public class WishService {
     public List<WishResponseDto> getWishes(Long memberId) {
         return wishRepository.findAllByMemberIdWithProduct(memberId);
     }
+
+    public void remove(Long wishId) {
+        wishRepository.remove(wishId);
+    }
 }

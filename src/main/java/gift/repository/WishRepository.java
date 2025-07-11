@@ -54,4 +54,12 @@ public class WishRepository {
                 .list();
     }
 
+    public void remove(Long wishId){
+        var sql="DELETE FROM Wish WHERE id = :wishId";
+
+        jdbcClient.sql(sql)
+                .param("wishId", wishId)
+                .update();
+    }
+
 }
