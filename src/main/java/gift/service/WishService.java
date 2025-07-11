@@ -1,6 +1,6 @@
 package gift.service;
 
-import gift.dto.CreateWishResponseDto;
+import gift.dto.WishCreateResponseDto;
 import gift.dto.WishResponseDto;
 import gift.entity.Product;
 import gift.entity.Wish;
@@ -36,12 +36,12 @@ public class WishService {
                 .collect(Collectors.toList());
     }
 
-    public CreateWishResponseDto add(Long memberId, Long productId) {
+    public WishCreateResponseDto add(Long memberId, Long productId) {
         if (wishRepository.existsByMemberIdAndProductId(memberId, productId)) {
             throw new WishAlreadyExistException(productId);
         }
         Wish wish = wishRepository.save(memberId, productId);
-        return new CreateWishResponseDto(wish.getId(), wish.getMemberId(), wish.getProductId());
+        return new WishCreateResponseDto(wish.getId(), wish.getMemberId(), wish.getProductId());
     }
 
     public void remove(Long memberId, Long productId) {

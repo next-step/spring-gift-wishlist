@@ -1,6 +1,6 @@
 package gift.controller;
 
-import gift.dto.CreateWishResponseDto;
+import gift.dto.WishCreateResponseDto;
 import gift.dto.WishRequestDto;
 import gift.dto.WishResponseDto;
 import gift.service.WishService;
@@ -30,12 +30,12 @@ public class WishController {
     }
 
     @PostMapping
-    public ResponseEntity<CreateWishResponseDto> addWishlist(
+    public ResponseEntity<WishCreateResponseDto> addWishlist(
             @RequestBody WishRequestDto requestDto,
             HttpServletRequest request
     ) {
         Long memberId = Long.parseLong(request.getAttribute("memberId").toString());
-        CreateWishResponseDto responseDto = wishlistService.add(memberId, requestDto.productId());
+        WishCreateResponseDto responseDto = wishlistService.add(memberId, requestDto.productId());
         return ResponseEntity.ok(responseDto);
     }
 
