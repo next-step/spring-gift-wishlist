@@ -1,13 +1,12 @@
-package com.example.demo.controller;
+package com.example.demo.controller.user;
 
-import com.example.demo.dto.UserRequestDto;
+import com.example.demo.dto.user.UserRequestDto;
 import com.example.demo.entity.User;
 import com.example.demo.exception.InvalidLoginException;
-import com.example.demo.service.UserService;
+import com.example.demo.service.user.UserService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -64,5 +63,4 @@ public class UserPageController {
       return "redirect:/signup-page";
     }
   }
-
 }

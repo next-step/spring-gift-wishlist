@@ -1,15 +1,15 @@
-package com.example.demo.service;
+package com.example.demo.service.user;
 
-import com.example.demo.dto.UserRequestDto;
+import com.example.demo.dto.user.UserRequestDto;
 import com.example.demo.entity.User;
 import com.example.demo.exception.InvalidLoginException;
 import com.example.demo.exception.UserNotFoundException;
 import com.example.demo.security.PasswordHasher;
-import com.example.demo.repository.UserRepository;
+import com.example.demo.repository.user.UserRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
   private final UserRepository userRepository;
 
   public UserServiceImpl(UserRepository userRepository) {
