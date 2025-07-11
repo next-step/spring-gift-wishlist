@@ -33,13 +33,6 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
     public Member resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
             NativeWebRequest webRequest, WebDataBinderFactory binderFactory){
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
-        String token = request.getHeader("Authorization");
-
-        Optional<Member> find =  tokenService.isValidateToken(token);
-
-        if (find.isEmpty()) {
-            throw new CustomException(ErrorCode.NotLogin);
-        }
-        return find.get();
+        return (Member) request.getAttribute("login");
     }
 }
