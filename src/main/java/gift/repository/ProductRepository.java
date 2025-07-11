@@ -76,4 +76,13 @@ public class ProductRepository {
         String sql = "DELETE FROM product WHERE id = :id";
         jdbcClient.sql(sql).param("id", id).update();
     }
+
+    public boolean existsById(Long productId) {
+        String sql = "SELECT COUNT(*) FROM Product WHERE id = :id";
+        Integer count = jdbcClient.sql(sql)
+                .param("id", productId)
+                .query(Integer.class)
+                .single();
+        return count != null && count > 0;
+    }
 }
