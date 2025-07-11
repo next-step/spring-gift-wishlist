@@ -1,6 +1,7 @@
 package gift.service;
 
 import gift.entity.Member;
+import gift.repository.MemberRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -12,6 +13,12 @@ public class TokenServiceImpl implements TokenService {
 
     private String key = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E";
 
+    private final MemberRepository memberRepository;
+
+    public TokenServiceImpl(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
+    }
+
     @Override
     public Optional<Member> isValidateToken(String token) {
         try {
@@ -20,9 +27,8 @@ public class TokenServiceImpl implements TokenService {
                     .build()
                     .parseSignedClaims(token)
                     .getPayload();
-            Member find = new Member(claims.get("id", Long.class), claims.get("email", String.class), null,
-                    claims.get("role", String.class));
-            return Optional.of(find);
+            Optional<Member> find = memberRepository.findMemberByEmail(claims.get("email", String.class));
+            return find;
 
         } catch (Exception e) {
             return Optional.empty();
