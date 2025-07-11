@@ -21,6 +21,7 @@
         <th>수량</th>
         <th>수량조절</th>
         <th>상세보기</th>
+        <th>삭제</th>
       </tr>
       </thead>
       <tbody>
@@ -41,6 +42,11 @@
         <td>
           <a th:href="@{|/api/wishlist/${item.productId}|}"
              class="btn btn-sm btn-outline-primary">상세보기</a>
+        </td>
+        <td>
+        <form th:action="@{|/api/wishlist/${item.productId}/delete|}" method="post">
+          <button type="submit" class="btn btn-sm btn-outline-danger">삭제</button>
+        </form>
         </td>
       </tr>
       <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>

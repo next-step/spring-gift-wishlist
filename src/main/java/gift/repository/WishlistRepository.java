@@ -54,6 +54,11 @@ public class WishlistRepository {
     jdbcTemplate.update(sql, quantity, memberId, productId);
   }
 
+  // 찜 상품 삭제
+  public void delete(Long memberId, Long productId) {
+    String sql = "DELETE FROM wishlist WHERE member_id = ? AND product_id = ?";
+    jdbcTemplate.update(sql, memberId, productId);
+  }
 
 
   private WishItem mapRowToWishItem(ResultSet rs) throws SQLException {

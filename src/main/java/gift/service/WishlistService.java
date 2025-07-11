@@ -46,6 +46,9 @@ public class WishlistService {
     wishlistRepository.updateQuantity(memberId, productId, quantity);
   }
 
+  public void deleteWishListItem(Long memberId, Long productId) {
+    wishlistRepository.delete(memberId, productId);
+  }
 
 }
 

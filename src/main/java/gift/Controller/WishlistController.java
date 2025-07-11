@@ -8,6 +8,7 @@ import gift.util.LoginMember;
 import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,6 +54,16 @@ public class WishlistController {
     wishlistService.updateQuantity(member.getId(), productId, quantity);
     redirectAttributes.addFlashAttribute("message", "수량이 변경되었습니다.");
 
+    return "redirect:/api/wishlist";
+  }
+
+  // ✅ 찜 상품 삭제
+  @PostMapping("/{productId}/delete")
+  public String deleteWishlistItem(@PathVariable Long productId,
+      @LoginMember Member member,
+      RedirectAttributes redirectAttributes) {
+    wishlistService.deleteWishListItem(member.getId(), productId);
+    redirectAttributes.addFlashAttribute("message", "상품이 찜 목록에서 삭제되었습니다");
     return "redirect:/api/wishlist";
   }
 
