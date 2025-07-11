@@ -48,6 +48,8 @@ step 2. 피드백
 5. 토큰생성시 currentTimeMillis 값을 하나로 통합 하고 시간변경
 6. ResponseEntity<?>로 받던걸 ResponseEntity<Dto>로 받게 변경
 7. MemberService내에서 JWT토큰이 반환되도록 변경
+8. jwt토큰을 service에서 주지말고 controller에서 주게 변경
+9. MemberControllerTest에서 중복되는 sql문을 BeforeEach로 대체
 
 step 3. 위시 리스트
 - 기본조건
