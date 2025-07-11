@@ -1,5 +1,6 @@
-package com.example.demo.controller;
+package com.example.demo.exception.handler;
 
+import com.example.demo.controller.UserController;
 import com.example.demo.dto.ErrorResponseDto;
 import com.example.demo.exception.InvalidLoginException;
 import com.example.demo.exception.UserNotFoundException;
@@ -12,8 +13,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RestControllerAdvice
-public class GlobalExceptionHandler {
+@RestControllerAdvice(assignableTypes = {UserController.class})
+public class UserExceptionHandler {
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<ErrorResponseDto> handleValidationErrors(
