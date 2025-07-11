@@ -18,9 +18,11 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.web.client.RestClient;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class ProductControllerTest {
 
     @LocalServerPort
@@ -164,7 +166,7 @@ public class ProductControllerTest {
             .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {
             })
             .toEntity(String.class);
-        
+
         assertValidationError(response, "상품명은 필수입니다.");
     }
 

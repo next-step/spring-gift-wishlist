@@ -7,6 +7,7 @@ import gift.dto.AuthRequest;
 import gift.dto.AuthResponse;
 import gift.entity.User;
 import gift.repository.UserRepository;
+import io.jsonwebtoken.JwtException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,25 +16,24 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
-    public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder,
+        JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
     }
 
     @Override
-    public AuthResponse register(AuthRequest request) {
+    public void register(AuthRequest request) {
         if (userRepository.findByEmail(request.email()).isPresent()) {
             throw new CustomException(CustomResponseCode.EMAIL_DUPLICATE);
         }
 
         String encrypted = passwordEncoder.encode(request.password());
         User user = new User(null, request.email(), encrypted);
-        User savedUser = userRepository.save(user);
-
-        String token = JwtUtil.generateToken(savedUser.getEmail());
-
-        return AuthResponse.from(token);
+        userRepository.save(user);
     }
 
     @Override
@@ -45,8 +45,21 @@ public class AuthServiceImpl implements AuthService {
             throw new CustomException(CustomResponseCode.LOGIN_FAILED);
         }
 
-        String token = JwtUtil.generateToken(user.getEmail());
+        String token = jwtUtil.generateToken(user.getEmail());
 
         return AuthResponse.from(token);
+    }
+
+    @Override
+    public User findByToken(String token) {
+        String email;
+        try {
+            email = jwtUtil.extractEmail(token);
+        } catch (JwtException e) {
+            throw new CustomException(CustomResponseCode.INVALID_TOKEN);
+        }
+
+        return userRepository.findByEmail(email)
+            .orElseThrow(() -> new CustomException(CustomResponseCode.UNAUTHORIZED));
     }
 }
