@@ -95,6 +95,11 @@ public class MemberService {
 
     }
 
+    @Transactional(readOnly = true)
+    public Long getIdFromToken(String token) {
+        return jwtUtil.getIdFromToken(token);
+    }
+
     private MemberResponse convertToDTO(Member member) {
         return new MemberResponse(
             member.getId(),

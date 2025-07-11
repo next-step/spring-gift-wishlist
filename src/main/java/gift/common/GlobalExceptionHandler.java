@@ -3,6 +3,7 @@ package gift.common;
 import gift.common.exceptions.JwtValidationException;
 import gift.common.exceptions.LogInFailedException;
 import gift.common.exceptions.MemberAlreadyExistsException;
+import gift.common.exceptions.NullTokenException;
 import java.util.stream.Collectors;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -41,7 +42,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(
             new ErrorResult(
                 HttpStatus.BAD_REQUEST,
-                "유효한 값을 입력해주세요. 상품 가격의 경우 최대 2,147,483,647원까지 가능합니다."
+                "유효한 값을 입력해주세요."
             ),
             HttpStatus.BAD_REQUEST
         );
@@ -100,6 +101,20 @@ public class GlobalExceptionHandler {
                 ex.getMessage()
             ),
             HttpStatus.CONFLICT
+        );
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(value = NullTokenException.class)
+    public ResponseEntity<ErrorResult> handleNullTokenException(
+        NullTokenException ex
+    ) {
+        return new ResponseEntity<>(
+            new ErrorResult(
+                HttpStatus.UNAUTHORIZED,
+                ex.getMessage()
+            ),
+            HttpStatus.UNAUTHORIZED
         );
     }
 }
