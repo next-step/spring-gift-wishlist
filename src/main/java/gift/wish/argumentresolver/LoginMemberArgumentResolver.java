@@ -1,6 +1,7 @@
 package gift.wish.argumentresolver;
 
 import gift.exception.wish.InvalidAuthorizationException;
+import gift.exception.wish.InvalidTokenException;
 import gift.member.repository.MemberRepository;
 import gift.member.security.JwtTokenProvider;
 import gift.wish.annotation.LoginMember;
@@ -39,6 +40,10 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
         }
 
         String token = authorizationHeader.substring(7);
+
+        if (!jwtTokenProvider.validateToken(token)) {
+            throw new InvalidTokenException("토큰이 유효하지 않습니다.");
+        }
 
         Long memberId = jwtTokenProvider.getMemberIdFromToken(token);
 

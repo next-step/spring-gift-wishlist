@@ -7,6 +7,7 @@ import gift.exception.product.ProductNotFoundException;
 import gift.exception.product.UnapprovedProductException;
 import gift.exception.wish.InvalidAuthorizationException;
 import gift.exception.wish.InvalidPageException;
+import gift.exception.wish.InvalidTokenException;
 import gift.exception.wish.WishNotFoundException;
 import gift.exception.wish.WishlistAccessDeniedException;
 import org.springframework.http.HttpStatus;
@@ -33,7 +34,7 @@ public class GlobalRestExceptionHandler {
     }
 
     // 401 인증 실패
-    @ExceptionHandler(InvalidAuthorizationException.class)
+    @ExceptionHandler({InvalidAuthorizationException.class, InvalidTokenException.class})
     public ResponseEntity<String> handleUnauthorizedException(RuntimeException ex) {
         return new ResponseEntity<>("오류: " + ex.getMessage(), HttpStatus.UNAUTHORIZED);
     }
