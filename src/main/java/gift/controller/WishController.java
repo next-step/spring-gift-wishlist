@@ -3,6 +3,7 @@ package gift.controller;
 import gift.dto.WishRequestDto;
 import gift.dto.WishResponseDto;
 import gift.service.WishService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,18 +20,18 @@ public class WishController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<WishResponseDto>> findAllWishes() {
-        return ResponseEntity.ok(wishService.findAllWishes());
+    public ResponseEntity<List<WishResponseDto>> findUserWishes() {
+        return ResponseEntity.ok(wishService.findUserWishes());
     }
 
     @PostMapping("/add")
     public ResponseEntity<WishResponseDto> addWish(@RequestBody WishRequestDto requestDto) {
-        return ResponseEntity.created(wishService.addWish(requestDto));
+        return new ResponseEntity<>(wishService.addWish(requestDto), HttpStatus.CREATED);
     }
 
     @PatchMapping("/patch")
-    public ResponseEntity<WishResponseDto> updateWish(@RequestBody WishRequestDto requestDto) {
-        return ResponseEntity.ok(wishService.updateWish(requestDto));
+    public ResponseEntity<Void> updateWish(@RequestBody WishRequestDto requestDto) {
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/delete")

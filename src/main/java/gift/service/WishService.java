@@ -1,8 +1,10 @@
 package gift.service;
 
+import gift.dto.UserInfoRequestDto;
 import gift.dto.WishRequestDto;
 import gift.dto.WishResponseDto;
 import gift.entity.Wish;
+import gift.repository.WishRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,16 +19,16 @@ public class WishService {
         this.wishRepository = wishRepository;
     }
 
-    public List<WishResponseDto> findAllWishes() {
-        return wishRepository.findAllWishes().stream().map(WishResponseDto::new).collect(Collectors.toList());
+    public List<WishResponseDto> findUserWishes(UserInfoRequestDto userInfoRequestDto) {
+        return wishRepository.findUserWishes(userInfoRequestDto).stream().map(WishResponseDto::new).collect(Collectors.toList());
     }
 
     public WishResponseDto addWish(WishRequestDto wishRequestDto) {
-        return new WishResponseDto(wishRepository.addWish(new Wish(wishRequestDto)));
+       return new WishResponseDto(wishRepository.addWish(new Wish(wishRequestDto)));
     }
 
-    public WishResponseDto updateWish(WishRequestDto wishRequestDto) {
-        return new WishResponseDto(wishRepository.updateWish(new Wish(wishRequestDto)));
+    public void updateWish(WishRequestDto wishRequestDto) {
+        wishRepository.updateWish(new Wish(wishRequestDto));
     }
 
     public void deleteWish(WishRequestDto wishRequestDto) {

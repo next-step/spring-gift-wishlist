@@ -32,3 +32,10 @@ base64로 인코딩하던 이메일과 비밀번호를 이메일 : AES, 비밀�
 
 애매한 것 : 역할 부여 및 토큰 검증? 현재 상황에서는 나뉘어진 역할도 없고 로그인해야만 사용 할 수 있는 기능도 없으므로 step3에서 구현하기로 결정
 테스트 코드 : 테스트 코드 작성은 아직 공부가 좀 더 필요.... 일단 Postman으로 테스트
+
+# 위시 리스트
+1. ProductControllerTest 추가
+2. AdminControllerTest, AuthControllerTest 추가
+3. WishController에 위시리스트 구현을 위한 API 정의 및 Dto, Entity 정의
+4. 오타 수정 및 Controller, Service 레이어 정의
+5. Repository 레이어 정의 및 Dto 재정의
