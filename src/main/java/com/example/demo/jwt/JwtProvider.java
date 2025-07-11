@@ -26,8 +26,9 @@ public class JwtProvider {
     this.key = Keys.hmacShaKeyFor(secret.getBytes());
   }
 
-  public String createAccessToken(String email, String role){
+  public String createAccessToken(Long userId, String email, String role){
     Map<String, Object> claims = new HashMap<>();
+    claims.put("userId", userId);
     claims.put("email", email);
     claims.put("role", role);
     return createToken(claims, getAccessTokenExpireDate());
@@ -36,21 +37,22 @@ public class JwtProvider {
   public String createRefreshToken(String email, String role){
     Map<String, Object> claims = new HashMap<>();
     claims.put("email", email);
+    claims.put("role", role);
     return createToken(claims, getRefreshTokenExpireDate());
   }
 
-  public Jwt createJwt(String email, String role){
-    String accessToken = createAccessToken(email, role);
+  public Jwt createJwt(Long userId, String email, String role){
+    String accessToken = createAccessToken(userId, email, role);
     String refreshToken = createRefreshToken(email, role);
     return new Jwt(accessToken, refreshToken);
   }
 
-  public String createToken(Map<String, Object> claims, Date expiry){
+  private String createToken(Map<String, Object> claims, Date expiry){
     return Jwts.builder()
-        .setClaims(claims)
-        .setExpiration(expiry)
-        .signWith(key, SignatureAlgorithm.HS256)
-        .compact();
+               .setClaims(claims)
+               .setExpiration(expiry)
+               .signWith(key, SignatureAlgorithm.HS256)
+               .compact();
   }
 
   public Date getAccessTokenExpireDate(){
@@ -62,12 +64,12 @@ public class JwtProvider {
   }
 
   public Claims getClaims(String token){
-    try{
+    try {
       return Jwts.parser()
-          .setSigningKey(key)
-          .build()
-          .parseClaimsJws(token)
-          .getBody();
+                 .setSigningKey(key)
+                 .build()
+                 .parseClaimsJws(token)
+                 .getBody();
     } catch (JwtException e){
       throw new IllegalArgumentException("유효하지 않은 JWT입니다.");
     }
