@@ -2,6 +2,7 @@ package gift.auth.service;
 
 import gift.auth.JwtProvider;
 import gift.auth.dto.UserSignupResponseDto;
+import gift.common.exception.InvalidPasswordException;
 import gift.user.domain.User;
 import gift.auth.dto.UserLoginRequestDto;
 import gift.auth.dto.UserSingupRequestDto;
@@ -31,7 +32,7 @@ public class AuthService {
         User user = userDao.findByEmail(userLoginRequestDto.getEmail());
 
         if(!user.getPassword().equals(userLoginRequestDto.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new InvalidPasswordException("비밀번호가 일치하지 않습니다.");
         }
         return jwtProvider.createToken(user);
     }
