@@ -1,6 +1,7 @@
 package gift.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gift.dto.WishRequestDto;
 import gift.dto.PageRequestDto;
 import gift.entity.Member;
 import gift.entity.Product;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.*;
@@ -36,12 +38,11 @@ class WishControllerTest {
 
     @BeforeEach
     void setUp() {
-        wishRepository.findAllWishByMemberId(1L)
+        wishRepository.findAllWishByMemberId(memberId != null ? memberId : 1L)
                 .forEach(w -> wishRepository.deleteWishById(w.getId()));
 
         memberRepository.findAllMembers()
                 .forEach(m -> memberRepository.deleteMember(m.getId()));
-
         productRepository.findAllProducts(new PageRequestDto(0, Integer.MAX_VALUE))
                 .content()
                 .forEach(p -> productRepository.deleteProduct(p.getId()));
@@ -58,34 +59,45 @@ class WishControllerTest {
     }
 
     @Test
-    @DisplayName("위시를 추가하면, 해당 상품 정보가 담긴 응답을 반환한다. ")
+    @DisplayName("위시를 추가하면, 해당 상품 정보가 담긴 응답을 반환한다.")
     void shouldAddWish() throws Exception {
+        // given
+        var dto = new WishRequestDto(productId);
+
+        // when & then
         mockMvc.perform(post("/api/wishes")
-                        .param("memberId", memberId.toString())
-                        .param("productId", productId.toString()))
+                        .header("Authorization", "Bearer fakeToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.productId").value(productId))
                 .andExpect(jsonPath("$.productName").value("하리보 젤리"));
     }
 
     @Test
-    @DisplayName("회원 ID로 위시 목록을 조회하면, 해당 회원의 위시 목록을 반환한다. ")
+    @DisplayName("회원의 위시 목록을 조회하면, 해당 회원의 위시 목록을 반환한다.")
     void shouldGetWishes() throws Exception {
-        wishRepository.createWish(new Wish(null, memberId, productId));
+        var dto = new WishRequestDto(productId);
+        mockMvc.perform(post("/api/wishes")
+                        .header("Authorization", "Bearer fakeToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isOk());
 
         mockMvc.perform(get("/api/wishes")
-                        .param("memberId", memberId.toString()))
+                        .header("Authorization", "Bearer fakeToken"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].productName").value("하리보 젤리"));
     }
 
     @Test
-    @DisplayName("위시 ID로 삭제 요청하면, 204(No Content)를 반환한다. ")
+    @DisplayName("위시 ID로 삭제 요청하면, 204(No Content)를 반환한다.")
     void shouldDeleteWish() throws Exception {
-        var savedWish = wishRepository.createWish(new Wish(memberId, productId));
+        var savedWish = wishRepository.createWish(new Wish(null, memberId, productId));
 
-        mockMvc.perform(delete("/api/wishes/" + savedWish.getId()))
+        mockMvc.perform(delete("/api/wishes/" + savedWish.getId())
+                        .header("Authorization", "Bearer fakeToken"))
                 .andExpect(status().isNoContent());
     }
 }

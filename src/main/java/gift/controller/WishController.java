@@ -1,6 +1,9 @@
 package gift.controller;
 
+import gift.annotation.LoginMember;
+import gift.dto.WishRequestDto;
 import gift.dto.WishResponseDto;
+import gift.entity.Member;
 import gift.service.WishService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,20 +21,25 @@ public class WishController {
     }
 
     @PostMapping
-    public ResponseEntity<WishResponseDto> addWish(@RequestParam Long memberId, @RequestParam Long productId) {
-        WishResponseDto created = wishService.createWish(memberId, productId);
+    public ResponseEntity<WishResponseDto> createWish(
+            @RequestBody WishRequestDto request,
+            @LoginMember Member member
+    ) {
+        WishResponseDto created = wishService.createWish(member.getId(), request.productId());
         return ResponseEntity.ok(created);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<WishResponseDto>> findAllWish(
+            @LoginMember Member member
+    ) {
+        List<WishResponseDto> result = wishService.findAllWishesByMemberId(member.getId());
+        return ResponseEntity.ok(result);
     }
 
     @DeleteMapping("/{wishId}")
     public ResponseEntity<Void> deleteWish(@PathVariable Long wishId) {
         wishService.deleteWishById(wishId);
         return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping
-    public ResponseEntity<List<WishResponseDto>> getWishes(@RequestParam Long memberId) {
-        List<WishResponseDto> result = wishService.findAllWishesByMemberId(memberId);
-        return ResponseEntity.ok(result);
     }
 }
