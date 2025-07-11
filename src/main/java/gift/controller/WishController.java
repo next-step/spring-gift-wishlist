@@ -5,6 +5,7 @@ import gift.dto.WishRequestDto;
 import gift.dto.WishResponseDto;
 import gift.entity.Member;
 import gift.service.WishService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -31,7 +32,7 @@ public class WishController {
     @PostMapping
     public ResponseEntity<WishResponseDto> createWish(
             @LoginMember Member member,
-            @RequestBody WishRequestDto dto
+            @Valid @RequestBody WishRequestDto dto
             ) {
 
         return ResponseEntity.status(HttpStatus.CREATED)
