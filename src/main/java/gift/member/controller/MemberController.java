@@ -33,7 +33,10 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute("member") MemberLoginRequest loginRequest, HttpServletResponse response){
+    public String login(@ModelAttribute("member") MemberLoginRequest loginRequest, HttpServletResponse response, BindingResult bindingResult){
+        if(bindingResult.hasErrors()) {
+            return "/members/login";
+        }
         MemberTokenResponse tokenResponse = memberService.login(loginRequest);
 
         addTokenCookie(response, tokenResponse.token());

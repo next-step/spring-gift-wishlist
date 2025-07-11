@@ -28,6 +28,13 @@ public class MemberApiController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @PostMapping("/register/admin")
+    public ResponseEntity<MemberTokenResponse> registerAdmin(@Valid @RequestBody MemberRegisterRequest request) {
+        MemberTokenResponse response = memberService.registerAdmin(request);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
     @PostMapping("/login")
     public ResponseEntity<MemberTokenResponse> login(@RequestBody MemberLoginRequest request) {
         MemberTokenResponse response = memberService.login(request);

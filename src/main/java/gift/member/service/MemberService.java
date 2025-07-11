@@ -21,11 +21,19 @@ public class MemberService {
     }
 
     public MemberTokenResponse register(MemberRegisterRequest request) {
+        return registerMember(request, RoleType.USER);
+    }
+
+    public MemberTokenResponse registerAdmin(MemberRegisterRequest request) {
+        return registerMember(request, RoleType.ADMIN);
+    }
+
+    private MemberTokenResponse registerMember(MemberRegisterRequest request, RoleType roleType) {
         if(memberRepository.findByEmail(request.email()).isPresent()) {
             throw new IllegalArgumentException("이미 사용 중인 이메일입니다: " + request.email());
         }
 
-        Member member = memberRepository.save(request.email(), request.password(), RoleType.USER);
+        Member member = memberRepository.save(request.email(), request.password(), roleType);
 
         return new MemberTokenResponse(jwtUtil.generateToken(member));
     }

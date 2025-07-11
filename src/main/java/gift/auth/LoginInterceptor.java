@@ -44,6 +44,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         }
 
         request.setAttribute("member", member.get());
+        request.setAttribute("isLoggedIn", Boolean.TRUE);
 
         return true;
     }

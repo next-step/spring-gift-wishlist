@@ -44,7 +44,7 @@ public class MemberApiControllerTest extends ControllerTestTemplate {
     @DisplayName("로그인 후 product list 조회 - 200")
     void loginAndAccessResource() throws Exception {
 
-        postWithoutToken("/api/members/register", getRegisterRequest())
+        postWithoutToken("/api/members/register/admin", getRegisterRequest())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.token").isString());
 
@@ -55,7 +55,7 @@ public class MemberApiControllerTest extends ControllerTestTemplate {
         String jsonResponse = loginResult.getResponse().getContentAsString();
         String token = objectMapper.readValue(jsonResponse, MemberTokenResponse.class).token();
 
-        getWithToken("/api/products", token)
+        getWithToken("/api/admin/products", token)
                 .andExpect(status().isOk());
     }
 

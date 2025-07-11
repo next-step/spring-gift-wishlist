@@ -39,7 +39,7 @@ public class ProductApiControllerTest extends ControllerTestTemplate {
     void setUp() {
         MemberRegisterRequest request = new MemberRegisterRequest("test@gmail.com", "12345678");
 
-        adminToken = memberService.register(request).token();
+        adminToken = memberService.registerAdmin(request).token();
 
         product1 = productService.saveProduct(getProductRequest("Test1", 1000, "Test1.jpg"));
         product2 = productService.saveProduct(getProductRequest("Test2", 1200, "Test2.jpg"));
@@ -48,7 +48,7 @@ public class ProductApiControllerTest extends ControllerTestTemplate {
     @Test
     @DisplayName("상품 등록 테스트 - 201")
     void addProduct() throws Exception {
-        postWithToken("/api/products", adminToken, getProductRequest("new", 1500, "new.png"))
+        postWithToken("/api/admin/products", adminToken, getProductRequest("new", 1500, "new.png"))
                 .andExpect(status().isCreated())
                 .andDo(print());
     }
@@ -56,7 +56,7 @@ public class ProductApiControllerTest extends ControllerTestTemplate {
     @Test
     @DisplayName("전체 상품 조회 테스트 - 200")
     void getProducts() throws Exception {
-        getWithToken("/api/products", adminToken)
+        getWithToken("/api/admin/products", adminToken)
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$[0].name", is("Test1")))
@@ -69,7 +69,7 @@ public class ProductApiControllerTest extends ControllerTestTemplate {
     void getProductById() throws Exception{
         Long productId = product1.getId();
 
-        getWithToken("/api/products/" + productId, adminToken)
+        getWithToken("/api/admin/products/" + productId, adminToken)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(productId.intValue())))
                 .andDo(print());
@@ -80,7 +80,7 @@ public class ProductApiControllerTest extends ControllerTestTemplate {
     void getProductNotFound() throws Exception{
         Long notFoundId = 999999L;
 
-        getWithToken("/api/products/" + notFoundId, adminToken)
+        getWithToken("/api/admin/products/" + notFoundId, adminToken)
                 .andExpect(status().isNotFound())
                 .andDo(print());
     }
@@ -90,11 +90,11 @@ public class ProductApiControllerTest extends ControllerTestTemplate {
     void updateProduct() throws Exception{
         Long productId = product1.getId();
 
-        putWithToken("/api/products/" + productId, adminToken, getProductRequest("수정된 이름", 12000, "updated"))
+        putWithToken("/api/admin/products/" + productId, adminToken, getProductRequest("수정된 이름", 12000, "updated"))
                 .andExpect(status().isNoContent())
                 .andDo(print());
 
-        getWithToken("/api/products/" + productId, adminToken)
+        getWithToken("/api/admin/products/" + productId, adminToken)
                 .andExpect(jsonPath("$.name", is("수정된 이름")))
                 .andExpect(jsonPath("$.price", is(12000)));
     }
@@ -104,11 +104,11 @@ public class ProductApiControllerTest extends ControllerTestTemplate {
     void deleteProduct() throws Exception {
         Long productId = product1.getId();
 
-        deleteWithToken("/api/products/" + productId, adminToken)
+        deleteWithToken("/api/admin/products/" + productId, adminToken)
                 .andExpect(status().isNoContent())
                 .andDo(print());
 
-        getWithToken("/api/products/" + productId, adminToken)
+        getWithToken("/api/admin/products/" + productId, adminToken)
                 .andExpect(status().isNotFound());
     }
 
@@ -116,7 +116,7 @@ public class ProductApiControllerTest extends ControllerTestTemplate {
     @DisplayName("상품 등록 실패 - 유효하지 않은 상품명(카카오) - 400")
     void addProduct_fail() throws Exception {
 
-        postWithToken("/api/products", adminToken, getProductRequest("카카오 인형", 15000, "a.jpg"))
+        postWithToken("/api/admin/products", adminToken, getProductRequest("카카오 인형", 15000, "a.jpg"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.name").exists())
                 .andDo(print());
