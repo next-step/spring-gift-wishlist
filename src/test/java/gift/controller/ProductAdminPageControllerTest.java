@@ -2,12 +2,16 @@ package gift.controller;
 
 import gift.entity.Product;
 import gift.service.ProductService;
+import gift.handler.LoginMemberArgumentResolver;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -23,6 +27,9 @@ class ProductAdminPageControllerTest {
 
     @MockitoBean
     private ProductService productService;
+
+    @MockitoBean
+    private LoginMemberArgumentResolver loginMemberArgumentResolver;
 
     @Test
     void 상품목록_조회_시_상품목록페이지() throws Exception {

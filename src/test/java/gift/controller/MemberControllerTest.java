@@ -1,4 +1,4 @@
-package gift;
+package gift.controller;
 
 import gift.dto.RegisterMemberRequest;
 import gift.dto.RegisterMemberResponse;
