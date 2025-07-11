@@ -17,8 +17,11 @@ public class WishlistService {
   }
 
   public WishItem getWishItem(Long memberId, Long productId) {
-    return wishlistRepository.findByMemberIdAndProductId(memberId, productId)
-        .orElseThrow(() -> new RuntimeException("찜한 상품을 찾을 수 없습니다"));
+    Optional<WishItem> existing = wishlistRepository.findByMemberIdAndProductId(memberId, productId);
+    if(existing.isEmpty()) {
+      throw new IllegalArgumentException("찜 항목이 존재하지 않습니다");
+    }
+    return existing.get();
   }
 
   // ✅ 전체 찜 목록 조회

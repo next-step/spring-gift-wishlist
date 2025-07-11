@@ -81,8 +81,6 @@ public class GlobalExceptionHandler {
 
     response.setStatus(HttpServletResponse.SC_BAD_REQUEST); // 상태코드 유지
 
-
-
     // 다시 wishlist를 채워서 렌더링
     List<WishItem> wishList = wishlistService.getWishList(member.getId());
     model.addAttribute("wishList", wishList);
@@ -91,6 +89,19 @@ public class GlobalExceptionHandler {
     return "wishlist/list"; // 리디렉션 아님, 직접 렌더링
   }
 
+  @ExceptionHandler(IllegalArgumentException.class)
+  public String handleIllegalArgument(IllegalArgumentException ex,
+      Model model,
+      HttpServletResponse response,
+      @LoginMember Member member) {
+    response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+
+    // 다시 wishlist를 채워서 렌더링
+    List<WishItem> wishList = wishlistService.getWishList(member.getId());
+    model.addAttribute("wishList", wishList);
+    model.addAttribute("error", ex.getMessage());
+    return "wishlist/list";
+  }
 }
 
 

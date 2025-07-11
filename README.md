@@ -56,3 +56,9 @@
   - [x] 상품 추가
   - [x] 상품 수량 조절
   - [ ] 상품 삭제
+
+### Step3 Refactoring [ 07/11 ]
+- [x] repository에서는 데이터 접근만 하도록 변경(검증은 service layer로)
+  - [x] wishlist service에서 항목을 찾을 수 없는 경우, Http status 코드 수정
+- [ ] wishlist 상품 삭제기능 추가
+- [ ] wishlist 테스트코드 추가

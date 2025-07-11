@@ -51,10 +51,7 @@ public class WishlistRepository {
   // 찜 상품 수량 조절
   public void updateQuantity(Long memberId, Long productId, int quantity) {
     String sql = "UPDATE wishlist SET quantity = ? WHERE member_id = ? AND product_id = ?";
-    int updated = jdbcTemplate.update(sql, quantity, memberId, productId);
-    if (updated == 0) {
-      throw new RuntimeException("찜 항목이 존재하지 않습니다.");
-    }
+    jdbcTemplate.update(sql, quantity, memberId, productId);
   }
 
 
