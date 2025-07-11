@@ -34,17 +34,7 @@ public class JwtUtil {
         }
 
         String token = authHeader.substring(7);
-
-        Claims claims;
-        try {
-            claims = Jwts.parser()
-                    .verifyWith(getSigningKey())
-                    .build()
-                    .parseSignedClaims(token)
-                    .getPayload();
-        } catch (JwtException e) {
-            throw new UnauthorizedException("유효하지 않은 토큰입니다", realm);
-        }
+        Claims claims = parseToken(token);
 
         if (requiredRole != null) {
             String tokenRole = claims.get("role", String.class);
@@ -56,5 +46,32 @@ public class JwtUtil {
 
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public Claims parseToken(String token) {
+        try {
+
+            return Jwts.parser()
+                    .verifyWith(getSigningKey())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+        } catch (JwtException e) {
+            throw new UnauthorizedException("유효하지 않은 토큰입니다", "gift");
+        }
+    }
+
+    public Long extractMemberId(String token) {
+        Claims claims = parseToken(token);
+
+        return Long.parseLong(claims.get("sub", String.class));
+    }
+
+    public String extractTokenFromHeader(String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new UnauthorizedException("Authorization 헤더가 존재하지 않거나 형식이 잘못되었습니다.", "gift");
+        }
+
+        return authHeader.substring(7);
     }
 }
