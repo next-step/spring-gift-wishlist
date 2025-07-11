@@ -11,3 +11,12 @@ CREATE TABLE members (
                          password    VARCHAR(255)    NOT NULL,
                          role        VARCHAR(50)     NOT NULL
 );
+
+CREATE TABLE wishes (
+                        id          BIGINT          PRIMARY KEY AUTO_INCREMENT,
+                        member_id   BIGINT          NOT NULL,
+                        product_id  BIGINT          NOT NULL,
+                        FOREIGN KEY (member_id) REFERENCES members(id),
+                        FOREIGN KEY (product_id) REFERENCES products(id),
+                        UNIQUE (member_id, product_id)
+);
