@@ -1,5 +1,6 @@
 package gift.wishlist.repository;
 
+import gift.common.exception.WishlistItemNotFoundException;
 import gift.wishlist.dto.WishlistRequestDto;
 import gift.wishlist.dto.WishlistResponseDto;
 import gift.wishlist.entity.Wishlist;
@@ -45,17 +46,7 @@ public class jdbcWishlistRepository implements  WishlistRepository {
             WHERE w.member_id = ? AND w.product_id = ?
         """;
 
-        return jdbcTemplate.queryForObject(
-            joinSql,
-            new Object[]{memberId, productId},
-            (rs, rowNum) -> new WishlistResponseDto(
-                rs.getLong("product_id"),
-                rs.getString("name"),
-                rs.getInt("quantity"),
-                rs.getInt("price"),
-                rs.getString("image_url")
-            )
-        );
+        return jdbcTemplate.queryForObject(joinSql, new Object[]{memberId, productId}, wishlistResponseMapper);
     }
 
     @Override
@@ -73,15 +64,7 @@ public class jdbcWishlistRepository implements  WishlistRepository {
         WHERE w.member_id = ?
         """;
 
-        return jdbcTemplate.query(sql, new Object[]{memberId}, (rs, rowNum) ->
-                new WishlistResponseDto(
-                        rs.getLong("product_id"),
-                        rs.getString("product_name"),
-                        rs.getInt("quantity"),
-                        rs.getInt("price"),
-                        rs.getString("image_url")
-                )
-        );
+        return jdbcTemplate.query(sql, new Object[]{memberId}, wishlistResponseMapper);
     }
 
     @Override
@@ -99,20 +82,10 @@ public class jdbcWishlistRepository implements  WishlistRepository {
                 WHERE w.member_id = ? AND w.product_id = ?
         """;
 
-        List<WishlistResponseDto> result = jdbcTemplate.query(
-                selectSql,
-                new Object[]{memberId, productId},
-                (rs, rowNum) -> new WishlistResponseDto(
-                        rs.getLong("product_id"),
-                        rs.getString("product_name"),
-                        rs.getInt("quantity"),
-                        rs.getInt("price"),
-                        rs.getString("image_url")
-                )
-        );
+        List<WishlistResponseDto> result = jdbcTemplate.query(selectSql, new Object[]{memberId, productId}, wishlistResponseMapper);
 
         if (result.isEmpty()) {
-            throw new IllegalArgumentException("위시리스트에 해당 상품이 존재하지 않습니다.");
+            throw new WishlistItemNotFoundException();
         }
 
         WishlistResponseDto toReturn = result.get(0);
@@ -137,20 +110,10 @@ public class jdbcWishlistRepository implements  WishlistRepository {
             WHERE w.member_id = ? AND w.product_id = ?
         """;
 
-        List<WishlistResponseDto> exist = jdbcTemplate.query(
-                selectSql,
-                new Object[]{memberId, productId},
-                (rs, rowNum) -> new WishlistResponseDto(
-                    rs.getLong("product_id"),
-                    rs.getString("product_name"),
-                    rs.getInt("quantity"),
-                    rs.getInt("price"),
-                    rs.getString("image_url")
-                )
-        );
+        List<WishlistResponseDto> exist = jdbcTemplate.query(selectSql, new Object[]{memberId, productId}, wishlistResponseMapper);
 
         if (exist.isEmpty()) {
-            throw new IllegalArgumentException("위시리스트에 해당 상품이 존재하지 않습니다.");
+            throw new WishlistItemNotFoundException();
         }
 
         if (newQuantity == 0) {
@@ -165,17 +128,7 @@ public class jdbcWishlistRepository implements  WishlistRepository {
             jdbcTemplate.update(updateSql, newQuantity, memberId, productId);
 
             // 업데이트된 데이터 다시 조회 & 반환
-            WishlistResponseDto updated = jdbcTemplate.queryForObject(
-                    selectSql,
-                    new Object[]{memberId, productId},
-                    (rs, rowNum) -> new WishlistResponseDto(
-                            rs.getLong("product_id"),
-                            rs.getString("product_name"),
-                            rs.getInt("quantity"),
-                            rs.getInt("price"),
-                            rs.getString("image_url")
-                    )
-            );
+            WishlistResponseDto updated = jdbcTemplate.queryForObject(selectSql, new Object[]{memberId, productId}, wishlistResponseMapper);
 
             return updated;
         }
@@ -190,4 +143,14 @@ public class jdbcWishlistRepository implements  WishlistRepository {
                 rs.getTimestamp("created_at").toLocalDateTime()
         );
     }
+
+    private final RowMapper<WishlistResponseDto> wishlistResponseMapper = (rs, rowNum) ->
+            new WishlistResponseDto(
+                    rs.getLong("product_id"),
+                    rs.getString("product_name"),
+                    rs.getInt("quantity"),
+                    rs.getInt("price"),
+                    rs.getString("image_url")
+            );
+
 }

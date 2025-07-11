@@ -38,4 +38,10 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleDuplicateEmail(DuplicateEmailException ex) {
         return new ErrorResponse(HttpStatus.CONFLICT.value(), ex.getMessage());
     }
+
+    @ExceptionHandler(WishlistItemNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleWishlistItemNotFound(WishlistItemNotFoundException ex) {
+        return new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+    }
 }
