@@ -6,6 +6,7 @@ import gift.dto.WishSummaryResponseDto;
 import gift.repository.ProductRepository;
 import gift.repository.WishListRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -27,12 +28,14 @@ public class WishListService {
                 .toList();
     }
 
+    @Transactional
     public void saveWish(Long memberId, Long productId) {
         Product findProduct = productRepository.findProductByIdOrElseThrow(productId);
 
         wishListRepository.saveWish(new Wish(memberId, findProduct.getId()));
     }
 
+    @Transactional
     public void deleteWish(Long memberId, Long productId) {
         Product findProduct = productRepository.findProductByIdOrElseThrow(productId);
 
