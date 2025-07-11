@@ -13,6 +13,7 @@ public enum ErrorCode {
     INVALID_FORM_REQUEST(HttpStatus.BAD_REQUEST, "허용되지 않은 값을 입력하셨습니다."),
     INVALID_TOKEN_REQUEST(HttpStatus.UNAUTHORIZED, "잘못된 형식의 토큰입니다."),
     //NOT_EXISTS_MEMBER(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
+    FORBIDDEN_REQUEST(HttpStatus.FORBIDDEN, "본인의 위시리스트만 조회할 수 있습니다."),
     INCORRECT_LOGIN_INFO(HttpStatus.FORBIDDEN, "이메일, 비밀번호 조합이 잘못되었습니다."),
     DUPLICATE_EMAIL(HttpStatus.FORBIDDEN, "이미 사용 중인 이메일입니다."),
     OTHERS(HttpStatus.INTERNAL_SERVER_ERROR, "기타 오류입니다.");
