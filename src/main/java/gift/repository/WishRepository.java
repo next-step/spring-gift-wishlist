@@ -1,8 +1,6 @@
 package gift.repository;
 
 import gift.domain.Wish;
-import gift.dto.CreateWishRequest;
-import gift.dto.UpdateWishRequest;
 import gift.dto.WishResponse;
 
 import java.util.List;
@@ -10,7 +8,7 @@ import java.util.Optional;
 
 public interface WishRepository {
 
-    Wish save(CreateWishRequest request);
+    Wish save(Long productId, Long memberId, int quantity);
 
     List<WishResponse> findAllByMember(Long memberId);
 
@@ -18,5 +16,5 @@ public interface WishRepository {
 
     Optional<Wish> findById(Long id);
 
-    void update(UpdateWishRequest request, Long wishId);
+    void update(int quantity, Long wishId);
 }

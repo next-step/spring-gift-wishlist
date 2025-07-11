@@ -2,6 +2,8 @@ package gift.controller;
 
 import gift.domain.Product;
 import gift.dto.*;
+import gift.login.Login;
+import gift.login.LoginMember;
 import gift.service.WishService;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -28,26 +30,27 @@ public class WishRestController {
     }
 
     @PostMapping()
-    public HttpEntity<CreateWishResponse> addWishList(@Validated @RequestBody CreateWishRequest request) {
-        CreateWishResponse response = service.addWishProduct(request);
+    public HttpEntity<CreateWishResponse> addWishList(@Validated @RequestBody CreateWishRequest request,
+                                                      @Login LoginMember loginMember) {
+        CreateWishResponse response = service.addWishProduct(request, loginMember.id());
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @GetMapping("/{memberId}")
-    public HttpEntity<List<WishResponse>> getWishList(@PathVariable Long memberId) {
-        List<WishResponse> wishList = service.getMeberWishList(memberId);
+    @GetMapping
+    public HttpEntity<List<WishResponse>> getWishList(@Login LoginMember loginMember) {
+        List<WishResponse> wishList = service.getMeberWishList(loginMember.id());
         return new ResponseEntity<>(wishList, HttpStatus.OK);
     }
 
     @DeleteMapping("/{wishId}")
-    HttpEntity<Void> deleteProduct(@PathVariable Long wishId) {
-        service.delete(wishId);
+    HttpEntity<Void> deleteProduct(@PathVariable Long wishId, @Login LoginMember loginMember) {
+        service.delete(wishId, loginMember.id());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PatchMapping("/{wishId}")
-    HttpEntity<UpdateWishResponse> updateQuantity(@Validated @RequestBody UpdateWishRequest request, @PathVariable Long wishId) {
-        UpdateWishResponse response = service.updateQuantity(request, wishId);
+    HttpEntity<UpdateWishResponse> updateQuantity(@Validated @RequestBody UpdateWishRequest request, @PathVariable Long wishId, @Login LoginMember loginMember) {
+        UpdateWishResponse response = service.updateQuantity(request, wishId, loginMember.id());
         return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
     }
 }
