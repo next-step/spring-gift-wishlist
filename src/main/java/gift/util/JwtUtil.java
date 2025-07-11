@@ -51,4 +51,18 @@ public class JwtUtil {
                 .build()
                 .parseSignedClaims(token);
     }
+
+    public boolean validate(String token) {
+        try {
+            parseToken(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public Long getMemberId(String token) {
+        Claims claims = parseToken(token).getPayload();
+        return Long.valueOf(claims.getSubject());
+    }
 }
