@@ -46,4 +46,11 @@ public class MemberService {
         return tokenService.generateToken(member.getId(), member.getEmail());
     }
 
+    public boolean isAdmin(String email) {
+        Member member = memberRepository.findByEmail(email)
+            .orElseThrow(() -> new InvalidCredentialsException("이메일 또는 비밀번호가 올바르지 않습니다."));
+
+        return memberRepository.isAdminMember(member);
+    }
+
 }

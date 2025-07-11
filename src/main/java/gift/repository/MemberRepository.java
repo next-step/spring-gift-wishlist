@@ -67,4 +67,13 @@ public class MemberRepository {
             .optional();
     }
 
+    public boolean isAdminMember(Member member) {
+        String sql = "SELECT is_admin FROM members WHERE email = ?";
+        return jdbcClient
+            .sql(sql)
+            .param(member.getEmail())
+            .query(Boolean.class)
+            .single();
+    }
+
 }

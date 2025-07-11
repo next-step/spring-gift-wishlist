@@ -1,4 +1,4 @@
-package gift.controller;
+package gift.controller.view;
 
 import gift.dto.api.ProductUpdateRequestDto;
 import gift.dto.view.ProductViewRequestDto;
@@ -14,16 +14,15 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/admin/products")
-public class ProductViewController {
+public class AdminProductViewController {
 
     private final ProductService productService;
 
-    public ProductViewController(ProductService productService) {
+    public AdminProductViewController(ProductService productService) {
         this.productService = productService;
     }
 
@@ -31,14 +30,14 @@ public class ProductViewController {
     @GetMapping
     public String getProducts(Model model) {
         model.addAttribute("products", productService.getAllProducts());
-        return "products/list";     // templates/product/list.html
+        return "products/admin/list";     // templates/product/list.html
     }
 
     // 상품 등록 폼 화면
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("productRequest", new ProductViewRequestDto());
-        return "products/form";     // templates/product/form.html
+        return "products/admin/form";     // templates/product/admin/form.html
     }
 
     // 상품 등록 요청 처리
@@ -47,7 +46,7 @@ public class ProductViewController {
                                 BindingResult bindingResult,
                                 Model model) {
         if (bindingResult.hasErrors()) {
-            return "products/form";     // 유효성 오류 있으면 다시 폼으로
+            return "products/admin/form";     // 유효성 오류 있으면 다시 폼으로
         }
 
         try {
@@ -64,7 +63,7 @@ public class ProductViewController {
         } catch (IllegalArgumentException e) {
             // 예외 메세지를 모델에 추가
             model.addAttribute("errorMessage", e.getMessage());
-            return "products/form";
+            return "products/admin/form";
         }
 
     }
@@ -77,7 +76,7 @@ public class ProductViewController {
         try {
             Product product = productService.getProductById(id);
             model.addAttribute("product", product);
-            return "products/detail";
+            return "products/admin/detail";
         } catch (NoSuchElementException e) {
             ra.addFlashAttribute("errorMsg", "상품을 찾을 수 없습니다.");
             return "redirect:/admin/products";
@@ -97,7 +96,7 @@ public class ProductViewController {
         model.addAttribute("productRequest", dto);
         model.addAttribute("productId", id);  // 수정 시 필요한 ID
 
-        return "products/form";
+        return "products/admin/form";
     }
 
     // 상품 수정 요청 처리
@@ -108,7 +107,7 @@ public class ProductViewController {
         Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("productId", id);
-            return "products/form";
+            return "products/admin/form";
         }
 
         try {
@@ -124,7 +123,7 @@ public class ProductViewController {
         } catch (IllegalArgumentException e) {
             // 예외 메세지를 모델에 추가
             model.addAttribute("errorMessage", e.getMessage());
-            return "products/form";
+            return "products/admin/form";
         }
 
     }

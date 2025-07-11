@@ -1,4 +1,4 @@
-package gift.controller;
+package gift.controller.api;
 
 import gift.dto.api.ProductCreateRequestDto;
 import gift.dto.api.ProductUpdateRequestDto;
