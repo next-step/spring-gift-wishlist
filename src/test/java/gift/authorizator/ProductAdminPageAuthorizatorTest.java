@@ -1,4 +1,4 @@
-package gift;
+package gift.authorizator;
 
 import gift.entity.Member;
 import gift.entity.Role;
@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql(scripts = "/clear_member_table.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-class ProductAdminPageTokenTest {
+class ProductAdminPageAuthorizatorTest {
 
     private final String baseUrl = "http://localhost:";
 

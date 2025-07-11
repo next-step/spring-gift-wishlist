@@ -1,6 +1,5 @@
-package gift;
+package gift.controller;
 
-import gift.controller.ProductAdminPageController;
 import gift.entity.Product;
 import gift.service.ProductService;
 import org.junit.jupiter.api.Test;
@@ -91,7 +90,7 @@ class ProductAdminPageControllerTest {
     void 유효한_상품_조회_시_상품상세페이지() throws Exception {
         Product mockProduct = new Product(1L, "각하오커피", 7800,
             "https://...", false);
-        when(productService.getProductById(1L)).thenReturn(mockProduct);
+        when(productService.getProductWhetherDeletedById(1L)).thenReturn(mockProduct);
 
         mockMvc.perform(get("/admin/products/1"))
             .andExpect(view().name("admin/product-form"));
@@ -117,6 +116,7 @@ class ProductAdminPageControllerTest {
     void 유효하지_않은_상품_수정_시_상품상세페이지() throws Exception {
         Product existing = new Product(1L, "각하오 커피", 7800, "https://...", false);
         when(productService.getProductById(1L)).thenReturn(existing);
+        when(productService.getProductWhetherDeletedById(1L)).thenReturn(existing);
 
         mockMvc.perform(
             put("/admin/products/1")

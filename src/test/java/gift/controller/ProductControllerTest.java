@@ -1,4 +1,4 @@
-package gift;
+package gift.controller;
 
 import gift.dto.CreateProductRequest;
 import gift.dto.UpdateProductRequest;
@@ -24,7 +24,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOf
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Sql({"/clear_product_table.sql", "/insert_product_table.sql", "/clear_member_table.sql"})
+@Sql({"/clear_product_table.sql", "/insert_product_item.sql", "/clear_member_table.sql"})
 public class ProductControllerTest {
 
     private final String baseUrl = "http://localhost:";

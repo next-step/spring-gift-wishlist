@@ -4,13 +4,14 @@ import java.util.List;
 
 public class Product {
 
-    private static List<String> prohibitedNames = List.of("카카오");
+    private static final List<String> prohibitedNames = List.of("카카오");
 
     private Long id;
     private String name;
     private Integer price;
     private String imageUrl;
     private Boolean validated;
+    private Boolean deleted = false;
 
     public Product() {}
 
@@ -20,6 +21,16 @@ public class Product {
         this.price = price;
         this.imageUrl = imageUrl;
         this.validated = validated;
+    }
+
+    // this constructor is used only for the repository
+    public Product(Long id, String name, Integer price, String imageUrl, Boolean validated, Boolean deleted) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.imageUrl = imageUrl;
+        this.validated = validated;
+        this.deleted = deleted;
     }
 
     public Product(String name, Integer price, String imageUrl) {
@@ -67,6 +78,10 @@ public class Product {
 
     public Boolean getValidated() {
         return validated;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
     }
 
     public Product applyPatch(String name, Integer price, String imageUrl) {

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>상품정보 작성</title>
@@ -26,8 +26,9 @@
     <h1>상품정보 작성</h1>
     <h2 th:if="${productId != null}" th:inline="text">- [[${productId}]]번 상품</h2>
     <h2 th:if="${productId == null}">- 신규 상품</h2>
-    <h3 th:if="${productId != null}" th:text="${validated} ? '✅상품이 검증 완료되어, 현재 공개 상태입니다' : '🛑상품명이 담당MD에 의해 검증되지 않은 상태입니다'">안내문</h3>
-    <form th:if="${productId != null}"
+    <h3 th:if="${productId != null and deleted}">❌상품이 삭제되어, 더이상 게시/수정할 수 없습니다. 현재 비공개 상태입니다.</h3>
+    <h3 th:if="${productId != null and !deleted}" th:text="${validated} ? '✅상품이 검증 완료되어, 현재 공개 상태입니다.' : '🛑상품명이 담당MD에 의해 검증되지 않은 상태입니다.'">안내문</h3>
+    <form th:if="${productId != null and !deleted}"
           th:with="actionUrl='/admin/products/' + ${productId} + '?validated=' + ${!validated}"
           th:action="@{${actionUrl}}"
           method="post" style="display:inline">
@@ -51,7 +52,7 @@
             <input type="text" th:field="*{imageUrl}" />
         </p>
         <button type="submit" th:if="${productId == null}" >Create</button>
-        <button type="submit" th:if="${productId != null}" >Apply Changes</button>
+        <button type="submit" th:if="${productId != null and !deleted}" >Apply Changes</button>
     </form>
     <form th:if="${productId != null}"
           th:action="@{/admin/products/{id}(id=${productId})}"
