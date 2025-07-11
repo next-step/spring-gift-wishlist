@@ -13,6 +13,10 @@ public class User {
         this.password = password;
     }
 
+    public boolean isEqualToPassword(String password) {
+        return this.password.equals(password);
+    }
+
     public UUID getId() {
         return id;
     }

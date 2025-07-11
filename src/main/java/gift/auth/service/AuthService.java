@@ -41,7 +41,7 @@ public class AuthService {
             throw new EmptyResultDataAccessException(1);
         }
         User user = optionalUser.get();
-        if(!user.getPassword().equals(userLoginRequestDto.getPassword())) {
+        if(!user.isEqualToPassword(userLoginRequestDto.getPassword())) {
             throw new InvalidPasswordException("비밀번호가 일치하지 않습니다.");
         }
         return jwtProvider.createToken(user);
