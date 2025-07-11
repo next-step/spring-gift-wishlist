@@ -1,8 +1,5 @@
 package gift.dto;
 
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
-
 public class WishListProductRequestDto {
 
     private Long productId;

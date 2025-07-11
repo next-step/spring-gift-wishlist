@@ -1,4 +1,4 @@
-package gift.controller;
+package gift.handler;
 
 import gift.exception.MemberExceptions;
 import org.springframework.http.HttpStatus;
