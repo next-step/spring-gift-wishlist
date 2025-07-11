@@ -71,8 +71,6 @@ public class AdminProductController {
         requestDto.setName(responseDto.getName());
         requestDto.setPrice(responseDto.getPrice());
         requestDto.setImageUrl(responseDto.getImageUrl());
-        requestDto.setMdApproved(responseDto.isMdApproved());
-
         model.addAttribute("form", requestDto);
         model.addAttribute("productId", id);
         return "admin/product-form";

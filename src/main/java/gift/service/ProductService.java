@@ -25,7 +25,7 @@ public class ProductService {
     }
 
     public ProductResponseDto createProduct(ProductRequestDto requestDto) {
-        Product product = new Product(null, requestDto.getName(), requestDto.getPrice(), requestDto.getImageUrl(), requestDto.isMdApproved());
+        Product product = new Product(null, requestDto.getName(), requestDto.getPrice(), requestDto.getImageUrl());
         Product saved = productRepository.save(product);
         return new ProductResponseDto(saved);
     }
@@ -49,7 +49,6 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-
     private Product findProductOrThrow(Long id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 상품입니다."));
@@ -58,5 +57,4 @@ public class ProductService {
     public int getProductCount() {
         return productRepository.count();
     }
-
 }
