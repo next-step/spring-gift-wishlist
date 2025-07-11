@@ -71,10 +71,6 @@ class WishControllerTest {
     @DisplayName("위시를 추가하면, 해당 상품 정보가 담긴 응답을 반환한다.")
     void shouldAddWish() throws Exception {
         // given
-        String realToken = jwtProvider.generateToken(
-                memberRepository.findMemberById(memberId).get()
-        );
-
         var dto = new WishRequestDto(productId);
 
         // when & then
