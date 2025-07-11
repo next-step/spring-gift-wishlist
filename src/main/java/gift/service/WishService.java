@@ -34,6 +34,9 @@ public class WishService {
     }
 
     public void deleteWish(Long memberId, Long productId) {
-        wishRepository.deleteByMemberIdAndProductId(memberId, productId);
+        boolean deleted = wishRepository.deleteByMemberIdAndProductId(memberId, productId);
+        if (!deleted) {
+            throw new java.util.NoSuchElementException("해당 상품이 위시리스트에 존재하지 않습니다.");
+        }
     }
 }

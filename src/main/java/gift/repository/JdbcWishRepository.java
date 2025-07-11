@@ -13,6 +13,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class JdbcWishRepository implements WishRepository {
 
+    private static final int NO_ROWS_AFFECTED = 0;
+
     private final JdbcTemplate jdbcTemplate;
 
     private final RowMapper<Wish> wishRowMapper = (rs, rowNum) ->
@@ -45,8 +47,9 @@ public class JdbcWishRepository implements WishRepository {
     }
 
     @Override
-    public void deleteByMemberIdAndProductId(Long memberId, Long productId) {
+    public boolean deleteByMemberIdAndProductId(Long memberId, Long productId) {
         String sql = "DELETE FROM wishes WHERE member_id = ? AND product_id = ?";
-        jdbcTemplate.update(sql, memberId, productId);
+        int affectedRows = jdbcTemplate.update(sql, memberId, productId);
+        return affectedRows > NO_ROWS_AFFECTED;
     }
 }

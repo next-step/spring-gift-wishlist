@@ -9,5 +9,5 @@ public interface WishRepository {
 
     List<Wish> findByMemberId(Long memberId);
 
-    void deleteByMemberIdAndProductId(Long memberId, Long productId);
+    boolean deleteByMemberIdAndProductId(Long memberId, Long productId);
 }
