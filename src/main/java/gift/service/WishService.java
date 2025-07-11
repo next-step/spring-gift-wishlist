@@ -3,11 +3,8 @@ package gift.service;
 import gift.dto.ProductResponseDto;
 import gift.dto.WishCreateResponseDto;
 import gift.dto.WishResponseDto;
-import gift.entity.Product;
 import gift.entity.Wish;
-import gift.exception.ProductNotExistException;
 import gift.exception.WishAlreadyExistException;
-import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
 import org.springframework.stereotype.Service;
 
@@ -40,14 +37,20 @@ public class WishService {
     }
 
     public WishCreateResponseDto add(Long memberId, Long productId) {
+
         if (wishRepository.existsByMemberIdAndProductId(memberId, productId)) {
             throw new WishAlreadyExistException(productId);
         }
+
+        productService.find(productId);
+
         Wish wish = wishRepository.save(memberId, productId);
         return new WishCreateResponseDto(wish.getId(), wish.getMemberId(), wish.getProductId());
     }
 
     public void remove(Long memberId, Long productId) {
+        productService.find(productId);
+
         wishRepository.delete(memberId, productId);
     }
 }
