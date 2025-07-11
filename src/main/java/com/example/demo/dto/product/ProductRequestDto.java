@@ -1,4 +1,4 @@
-package com.example.demo.dto;
+package com.example.demo.dto.product;
 
 import com.example.demo.validation.NoForbiddenWords;
 import jakarta.validation.constraints.Min;

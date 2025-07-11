@@ -1,15 +1,15 @@
-package com.example.demo.service;
+package com.example.demo.service.product;
 
-import com.example.demo.dto.ProductRequestDto;
-import com.example.demo.dto.ProductResponseDto;
-import com.example.demo.dto.ProductUpdateDto;
+import com.example.demo.dto.product.ProductRequestDto;
+import com.example.demo.dto.product.ProductResponseDto;
+import com.example.demo.dto.product.ProductUpdateDto;
 import com.example.demo.entity.Product;
-import com.example.demo.repository.ProductRepository;
+import com.example.demo.repository.product.ProductRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ProductServiceImpl implements ProductService{
+public class ProductServiceImpl implements ProductService {
 
   private final ProductRepository productRepository;
 

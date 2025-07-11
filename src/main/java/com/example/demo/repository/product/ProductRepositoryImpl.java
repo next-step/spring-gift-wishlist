@@ -1,4 +1,4 @@
-package com.example.demo.repository;
+package com.example.demo.repository.product;
 
 import com.example.demo.entity.Product;
 import java.util.List;

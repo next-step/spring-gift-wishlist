@@ -1,9 +1,9 @@
-package com.example.demo.controller;
+package com.example.demo.controller.product;
 
-import com.example.demo.dto.ProductRequestDto;
-import com.example.demo.dto.ProductResponseDto;
-import com.example.demo.dto.ProductUpdateDto;
-import com.example.demo.service.ProductService;
+import com.example.demo.dto.product.ProductRequestDto;
+import com.example.demo.dto.product.ProductResponseDto;
+import com.example.demo.dto.product.ProductUpdateDto;
+import com.example.demo.service.product.ProductService;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;

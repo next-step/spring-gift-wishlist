@@ -1,8 +1,8 @@
-package com.example.demo.service;
+package com.example.demo.service.product;
 
-import com.example.demo.dto.ProductRequestDto;
-import com.example.demo.dto.ProductResponseDto;
-import com.example.demo.dto.ProductUpdateDto;
+import com.example.demo.dto.product.ProductRequestDto;
+import com.example.demo.dto.product.ProductResponseDto;
+import com.example.demo.dto.product.ProductUpdateDto;
 import java.util.List;
 
 public interface ProductService {

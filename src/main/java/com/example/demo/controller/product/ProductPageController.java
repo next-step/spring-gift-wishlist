@@ -1,9 +1,9 @@
-package com.example.demo.controller;
+package com.example.demo.controller.product;
 
-import com.example.demo.dto.ProductRequestDto;
-import com.example.demo.dto.ProductResponseDto;
-import com.example.demo.dto.ProductUpdateDto;
-import com.example.demo.service.ProductService;
+import com.example.demo.dto.product.ProductRequestDto;
+import com.example.demo.dto.product.ProductResponseDto;
+import com.example.demo.dto.product.ProductUpdateDto;
+import com.example.demo.service.product.ProductService;
 import jakarta.validation.Valid;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Controller;
@@ -35,7 +35,7 @@ public class ProductPageController {
   public String showCreateForm(Model model) {
     model.addAttribute("product", new ProductRequestDto());
     model.addAttribute("formAction", "/product-page");
-    return "product/form";
+    return "form";
   }
 
   @PostMapping
@@ -53,7 +53,7 @@ public class ProductPageController {
                                            .map(error -> error.getDefaultMessage())
                                            .collect(Collectors.joining("\n"));
         model.addAttribute("errorMessage", errorMessage);
-        return "product/form";
+        return "form";
       }
     productService.addProduct(dto);
     return "redirect:/product-page";
@@ -72,7 +72,7 @@ public class ProductPageController {
     model.addAttribute("product", updateDto);
     model.addAttribute("formAction", "/product-page/" + id + "/edit");
 
-    return "product/form";
+    return "form";
   }
 
   @PostMapping("/{id}/edit")
@@ -83,7 +83,7 @@ public class ProductPageController {
 
     if (bindingResult.hasErrors()) {
       model.addAttribute("formAction", "/product-page/" + id + "/edit");
-      return "product/form";
+      return "form";
     }
 
     productService.productUpdateById(id, dto);
