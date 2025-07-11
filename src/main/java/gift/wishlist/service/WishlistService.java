@@ -50,6 +50,11 @@ public class WishlistService {
             .toList();
     }
 
+    @Transactional
+    public void delete(Long wishId, Long memberId) {
+        wishlistRepository.delete(wishId, memberId);
+    }
+
     private WishResponse convertToDTO(Wishlist wishlist) {
         return new WishResponse(
             wishlist.getId(),

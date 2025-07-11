@@ -65,6 +65,15 @@ public class WishlistRepository {
             .list();
     }
 
+    public void delete(Long wishId, Long memberId) {
+        String sql = "DELETE FROM wishlist WHERE id = ? AND member_id = ?";
+
+        jdbcClient.sql(sql)
+            .param(wishId)
+            .param(memberId)
+            .update();
+    }
+
     private RowMapper<Wishlist> wishlistRowMapper() {
         return ((rs, rowNum) ->
             new Wishlist(
