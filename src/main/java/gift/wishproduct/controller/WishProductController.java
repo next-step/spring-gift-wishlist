@@ -6,6 +6,7 @@ import gift.member.dto.AuthMember;
 import gift.util.LocationGenerator;
 import gift.wishproduct.dto.WishProductCreateReq;
 import gift.wishproduct.dto.WishProductResponse;
+import gift.wishproduct.dto.WishProductUpdateReq;
 import gift.wishproduct.service.WishProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -52,6 +53,15 @@ public class WishProductController {
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> updateWishProduct(@MyAuthenticalPrincipal AuthMember authMember, @PathVariable UUID id,
+                                                  @Valid @RequestBody WishProductUpdateReq wishProductUpdateReq) {
+
+        wishProductService.updateQuantity(id, wishProductUpdateReq, authMember.getEmail());
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }

@@ -9,6 +9,7 @@ import gift.member.repository.MemberRepository;
 import gift.product.repository.ProductRepository;
 import gift.wishproduct.dto.WishProductCreateReq;
 import gift.wishproduct.dto.WishProductResponse;
+import gift.wishproduct.dto.WishProductUpdateReq;
 import gift.wishproduct.repository.WishProductRepository;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +33,7 @@ public class WishProductServiceV1 implements WishProductService {
     public UUID save(WishProductCreateReq dto, String email) {
 
         Product product = productRepository.findById(dto.getProductId())
-                .orElseThrow(() -> new NotFoundEntityException("존재하지 않는 상품입니다."));
+                .orElseThrow(() -> new NotFoundEntityException("존재하지 않는 위시 상품입니다."));
 
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundEntityException("존재하지 않는 회원입니다."));
@@ -68,7 +69,7 @@ public class WishProductServiceV1 implements WishProductService {
     public void deleteById(UUID id, String email) {
 
         WishProduct wishProduct = wishProductRepository.findById(id)
-                .orElseThrow(() -> new NotFoundEntityException("존재하지 않는 상품입니다."));
+                .orElseThrow(() -> new NotFoundEntityException("존재하지 않는 위시 상품입니다."));
 
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundEntityException("존재하지 않는 회원입니다."));
@@ -77,6 +78,26 @@ public class WishProductServiceV1 implements WishProductService {
             throw new BadRequestEntityException("자신의 위시 상품만 삭제할 수 있습니다");
 
         wishProductRepository.deleteById(wishProduct.getId());
+    }
+
+    @Override
+    public void updateQuantity(UUID id, WishProductUpdateReq dto, String email) {
+
+        WishProduct wishProduct = wishProductRepository.findById(id)
+                .orElseThrow(() -> new NotFoundEntityException("존재하지 않는 위시 상품입니다."));
+
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundEntityException("존재하지 않는 회원입니다."));
+
+        if (!member.getId().equals(wishProduct.getMemberId()))
+            throw new BadRequestEntityException("자신의 위시 상품만 수정할 수 있습니다");
+
+        wishProductRepository.update(new WishProduct(
+                wishProduct.getId(), wishProduct.getProductName(),
+                wishProduct.getPrice(), dto.getQuantity(),
+                wishProduct.getImageURL(), member.getId(), wishProduct.getId()
+        ));
+
     }
 
 

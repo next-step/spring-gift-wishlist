@@ -10,6 +10,7 @@ import gift.member.repository.MemberRepository;
 import gift.product.repository.ProductRepository;
 import gift.wishproduct.dto.WishProductCreateReq;
 import gift.wishproduct.dto.WishProductResponse;
+import gift.wishproduct.dto.WishProductUpdateReq;
 import gift.wishproduct.repository.WishProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -228,6 +229,64 @@ class WishProductServiceV1Test {
         verify(wishProductRepository).findById(wishProduct.getId());
         verifyNoMoreInteractions(wishProductRepository, memberRepository, productRepository);
     }
+
+    @Test
+    @DisplayName("위시 상품 수량 수정 성공")
+    void changeQuantitySuccess() {
+        // given
+
+        Member member = addMemberCase();
+        Product product = addProductCase(member);
+        WishProduct wishProduct = addWishProduct(product, member, 15);
+
+        given(wishProductRepository.findById(wishProduct.getId()))
+                .willReturn(Optional.of(wishProduct));
+
+        given(memberRepository.findByEmail(member.getEmail()))
+                .willReturn(Optional.of(member));
+
+        // when
+
+        wishProductService.updateQuantity(wishProduct.getId(), new WishProductUpdateReq(10), member.getEmail());
+
+
+        // then
+
+        verify(wishProductRepository).findById(wishProduct.getId());
+        verify(memberRepository).findByEmail(member.getEmail());
+        verify(wishProductRepository).update(any(WishProduct.class));
+        verifyNoMoreInteractions(wishProductRepository, memberRepository, productRepository);
+    }
+
+    @Test
+    @DisplayName("위시 상품 수량 수정 실패 - 자신의 위시 상품이 아님")
+    void changeQuantityFail() {
+        // given
+
+        Member member = addMemberCase();
+        Product product = addProductCase(member);
+        WishProduct wishProduct = addWishProduct(product, member, 15);
+
+        given(wishProductRepository.findById(wishProduct.getId()))
+                .willReturn(Optional.of(wishProduct));
+
+        given(memberRepository.findByEmail(anyString()))
+                .willReturn(Optional.of(new Member("temp@naver.com", "Qwer1234!!", Role.REGULAR)));
+
+        // when
+
+        assertThatThrownBy(()->wishProductService.updateQuantity(wishProduct.getId(),
+                new WishProductUpdateReq(10), member.getEmail())
+        ).isInstanceOf(BadRequestEntityException.class);
+
+
+        // then
+
+        verify(wishProductRepository).findById(wishProduct.getId());
+        verify(memberRepository).findByEmail(member.getEmail());
+        verifyNoMoreInteractions(wishProductRepository, memberRepository, productRepository);
+    }
+
 
 
     private Member addMemberCase() {

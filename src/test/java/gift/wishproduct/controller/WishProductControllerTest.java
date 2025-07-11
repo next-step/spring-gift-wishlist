@@ -9,6 +9,7 @@ import gift.jwt.JWTUtil;
 import gift.member.repository.MemberRepository;
 import gift.product.repository.ProductRepository;
 import gift.wishproduct.dto.WishProductCreateReq;
+import gift.wishproduct.dto.WishProductUpdateReq;
 import gift.wishproduct.repository.WishProductRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -129,6 +130,47 @@ class WishProductControllerTest {
                 .retrieve()
                 .toEntity(Void.class)
         ).isInstanceOf(HttpClientErrorException.NotFound.class);
+    }
+
+    @Test
+    @DisplayName("위시 상품 수정 성공")
+    void updateWishProductSuccess() {
+
+        // given
+        WishProduct wishProduct = addWishProduct();
+
+        WishProductUpdateReq body = new WishProductUpdateReq(20);
+
+        // when
+        ResponseEntity<Void> response = restClient.patch()
+                .uri("/{id}", wishProduct.getId())
+                .body(body)
+                .retrieve()
+                .toEntity(Void.class);
+
+        WishProduct updated = wishProductRepository.findById(wishProduct.getId()).get();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        assertThat(updated.getQuantity()).isEqualTo(body.getQuantity());
+
+    }
+
+    @Test
+    @DisplayName("위시 상품 수정 실패 - 0개로 수정 불가")
+    void updateWishProductFail() {
+
+        // given
+        WishProduct wishProduct = addWishProduct();
+
+        WishProductUpdateReq body = new WishProductUpdateReq(0);
+
+        // when
+        assertThatThrownBy(()->restClient.patch()
+                .uri("/{id}", wishProduct.getId())
+                .body(body)
+                .retrieve()
+                .toEntity(Void.class)
+        ).isInstanceOf(HttpClientErrorException.BadRequest.class);
+
     }
 
 
