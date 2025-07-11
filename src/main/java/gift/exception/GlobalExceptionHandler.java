@@ -101,4 +101,16 @@ public class GlobalExceptionHandler {
         return ResponseEntity.of(pd).build();
     }
 
+    @ExceptionHandler(MemberNotFoundException.class)
+    public ResponseEntity<ProblemDetail> handleMemberNotFoundException(
+            MemberNotFoundException ex) {
+
+        ProblemDetail pd = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
+
+        pd.setType(URI.create("/errors/member-not-found"));
+        pd.setTitle("사용자을 찾을 수 없습니다.");
+        pd.setDetail(ex.getMessage());
+
+        return ResponseEntity.of(pd).build();
+    }
 }

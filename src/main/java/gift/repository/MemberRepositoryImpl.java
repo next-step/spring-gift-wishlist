@@ -40,4 +40,14 @@ public class MemberRepositoryImpl implements MemberRepository {
                      .query(Member.class)
                      .optional();
     }
+
+    @Override
+    public Optional<Member> findMemberById(Long id) {
+        var sql = "SELECT * FROM member WHERE id = :id";
+
+        return client.sql(sql)
+                     .param("id", id)
+                     .query(Member.class)
+                     .optional();
+    }
 }
