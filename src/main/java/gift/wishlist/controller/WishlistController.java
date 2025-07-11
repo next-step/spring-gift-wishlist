@@ -1,5 +1,7 @@
 package gift.wishlist.controller;
 
+import gift.member.entity.Member;
+import gift.member.token.LoginMember;
 import gift.wishlist.dto.WishRequestDto;
 import gift.wishlist.dto.WishResponseDto;
 import gift.wishlist.service.WishlistService;
@@ -20,27 +22,27 @@ public class WishlistController {
 
     @PostMapping
     public ResponseEntity<WishResponseDto> addWishlist(
-            @RequestHeader Long memberId,
+            @LoginMember Member member,
             @RequestBody WishRequestDto wishRequestDto) {
         WishResponseDto wishResponseDto =
-                wishlistService.addWish(memberId, wishRequestDto);
+                wishlistService.addWish(member.getId(), wishRequestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(wishResponseDto);
     }
 
     @GetMapping
     public ResponseEntity<List<WishResponseDto>> getWishlist(
-            @RequestHeader Long memberId) {
-        List<WishResponseDto> wishResponseDto = wishlistService.getWishesByMemberId(memberId);
+            @LoginMember Member member) {
+        List<WishResponseDto> wishResponseDto = wishlistService.getWishesByMemberId(member.getId());
 
         return ResponseEntity.ok(wishResponseDto);
     }
 
     @DeleteMapping("/{wishId}")
     public ResponseEntity<Void> deleteWishlist(
-            @RequestHeader Long memberId,
+            @LoginMember Member member,
             @PathVariable Long wishId) {
-        wishlistService.deleteWish(memberId, wishId);
+        wishlistService.deleteWish(member.getId(), wishId);
 
         return ResponseEntity.noContent().build();
     }

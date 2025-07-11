@@ -85,9 +85,10 @@
   - [x] 위시리스트에 상품을 추가하는 API 구현
   - [x] 위시리스트 목록 조회하는 API 구현
   - [x] 위시리스트에서 항목을 삭제하는 API 구현
-- [ ] 로그인한 사용자의 토큰을 이용하여 컨트롤러에 memberId 주입
+- [x] 로그인한 사용자의 토큰을 이용하여 컨트롤러에 memberId 주입
   - [x] TokenProvider에 토큰에서 memberId를 추출하는 getMemberIdFromToken 구현
   - [x] 커스텀 어노테이션 @LoginMember 구현
   - [x] AuthenticationInterceptor에서 토큰 검증 후 memberId를 request의 속성에 추가되도록 추가 구현
   - [x] HandlerMethodArgumentResolver를 구현한 LoginMemberArgumentResolver 추가
   - [x] WebConfig에 AuthenticationInterceptor,loginMemberArgumentResolver 적용
+  - [x] WishlistController의 각 메서드 파라미터에 @LoginMember 어노테이션 적용하여 구현
