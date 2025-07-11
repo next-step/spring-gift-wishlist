@@ -1,6 +1,5 @@
 package gift.wishlist.entity;
 
-import gift.wishlist.dto.WishRequestDto;
 
 public class Wishlist {
     private Long id;

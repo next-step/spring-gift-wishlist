@@ -1,10 +1,9 @@
 package gift.wishlist.repository;
 
-import gift.product.entity.Product;
+
 import gift.wishlist.entity.Wishlist;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;

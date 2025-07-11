@@ -7,10 +7,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
-public class AdminInterceptor implements HandlerInterceptor {
+public class AuthenticationInterceptor implements HandlerInterceptor {
     private final TokenProvider tokenProvider;
 
-    public AdminInterceptor(TokenProvider tokenProvider) {
+    public AuthenticationInterceptor(TokenProvider tokenProvider) {
         this.tokenProvider = tokenProvider;
     }
 
@@ -32,13 +32,8 @@ public class AdminInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        String role = tokenProvider.getRoleFromToken(token);
-
-        if(!"ADMIN".equals(role)) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            response.getWriter().println("관리자 권한이 없습니다.");
-            return false;
-        }
+        Long memberId = tokenProvider.getMemberIdFromToken(token);
+        request.setAttribute("memberId", memberId);
         return true;
     }
 }
