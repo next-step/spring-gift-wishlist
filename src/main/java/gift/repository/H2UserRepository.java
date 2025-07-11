@@ -18,6 +18,13 @@ public class H2UserRepository {
         this.jdbcClient = jdbcClient;
     }
 
+    public Optional<User> findById(Long id) {
+        return jdbcClient.sql("select * from users where id = :id")
+                .param("id", id)
+                .query(User.class)
+                .optional();
+    }
+
     public Optional<User> findByEmail(Email email) {
         return jdbcClient.sql("select * from users where email = :email")
                 .param("email", email.value())
