@@ -202,7 +202,7 @@ public class MemberControllerTest {
     void 위시_리스트_상품_추가_정상_테스트(){
         System.out.println("Add Product to WishList success test");
         var url = "http://localhost:" + port + "/api/members/wishlist";
-        WishListProductRequestDto wishListProductRequestDto = new WishListProductRequestDto(2L, "포스틱", 1500);
+        WishListProductRequestDto wishListProductRequestDto = new WishListProductRequestDto(2L);
         var response = client.post()
                 .uri(url)
                 .header("Authorization", "Bearer " + testJWTToken)

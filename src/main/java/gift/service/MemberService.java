@@ -70,7 +70,7 @@ public class MemberService implements MemberServiceInterface {
     @Override
     public List<ProductResponseDto> addProductToWishListByEmail(String token, WishListProductRequestDto requestDto) {
         String email = jwtAuth.getEmailFromToken(token);
-        Long productId = requestDto.getId();
+        Long productId = requestDto.getproductId();
         memberRepository.addProductToWishListByEmail(email, productId);
 
         return findAllProductsFromWishList(token);
