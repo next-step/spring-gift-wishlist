@@ -31,6 +31,11 @@ public class MemberRepository {
         return list.stream().findFirst();
     }
 
+    public Optional<Member> findById(Long id) {
+        List<Member> list = jdbc.query("SELECT * FROM members WHERE id = ?", ROW_MAPPER, id);
+        return list.stream().findFirst();
+    }
+
     public Long save(Member member) {
         KeyHolder kh = new GeneratedKeyHolder();
         jdbc.update(con -> {
