@@ -13,7 +13,7 @@ public interface ProductRepository {
 
     Optional<Product> findById(Long id);
 
-    void update(Long id, String name, int price, String imageUrl);
+    boolean update(Long id, String name, int price, String imageUrl);
 
-    void deleteById(Long id);
+    boolean deleteById(Long id);
 }

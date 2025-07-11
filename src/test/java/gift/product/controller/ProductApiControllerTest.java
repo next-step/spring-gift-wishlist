@@ -1,7 +1,6 @@
 package gift.product.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import gift.auth.JwtUtil;
+import gift.common.ControllerTestTemplate;
 import gift.member.dto.MemberRegisterRequest;
 import gift.member.service.MemberService;
 import gift.product.domain.Product;
@@ -14,11 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -26,13 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 @AutoConfigureMockMvc
 @DisplayName("ProductApiController 테스트")
-public class ProductApiControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+public class ProductApiControllerTest extends ControllerTestTemplate {
 
     @Autowired
     private ProductService productService;
@@ -48,29 +39,16 @@ public class ProductApiControllerTest {
     void setUp() {
         MemberRegisterRequest request = new MemberRegisterRequest("test@gmail.com", "12345678");
 
-        adminToken = memberService.register(request).token();
+        adminToken = memberService.registerAdmin(request).token();
 
-        ProductRequestDto requestDto1 = new ProductRequestDto("Test1", 1000, "Test1.jpg");
-        ProductRequestDto requestDto2 = new ProductRequestDto("Test2", 1200, "Test2.jpg");
-
-        product1 = productService.saveProduct(requestDto1);
-        product2 = productService.saveProduct(requestDto2);
+        product1 = productService.saveProduct(getProductRequest("Test1", 1000, "Test1.jpg"));
+        product2 = productService.saveProduct(getProductRequest("Test2", 1200, "Test2.jpg"));
     }
 
     @Test
     @DisplayName("상품 등록 테스트 - 201")
     void addProduct() throws Exception {
-        // given
-        ProductRequestDto newProduct = new ProductRequestDto("new", 1500, "new.png");
-        String content = objectMapper.writeValueAsString(newProduct);
-
-        // when
-        // then
-        mockMvc.perform(post("/api/products")
-                .header("Authorization", "Bearer " + adminToken)
-                .content(content)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
+        postWithToken("/api/admin/products", adminToken, getProductRequest("new", 1500, "new.png"))
                 .andExpect(status().isCreated())
                 .andDo(print());
     }
@@ -78,9 +56,7 @@ public class ProductApiControllerTest {
     @Test
     @DisplayName("전체 상품 조회 테스트 - 200")
     void getProducts() throws Exception {
-        mockMvc.perform(get("/api/products")
-                .header("Authorization", "Bearer " + adminToken)
-                .accept(MediaType.APPLICATION_JSON))
+        getWithToken("/api/admin/products", adminToken)
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$[0].name", is("Test1")))
@@ -93,9 +69,7 @@ public class ProductApiControllerTest {
     void getProductById() throws Exception{
         Long productId = product1.getId();
 
-        mockMvc.perform(get("/api/products/" + productId)
-                .header("Authorization", "Bearer " + adminToken)
-                .accept(MediaType.APPLICATION_JSON))
+        getWithToken("/api/admin/products/" + productId, adminToken)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(productId.intValue())))
                 .andDo(print());
@@ -106,9 +80,7 @@ public class ProductApiControllerTest {
     void getProductNotFound() throws Exception{
         Long notFoundId = 999999L;
 
-        mockMvc.perform(get("/api/products/" + notFoundId)
-                .header("Authorization", "Bearer " + adminToken)
-                .accept(MediaType.APPLICATION_JSON))
+        getWithToken("/api/admin/products/" + notFoundId, adminToken)
                 .andExpect(status().isNotFound())
                 .andDo(print());
     }
@@ -118,20 +90,11 @@ public class ProductApiControllerTest {
     void updateProduct() throws Exception{
         Long productId = product1.getId();
 
-        ProductRequestDto requestDto = new ProductRequestDto("수정된 이름", 12000, "updated");
-
-        String content = objectMapper.writeValueAsString(requestDto);
-
-        mockMvc.perform(put("/api/products/" + productId)
-                .header("Authorization", "Bearer " + adminToken)
-                .content(content)
-                .contentType(MediaType.APPLICATION_JSON))
+        putWithToken("/api/admin/products/" + productId, adminToken, getProductRequest("수정된 이름", 12000, "updated"))
                 .andExpect(status().isNoContent())
                 .andDo(print());
 
-        mockMvc.perform(get("/api/products/" + productId)
-                .header("Authorization", "Bearer " + adminToken)
-                .accept(MediaType.APPLICATION_JSON))
+        getWithToken("/api/admin/products/" + productId, adminToken)
                 .andExpect(jsonPath("$.name", is("수정된 이름")))
                 .andExpect(jsonPath("$.price", is(12000)));
     }
@@ -141,28 +104,25 @@ public class ProductApiControllerTest {
     void deleteProduct() throws Exception {
         Long productId = product1.getId();
 
-        mockMvc.perform(delete("/api/products/" + productId)
-                .header("Authorization", "Bearer " + adminToken))
+        deleteWithToken("/api/admin/products/" + productId, adminToken)
                 .andExpect(status().isNoContent())
                 .andDo(print());
 
-        mockMvc.perform(get("/api/products/" + productId)
-                .header("Authorization", "Bearer " + adminToken))
+        getWithToken("/api/admin/products/" + productId, adminToken)
                 .andExpect(status().isNotFound());
     }
 
     @Test
     @DisplayName("상품 등록 실패 - 유효하지 않은 상품명(카카오) - 400")
     void addProduct_fail() throws Exception {
-        ProductRequestDto invalidProduct = new ProductRequestDto("카카오 인형", 15000, "a.jpg");
-        String content = objectMapper.writeValueAsString(invalidProduct);
 
-        mockMvc.perform(post("/api/products")
-                .header("Authorization", "Bearer " + adminToken)
-                .content(content)
-                .contentType(MediaType.APPLICATION_JSON))
+        postWithToken("/api/admin/products", adminToken, getProductRequest("카카오 인형", 15000, "a.jpg"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.name").exists())
                 .andDo(print());
+    }
+
+    ProductRequestDto getProductRequest(String name, int price, String imageUrl) {
+        return new ProductRequestDto(name, price, imageUrl);
     }
 }

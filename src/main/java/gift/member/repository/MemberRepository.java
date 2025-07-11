@@ -38,6 +38,23 @@ public class MemberRepository {
                 .optional();
     }
 
+    public boolean updatePassword(Long id, String newPassword) {
+        int affected = client.sql("update member set password = :password where id = :id")
+                .param("password", newPassword)
+                .param("id", id)
+                .update();
+
+        return affected > 0;
+    }
+
+    public boolean deleteById(Long id) {
+        int affected = client.sql("delete from member where id = :id")
+                .param("id", id)
+                .update();
+
+        return affected > 0;
+    }
+
     private final RowMapper<Member> memberRowMapper = (rs, rowNum) -> new Member(
             rs.getLong("id"),
             rs.getString("email"),
