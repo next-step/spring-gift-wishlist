@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>유저 수정</title>
+    <meta charset="UTF-8">
+
+</head>
+<body>
+<h1>유저 수정</h1>
+
+<form th:action="@{/admin/users/edit/{id}(id=${user.id})}"
+      th:object="${user}"
+      method="post">
+    <input type="hidden" th:field="*{id}" />
+    <div>
+        <label>이름:</label>
+        <input type="text" name="userid" th:value="${user.userid}" required />
+    </div>
+    <div>
+        <label>비밀번호:</label>
+        <input type="text" name="password" th:value="${user.password}" required />
+    </div>
+    <div>
+        <label>역할:</label>
+        <input type="text" name="role" th:value="${user.role}" required />
+    </div>
+    <div style="margin-top: 10px;">
+        <button type="submit">저장</button>
+        <a href="/admin/users">취소</a>
+    </div>
+</form>
+
+</body>
+</html>

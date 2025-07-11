@@ -6,6 +6,7 @@ import gift.model.User;
 import gift.repository.UserDao;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -21,5 +22,31 @@ public class UserService {
         Optional<User> userOpt = userDao.findUserByUserid(login.getUserid());
         User user = userOpt.orElseThrow(() -> new RuntimeException("없음"));
         return jwtTokenProvider.createToken(user.getUserid(),user.getPassword());
+    }
+
+    public User findByUserId(String userId) {
+        Optional<User> userOpt = userDao.findUserByUserid(userId);
+        User user = userOpt.orElseThrow(() -> new RuntimeException("user 찾을 수 없음"));
+        return user;
+    }
+
+    public void createUser(User user) {
+        userDao.createUser(user);
+    }
+
+    public List<User> getAllUsers() {
+        return userDao.getAllUsers();
+    }
+
+    public void removeUser(Long id) {
+        userDao.removeUser(id);
+    }
+
+    public Optional<User> findUserById(Long id) {
+        return userDao.findUserById(id);
+    }
+
+    public void updateUser(Long id, User user) {
+        userDao.updateUser(id, user);
     }
 }

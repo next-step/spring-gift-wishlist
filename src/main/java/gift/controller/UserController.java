@@ -12,17 +12,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 @RestController
 public class UserController {
-    private final UserDao userDao;
     private final UserService userService;
 
-    public UserController(UserDao userDao, UserService userService) {
-        this.userDao = userDao;
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
     @PostMapping("/users")
     public void registerUser(@RequestBody User user) {
-        userDao.createUser(user);
+        userService.createUser(user);
     }
 
     @PostMapping("/users/login")
