@@ -1,8 +1,11 @@
 package gift.service;
 
+import gift.dto.response.WishResponseDto;
 import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class WishService {
@@ -17,5 +20,9 @@ public class WishService {
     public void addWish(Long memberId, Long productId, int quantity) {
 
         wishRepository.save(memberId, productId, quantity);
+    }
+
+    public List<WishResponseDto> getWishes(Long memberId) {
+        return wishRepository.findAllByMemberIdWithProduct(memberId);
     }
 }
