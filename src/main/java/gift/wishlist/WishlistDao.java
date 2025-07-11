@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -29,5 +30,18 @@ public class WishlistDao {
                 .update();
 
         return wishlist;
+    }
+
+    public Optional<Wishlist> findById(Long id) {
+        return jdbcClient.sql("SELECT * FROM WISHLISTS WHERE id = :id")
+                .param("id", id)
+                .query(Wishlist.class)
+                .optional();
+    }
+
+    public void delete(Long id) {
+        jdbcClient.sql("DELETE FROM WISHLISTS WHERE id = :id")
+                .param("id", id)
+                .update();
     }
 }

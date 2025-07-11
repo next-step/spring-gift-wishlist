@@ -24,10 +24,16 @@ public class WishlistController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Wishlist> addWishlist(@RequestBody WishlistSaveRequestDto wishlistSaveRequestDto) {
-        Wishlist wishlist1 =  wishlistService.saveWishlist(wishlistSaveRequestDto);
+    public ResponseEntity<Wishlist> addWishlist(@LoginUser User user, @RequestBody WishlistSaveRequestDto wishlistSaveRequestDto) {
+        Wishlist wishlist =  wishlistService.saveWishlist(wishlistSaveRequestDto);
         return ResponseEntity
-                .created(URI.create("/api/product/" + wishlist1.getId()))
-                .body(wishlist1);
+                .created(URI.create("/api/wishlist/" + wishlist.getId()))
+                .body(wishlist);
+    }
+
+    @DeleteMapping("/{id}/delete")
+    public ResponseEntity<Void> deleteById(@LoginUser User user, @PathVariable Long id) {
+        wishlistService.deleteWishlist(id);
+        return ResponseEntity.noContent().build();
     }
 }
