@@ -1,8 +1,11 @@
 package gift.service;
 
 import gift.jwt.JwtTokenProvider;
+import gift.model.Wish;
 import gift.repository.WishDao;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class WishService {
@@ -15,4 +18,15 @@ public class WishService {
     }
 
 
+    public void addWish(Long id, Long productid) {
+        wishDao.addWish(id, productid);
+    }
+
+    public void deleteWish(Long id, Long productid) {
+        wishDao.deleteWish(id, productid);
+    }
+
+    public List<Wish> getAllWish(Long id) {
+        return wishDao.getAllWish(id);
+    }
 }

@@ -38,7 +38,6 @@ public class AdminProductController {
         if (!product.getName().contains("카카오")) {
             product.setMdApproved(true);
         }
-        System.out.println(product.getMdApproved());
         productDao.insertProduct(product);
         return "redirect:/admin/products";
     }
