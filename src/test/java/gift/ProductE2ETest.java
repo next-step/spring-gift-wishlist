@@ -6,11 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import gift.api.domain.MemberRole;
-import gift.api.dto.MemberRequestDto;
-import gift.api.dto.ProductRequestDto;
-import gift.api.dto.ProductResponseDto;
-import gift.api.dto.TokenResponseDto;
+import gift.api.member.domain.MemberRole;
+import gift.api.member.dto.MemberRequestDto;
+import gift.api.member.dto.TokenResponseDto;
+import gift.api.product.dto.ProductRequestDto;
+import gift.api.product.dto.ProductResponseDto;
 import java.util.List;
 import java.util.Objects;
 import org.junit.jupiter.api.AfterEach;

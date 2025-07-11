@@ -1,6 +1,6 @@
 package gift.util;
 
-import gift.api.domain.MemberRole;
+import gift.api.member.domain.MemberRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

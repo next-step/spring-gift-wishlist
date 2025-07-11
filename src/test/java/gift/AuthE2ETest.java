@@ -3,8 +3,8 @@ package gift;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import gift.api.dto.MemberRequestDto;
-import gift.api.dto.TokenResponseDto;
+import gift.api.member.dto.MemberRequestDto;
+import gift.api.member.dto.TokenResponseDto;
 import java.util.Objects;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

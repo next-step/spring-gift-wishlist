@@ -1,8 +1,8 @@
 package gift.front.controller;
 
-import gift.api.domain.MemberRole;
-import gift.api.dto.ProductRequestDto;
-import gift.api.service.ProductService;
+import gift.api.member.domain.MemberRole;
+import gift.api.product.dto.ProductRequestDto;
+import gift.api.product.service.ProductService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;

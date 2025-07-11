@@ -1,8 +1,8 @@
 package gift.config;
 
-import gift.api.domain.Member;
-import gift.api.domain.MemberRole;
-import gift.api.repository.MemberRepository;
+import gift.api.member.domain.Member;
+import gift.api.member.domain.MemberRole;
+import gift.api.member.repository.MemberRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;

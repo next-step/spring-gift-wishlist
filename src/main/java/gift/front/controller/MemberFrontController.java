@@ -1,7 +1,7 @@
 package gift.front.controller;
 
-import gift.api.service.ProductService;
-import gift.api.service.WishlistService;
+import gift.api.product.service.ProductService;
+import gift.api.wishlist.service.WishlistService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
