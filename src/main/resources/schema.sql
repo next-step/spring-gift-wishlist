@@ -12,3 +12,10 @@ CREATE TABLE member (
                         role VARCHAR(50) NOT NULL
 );
 
+CREATE TABLE wish (
+                      id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                      member_id BIGINT NOT NULL,
+                      product_id BIGINT NOT NULL
+);
+
+
