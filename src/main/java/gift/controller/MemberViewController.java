@@ -49,8 +49,6 @@ public class MemberViewController {
         Optional<Member> member = memberService.getMemberByEmail(email);
         if(member.isEmpty()){
             throw new MyException(ErrorCode.MEMBER_NOT_FOUND);
-            //String errMsg = "email이 " + email +"인 회원은 존재하지 않습니다.";
-            //throw new MemberNotFoundException(errMsg);
         }
         model.addAttribute("member", member.get());
         return "members/memberinfo";

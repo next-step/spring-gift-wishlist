@@ -1,11 +1,11 @@
-package yjshop.controller;
+package gift.yjshop.controller;
 
+import gift.dto.MemberRequestDto;
+import gift.entity.Member;
+import gift.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Optional;
-import yjshop.dto.MemberRequestDto;
-import yjshop.entity.Member;
-import yjshop.service.MemberService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;

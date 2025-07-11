@@ -1,6 +1,5 @@
 package gift;
 
-import gift.entity.LoggedInMember;
 import gift.service.JwtAuthService;
 import gift.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,7 +32,6 @@ public class LoggedInMemberArgumentResolver implements HandlerMethodArgumentReso
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
             NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) webRequest.getNativeRequest();
         String token = httpServletRequest.getHeader("Authorization"); //토큰 꺼내기

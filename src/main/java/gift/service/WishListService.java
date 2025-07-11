@@ -29,7 +29,6 @@ public class WishListService {
         Optional<Product> productOptional = productRepository.findById(requestDto.productId());
         if(productOptional.isEmpty()) {
             throw new MyException(ErrorCode.PRODUCT_NOT_FOUND);
-            //throw new ProductNotFoundException("해당 상품은 존재하지 않는 상품입니다.");
         }
 
         //이미 장바구니에 해당 상품이 있는 경우에는 수량만 업데이트

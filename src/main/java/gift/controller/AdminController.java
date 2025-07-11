@@ -78,8 +78,6 @@ public class AdminController {
 
         Optional<Product> product = productService.findOne(id);
         if (product.isEmpty()) {
-            //String errorMsg = "상품 ID가 " + id + "인 상품은 존재하지 않습니다.";
-            //throw new ProductNotFoundException(errorMsg);
             throw new MyException(ErrorCode.PRODUCT_NOT_FOUND);
         }
         model.addAttribute("product", product.get());

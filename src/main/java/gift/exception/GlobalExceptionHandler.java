@@ -1,7 +1,5 @@
 package gift.exception;
 
-import gift.exception.old.JwtValidationFailException;
-import gift.exception.old.MemberNotFoundException;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -26,24 +24,6 @@ public class GlobalExceptionHandler {
         }
 
         return null;
-    }
-
-//    @ExceptionHandler(ProductNotFoundException.class)
-//    public String handleNotFoundException(ProductNotFoundException e, Model model){
-//        model.addAttribute("errorMsg", e.getMessage());
-//        return "ProductNotFound";
-//    }
-
-    @ExceptionHandler(MemberNotFoundException.class)
-    public String handleMemberNotFound(MemberNotFoundException e, Model model){
-        model.addAttribute("errorMsg", e.getMessage());
-        return "members/membernotfound";
-    }
-
-    @ExceptionHandler(JwtValidationFailException.class)
-    public String handleJewValidationFailure(JwtValidationFailException e){
-        System.out.println("e.getMessage() = " + e.getMessage());
-        return "redirect:/view/products/list";
     }
 
 }

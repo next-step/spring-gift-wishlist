@@ -1,5 +1,6 @@
-package yjshop.interceptor;
+package gift.yjshop.interceptor;
 
+import gift.yjshop.service.AuthServiceJWTandCookie;
 import groovy.util.logging.Slf4j;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,7 +11,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import yjshop.service.AuthServiceJWTandCookie;
 
 @Slf4j
 @Component

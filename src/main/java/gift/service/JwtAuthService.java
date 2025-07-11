@@ -1,6 +1,5 @@
 package gift.service;
 
-import gift.dto.MemberRequestDto;
 import gift.exception.ErrorCode;
 import gift.exception.MyException;
 import groovy.util.logging.Slf4j;
@@ -8,9 +7,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 //JWT와 관련된 서비스 :
 @Slf4j
@@ -43,9 +40,8 @@ public class JwtAuthService {
     //TODO: 토큰을 검증 -> 로그인 이후의 동작 (wishList -> 사용자별 wishList 존재)
     public void checkValidation(String bearerToken) {
 
-        if(!bearerToken.startsWith("Bearer ")){
+        if(bearerToken==null || !bearerToken.startsWith("Bearer ")){
             throw new MyException(ErrorCode.JWT_VALIDATION_FAIL);
-            //throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다.");
         }
 
         try{
@@ -56,7 +52,6 @@ public class JwtAuthService {
             //Authorization 헤더가 유효하지 않거나 토큰이 유효하지 않은 경우 401 Unauthorized 반환
             log.info("토큰검증에 실패했습니다.");
             throw new MyException(ErrorCode.JWT_VALIDATION_FAIL);
-            //throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다.");
         }
     }
 

@@ -1,10 +1,12 @@
-package yjshop.interceptor;
+package gift.yjshop.interceptor;
 
+import gift.exception.ErrorCode;
+import gift.exception.MyException;
+import gift.yjshop.service.AuthServiceJWTandCookie;
 import groovy.util.logging.Slf4j;
 import jakarta.servlet.http.Cookie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import yjshop.service.AuthServiceJWTandCookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.lang.Nullable;
@@ -28,23 +30,32 @@ public class LoginChecker implements HandlerInterceptor {
 
         //컨트롤러가 호출되기 전에 실행됨
         log.info("[interceptor] preHandle");
-
         String token = null;
-        Cookie[] cookies = request.getCookies();
-        for(Cookie c : cookies){
-            if(c.getName().equals("yjtoken")){
-                token = c.getValue();
+
+        try{
+            Cookie[] cookies = request.getCookies();
+            for(Cookie c : cookies){
+                if(c.getName().equals("yjtoken")){
+                    token = c.getValue();
+                }
             }
         }
+        catch (NullPointerException e){
+            log.info("쿠키가 존재하지 않음"); //쿠키가 존재하지 않는 경우,,,
+            response.sendRedirect("/view/loginform"); //로그인 화면으로 유도
+            return false; //컨트롤러가 동작하지 않는다.
+        }
 
-        //토큰이 없다면 -> 로그인 페이지로 이동시키기
+        //쿠키에 토큰이 없다면 -> 로그인 페이지로 이동시키기
         if(token == null){
             response.sendRedirect("/view/loginform");
             return false; //컨트롤러가 동작하지 않는다.
         }
 
         //토큰의 유효성을 확인하기
+        log.info("로그인 정보를 확인 중,,,");
         authServiceJWTandCookie.checkValidation(token);
+        log.info("JWT 토큰 검증 성공,,,");
         return true; //컨트롤러가 동작
     }
 

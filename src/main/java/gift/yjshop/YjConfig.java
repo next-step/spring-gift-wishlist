@@ -1,7 +1,7 @@
-package yjshop;
+package gift.yjshop;
 
-import yjshop.interceptor.LoginInterceptor;
-import yjshop.interceptor.LoginChecker;
+import gift.yjshop.interceptor.LoginInterceptor;
+import gift.yjshop.interceptor.LoginChecker;
 import java.util.List;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -9,26 +9,26 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class WebMvcConfig implements WebMvcConfigurer {
+public class YjConfig implements WebMvcConfigurer {
 
     private final LoginInterceptor loginInterceptor;
     private final LoginChecker loginChecker;
-    private final LoggedInUserArgumentResolver loggedInUserArgumentResolver;
+    private final YjArgumentResolver yjArgumentResolver;
 
 
-    public WebMvcConfig(
+    public YjConfig(
             LoginInterceptor loginInterceptor,
             LoginChecker loginChecker,
-            LoggedInUserArgumentResolver loggedInUserArgumentResolver
+            YjArgumentResolver yjArgumentResolver
     ) {
         this.loginInterceptor = loginInterceptor;
         this.loginChecker = loginChecker;
-        this.loggedInUserArgumentResolver = loggedInUserArgumentResolver;
+        this.yjArgumentResolver = yjArgumentResolver;
     }
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(loggedInUserArgumentResolver);
+        resolvers.add(yjArgumentResolver);
     }
 
     @Override

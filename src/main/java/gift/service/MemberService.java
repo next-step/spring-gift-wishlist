@@ -5,13 +5,10 @@ import gift.dto.MemberRequestDto;
 import gift.exception.ErrorCode;
 import gift.exception.MyException;
 import gift.repository.MemberRepository;
-import gift.repository.MemberRepositoryImpl;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class MemberService {
@@ -29,7 +26,6 @@ public class MemberService {
         //중복을 확인 - memberService내에서 이미 등록된 메일이라면 예외를 던져서 예외처리로 HttpRepsonse를 내는 방식이 좋을것 같아요
         if(getMemberByEmail(memberRequestDto.email()).isPresent()){ //중복이라면,,,
             throw new MyException(ErrorCode.UNAVAILABLE_EMAIL);
-            //throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 사용중인 이메일 입니다.");
         }
         //중복된 이메일이 아니라면 회원가입을 진행
         Member member = new Member(memberRequestDto.email(), memberRequestDto.password());
