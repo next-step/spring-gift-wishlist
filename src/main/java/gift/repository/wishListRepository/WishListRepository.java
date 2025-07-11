@@ -10,10 +10,6 @@ public interface WishListRepository {
 
     List<WishItem> getAllWishItems(Long userId);
 
-    List<WishItem> getWishItems(String name, Integer price, String userEmail);
-
-    WishItem deleteItem(String name, String userEmail);
-
     WishItem updateWishItem(Integer quantity, Long itemId, Long userId);
 
     void deleteWishItem(Long userId, Long itemId);
