@@ -2,9 +2,10 @@ package gift.auth.controller;
 
 import gift.auth.domain.CustomUserDetails;
 import gift.auth.dto.LoginRequestDto;
+import gift.auth.dto.LoginResponseDto;
 import gift.auth.dto.MemberRegisterRequestDto;
 import gift.auth.dto.RefreshTokenRequestDto;
-import gift.auth.dto.TokenResponseDto;
+import gift.auth.dto.RegisterMemberResponseDto;
 import gift.auth.service.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -24,21 +25,21 @@ public class AuthController {
   }
 
   @PostMapping("/register")
-  public ResponseEntity<TokenResponseDto> registerMember(
+  public ResponseEntity<RegisterMemberResponseDto> registerMember(
       @RequestBody MemberRegisterRequestDto dto) {
-    TokenResponseDto responseDto = authService.registerMember(dto);
+    RegisterMemberResponseDto responseDto = authService.registerMember(dto);
     return ResponseEntity.ok(responseDto);
   }
 
   @PostMapping("/login")
-  public ResponseEntity<TokenResponseDto> login(@RequestBody LoginRequestDto dto) {
-    TokenResponseDto responseDto = authService.login(dto);
+  public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto dto) {
+    LoginResponseDto responseDto = authService.login(dto);
     return ResponseEntity.ok(responseDto);
   }
 
   @PostMapping("/refresh")
-  public ResponseEntity<TokenResponseDto> refreshToken(@RequestBody RefreshTokenRequestDto dto) {
-    TokenResponseDto responseDto = authService.refreshToken(dto);
+  public ResponseEntity<LoginResponseDto> refreshToken(@RequestBody RefreshTokenRequestDto dto) {
+    LoginResponseDto responseDto = authService.refreshToken(dto);
     return ResponseEntity.ok(responseDto);
   }
 
