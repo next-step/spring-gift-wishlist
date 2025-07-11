@@ -9,6 +9,8 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import org.springframework.http.HttpHeaders;
+
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final JwtUtil jwtUtil;
@@ -29,7 +31,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
                                   org.springframework.web.bind.support.WebDataBinderFactory binderFactory) {
 
         HttpServletRequest request = ((ServletWebRequest) webRequest).getRequest();
-        String authHeader = request.getHeader("Authorization");
+        String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return null;
