@@ -15,3 +15,14 @@ Create table Member(
     role varchar(10),
     primary key (id)
 );
+
+
+CREATE TABLE Wish (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    member_id BIGINT ,
+    product_id BIGINT,
+    quantity INT ,
+
+    FOREIGN KEY (member_id) REFERENCES Member(id),
+    FOREIGN KEY (product_id) REFERENCES Product(id)
+);
