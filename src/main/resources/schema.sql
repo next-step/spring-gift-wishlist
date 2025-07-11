@@ -10,9 +10,20 @@ CREATE TABLE products
 
 CREATE TABLE users
 (
-    memberId       BIGINT AUTO_INCREMENT,
+    memberId BIGINT AUTO_INCREMENT,
     email    VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
-    role     VARCHAR(10) NOT NULL DEFAULT 'USER',
-    PRIMARY KEY(memberId)
+    role     VARCHAR(10)  NOT NULL DEFAULT 'USER',
+    PRIMARY KEY (memberId)
+);
+
+CREATE TABLE wishes
+(
+    wishId    BIGINT AUTO_INCREMENT,
+    memberId  BIGINT NOT NULL,
+    productId BIGINT NOT NULL,
+    FOREIGN KEY (memberId) REFERENCES members (memberId) ON DELETE CASCADE,
+    FOREIGN KEY (productId) REFERENCES products (id) ON DELETE CASCADE,
+    PRIMARY KEY (wishId)
+        UNIQUE (memberId, productId)
 );
