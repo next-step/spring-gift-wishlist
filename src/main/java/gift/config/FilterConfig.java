@@ -2,7 +2,7 @@ package gift.config;
 
 import gift.filter.ExceptionHandlerFilter;
 import gift.filter.JwtAuthenticationFilter;
-import gift.JwtUtil;
+import gift.util.JwtUtil;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
