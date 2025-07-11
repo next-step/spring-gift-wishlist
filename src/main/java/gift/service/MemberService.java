@@ -25,6 +25,7 @@ public class MemberService {
     }
 
     public String register(MemberRegisterRequestDto requestDto) {
+
         if (memberRepository.existsByEmail(requestDto.email())) {
             throw new EmailAlreadyExistsException();
         }
@@ -32,16 +33,19 @@ public class MemberService {
         String encodedPassword = passwordEncoder.encode(requestDto.password());
 
         Member member = new Member(requestDto.email(), encodedPassword);
+
         Member saved = memberRepository.save(member);
 
         return jwtProvider.createToken(saved);
     }
 
     public String login(MemberLoginRequestDto requestDto) {
+
         Member member = memberRepository.findByEmail(requestDto.email())
                 .orElseThrow(InvalidLoginException::new);
 
         if (!passwordEncoder.matches(requestDto.password(), member.getPassword())) {
+
             throw new InvalidLoginException();
         }
 
