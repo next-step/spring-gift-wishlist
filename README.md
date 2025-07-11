@@ -89,3 +89,64 @@
 - 코드 중복 해결
   - 메서드로 분리
   - HandlerMethodArgumentResolver 활용 커스텀 어노테이션으로 공통 로그인 로직 분리
+
+# step3
+- 사용자는 위시를 등록할 수 있다
+  - 회원은 각 상품별로 위시를 등록할 수 있다
+    - Request: 'POST /api/wishes'
+      {
+      "productId":3,
+      "quantity":1
+      }
+    - Response: 201 CREATED
+      {
+      "productResponseDto": {
+      "id": 3,
+      "name": "식빵",
+      "price": 5000,
+      "imageUrl": "abcdef"
+      },
+      "quantity": 1
+      }
+  - 회원은 자신의 위시리스트를 조회할 수 있다
+    - Request: 'GET /api/wishes'
+    - Response: 200 OK
+      [
+      {
+      "productResponseDto": {
+      "id": 3,
+      "name": "식빵",
+      "price": 5000,
+      "imageUrl": "abcdef"
+      },
+      "quantity": 1
+      },
+      {
+      "productResponseDto": {
+      "id": 2,
+      "name": "붕어빵",
+      "price": 1000,
+      "imageUrl": "abcdef"
+      },
+      "quantity": 2
+      }
+      ]
+  - 회원은 위시의 수량을 변경할 수 있다
+    - Request: 'PATCH /api/wishes/{productId}'
+      {
+      "quantity":1
+      }
+    - Response: 200 OK
+      {
+      "productResponseDto": {
+      "id": 3,
+      "name": "식빵",
+      "price": 5000,
+      "imageUrl": "abcdef"
+      },
+      "quantity": 1
+      }
+  - 회원은 위시를 삭제할 수 있다
+    - Request: 'DELETE /api/wishes/{productId}'
+    - Response: 204 NO_CONTENT
+- 로그인 시 사용자 검증 인터셉터로 이동
