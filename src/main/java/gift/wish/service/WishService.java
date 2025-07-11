@@ -1,5 +1,6 @@
 package gift.wish.service;
 
+import gift.exception.BusinessException;
 import gift.product.dto.ProductResponseDto;
 import gift.product.service.ProductService;
 import gift.wish.dao.WishDao;
@@ -32,4 +33,7 @@ public class WishService {
         .collect(Collectors.toList());
   }
 
+  public void deleteWish(Long memberId, Long productId) {
+    wishDao.deleteWish(memberId, productId);
+  }
 }

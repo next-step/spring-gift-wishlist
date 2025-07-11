@@ -1,5 +1,7 @@
 package gift.wish.dao;
 
+import gift.exception.BusinessException;
+import gift.exception.ErrorCode;
 import gift.product.dto.ProductResponseDto;
 import gift.user.domain.Role;
 import gift.wish.dto.WishResponseDto;
@@ -45,5 +47,19 @@ public class WishDao {
         .param(memberId)
         .query(Long.class)
         .list();
+  }
+
+  public void deleteWish(Long memberId, Long productId) {
+    String sql = "DELETE FROM wishes WHERE memberId = ? AND productId = ?";
+
+    int deletedRow = jdbcClient.sql(sql)
+        .param(memberId)
+        .param(productId)
+        .update();
+
+    if (deletedRow == 0) {
+      throw new BusinessException(ErrorCode.WISH_NOT_FOUND);
+    }
+
   }
 }
