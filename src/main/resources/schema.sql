@@ -18,6 +18,5 @@ create table wish
 (
     id bigint AUTO_INCREMENT,
     productId bigint,
-    memberId bigint,
-    quantity int
+    memberId bigint
 );
