@@ -91,5 +91,4 @@ class UserLoginTest {
         () -> assertThat(response.getBody().getRefreshToken()).isNotBlank()
     );
   }
-
 }
