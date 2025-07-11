@@ -4,6 +4,8 @@ import gift.entity.Wish;
 import java.util.List;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -23,21 +25,20 @@ public class WishRepositoryJDBCImpl implements WishRepository {
 
     @Override
     public Wish save(Wish wish) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
         jdbcClient.sql("""
                     INSERT INTO wish (user_id, product_id)
                     VALUES (:userId, :productId)
                 """)
             .param("userId", wish.getUserId())
             .param("productId", wish.getProductId())
-            .update();
+            .update(keyHolder);
 
-        return jdbcClient.sql("""
-                    SELECT * FROM wish
-                    WHERE user_id = :userId AND product_id = :productId
-                    ORDER BY id DESC LIMIT 1
-                """)
-            .param("userId", wish.getUserId())
-            .param("productId", wish.getProductId())
+        Long generatedId = keyHolder.getKey().longValue();
+
+        return jdbcClient.sql("SELECT * FROM wish WHERE id = :id")
+            .param("id", generatedId)
             .query(ROW_MAPPER)
             .single();
     }
