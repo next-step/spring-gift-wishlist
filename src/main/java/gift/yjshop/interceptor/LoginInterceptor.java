@@ -26,7 +26,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable ModelAndView modelAndView) throws Exception {;
-        log.info("[interceptor] postHandle");
+        log.info("[LoginInterceptor] postHandle");
 
         if(response.getStatus() == HttpServletResponse.SC_CREATED || response.getStatus() == HttpServletResponse.SC_CREATED){
             log.info("로그인 인증 중....");

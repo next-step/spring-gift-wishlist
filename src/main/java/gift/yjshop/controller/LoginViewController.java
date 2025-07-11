@@ -1,6 +1,7 @@
 package gift.yjshop.controller;
 
 import gift.dto.MemberRequestDto;
+import gift.dto.Role;
 import gift.entity.Member;
 import gift.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,6 +27,11 @@ public class LoginViewController {
 
     public LoginViewController(MemberService memberService){
         this.memberService = memberService;
+    }
+
+    @GetMapping
+    public String home(){
+        return "redirect:/view/products/list";
     }
 
     //회원 가입 화면을 보여주는 메서드
@@ -57,6 +63,7 @@ public class LoginViewController {
         request.setAttribute("memberId", member.getMemberId());
         request.setAttribute("role", member.getRole());
         response.setStatus(HttpServletResponse.SC_CREATED);
+
         return "redirect:/view/loginform";
     }
 
@@ -86,9 +93,15 @@ public class LoginViewController {
         }
 
         //서버에 저장된 id-pw 쌍과 일치한다면 토큰을 발급
-        Optional<Member> member = memberService.getMemberByEmail(memberRequestDto.email());
-        request.setAttribute("memberId", member.get().getMemberId());
+        Member member = memberService.getMemberByEmail(memberRequestDto.email()).get();
+        request.setAttribute("memberId", member.getMemberId());
+        request.setAttribute("role", member.getRole());
         response.setStatus(HttpServletResponse.SC_CREATED);
+
+        if(member.getRole().equals(Role.ADMIN)){
+            return "redirect:/view/admin/products";
+        }
+
         return "redirect:/view/products/list";
     }
 

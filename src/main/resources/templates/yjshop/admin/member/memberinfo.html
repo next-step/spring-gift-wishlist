@@ -1,0 +1,50 @@
+<html layout:decorate="~{yjshop/admin/layout}">
+<div layout:fragment="content">
+
+  <nav>
+    <div>
+      <ul>
+        <li><a th:href="@{/view/admin/members}">전체 회원 조회</a></li>
+        <li><a th:href="@{/view/admin/members/add}">회원 등록 하기</a></li>
+        <form th:action="@{/view/admin/members/search}" method="get">
+          <input type="email" name="email" placeholder="회원 이메일 조회">
+          <input type="submit" value="회원 검색하기">
+        </form>
+      </ul>
+    </div>
+  </nav>
+
+  <table>
+    <thead>
+    <tr>
+      <th>회원ID</th>
+      <th>이메일</th>
+      <th>권한</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr>
+      <td th:text="${member.memberId}"></td>
+      <td th:text="${member.email}"></td>
+      <td th:text="${member.role}"></td>
+
+      <td>
+        <form th:action="@{/view/admin/members/modify/{id}(id=${member.memberId})}" method="post">
+          <button type="submit">회원 수정</button>
+        </form>
+
+        <form th:action="@{/view/admin/members/remove/{id}(id=${member.memberId})}" method="post">
+          <button type="submit">회원 삭제</button>
+        </form>
+      </td>
+
+
+    </tr>
+    </tbody>
+  </table>
+
+
+</div>
+</html>

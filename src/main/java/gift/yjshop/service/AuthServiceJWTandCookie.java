@@ -24,13 +24,16 @@ public class AuthServiceJWTandCookie {
     }
 
     //payload의 정보를 추출하는 함수
-    public Role getMemberRole(String token){
+    public String getMemberRole(String token){
+
+        System.out.println("token = " + token);
+
         return Jwts.parser()
                 .verifyWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
                 .build()
                 .parseSignedClaims(token)
                 .getPayload()
-                .get("role", Role.class);
+                .get("role", String.class);
     }
 
     //토큰 생성
@@ -38,7 +41,7 @@ public class AuthServiceJWTandCookie {
         return Jwts.builder()
                 .claim("email", email)
                 .claim("memberId", memberId)
-                .claim("role", role)
+                .claim("role", role.toString())
                 .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
                 .compact();
     }

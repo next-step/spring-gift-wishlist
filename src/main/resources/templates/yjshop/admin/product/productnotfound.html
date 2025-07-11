@@ -1,0 +1,17 @@
+<html layout:decorate="~{yjshop/admin/layout}">
+<div layout:fragment="content">
+  <nav>
+    <div>
+      <ul>
+        <li><a th:href="@{/view/admin/products}">전체 상품 보기</a></li>
+        <li><a th:href="@{/view/admin/products/add}">상품 등록 하기</a></li>
+        <form th:action="@{/view/admin/products/search}" method="get">
+          <input type="number" name="id" placeholder="상품 아이디 입력">
+          <input type="submit" value="상품 검색하기">
+        </form>
+      </ul>
+    </div>
+  </nav>
+  <p th:text="${errorMsg}"></p>
+</div>
+</html>

@@ -1,0 +1,50 @@
+<html layout:decorate="~{yjshop/admin/layout}">
+<div layout:fragment="content">
+
+  <nav>
+    <div>
+      <ul>
+        <li><a th:href="@{/view/admin/products}">전체 상품 보기</a></li>
+        <li><a th:href="@{/view/admin/products/add}">상품 등록 하기</a></li>
+        <form th:action="@{/view/admin/products/search}" method="get">
+          <input type="number" name="id" placeholder="상품 아이디 입력">
+          <input type="submit" value="상품 검색하기">
+        </form>
+      </ul>
+    </div>
+  </nav>
+
+  <table>
+
+    <thead>
+    <tr>
+      <th>상품ID</th>
+      <th>상품명</th>
+      <th>가격</th>
+      <th>이미지</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="product : ${productList}">
+      <td th:text="${product.id}"></td>
+      <td th:text="${product.name}"></td>
+      <td th:text="${product.price}"></td>
+      <td><img th:src="${product.imageUrl}" width="100px" alt = "상품 이미지"></td>
+
+
+      <td>
+        <form th:action="@{/view/admin/products/remove/{id}(id=${product.id})}" method="post">
+          <button type="submit">상품 삭제</button>
+        </form>
+        <button th:onclick="|location.href='@{/view/admin/products/modify/{id}(id=${product.id})}'|">상품 수정</button>
+      </td>
+
+
+    </tr>
+    </tbody>
+  </table>
+
+</div>
+</html>

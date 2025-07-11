@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -59,6 +60,12 @@ public class ProductViewController {
         List<Product> product = productService.searchProduct(name);
         model.addAttribute("productList", product);
         return "/yjshop/home";
+    }
+
+    @ExceptionHandler(MyException.class)
+    public String MyExceptionHandler(MyException e, Model model){
+        model.addAttribute("errorMsg", e.getErrorCode().getMessage());
+        return "/yjshop/admin/member/membernotfound";
     }
 
 }

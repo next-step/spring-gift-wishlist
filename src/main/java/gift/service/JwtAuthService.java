@@ -30,14 +30,14 @@ public class JwtAuthService {
     }
 
     //payload의 정보를 추출하는 함수
-    public Role getMemberRole(String bearerToken){
+    public String getMemberRole(String bearerToken){
         String token = bearerToken.split(" ")[1]; //접두사 제거
         return Jwts.parser()
                 .verifyWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
                 .build()
                 .parseSignedClaims(token)
                 .getPayload()
-                .get("role", Role.class);
+                .get("role", String.class);
     }
 
     //TODO: 토큰 생성
@@ -45,7 +45,7 @@ public class JwtAuthService {
         return Jwts.builder()
                 .claim("email", email)
                 .claim("memberId", memberId)
-                .claim("role", role)
+                .claim("role", role.toString())
                 .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
                 .compact();
     }
