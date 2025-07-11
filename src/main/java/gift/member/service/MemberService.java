@@ -51,7 +51,7 @@ public class MemberService {
     public void updatePassword(Member member, MemberUpdateRequest request) {
         checkPassword(member, request.password(), "현재 비밀번호가 일치하지 않습니다.");
 
-        memberRepository.updatePassword(member.getId(), request.password());
+        memberRepository.updatePassword(member.getId(), request.newPassword());
     }
 
     public void deleteMember(Member member, String password) {
@@ -61,7 +61,7 @@ public class MemberService {
     }
 
     private void checkPassword(Member member, String password, String msg) {
-        if(member.getPassword().equals(password)) {
+        if(!member.getPassword().equals(password)) {
             throw new IllegalArgumentException(msg);
         }
     }
