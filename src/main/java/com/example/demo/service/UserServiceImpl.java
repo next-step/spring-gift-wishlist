@@ -41,4 +41,15 @@ public class UserServiceImpl implements UserService{
     }
     userRepository.deleteByEmail(email);
   }
+
+  @Override
+  public void signup(UserRequestDto dto) {
+    if (userRepository.existsByEmail(dto.getEmail())) {
+      throw new IllegalArgumentException("이미 가입된 이메일입니다.");
+    }
+
+    String hashedPassword = PasswordHasher.hash(dto.getPassword());
+    User user = new User(dto.getEmail(), hashedPassword, "USERS");
+    userRepository.saveUser(user);
+  }
 }
