@@ -30,6 +30,12 @@ public class GlobalExceptionHandler {
             .body(ex.getMessage());
     }
 
+    @ExceptionHandler(WishlistNotFoundException.class)
+    public ResponseEntity<String> handleWishlistNotFoundException(WishlistNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .body(ex.getMessage());
+    }
+
     @ExceptionHandler(MemberEmailAlreadyExistsException.class)
     public ResponseEntity<String> handleMemberEmailAlreadyExists(MemberEmailAlreadyExistsException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)

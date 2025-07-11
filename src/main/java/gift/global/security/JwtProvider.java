@@ -57,4 +57,8 @@ public class JwtProvider {
     public boolean isTokenExpired(String token) {
         return parseToken(token).getExpiration().before(new Date());
     }
+
+    public Long getMemberId(String token) {
+        return Long.parseLong(parseToken(token).getSubject());
+    }
 }

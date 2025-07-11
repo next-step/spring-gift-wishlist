@@ -11,3 +11,10 @@ CREATE TABLE members (
   email VARCHAR(255) NOT NULL,
   password VARCHAR(255) NOT NULL
 );
+
+CREATE TABLE wishlist (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  member_id BIGINT,
+  product_id BIGINT,
+  amount INT
+)

@@ -3,10 +3,10 @@ package gift.product.entity;
 import gift.product.dto.ProductRequestDto;
 
 public class Product {
-    private Long id;
-    private String name;
-    private Integer price;
-    private String imageUrl;
+    private final Long id;
+    private final String name;
+    private final Integer price;
+    private final String imageUrl;
 
     public Long getId() {
         return id;
