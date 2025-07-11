@@ -19,13 +19,13 @@ public class AuthService {
 
     public AuthResponseDto register(MemberRequestDto memberRequestDto) {
         Member member = memberService.creatMember(memberRequestDto);
-        String token = jwtTokenProvider.makeJwtToken(member.id());
+        String token = jwtTokenProvider.makeJwtToken(member.getId());
         return new AuthResponseDto(token);
     }
 
     public AuthResponseDto login(MemberRequestDto memberRequestDto) {
         Member member = memberService.login(memberRequestDto);
-        String token = jwtTokenProvider.makeJwtToken(member.id());
+        String token = jwtTokenProvider.makeJwtToken(member.getId());
         return new AuthResponseDto(token);
     }
 }

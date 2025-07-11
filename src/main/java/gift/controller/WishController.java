@@ -23,7 +23,7 @@ public class WishController {
     public ResponseEntity<WishesResponseDto> getWishList(@LoginMember Member member) {
         return ResponseEntity.ok(
             new WishesResponseDto(
-                    wishService.getWishList(member.id())
+                    wishService.getWishList(member.getId())
             )
         );
     }
@@ -35,7 +35,7 @@ public class WishController {
             @RequestBody WishRequestDto wishRequestDto
             ) {
         wishService.saveWish(
-                member.id(),
+                member.getId(),
                 productId,
                 wishRequestDto.count()
         );
@@ -51,7 +51,7 @@ public class WishController {
             @RequestBody WishRequestDto wishRequestDto
     ) {
         wishService.updateWishCount(
-                member.id(),
+                member.getId(),
                 productId,
                 wishRequestDto.count()
         );
