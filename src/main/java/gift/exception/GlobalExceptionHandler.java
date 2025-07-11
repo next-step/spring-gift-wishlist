@@ -102,6 +102,19 @@ public class GlobalExceptionHandler {
     model.addAttribute("error", ex.getMessage());
     return "wishlist/list";
   }
+
+  @ExceptionHandler(RuntimeException.class)
+  public String handleRuntimeException(RuntimeException ex,
+      HttpServletResponse response,
+      Model model ,
+      @LoginMember Member member) {
+    response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+    List<WishItem> wishList = wishlistService.getWishList(member.getId());
+    model.addAttribute("wishList", wishList);
+    model.addAttribute("error", ex.getMessage());
+    return "wishlist/list";
+  }
+
 }
 
 

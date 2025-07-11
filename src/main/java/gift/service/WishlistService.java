@@ -47,8 +47,12 @@ public class WishlistService {
   }
 
   public void deleteWishListItem(Long memberId, Long productId) {
-    wishlistRepository.delete(memberId, productId);
+    int rowsAffected = wishlistRepository.delete(memberId, productId);
+    if (rowsAffected == 0) {
+      throw new RuntimeException("삭제할 찜 항목이 존재하지 않습니다.");
+    }
   }
+
 
 }
 
