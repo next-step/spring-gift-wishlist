@@ -1,7 +1,7 @@
 package gift.product.repository;
 
 import gift.product.domain.Product;
-import gift.product.dto.RequestDto;
+import gift.product.dto.ProductPatchRequestDto;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
@@ -44,22 +44,22 @@ public class ProductDao {
     }
 
     @Transactional
-    public Product update(UUID id, RequestDto requestDto) {
-        if (requestDto.getName() != null) {
+    public Product update(UUID id, ProductPatchRequestDto productPatchRequestDto) {
+        if (productPatchRequestDto.getName() != null) {
             jdbcClient.sql("UPDATE PRODUCTS SET name = :name WHERE id = :id")
-                    .param("name", requestDto.getName())
+                    .param("name", productPatchRequestDto.getName())
                     .param("id", id)
                     .update();
         }
-        if (requestDto.getPrice() != 0) {
+        if (productPatchRequestDto.getPrice() != null) {
             jdbcClient.sql("UPDATE PRODUCTS SET price = :price WHERE id = :id")
-                    .param("price", requestDto.getPrice())
+                    .param("price", productPatchRequestDto.getPrice())
                     .param("id", id)
                     .update();
         }
-        if (requestDto.getImageUrl() != null) {
+        if (productPatchRequestDto.getImageUrl() != null) {
             jdbcClient.sql("UPDATE PRODUCTS SET imageUrl = :imageUrl WHERE id = :id")
-                    .param("imageUrl", requestDto.getImageUrl())
+                    .param("imageUrl", productPatchRequestDto.getImageUrl())
                     .param("id", id)
                     .update();
         }

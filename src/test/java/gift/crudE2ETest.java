@@ -1,6 +1,7 @@
 package gift;
 
-import gift.product.dto.RequestDto;
+import gift.product.dto.ProductPatchRequestDto;
+import gift.product.dto.ProductSaveRequestDto;
 import gift.product.dto.ResponseDto;
 import gift.product.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,38 +33,38 @@ class crudE2ETest {
 
     @BeforeEach
     void setUp() {
-        RequestDto requestDto = new RequestDto("testProduct1", 1000, "imageUrl1");
-        productService.saveProduct(requestDto);
+        ProductSaveRequestDto productSaveRequestDto = new ProductSaveRequestDto("testProduct1", 1000, "imageUrl1");
+        productService.saveProduct(productSaveRequestDto);
         lastUUID = productService.findAll().getLast().getId();
     }
 
     @Test
-    void productCreateTest() {
+    void 상품이_정상적으로_생성됨() {
         String url = "http://localhost:" + port + "/api/product/add";
-        RequestDto requestDto = new RequestDto("testProduct2", 2000, "imageUrl2");
+        ProductSaveRequestDto productSaveRequestDto = new ProductSaveRequestDto("testProduct2", 2000, "imageUrl2");
         ResponseEntity<ResponseDto> response = restClient
                 .post()
                 .uri(url)
-                .body(requestDto)
+                .body(productSaveRequestDto)
                 .retrieve()
                 .toEntity(ResponseDto.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody())
                 .extracting("name", "price", "imageUrl")
-                .containsExactly(requestDto.getName(), requestDto.getPrice(), requestDto.getImageUrl());
+                .containsExactly(productSaveRequestDto.getName(), productSaveRequestDto.getPrice(), productSaveRequestDto.getImageUrl());
     }
 
     @Test
-    void productCreateWithSpecialCharacterTest() {
+    void 상품_생성요청에서_이름에_특수문자를_포함할_시_400_반환() {
         String url = "http://localhost:" + port + "/api/product/add";
-        RequestDto requestDto = new RequestDto("testProduct2!?", 2000, "imageUrl2");
+        ProductSaveRequestDto productSaveRequestDto = new ProductSaveRequestDto("testProduct2!?", 2000, "imageUrl2");
         assertThatExceptionOfType(HttpClientErrorException.BadRequest.class)
                 .isThrownBy(
                         () -> restClient
                                 .post()
                                 .uri(url)
-                                .body(requestDto)
+                                .body(productSaveRequestDto)
                                 .retrieve()
                                 .toEntity(String.class)
                 )
@@ -73,7 +74,7 @@ class crudE2ETest {
     }
 
     @Test
-    void productReadTest() {
+    void 상품이_정상적으로_조회() {
         String url = "http://localhost:" + port + "/api/product/" + lastUUID;
         ResponseEntity<ResponseDto> response = restClient
                 .get()
@@ -87,7 +88,7 @@ class crudE2ETest {
     }
 
     @Test
-    void productReadNotFoundTest() {
+    void 존재하지_않는_상품에_대한_조회요청_시_404_반환() {
         String url = "http://localhost:" + port + "/api/product/" + "00000000-0000-0000-0000-000000000000";
         assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
                 .isThrownBy(
@@ -103,13 +104,13 @@ class crudE2ETest {
     }
 
     @Test
-    void productUpdateTest() {
+    void 상품이_정상적으로_수정() {
         String url = "http://localhost:" + port + "/api/product/" + lastUUID + "/update";
-        RequestDto requestDto = new RequestDto("updatedName", 10, "updatedUrl");
+        ProductPatchRequestDto productPatchRequestDto = new ProductPatchRequestDto("updatedName", 10, "updatedUrl");
         ResponseEntity<ResponseDto> response = restClient
                 .patch()
                 .uri(url)
-                .body(requestDto)
+                .body(productPatchRequestDto)
                 .retrieve()
                 .toEntity(ResponseDto.class);
 
@@ -119,15 +120,15 @@ class crudE2ETest {
     }
 
     @Test
-    void productUpdateNotFoundTest() {
+    void 존재하지_않는_상품에_대해_수정요청_시_404_반환() {
         String url = "http://localhost:" + port + "/api/product/00000000-0000-0000-0000-000000000000/update";
-        RequestDto requestDto = new RequestDto("updatedName", 10, "updatedUrl");
+        ProductPatchRequestDto productPatchRequestDto = new ProductPatchRequestDto("updatedName", 10, "updatedUrl");
         assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
                 .isThrownBy(
                         () -> restClient
                                 .patch()
                                 .uri(url)
-                                .body(requestDto)
+                                .body(productPatchRequestDto)
                                 .retrieve()
                                 .toEntity(String.class)
                 )
@@ -137,7 +138,7 @@ class crudE2ETest {
     }
 
     @Test
-    void productDeleteTest() {
+    void 상품이_정상적으로_삭제() {
         String url = "http://localhost:" + port + "/api/product/" + lastUUID + "/delete";
         ResponseEntity<ResponseDto> response = restClient
                 .delete()
@@ -149,7 +150,7 @@ class crudE2ETest {
     }
 
     @Test
-    void productDeleteNotFoundTest() {
+    void 존재하지_않는_상품에_대한_삭제요청_시_404_반환() {
         String url = "http://localhost:" + port + "/api/product/00000000-0000-0000-0000-000000000000/delete";
         assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
                 .isThrownBy(

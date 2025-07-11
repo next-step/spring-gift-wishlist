@@ -19,6 +19,6 @@ public class RestExceptionHandler {
             String field = fieldError.getField();
             builder.append(field).append(" : ").append(fieldError.getDefaultMessage()).append("\n");
         }
-        return new ResponseEntity<>(builder.toString(), HttpStatus.BAD_REQUEST);
+        return ResponseEntity.badRequest().body(builder.toString());
     }
 }
