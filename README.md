@@ -28,7 +28,18 @@
   - [x] 인증은 되었지만 권한이 없는 경우 (`403 Forbidden`)
   - [x] Authorization 헤더 또는 토큰이 유효하지 않은 경우 (`401 Unauthorized`)
 
-## 3️⃣ 기술 스택
+## 3️⃣ 3단계 - 위시 리스트
+### 개발 예정 기능 목록
+- [x] 위시 리스트 API
+  - [x] 위시 리스트에 등록된 상품 조회 API (`GET /api/wishes`)
+  - [x] 위시 리스트에 상품 등록 API (`POST /api/wishes`)
+    - [x] 존재하지 않는 상품일 경우 예외 처리 (`404 Not Found`) 
+  - [x] 위시 리시트 상품 삭제 API (`DELETE /api/wishes/{productId}`)
+    - [x] 존재하지 않는 상품일 경우 예외 처리 (`404 Not Found`)
+- [x] 인증 처리
+  - [x] `@LoginMember` 어노테이션 + `LoginMemberArgumentResolver`를 구현하여 토큰에서 사용자 정보 추출 및 사용자 정보 컨트롤러에 주입
+
+## 4️⃣ 기술 스택
 - Java 17
 - Spring Boot 3.5.3
 - JSON

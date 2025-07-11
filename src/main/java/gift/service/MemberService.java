@@ -60,6 +60,15 @@ public class MemberService {
         return new TokenResponseDto(getToken(member));
     }
 
+    public Member findMemberById(Long id) {
+        Optional<Member> findMember = memberRepository.findMemberById(id);
+        if (findMember.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "[id = " + id + "] 해당 id의 회원을 찾을 수 없습니다.");
+        }
+
+        return findMember.get();
+    }
+
     private String getToken(Member member) {
         return Jwts.builder()
                 .subject(member.getId().toString())
