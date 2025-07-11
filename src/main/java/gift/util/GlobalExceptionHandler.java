@@ -1,6 +1,10 @@
-package gift;
+package gift.util;
 
+import gift.exception.DuplicatedEmailException;
 import gift.exception.InvalidProductNameException;
+import gift.exception.UnAuthenticatedException;
+import gift.exception.UnAuthorizedException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,7 +57,32 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleAllUnexpectedException(Exception ex) {
         Map<String, String> error = new HashMap<>();
-        error.put("error", "An unexpected error occurred.");
+        error.put("error", ex.getMessage());
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(UnAuthenticatedException.class)
+    public ResponseEntity<Map<String, String>> handleUnauthorizedException(UnAuthenticatedException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("WWW-Authenticate", "Bearer");
+        return new ResponseEntity<>(error, headers, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(UnAuthorizedException.class)
+    public ResponseEntity<Map<String, String>> handleUnauthorizedException(UnAuthorizedException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        HttpHeaders headers = new HttpHeaders();
+        return new ResponseEntity<>(error, headers, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(DuplicatedEmailException.class)
+    public ResponseEntity<Map<String, String>> handleDuplicatedEmailException(DuplicatedEmailException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        HttpHeaders headers = new HttpHeaders();
+        return new ResponseEntity<>(error, headers, HttpStatus.CONFLICT);
     }
 }

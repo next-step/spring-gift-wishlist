@@ -15,7 +15,7 @@ public class ProductRequestDto {
 
     @NotNull(message = "상품 가격을 반드시 입력해야 합니다.")
     @Min(value = 0, message = "상품 가격은 0원 이상이어야 합니다.")
-    @Max(value = 1000000000, message = "상품 가격은 1,000,000,000원을 초과할 수 없습니다.")
+    @Max(value = 1_000_000_000, message = "상품 가격은 1,000,000,000원을 초과할 수 없습니다.")
     private int price;
 
     @NotBlank(message = "상품 이미지 URL을 반드시 입력해야 합니다.")
