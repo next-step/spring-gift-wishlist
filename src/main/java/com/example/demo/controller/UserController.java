@@ -57,4 +57,10 @@ public class UserController {
     return ResponseEntity.ok(new UserDataInfo(user));
   }
 
+  @PostMapping("/signup")
+  public ResponseEntity<Void> signup(@RequestBody @Valid UserRequestDto dto) {
+    userService.signup(dto);
+    return ResponseEntity.ok().build();
+  }
+
 }
