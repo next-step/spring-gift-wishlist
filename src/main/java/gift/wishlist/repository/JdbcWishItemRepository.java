@@ -49,7 +49,7 @@ public class JdbcWishItemRepository implements WishItemRepository {
   @Override
   public Optional<WishItem> findById(Long id) {
     Objects.requireNonNull(id, "ID는 null일 수 없습니다.");
-    String sql = "SELECT * FROM wish_item WHERE id := id";
+    String sql = "SELECT * FROM wish_item WHERE id = :id";
     try {
       Map<String, Object> params = Map.of("id", id);
       return Optional.of(jdbcTemplate.queryForObject(sql, params, wishItemRowMapper()));
@@ -92,7 +92,7 @@ public class JdbcWishItemRepository implements WishItemRepository {
   @Override
   public List<WishItem> findAllByMemberId(Long memberId) {
     Objects.requireNonNull(memberId, "회원 id는 null일 수 없습니다.");
-    String sql = "SELECT * FROM wishlist WHERE member_id = :memberId";
+    String sql = "SELECT * FROM wish_item WHERE member_id = :memberId";
     Map<String, Object> params = Map.of("memberId", memberId);
     return jdbcTemplate.query(sql, params, wishItemRowMapper());
   }
@@ -117,7 +117,7 @@ public class JdbcWishItemRepository implements WishItemRepository {
   public void deleteById(Long id) {
     Objects.requireNonNull(id, "ID는 null일 수 없습니다");
 
-    String sql = "DELETE FROM wishlist WHERE id = :id";
+    String sql = "DELETE FROM wish_item WHERE id = :id";
     SqlParameterSource params = new MapSqlParameterSource()
         .addValue("id", id);
 
