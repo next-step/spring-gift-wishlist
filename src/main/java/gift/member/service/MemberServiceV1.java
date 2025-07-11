@@ -8,6 +8,7 @@ import gift.global.exception.DuplicateEntityException;
 import gift.global.exception.NotFoundEntityException;
 import gift.member.dto.*;
 import gift.member.repository.MemberRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,11 +19,13 @@ import java.util.UUID;
 @Service
 public class MemberServiceV1 implements MemberService{
 
-    public MemberServiceV1(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
-    }
-
     private final MemberRepository memberRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
+
+    public MemberServiceV1(MemberRepository memberRepository, BCryptPasswordEncoder passwordEncoder) {
+        this.memberRepository = memberRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     public UUID save(MemberCreateDto memberCreateDto) {
@@ -35,8 +38,9 @@ public class MemberServiceV1 implements MemberService{
                     throw new DuplicateEntityException(member.getEmail() + "은 이미 존재하는 이메일 입니다.");
                 });
 
+        String password = passwordEncoder.encode(memberCreateDto.getPassword());
 
-        Member saved = memberRepository.save(new Member(memberCreateDto.getEmail(), memberCreateDto.getPassword(), Role.valueOf(memberCreateDto.getRole())));
+        Member saved = memberRepository.save(new Member(memberCreateDto.getEmail(), password, Role.valueOf(memberCreateDto.getRole())));
 
         return saved.getId();
     }
@@ -46,14 +50,16 @@ public class MemberServiceV1 implements MemberService{
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundEntityException("존재하는 회원이 아닙니다."));
 
-        if (!member.getPassword().equals(memberUpdateRequest.getPassword()))
+        if (!passwordEncoder.matches(memberUpdateRequest.getPassword(), member.getPassword()))
             throw new AuthorizationException("비밀번호가 다릅니다.");
 
 
         if (!memberUpdateRequest.getConfirmPassword().equals(memberUpdateRequest.getNewPassword()))
             throw new BadRequestEntityException("새로운 비밀번호가 확인 비밀번호와 일치하지 않습니다.");
 
-        memberRepository.update(new Member(member.getId(), member.getEmail(), memberUpdateRequest.getNewPassword(), member.getRole()));
+        String password =  passwordEncoder.encode(memberUpdateRequest.getNewPassword());
+
+        memberRepository.update(new Member(member.getId(), member.getEmail(), password, member.getRole()));
     }
 
     @Override
@@ -61,15 +67,17 @@ public class MemberServiceV1 implements MemberService{
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new NotFoundEntityException("존재하는 회원이 아닙니다."));
 
-        if (!member.getPassword().equals(memberUpdateReqForAdmin.getPassword()))
+        if (!passwordEncoder.matches(memberUpdateReqForAdmin.getPassword(), member.getPassword()))
             throw new AuthorizationException("비밀번호가 다릅니다.");
 
 
         if (!memberUpdateReqForAdmin.getConfirmPassword().equals(memberUpdateReqForAdmin.getNewPassword()))
             throw new BadRequestEntityException("새로운 비밀번호가 확인 비밀번호와 일치하지 않습니다.");
 
+        String password =  passwordEncoder.encode(memberUpdateReqForAdmin.getNewPassword());
+
         memberRepository.update(new Member(member.getId(), member.getEmail(),
-                memberUpdateReqForAdmin.getNewPassword(), Role.valueOf(memberUpdateReqForAdmin.getRole())));
+                password, Role.valueOf(memberUpdateReqForAdmin.getRole())));
 
     }
 
@@ -122,7 +130,7 @@ public class MemberServiceV1 implements MemberService{
         Member findMember = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundEntityException("존재하는 회원이 아닙니다"));
 
-        if (!findMember.getPassword().equals(password))
+        if (!passwordEncoder.matches(password, findMember.getPassword()))
             throw new AuthorizationException("비밀번호가 다릅니다.");
 
         return new  MemberResponse(findMember.getId(), findMember.getEmail(), findMember.getRole());

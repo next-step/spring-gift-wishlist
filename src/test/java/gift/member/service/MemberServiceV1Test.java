@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -34,6 +35,9 @@ class MemberServiceV1Test {
 
     @Mock
     private MemberRepository memberRepository;
+
+    @Mock
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Test
     @DisplayName("회원 조회 성공")
@@ -175,6 +179,9 @@ class MemberServiceV1Test {
         given(memberRepository.findByEmail(member.getEmail()))
                 .willReturn(Optional.of(member));
 
+        given(passwordEncoder.matches(anyString(), anyString()))
+                .willReturn(true);
+
         // when
         memberService.changePassword(member.getEmail(), updateRequest);
 
@@ -193,6 +200,9 @@ class MemberServiceV1Test {
 
         given(memberRepository.findByEmail(member.getEmail()))
                 .willReturn(Optional.of(member));
+
+        given(passwordEncoder.matches(anyString(),anyString()))
+                .willReturn(false);
 
         // when
         assertThatThrownBy(()->memberService.changePassword(member.getEmail(), updateRequest))
@@ -213,6 +223,9 @@ class MemberServiceV1Test {
         given(memberRepository.findByEmail(member.getEmail()))
                 .willReturn(Optional.of(member));
 
+        given(passwordEncoder.matches(anyString(),anyString()))
+                .willReturn(true);
+
         // when
         assertThatThrownBy(()->memberService.changePassword(member.getEmail(), updateRequest))
                 .isInstanceOf(BadRequestEntityException.class);
@@ -230,6 +243,9 @@ class MemberServiceV1Test {
 
         given(memberRepository.findByEmail(member.getEmail()))
                 .willReturn(Optional.of(member));
+
+        given(passwordEncoder.matches(anyString(), anyString()))
+                .willReturn(true);
 
         // when
         MemberResponse result = memberService.validate(member.getEmail(), member.getPassword());
@@ -268,6 +284,10 @@ class MemberServiceV1Test {
 
         given(memberRepository.findByEmail(member.getEmail()))
                 .willReturn(Optional.of(member));
+
+        given(passwordEncoder.matches(anyString(), anyString()))
+                .willReturn(false);
+
         //when & then
         assertThatThrownBy(()->memberService.validate(member.getEmail(), "1234Qwer!!"))
                 .isInstanceOf(AuthorizationException.class);
