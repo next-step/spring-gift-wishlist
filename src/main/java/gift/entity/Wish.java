@@ -1,9 +1,9 @@
 package gift.entity;
 
 public class Wish {
-    private Long id;
-    private Long memberId;
-    private Long productId;
+    private final Long id;
+    private final Long memberId;
+    private final Long productId;
 
     public Wish(Long id, Long memberId, Long productId) {
         this.id = id;
