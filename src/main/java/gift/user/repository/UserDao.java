@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -34,17 +35,17 @@ public class UserDao {
                 .query(User.class)
                 .list();
     }
-    public User findById(UUID id) {
+    public Optional<User> findById(UUID id) {
         return jdbcClient.sql("SELECT * FROM USERS WHERE id = :id")
                 .param("id", id)
                 .query(User.class)
-                .single();
+                .optional();
     }
-    public User findByEmail(String email) throws EmptyResultDataAccessException {
+    public Optional<User> findByEmail(String email) throws EmptyResultDataAccessException {
         return jdbcClient.sql("SELECT * FROM USERS WHERE email = :email")
                 .param("email", email)
                 .query(User.class)
-                .single();
+                .optional();
     }
 
     @Transactional

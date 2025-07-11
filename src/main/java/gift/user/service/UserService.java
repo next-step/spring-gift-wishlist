@@ -5,10 +5,12 @@ import gift.user.domain.User;
 import gift.user.dto.UserPatchRequestDto;
 import gift.user.dto.UserSaveRequestDto;
 import gift.user.repository.UserDao;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -30,24 +32,28 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public User findById(UUID id) {
+    public Optional<User> findById(UUID id) {
         return userDao.findById(id);
     }
 
     @Transactional(readOnly = true)
-    public User findByEmail(String Email) {
+    public Optional<User> findByEmail(String Email) {
         return userDao.findByEmail(Email);
     }
 
     @Transactional
     public User updateUser(UUID id, UserPatchRequestDto userPatchRequestDto) {
-        userDao.findById(id);
+        if(userDao.findById(id).isEmpty()) {
+            throw new EmptyResultDataAccessException(1);
+        }
         return userDao.update(id, userPatchRequestDto);
     }
 
     @Transactional
     public void deleteUser(UUID id) {
-        userDao.findById(id);
+        if(userDao.findById(id).isEmpty()) {
+            throw new EmptyResultDataAccessException(1);
+        }
         userDao.delete(id);
     }
 }

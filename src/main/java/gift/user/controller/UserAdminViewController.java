@@ -6,6 +6,7 @@ import gift.user.dto.UserSaveRequestDto;
 import gift.user.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -52,15 +53,9 @@ public class UserAdminViewController {
         return "redirect:/api/admin/user/list";
     }
 
-    @ResponseBody
-    @GetMapping("/{id}")
-    public User findById(@PathVariable UUID id) {
-        return userService.findById(id);
-    }
-
     @GetMapping("/{id}/update")
     public String updateForm(@PathVariable UUID id, Model model) {
-        User user = userService.findById(id);
+        User user = userService.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
         UserPatchRequestDto userPatchRequestDto = new UserPatchRequestDto(user);
         model.addAttribute("userPatchRequestDto", userPatchRequestDto);
         return "userUpdateForm";
