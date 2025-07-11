@@ -58,13 +58,13 @@
 
 ### 관리자 전용 회원 관리 API
 
-| 기능            | Method | 경로                          | 요청 Body                                                     | 응답 Status       | 응답 Body                                                     |
-|-----------------|--------|-------------------------------|---------------------------------------------------------------|-------------------|---------------------------------------------------------------|
-| 회원 추가       | POST   | `/admin/members`              | `{"email":"...","password":"...","role":"USER"}`              | `201 Created`     | `{"id":1,"email":"...","role":"USER"}`                        |
-| 전체 회원 조회  | GET    | `/admin/members`              | —                                                             | `200 OK`          | `[{"id":1,"email":"...","role":"USER"}, ...]`                  |
-| 단일 회원 조회  | GET    | `/admin/members/{id}`         | —                                                             | `200 OK`          | `{"id":1,"email":"...","role":"USER"}`                        | 
-| 회원 정보 수정  | PUT    | `/admin/members/{id}`         | `{"email":"...","password":"...","role":"ADMIN"}`             | `200 OK`          | `{"id":1,"email":"...","role":"ADMIN"}`                       |  
-| 회원 삭제       | DELETE | `/admin/members/{id}`         | —                                                             | `204 No Content`  | —                                                             |  
+| 기능            | Method | 경로                        | 요청 Body                                                     | 응답 Status       | 응답 Body                                                     |
+|-----------------|--------|---------------------------|---------------------------------------------------------------|-------------------|---------------------------------------------------------------|
+| 회원 추가       | POST   | `/api/admdin/members`     | `{"email":"...","password":"...","role":"USER"}`              | `201 Created`     | `{"id":1,"email":"...","role":"USER"}`                        |
+| 전체 회원 조회  | GET    | `/api/admin/members`      | —                                                             | `200 OK`          | `[{"id":1,"email":"...","role":"USER"}, ...]`                  |
+| 단일 회원 조회  | GET    | `/api/admin/members/{id}` | —                                                             | `200 OK`          | `{"id":1,"email":"...","role":"USER"}`                        | 
+| 회원 정보 수정  | PUT    | `/api/admin/members/{id}` | `{"email":"...","password":"...","role":"ADMIN"}`             | `200 OK`          | `{"id":1,"email":"...","role":"ADMIN"}`                       |  
+| 회원 삭제       | DELETE | `/api/admin/members/{id}` | —                                                             | `204 No Content`  | —                                                             |  
 
 
 ### 회원 로그인 API
