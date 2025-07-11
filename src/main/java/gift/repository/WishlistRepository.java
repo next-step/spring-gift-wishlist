@@ -1,7 +1,9 @@
 package gift.repository;
 
+import gift.dto.WishResponse;
 import gift.model.Member;
 import gift.model.Wishlist;
+import java.util.List;
 import java.util.Optional;
 import javax.sql.DataSource;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -33,6 +35,11 @@ public class WishlistRepository {
 
         return new Wishlist(newId, wishlist.getMemberId(), wishlist.getProductId(),
             wishlist.getQuantity());
+    }
+
+    public List<Wishlist> findAll(Long memberId) {
+        String sql = "SELECT id, memberId, productId, quantity FROM WISHLIST WHERE memberId = ?";
+        return jdbcTemplate.query(sql, wishListRowMapper(), memberId);
     }
 
     public Optional<Wishlist> findByMemberIdAndProductId(Long memberId, Long productId) {
