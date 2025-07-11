@@ -47,25 +47,17 @@ public class UserDao {
                 .query(User.class)
                 .optional();
     }
-
-    @Transactional
-    public User update(UUID id, UserPatchRequestDto userPatchRequestDto) {
-        if (userPatchRequestDto.getEmail() != null) {
-            jdbcClient.sql("UPDATE USERS SET email = :email WHERE id = :id")
-                    .param("email", userPatchRequestDto.getEmail())
-                    .param("id", id)
-                    .update();
-        }
-        if (userPatchRequestDto.getPassword() != null) {
-            jdbcClient.sql("UPDATE USERS SET password = :password WHERE id = :id")
-                    .param("password", userPatchRequestDto.getPassword())
-                    .param("id", id)
-                    .update();
-        }
-        return jdbcClient.sql("SELECT * FROM USERS WHERE id = :id")
+    public void updateEmail(UUID id, String email) {
+        jdbcClient.sql("UPDATE USERS SET email = :email WHERE id = :id")
+                .param("email", email)
                 .param("id", id)
-                .query(User.class)
-                .single();
+                .update();
+    }
+    public void updatePassword(UUID id, String password) {
+        jdbcClient.sql("UPDATE USERS SET password = :password WHERE id = :id")
+                .param("password", password)
+                .param("id", id)
+                .update();
     }
 
     public void delete(UUID id) {

@@ -46,7 +46,13 @@ public class UserService {
         if(userDao.findById(id).isEmpty()) {
             throw new EmptyResultDataAccessException(1);
         }
-        return userDao.update(id, userPatchRequestDto);
+        if(userPatchRequestDto.getEmail() != null) {
+            userDao.updateEmail(id, userPatchRequestDto.getEmail());
+        }
+        if(userPatchRequestDto.getPassword() != null) {
+            userDao.updatePassword(id, userPatchRequestDto.getPassword());
+        }
+        return userDao.findById(id).get();
     }
 
     @Transactional
