@@ -20,14 +20,6 @@ public class WishlistRepository {
         this.rowMapper = new DataClassRowMapper<>(Product.class);
     }
 
-    public boolean existsByMemberId(Long memberId) {
-        String sql = "SELECT COUNT(*) FROM wishlist WHERE memberId = :memberId";
-        return jdbcClient.sql(sql)
-            .param("memberId", memberId)
-            .query(Long.class)
-            .single() > 0;
-    }
-
     public List<Product> findAllProductByMemberId(Long memberId) {
         String sql = """
         SELECT p.id, p.name, p.price, p.imageUrl

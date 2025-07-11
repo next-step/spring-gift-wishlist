@@ -29,10 +29,6 @@ public class WishlistService {
 
     @Transactional
     public List<ProductResponse> getProductsFromWishlist(Long memberId) {
-        if (!wishlistRepository.existsByMemberId(memberId)) {
-            return List.of(); // 레코드가 하나도 없을 경우, 바로 빈 리스트를 반환!
-        }
-
         return wishlistRepository.findAllProductByMemberId(memberId)
             .stream()
             .map(ProductResponse::from)
