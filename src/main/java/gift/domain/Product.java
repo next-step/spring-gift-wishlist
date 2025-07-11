@@ -21,6 +21,13 @@ public class Product {
     }
 
     public Product(String name, int price, String imageUrl, ProductStatus status) {
+        this.name = name;
+        this.price = price;
+        this.imageUrl = imageUrl;
+        this.status = status;
+    }
+
+    public Product(String name, int price, String imageUrl, ProductStatus status, boolean isDeleted) {
         this(null, name, price, imageUrl,status, false);
     }
 

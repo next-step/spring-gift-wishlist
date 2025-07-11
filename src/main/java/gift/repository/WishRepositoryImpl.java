@@ -1,5 +1,7 @@
 package gift.repository;
 
+import gift.domain.Product;
+import gift.domain.ProductStatus;
 import gift.domain.Wish;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
@@ -56,19 +58,41 @@ public class WishRepositoryImpl implements WishRepository  {
     @Override
     public List<Wish> findWishByMemberId(Long memberId) {
         return jdbcClient.sql("""
-                SELECT id, member_id, product_id, quantity
-                FROM wishes
-                WHERE member_id = :memberId
-                """)
+        SELECT 
+            w.id, 
+            w.member_id, 
+            w.quantity,
+            p.id AS product_id,
+            p.name AS product_name,
+            p.price AS product_price,
+            p.image_url AS product_image_url,
+            p.status AS product_status
+        FROM wishes w
+        JOIN products p ON w.product_id = p.id
+        WHERE w.member_id = :memberId
+        """)
                 .param("memberId", memberId)
-                .query((rs, rowNum) -> new Wish(
-                        rs.getLong("id"),
-                        rs.getLong("member_id"),
-                        rs.getLong("product_id"),
-                        rs.getInt("quantity")
-                ))
+                .query((rs, rowNum) -> {
+                    Product product = new Product(
+                            rs.getString("product_name"),
+                            rs.getInt("product_price"),
+                            rs.getString("product_image_url"),
+                            ProductStatus.valueOf(rs.getString("product_status"))
+                    );
+
+                    return new Wish(
+                            rs.getLong("id"),
+                            rs.getLong("member_id"),
+                            rs.getLong("product_id"),
+                            rs.getInt("quantity"),
+                            product
+                    );
+                })
                 .list();
     }
+
+
+
 
     @Override
     public boolean exists(Long memberId, Long productId) {
