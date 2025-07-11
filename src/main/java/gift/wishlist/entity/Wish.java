@@ -1,10 +1,12 @@
 package gift.wishlist.entity;
 
+import gift.wishlist.vo.Amount;
+
 public class Wish {
     private Long id;
     private Long memberId;
     private Long productId;
-    private int amount;
+    private Amount amount;
 
     public Long getId() {
         return id;
@@ -18,11 +20,11 @@ public class Wish {
         return productId;
     }
 
-    public int getAmount() {
+    public Amount getAmount() {
         return amount;
     }
 
-    public Wish(Long id, Long memberId, Long productId, int amount) {
+    public Wish(Long id, Long memberId, Long productId, Amount amount) {
         this.id = id;
         this.memberId = memberId;
         this.productId = productId;

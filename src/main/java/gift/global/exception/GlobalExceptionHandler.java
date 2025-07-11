@@ -65,6 +65,12 @@ public class GlobalExceptionHandler {
             .body(ex.getMessage());
     }
 
+    @ExceptionHandler(InValidAmountException.class)
+    public ResponseEntity<String> handleInValidAmountException(InValidAmountException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(ex.getMessage());
+    }
+
     @ExceptionHandler(JwtException.class)
     public ResponseEntity<String> handleJwtException(JwtException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

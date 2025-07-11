@@ -13,7 +13,7 @@ public record WishResponseDto(
             wish.getId(),
             wish.getMemberId(),
             wish.getProductId(),
-            wish.getAmount()
+            wish.getAmount().getValue()
         );
     }
 }

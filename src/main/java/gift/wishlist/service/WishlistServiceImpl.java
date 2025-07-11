@@ -5,6 +5,7 @@ import gift.wishlist.dto.UpdateWishRequestDto;
 import gift.wishlist.dto.WishResponseDto;
 import gift.wishlist.entity.Wish;
 import gift.wishlist.repository.WishlistRepository;
+import gift.wishlist.vo.Amount;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +31,7 @@ public class WishlistServiceImpl implements WishlistService{
             null,
             memberId,
             requestDto.productId(),
-            requestDto.amount()
+            new Amount(requestDto.amount())
         );
         long id = wishlistRepository.save(wish);
 
@@ -39,7 +40,7 @@ public class WishlistServiceImpl implements WishlistService{
 
     @Override
     public void update(Long id, UpdateWishRequestDto requestDto) {
-        wishlistRepository.update(id, requestDto.amount());
+        wishlistRepository.update(id, new Amount(requestDto.amount()));
     }
 
     @Override

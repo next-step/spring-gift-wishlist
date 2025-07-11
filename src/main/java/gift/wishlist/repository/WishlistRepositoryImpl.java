@@ -3,6 +3,7 @@ package gift.wishlist.repository;
 import gift.global.exception.FailedGenerateKeyException;
 import gift.global.exception.WishlistNotFoundException;
 import gift.wishlist.entity.Wish;
+import gift.wishlist.vo.Amount;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
@@ -36,7 +37,7 @@ public class WishlistRepositoryImpl implements WishlistRepository{
             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setLong(1, wish.getMemberId());
             ps.setLong(2, wish.getProductId());
-            ps.setInt(3, wish.getAmount());
+            ps.setInt(3, wish.getAmount().getValue());
             return ps;
         }, keyHolder);
         Number key = keyHolder.getKey();
@@ -47,10 +48,10 @@ public class WishlistRepositoryImpl implements WishlistRepository{
     }
 
     @Override
-    public void update(Long id, int amount) {
+    public void update(Long id, Amount amount) {
         final String sql = "UPDATE wishlist SET amount = ? WHERE id = ?";
 
-        int updated = jdbcTemplate.update(sql, amount, id);
+        int updated = jdbcTemplate.update(sql, amount.getValue(), id);
         if (updated == 0) {
             throw new WishlistNotFoundException();
         }
@@ -71,7 +72,7 @@ public class WishlistRepositoryImpl implements WishlistRepository{
             rs.getLong("id"),
             rs.getLong("member_id"),
             rs.getLong("product_id"),
-            rs.getInt("amount")
+            new Amount(rs.getInt("amount"))
         );
     }
 }
