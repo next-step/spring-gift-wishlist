@@ -16,6 +16,13 @@
 6. MemberController 구현 
 7. 인터셉터 적용
 
+### 위시리스트 (3단계)
+1. wishlist 테이블 추가
+2. Wishlist 엔티티 생성
+3. WishList DTO 생성
+4. WishlistRepository 생성
+5. WishlistService 구현
+6. WishlistController 구현
 
 ### 커밋메시지
 
