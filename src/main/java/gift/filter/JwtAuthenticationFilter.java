@@ -23,8 +23,8 @@ public class JwtAuthenticationFilter implements Filter {
 
         String uri = request.getRequestURI();
 
-        // admin, wishlist 경로 토큰 검사. 로그인이 되어야 이용 가능한 기능
-        if (uri.startsWith("/admin/members") || uri.startsWith("/api/wishes")) {
+        // wishlist 경로 토큰 검사. 로그인이 되어야 이용 가능한 기능
+        if (uri.startsWith("/api/wishes")) {
 
             String token = request.getHeader("Authorization");
 
@@ -34,7 +34,7 @@ public class JwtAuthenticationFilter implements Filter {
                 return;
             }
 
-            Claims claims = validateToken(token);
+            Claims claims = parseToken(token);
             if (claims == null) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.getWriter().write("Invalid Token");
@@ -45,12 +45,12 @@ public class JwtAuthenticationFilter implements Filter {
 
             chain.doFilter(req, res);
         } else {
-            // admin 경로가 아니면 그냥 통과
+            // wishlist 경로가 아니면 그냥 통과
             chain.doFilter(req, res);
         }
     }
 
-    private Claims validateToken(String token) {
+    private Claims parseToken(String token) {
         try {
             Claims claims = Jwts.parser()
                 .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes()))
