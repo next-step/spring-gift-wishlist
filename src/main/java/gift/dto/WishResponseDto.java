@@ -2,11 +2,11 @@ package gift.dto;
 
 public class WishResponseDto {
 
-    private Long wishId;
-    private Long productId;
-    private String name;
-    private Long price;
-    private String imageUrl;
+    private final Long wishId;
+    private final Long productId;
+    private final String name;
+    private final Long price;
+    private final String imageUrl;
 
     public WishResponseDto(Long wishId, Long productId, String name, Long price, String imageUrl) {
         this.wishId = wishId;
