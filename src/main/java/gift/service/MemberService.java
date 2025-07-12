@@ -4,7 +4,7 @@ import gift.dto.LoginRequest;
 import gift.exception.EmailAlreadyExistsException;
 import gift.exception.InvalidPasswordException;
 import gift.exception.MemberNotFoundException;
-import gift.model.Product;
+import gift.util.JwtUtil;
 import gift.util.PasswordUtil;
 import gift.dto.RegisterRequest;
 import gift.dto.TokenResponse;
@@ -20,10 +20,11 @@ import org.springframework.stereotype.Service;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-    final String secretKey = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";
+    private final JwtUtil jwtUtil;
 
-    public MemberService(MemberRepository memberRepository) {
+    public MemberService(MemberRepository memberRepository, JwtUtil jwtUtil) {
         this.memberRepository = memberRepository;
+        this.jwtUtil = jwtUtil;
     }
 
     public TokenResponse save(RegisterRequest request) {
@@ -36,7 +37,7 @@ public class MemberService {
         Member member = new Member(request.getEmail(), encryptedPassword);
         Member savedMember = memberRepository.save(member);
 
-        String accessToken = generateAccessToken(savedMember);
+        String accessToken = jwtUtil.generateAccessToken(savedMember);
 
         return new TokenResponse(accessToken);
     }
@@ -49,17 +50,9 @@ public class MemberService {
             throw new InvalidPasswordException();
         }
 
-        String accessToken = generateAccessToken(member);
+        String accessToken = jwtUtil.generateAccessToken(member);
 
         return new TokenResponse(accessToken);
-    }
-
-    public String generateAccessToken(Member member) {
-        return Jwts.builder()
-            .setSubject(member.getId().toString())
-            .claim("email", member.getEmail())
-            .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
-            .compact();
     }
 
     public List<Member> getAllMembers() {

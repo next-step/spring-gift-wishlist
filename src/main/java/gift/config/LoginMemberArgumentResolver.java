@@ -3,7 +3,6 @@ package gift.config;
 
 import gift.annotation.LoginMember;
 import gift.dto.LoginMemberDto;
-import gift.exception.UnAuthorizedException;
 import gift.service.MemberService;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;

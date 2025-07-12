@@ -1,5 +1,6 @@
 package gift.filter;
 
+import gift.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -12,7 +13,11 @@ import java.io.IOException;
 
 public class JwtAuthenticationFilter implements Filter {
 
-    private static final String secretKey = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";
+    private final JwtUtil jwtUtil;
+
+    public JwtAuthenticationFilter(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
@@ -34,7 +39,7 @@ public class JwtAuthenticationFilter implements Filter {
                 return;
             }
 
-            Claims claims = parseToken(token);
+            Claims claims = jwtUtil.parseToken(token);
             if (claims == null) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.getWriter().write("Invalid Token");
@@ -50,17 +55,5 @@ public class JwtAuthenticationFilter implements Filter {
         }
     }
 
-    private Claims parseToken(String token) {
-        try {
-            Claims claims = Jwts.parser()
-                .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes()))
-                .build()
-                .parseClaimsJws(token)
-                .getBody(); // 파싱되면 유효한 토큰
-            return claims;
-        } catch (JwtException | IllegalArgumentException e) {
-            return null;
-        }
-    }
 
 }
