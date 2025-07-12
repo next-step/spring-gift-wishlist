@@ -23,20 +23,10 @@ public class WishService {
         this.productRepository = productRepository;
     }
 
-    private WishResponseDto mapWishItemToWishResponseDto(WishItem wi) {
-        return new WishResponseDto(
-                wi.getProductId(),
-                wi.getName(),
-                wi.getPrice(),
-                wi.getImageUrl(),
-                wi.getQuantity()
-        );
-    }
-
     public  List<WishResponseDto>getWishListForMember(Member member) {
         List<WishItem> items = wishRepository.findAllByMemberId(member.getId());
         return items.stream()
-                .map(this::mapWishItemToWishResponseDto)
+                .map(WishResponseDto::of)
                 .toList();
     }
 

@@ -1,5 +1,7 @@
 package gift.dto.api;
 
+import gift.entity.WishItem;
+
 public record WishResponseDto(
         Long productId,
         String name,
@@ -26,6 +28,16 @@ public record WishResponseDto(
 
     public int getQuantity() {
         return quantity;
+    }
+
+    public static WishResponseDto of(WishItem wi) {
+        return new WishResponseDto(
+            wi.getProductId(),
+            wi.getName(),
+            wi.getPrice(),
+            wi.getImageUrl(),
+            wi.getQuantity()
+        );
     }
 
 }
