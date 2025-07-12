@@ -24,18 +24,20 @@ public class WishlistRepository {
 
     public Wishlist saveWish(Long memberId, Long productId, int quantity) {
         String sql = """
-            MERGE INTO wishlist (member_id, product_id, quantity)
-            KEY(member_id, product_id)
-            VALUES (?, ?, ?)
-            """;
-
-        Optional<Wishlist> wish = findWishByMemberIdAndProductId(memberId, productId);
-        int newQuantity = wish.map(w -> w.getQuantity() + quantity).orElse(quantity);
+                MERGE INTO wishlist
+                USING dual
+                ON (member_id = :memberId AND product_id = :productId)
+                WHEN MATCHED THEN 
+                    UPDATE SET quantity = quantity + :quantity
+                WHEN NOT MATCHED THEN 
+                    INSERT (member_id, product_id, quantity)
+                    VALUES (:memberId, :productId, :quantity)
+        """;
 
         jdbcClient.sql(sql)
-                .param(memberId)
-                .param(productId)
-                .param(newQuantity)
+                .param("memberId", memberId)
+                .param("productId", productId)
+                .param("quantity", quantity)
                 .update();
 
         return findWishByMemberIdAndProductId(memberId, productId)
@@ -47,12 +49,12 @@ public class WishlistRepository {
         String sql = """
                 SELECT id, member_id, product_id, quantity
                 FROM wishlist
-                WHERE member_id = ?
-                AND product_id = ?
+                WHERE member_id = :memberId
+                AND product_id = :productId
                 """;
         return jdbcClient.sql(sql)
-                .param(memberId)
-                .param(productId)
+                .param("memberId", memberId)
+                .param("productId",productId)
                 .query(getRowMapper())
                 .optional();
     }
@@ -61,10 +63,10 @@ public class WishlistRepository {
         String sql = """
                 SELECT id, member_id, product_id, quantity
                 FROM wishlist
-                WHERE member_id = ?
+                WHERE member_id = :memberId
                 """;
         return jdbcClient.sql(sql)
-                .param(memberId)
+                .param("memberId",memberId)
                 .query(getRowMapper())
                 .list();
     }
@@ -72,13 +74,13 @@ public class WishlistRepository {
     public void deleteWishByMemberIdAndWishId(Long memberId, Long wishId) {
         String sql = """
                 DELETE FROM wishlist
-                WHERE id = ?
-                AND member_id = ?
+                WHERE id = :wishId
+                AND member_id = :memberId
                 """;
 
         int affectedRows = jdbcClient.sql(sql)
-                .param(wishId)
-                .param(memberId)
+                .param("wishId",wishId)
+                .param("memberId",memberId)
                 .update();
 
         if(affectedRows == 0){
