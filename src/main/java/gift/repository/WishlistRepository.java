@@ -52,6 +52,17 @@ public class WishlistRepository {
         }
     }
 
+    public void delete(Long memberId, Long productId) {
+        String sql = "DELETE FROM WISHLIST WHERE memberId = ? and productId = ?";
+        jdbcTemplate.update(sql, memberId, productId);
+    }
+
+    // DB 초기화
+    public void deleteAll() {
+        String sql = "DELETE FROM MEMBER";
+        jdbcTemplate.update(sql);
+    }
+
     private RowMapper<Wishlist> wishListRowMapper() {
         return ((rs, rowNum) -> {
             Long id = rs.getLong("id");
@@ -62,8 +73,4 @@ public class WishlistRepository {
         });
     }
 
-    public void delete(Long memberId, Long productId) {
-        String sql = "DELETE FROM WISHLIST WHERE memberId = ? and productId = ?";
-        jdbcTemplate.update(sql, memberId, productId);
-    }
 }
