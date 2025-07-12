@@ -42,13 +42,9 @@ public class WishServiceImpl implements WishService {
 
   @Override
   public WishResponseDto createWish(Long memberId, WishRequestDto requestDto) {
-
     Optional<Product> productById = productRepository.findProductById(requestDto.getProductId());
-    if (productById.isEmpty()) {
-      throw new ProductNotFoundException("위시 리스트에 넣으려는 상품이 없습니다.");
-    }
-
-    Product product = productById.get();
+    Product product = productById.orElseThrow(
+        () -> new ProductNotFoundException("위시 리스트에 넣으려는 상품이 없습니다."));
 
     Wish wish = wishRepository.createWish(
         new Wish(memberId, requestDto.getProductId(),
@@ -60,17 +56,16 @@ public class WishServiceImpl implements WishService {
   @Override
   public WishResponseDto updateQuantity(Long memberId, WishRequestDto requestDto) {
     Optional<Product> productById = productRepository.findProductById(requestDto.getProductId());
-    if (productById.isEmpty()) {
-      throw new ProductNotFoundException("위시 리스트에 넣으려는 상품이 없습니다.");
-    }
-    Optional<Wish> wish = wishRepository.updateQuantity(memberId,
+    Product product = productById.orElseThrow(
+        () -> new ProductNotFoundException("위시 리스트에 넣으려는 상품이 없습니다."));
+
+    Optional<Wish> OptionalWish = wishRepository.updateQuantity(memberId,
         new Wish(memberId, requestDto.getProductId(),
             requestDto.getQuantity()));
-    return wishRepository.updateQuantity(memberId,
-            new Wish(memberId, requestDto.getProductId(),
-                requestDto.getQuantity()))
-        .map(WishResponseDto::new)
-        .orElseThrow(() -> new WishListNotFoundException("업데이트 하려는 위시 리스트가 없습니다."));
+    Wish wish = OptionalWish.orElseThrow(
+        () -> new WishListNotFoundException("업데이트 하려는 위시 리스트가 없습니다."));
+    return new WishResponseDto(wish.getId(), wish.getProductId(),
+        product.getName(), wish.getQuantity());
   }
 
   @Override
