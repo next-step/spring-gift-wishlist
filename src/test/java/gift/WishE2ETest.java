@@ -7,11 +7,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class WishE2ETest {
@@ -106,5 +109,59 @@ public class WishE2ETest {
                 .body(MemberLoginResponseDto.class);
 
         return loginResponse.token();
+    }
+
+    @Test
+    void 존재하지_않는_상품으로_위시_추가_시_실패() {
+        // given
+        WishRequestDto request = new WishRequestDto(999999L);
+
+        // when
+        HttpClientErrorException exception = assertThrows(HttpClientErrorException.class, () -> {
+            restClient.post()
+                    .uri("/api/wishes")
+                    .header("Authorization", "Bearer " + token)
+                    .body(request)
+                    .retrieve()
+                    .body(WishCreateResponseDto.class);
+        });
+
+        // then
+        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    void 중복된_상품_위시_추가_시_실패() {
+        // given
+        ProductRequestDto productRequest = new ProductRequestDto("카페라떼", 4800, "latte.jpg");
+
+        ProductResponseDto product = restClient.post()
+                .uri("/api/products")
+                .header("Authorization", "Bearer " + token)
+                .body(productRequest)
+                .retrieve()
+                .body(ProductResponseDto.class);
+
+        WishRequestDto wishRequest = new WishRequestDto(product.id());
+
+        restClient.post()
+                .uri("/api/wishes")
+                .header("Authorization", "Bearer " + token)
+                .body(wishRequest)
+                .retrieve()
+                .toBodilessEntity();
+
+        // when
+        HttpClientErrorException exception = assertThrows(HttpClientErrorException.class, () -> {
+            restClient.post()
+                    .uri("/api/wishes")
+                    .header("Authorization", "Bearer " + token)
+                    .body(wishRequest)
+                    .retrieve()
+                    .body(WishCreateResponseDto.class);
+        });
+
+        // then
+        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
     }
 }
