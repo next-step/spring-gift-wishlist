@@ -46,4 +46,5 @@ public class TokenServiceImpl implements TokenService {
                 .signWith(Keys.hmacShaKeyFor(key.getBytes()))
                 .compact();
     }
+
 }
