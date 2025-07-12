@@ -10,3 +10,11 @@ CREATE TABLE IF NOT EXISTS members (
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS wishlist (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    member_id BIGINT NOT NULL,
+    item_id BIGINT NOT NULL,
+    CONSTRAINT fk_wishlist_member FOREIGN KEY (member_id) REFERENCES members(id),
+    CONSTRAINT fk_wishlist_item FOREIGN KEY (item_id) REFERENCES items(id)
+);

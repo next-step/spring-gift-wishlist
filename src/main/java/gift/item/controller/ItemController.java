@@ -37,7 +37,7 @@ public class ItemController {
     //특정 상품 조회
     @GetMapping("/api/products/{id}")
     public ResponseEntity<ItemDto> findItem(
-            @PathVariable Long id
+            @PathVariable("id") Long id
     ) {
         ItemDto item = itemService.findItem(id);
         return ResponseEntity.ok(item);
@@ -46,7 +46,7 @@ public class ItemController {
     //상품 삭제
     @DeleteMapping("/api/products/{id}")
     public ResponseEntity<Void> deleteItem(
-            @PathVariable Long id
+            @PathVariable("id") Long id
     ) {
         itemService.deleteItem(id);
         return ResponseEntity.ok().build();
@@ -55,7 +55,7 @@ public class ItemController {
     //상품 수정
     @PutMapping("/api/products/{id}")
     public ResponseEntity<ItemDto> updateItem(
-            @PathVariable Long id,
+            @PathVariable("id") Long id,
             @RequestBody @Valid UpdateItemDto dto
     ) {
         itemService.updateItem(id, dto);

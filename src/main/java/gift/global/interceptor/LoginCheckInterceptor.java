@@ -7,6 +7,7 @@ import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
+import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
@@ -22,7 +23,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         // preflight 요청은 통과
-        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+        if (CorsUtils.isPreFlightRequest(request)) {
             return true;
         }
 

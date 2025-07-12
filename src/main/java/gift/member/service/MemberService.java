@@ -10,6 +10,7 @@ import gift.member.entity.Member;
 import gift.member.repository.MemberRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MemberService {
@@ -29,6 +30,7 @@ public class MemberService {
     /**
      * 회원가입
      */
+    @Transactional
     public void register(MemberRegisterRequestDto dto) {
         if (memberRepository.findByEmail(dto.email()).isPresent()) {
             throw new CustomException(ErrorCode.EMAIL_DUPLICATE);
@@ -43,6 +45,7 @@ public class MemberService {
      * 로그인
      * @return JWT 토큰 응답 DTO
      */
+    @Transactional(readOnly = true)
     public TokenResponseDto login(MemberLoginRequestDto dto) {
         Member member = memberRepository.findByEmail(dto.email())
                 .orElseThrow(() -> new CustomException(ErrorCode.EMAIL_NOT_FOUND));

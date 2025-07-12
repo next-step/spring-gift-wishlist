@@ -75,4 +75,20 @@ public class itemRepositoryImpl implements ItemRepository {
         String sql = "DELETE FROM items WHERE id = ?";
         jdbcTemplate.update(sql, id);
     }
+
+    @Override
+    public Optional<Item> findById(Long id) {
+        String sql = "SELECT * FROM items WHERE id = ?";
+        List<Item> result = jdbcTemplate.query(sql, (rs, rowNum) ->
+                new Item(
+                        rs.getLong("id"),
+                        rs.getString("name"),
+                        rs.getInt("price"),
+                        rs.getString("image_url")
+                ), id);
+
+        return result.isEmpty() ? Optional.empty() : Optional.of(result.get(0));
+    }
+
+
 }
