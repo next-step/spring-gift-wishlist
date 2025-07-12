@@ -18,7 +18,7 @@ public class GlobalExceptionHandler {
     }
 
     // INTERNAL_SERVER_ERROR 응답하는 예외처리 핸들러
-    @ExceptionHandler(IncorrectResultSizeDataAccessException.class)
+    @ExceptionHandler({IncorrectResultSizeDataAccessException.class, DecryptFailedException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public String handleInternalServerError(RuntimeException e) { return e.getMessage(); }
 
@@ -31,9 +31,22 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleBadRequest(MethodArgumentNotValidException e) { return e.getBindingResult().getAllErrors().getFirst().getDefaultMessage(); }
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleBadRequest(IllegalArgumentException e) { return e.getMessage(); }
 
     // CONFLICT 응답하는 예외처리 핸들러
     @ExceptionHandler(DuplicateKeyException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public String handleConflict(DuplicateKeyException e) { return e.getMessage(); }
+
+    // UNPROCESSABLE_ENTITY 응답하는 예외처리 핸들러
+    @ExceptionHandler(EncryptFailedException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public String handleUnprocessableEntity(EncryptFailedException e) { return e.getMessage(); }
+
+    // UNAUTHORIZED 응답하는 예외처리 핸들러
+    @ExceptionHandler({LoginFailedException.class, TokenUnauthorizedException.class})
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public String handleUnauthorized(Exception e) { return e.getMessage(); }
 }
