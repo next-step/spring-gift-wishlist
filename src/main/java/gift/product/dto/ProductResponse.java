@@ -10,12 +10,14 @@ public class ProductResponse {
     private String name;
     private int price;
     private String imageURL;
+    private UUID memberId;
 
     public ProductResponse(Product product) {
         this.id = product.getId();
         this.name = product.getName();
         this.price = product.getPrice();
         this.imageURL = product.getImageURL();
+        this.memberId = product.getMemberId();
     }
 
     protected ProductResponse() {}
@@ -34,5 +36,9 @@ public class ProductResponse {
 
     public String getImageURL() {
         return imageURL;
+    }
+
+    public UUID getMemberId() {
+        return memberId;
     }
 }

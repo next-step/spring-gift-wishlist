@@ -1,5 +1,6 @@
 package gift.member.service;
 
+import gift.domain.Member;
 import gift.domain.Role;
 import gift.member.dto.*;
 
@@ -25,4 +26,6 @@ public interface MemberService {
     void validateToken(String email, String role);
 
     MemberResponse validate(String email, String password);
+
+    Member findByEmail(String email);
 }

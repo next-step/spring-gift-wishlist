@@ -43,11 +43,13 @@ class ProductControllerTest {
     @Autowired
     private JWTUtil jwtUtil;
 
+    private final UUID memberId = UUID.randomUUID();
+
     RestClient restClient;
 
     @BeforeEach
     void setUp() {
-        Member saved = memberRepository.save(new Member("ljw2109@naver.com", "Qwer1234!!", Role.REGULAR));
+        Member saved = memberRepository.save(new Member(memberId,"ljw2109@naver.com", "Qwer1234!!", Role.REGULAR));
 
         String token = jwtUtil
                 .createJWT(saved.getEmail(), saved.getRole().toString(), 1000 * 60L);
@@ -79,7 +81,7 @@ class ProductControllerTest {
     }
 
     @Test
-    @DisplayName("상품 등록 실패 - 상품 이름에 카카오 포함")
+    @DisplayName("상품 등록 성공 - 상품 이름에 카카오 포함")
     void addProductFailCase1() {
         ProductCreateRequest productDto = new ProductCreateRequest("카카오", 3000, "data:image/~base64,");
 
@@ -199,13 +201,14 @@ class ProductControllerTest {
     }
 
     @Test
-    @DisplayName("모든 상품 조회")
+    @DisplayName("자신의 등록한 모든 상품 조회")
     void getAllProducts() {
         for (int i=0; i<10; i++) {
             addProductCase();
         }
 
         ResponseEntity<List> repsonse = restClient.get()
+                .uri("/mine")
                 .retrieve()
                 .toEntity(List.class);
 
@@ -226,7 +229,7 @@ class ProductControllerTest {
     }
 
     private Product addProductCase() {
-        Product product = new Product("스윙칩", 3000, "data:image/~base64,");
+        Product product = new Product("스윙칩", 3000, "data:image/~base64,", memberId);
         UUID uuid = productRepository.save(product);
         return product;
     }
