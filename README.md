@@ -133,7 +133,65 @@ Content-Type: application/json
 # [step3] 위시 리스트
 
 ## 구현 기능 목록
-- [ ] 위시리스트에 상품 추가
+- [x] 위시리스트에 상품 추가
 - [ ] 위시리스트에서 상품 삭제
-- [ ] 위시리스트에 담긴 상품 목록 조회
+- [x] 위시리스트에 담긴 상품 목록 조회
 - [ ] 위시리스트 테스트 
+
+## 구현 기능
+1. 위시리스트에 상품 추가(`POST /api/wishes`)
+
+### Request
+```http
+Authorization: Bearer {access_token}
+Content-Type: application/json
+```
+```json
+{
+   "productId": 1
+}
+```
+### Response
+```http
+HTTP/1.1 201 Created
+Location: /api/wishes/{wishId}
+Content-Type: application/json
+```
+```json
+{
+   "message": "위시리스트에 추가되었습니다."
+}
+```
+응답코드
+- 201 Created: 성공적으로 추가됨
+- 401 Unauthorized: 인증 실패 (토큰 누락/오류)
+- 404 Not Found: 존재하지 않는 상품
+
+2. 위시리스트 상품 조회(`GET /api/wishes`)
+### Request
+```http
+Authorization: Bearer {access_token}
+```
+
+### Response
+```json
+[
+   {
+      "id": 1,
+      "productId": 1,
+      "productName": "아이스 카페 아메리카노 T",
+      "price": 4700,
+      "imageUrl": "https://image.istarbucks.co.kr/upload/store/skuimg/2021/04/[110563]_20210426095937947.jpg"
+   },
+   {
+      "id": 2,
+      "productId": 3,
+      "productName": "배민상품권 2만원 교환권",
+      "price": 20000,
+      "imageUrl": "https://st.kakaocdn.net/product/gift/product/20230830170233_21660381ee6d4c06ac0abe956468d0d2.png"
+   }
+]
+```
+응답코드
+- 200 Ok: 조회 성공
+- 401 Unauthorized: 인증 실패 (토큰 누락/오류)
