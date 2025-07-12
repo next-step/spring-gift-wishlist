@@ -4,6 +4,7 @@ import gift.dto.ProductResponseDto;
 import gift.dto.WishCreateResponseDto;
 import gift.dto.WishResponseDto;
 import gift.entity.Wish;
+import gift.exception.ProductNotExistException;
 import gift.exception.WishNotExistException;
 import gift.exception.WishAlreadyExistException;
 import gift.repository.WishRepository;
@@ -43,7 +44,9 @@ public class WishService {
             throw new WishAlreadyExistException(productId);
         }
 
-        productService.find(productId);
+        if (!productService.exists(productId)) {
+            throw new ProductNotExistException(productId);
+        }
 
         Wish wish = wishRepository.save(memberId, productId);
         return new WishCreateResponseDto(wish.getId(), wish.getMemberId(), wish.getProductId());

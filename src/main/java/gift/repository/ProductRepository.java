@@ -20,6 +20,12 @@ public class ProductRepository{
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    public boolean existsById(Long productId) {
+        String sql = "select count(*) from products where id = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, productId);
+        return count!=null && count>0;
+    }
+
     private static class ProductRowMapper implements RowMapper<Product> {
         @Override
         public Product mapRow(ResultSet rs, int rowNum) throws SQLException {
