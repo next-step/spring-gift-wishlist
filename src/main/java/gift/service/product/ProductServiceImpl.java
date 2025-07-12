@@ -4,7 +4,7 @@ import gift.dto.product.ProductRequestDto;
 import gift.dto.product.ProductResponseDto;
 import gift.entity.Product;
 import gift.exception.NameHasKakaoException;
-import gift.exception.ProductNotFoundException;
+import gift.exception.notfound.ProductNotFoundException;
 import gift.repository.product.ProductRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +40,9 @@ public class ProductServiceImpl implements ProductService {
 
   @Override
   public ProductResponseDto createProduct(ProductRequestDto requestDto) {
-    if (requestDto.getName().contains("카카오") && !requestDto.getMdOk()) {
+    Product checkProduct = new Product(requestDto.getName(), requestDto.getPrice(),
+        requestDto.getImageUrl());
+    if (checkProduct.isNameHasWord("카카오") && !requestDto.getMdOk()) {
       throw new NameHasKakaoException("상품 이름에 '카카오'가 포함되어 있습니다. 담당 MD와 협의가 필요합니다.");
     }
     Product product = repository.createProduct(
@@ -51,7 +53,9 @@ public class ProductServiceImpl implements ProductService {
 
   @Override
   public ProductResponseDto updateProduct(Long id, ProductRequestDto requestDto) {
-    if (requestDto.getName().contains("카카오") && !requestDto.getMdOk()) {
+    Product checkProduct = new Product(requestDto.getName(), requestDto.getPrice(),
+        requestDto.getImageUrl());
+    if (checkProduct.isNameHasWord("카카오") && !requestDto.getMdOk()) {
       throw new NameHasKakaoException("상품 이름에 '카카오'가 포함되어 있습니다. 담당 MD와 협의가 필요합니다.");
     }
     return repository.updateProduct(id,

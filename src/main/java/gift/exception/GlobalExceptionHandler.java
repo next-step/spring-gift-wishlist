@@ -1,5 +1,6 @@
 package gift.exception;
 
+import gift.exception.notfound.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -31,9 +32,9 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
   }
 
-  @ExceptionHandler(value = {ProductNotFoundException.class, MemberNotFoundException.class})
+  @ExceptionHandler(value = NotFoundException.class)
   public ResponseEntity<CustomErrorResponse> handleProductNotFoundException(
-      ProductNotFoundException exception) {
+      NotFoundException exception) {
     CustomErrorResponse errorResponse = new CustomErrorResponse(HttpStatus.NOT_FOUND,
         exception.getMessage());
     return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);

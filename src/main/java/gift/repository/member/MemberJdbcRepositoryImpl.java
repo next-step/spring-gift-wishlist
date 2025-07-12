@@ -2,8 +2,6 @@ package gift.repository.member;
 
 import gift.entity.Member;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -18,6 +16,12 @@ import org.springframework.stereotype.Repository;
 public class MemberJdbcRepositoryImpl implements MemberRepository {
 
   private final JdbcTemplate jdbcTemplate;
+  private static final RowMapper<Member> memberRowMapper = (rs, rowNum) ->
+      new Member(
+          rs.getLong("id"),
+          rs.getString("email"),
+          rs.getString("password")
+      );
 
   public MemberJdbcRepositoryImpl(JdbcTemplate jdbcTemplate) {
     this.jdbcTemplate = jdbcTemplate;
@@ -26,14 +30,14 @@ public class MemberJdbcRepositoryImpl implements MemberRepository {
   @Override
   public List<Member> findAllMembers() {
     String sql = "select * from members";
-    return jdbcTemplate.query(sql, memberRowMapper());
+    return jdbcTemplate.query(sql, memberRowMapper);
   }
 
   @Override
   public Optional<Member> findByEmail(String email) {
     String sql = "select * from members where email=?";
     try {
-      Member result = jdbcTemplate.queryForObject(sql, memberRowMapper(), email);
+      Member result = jdbcTemplate.queryForObject(sql, memberRowMapper, email);
       return Optional.of(result);
     } catch (EmptyResultDataAccessException e) {
       return Optional.empty();
@@ -44,7 +48,7 @@ public class MemberJdbcRepositoryImpl implements MemberRepository {
   public Optional<Member> findById(Long id) {
     String sql = "select * from members where id=?";
     try {
-      Member result = jdbcTemplate.queryForObject(sql, memberRowMapper(), id);
+      Member result = jdbcTemplate.queryForObject(sql, memberRowMapper, id);
       return Optional.of(result);
     } catch (EmptyResultDataAccessException e) {
       return Optional.empty();
@@ -92,19 +96,4 @@ public class MemberJdbcRepositoryImpl implements MemberRepository {
     }
     return deletedMember;
   }
-
-  private static RowMapper<Member> memberRowMapper() {
-    return new RowMapper<Member>() {
-      @Override
-      public Member mapRow(ResultSet rs, int rowNum) throws SQLException {
-        Member member = new Member(
-            rs.getLong("id"),
-            rs.getString("email"),
-            rs.getString("password")
-        );
-        return member;
-      }
-    };
-  }
-
 }

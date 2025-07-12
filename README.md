@@ -42,3 +42,16 @@
 
     - /admin/members/{id}/delete: 회원 삭제
 
+# step3 구현 기능
+
+- HandlerMethodArgumentResolver 구현
+    - 위를 통해서 토큰을 Member 객체로 변환해 매개변수에 넣어줌.
+- 위시 리스트 등록, 조회, 수정, 삭제 기능 구현
+    - 등록: POST /api/wishes
+        - 매개변수: Member, WishRequestDto
+    - 조회: GET /api/wishes
+        - 매개변수: Member
+    - 수정(수량 수정): PATCH /api/wishes
+        - 매개변수: Member, WishRequestDto
+    - 삭제: DELETE /api/wishes
+        - 매개변수: Member
