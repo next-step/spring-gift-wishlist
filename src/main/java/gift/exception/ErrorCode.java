@@ -10,7 +10,8 @@ public enum ErrorCode {
     INVALID_PRICE_FORMAT(HttpStatus.BAD_REQUEST, "price가 숫자 형식이 아닙니다."),
     PRICE_OUT_OF_RANGE(HttpStatus.BAD_REQUEST, "price 값이 유효 범위를 벗어났습니다."),
     USER_PASSWORD_MISMATCH(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다."),
-    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다.");
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
+    USER_EMAIL_ALREADY_EXIST(HttpStatus.CONFLICT, "이미 존재하는 이메일입니다.");
     
     private final HttpStatus status;
     private final String description;

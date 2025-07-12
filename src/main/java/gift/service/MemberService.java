@@ -1,15 +1,15 @@
 package gift.service;
 
-import gift.controller.MemberRegisterResponse;
-import gift.controller.MemberResponse;
 import gift.domain.Member;
 import gift.dto.AuthorizationRequest;
 import gift.dto.AuthorizationResponse;
+import gift.dto.MemberRegisterResponse;
+import gift.dto.MemberResponse;
 import gift.exception.BusinessException;
 import gift.exception.ErrorCode;
 import gift.repository.MemberRepository;
-import gift.util.JwtProvider;
-import gift.util.PasswordUtil;
+import gift.util.PasswordEncoder;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,22 +22,25 @@ public class MemberService {
     }
 
     public MemberRegisterResponse register(AuthorizationRequest request) {
-        String hashedPassword = PasswordUtil.hashPassword(request.password());
+        String hashedPassword = PasswordEncoder.hashPassword(request.password());
         Member member = Member.of(
                 request.email(),
                 hashedPassword
         );
-        Member savedMember = memberRepository.save(member);
-
-        String token = jwtProvider.generateToken(savedMember.email());
-        return MemberRegisterResponse.of(token, member);
+        try {
+            Member savedMember = memberRepository.save(member);
+            String token = jwtProvider.generateToken(savedMember.email());
+            return MemberRegisterResponse.of(token, savedMember);
+        }catch (DuplicateKeyException ex){
+            throw new BusinessException(ErrorCode.USER_EMAIL_ALREADY_EXIST);
+        }
     }
 
     public AuthorizationResponse login(AuthorizationRequest request) {
         String email = request.email();
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(()-> new BusinessException(ErrorCode.USER_EMAIL_NOT_FOUND));
-        if(!PasswordUtil.checkPassword(request.password(), member.password())){
+        if(!PasswordEncoder.checkPassword(request.password(), member.password())){
             throw new BusinessException(ErrorCode.USER_PASSWORD_MISMATCH);
         }
 
