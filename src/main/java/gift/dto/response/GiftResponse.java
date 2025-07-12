@@ -2,15 +2,15 @@ package gift.dto.response;
 
 import gift.entity.Gift;
 
-public record ResponseGift(
+public record GiftResponse(
         Long id,
         Long giftId,
         String giftName,
         Integer giftPrice,
         String giftPhotoUrl
 ) {
-    public static ResponseGift from(Gift gift) {
-        return new ResponseGift(
+    public static GiftResponse from(Gift gift) {
+        return new GiftResponse(
                 gift.getId(),
                 gift.getGiftId(),
                 gift.getGiftName(),

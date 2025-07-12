@@ -1,14 +1,10 @@
 package gift.entity;
 
-
-import jakarta.validation.constraints.Size;
-
 public class Gift {
     private Long id;
 
     private Long giftId;
 
-    @Size(min = 1, max = 15, message = "상품 명은 공백 포함 최대 15자까지 가능합니다.")
     private String giftName;
 
     private Integer giftPrice;

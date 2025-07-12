@@ -1,9 +1,9 @@
 package gift.controller;
 
-import gift.dto.request.RequestGift;
-import gift.dto.request.RequestModifyGift;
-import gift.dto.response.ResponseGift;
-import gift.repository.GiftJdbcRepository;
+import gift.dto.request.GiftCreateRequest;
+import gift.dto.request.GiftModifyRequest;
+import gift.dto.response.GiftResponse;
+import gift.repository.GiftRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,9 +14,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class GiftWebViewController {
-    private final GiftJdbcRepository giftRepository;
+    private final GiftRepository giftRepository;
 
-    public GiftWebViewController(GiftJdbcRepository giftRepository) {
+    public GiftWebViewController(GiftRepository giftRepository) {
         this.giftRepository = giftRepository;
     }
 
@@ -32,9 +32,9 @@ public class GiftWebViewController {
     }
 
     @PostMapping("/addItem")
-    public String addItem(@ModelAttribute RequestGift requestGift, RedirectAttributes redirectAttributes){
-        ResponseGift responseGift = ResponseGift.from(giftRepository.save(RequestGift.toEntity(requestGift)));
-        redirectAttributes.addAttribute("giftId", responseGift.id());
+    public String addItem(@ModelAttribute GiftCreateRequest giftCreateRequest, RedirectAttributes redirectAttributes){
+        GiftResponse giftResponse = GiftResponse.from(giftRepository.save(giftCreateRequest.toEntity()));
+        redirectAttributes.addAttribute("giftId", giftResponse.id());
         return "redirect:/gift/{giftId}";
     }
 
@@ -53,10 +53,10 @@ public class GiftWebViewController {
     @PostMapping("gift/{id}/edit")
     public String edit(
             @PathVariable Long id,
-            @ModelAttribute RequestModifyGift item,
+            @ModelAttribute GiftModifyRequest item,
             RedirectAttributes redirectAttributes
     ) {
-        giftRepository.modify(id, RequestModifyGift.toEntity(item));
+        giftRepository.modify(id, item.toEntity());
         redirectAttributes.addAttribute("giftId", id);
         return "redirect:/gift/{giftId}";
     }
