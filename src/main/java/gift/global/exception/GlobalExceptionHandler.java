@@ -49,14 +49,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<SingleErrorResponse> handleLoginFailedException(LoginFailedException e) {
         log.warn("로그인 실패 : {}", e.getMessage());
         SingleErrorResponse errorResponse = new SingleErrorResponse(e.getMessage());
-        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(TokenExpiredException.class)
     public ResponseEntity<SingleErrorResponse> handleTokenExpiredException(TokenExpiredException e) {
         log.warn("토큰 만료됨 : {}", e.getMessage());
         SingleErrorResponse errorResponse = new SingleErrorResponse(e.getMessage());
-        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(BadRequestException.class)
@@ -71,5 +71,12 @@ public class GlobalExceptionHandler {
         log.warn("관리자만 이 기능을 사용할 수 있음 : {}", e.getMessage());
         SingleErrorResponse errorResponse = new SingleErrorResponse(e.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(WishNotFoundException.class)
+    public ResponseEntity<SingleErrorResponse> handleWishNotFoundException(WishNotFoundException e) {
+        log.warn("해당 위시리스트가 존재하지 않습니다.");
+        SingleErrorResponse errorResponse = new SingleErrorResponse(e.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 }
