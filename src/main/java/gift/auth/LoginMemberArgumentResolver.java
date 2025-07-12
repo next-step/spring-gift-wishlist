@@ -1,7 +1,5 @@
 package gift.auth;
 
-import gift.entity.Member;
-import gift.service.MemberService;
 import gift.exception.unauthorized.WrongHeaderException;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,17 +16,16 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
 
     private static final String BEARER_PREFIX = "Bearer ";
 
-    private final MemberService memberService;
     private final JwtProvider jwtProvider;
 
-    public LoginMemberArgumentResolver(MemberService memberService, JwtProvider jwtProvider) {
-        this.memberService = memberService;
+    public LoginMemberArgumentResolver(JwtProvider jwtProvider) {
         this.jwtProvider = jwtProvider;
     }
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(LoginMember.class);
+        return parameter.hasParameterAnnotation(LoginMember.class)
+                && parameter.getParameterType().equals(LoginMemberInfoDto.class);
     }
 
     @Override
@@ -42,15 +39,12 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
         }
 
         String token = authorization.substring(BEARER_PREFIX.length());
-
         Claims claims = jwtProvider.parseToken(token);
 
-        Long memberId = Long.valueOf(claims.getSubject());
+        Long memberId = Long.parseLong(claims.getSubject());
+        String email = claims.get("email", String.class);
+        String role = claims.get("role", String.class);
 
-        Member member = memberService.findByToken(token);
-        if (member == null) {
-            throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
-        }
-        return member;
+        return new LoginMemberInfoDto(memberId, email, role);
     }
 }
