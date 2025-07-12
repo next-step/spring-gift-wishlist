@@ -49,3 +49,10 @@
 -[x] [Exception] 위 2가지 커스텀 Exception에 대해서 GlobalExcpetionHandler 수정
 -[x] [Refactor : Service] NoSuchElementException -> ProductNotFoundException 변경에 따른 리팩토링
 -[x] [Test] 위시 리스트 도메인에 대한 테스트 코드 작성 (WishListTest)
+
+### 3단계 피드백 반영 사항
+-[x] [Security] JwtAuthenticationFilter 에서 "Authorization" 대신 표준인 HttpHeaders.AUTHORIZATION 사용하도록 변경
+-[x] [Security] Custom Annotation 인 LoginMemberId 정의 (WishListController에서 memberId를 자동 주입받기 위한 일환으로 작성)
+-[x] [Security] 위 커스텀 어노테이션 처리하기 위한 LoginMemberIdArgumentResolver 작성 (HandlerMethodArgumentResolver 구현)
+-[x] [Security] WebConfig 작성(스프링 MVC가 Controller 파라미터 분석할 때 LoginMemberIdArgumentResolver 활용하기 위함)
+-[x] [Controller] 위 3가지 사항을 통한 WishListController 리팩토링
