@@ -84,5 +84,7 @@ public class ProductService {
             throw new IllegalArgumentException("상품 이름은 '카카오'를 포함할 수 없습니다.");
         }
     }
-
+    public List<Product> findAllById(List<Long> ids) {
+        return productRepository.findAllById(ids);
+    }
 }

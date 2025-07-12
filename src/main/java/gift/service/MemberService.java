@@ -7,6 +7,7 @@ import gift.exception.EmailAlreadyExistsException;
 import gift.exception.InvalidLoginException;
 import gift.repository.MemberRepository;
 import gift.security.JwtProvider;
+import java.util.NoSuchElementException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -50,5 +51,16 @@ public class MemberService {
         }
 
         return jwtProvider.createToken(member);
+    }
+    public Member findById(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다. id=" + id));
+    }
+    public Long parseTokenAndGetMemberId(String token) {
+
+        String subject = jwtProvider.getSubject(token);
+        return Long.parseLong(subject);
+
+
     }
 }

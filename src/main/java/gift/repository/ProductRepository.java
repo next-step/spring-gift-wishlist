@@ -82,6 +82,21 @@ public class ProductRepository {
                 .param("id", id)
                 .update();
     }
+    public List<Product> findAllById(List<Long> ids) {
+        return jdbcClient.sql("""
+            SELECT id, name, price, image_url
+              FROM product
+             WHERE id IN (:ids)
+            """)
+                .param("ids", ids)
+                .query((rs, rowNum) -> new Product(
+                        rs.getLong("id"),
+                        rs.getString("name"),
+                        rs.getInt("price"),
+                        rs.getString("image_url")
+                ))
+                .list();
+    }
 
 
 }
