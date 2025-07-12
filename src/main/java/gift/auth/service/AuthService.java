@@ -7,8 +7,13 @@ import gift.auth.dto.LoginResponseDto;
 import gift.auth.dto.RefreshTokenRequestDto;
 import gift.auth.dto.RegisterMemberRequestDto;
 import gift.auth.dto.RegisterMemberResponseDto;
+import gift.auth.exception.DuplicatedEmailException;
+import gift.auth.exception.ExpiredTokenException;
+import gift.auth.exception.InvalidTokenException;
+import gift.auth.exception.PasswordMismatchException;
 import gift.auth.repository.MemberAuthRepository;
 import gift.member.domain.Member;
+import gift.member.exception.MemberNotFoundException;
 import gift.member.repository.MemberRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -35,7 +40,7 @@ public class AuthService {
   public RegisterMemberResponseDto registerMember(RegisterMemberRequestDto dto) {
     String email = dto.email();
     if (memberAuthRepository.findByEmail(email).isPresent()) {
-      throw new IllegalArgumentException("중복된 이메일의 사용자가 존재합니다.");
+      throw new DuplicatedEmailException();
     }
 
     Member member = Member.of(dto.username());
@@ -53,14 +58,14 @@ public class AuthService {
   public LoginResponseDto login(LoginRequestDto dto) {
     String email = dto.email();
     MemberAuth memberAuth = memberAuthRepository.findByEmail(email)
-        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+        .orElseThrow(MemberNotFoundException::new);
 
     if (!passwordEncoder.matches(dto.password(), memberAuth.password())) {
-      throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+      throw new PasswordMismatchException();
     }
 
     Member member = memberRepository.findById(memberAuth.memberId())
-        .orElseThrow(() -> new IllegalStateException("회원 정보가 존재하지 않습니다."));
+        .orElseThrow(MemberNotFoundException::new);
 
     TokenResponse tokenResponse = tokenService.generateBearerTokenResponse(member.id(), email);
     return LoginResponseDto.from(tokenResponse);
@@ -70,16 +75,16 @@ public class AuthService {
   public LoginResponseDto refreshToken(RefreshTokenRequestDto dto) {
     String refreshToken = dto.refreshToken();
     if (!tokenService.isValidToken(refreshToken)) {
-      throw new IllegalArgumentException("토큰이 유효하지 않습니다.");
+      throw new ExpiredTokenException();
     }
 
     String email = tokenService.getEmail(refreshToken);
     Long memberId = tokenService.getUserId(refreshToken);
     MemberAuth memberAuth = memberAuthRepository.findById(memberId)
-        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+        .orElseThrow(MemberNotFoundException::new);
 
     if (!refreshToken.equals(memberAuth.refreshToken())) {
-      throw new IllegalArgumentException("리프레시 토큰이 일치하지 않습니다.");
+      throw new InvalidTokenException();
     }
 
     TokenResponse tokenResponse = tokenService.generateBearerTokenResponse(memberId, email);
@@ -89,7 +94,7 @@ public class AuthService {
   @Transactional
   public void logout(String email) {
     MemberAuth memberAuth = memberAuthRepository.findByEmail(email)
-        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+        .orElseThrow(MemberNotFoundException::new);
 
     memberAuthRepository.updateRefreshToken(memberAuth.memberId(), null);
   }
