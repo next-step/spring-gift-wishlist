@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 public class JwtTokenHandler {
 
     private final String secretKey;
+    private final String tokenType = "Bearer ";
 
     public JwtTokenHandler(@Value("${app.jwt.secret-key}") String secretKey) {
         this.secretKey = secretKey;
@@ -58,5 +59,15 @@ public class JwtTokenHandler {
             .parseSignedClaims(token)
             .getPayload();
         return claims.get("userRole", String.class);
+    }
+
+    public String getEmailFromHeader(String header) {
+        String token = header.substring(tokenType.length());
+        Claims claims = Jwts.parser()
+            .verifyWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
+            .build()
+            .parseSignedClaims(token)
+            .getPayload();
+        return claims.get("email", String.class);
     }
 }

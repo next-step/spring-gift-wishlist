@@ -10,6 +10,7 @@ import gift.exception.EmailDuplicationException;
 import gift.exception.InvalidPasswordException;
 import gift.exception.UserNotFoundException;
 import gift.repository.UserRepository;
+import java.util.Optional;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
@@ -53,5 +54,10 @@ public class UserService implements UserServiceInterface {
         }
 
         return new TokenResponseDto(jwtTokenHandler.createToken(storedUser));
+    }
+
+    @Override
+    public Optional<User> getUserByEmail(String email) {
+        return userRepository.findUserByEmail(email);
     }
 }

@@ -1,12 +1,9 @@
-DROP TABLE IF EXISTS product;
-DROP TABLE IF EXISTS "user";
-
 CREATE TABLE product
 (
-    productId BIGINT PRIMARY KEY,
-    name      VARCHAR(255) NOT NULL,
-    price     INTEGER      NOT NULL,
-    imageURL  VARCHAR(500)
+    product_id BIGINT PRIMARY KEY,
+    name       VARCHAR(255) NOT NULL UNIQUE,
+    price      INTEGER      NOT NULL,
+    image_url  VARCHAR(500)
 
 );
 
@@ -18,4 +15,11 @@ CREATE TABLE users
     password  VARCHAR(100) NOT NULL
 );
 
-
+CREATE TABLE wish_list
+(
+    wish_id      BIGINT,
+    user_id      BIGINT REFERENCES users (user_id),
+    product_name VARCHAR(100) REFERENCES product (name),
+    quantity     INTEGER default (0),
+    UNIQUE (user_id, product_name)
+);

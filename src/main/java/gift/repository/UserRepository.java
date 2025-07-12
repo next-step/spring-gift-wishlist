@@ -9,5 +9,7 @@ public interface UserRepository {
 
     Optional<User> findUserByEmail(String email);
 
+    Long findUserIdByEmail(String email);
+
 
 }
