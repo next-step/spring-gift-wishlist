@@ -14,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class WishRepository {
@@ -33,6 +34,12 @@ public class WishRepository {
                     rs.getLong("productId")
             );
         }
+    }
+
+    public Optional<Wish> findById(Long id) {
+        String sql = "select * from wishes where id = ?";
+        List<Wish> wishes = jdbcTemplate.query(sql, new WishRowMapper(), id);
+        return Optional.ofNullable(wishes.isEmpty() ? null : wishes.get(0));
     }
 
     public List<Wish> findByMemberId(Long memberId) {
@@ -69,8 +76,13 @@ public class WishRepository {
         return null;
     }
 
-    public void delete(Long memberId, Long productId) {
-        String sql = "DELETE FROM wishes WHERE memberId = ? AND productId = ?";
-        jdbcTemplate.update(sql, memberId, productId);
+    public boolean delete(Long wishId) {
+        Optional<Wish> wish = findById(wishId);
+        if (wish.isEmpty()) {
+            return false;
+        }
+
+        String sql = "DELETE FROM wishes WHERE id = ?";
+        return jdbcTemplate.update(sql, wishId) > 0;
     }
 }

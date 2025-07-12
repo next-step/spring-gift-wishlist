@@ -36,12 +36,9 @@ public class WishController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @DeleteMapping("/{productId}")
-    public ResponseEntity<Void> removeWishlist(
-            @PathVariable Long productId,
-            @LoginMember Member member
-    ) {
-        wishlistService.remove(member.getId(), productId);
+    @DeleteMapping("/{wishId}")
+    public ResponseEntity<Void> removeWishlist(@PathVariable Long wishId) {
+        wishlistService.remove(wishId);
         return ResponseEntity.noContent().build();
     }
 }

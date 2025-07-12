@@ -69,4 +69,11 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.CONFLICT)
                 .body(new ErrorResponse(ex.getMessage()));
     }
+
+    @ExceptionHandler(WishNotExistException.class)
+    public ResponseEntity<ErrorResponse> handleWishNotExist(ProductNotExistException ex) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(ex.getMessage()));
+    }
 }
