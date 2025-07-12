@@ -46,18 +46,13 @@ public class WishlistControllerTest {
     @MockitoBean
     private MemberRepository memberRepository;
 
-    private Member testMember;
-    private Product testProduct;
-    private Product testProduct2;
-    private String testToken;
+    private Member testMember = new Member(1L, "test@example.com", "salt", "password", "USER");
+    private Product testProduct = new Product(10L, "product", 10000L, "http://image.url", Boolean.FALSE);
+    private Product testProduct2 = new Product(11L, "product2", 20000L, "http://image2.url", Boolean.FALSE);
+    private String testToken = "token";
 
     @BeforeEach
     void setUp() {
-        testMember = new Member(1L, "test@example.com", "salt", "password", "USER");
-        testProduct = new Product(10L, "product", 10000L, "http://image.url", Boolean.FALSE);
-        testProduct2 = new Product(11L, "product2", 20000L, "http://image2.url", Boolean.FALSE);
-        testToken = "token";
-
         given(tokenProvider.isValidToken(any())).willReturn(true);
         given(tokenProvider.getMemberIdFromToken(any())).willReturn(testMember.getId());
         given(memberRepository.findById(testMember.getId())).willReturn(Optional.of(testMember));
