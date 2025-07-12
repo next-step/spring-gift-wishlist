@@ -39,7 +39,14 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
             throw new IllegalArgumentException("로그인 정보가 존재하지 않습니다.");
         }
 
-        Long memberId = (Long) memberIdAttr;
+        Long memberId;
+
+        try {
+            memberId = (Long)memberIdAttr;
+        } catch (ClassCastException e) {
+            throw new IllegalStateException("잘못된 형식의 memberId 입니다.");
+        }
+
         return memberService.findById(memberId);
     }
 }
