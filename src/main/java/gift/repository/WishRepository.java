@@ -4,6 +4,7 @@ import gift.entity.Member;
 import gift.entity.Product;
 import gift.entity.Role;
 import gift.entity.Wish;
+import gift.exception.DataInsertFailedException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -70,10 +71,11 @@ public class WishRepository {
         }, keyHolder);
 
         Number key = keyHolder.getKey();
-        if (key != null) {
-            return new Wish(key.longValue(), memberId, productId);
+        if (key == null) {
+            throw new DataInsertFailedException();
         }
-        return null;
+        return new Wish(key.longValue(), memberId, productId);
+
     }
 
     public boolean delete(Long wishId) {

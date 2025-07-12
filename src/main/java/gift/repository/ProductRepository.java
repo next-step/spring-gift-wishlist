@@ -1,6 +1,7 @@
 package gift.repository;
 
 import gift.entity.Product;
+import gift.exception.DataInsertFailedException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -52,7 +53,9 @@ public class ProductRepository{
         }, keyHolder);
 
         Number key = keyHolder.getKey();
-        if (key == null) throw new IllegalStateException("생성된 키를 가져올 수 없습니다.");
+        if (key == null) {
+            throw new DataInsertFailedException();
+        }
 
         return new Product(key.longValue(), product.getName(), product.getPrice(), product.getImageUrl());
     }
