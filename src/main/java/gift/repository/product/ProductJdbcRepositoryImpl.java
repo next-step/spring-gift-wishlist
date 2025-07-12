@@ -1,7 +1,7 @@
 package gift.repository.product;
 
 import gift.entity.Product;
-import gift.exception.ProductNotFoundException;
+import gift.exception.notfound.ProductNotFoundException;
 import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;

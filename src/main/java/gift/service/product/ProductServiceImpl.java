@@ -4,7 +4,7 @@ import gift.dto.product.ProductRequestDto;
 import gift.dto.product.ProductResponseDto;
 import gift.entity.Product;
 import gift.exception.NameHasKakaoException;
-import gift.exception.ProductNotFoundException;
+import gift.exception.notfound.ProductNotFoundException;
 import gift.repository.product.ProductRepository;
 import java.util.ArrayList;
 import java.util.List;

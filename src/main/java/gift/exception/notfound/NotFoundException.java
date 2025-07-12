@@ -1,4 +1,4 @@
-package gift.exception;
+package gift.exception.notfound;
 
 public abstract class NotFoundException extends RuntimeException {
 
