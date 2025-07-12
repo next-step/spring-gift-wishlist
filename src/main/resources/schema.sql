@@ -12,3 +12,13 @@ CREATE TABLE users (
                         created_at DATETIME(6),
                         updated_at DATETIME(6)
 );
+
+CREATE TABLE wishlist (
+                        id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                        user_email VARCHAR(50),
+                        product_id BIGINT,
+                        FOREIGN KEY (user_email) REFERENCES users(email),
+                        FOREIGN KEY (product_id) REFERENCES products(id)
+
+);
+
