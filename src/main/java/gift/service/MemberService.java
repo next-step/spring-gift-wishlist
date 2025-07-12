@@ -1,50 +1,60 @@
 package gift.service;
 
+import gift.auth.JwtProvider;
 import gift.domain.Member;
-import gift.dto.LoginRequest;
-import gift.dto.LoginResponse;
-import gift.dto.RegisterRequest;
-import gift.dto.RegisterResponse;
 import gift.repository.MemberRepository;
-import gift.security.JwtProvider;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class MemberService {
 
     private final MemberRepository memberRepository;
     private final JwtProvider jwtProvider;
-    private final BCryptPasswordEncoder passwordEncoder;
 
     public MemberService(MemberRepository memberRepository, JwtProvider jwtProvider) {
         this.memberRepository = memberRepository;
         this.jwtProvider = jwtProvider;
-        this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
-    public RegisterResponse register(RegisterRequest request) {
-        if (memberRepository.existsByEmail(request.getEmail())) {
+    public Optional<String> authenticateAndGenerateToken(String email, String password) {
+        return memberRepository.findByEmail(email)
+                .filter(member -> member.getPassword().equals(password))
+                .map(member -> jwtProvider.createToken(member.getId()));
+    }
+
+    public boolean existsByEmail(String email) {
+        return memberRepository.existsByEmail(email);
+    }
+
+    public Member register(String email, String password) {
+        if (!isValidEmail(email)) {
+            throw new IllegalArgumentException("이메일 형식이 올바르지 않습니다.");
+        }
+        if (memberRepository.existsByEmail(email)) {
             throw new IllegalArgumentException("이미 가입된 이메일입니다.");
         }
-
-        String encryptedPassword = passwordEncoder.encode(request.getPassword());
-        Member member = new Member(request.getEmail(), encryptedPassword);
-        memberRepository.save(member);
-
-        String token = jwtProvider.generateToken(member);
-        return new RegisterResponse(token);
+        Member member = new Member(null, email, password);
+        return memberRepository.save(member);
     }
 
-    public LoginResponse login(LoginRequest request) {
-        Member member = memberRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다."));
-
-        if (!passwordEncoder.matches(request.getPassword(), member.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
-        }
-
-        String token = jwtProvider.generateToken(member);
-        return new LoginResponse(token);
+    //이메일 유효성 검사
+    private boolean isValidEmail(String email) {
+        return email != null && email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
     }
+
+    public Optional<Member> authenticate(String email, String password) {
+        return memberRepository.findByEmail(email)
+                .filter(member -> member.getPassword().equals(password));
+    }
+
+    public String createTokenFor(Member member) {
+        return jwtProvider.createToken(member.getId());
+    }
+
+    public Optional<Member> findById(Long id) {
+        return memberRepository.findById(id);
+    }
+
 }

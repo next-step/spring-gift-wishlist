@@ -1,14 +1,14 @@
 package gift.controller;
 
+import gift.domain.Member;
 import gift.dto.LoginRequest;
 import gift.dto.LoginResponse;
+import gift.dto.MemberResponse;
 import gift.dto.RegisterRequest;
-import gift.dto.RegisterResponse;
 import gift.service.MemberService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,29 +22,36 @@ public class MemberController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest request) {
-        RegisterResponse response = memberService.register(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    public ResponseEntity<LoginResponse> register(@RequestBody RegisterRequest request) {
+        if (memberService.existsByEmail(request.getEmail())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        Member saved = memberService.register(request.getEmail(), request.getPassword());
+        String token = memberService.createTokenFor(saved);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new LoginResponse(token));
     }
 
+
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        try {
-            LoginResponse response = memberService.login(request);
-            return ResponseEntity.ok(response);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-        }
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+        return memberService.authenticateAndGenerateToken(
+                        request.getEmail(), request.getPassword())
+                .map(token -> ResponseEntity.ok(new LoginResponse(token)))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.FORBIDDEN).build());
     }
 
     @GetMapping("/me")
-    public String getAuthenticatedMemberInfo() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || authentication.getPrincipal() == "anonymousUser") {
-            return "인증되지 않은 사용자입니다.";
+    public ResponseEntity<MemberResponse> getMyInfo(HttpServletRequest request) {
+        Long memberId = (Long) request.getAttribute("memberId");
+        if (memberId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        Long memberId = (Long) authentication.getPrincipal();
-        return "로그인된 회원 ID: " + memberId;
+        return memberService.findById(memberId)
+                .map(member -> ResponseEntity.ok(new MemberResponse(member.getId(), member.getEmail())))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
+
 }
