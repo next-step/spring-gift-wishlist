@@ -27,4 +27,8 @@ public class Wish {
     public Long getProductId() {
         return productId;
     }
+
+    public boolean isOwner(Long memberId) {
+        return this.memberId.equals(memberId);
+    }
 }
