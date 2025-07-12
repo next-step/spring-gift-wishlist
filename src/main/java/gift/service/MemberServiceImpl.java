@@ -28,10 +28,8 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public boolean existMember(MemberRequestDto memberRequestDto) {
         int membercount = memberRepository.countMember(memberRequestDto.getEmail(), memberRequestDto.getPassword());
-        if(membercount < 1) {
-            return false;
-        }
-        return true;
+
+        return membercount>=1;
     }
 
     @Override
