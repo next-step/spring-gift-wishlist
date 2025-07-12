@@ -2,6 +2,7 @@ package gift.repository;
 
 import gift.entity.Product;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -36,6 +37,10 @@ public class ProductJdbcRepository implements ProductRepository {
             productId).stream().findFirst();
     }
 
+    @Override
+    public List<Product> findAll() {
+        return jdbcTemplate.query("select * from product", productRowMapper());
+    }
 
     @Override
     public void createProduct(Product product) {

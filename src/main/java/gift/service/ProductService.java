@@ -7,6 +7,7 @@ import gift.entity.Product;
 import gift.exception.KakaoApproveException;
 import gift.exception.ProductNotFoundException;
 import gift.repository.ProductRepository;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 
@@ -22,7 +23,10 @@ public class ProductService implements ProductServiceInterface {
     private static final String KAKAO_KEYWORD = "카카오";
 
     public ProductResponseDto productToResponseDto(Product product) {
-        return new ProductResponseDto(product.productId(), product.name(), product.price(),
+        return new ProductResponseDto(
+            product.productId(),
+            product.name(),
+            product.price(),
             product.imageURL());
     }
 
@@ -32,6 +36,10 @@ public class ProductService implements ProductServiceInterface {
             throw new ProductNotFoundException("상품을 찾을 수 없습니다");
         }
         return productRepository.findById(productId).orElseThrow();
+    }
+
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
     }
 
 

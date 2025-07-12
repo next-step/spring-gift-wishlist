@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/api/members")
-public class UserController {
+public class UserAuthenticationController {
 
     private final UserService userService;
 
-    public UserController(UserService userService) {
+    public UserAuthenticationController(UserService userService) {
         this.userService = userService;
     }
 
@@ -37,5 +37,4 @@ public class UserController {
         TokenResponseDto token = userService.login(loginRequestDto);
         return new ResponseEntity<>(token, HttpStatus.OK);
     }
-
 }

@@ -5,6 +5,8 @@ import gift.dto.request.ProductUpdateRequestDto;
 import gift.dto.response.ProductResponseDto;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,6 +36,15 @@ class ProductController {
             HttpStatus.OK);
     }
 
+    @GetMapping("/products")
+    public ResponseEntity<List<ProductResponseDto>> getAllProducts() {
+        return new ResponseEntity<>(
+            productService.getAllProducts().stream()
+                .map(product -> productService.productToResponseDto(product))
+                .collect(Collectors.toList())
+            , HttpStatus.OK);
+    }
+
     @PostMapping("/products")
     public ResponseEntity<ProductResponseDto> createProduct(
         @RequestBody @Valid ProductRequestDto productRequestDto) {
@@ -49,7 +60,7 @@ class ProductController {
         return new ResponseEntity<>(
             productService.updateProduct(productId, productUpdateRequestDto), HttpStatus.OK);
     }
-    
+
     @DeleteMapping("/products/{productId}")
     public ResponseEntity<Void> deleteProduct(@PathVariable long productId) {
 

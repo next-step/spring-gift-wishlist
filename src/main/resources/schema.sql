@@ -1,6 +1,3 @@
-DROP TABLE IF EXISTS product;
-DROP TABLE IF EXISTS "user";
-
 CREATE TABLE product
 (
     product_id BIGINT PRIMARY KEY,
@@ -20,9 +17,8 @@ CREATE TABLE users
 
 CREATE TABLE wish_list
 (
-    wish_id    BIGINT PRIMARY KEY AUTO_INCREMENT,
+    wish_id    BIGINT PRIMARY KEY,
     user_id    BIGINT REFERENCES users (user_id),
-    product_id BIGINT REFERENCES product (product_id)
+    product_id BIGINT REFERENCES product (product_id),
+    quantity   INTEGER
 );
-
-CREATE INDEX user_idx ON wish_list (user_id);
