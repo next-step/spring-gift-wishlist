@@ -92,6 +92,7 @@ public class ProductControllerTest {
                 .isThrownBy(() ->
                         client.post()
                                 .uri(url)
+                                .header("Authorization", token)
                                 .body(requestDto)
                                 .retrieve()
                                 .toEntity(Void.class)
@@ -107,6 +108,7 @@ public class ProductControllerTest {
                 .isThrownBy(() ->
                         client.put()
                                 .uri(url)
+                                .header("Authorization", token)
                                 .body(requestDto)
                                 .retrieve()
                                 .toEntity(Void.class)

@@ -1,0 +1,104 @@
+package gift.repository;
+
+import gift.entity.Product;
+import gift.entity.Wish;
+import gift.misc.Pair;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public class WishDao implements WishRepository {
+
+    private final JdbcClient client;
+
+    private final RowMapper<Wish> getWishRowMapper = (rs, rowNum) -> {
+        Long id = rs.getLong("id");
+        Long productId = rs.getLong("productId");
+        Long memberId = rs.getLong("memberId");
+        Long quantity = rs.getLong("quantity");
+        return new Wish(id, productId, memberId, quantity);
+    };
+
+    private final RowMapper<Pair<Wish, Product>> getWishAndProductRowMapper = (rs, rowNum) -> {
+        Long id = rs.getLong("id");
+        Long productId = rs.getLong("productId");
+        Long memberId = rs.getLong("memberId");
+        Long quantity = rs.getLong("quantity");
+
+        String name = rs.getString("name");
+        String imageUrl = rs.getString("imageUrl");
+        Long price = rs.getLong("price");
+
+        Wish wish = new Wish(id, productId, memberId, quantity);
+        Product product = new Product(productId, name, price, imageUrl);
+
+        return new Pair<>(wish, product);
+    };
+
+    public WishDao(JdbcClient client) {
+        this.client = client;
+    }
+
+    @Override
+    public Wish createWish(Wish newWish) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        String sql = "insert into wishes(productId, memberId, quantity) values (:productId, :memberId, :quantity);";
+        client.sql(sql)
+                .param("productId", newWish.getProductId())
+                .param("memberId", newWish.getMemberId())
+                .param("quantity", newWish.getQuantity())
+                .update(keyHolder);
+
+        Wish savedWish = new Wish(keyHolder.getKey().longValue(), newWish.getProductId(),
+                newWish.getMemberId(), newWish.getQuantity());
+
+        return savedWish;
+    }
+
+    @Override
+    public List<Pair<Wish, Product>> findMemberWishes(Long memberId) {
+        String sql = "select * from wishes join products on wishes.productId = products.id where memberId = :memberId;";
+        return client.sql(sql)
+                .param("memberId", memberId)
+                .query(getWishAndProductRowMapper)
+                .list();
+    }
+
+    @Override
+    public Optional<Wish> findMemberWishByProductId(Long productId, Long memberId) {
+        String sql = "select * from wishes where productId = :productId and memberId = :memberId;";
+        return client.sql(sql)
+                .param("productId", productId)
+                .param("memberId", memberId)
+                .query(getWishRowMapper)
+                .optional();
+    }
+
+    @Override
+    public Wish updateMemberWishQuantityByProductId(Long quantity, Long productId, Long memberId) {
+        String sql = "update wishes set quantity = :quantity where productId = :productId and memberId = :memberId;";
+        client.sql(sql)
+                .param("quantity", quantity)
+                .param("productId", productId)
+                .param("memberId", memberId)
+                .update();
+
+        return findMemberWishByProductId(productId, memberId).get();
+    }
+
+    @Override
+    public void deleteMemberWishByProductId(Long productId, Long memberId) {
+        String sql = "delete from wishes where productId = :productId and memberId = :memberId;";
+        client.sql(sql)
+                .param("productId", productId)
+                .param("memberId", memberId)
+                .update();
+    }
+}

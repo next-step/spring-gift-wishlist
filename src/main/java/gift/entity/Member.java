@@ -32,7 +32,7 @@ public class Member {
         return role;
     }
 
-    public Boolean isAdmin(){
+    public Boolean isAdmin() {
         return this.role.equals("admin");
     }
 }
