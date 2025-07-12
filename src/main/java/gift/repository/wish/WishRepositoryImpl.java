@@ -30,7 +30,7 @@ public class WishRepositoryImpl implements WishRepository {
 
   @Override
   public List<Wish> findByMemberId(Long memberId) {
-    String sql = "SELECT * FROM WISHLIST WHERE member_id = ?";
+    String sql = "select * from wishlist where member_id = ?";
     return jdbcTemplate.query(sql, wishRowMapper, memberId);
   }
 
@@ -64,7 +64,7 @@ public class WishRepositoryImpl implements WishRepository {
     if (update == 0) {
       return Optional.empty();
     }
-    String selectSql = "SELECT * FROM wishlist WHERE member_id = ? AND product_id = ?";
+    String selectSql = "select * from wishlist where member_id = ? and product_id = ?";
     Wish updatedWish = jdbcTemplate.queryForObject(selectSql, wishRowMapper, wish.getMemberId(),
         wish.getProductId());
     return Optional.of(updatedWish);
