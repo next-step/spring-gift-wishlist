@@ -1,6 +1,6 @@
 package gift.dto.response;
 
-public record WishResponseDto(
+public record WishIdResponseDto(
     Long wishId
 ) {
 

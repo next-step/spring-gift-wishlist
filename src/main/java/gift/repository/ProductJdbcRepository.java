@@ -22,10 +22,10 @@ public class ProductJdbcRepository implements ProductRepository {
 
     private RowMapper<Product> productRowMapper() {
         return (rs, rowNum) -> new Product(
-            rs.getLong("productId"),
+            rs.getLong("product_id"),
             rs.getString("name"),
             rs.getInt("price"),
-            rs.getString("imageURL")
+            rs.getString("image_url")
         );
     }
 
@@ -55,10 +55,10 @@ public class ProductJdbcRepository implements ProductRepository {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(this.jdbcTemplate);
 
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("productId", product.productId());
+        parameters.put("product_id", product.productId());
         parameters.put("name", product.name());
         parameters.put("price", product.price());
-        parameters.put("imageURL", product.imageURL());
+        parameters.put("image_url", product.imageURL());
 
         jdbcInsert.withTableName("product").execute(parameters);
     }
@@ -66,13 +66,13 @@ public class ProductJdbcRepository implements ProductRepository {
     @Override
     public void updateProduct(Product product) {
         jdbcTemplate.update(
-            "update product set name = ?, price = ?, imageURL = ? where product_id = ?",
+            "update product set name = ?, price = ?, image_url = ? where product_id = ?",
             product.name(), product.price(), product.imageURL(), product.productId());
     }
 
     @Override
     public void delete(long productId) {
-        jdbcTemplate.update("delete from product where productId = ?", productId);
+        jdbcTemplate.update("delete from product where product_id = ?", productId);
     }
 
     @Override

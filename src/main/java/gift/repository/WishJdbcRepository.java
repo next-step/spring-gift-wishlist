@@ -1,11 +1,14 @@
 package gift.repository;
 
 import gift.entity.Product;
+import gift.entity.WishProduct;
 import gift.exception.ProductNotFoundException;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -22,16 +25,36 @@ public class WishJdbcRepository implements WishRepository {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(this.jdbcTemplate)
             .withTableName("wish_list")
-            .usingColumns("wish_id", "user_id", "product_id", "quantity");
+            .usingColumns("wish_id", "user_id", "product_name", "quantity");
         this.userJdbcRepository = userJdbcRepository;
         this.productJdbcRepository = productJdbcRepository;
+    }
+
+    private RowMapper<WishProduct> wishRowMapper() {
+        return (rs, rowNum) -> new WishProduct(
+            rs.getString("product_name"),
+            rs.getInt("quantity")
+        );
+    }
+
+    @Override
+    public Optional<Integer> getCurrnetQuantity(String productName, Long userId) {
+        try {
+            Integer quantity = jdbcTemplate.queryForObject(
+                "select quantity from wish_list where product_name = ? and user_id = ?",
+                Integer.class,
+                productName, userId
+            );
+            return Optional.ofNullable(quantity);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
     public long addProduct(String productName, String email) {
         Optional<Product> product = productJdbcRepository.findByName(productName);
         long userId = userJdbcRepository.findUserIdByEmail(email);
-        int quantity = getCurrnetQuantity(productName, userId).get();
         if (product.isEmpty()) {
             throw new ProductNotFoundException("상품을 찾을 수 없습니다");
         }
@@ -39,28 +62,33 @@ public class WishJdbcRepository implements WishRepository {
         Map<String, Object> parameters = Map.of(
             "wish_id", userId,
             "user_id", userId,
-            "product_id", product.get().productId(),
-            "quantity", quantity + 1);
+            "product_name", productName,
+            "quantity", 1);
 
         jdbcInsert.execute(parameters);
         return userId;
     }
 
     @Override
-    public Optional<Integer> getCurrnetQuantity(String productName, Long userId) {
-        long productId = productJdbcRepository
-            .findByName(productName)
-            .get()
-            .productId();
-        try {
-            Integer quantity = jdbcTemplate.queryForObject(
-                "select quantity from wish_list where product_id = ? and user_id = ?",
-                Integer.class,
-                productId, userId
-            );
-            return Optional.ofNullable(quantity);
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
+    public List<WishProduct> getWishList(String email) {
+        long userId = userJdbcRepository.findUserIdByEmail(email);
+
+        return jdbcTemplate.query("select * from wish_list where user_id = ?",
+            wishRowMapper(),
+            userId);
+    }
+
+    @Override
+    public int deleteProduct(Long wishId, String productName) {
+        System.out.println(productName);
+        return jdbcTemplate.update("delete from wish_list where wish_id = ? and product_name = ?",
+            wishId, productName);
+    }
+
+    @Override
+    public int updateWish(Long wishId, String productName, int quantity) {
+        return jdbcTemplate.update(
+            "update wish_list set quantity = ? where wish_id = ? and product_name = ?"
+            , quantity, wishId, productName);
     }
 }

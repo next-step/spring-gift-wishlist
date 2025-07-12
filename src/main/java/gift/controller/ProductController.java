@@ -40,7 +40,7 @@ class ProductController {
     public ResponseEntity<List<ProductResponseDto>> getAllProducts() {
         return new ResponseEntity<>(
             productService.getAllProducts().stream()
-                .map(product -> productService.productToResponseDto(product))
+                .map(productService::productToResponseDto)
                 .collect(Collectors.toList())
             , HttpStatus.OK);
     }

@@ -65,6 +65,19 @@ public class GlobalExceptionHandler {
     }
 
     @ResponseBody
+    @ExceptionHandler(UnauthorizedWishListException.class)
+    public ResponseEntity<ExceptionResponseDto> handleUnauthorizedWishList(
+        UnauthorizedWishListException e) {
+        List<String> errors = new ArrayList<>();
+        errors.add(e.getMessage());
+        ExceptionResponseDto exception = new ExceptionResponseDto(
+            errors,
+            LocalDateTime.now());
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exception);
+    }
+
+    @ResponseBody
     @ExceptionHandler(InvalidPasswordException.class)
     public ResponseEntity<ExceptionResponseDto> handleInvalidPasswordException(
         InvalidPasswordException e) {
@@ -93,7 +106,6 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception);
     }
-
 
     @ExceptionHandler(KakaoApproveException.class)
     public String handleKakaoApproveException(

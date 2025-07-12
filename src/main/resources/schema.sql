@@ -1,7 +1,7 @@
 CREATE TABLE product
 (
     product_id BIGINT PRIMARY KEY,
-    name       VARCHAR(255) NOT NULL,
+    name       VARCHAR(255) NOT NULL UNIQUE,
     price      INTEGER      NOT NULL,
     image_url  VARCHAR(500)
 
@@ -17,8 +17,9 @@ CREATE TABLE users
 
 CREATE TABLE wish_list
 (
-    wish_id    BIGINT,
-    user_id    BIGINT REFERENCES users (user_id),
-    product_id BIGINT REFERENCES product (product_id),
-    quantity   INTEGER default (0)
+    wish_id      BIGINT,
+    user_id      BIGINT REFERENCES users (user_id),
+    product_name VARCHAR(100) REFERENCES product (name),
+    quantity     INTEGER default (0),
+    UNIQUE (user_id, product_name)
 );
