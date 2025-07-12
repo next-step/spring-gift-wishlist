@@ -5,3 +5,10 @@ CREATE TABLE product
     price     INT          NOT NULL,             -- '가격'
     image_url VARCHAR(255) NOT NULL              -- '이미지 URL'
 );
+
+CREATE TABLE member
+(
+    id        BIGINT AUTO_INCREMENT PRIMARY KEY,
+    email     VARCHAR(255) NOT NULL unique ,
+    password  VARCHAR(255) NOT NULL
+);
