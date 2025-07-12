@@ -32,4 +32,11 @@ public class WishController {
         List<WishDto> response = wishService.handleGetMyWishList(member);
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/{wishId}")
+    public ResponseEntity<Void> deleteWish(@CurrentMember Member member,
+                                           @PathVariable Long wishId) {
+        wishService.handleDeleteWish(member, wishId);
+        return ResponseEntity.noContent().build();
+    }
 }

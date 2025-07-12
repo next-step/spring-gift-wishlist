@@ -1,13 +1,12 @@
 package gift.config;
 
 import gift.common.dto.response.ErrorResponseDto;
-import gift.common.exception.CreationFailException;
-import gift.common.exception.EntityNotFoundException;
-import gift.common.exception.RegisterFailException;
-import gift.common.exception.RequestValidateFailException;
+import gift.common.exception.*;
+import gift.common.exception.SecurityException;
 import gift.domain.product.ProductDomainRuleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -16,6 +15,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+    @ExceptionHandler(AuthorityException.class)
+    public ResponseEntity<ErrorResponseDto> handleAuthorityException(AuthorityException e) {
+        log.warn("AuthorityException: {}", e.getMessage());
+        ErrorResponseDto response = new ErrorResponseDto(e.getMessage(), 403);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+    }
 
     @ExceptionHandler(RequestValidateFailException.class)
     public ResponseEntity<ErrorResponseDto> handleRequestValidateFail(RequestValidateFailException e) {
@@ -49,5 +55,12 @@ public class GlobalExceptionHandler {
         log.warn("RegisterFailException: {}", e.getMessage());
         ErrorResponseDto response = new ErrorResponseDto(e.getMessage(), e.getStatus().value());
         return ResponseEntity.status(response.code()).body(response);
+    }
+
+    @ExceptionHandler(SecurityException.class)
+    public ResponseEntity<ErrorResponseDto> handleSecurityException(SecurityException e) {
+        log.warn("SecurityException: {}", e.getMessage());
+        ErrorResponseDto response = new ErrorResponseDto(e.getMessage(), 401);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     }
 }
