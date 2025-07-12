@@ -1,7 +1,7 @@
-package gift.controller;
+package gift.yjshop.controller;
 
-import gift.entity.Member;
 import gift.dto.MemberRequestDto;
+import gift.entity.Member;
 import gift.exception.ErrorCode;
 import gift.exception.MyException;
 import gift.service.MemberService;
@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,50 +21,48 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-@RequestMapping("/admin")
-public class MemberViewController {
-
+@RequestMapping("/view/admin")
+public class MemberAdminViewController {
     private final MemberService memberService;
 
-    public MemberViewController(MemberService memberService){
+    public MemberAdminViewController(MemberService memberService) {
         this.memberService = memberService;
     }
 
     //모든 회원을 조회
-    @GetMapping("/members/list")
+    @GetMapping("/members")
     public String getMembers(Model model){
         List<Member> memberList = memberService.getAllMembers();
         model.addAttribute("memberList", memberList);
-        return "members/home";
+        return "/yjshop/admin/member/home";
     }
 
     //특정 회원 조회(이메일로 검색)
-    @GetMapping("/members/info")
+    @GetMapping("/members/search")
     public String getMembers(
             @RequestParam(required = false) String email,
             Model model
     ){
         if(email.isEmpty()){
-            return "redirect:/admin/members/list";
+            return "redirect:/view/admin/members";
         }
         Optional<Member> member = memberService.getMemberByEmail(email);
         if(member.isEmpty()){
             throw new MyException(ErrorCode.MEMBER_NOT_FOUND);
         }
         model.addAttribute("member", member.get());
-        return "members/memberinfo";
+        return "/yjshop/admin/member/memberinfo";
     }
 
-    //회원 추가
-    //1. 회원 등록 폼을 가져오기
+    //회원 등록 폼 가져오기
     @GetMapping("/members/add")
     public String getMemeberForm(Model model){
         model.addAttribute("memberRequestDto", new MemberRequestDto(null, null));
         model.addAttribute("memberDto", new MemberRequestDto(null, null));
-        return "members/form";
+        return "/yjshop/admin/member/form";
     }
 
-    //2. 회원 등록(추가)
+    //회원 등록
     @PostMapping("/members/add")
     public String addMember(
             @ModelAttribute @Valid MemberRequestDto memberRequestDto,
@@ -75,15 +74,14 @@ public class MemberViewController {
         }
         if(bindingResult.hasErrors()){
             model.addAttribute("memberDto", memberRequestDto); //입력값 유지를 위함
-            return "members/form";
+            return "yjshop/admin/member/form";
         }
         memberService.register(memberRequestDto);
         String email = memberService.getMemberByEmail(memberRequestDto.email()).get().getEmail();
-        return "redirect:/admin/members/info?email=" + email;
+        return "redirect:/view/admin/members/search?email=" + email;
     }
 
-    //회원 수정
-    //1. 수정 화면 가져오기
+    //회원 수정 폼 가져오기
     @GetMapping("/members/modify/{id}")
     public String modifyMemberForm(
             @PathVariable Long id,
@@ -92,9 +90,10 @@ public class MemberViewController {
         Member member = memberService.findMember(id).get();
         model.addAttribute("memberRequestDto", new MemberRequestDto(null, null));
         model.addAttribute("member", member);
-        return "members/modifyForm";
+        return "/yjshop/admin/member/modifyForm";
     }
 
+    //회원 수정
     @PostMapping("/members/modify/{id}")
     public String modifyMember(
             @ModelAttribute @Valid MemberRequestDto memberRequestDto,
@@ -110,19 +109,33 @@ public class MemberViewController {
 
         if(bindingResult.hasErrors()){
             model.addAttribute("member", member);
-            return "members/modifyForm";
+            return "/yjshop/admin/member/modifyForm";
         }
 
         memberService.modifyMember(id, memberRequestDto);
         String email = memberService.getMemberByEmail(memberRequestDto.email()).get().getEmail();
-        return "redirect:/admin/members/info?email=" + email;
+        return "redirect:/view/admin/members/search?email=" + email;
     }
 
     //회원을 삭제
     @PostMapping("/members/remove/{id}")
     public String removeMember(@PathVariable Long id){
         memberService.removeMember(id);
-        return "redirect:/admin/members/list";
+        return "redirect:/view/admin/members";
     }
+
+    @ExceptionHandler(MyException.class)
+    public String MyExceptionHandler(MyException e, Model model){
+        model.addAttribute("errorMsg", e.getErrorCode().getMessage());
+
+        if(e.getErrorCode().equals(ErrorCode.JWT_VALIDATION_FAIL)){
+            return "redirect:/view/login";
+        }
+
+        return "/yjshop/admin/member/membernotfound";
+    }
+
+
+
 
 }

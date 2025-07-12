@@ -28,7 +28,7 @@ class MemberControllerTest {
     void 회원_가입_성공시_토큰이_반환() {
         var url = "http://localhost:" + port + "/api/members/register";
 
-        MemberRequestDto member1 = new MemberRequestDto("abc123@gmail.com", "password");
+        MemberRequestDto member1 = new MemberRequestDto("qazwsx123@gmail.com", "password");
 
         var response = restClient.post()
                 .uri(url)

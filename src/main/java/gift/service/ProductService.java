@@ -26,6 +26,12 @@ public class ProductService {
         return productRepository.findById(id);
     }
 
+    //상품 검색
+    public List<Product> searchProduct(String name){
+        String keyword = "%" + name + "%";
+        return productRepository.findProductByName(keyword);
+    }
+
     //전체 상품 검색
     public List<Product> findAll(){
         return productRepository.findProducts();

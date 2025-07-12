@@ -60,6 +60,12 @@ public class ProductRepository {
         jdbcTemplate.update(sql, id);
     }
 
+    public List<Product> findProductByName(String name){
+        String sql = "select * from products where name like ?";
+        List<Product> productList = jdbcTemplate.query(sql, productRowMapper(), name);
+        return productList;
+    }
+
     public RowMapper<Product> productRowMapper(){
         return new RowMapper<Product>() {
             @Override

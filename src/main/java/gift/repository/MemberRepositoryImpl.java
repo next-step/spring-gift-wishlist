@@ -1,5 +1,6 @@
 package gift.repository;
 
+import gift.dto.Role;
 import gift.entity.Member;
 import gift.dto.MemberRequestDto;
 import java.sql.ResultSet;
@@ -28,11 +29,12 @@ public class MemberRepositoryImpl implements MemberRepository{
         simpleJdbcInsert.withTableName("members").usingGeneratedKeyColumns("id");
 
         Map<String, Object> params = new HashMap<>();
+        params.put("role", member.getRole().toString());
         params.put("email", member.getEmail());
         params.put("password", member.getPassword());
 
         Long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
-        return new Member(member.getMemberId(), member.getEmail(), member.getPassword());
+        return new Member(id, member.getEmail(), member.getPassword(), member.getRole());
     }
 
     @Override
@@ -78,7 +80,8 @@ public class MemberRepositoryImpl implements MemberRepository{
                 Long id = rs.getLong("id");
                 String email = rs.getString("email");
                 String password = rs.getString("password");
-                return new Member(id, email, password);
+                String role = rs.getString("role");
+                return new Member(id, email, password, Role.valueOf(role));
             }
         };
     }
