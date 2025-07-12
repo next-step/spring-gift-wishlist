@@ -2,6 +2,7 @@ package gift.repository;
 
 import gift.entity.Member;
 import gift.entity.Role;
+import gift.exception.DataInsertFailedException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -55,10 +56,11 @@ public class MemberRepository {
         }, keyHolder);
 
         Number key = keyHolder.getKey();
-        if (key != null) {
-            return new Member(key.longValue(), member.getName(), member.getEmail(), member.getPassword(),  member.getRole());
+        if (key == null) {
+            throw new DataInsertFailedException();
         }
-        return member;
+
+        return new Member(key.longValue(), member.getName(), member.getEmail(), member.getPassword(),  member.getRole());
     }
 
     public Optional<Member> findById(Long id) {

@@ -4,9 +4,6 @@ import gift.validation.ForbiddenWord;
 import jakarta.validation.constraints.*;
 
 public record ProductRequestDto(
-
-        Long id,
-
         @NotBlank(message = "상품명은 필수 입력값입니다.")
         @Size(max = 15, message = "상품명은 15자 이하로 입력해주세요.")
         @Pattern(

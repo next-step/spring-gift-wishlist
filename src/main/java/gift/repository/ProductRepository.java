@@ -1,6 +1,7 @@
 package gift.repository;
 
 import gift.entity.Product;
+import gift.exception.DataInsertFailedException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -18,6 +19,12 @@ public class ProductRepository{
     private final JdbcTemplate jdbcTemplate;
     public ProductRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+    }
+
+    public boolean existsById(Long productId) {
+        String sql = "select count(*) from products where id = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, productId);
+        return count!=null && count>0;
     }
 
     private static class ProductRowMapper implements RowMapper<Product> {
@@ -46,7 +53,9 @@ public class ProductRepository{
         }, keyHolder);
 
         Number key = keyHolder.getKey();
-        if (key == null) throw new IllegalStateException("생성된 키를 가져올 수 없습니다.");
+        if (key == null) {
+            throw new DataInsertFailedException();
+        }
 
         return new Product(key.longValue(), product.getName(), product.getPrice(), product.getImageUrl());
     }

@@ -31,7 +31,7 @@ public class MemberViewController {
     @GetMapping("/new")
     public ModelAndView createForm() {
         Map<String, Object> model = new HashMap<>();
-        model.put("member", new MemberRequestDto(null, null, null, null));
+        model.put("member", new MemberRequestDto(null, null, null));
         return new ModelAndView("member/create", model);
     }
 
