@@ -1,6 +1,7 @@
 package gift.service;
 
 import gift.common.dto.request.AddWishRequest;
+import gift.common.dto.response.WishDto;
 import gift.common.exception.CreationFailException;
 import gift.common.exception.EntityNotFoundException;
 import gift.domain.member.Member;
@@ -8,6 +9,7 @@ import gift.domain.wish.Wish;
 import gift.repository.WishRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,12 +21,22 @@ public class WishService {
         this.wishRepository = wishRepository;
     }
 
-    public Wish handleAddWishRequest(Member member, AddWishRequest request) {
+    public WishDto handleAddWishRequest(Member member, AddWishRequest request) {
         Optional<Wish> found = wishRepository.findByMemberIdProductId(member.getId(), request.productId());
+        Wish wish;
         if (found.isEmpty()) {
-            return createWish(member.getId(), request.productId(), request.quantity());
+            wish = createWish(member.getId(), request.productId(), request.quantity());
+        } else {
+            wish = addWishQuantity(found.get(), request.quantity());
         }
-        return addWishQuantity(found.get(), request.quantity());
+        return WishDto.from(wish);
+    }
+
+    public List<WishDto> handleGetMyWishList(Member member) {
+        return wishRepository.findAll().stream()
+                .filter(w -> w.getMemberId().equals(member.getId()))
+                .map(WishDto::from)
+                .toList();
     }
 
     private Wish createWish(Long memberId, Long productId, Integer quantity) {
