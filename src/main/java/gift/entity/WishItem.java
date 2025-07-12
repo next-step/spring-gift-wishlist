@@ -4,20 +4,20 @@ public class WishItem {
 
     private final Long memberId;
     private final Long productId;
-    private final String name;
+    private final String productName;
     private final int price;
     private final String imageUrl;
     private final int quantity;
 
     public WishItem(Long memberId,
                     Long productId,
-                    String name,
+                    String productName,
                     int price,
                     String imageUrl,
                     int quantity) {
         this.memberId = memberId;
         this.productId = productId;
-        this.name = name;
+        this.productName = productName;
         this.price = price;
         this.imageUrl = imageUrl;
         this.quantity = quantity;
@@ -32,7 +32,7 @@ public class WishItem {
     }
 
     public String getName() {
-        return name;
+        return productName;
     }
 
     public int getPrice() {
