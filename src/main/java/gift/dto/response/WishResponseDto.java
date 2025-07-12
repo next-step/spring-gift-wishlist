@@ -1,18 +1,24 @@
 package gift.dto.response;
 
 public class WishResponseDto {
+    private Long wishId;
     private Long productId;
     private String name;
     private int price;
     private String imageUrl;
     private int quantity;
 
-    public WishResponseDto(Long productId, String name, int price, String imageUrl, int quantity) {
+    public WishResponseDto(Long wishId, Long productId, String name, int price, String imageUrl, int quantity) {
+        this.wishId = wishId;
         this.productId = productId;
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
         this.quantity = quantity;
+    }
+
+    public Long getWishId() {
+        return wishId;
     }
 
     public Long getProductId() {
@@ -33,6 +39,10 @@ public class WishResponseDto {
 
     public int getQuantity() {
         return quantity;
+    }
+
+    public void setWishId(Long wishId) {
+        this.wishId = wishId;
     }
 
     public void setProductId(Long productId) {

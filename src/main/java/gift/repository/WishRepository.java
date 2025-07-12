@@ -31,20 +31,22 @@ public class WishRepository {
 
     public List<WishResponseDto> findAllByMemberIdWithProduct(Long memberId) {
         String sql = """
-            SELECT 
-                p.id AS product_id,
-                p.name,
-                p.price,
-                p.imageUrl,
-                w.quantity
-            FROM Wish w
-            JOIN Product p ON w.product_id = p.id
-            WHERE w.member_id = :memberId
-        """;
+        SELECT 
+            w.id AS wish_id,
+            p.id AS product_id,
+            p.name,
+            p.price,
+            p.imageUrl,
+            w.quantity
+        FROM Wish w
+        JOIN Product p ON w.product_id = p.id
+        WHERE w.member_id = :memberId
+    """;
 
         return jdbcClient.sql(sql)
                 .param("memberId", memberId)
                 .query((rs, rowNum) -> new WishResponseDto(
+                        rs.getLong("wish_id"),
                         rs.getLong("product_id"),
                         rs.getString("name"),
                         rs.getInt("price"),
