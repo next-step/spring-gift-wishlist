@@ -2,6 +2,7 @@ package gift.jwt;
 
 import gift.member.model.Member;
 import gift.member.model.Token;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,5 +34,15 @@ public class JwtService {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public Long getMemberIdFromToken(String token) {
+        Claims claims = Jwts.parser()
+                .verifyWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+
+        return Long.valueOf(claims.getSubject());
     }
 }
