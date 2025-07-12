@@ -38,7 +38,7 @@ public class WishListController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteWishList(@LoginMember Member member, @PathVariable Long id) throws AccessDeniedException {
         wishListService.deleteWishList(member.getId(), id);
-        return ResponseEntity.ok("위시리스트에 상품이 삭제되었습니다.");
+        return ResponseEntity.noContent().build();
 
     }
 }
