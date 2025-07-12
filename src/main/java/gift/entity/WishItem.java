@@ -31,7 +31,7 @@ public class WishItem {
         return productId;
     }
 
-    public String getName() {
+    public String getProductName() {
         return productName;
     }
 

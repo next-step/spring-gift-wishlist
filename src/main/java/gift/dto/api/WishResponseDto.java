@@ -33,7 +33,7 @@ public record WishResponseDto(
     public static WishResponseDto of(WishItem wi) {
         return new WishResponseDto(
             wi.getProductId(),
-            wi.getName(),
+            wi.getProductName(),
             wi.getPrice(),
             wi.getImageUrl(),
             wi.getQuantity()
