@@ -41,7 +41,7 @@ public class Product {
     return imageUrl;
   }
 
-  public boolean isNameHasKakao() {
-    return this.name.contains("카카오");
+  public boolean isNameHasWord(String word) {
+    return this.name.contains(word);
   }
 }
