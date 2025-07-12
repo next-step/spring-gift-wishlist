@@ -3,6 +3,7 @@ package gift.service;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.entity.Product;
+import gift.exception.product.ProductNotFoundException;
 import gift.repository.ProductRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -51,7 +52,16 @@ public class ProductServiceImpl implements ProductService{
                         product.getImageUrl(),
                         product.getApproved(),
                         product.getDescription()))
-                .orElse(null);
+                .orElseThrow(() ->
+                        new ProductNotFoundException(
+                                "해당 ID의 상품을 찾을 수 없습니다."
+                        )
+                );
+    }
+
+    @Override
+    public ProductResponseDto findProductByIdElseThrow(Long id) {
+        return null;
     }
 
     @Override
@@ -97,8 +107,7 @@ public class ProductServiceImpl implements ProductService{
         );
 
         if (updatedNum == 0) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
+            throw new ProductNotFoundException(
                     "해당 ID의 상품은 존재하지 않습니다."
             );
         }
@@ -112,8 +121,7 @@ public class ProductServiceImpl implements ProductService{
         int deletedNum = productRepository.deleteProduct(id);
 
         if (deletedNum == 0) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
+            throw new ProductNotFoundException(
                     "해당 ID의 상품은 존재하지 않습니다."
             );
         }
