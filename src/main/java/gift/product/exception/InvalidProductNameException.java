@@ -4,14 +4,14 @@ public class InvalidProductNameException extends RuntimeException {
 
   private final ProductErrorCode errorCode;
 
-  public InvalidProductNameException(ProductErrorCode errorCode) {
-    super(errorCode.getErrorMessage());
-    this.errorCode = errorCode;
+  public InvalidProductNameException() {
+    super(ProductErrorCode.INVALID_PRODUCT_NAME.getErrorMessage());
+    this.errorCode = ProductErrorCode.INVALID_PRODUCT_NAME;
   }
 
-  public InvalidProductNameException(String message, ProductErrorCode errorCode) {
+  public InvalidProductNameException(String message) {
     super(message);
-    this.errorCode = errorCode;
+    this.errorCode = ProductErrorCode.INVALID_PRODUCT_NAME;
   }
 
   public ProductErrorCode getErrorCode() {

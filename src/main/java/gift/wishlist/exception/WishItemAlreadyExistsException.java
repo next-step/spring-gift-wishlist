@@ -4,14 +4,14 @@ public class WishItemAlreadyExistsException extends RuntimeException {
 
   private final WishItemErrorCode errorCode;
 
-  public WishItemAlreadyExistsException(WishItemErrorCode errorCode) {
-    super(errorCode.getErrorMessage());
-    this.errorCode = errorCode;
+  public WishItemAlreadyExistsException() {
+    super(WishItemErrorCode.WISH_ITEM_ALREADY_EXISTS.getErrorMessage());
+    this.errorCode = WishItemErrorCode.WISH_ITEM_ALREADY_EXISTS;
   }
 
-  public WishItemAlreadyExistsException(String message, WishItemErrorCode errorCode) {
+  public WishItemAlreadyExistsException(String message) {
     super(message);
-    this.errorCode = errorCode;
+    this.errorCode = WishItemErrorCode.WISH_ITEM_ALREADY_EXISTS;
   }
 
   public WishItemErrorCode getErrorCode() {

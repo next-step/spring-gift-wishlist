@@ -6,7 +6,6 @@ import gift.product.domain.Product;
 import gift.product.dto.CreateProductReqDto;
 import gift.product.dto.GetProductResDto;
 import gift.product.dto.UpdateProductReqDto;
-import gift.product.exception.ProductErrorCode;
 import gift.product.exception.ProductNotFoundException;
 import gift.product.repository.ProductRepository;
 import gift.product.validation.ProductValidator;
@@ -36,7 +35,7 @@ public class ProductService {
 
   public GetProductResDto getProductById(Long id) throws ProductNotFoundException {
     Product product = productRepository.findById(id)
-        .orElseThrow(() -> new ProductNotFoundException(ProductErrorCode.PRODUCT_NOT_FOUND));
+        .orElseThrow(ProductNotFoundException::new);
     return GetProductResDto.from(product);
   }
 
@@ -56,7 +55,7 @@ public class ProductService {
   public void updateProduct(Long id, UpdateProductReqDto dto) throws ProductNotFoundException {
     productValidator.validateProductName(dto.name());
     if (productRepository.findById(id).isEmpty()) {
-      throw new ProductNotFoundException(ProductErrorCode.PRODUCT_NOT_FOUND);
+      throw new ProductNotFoundException();
     }
     Product newProduct = Product.withId(
         id,
@@ -71,7 +70,7 @@ public class ProductService {
   @Transactional
   public void deleteProduct(Long id) throws ProductNotFoundException {
     if (productRepository.findById(id).isEmpty()) {
-      throw new ProductNotFoundException(ProductErrorCode.PRODUCT_NOT_FOUND);
+      throw new ProductNotFoundException();
     }
     productRepository.deleteById(id);
   }

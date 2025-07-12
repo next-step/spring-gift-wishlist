@@ -4,14 +4,14 @@ public class MemberNotFoundException extends RuntimeException {
 
   private final MemberErrorCode errorCode;
 
-  public MemberNotFoundException(MemberErrorCode errorCode) {
-    super(errorCode.getErrorMessage());
-    this.errorCode = errorCode;
+  public MemberNotFoundException() {
+    super(MemberErrorCode.MEMBER_NOT_FOUND.getErrorMessage());
+    this.errorCode = MemberErrorCode.MEMBER_NOT_FOUND;
   }
 
-  public MemberNotFoundException(String message, MemberErrorCode errorCode) {
+  public MemberNotFoundException(String message) {
     super(message);
-    this.errorCode = errorCode;
+    this.errorCode = MemberErrorCode.MEMBER_NOT_FOUND;
   }
 
   public MemberErrorCode getErrorCode() {

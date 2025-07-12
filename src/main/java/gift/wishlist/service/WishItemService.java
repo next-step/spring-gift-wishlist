@@ -1,14 +1,12 @@
 package gift.wishlist.service;
 
 import gift.member.repository.MemberRepository;
-import gift.product.exception.ProductErrorCode;
 import gift.product.exception.ProductNotFoundException;
 import gift.product.repository.ProductRepository;
 import gift.wishlist.domain.WishItem;
 import gift.wishlist.dto.GetWishItemResponseDto;
 import gift.wishlist.dto.RegisterWishItemRequestDto;
 import gift.wishlist.exception.WishItemAlreadyExistsException;
-import gift.wishlist.exception.WishItemErrorCode;
 import gift.wishlist.exception.WishItemNotFoundException;
 import gift.wishlist.repository.WishItemRepository;
 import java.util.List;
@@ -35,10 +33,10 @@ public class WishItemService {
       throw new IllegalArgumentException("회원이 존재하지 않습니다.");
     }
     if (productRepository.findById(dto.productId()).isEmpty()) {
-      throw new ProductNotFoundException(ProductErrorCode.PRODUCT_NOT_FOUND);
+      throw new ProductNotFoundException();
     }
     if (wishItemRepository.findByMemberIdAndProductId(memberId, dto.productId()).isPresent()) {
-      throw new WishItemAlreadyExistsException(WishItemErrorCode.WISH_ITEM_ALREADY_EXISTS);
+      throw new WishItemAlreadyExistsException();
     }
     return wishItemRepository.save(WishItem.of(memberId, dto.productId()));
   }
@@ -53,7 +51,7 @@ public class WishItemService {
   @Transactional
   public void deleteWishItem(Long id) {
     if (wishItemRepository.findById(id).isEmpty()) {
-      throw new WishItemNotFoundException(WishItemErrorCode.WISH_ITEM_NOT_FOUND);
+      throw new WishItemNotFoundException();
     }
     wishItemRepository.deleteById(id);
   }

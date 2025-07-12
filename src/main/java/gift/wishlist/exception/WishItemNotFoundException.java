@@ -4,14 +4,14 @@ public class WishItemNotFoundException extends RuntimeException {
 
   private final WishItemErrorCode errorCode;
 
-  public WishItemNotFoundException(WishItemErrorCode errorCode) {
-    super(errorCode.getErrorMessage());
-    this.errorCode = errorCode;
+  public WishItemNotFoundException() {
+    super(WishItemErrorCode.WISH_ITEM_NOT_FOUND.getErrorMessage());
+    this.errorCode = WishItemErrorCode.WISH_ITEM_NOT_FOUND;
   }
 
-  public WishItemNotFoundException(String message, WishItemErrorCode errorCode) {
+  public WishItemNotFoundException(String message) {
     super(message);
-    this.errorCode = errorCode;
+    this.errorCode = WishItemErrorCode.WISH_ITEM_NOT_FOUND;
   }
 
   public WishItemErrorCode getErrorCode() {
