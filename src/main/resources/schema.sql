@@ -19,3 +19,14 @@ create table members
     password    varchar(255) not null,
     role        varchar(50) not null default 'USER'
 );
+
+drop table wishes if exists;
+
+create table wishes
+(
+    id          bigint auto_increment primary key,
+    member_id   bigint not null,
+    product_id  bigint not null,
+    foreign key(member_id) references members(id),
+    foreign key(product_id) references products(id)
+);
