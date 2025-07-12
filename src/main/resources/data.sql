@@ -15,3 +15,12 @@ CREATE TABLE members (
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL
 );
+CREATE TABLE wishlist (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  member_id BIGINT NOT NULL,
+  product_id BIGINT NOT NULL,
+  quantity INT NOT NULL DEFAULT 1,
+  CONSTRAINT uq_wishlist_member_product UNIQUE (member_id, product_id),
+  CONSTRAINT fk_wishlist_member FOREIGN KEY (member_id) REFERENCES members(id),
+  CONSTRAINT fk_wishlist_product FOREIGN KEY (product_id) REFERENCES product(id)
+);
