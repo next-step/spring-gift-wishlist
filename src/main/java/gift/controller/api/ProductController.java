@@ -1,4 +1,4 @@
-package gift.controller;
+package gift.controller.api;
 
 import gift.dto.api.ProductCreateRequestDto;
 import gift.dto.api.ProductUpdateRequestDto;
@@ -59,5 +59,4 @@ public class ProductController {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build(); // 204 No Content
     }
-
 }

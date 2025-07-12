@@ -34,7 +34,8 @@ public class GlobalExceptionHandler {
 
     // PathVariable/RequestParam 타입 불일치 시 예외를 처리할 핸들러
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<Map<String, String>> handleTypeMismatch(MethodArgumentTypeMismatchException e) {
+    public ResponseEntity<Map<String, String>> handleTypeMismatch(
+        MethodArgumentTypeMismatchException e) {
         Map<String, String> errors = new HashMap<>();
         String field = e.getName();             // "id" 같은 파라미터 이름
         String requiredType = e.getRequiredType() != null
@@ -47,7 +48,8 @@ public class GlobalExceptionHandler {
 
     // JSON 바디 파싱 오류(HttpMessageNotReadableException) 예외 처리 핸들러
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<Map<String, String>> handleHttpMessageNotReadable(HttpMessageNotReadableException e) {
+    public ResponseEntity<Map<String, String>> handleHttpMessageNotReadable(
+        HttpMessageNotReadableException e) {
         Map<String, String> errors = new HashMap<>();
 
         String defaultMsg = "요청 JSON 형식이 잘못되었습니다.";
@@ -73,7 +75,8 @@ public class GlobalExceptionHandler {
 
     // 유효성 검사 실패 시 예외를 처리할 핸들러
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationErrors(MethodArgumentNotValidException e) {
+    public ResponseEntity<Map<String, String>> handleValidationErrors(
+        MethodArgumentNotValidException e) {
         Map<String, String> errors = new HashMap<>();
         e.getBindingResult().getFieldErrors()
             .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
@@ -90,7 +93,8 @@ public class GlobalExceptionHandler {
 
     // 이메일, 비밀번호 불일치 예외를 처리할 핸들러
     @ExceptionHandler(InvalidCredentialsException.class)
-    public ResponseEntity<Map<String, String>> handleInvalidCredentials(InvalidCredentialsException e) {
+    public ResponseEntity<Map<String, String>> handleInvalidCredentials(
+        InvalidCredentialsException e) {
         Map<String, String> error = new HashMap<>();
         error.put("error", e.getMessage());
         return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
@@ -98,7 +102,8 @@ public class GlobalExceptionHandler {
 
     // 헤더 누락 예외를 처리할 핸들러
     @ExceptionHandler(MissingAuthorizationHeaderException.class)
-    public ResponseEntity<Map<String, String>> handleMissingHeader(MissingAuthorizationHeaderException e) {
+    public ResponseEntity<Map<String, String>> handleMissingHeader(
+        MissingAuthorizationHeaderException e) {
         Map<String, String> error = new HashMap<>();
         error.put("error", e.getMessage());
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
@@ -106,10 +111,17 @@ public class GlobalExceptionHandler {
 
     // 헤더 형식 오류 예외를 처리할 핸들러
     @ExceptionHandler(InvalidAuthorizationHeaderException.class)
-    public ResponseEntity<Map<String, String>> handleMissingHeader(InvalidAuthorizationHeaderException e) {
+    public ResponseEntity<Map<String, String>> handleMissingHeader(
+        InvalidAuthorizationHeaderException e) {
         Map<String, String> error = new HashMap<>();
         error.put("error", e.getMessage());
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(InvalidMemberException.class)
+    public ResponseEntity<Map<String, String>> handleInvalidMember(InvalidMemberException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
 }

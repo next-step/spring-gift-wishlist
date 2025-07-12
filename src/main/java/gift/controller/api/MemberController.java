@@ -1,4 +1,4 @@
-package gift.controller;
+package gift.controller.api;
 
 import gift.dto.api.MemberRegisterRequestDto;
 import gift.dto.api.MemberRegisterResponseDto;
@@ -43,12 +43,9 @@ public class MemberController {
     public ResponseEntity<MemberRegisterResponseDto> login(
         @RequestHeader(value = "Authorization", required = false) String authorizationHeader
     ) throws InvalidCredentialsException {
-
         Credentials cred = basicAuthHeaderParser.parse(authorizationHeader);
 
         String token = memberService.loginMember(cred.email(), cred.password());
         return ResponseEntity.ok(new MemberRegisterResponseDto(token));
-
     }
-
 }

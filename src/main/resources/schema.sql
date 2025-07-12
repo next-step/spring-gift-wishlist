@@ -17,5 +17,17 @@ CREATE TABLE members
 (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     email VARCHAR(255) NOT NULL,
-    password VARCHAR(255) NOT NULL
+    password VARCHAR(255) NOT NULL,
+    is_admin BOOLEAN NOT NULL DEFAULT FALSE
 );
+
+CREATE TABLE wish_items
+(
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    member_id BIGINT NOT NULL,
+    product_id BIGINT NOT NULL,
+    quantity INT NOT NULL DEFAULT 1,
+    CONSTRAINT uk_member_product UNIQUE (member_id, product_id),
+    CONSTRAINT fk_wish_member FOREIGN KEY (member_id) REFERENCES members(id),
+    CONSTRAINT fk_wish_product FOREIGN KEY (product_id) REFERENCES products(id)
+)

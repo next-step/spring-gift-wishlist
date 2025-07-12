@@ -16,7 +16,8 @@ public class ProductService {
     private final ProductRepository repository;
     private final ApprovedProductRepository approvedRepository;
 
-    public ProductService(ProductRepository repository, ApprovedProductRepository approvedRepository) {
+    public ProductService(ProductRepository repository,
+        ApprovedProductRepository approvedRepository) {
         this.repository = repository;
         this.approvedRepository = approvedRepository;
     }
@@ -43,7 +44,8 @@ public class ProductService {
             .orElseThrow(() -> new NoSuchElementException("상품을 찾을 수 없습니다."));
 
         // 기존 객체와 무관하게 새로운 Product 객체 생성
-        Product updated = new Product(id, updateRequestDto.getName(), updateRequestDto.getPrice(), updateRequestDto.getImageUrl());
+        Product updated = new Product(id, updateRequestDto.getName(), updateRequestDto.getPrice(),
+            updateRequestDto.getImageUrl());
 
         // '카카오' 문구 검증
         verifyKakaoNameIsApproved(updated.getName());
@@ -66,5 +68,4 @@ public class ProductService {
             }
         }
     }
-
 }

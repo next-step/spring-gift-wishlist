@@ -35,10 +35,10 @@ public class MemberRepository {
     public boolean existByEmail(String email) {
         String sql = "SELECT EXISTS (SELECT 1 FROM members WHERE email = ?)";
         return jdbcClient
-                .sql(sql)
-                .param(email)
-                .query(Boolean.class)
-                .single();
+            .sql(sql)
+            .param(email)
+            .query(Boolean.class)
+            .single();
     }
 
     private Member mapRowToMember(ResultSet rs, int rowNum) throws SQLException {
@@ -47,6 +47,15 @@ public class MemberRepository {
             rs.getString("email"),
             rs.getString("password")
         );
+    }
+
+    public Optional<Member> findById(Long id) {
+        String sql = "SELECT id, email, password FROM members WHERE id = ?";
+        return jdbcClient
+            .sql(sql)
+            .param(id)
+            .query(this::mapRowToMember)
+            .optional();
     }
 
     public Optional<Member> findByEmail(String email) {
@@ -58,4 +67,12 @@ public class MemberRepository {
             .optional();
     }
 
+    public boolean isAdminMember(Member member) {
+        String sql = "SELECT is_admin FROM members WHERE email = ?";
+        return jdbcClient
+            .sql(sql)
+            .param(member.getEmail())
+            .query(Boolean.class)
+            .single();
+    }
 }

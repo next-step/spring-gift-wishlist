@@ -11,7 +11,6 @@ import java.util.Base64;
 public class BasicAuthHeaderParser {
 
     public Credentials parse(String authorizationHeader) {
-
         if (authorizationHeader == null) {
             // 헤더 누락 → 401 Unauthorized
             throw new MissingAuthorizationHeaderException("Authorization 헤더가 필요합니다.");
@@ -36,5 +35,4 @@ public class BasicAuthHeaderParser {
 
         return new Credentials(email, rawPassword);
     }
-
 }

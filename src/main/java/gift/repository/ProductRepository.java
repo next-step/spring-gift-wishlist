@@ -24,11 +24,11 @@ public class ProductRepository {
         String sql = "INSERT INTO products (name, price, image_url) VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcClient
-                .sql(sql)
-                .param(product.getName())
-                .param(product.getPrice())
-                .param(product.getImageUrl())
-                .update(keyHolder, "id");
+            .sql(sql)
+            .param(product.getName())
+            .param(product.getPrice())
+            .param(product.getImageUrl())
+            .update(keyHolder, "id");
 
         Long id = keyHolder.getKey().longValue();
         return new Product(id, product.getName(), product.getPrice(), product.getImageUrl());
@@ -47,38 +47,38 @@ public class ProductRepository {
     public List<Product> findAll() {
         String sql = "SELECT * FROM products";
         return jdbcClient
-                .sql(sql)
-                .query(this::mapRowToProduct)
-                .list();
+            .sql(sql)
+            .query(this::mapRowToProduct)
+            .list();
     }
 
     public Optional<Product> findById(Long id) {
         String sql = "SELECT * FROM products WHERE id = ?";
         List<Product> result = jdbcClient
-                .sql(sql)
-                .param(id)
-                .query(this::mapRowToProduct)
-                .list();
+            .sql(sql)
+            .param(id)
+            .query(this::mapRowToProduct)
+            .list();
         return result.stream().findFirst();
     }
 
     public void update(Product product) {
         String sql = "UPDATE products SET name = ?, price = ?, image_url = ? WHERE id = ?";
         jdbcClient
-                .sql(sql)
-                .param(product.getName())
-                .param(product.getPrice())
-                .param(product.getImageUrl())
-                .param(product.getId())
-                .update();
+            .sql(sql)
+            .param(product.getName())
+            .param(product.getPrice())
+            .param(product.getImageUrl())
+            .param(product.getId())
+            .update();
     }
 
     public void delete(Long id) {
         String sql = "DELETE FROM products WHERE id = ?";
         jdbcClient
-                .sql(sql)
-                .param(id)
-                .update();
+            .sql(sql)
+            .param(id)
+            .update();
     }
 
     public void deleteAll() {
@@ -87,5 +87,4 @@ public class ProductRepository {
             .sql(sql)
             .update();
     }
-
 }

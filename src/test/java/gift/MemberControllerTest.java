@@ -32,7 +32,8 @@ public class MemberControllerTest {
     @Test
     @DisplayName("회원가입 성공 → 201, 토큰 반환")
     void register_success() throws Exception {
-        MemberRegisterRequestDto req = new MemberRegisterRequestDto("newuser@example.com", "password123");
+        MemberRegisterRequestDto req = new MemberRegisterRequestDto("newuser@example.com",
+            "password123");
 
         mockMvc.perform(post("/api/members")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -47,7 +48,8 @@ public class MemberControllerTest {
     @DisplayName("회원가입 실패 – 이메일 중복 → 409 Conflict + 메시지")
     void register_duplicateEmail() throws Exception {
         // 먼저 한 번 가입시켜 둠
-        MemberRegisterRequestDto req = new MemberRegisterRequestDto("dup@example.com", "password123");
+        MemberRegisterRequestDto req = new MemberRegisterRequestDto("dup@example.com",
+            "password123");
 
         mockMvc.perform(post("/api/members")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -119,7 +121,7 @@ public class MemberControllerTest {
     @DisplayName("로그인 성공 → 200 OK + token 반환")
     void login_success() throws Exception {
         String email = "user@example.com";
-        String pw    = "password123";
+        String pw = "password123";
         register(email, pw);
 
         String credentials = Base64.getEncoder()
@@ -170,7 +172,7 @@ public class MemberControllerTest {
     @DisplayName("로그인 실패 – 잘못된 비밀번호 → 403 Forbidden + 메시지")
     void login_fail_wrongCredentials() throws Exception {
         String email = "test@example.com";
-        String pw    = "correctpw";
+        String pw = "correctpw";
         register(email, pw);
 
         String wrong = Base64.getEncoder()
@@ -182,5 +184,4 @@ public class MemberControllerTest {
             .andExpect(jsonPath("$.error")
                 .value("이메일 또는 비밀번호가 올바르지 않습니다."));
     }
-
 }
