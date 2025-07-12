@@ -43,15 +43,13 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
 
         String token = authorization.substring(BEARER_PREFIX.length());
 
-        // JwtProvider를 통해 Claims 파싱
         Claims claims = jwtProvider.parseToken(token);
 
-        // Claims에서 memberId 가져오기
         Long memberId = Long.valueOf(claims.getSubject());
 
         Member member = memberService.findById(memberId);
         if (member == null) {
-            throw new RuntimeException("회원을 찾을 수 없습니다.");
+            throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
         }
         return member;
     }
