@@ -2,7 +2,10 @@ package gift.repository;
 
 import gift.entity.Product;
 import gift.entity.Wish;
+import gift.misc.Pair;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -21,6 +24,22 @@ public class WishDao implements WishRepository {
         Long memberId = rs.getLong("memberId");
         Long quantity = rs.getLong("quantity");
         return new Wish(id, productId, memberId, quantity);
+    };
+
+    private final RowMapper<Pair<Wish, Product>> getWishAndProductRowMapper = (rs, rowNum) -> {
+        Long id = rs.getLong("id");
+        Long productId = rs.getLong("productId");
+        Long memberId = rs.getLong("memberId");
+        Long quantity = rs.getLong("quantity");
+
+        String name = rs.getString("name");
+        String imageUrl = rs.getString("imageUrl");
+        Long price = rs.getLong("price");
+
+        Wish wish = new Wish(id, productId, memberId, quantity);
+        Product product = new Product(productId, name, price, imageUrl);
+
+        return new Pair<>(wish, product);
     };
 
     public WishDao(JdbcClient client) {
@@ -44,11 +63,11 @@ public class WishDao implements WishRepository {
     }
 
     @Override
-    public List<Wish> findMemberWishes(Long memberId) {
-        String sql = "select * from wishes where memberId = :memberId;";
+    public List<Pair<Wish, Product>> findMemberWishes(Long memberId) {
+        String sql = "select * from wishes join products on wishes.productId = products.id where memberId = :memberId;";
         return client.sql(sql)
                 .param("memberId", memberId)
-                .query(getWishRowMapper)
+                .query(getWishAndProductRowMapper)
                 .list();
     }
 

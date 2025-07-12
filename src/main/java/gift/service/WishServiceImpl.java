@@ -3,12 +3,15 @@ package gift.service;
 import gift.dto.CreateWishRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.dto.WishResponseDto;
+import gift.entity.Product;
 import gift.entity.Wish;
 import gift.exception.CustomException;
 import gift.exception.ErrorCode;
+import gift.misc.Pair;
 import gift.repository.WishRepository;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -35,11 +38,17 @@ public class WishServiceImpl implements WishService {
 
     @Override
     public List<WishResponseDto> findMemberWishes(Long memberId) {
-        List<Wish> wishes = wishRepository.findMemberWishes(memberId);
+        List<Pair<Wish, Product>> pairs = wishRepository.findMemberWishes(memberId);
         List<WishResponseDto> wishesList = new ArrayList<>();
-        for (Wish wish : wishes) {
-            Long productId = wish.getProductId();
-            ProductResponseDto productResponseDto = productService.findProductById(productId);
+        for (Pair<Wish, Product> pair: pairs) {
+            Wish wish = pair.first();
+            Product product = pair.second();
+            ProductResponseDto productResponseDto = new ProductResponseDto(
+                    product.getId(),
+                    product.getName(),
+                    product.getPrice(),
+                    product.getImageUrl()
+            );
             WishResponseDto responseDto = new WishResponseDto(productResponseDto,
                     wish.getQuantity());
             wishesList.add(responseDto);
