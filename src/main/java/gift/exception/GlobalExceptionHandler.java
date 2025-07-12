@@ -34,44 +34,7 @@ public class GlobalExceptionHandler {
         e.getBindingResult().getFieldErrors().forEach(error ->
                 errors.put(error.getField(), error.getDefaultMessage())
         );
-
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
-    }
-
-    @ExceptionHandler(InvalidCredentialsException.class)
-    public ResponseEntity<Map<String, String>>
-    handlerValidationError(InvalidCredentialsException e) {
-        Map<String, String> errors = new HashMap<>();
-        errors.put("message", e.getMessage());
-
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errors);
-    }
-
-    @ExceptionHandler(MemberAlreadyExistsException.class)
-    public ResponseEntity<Map<String, String>>
-    handlerValidationError(MemberAlreadyExistsException e) {
-        Map<String, String> errors = new HashMap<>();
-        errors.put("message", e.getMessage());
-
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(errors);
-    }
-
-    @ExceptionHandler(AlreadyInWishListException.class)
-    public ResponseEntity<Map<String, String>>
-    handlerValidationError(AlreadyInWishListException e) {
-        Map<String, String> errors = new HashMap<>();
-        errors.put("message", e.getMessage());
-
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(errors);
-    }
-
-    @ExceptionHandler(WishAccessDeniedException.class)
-    public ResponseEntity<Map<String, String>>
-    handlerValidationError(WishAccessDeniedException e) {
-        Map<String, String> errors = new HashMap<>();
-        errors.put("message", e.getMessage());
-
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errors);
     }
 
 }
