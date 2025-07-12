@@ -11,7 +11,6 @@ public record Member(Long id, String email, String password) {
     }
 
     public static Member withId(Long id, String email, String password) {
-        validateId(id);
         return new Member(id, email, password);
     }
 
@@ -19,9 +18,5 @@ public record Member(Long id, String email, String password) {
         if (id != null && id < 0) {
             throw new IllegalArgumentException("ID는 음수일 수 없습니다.");
         }
-    }
-
-    public boolean isMatchPassword(String password) {
-        return this.password.equals(password);
     }
 }
