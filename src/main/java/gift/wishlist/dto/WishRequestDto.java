@@ -11,7 +11,7 @@ public record WishRequestDto(
         @Min(value = 1, message = "수량은 1개 이상이어야 합니다.")
         int quantity
 ) {
-        public Wish toEntity() {
-                return new Wish(null, this.productId, this.quantity);
+        public Wish toEntity(Long memberId) {
+                return new Wish(memberId, this.productId, this.quantity);
         }
 }

@@ -26,7 +26,7 @@ public class WishServiceImpl implements WishService {
             throw new DuplicatedWishException("이미 위시리스트에 등록된 상품입니다.");
         }
 
-        Wish wish = requestDto.toEntity();
+        Wish wish = requestDto.toEntity(memberId);
         return wishRepository.save(wish);
     }
 
