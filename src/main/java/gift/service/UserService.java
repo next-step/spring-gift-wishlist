@@ -1,10 +1,9 @@
 package gift.service;
 
 import gift.dto.user.UserRequestDto;
+import gift.jwt.JwtUtil;
 import gift.model.User;
 import gift.repository.UserRepository;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -15,9 +14,11 @@ import java.util.Optional;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final JwtUtil jwtUtil;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
+        this.jwtUtil = jwtUtil;
     }
 
     public String register(UserRequestDto userRequestDto) {
@@ -28,7 +29,7 @@ public class UserService {
                 makeHashPwd(userRequestDto.getPassword()), userRequestDto.getName());
         userRepository.save(new_user);
 
-        return makeToken(new_user);
+        return jwtUtil.makeToken(new_user);
     }
 
     public String login(UserRequestDto userRequestDto) {
@@ -47,16 +48,7 @@ public class UserService {
         User access_user = userRequestDto.toEntity();
         access_user.setId(user_id);
 
-        return makeToken(access_user);
-    }
-
-    private String makeToken(User user) {
-        String secretKey = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";
-        return Jwts.builder()
-                .subject(user.getId().toString())
-                .claim("email", user.getEmail())
-                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
-                .compact();
+        return jwtUtil.makeToken(access_user);
     }
 
     private String makeHashPwd(String password) {
