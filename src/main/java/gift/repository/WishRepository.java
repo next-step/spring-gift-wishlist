@@ -8,9 +8,9 @@ public interface WishRepository {
 
     Long saveWish(Wish wish);
 
-    List<Wish> findAllWishes(Long memberId);
+    List<Wish> findAllWishesByMemberId(Long memberId);
 
-    void deleteWish(Long wishId);
+    void deleteWishById(Long wishId);
 
-    Optional<Wish> findWish(Long wishId);
+    Optional<Wish> findWishById(Long wishId);
 }

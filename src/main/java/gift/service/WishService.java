@@ -33,9 +33,9 @@ public class WishService {
     }
 
     @Transactional(readOnly = true)
-    public List<WishResponseDto> getWishlist(long memberId) {
+    public List<WishResponseDto> getWishlistByMemberId(long memberId) {
 
-        List<Wish> wishes = wishRepository.findAllWishes(memberId);
+        List<Wish> wishes = wishRepository.findAllWishesByMemberId(memberId);
         return wishes.stream()
                      .map(wish -> {
                          Product product = productService.findProductOrThrow(wish.getProductId());
@@ -45,14 +45,14 @@ public class WishService {
     }
 
     @Transactional
-    public void deleteWish(Long memberId, Long wishId) {
-        Wish wish = wishRepository.findWish(wishId)
+    public void deleteWishById(Long memberId, Long wishId) {
+        Wish wish = wishRepository.findWishById(wishId)
                                   .orElseThrow(() -> new WishNotFoundException(wishId));
 
         if (!memberId.equals(wish.getMemberId())) {
             throw new PermissionDeniedException("해당 상품을 삭제할 권한이 없습니다.");
         }
 
-        wishRepository.deleteWish(wishId);
+        wishRepository.deleteWishById(wishId);
     }
 }

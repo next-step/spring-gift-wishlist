@@ -32,7 +32,7 @@ public class WishRepositoryImpl implements WishRepository {
     }
 
     @Override
-    public List<Wish> findAllWishes(Long memberId) {
+    public List<Wish> findAllWishesByMemberId(Long memberId) {
         var sql = "SELECT * FROM wish WHERE member_id = :member_id";
 
         return client.sql(sql)
@@ -42,7 +42,7 @@ public class WishRepositoryImpl implements WishRepository {
     }
 
     @Override
-    public void deleteWish(Long wishId) {
+    public void deleteWishById(Long wishId) {
         var sql = "DELETE FROM wish WHERE id = :id";
 
         client.sql(sql)
@@ -51,7 +51,7 @@ public class WishRepositoryImpl implements WishRepository {
     }
 
     @Override
-    public Optional<Wish> findWish(Long wishId) {
+    public Optional<Wish> findWishById(Long wishId) {
         var sql = "SELECT * FROM wish WHERE id = :id";
 
         return client.sql(sql)

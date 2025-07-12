@@ -39,17 +39,17 @@ public class WishController {
 
     // 상품 목록 조회
     @GetMapping
-    public ResponseEntity<List<WishResponseDto>> getWishlist(@LoginMember Member member) {
+    public ResponseEntity<List<WishResponseDto>> getWishlistByMemberId(@LoginMember Member member) {
 
-        return ResponseEntity.ok(wishService.getWishlist(member.getId()));
+        return ResponseEntity.ok(wishService.getWishlistByMemberId(member.getId()));
     }
 
     // 상품 삭제
     @DeleteMapping("/{wishId}")
-    public ResponseEntity<Void> deleteWish(
+    public ResponseEntity<Void> deleteWishById(
             @PathVariable Long wishId,
             @LoginMember Member member) {
-        wishService.deleteWish(member.getId(), wishId);
+        wishService.deleteWishById(member.getId(), wishId);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
