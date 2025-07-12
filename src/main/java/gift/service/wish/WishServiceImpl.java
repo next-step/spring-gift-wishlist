@@ -30,8 +30,11 @@ public class WishServiceImpl implements WishService {
     List<Wish> allWish = wishRepository.findByMemberId(memberId);
     List<WishResponseDto> responseDtoList = new ArrayList<>();
     for (Wish wish : allWish) {
-      WishResponseDto responseDto = new WishResponseDto(wish.getId(), wish.getMemberId(),
-          wish.getProductId(), wish.getQuantity());
+      Optional<Product> productById = productRepository.findProductById(wish.getProductId());
+      Product product = productById.get();
+      WishResponseDto responseDto = new WishResponseDto(wish.getId(), wish.getProductId(),
+          product.getName(),
+          wish.getQuantity());
       responseDtoList.add(responseDto);
     }
     return responseDtoList;
@@ -45,10 +48,12 @@ public class WishServiceImpl implements WishService {
       throw new ProductNotFoundException("위시 리스트에 넣으려는 상품이 없습니다.");
     }
 
+    Product product = productById.get();
+
     Wish wish = wishRepository.createWish(
         new Wish(memberId, requestDto.getProductId(),
             requestDto.getQuantity()));
-    return new WishResponseDto(wish.getId(), wish.getMemberId(), wish.getProductId(),
+    return new WishResponseDto(wish.getId(), wish.getProductId(), product.getName(),
         wish.getQuantity());
   }
 
