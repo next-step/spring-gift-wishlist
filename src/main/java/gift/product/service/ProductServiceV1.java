@@ -6,7 +6,7 @@ import gift.domain.Role;
 import gift.global.exception.BadRequestEntityException;
 import gift.global.exception.NotFoundEntityException;
 import gift.member.dto.AuthMember;
-import gift.member.repository.MemberRepository;
+import gift.member.service.MemberService;
 import gift.product.dto.ProductCreateRequest;
 import gift.product.dto.ProductResponse;
 import gift.product.dto.ProductUpdateRequest;
@@ -22,17 +22,16 @@ import java.util.UUID;
 public class ProductServiceV1 implements ProductService{
 
     private final ProductRepository productRepository;
-    private final MemberRepository memberRepository;
+    private final MemberService memberService;
 
-    public ProductServiceV1(ProductRepository productRepository, MemberRepository memberRepository) {
+    public ProductServiceV1(ProductRepository productRepository, MemberService memberService) {
         this.productRepository = productRepository;
-        this.memberRepository = memberRepository;
+        this.memberService = memberService;
     }
 
 
     public UUID save(ProductCreateRequest dto, String email) {
-        Member findMember = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundEntityException("존재하는 회원이 아닙니다"));
+        Member findMember = memberService.findByEmail(email);
         return productRepository.save(new Product(dto.getName(), dto.getPrice(), dto.getImageURL(), findMember.getId()));
     }
 
@@ -54,7 +53,9 @@ public class ProductServiceV1 implements ProductService{
         Product findProduct = productRepository.findById(id)
                 .orElseThrow(() -> new NotFoundEntityException("상품이 존재하지 않습니다."));
 
-        checkAuthorization(authMember, findProduct.getMemberId());
+        Member findMember = memberService.findByEmail(authMember.getEmail());
+
+        checkIsAdminOrOwner(authMember,findMember, findProduct.getMemberId());
 
         productRepository.deleteById(id);
     }
@@ -65,31 +66,31 @@ public class ProductServiceV1 implements ProductService{
         Product findProduct = productRepository.findById(id)
                 .orElseThrow(() -> new NotFoundEntityException("상품이 존재하지 않습니다."));
 
-        UUID memberId = checkAuthorization(authMember, findProduct.getMemberId());
+        Member findMember = memberService.findByEmail(authMember.getEmail());
 
-        productRepository.update(new Product(id, dto.getName(), dto.getPrice(), dto.getImageURL(), memberId));
+        checkIsAdminOrOwner(authMember, findMember, findProduct.getMemberId());
+
+        productRepository.update(new Product(id, dto.getName(), dto.getPrice(), dto.getImageURL(), findMember.getId()));
     }
 
     @Override
-    public List<ProductResponse> findByMember(AuthMember authMember) {
-        Member findMember = memberRepository.findByEmail(authMember.getEmail())
-                .orElseThrow(() -> new NotFoundEntityException("존재하는 회원이 아닙니다"));
+    public List<ProductResponse> findByEmail(AuthMember authMember) {
+        Member findMember = memberService.findByEmail(authMember.getEmail());
 
        return productRepository.findByMemberId(findMember.getId())
                 .stream().map(ProductResponse::new).toList();
     }
 
-    private UUID checkAuthorization(AuthMember authMember, UUID productMemberId) {
+    public Product findById(UUID productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(()->new NotFoundEntityException("존재하는 상품이 아닙니다"));
+    }
 
-        Member findMember = memberRepository.findByEmail(authMember.getEmail())
-                .orElseThrow(() -> new NotFoundEntityException("존재하는 회원이 아닙니다"));
+    private void checkIsAdminOrOwner(AuthMember authMember, Member member, UUID productMemberId) {
 
-        if (authMember.getRole() == Role.ADMIN) return findMember.getId();
+        if (authMember.getRole() == Role.ADMIN) return;
 
-
-        if (!findMember.getId().equals(productMemberId))
+        if (!member.getId().equals(productMemberId))
             throw new BadRequestEntityException("자신의 상품이 아닙니다.");
-
-        return findMember.getId();
     }
 }

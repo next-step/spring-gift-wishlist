@@ -6,8 +6,8 @@ import gift.domain.Role;
 import gift.domain.WishProduct;
 import gift.global.exception.BadRequestEntityException;
 import gift.global.exception.NotFoundEntityException;
-import gift.member.repository.MemberRepository;
-import gift.product.repository.ProductRepository;
+import gift.member.service.MemberService;
+import gift.product.service.ProductService;
 import gift.wishproduct.dto.WishProductCreateReq;
 import gift.wishproduct.dto.WishProductResponse;
 import gift.wishproduct.dto.WishProductUpdateReq;
@@ -37,10 +37,10 @@ class WishProductServiceV1Test {
     private WishProductRepository wishProductRepository;
 
     @Mock
-    private MemberRepository memberRepository;
+    private MemberService memberService;
 
     @Mock
-    private ProductRepository productRepository;
+    private ProductService productService;
 
     @Test
     @DisplayName("위시 상품 추가 성공 - 새로운 위시 상품")
@@ -53,13 +53,13 @@ class WishProductServiceV1Test {
         WishProduct wishProduct = addWishProduct(product, member, dto.getQuantity());
 
 
-        given(productRepository.findById(product.getId()))
-            .willReturn(Optional.of(product));
+        given(productService.findById(product.getId()))
+            .willReturn(product);
 
-        given(memberRepository.findByEmail(member.getEmail()))
-                .willReturn(Optional.of(member));
+        given(memberService.findByEmail(member.getEmail()))
+                .willReturn(member);
 
-        given(wishProductRepository.findByMemberIdAndProductId(member.getId(), product.getId()))
+        given(wishProductRepository.findByOwnerIdAndProductId(member.getId(), product.getId()))
                 .willReturn(Optional.empty());
 
         given(wishProductRepository.save(any(WishProduct.class)))
@@ -72,10 +72,10 @@ class WishProductServiceV1Test {
         // then
         assertThat(savedId).isEqualTo(wishProduct.getId());
         verify(wishProductRepository).save(any(WishProduct.class));
-        verify(productRepository).findById(product.getId());
-        verify(memberRepository).findByEmail(member.getEmail());
-        verify(wishProductRepository).findByMemberIdAndProductId(member.getId(), product.getId());
-        verifyNoMoreInteractions(wishProductRepository, productRepository, memberRepository);
+        verify(productService).findById(product.getId());
+        verify(memberService).findByEmail(member.getEmail());
+        verify(wishProductRepository).findByOwnerIdAndProductId(member.getId(), product.getId());
+        verifyNoMoreInteractions(wishProductRepository, productService, memberService);
     }
 
     @Test
@@ -87,13 +87,13 @@ class WishProductServiceV1Test {
         WishProductCreateReq dto = new WishProductCreateReq(product.getId(), 10);
         WishProduct wishProduct = addWishProduct(product, member, 15);
 
-        given(productRepository.findById(product.getId()))
-                .willReturn(Optional.of(product));
+        given(productService.findById(product.getId()))
+                .willReturn(product);
 
-        given(memberRepository.findByEmail(member.getEmail()))
-                .willReturn(Optional.of(member));
+        given(memberService.findByEmail(member.getEmail()))
+                .willReturn(member);
 
-        given(wishProductRepository.findByMemberIdAndProductId(member.getId(), product.getId()))
+        given(wishProductRepository.findByOwnerIdAndProductId(member.getId(), product.getId()))
                 .willReturn(Optional.of(wishProduct));
 
         // when
@@ -101,11 +101,11 @@ class WishProductServiceV1Test {
 
         // then
         assertThat(updatedId).isEqualTo(wishProduct.getId());
-        verify(productRepository).findById(product.getId());
-        verify(memberRepository).findByEmail(member.getEmail());
+        verify(productService).findById(product.getId());
+        verify(memberService).findByEmail(member.getEmail());
         verify(wishProductRepository).update(any(WishProduct.class));
-        verify(wishProductRepository).findByMemberIdAndProductId(member.getId(), product.getId());
-        verifyNoMoreInteractions(wishProductRepository, productRepository, memberRepository);
+        verify(wishProductRepository).findByOwnerIdAndProductId(member.getId(), product.getId());
+        verifyNoMoreInteractions(wishProductRepository, productService, memberService);
     }
 
     @Test
@@ -117,18 +117,18 @@ class WishProductServiceV1Test {
         WishProductCreateReq dto = new WishProductCreateReq(product.getId(), 10);
 
 
-        given(productRepository.findById(product.getId()))
-                .willReturn(Optional.of(product));
+        given(productService.findById(product.getId()))
+                .willReturn(product);
 
-        given(memberRepository.findByEmail(member.getEmail()))
-                .willReturn(Optional.empty());
+        given(memberService.findByEmail(member.getEmail()))
+                .willThrow(new NotFoundEntityException("존재하지 않는 회원입니다."));
 
         // when & then
         assertThatThrownBy(() -> wishProductService.save(dto, member.getEmail()))
                 .isInstanceOf(NotFoundEntityException.class);
-        verify(productRepository).findById(product.getId());
-        verify(memberRepository).findByEmail(member.getEmail());
-        verifyNoMoreInteractions(wishProductRepository, productRepository, memberRepository);
+        verify(productService).findById(product.getId());
+        verify(memberService).findByEmail(member.getEmail());
+        verifyNoMoreInteractions(wishProductRepository, productService, memberService);
 
     }
 
@@ -141,15 +141,15 @@ class WishProductServiceV1Test {
         WishProductCreateReq dto = new WishProductCreateReq(product.getId(), 10);
 
 
-        given(productRepository.findById(product.getId()))
-                .willReturn(Optional.empty());
+        given(productService.findById(product.getId()))
+                .willThrow(new NotFoundEntityException("존재하지 않는 상품입니다."));
 
 
         // when & then
         assertThatThrownBy(() -> wishProductService.save(dto, member.getEmail()))
                 .isInstanceOf(NotFoundEntityException.class);
-        verify(productRepository).findById(product.getId());
-        verifyNoMoreInteractions(wishProductRepository, productRepository, memberRepository);
+        verify(productService).findById(product.getId());
+        verifyNoMoreInteractions(wishProductRepository, productService, memberService);
 
     }
 
@@ -161,20 +161,21 @@ class WishProductServiceV1Test {
         Product product = addProductCase(member);
         WishProduct wishProduct = addWishProduct(product, member, 15);
 
-        given(memberRepository.findByEmail(member.getEmail()))
-                .willReturn(Optional.of(member));
+        given(memberService.findByEmail(member.getEmail()))
+                .willReturn(member);
 
-        given(wishProductRepository.findByMemberId(member.getId()))
-                .willReturn(List.of(wishProduct));
+        given(wishProductRepository.findWithProductByOwnerId(member.getId()))
+                .willReturn(List.of(new WishProductResponse(wishProduct.getId(), product.getName(),
+                        product.getPrice(), wishProduct.getQuantity(), product.getImageURL())));
 
         // when
-        List<WishProductResponse> result = wishProductService.findMyWishProduct(member.getEmail());
+        List<WishProductResponse> result = wishProductService.findByEmail(member.getEmail());
 
         // then
         assertThat(result.size()).isEqualTo(1);
-        verify(memberRepository).findByEmail(member.getEmail());
-        verify(wishProductRepository).findByMemberId(member.getId());
-        verifyNoMoreInteractions(wishProductRepository, memberRepository, productRepository);
+        verify(memberService).findByEmail(member.getEmail());
+        verify(wishProductRepository).findWithProductByOwnerId(member.getId());
+        verifyNoMoreInteractions(wishProductRepository, memberService, productService);
 
     }
 
@@ -190,18 +191,18 @@ class WishProductServiceV1Test {
         given(wishProductRepository.findById(wishProduct.getId()))
                 .willReturn(Optional.of(wishProduct));
 
-        given(memberRepository.findByEmail(member.getEmail()))
-                .willReturn(Optional.of(member));
+        given(memberService.findByEmail(member.getEmail()))
+                .willReturn(member);
 
         // when
         wishProductService.deleteById(wishProduct.getId(), member.getEmail());
 
 
         // then
-        verify(memberRepository).findByEmail(member.getEmail());
+        verify(memberService).findByEmail(member.getEmail());
         verify(wishProductRepository).findById(wishProduct.getId());
         verify(wishProductRepository).deleteById(wishProduct.getId());
-        verifyNoMoreInteractions(wishProductRepository, memberRepository, productRepository);
+        verifyNoMoreInteractions(wishProductRepository, memberService, productService);
     }
 
     @Test
@@ -216,8 +217,8 @@ class WishProductServiceV1Test {
         given(wishProductRepository.findById(wishProduct.getId()))
                 .willReturn(Optional.of(wishProduct));
 
-        given(memberRepository.findByEmail(member.getEmail()))
-                .willReturn(Optional.of(new Member("temp@naver.com", "Qwer1234!!", Role.REGULAR)));
+        given(memberService.findByEmail(member.getEmail()))
+                .willReturn(new Member("temp@naver.com", "Qwer1234!!", Role.REGULAR));
 
         // when
         assertThatThrownBy(()->wishProductService.deleteById(wishProduct.getId(), member.getEmail()))
@@ -225,9 +226,9 @@ class WishProductServiceV1Test {
 
 
         // then
-        verify(memberRepository).findByEmail(member.getEmail());
+        verify(memberService).findByEmail(member.getEmail());
         verify(wishProductRepository).findById(wishProduct.getId());
-        verifyNoMoreInteractions(wishProductRepository, memberRepository, productRepository);
+        verifyNoMoreInteractions(wishProductRepository, memberService, productService);
     }
 
     @Test
@@ -242,8 +243,8 @@ class WishProductServiceV1Test {
         given(wishProductRepository.findById(wishProduct.getId()))
                 .willReturn(Optional.of(wishProduct));
 
-        given(memberRepository.findByEmail(member.getEmail()))
-                .willReturn(Optional.of(member));
+        given(memberService.findByEmail(member.getEmail()))
+                .willReturn(member);
 
         // when
 
@@ -253,9 +254,9 @@ class WishProductServiceV1Test {
         // then
 
         verify(wishProductRepository).findById(wishProduct.getId());
-        verify(memberRepository).findByEmail(member.getEmail());
+        verify(memberService).findByEmail(member.getEmail());
         verify(wishProductRepository).update(any(WishProduct.class));
-        verifyNoMoreInteractions(wishProductRepository, memberRepository, productRepository);
+        verifyNoMoreInteractions(wishProductRepository, memberService, productService);
     }
 
     @Test
@@ -270,8 +271,8 @@ class WishProductServiceV1Test {
         given(wishProductRepository.findById(wishProduct.getId()))
                 .willReturn(Optional.of(wishProduct));
 
-        given(memberRepository.findByEmail(anyString()))
-                .willReturn(Optional.of(new Member("temp@naver.com", "Qwer1234!!", Role.REGULAR)));
+        given(memberService.findByEmail(anyString()))
+                .willReturn(new Member("temp@naver.com", "Qwer1234!!", Role.REGULAR));
 
         // when
 
@@ -283,8 +284,8 @@ class WishProductServiceV1Test {
         // then
 
         verify(wishProductRepository).findById(wishProduct.getId());
-        verify(memberRepository).findByEmail(member.getEmail());
-        verifyNoMoreInteractions(wishProductRepository, memberRepository, productRepository);
+        verify(memberService).findByEmail(member.getEmail());
+        verifyNoMoreInteractions(wishProductRepository, memberService, productService);
     }
 
 
@@ -298,7 +299,7 @@ class WishProductServiceV1Test {
     }
 
     private WishProduct addWishProduct(Product product, Member member, int quantity) {
-        return new WishProduct(product.getName(), product.getPrice(), quantity, product.getImageURL(),
+        return new WishProduct(quantity,
                 member.getId(), product.getId());
     }
 

@@ -228,11 +228,6 @@ class ProductControllerTest {
         }).isInstanceOf(HttpClientErrorException.NotFound.class);
     }
 
-    private Member addMemberCase() {
-        return memberRepository.save(new Member("ljw2109@naver.com", "Qwer1234!!", Role.REGULAR));
-    }
-
-
     private Product addProductCase() {
         Product product = new Product("스윙칩", 3000, "data:image/~base64,", memberId);
         UUID uuid = productRepository.save(product);

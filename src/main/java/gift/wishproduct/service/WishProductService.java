@@ -11,7 +11,7 @@ public interface WishProductService {
 
     UUID save(WishProductCreateReq wishProductCreateReq, String email);
 
-    List<WishProductResponse> findMyWishProduct(String email);
+    List<WishProductResponse> findByEmail(String email);
 
     void deleteById(UUID id, String email);
 

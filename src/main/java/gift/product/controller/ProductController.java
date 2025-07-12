@@ -47,7 +47,7 @@ public class ProductController {
     @GetMapping("/mine")
     public ResponseEntity<List<ProductResponse>> getMyProducts(@MyAuthenticalPrincipal AuthMember authMember) {
 
-        List<ProductResponse> response = productService.findByMember(authMember);
+        List<ProductResponse> response = productService.findByEmail(authMember);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

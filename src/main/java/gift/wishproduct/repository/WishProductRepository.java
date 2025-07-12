@@ -1,6 +1,7 @@
 package gift.wishproduct.repository;
 
 import gift.domain.WishProduct;
+import gift.wishproduct.dto.WishProductResponse;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,11 +13,14 @@ public interface WishProductRepository {
 
     Optional<WishProduct> findById(UUID id);
 
-    List<WishProduct> findByMemberId(UUID memberId);
+    List<WishProduct> findByOwnerId(UUID ownerId);
+
+    List<WishProductResponse> findWithProductByOwnerId(UUID ownerId);
 
     List<WishProduct> findByProductId(UUID productId);
 
-    Optional<WishProduct> findByMemberIdAndProductId(UUID memberId, UUID productId);
+
+    Optional<WishProduct> findByOwnerIdAndProductId(UUID memberId, UUID productId);
 
     void deleteById(UUID id);
 

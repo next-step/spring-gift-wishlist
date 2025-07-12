@@ -3,6 +3,7 @@ package gift.wishproduct.repository;
 import gift.domain.Product;
 import gift.domain.WishProduct;
 import gift.global.exception.CustomDatabaseException;
+import gift.wishproduct.dto.WishProductResponse;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
@@ -26,15 +27,12 @@ public class WishProductRepositoryV1 implements WishProductRepository {
     @Override
     public WishProduct save(WishProduct wishProduct) {
         String sql = "insert into wish_product " +
-                "values(:id, :product_name, :price, :quantity, :image_url, :member_id, :product_id)";
+                "values(:id, :quantity, :owner_id, :product_id)";
 
         int update = jdbcClient.sql(sql)
                 .param("id", wishProduct.getId())
-                .param("product_name", wishProduct.getProductName())
-                .param("price", wishProduct.getPrice())
-                .param("image_url", wishProduct.getImageURL())
                 .param("quantity", wishProduct.getQuantity())
-                .param("member_id", uuidToBytes(wishProduct.getMemberId()))
+                .param("owner_id", uuidToBytes(wishProduct.getOwnerId()))
                 .param("product_id", uuidToBytes(wishProduct.getProductId()))
                 .update();
 
@@ -55,12 +53,12 @@ public class WishProductRepositoryV1 implements WishProductRepository {
     }
 
     @Override
-    public List<WishProduct> findByMemberId(UUID memberId) {
+    public List<WishProduct> findByOwnerId(UUID ownerId) {
 
-        String sql = "select * from wish_product where member_id = :member_id";
+        String sql = "select * from wish_product where owner_id = :owner_id";
 
         return jdbcClient.sql(sql)
-                .param("member_id", uuidToBytes(memberId))
+                .param("owner_id", uuidToBytes(ownerId))
                 .query(getWishProductRowMapper())
                 .list();
     }
@@ -75,13 +73,23 @@ public class WishProductRepositoryV1 implements WishProductRepository {
                 .list();
     }
 
-    @Override
-    public Optional<WishProduct> findByMemberIdAndProductId(UUID memberId, UUID productId) {
-        String sql = "select * from wish_product where member_id = :member_id and product_id = :product_id";
+    public List<WishProductResponse> findWithProductByOwnerId(UUID ownerId) {
+        String sql = "select * from wish_product w " +
+                "join product p on w.product_id = w.product_id where w.owner_id = :owner_id";
 
         return jdbcClient.sql(sql)
-                .param("member_id", memberId)
-                .param("product_id", productId)
+                .param("owner_id", uuidToBytes(ownerId))
+                .query(getWishProductResponseRowMapper())
+                .list();
+    }
+
+    @Override
+    public Optional<WishProduct> findByOwnerIdAndProductId(UUID ownerId, UUID productId) {
+        String sql = "select * from wish_product where owner_id = :owner_id and product_id = :product_id";
+
+        return jdbcClient.sql(sql)
+                .param("owner_id", uuidToBytes(ownerId))
+                .param("product_id", uuidToBytes(productId))
                 .query(getWishProductRowMapper())
                 .optional();
     }
@@ -120,13 +128,23 @@ public class WishProductRepositoryV1 implements WishProductRepository {
     private RowMapper<WishProduct> getWishProductRowMapper() {
         return (rs, rowNum) -> {
             UUID id = bytesToUUID(rs.getBytes("id"));
-            String productName = rs.getString("product_name");
-            int price = rs.getInt("price");
             int quantity = rs.getInt("quantity");
-            String imageUrl = rs.getString("image_url");
-            UUID memberId = bytesToUUID(rs.getBytes("member_id"));
+            UUID ownerId = bytesToUUID(rs.getBytes("owner_id"));
             UUID productId = bytesToUUID(rs.getBytes("product_id"));
-            return new WishProduct(id, productName, price, quantity, imageUrl, memberId, productId);
+            return new WishProduct(id, quantity, ownerId, productId);
+        };
+    }
+
+    private RowMapper<WishProductResponse> getWishProductResponseRowMapper() {
+        return (rs, rowNum)-> {
+            UUID id = bytesToUUID(rs.getBytes("id"));
+            String name = rs.getString("name");
+            int quantity = rs.getInt("quantity");
+            int price = rs.getInt("price");
+            String imageUrl = rs.getString("image_url");
+            UUID ownerId = bytesToUUID(rs.getBytes("owner_id"));
+            UUID productId = bytesToUUID(rs.getBytes("product_id"));
+            return new WishProductResponse(id, name, price, quantity, imageUrl);
         };
     }
 }

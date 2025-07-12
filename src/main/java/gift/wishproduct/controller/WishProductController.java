@@ -41,7 +41,7 @@ public class WishProductController {
     @GetMapping()
     public ResponseEntity<List<WishProductResponse>> getWishList(@MyAuthenticalPrincipal AuthMember authMember) {
 
-        List<WishProductResponse> response = wishProductService.findMyWishProduct(authMember.getEmail());
+        List<WishProductResponse> response = wishProductService.findByEmail(authMember.getEmail());
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

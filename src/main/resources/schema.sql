@@ -17,11 +17,8 @@ create table if not exists product (
 
 create table if not exists wish_product(
                         id binary(16),
-                        product_name varchar(255),
-                        price int,
                         quantity int,
-                        image_url text,
-                        member_id binary(16),
+                        owner_id binary(16),
                         product_id binary(16),
                         primary key(id)
 )

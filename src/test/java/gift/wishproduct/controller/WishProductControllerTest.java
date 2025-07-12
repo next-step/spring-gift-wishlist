@@ -175,8 +175,7 @@ class WishProductControllerTest {
 
 
     private WishProduct addWishProduct() {
-        WishProduct wishProduct = new WishProduct("스윙칩", 3000, 10,
-                "data:image/~base64", memberId, productId);
+        WishProduct wishProduct = new WishProduct(10, memberId, productId);
 
         return wishProductRepository.save(wishProduct);
     }

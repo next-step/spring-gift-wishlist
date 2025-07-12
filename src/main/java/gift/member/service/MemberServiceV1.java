@@ -38,9 +38,9 @@ public class MemberServiceV1 implements MemberService{
                     throw new DuplicateEntityException(member.getEmail() + "은 이미 존재하는 이메일 입니다.");
                 });
 
-        String password = passwordEncoder.encode(memberCreateDto.getPassword());
+        String encodedPassword = passwordEncoder.encode(memberCreateDto.getPassword());
 
-        Member saved = memberRepository.save(new Member(memberCreateDto.getEmail(), password, Role.valueOf(memberCreateDto.getRole())));
+        Member saved = memberRepository.save(new Member(memberCreateDto.getEmail(), encodedPassword, Role.valueOf(memberCreateDto.getRole())));
 
         return saved.getId();
     }
@@ -57,9 +57,9 @@ public class MemberServiceV1 implements MemberService{
         if (!memberUpdateRequest.getConfirmPassword().equals(memberUpdateRequest.getNewPassword()))
             throw new BadRequestEntityException("새로운 비밀번호가 확인 비밀번호와 일치하지 않습니다.");
 
-        String password =  passwordEncoder.encode(memberUpdateRequest.getNewPassword());
+        String encodedPassword =  passwordEncoder.encode(memberUpdateRequest.getNewPassword());
 
-        memberRepository.update(new Member(member.getId(), member.getEmail(), password, member.getRole()));
+        memberRepository.update(new Member(member.getId(), member.getEmail(), encodedPassword, member.getRole()));
     }
 
     @Override
@@ -74,10 +74,10 @@ public class MemberServiceV1 implements MemberService{
         if (!memberUpdateReqForAdmin.getConfirmPassword().equals(memberUpdateReqForAdmin.getNewPassword()))
             throw new BadRequestEntityException("새로운 비밀번호가 확인 비밀번호와 일치하지 않습니다.");
 
-        String password =  passwordEncoder.encode(memberUpdateReqForAdmin.getNewPassword());
+        String encodedPassword =  passwordEncoder.encode(memberUpdateReqForAdmin.getNewPassword());
 
         memberRepository.update(new Member(member.getId(), member.getEmail(),
-                password, Role.valueOf(memberUpdateReqForAdmin.getRole())));
+                encodedPassword, Role.valueOf(memberUpdateReqForAdmin.getRole())));
     }
 
     @Override
@@ -123,13 +123,18 @@ public class MemberServiceV1 implements MemberService{
         }
     }
 
+    public Member findByEmail(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundEntityException("존재하는 회원이 아닙니다."));
+    }
+
     @Override
-    public MemberResponse validate(String email, String password) {
+    public MemberResponse validate(String email, String encodedPassword) {
 
         Member findMember = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundEntityException("존재하는 회원이 아닙니다"));
 
-        if (!passwordEncoder.matches(password, findMember.getPassword()))
+        if (!passwordEncoder.matches(encodedPassword, findMember.getPassword()))
             throw new AuthorizationException("비밀번호가 다릅니다.");
 
         return new  MemberResponse(findMember.getId(), findMember.getEmail(), findMember.getRole());
