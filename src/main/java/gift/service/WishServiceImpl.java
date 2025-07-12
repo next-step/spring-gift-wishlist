@@ -34,7 +34,7 @@ public class WishServiceImpl implements WishService {
 
         Wish savedWish = wishRepository.createWish(new Wish(memberId, productId));
 
-        return WishResponseDto.from(savedWish, product);
+        return WishResponseDto.of(savedWish, product);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class WishServiceImpl implements WishService {
                 .map(wish -> {
                     Product product = productRepository.findProductById(wish.getProductId())
                             .orElseThrow(() -> new ProductNotFoundException(wish.getProductId()));
-                    return WishResponseDto.from(wish, product);
+                    return WishResponseDto.of(wish, product);
                 })
                 .toList();
     }

@@ -9,7 +9,7 @@ public record WishResponseDto(
         String productName,
         int productPrice
 ) {
-    public static WishResponseDto from(Wish wish, Product product) {
+    public static WishResponseDto of(Wish wish, Product product) {
         return new WishResponseDto(
                 wish.getId(),
                 product.getId(),
