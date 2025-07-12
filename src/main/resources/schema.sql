@@ -17,8 +17,8 @@ CREATE TABLE users
 
 CREATE TABLE wish_list
 (
-    wish_id    BIGINT PRIMARY KEY,
+    wish_id    BIGINT,
     user_id    BIGINT REFERENCES users (user_id),
     product_id BIGINT REFERENCES product (product_id),
-    quantity   INTEGER
+    quantity   INTEGER default (0)
 );

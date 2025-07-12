@@ -32,10 +32,18 @@ public class ProductJdbcRepository implements ProductRepository {
 
     @Override
     public Optional<Product> findById(long productId) {
-        return jdbcTemplate.query("select * from product where productId = ?",
+        return jdbcTemplate.query("select * from product where product_id = ?",
             productRowMapper(),
             productId).stream().findFirst();
     }
+
+    @Override
+    public Optional<Product> findByName(String productName) {
+        return jdbcTemplate.query("select * from product where name = ?",
+            productRowMapper(),
+            productName).stream().findFirst();
+    }
+
 
     @Override
     public List<Product> findAll() {
@@ -58,7 +66,7 @@ public class ProductJdbcRepository implements ProductRepository {
     @Override
     public void updateProduct(Product product) {
         jdbcTemplate.update(
-            "update product set name = ?, price = ?, imageURL = ? where productId = ?",
+            "update product set name = ?, price = ?, imageURL = ? where product_id = ?",
             product.name(), product.price(), product.imageURL(), product.productId());
     }
 
@@ -69,7 +77,7 @@ public class ProductJdbcRepository implements ProductRepository {
 
     @Override
     public boolean productExists(long id) {
-        return jdbcTemplate.query("select 1 from product where productId = ? limit 1",
+        return jdbcTemplate.query("select 1 from product where product_id = ? limit 1",
                 (rs, rowNum) -> 1, id)
             .stream().findFirst().isPresent();
     }
