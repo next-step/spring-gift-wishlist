@@ -8,20 +8,17 @@ import gift.api.member.repository.MemberRepository;
 import gift.exception.LoginFailedException;
 import gift.util.JwtUtil;
 import jakarta.transaction.Transactional;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
 
     private final MemberRepository memberRepository;
-    private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
-    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder,
-            JwtUtil jwtUtil) {
+    public MemberService(MemberRepository memberRepository, JwtUtil jwtUtil) {
         this.memberRepository = memberRepository;
-        this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
     }
 
@@ -31,7 +28,7 @@ public class MemberService {
             throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
         });
 
-        String encodedPassword = passwordEncoder.encode(memberRequestDto.password());
+        String encodedPassword = BCrypt.hashpw(memberRequestDto.password(), BCrypt.gensalt());
         Member member = new Member(
                 null,
                 memberRequestDto.email(),
@@ -49,7 +46,7 @@ public class MemberService {
         Member member = memberRepository.findByEmail(memberRequestDto.email())
                 .orElseThrow(() -> new LoginFailedException("이메일 또는 비밀번호가 일치하지 않습니다."));
 
-        if (!passwordEncoder.matches(memberRequestDto.password(), member.getPassword())) {
+        if (!BCrypt.checkpw(memberRequestDto.password(), member.getPassword())) {
             throw new LoginFailedException("이메일 또는 비밀번호가 일치하지 않습니다.");
         }
 

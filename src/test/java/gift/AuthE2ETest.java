@@ -9,12 +9,12 @@ import java.util.Objects;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.client.RestClient;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -27,8 +27,6 @@ public class AuthE2ETest {
 
     @Autowired
     private JdbcClient jdbcClient;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     private static final String ADMIN_EMAIL = "admin@test.com";
     private static final String USER_EMAIL = "user@test.com";
@@ -40,7 +38,7 @@ public class AuthE2ETest {
                 .baseUrl("http://localhost:" + port)
                 .build();
 
-        String encodedPassword = passwordEncoder.encode(PASSWORD);
+        String encodedPassword = BCrypt.hashpw(PASSWORD, BCrypt.gensalt());
 
         jdbcClient.sql(
                         "insert into member(email, password, role) values (:email, :password, :role)")

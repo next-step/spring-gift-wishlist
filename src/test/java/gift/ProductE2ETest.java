@@ -16,13 +16,13 @@ import java.util.Objects;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
@@ -37,8 +37,6 @@ public class ProductE2ETest {
     @Autowired
     private JdbcClient jdbcClient;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
     private String authToken;
 
     @BeforeEach
@@ -52,7 +50,7 @@ public class ProductE2ETest {
         jdbcClient.sql(
                         "INSERT INTO member(email, password, role) VALUES (:email, :password, :role)")
                 .param("email", email)
-                .param("password", passwordEncoder.encode(password))
+                .param("password", BCrypt.hashpw(password, BCrypt.gensalt()))
                 .param("role", MemberRole.USER.name())
                 .update();
 

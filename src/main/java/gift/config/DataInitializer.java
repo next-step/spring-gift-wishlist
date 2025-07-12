@@ -3,19 +3,17 @@ package gift.config;
 import gift.api.member.domain.Member;
 import gift.api.member.domain.MemberRole;
 import gift.api.member.repository.MemberRepository;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
 
     private final MemberRepository memberRepository;
-    private final PasswordEncoder passwordEncoder;
 
-    public DataInitializer(MemberRepository memberRepository, PasswordEncoder passwordEncoder) {
+    public DataInitializer(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -27,7 +25,7 @@ public class DataInitializer implements CommandLineRunner {
             Member admin = new Member(
                     null,
                     adminEmail,
-                    passwordEncoder.encode(adminPassword),
+                    BCrypt.hashpw(adminPassword, BCrypt.gensalt()),
                     MemberRole.ADMIN
             );
             memberRepository.registerMember(admin);
