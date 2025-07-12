@@ -4,6 +4,7 @@ import gift.dto.WishResponseDto;
 import gift.entity.Product;
 import gift.entity.Wish;
 import gift.exception.AccessDeniedException;
+import gift.exception.DuplicateWishException;
 import gift.exception.ProductNotFoundException;
 import gift.exception.WishNotFoundException;
 import gift.repository.WishRepository;
@@ -25,7 +26,7 @@ public class WishServiceImpl implements WishService {
     @Override
     public WishResponseDto createWish(Long memberId, Long productId) {
         if (wishRepository.existsWishByMemberIdAndProductId(memberId, productId)) {
-            throw new IllegalStateException("이미 위시리스트에 등록된 상품입니다.");
+            throw new DuplicateWishException(memberId, productId);
         }
 
         Product product = productRepository.findProductById(productId)
