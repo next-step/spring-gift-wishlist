@@ -1,6 +1,7 @@
 package gift.repository;
 
 import gift.domain.Product;
+import gift.domain.ProductStatus;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -42,8 +43,23 @@ public class ProductRepositoryImpl implements ProductRepository{
     }
 
     @Override
+    public List<Product> findAllActive() {
+        return jdbcClient.sql("SELECT * FROM products WHERE status = 'ACTIVE'")
+                .query(Product.class)
+                .list();
+    }
+
+    @Override
     public List<Product> findAll() {
         return jdbcClient.sql("SELECT * FROM products")
+                .query(Product.class)
+                .list();
+    }
+
+    @Override
+    public List<Product> findByStatus(ProductStatus status) {
+        return jdbcClient.sql("SELECT * FROM products WHERE status = :status")
+                .param("status", status.name())
                 .query(Product.class)
                 .list();
     }
@@ -59,6 +75,18 @@ public class ProductRepositoryImpl implements ProductRepository{
     @Override
     public void deleteById(Long id) {
         jdbcClient.sql("DELETE FROM products WHERE id = :id")
+                .param("id", id)
+                .update();
+    }
+
+    @Override
+    public void softDeleteById(Long id) {
+        jdbcClient.sql("""
+        UPDATE products
+        SET is_deleted = true,
+            status = 'DISCONTINUED'
+        WHERE id = :id
+    """)
                 .param("id", id)
                 .update();
     }

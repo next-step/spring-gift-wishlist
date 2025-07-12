@@ -13,7 +13,7 @@ public class MemberRepositoryImpl implements MemberRepository{
 
     private final JdbcTemplate jdbcTemplate;
 
-    private MemberRepositoryImpl(JdbcTemplate jdbcTemplate){
+    public MemberRepositoryImpl(JdbcTemplate jdbcTemplate){
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -37,7 +37,4 @@ public class MemberRepositoryImpl implements MemberRepository{
                 Role.valueOf(rs.getString("role"))
         );
     }
-
-
-
 }

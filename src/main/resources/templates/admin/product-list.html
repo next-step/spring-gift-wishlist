@@ -13,12 +13,24 @@
     </a>
 </div>
 
+<form method="get" action="/admin/products" style="margin: 1rem 0;">
+    <label for="status">상태 필터:</label>
+    <select name="status" id="status" onchange="this.form.submit()">
+        <option value="" th:selected="${selectedStatus == null}">전체</option>
+        <option value="ACTIVE" th:selected="${selectedStatus?.name() == 'ACTIVE'}">활성</option>
+        <option value="INACTIVE" th:selected="${selectedStatus?.name() == 'INACTIVE'}">비활성</option>
+        <option value="DISCONTINUED" th:selected="${selectedStatus?.name() == 'DISCONTINUED'}">단종</option>
+    </select>
+</form>
+
 <table>
     <thead>
     <tr>
         <th>ID</th>
         <th>이름</th>
         <th>가격</th>
+        <th>상태</th>
+        <th>삭제 여부</th>
         <th>이미지</th>
         <th>관리</th>
     </tr>
@@ -31,6 +43,8 @@
                th:text="${product.name}">상품명</a>
         </td>
         <td th:text="${product.price} + '원'">가격</td>
+        <td th:text="${product.status}">상태</td>
+        <td th:text="${product.deleted}">삭제 여부</td>
         <td>
             <img th:if="${product.imageUrl != null}" th:src="${product.imageUrl}" alt="상품 이미지"/>
         </td>

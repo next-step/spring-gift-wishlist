@@ -38,7 +38,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         try {
             if (jwtUtil.isValidToken(token)) {
-                Long memberId = jwtUtil.getMemberIdFromToken(token);
+                Long memberId = jwtUtil.extractMemberId(token);
                 filterChain.doFilter(request, response);
             } else {
                 setErrorResponse(response, "유효하지 않은 토큰입니다.");
