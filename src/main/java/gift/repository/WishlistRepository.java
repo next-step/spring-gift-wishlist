@@ -30,20 +30,28 @@ public class WishlistRepository {
 
 
     public List<Wishlist> findByMemberId(Long memberId) {
-        return jdbcClient.sql("SELECT id, member_id, product_id FROM wishlist WHERE member_id = :memberId")
+        return jdbcClient.sql(
+                        "SELECT id, member_id, product_id, quantity " +
+                                "  FROM wishlist " +
+                                " WHERE member_id = :memberId")
                 .param("memberId", memberId)
                 .query((rs, rowNum) -> mapRow(rs))
                 .list();
     }
 
+
     public Optional<Wishlist> findByMemberIdAndProductId(Long memberId, Long productId) {
-        return jdbcClient.sql("SELECT id, member_id, product_id FROM wishlist " +
-                        "WHERE member_id = :memberId AND product_id = :productId")
+        return jdbcClient.sql(
+                        "SELECT id, member_id, product_id, quantity " +
+                                "  FROM wishlist " +
+                                " WHERE member_id = :memberId " +
+                                "   AND product_id = :productId")
                 .param("memberId", memberId)
                 .param("productId", productId)
                 .query((rs, rowNum) -> mapRow(rs))
                 .optional();
     }
+
 
     public void deleteByMemberIdAndProductId(Long memberId, Long productId) {
         jdbcClient.sql("DELETE FROM wishlist WHERE member_id = :memberId AND product_id = :productId")
@@ -53,10 +61,12 @@ public class WishlistRepository {
     }
 
     private Wishlist mapRow(ResultSet rs) throws SQLException {
-        Wishlist w = new Wishlist(rs.getLong("member_id"), rs.getLong("product_id"));
-        w.setId(rs.getLong("id"));
-        w.setQuantity(rs.getInt("quantity"));
-        return w;
+        return new Wishlist(
+                rs.getLong("id"),
+                rs.getLong("member_id"),
+                rs.getLong("product_id"),
+                rs.getInt("quantity")
+        );
     }
 
     public void update(Wishlist wishlist) {
@@ -66,6 +76,28 @@ public class WishlistRepository {
                 .param("quantity", wishlist.getQuantity())
                 .update();
     }
+    public void upsertWishlist(Long memberId, Long productId) {
+        jdbcClient.sql("""
+        MERGE INTO wishlist (member_id, product_id, quantity)
+        KEY (member_id, product_id)
+        VALUES (
+          :memberId,
+          :productId,
+          COALESCE(
+            (SELECT quantity
+               FROM wishlist
+              WHERE member_id = :memberId
+                AND product_id = :productId
+            ) + 1,
+            1
+          )
+        )
+        """)
+                .param("memberId", memberId)
+                .param("productId", productId)
+                .update();
+    }
+
 
 
 }

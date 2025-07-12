@@ -13,6 +13,12 @@ public class Wishlist {
         this.productId = productId;
         this.quantity = 1;
     }
+    public Wishlist(Long id, Long memberId, Long productId, int quantity) {
+        this.id = id;
+        this.memberId = memberId;
+        this.productId = productId;
+        this.quantity = quantity;
+    }
 
     public Long getId() {
         return id;
