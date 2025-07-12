@@ -150,3 +150,11 @@
     - Request: 'DELETE /api/wishes/{productId}'
     - Response: 204 NO_CONTENT
 - 로그인 시 사용자 검증 인터셉터로 이동
+
+# step 3 피드백 반영
+- 어드민 컨트롤러에서 인증 부분 삭제
+- isValidateToken이 Member 자체를 반환하도록 수정
+  - throw 되는 예외는 ExceptionHandler로 처리
+- throwIfMemberWishFindByProductId 메서드 이름 변경
+- wish의 procduct 정보를 한 번에 조회하도록 변경
+  - sql join을 사용해 위시와 상품 정보를 한번에 조회, Pair<S,T> 레코드로 전달
