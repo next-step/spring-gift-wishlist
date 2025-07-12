@@ -117,4 +117,11 @@ public class GlobalExceptionHandler {
         error.put("error", e.getMessage());
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
+
+    @ExceptionHandler(InvalidMemberException.class)
+    public ResponseEntity<Map<String, String>> handleInvalidMember(InvalidMemberException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
 }

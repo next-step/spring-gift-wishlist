@@ -4,6 +4,7 @@ import gift.dto.api.WishRequestDto;
 import gift.dto.api.WishResponseDto;
 import gift.entity.Member;
 import gift.entity.WishItem;
+import gift.exception.InvalidMemberException;
 import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ public class WishService {
     }
 
     public List<WishResponseDto> getWishListForMember(Member member) {
+        validate(member);
         List<WishItem> items = wishRepository.findAllByMemberId(member.getId());
         return items.stream()
             .map(WishResponseDto::of)
@@ -31,6 +33,7 @@ public class WishService {
     }
 
     public void addWishItemForMember(Member member, WishRequestDto wishRequestDto) {
+        validate(member);
         if (productRepository.findById(wishRequestDto.productId()).isEmpty()) {
             throw new NoSuchElementException("상품을 찾을 수 없습니다.");
         }
@@ -43,6 +46,7 @@ public class WishService {
     }
 
     public void removeWishItemForMember(Member member, Long productId) {
+        validate(member);
         if (productRepository.findById(productId).isEmpty()) {
             throw new NoSuchElementException("상품을 찾을 수 없습니다.");
         }
@@ -54,4 +58,8 @@ public class WishService {
         }
     }
 
+    private void validate(Member member) {
+        if (member == null)
+            throw new InvalidMemberException("유효하지 않은 회원입니다.");
+    }
 }
