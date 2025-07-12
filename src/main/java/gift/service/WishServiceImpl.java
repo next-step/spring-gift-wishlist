@@ -25,7 +25,7 @@ public class WishServiceImpl implements WishService {
 
     @Override
     public WishResponseDto createWish(CreateWishRequestDto requestDto, Long memberId) {
-        throwIfMemberWishFindByProductId(requestDto.productId(), memberId);
+        checkDuplicateWish(requestDto.productId(), memberId);
         ProductResponseDto productResponseDto = productService.findProductById(
                 requestDto.productId());
         Wish newWish = new Wish(null, requestDto.productId(), memberId, requestDto.quantity());
@@ -68,7 +68,7 @@ public class WishServiceImpl implements WishService {
         wishRepository.deleteMemberWishByProductId(productId, memberId);
     }
 
-    private void throwIfMemberWishFindByProductId(Long productId, Long memberId) {
+    private void checkDuplicateWish(Long productId, Long memberId) {
         wishRepository.findMemberWishByProductId(productId, memberId)
                 .ifPresent(wish -> {
                     throw new CustomException(ErrorCode.AlreadyMadeWish);
