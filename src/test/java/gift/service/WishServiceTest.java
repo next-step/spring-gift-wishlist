@@ -1,11 +1,12 @@
 package gift.service;
 
-import gift.dto.WishResponseDto;
-import gift.entity.Product;
-import gift.entity.Wish;
-import gift.exception.ProductNotFoundException;
-import gift.repository.ProductRepository;
-import gift.repository.WishRepository;
+import gift.wish.dto.WishResponseDto;
+import gift.product.entity.Product;
+import gift.wish.entity.Wish;
+import gift.product.exception.ProductNotFoundException;
+import gift.product.repository.ProductRepository;
+import gift.wish.repository.WishRepository;
+import gift.wish.service.WishServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,16 +1,16 @@
 package gift.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gift.config.JwtProvider;
-import gift.dto.WishRequestDto;
-import gift.dto.PageRequestDto;
-import gift.entity.Member;
-import gift.entity.Product;
-import gift.entity.Role;
-import gift.entity.Wish;
-import gift.repository.MemberRepository;
-import gift.repository.ProductRepository;
-import gift.repository.WishRepository;
+import gift.security.config.JwtProvider;
+import gift.wish.dto.WishRequestDto;
+import gift.common.pagination.PageRequestDto;
+import gift.member.entity.Member;
+import gift.product.entity.Product;
+import gift.member.entity.Role;
+import gift.wish.entity.Wish;
+import gift.member.repository.MemberRepository;
+import gift.product.repository.ProductRepository;
+import gift.wish.repository.WishRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

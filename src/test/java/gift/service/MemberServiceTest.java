@@ -1,15 +1,16 @@
 package gift.service;
 
-import gift.config.JwtProvider;
-import gift.dto.MemberLoginRequestDto;
-import gift.dto.MemberRegisterRequestDto;
-import gift.dto.TokenResponseDto;
-import gift.entity.Member;
-import gift.entity.Role;
-import gift.exception.EmailAlreadyExistsException;
-import gift.exception.InvalidPasswordException;
-import gift.exception.MemberNotFoundException;
-import gift.repository.MemberRepository;
+import gift.security.config.JwtProvider;
+import gift.member.dto.MemberLoginRequestDto;
+import gift.member.dto.MemberRegisterRequestDto;
+import gift.member.dto.TokenResponseDto;
+import gift.member.entity.Member;
+import gift.member.entity.Role;
+import gift.member.exception.EmailAlreadyExistsException;
+import gift.member.exception.InvalidPasswordException;
+import gift.member.exception.MemberNotFoundException;
+import gift.member.service.MemberServiceImpl;
+import gift.member.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
