@@ -32,7 +32,7 @@ public class WishRepositoryImpl implements WishRepository {
                     rs.getLong("id"),
                     rs.getLong("member_id"),
                     rs.getLong("product_id"),
-                    rs.getInt("quantity")
+                    rs.getLong("quantity")
             );
         }
     };
@@ -49,7 +49,7 @@ public class WishRepositoryImpl implements WishRepository {
                 PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                 ps.setLong(1, wish.getMemberId());
                 ps.setLong(2, wish.getProductId());
-                ps.setInt(3, wish.getQuantity());
+                ps.setLong(3, wish.getQuantity());
                 return ps;
             }
         }, keyHolder);

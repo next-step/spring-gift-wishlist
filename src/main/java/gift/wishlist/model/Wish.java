@@ -4,21 +4,21 @@ public class Wish {
     private Long id;
     private Long memberId;
     private Long productId;
-    private int quantity;
+    private Long quantity;
 
-    public Wish(Long id, Long memberId, Long productId, int quantity) {
+    public Wish(Long id, Long memberId, Long productId, Long quantity) {
         this.id = id;
         this.memberId = memberId;
         this.productId = productId;
         this.quantity = quantity;
     }
 
-    public Wish(Long memberId, Long productId, int quantity) {
+    public Wish(Long memberId, Long productId, Long quantity) {
         this(null, memberId, productId, quantity);
     }
 
     public Wish(Long memberId, Long productId) {
-        this(null, memberId, productId, 1); // 기본 수량 1
+        this(null, memberId, productId, 1l); // 기본 수량 1
     }
 
     public Long getId() {
@@ -33,7 +33,7 @@ public class Wish {
         return productId;
     }
 
-    public int getQuantity() {
+    public Long getQuantity() {
         return quantity;
     }
 
@@ -41,7 +41,7 @@ public class Wish {
         this.id = id;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(Long quantity) {
         this.quantity = quantity;
     }
 }

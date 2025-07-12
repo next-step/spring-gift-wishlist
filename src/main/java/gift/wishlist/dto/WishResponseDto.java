@@ -5,7 +5,7 @@ import gift.wishlist.model.Wish;
 public record WishResponseDto(
         Long id,
         Long productId,
-        int quantity
+        Long quantity
 ) {
     public static WishResponseDto from(Wish wish) {
         return new WishResponseDto(

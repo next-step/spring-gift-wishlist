@@ -16,7 +16,7 @@ CREATE TABLE wishes (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     member_id BIGINT NOT NULL,
     product_id BIGINT NOT NULL,
-    quantity INT DEFAULT 1,
+    quantity BIGINT DEFAULT 1,
     FOREIGN KEY (member_id) REFERENCES members(id),
     FOREIGN KEY (product_id) REFERENCES products(id),
     UNIQUE(member_id, product_id)
