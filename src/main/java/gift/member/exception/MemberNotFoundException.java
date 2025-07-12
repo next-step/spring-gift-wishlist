@@ -1,6 +1,6 @@
 package gift.member.exception;
 
-public class MemberNotFoundException extends RuntimeException{
+public class MemberNotFoundException extends RuntimeException {
 
   private final MemberErrorCode errorCode;
 

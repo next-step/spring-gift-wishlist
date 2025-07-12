@@ -20,6 +20,8 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(
       MethodArgumentNotValidException exception) {
+    logger.error("MethodArgumentNotValidException. occurred: {}", exception.getMessage());
+
     List<Map<String, String>> invalidParams = exception.getFieldErrors().stream()
         .map(fieldError -> Map.of(
             "name", fieldError.getField(),
@@ -30,12 +32,15 @@ public class GlobalExceptionHandler {
 
     Map<String, Object> additionalInfo = Map.of("invalid-params", invalidParams);
 
-    return createErrorResponse(GlobalErrorCode.INVALID_ARGUMENT_ERROR, exception, additionalInfo);
+    return ErrorResponse.createErrorResponse(GlobalErrorCode.INVALID_ARGUMENT_ERROR, exception,
+        additionalInfo);
   }
 
   @ExceptionHandler(ConstraintViolationException.class)
   public ResponseEntity<ErrorResponse> handleConstraintViolationException(
       ConstraintViolationException exception) {
+    logger.error("ConstraintViolationException occurred: {}", exception.getMessage());
+
     List<Map<String, String>> invalidParams = exception.getConstraintViolations().stream()
         .map(violation -> Map.of(
             "name", PropertyPathUtils.extractFieldName(violation.getPropertyPath().toString()),
@@ -46,34 +51,15 @@ public class GlobalExceptionHandler {
 
     Map<String, Object> additionalInfo = Map.of("invalid-params", invalidParams);
 
-    return createErrorResponse(GlobalErrorCode.INVALID_ARGUMENT_ERROR, exception, additionalInfo);
+    return ErrorResponse.createErrorResponse(GlobalErrorCode.INVALID_ARGUMENT_ERROR, exception,
+        additionalInfo);
   }
 
   @ExceptionHandler(IllegalArgumentException.class)
   public ResponseEntity<ErrorResponse> handleIllegalArgumentException(
       IllegalArgumentException exception) {
-    return createErrorResponse(GlobalErrorCode.INVALID_ARGUMENT_ERROR, exception);
-  }
+    logger.error("IllegalArgumentException occurred: {}", exception.getMessage());
 
-
-  /*@ExceptionHandler(Exception.class)
-  public ResponseEntity<ErrorResponse> handleException(Exception exception) {
-    return createErrorResponse(GlobalErrorCode.INTERNAL_ERROR, exception);
-  }*/
-
-  private static ResponseEntity<ErrorResponse> createErrorResponse(GlobalErrorCode errorCode,
-      Exception exception) {
-    logger.error("Exception occurred: {}", exception.getMessage());
-    return ResponseEntity
-        .status(errorCode.getStatus())
-        .body(ErrorResponse.from(errorCode, exception.getMessage()));
-  }
-
-  private static ResponseEntity<ErrorResponse> createErrorResponse(GlobalErrorCode errorCode,
-      Exception exception, Map<String, Object> additionalInfo) {
-    logger.error("Exception occurred: {}", exception.getMessage());
-    return ResponseEntity
-        .status(errorCode.getStatus())
-        .body(ErrorResponse.from(errorCode, additionalInfo));
+    return ErrorResponse.createErrorResponse(GlobalErrorCode.INVALID_ARGUMENT_ERROR, exception);
   }
 }

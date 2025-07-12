@@ -17,27 +17,14 @@ public class WishItemExceptionHandler {
   public ResponseEntity<ErrorResponse> handleWishItemNotFoundException(
       WishItemNotFoundException exception) {
     logger.error("WishItem not found: {}", exception.getMessage());
-    return createErrorResponse(exception.getErrorCode());
+    return ErrorResponse.createErrorResponse(exception.getErrorCode());
   }
 
   @ExceptionHandler(WishItemAlreadyExistsException.class)
   public ResponseEntity<ErrorResponse> handleWishItemAlreadyExistsException(
       WishItemAlreadyExistsException exception) {
     logger.error("WishItem already exists: {}", exception.getMessage());
-    return createErrorResponse(exception.getErrorCode());
-  }
-
-  private static ResponseEntity<ErrorResponse> createErrorResponse(WishItemErrorCode errorCode) {
-    return ResponseEntity
-        .status(errorCode.getStatus())
-        .body(ErrorResponse.from(errorCode));
-  }
-
-  private static ResponseEntity<ErrorResponse> createErrorResponse(WishItemErrorCode errorCode,
-      Exception exception) {
-    return ResponseEntity
-        .status(errorCode.getStatus())
-        .body(ErrorResponse.from(errorCode, exception.getMessage()));
+    return ErrorResponse.createErrorResponse(exception.getErrorCode());
   }
 
 }
