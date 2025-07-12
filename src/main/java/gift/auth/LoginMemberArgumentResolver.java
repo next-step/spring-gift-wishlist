@@ -40,13 +40,10 @@ public class LoginMemberArgumentResolver
                                   NativeWebRequest webRequest,
                                   WebDataBinderFactory binderFactory) {
 
-        // Authorization 헤더 추출
         String header = webRequest.getHeader("Authorization");
 
-        // Authorization 헤더에서 Bearer 스킴 검증 후 토큰 문자열만 추출
         String token = authHeaderParser.extractBearerToken(header);
 
-        // JWT 파싱 및 Claim 추출
         Claims claims = tokenService.parseClaims(token);
 
         Long memberId = Long.valueOf(claims.getSubject());
