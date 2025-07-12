@@ -1,5 +1,24 @@
 # spring-gift-wishlist
 
+# 3단계
+
+## 1. 2단계 피드백 반영
+- Forbidden 대신 UnAuthorized로 응답하게 하기
+- Login 시 Post로 요청하게 하기
+- password 암호화하기
+- secret key를 applicaiton.porperties파일로 옮기
+- 정적 팩토리 메서드와 빌더패턴에 대해 알아보고 ErrorResponseDto 수정해보기
+
+## 2. 위시리스트 상품 추가
+- 선택한 상품 장바구니에 추가
+
+## 3. 위시리스트 상품 삭제
+- 장바구니 목록 조회
+- 선택한 상품 삭제
+
+## 4. 위시리스트 상품 수량 변경
+- 특정 상품 수량 변경
+
 # 2단계
 
 ## 1. 1단계 피드백 반영

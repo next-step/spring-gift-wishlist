@@ -21,7 +21,6 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public int addProduct(Product product) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
         int result = jdbcClient.sql("insert into product (name, price, url) values (:name, :price, :url)")
                 .param("name", product.name())
                 .param("price", product.price())

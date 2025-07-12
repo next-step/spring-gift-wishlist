@@ -41,7 +41,7 @@ public class MemberController {
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<TokenResponseDto> LoginMember(
             @Valid @RequestBody MemberLoginRequestDto requestDto, BindingResult bindingResult
     ) {
