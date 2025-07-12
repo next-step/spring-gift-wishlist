@@ -3,9 +3,8 @@ package gift;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import gift.dto.MemberPasswordChangeDto;
-import gift.dto.MemberRequestDto;
-import org.junit.jupiter.api.Assertions;
+import gift.dto.member.MemberPasswordChangeDto;
+import gift.dto.member.MemberRequestDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

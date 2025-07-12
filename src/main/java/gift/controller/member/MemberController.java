@@ -1,9 +1,9 @@
-package gift.controller;
+package gift.controller.member;
 
-import gift.dto.MemberPasswordChangeDto;
-import gift.dto.MemberRequestDto;
-import gift.dto.MemberResponseDto;
-import gift.service.MemberService;
+import gift.dto.member.MemberPasswordChangeDto;
+import gift.dto.member.MemberRequestDto;
+import gift.dto.member.MemberResponseDto;
+import gift.service.member.MemberService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

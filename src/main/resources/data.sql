@@ -6,4 +6,4 @@ insert into product(name, price, imageUrl)
 values ('Grapefruit Honey Black Tea', 5900, 'https://www.starbucks.co.kr/index.do');
 
 insert into member(email, password)
-values ('example@naver.com', 'qwer');
+values ('example@naver.com', 'f6f2ea8f45d8a057c9566a33f99474da2e5c6a6604d736121650e2730c6fb0a3');

@@ -1,5 +1,12 @@
 # spring-gift-product
 
+#### 위시리스트 기능 추가
+
+- 사용자별 위시리스트 상품 추가, 조회, 삭제(CRD) 기능 구현
+- 위시리스트 전체 기능에 대한 테스트 코드 작성
+- 커스텀 예외: `UnAuthenticatedException`, `ResourceNotFoundException` 추가
+- 토큰 만료, 토큰 유효성 오류, 리소스 미존재 시 대응하는 `ErrorCode` 추가
+
 #### 회원 인증(로그인/등록) 응답 코드 정책
 
 - 회원 등록 실패 시: **400 Bad Request**

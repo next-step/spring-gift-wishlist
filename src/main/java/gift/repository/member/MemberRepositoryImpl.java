@@ -1,6 +1,5 @@
-package gift.repository;
+package gift.repository.member;
 
-import gift.dto.MemberRequestDto;
 import gift.entity.Member;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,5 +78,15 @@ public class MemberRepositoryImpl implements MemberRepository {
             .param("password", member.getPassword())
             .param("email", member.getEmail())
             .update();
+    }
+
+    @Override
+    public Optional<Member> findById(Long id) {
+        String sql = "select * from member where id = :id";
+
+        return jdbcClient.sql(sql)
+            .param("id", id)
+            .query(MEMBER_ROW_MAPPER)
+            .optional();
     }
 }

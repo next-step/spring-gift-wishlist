@@ -1,11 +1,8 @@
-package gift.service;
+package gift.service.product;
 
-import gift.dto.ProductRequestDto;
-import gift.dto.ProductResponseDto;
-import gift.entity.Product;
-import java.util.HashMap;
+import gift.dto.product.ProductRequestDto;
+import gift.dto.product.ProductResponseDto;
 import java.util.List;
-import java.util.Map;
 
 public interface ProductService {
 
