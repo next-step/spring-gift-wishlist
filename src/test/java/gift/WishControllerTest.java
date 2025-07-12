@@ -7,6 +7,7 @@ import gift.controller.WishController;
 import gift.domain.Member;
 import gift.dto.request.WishRequest;
 import gift.dto.response.WishMsgResponse;
+import gift.exception.WishNotFoundException;
 import gift.service.MemberService;
 import gift.service.WishService;
 import org.junit.jupiter.api.DisplayName;
@@ -25,6 +26,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -83,6 +85,36 @@ public class WishControllerTest {
                     """))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.message").value("인증 정보가 유효하지 않습니다."));
+    }
+
+    @DisplayName("위시리스트 상품 삭제에 성공한다")
+    @Test
+    void 위시리스트_삭제_성공() throws Exception {
+        given(loginMemberArgumentResolver.supportsParameter(any())).willReturn(true);
+        given(loginMemberArgumentResolver.resolveArgument(any(), any(), any(), any()))
+                .willReturn(new Member(1L, "test@email.com", "1234"));
+
+        given(wishService.deleteByProductId(any(Member.class), any(Long.class)))
+                .willReturn(new WishMsgResponse("위시리스트에서 삭제되었습니다."));
+
+        mockMvc.perform(delete("/api/wishes/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("위시리스트에서 삭제되었습니다."));
+    }
+
+    @DisplayName("존재하지 않는 상품 ID로 삭제 시도 시 404 NotFound 에러가 발생한다")
+    @Test
+    void 위시리스트_삭제_실패_존재하지_않음() throws Exception {
+        given(loginMemberArgumentResolver.supportsParameter(any())).willReturn(true);
+        given(loginMemberArgumentResolver.resolveArgument(any(), any(), any(), any()))
+                .willReturn(new Member(1L, "test@email.com", "1234"));
+
+        given(wishService.deleteByProductId(any(Member.class), any(Long.class)))
+                .willThrow(new WishNotFoundException(2L));
+
+        mockMvc.perform(delete("/api/wishes/2"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("위시리스트에 존재하지 않는 상품입니다."));
     }
 
     @TestConfiguration
