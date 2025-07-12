@@ -134,7 +134,7 @@ Content-Type: application/json
 
 ## 구현 기능 목록
 - [x] 위시리스트에 상품 추가
-- [ ] 위시리스트에서 상품 삭제
+- [x] 위시리스트에서 상품 삭제
 - [x] 위시리스트에 담긴 상품 목록 조회
 - [ ] 위시리스트 테스트 
 
@@ -195,3 +195,20 @@ Authorization: Bearer {access_token}
 응답코드
 - 200 Ok: 조회 성공
 - 401 Unauthorized: 인증 실패 (토큰 누락/오류)
+
+3. 위시리스트 상품 삭제(`DELETE /api/wishes/{productId}`)
+### Request
+```http
+Authorization: Bearer {access_token}
+```
+
+### Response
+```json
+{
+   "message": "위시리스트에서 삭제되었습니다."
+}
+```
+응답코드
+- 200 Ok: 삭제 성공
+- 401 Unauthorized: 인증 실패 (토큰 누락/오류)
+- 404 Not Found:위시리스트에 존재하지 않는 상품
