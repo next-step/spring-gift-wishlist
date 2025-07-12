@@ -1,6 +1,6 @@
 package gift.config;
 
-import gift.annotation.LoginMember;
+import gift.annotation.CurrentMember;
 import gift.repository.MemberRepository;
 import gift.util.JwtTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,6 +12,8 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Optional;
 
 @Component
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
@@ -26,7 +28,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(LoginMember.class);
+        return parameter.hasParameterAnnotation(CurrentMember.class);
     }
 
     @Override
@@ -36,16 +38,16 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
                                   WebDataBinderFactory binderFactory) throws Exception {
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
 
-        String token = jwtTokenProvider.resolveAccessToken(request);
+        Optional<String> token = jwtTokenProvider.resolveAccessToken(request);
 
-        if (token == null || !jwtTokenProvider.validateToken(token)) {
+        if (token.isPresent() || !jwtTokenProvider.validateToken(token.get())) {
             throw new ResponseStatusException(
                     HttpStatus.UNAUTHORIZED,
                     "토큰이 존재하지 않거나 유효하지 않습니다."
                     );
         }
 
-        long id = Long.parseLong(jwtTokenProvider.getIdFromToken(token));
+        long id = Long.parseLong(jwtTokenProvider.getIdFromToken(token.get()));
 
         return memberRepository.findMemberById(id)
                 .orElseThrow(() ->

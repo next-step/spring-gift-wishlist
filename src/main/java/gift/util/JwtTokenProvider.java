@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.Optional;
 
 @Component
 public class JwtTokenProvider {
@@ -37,13 +38,13 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String resolveAccessToken(HttpServletRequest request) {
+    public Optional<String> resolveAccessToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring((7));
+            return bearerToken.substring((7)).describeConstable();
         }
 
-        return null;
+        return Optional.empty();
     }
 
     public boolean validateToken(String token) {
