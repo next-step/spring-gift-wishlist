@@ -2,10 +2,11 @@ package gift.controller;
 
 import gift.dto.WishlistProductDto;
 import gift.dto.WishlistRequestDto;
+import gift.entity.Member;
 import gift.entity.Product;
 import gift.repository.ProductRepository;
 import gift.repository.WishlistRepository;
-import gift.security.MemberDetails;
+import gift.security.LoginMember;
 import gift.service.WishlistService;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 @RestController
 @RequestMapping("/api/wishlist")
@@ -33,18 +33,13 @@ public class WishlistController {
         this.wishlistService = wishlistService;
     }
 
-    @GetMapping("/products")
-    public List<WishlistProductDto> showAllProducts() {
-        return productRepository.findAll().stream()
-                .map(p -> new WishlistProductDto(p.getName(), 0))
-                .collect(Collectors.toList());
-    }
 
 
+    //위시리스트의 목록을 가져오기
     @GetMapping
-    public List<WishlistProductDto> getWishlist(@AuthenticationPrincipal MemberDetails member) {
+    public List<WishlistProductDto> getWishlist(@LoginMember Member member) {
         return wishlistRepository.findByMemberId(member.getId()).stream()
-                .map(w -> {
+                .map(w -> {//dto로 가공
                     Product product = productRepository.findById(w.getProductId());
                     return new WishlistProductDto(product.getName(), w.getQuantity());
                 })
@@ -53,14 +48,14 @@ public class WishlistController {
 
 
     @PostMapping
-    public ResponseEntity<Void> addToWishlist(@AuthenticationPrincipal MemberDetails member,
+    public ResponseEntity<Void> addToWishlist(@LoginMember Member member,
             @RequestBody WishlistRequestDto request) {
         wishlistService.addToWishlist(member.getId(), request.productId());
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{productId}")
-    public ResponseEntity<Void> removeFromWishlist(@AuthenticationPrincipal MemberDetails member,
+    public ResponseEntity<Void> removeFromWishlist(@LoginMember Member member,
             @PathVariable Long productId) {
         wishlistService.removeFromWishlist(member.getId(), productId);
         return ResponseEntity.noContent().build();
