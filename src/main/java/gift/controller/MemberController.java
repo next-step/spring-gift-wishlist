@@ -38,7 +38,7 @@ public class MemberController {
     @PostMapping("/login")
     public ResponseEntity<?> loginMember(@Valid @RequestBody MemberRequestDto memberRequestDto) {
 
-        if(!memberService.existMember(memberRequestDto)) {
+      if(!memberService.existMember(memberRequestDto)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("아이디 또는 비밀번호가 올바르지 않습니다.");
         }
         String token = jwtUtil.generateToken(memberRequestDto);
