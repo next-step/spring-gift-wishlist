@@ -30,6 +30,8 @@ public class LoginInterceptor implements HandlerInterceptor {
                 return false;
             }
 
+            Long memberId = jwtService.getMemberIdFromToken(token);
+            request.setAttribute("memberId", memberId);
             request.setAttribute("accessToken", token);
 
             return true;

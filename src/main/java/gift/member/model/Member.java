@@ -18,10 +18,6 @@ public class Member {
         this(null, email, password, "USER");
     }
 
-    public Member(Long memberId) {
-        this.id = memberId;
-    }
-
     public Long getId() {
         return id;
     }

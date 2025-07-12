@@ -3,6 +3,7 @@ package gift.jwt.auth;
 import gift.jwt.JwtService;
 import gift.jwt.exception.InvalidTokenException;
 import gift.member.model.Member;
+import gift.member.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -14,10 +15,10 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @Component
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private final JwtService jwtService;
+    private final MemberService memberService;
 
-    public LoginMemberArgumentResolver(JwtService jwtService) {
-        this.jwtService = jwtService;
+    public LoginMemberArgumentResolver(MemberService memberService) {
+        this.memberService = memberService;
     }
 
     @Override
@@ -34,14 +35,12 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
 
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
 
-        String token = (String) request.getAttribute("accessToken");
+        Long memberId = (Long) request.getAttribute("memberId");
 
-        if (token == null) {
-            throw new InvalidTokenException("토큰 정보를 찾을 수 없습니다.");
+        if (memberId == null) {
+            throw new InvalidTokenException("회원 정보를 찾을 수 없습니다.");
         }
 
-        Long memberId = jwtService.getMemberIdFromToken(token);
-
-        return new Member(memberId);
+        return memberService.findById(memberId);
     }
 }
