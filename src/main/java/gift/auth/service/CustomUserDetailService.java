@@ -12,10 +12,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CustomUserDetailService implements UserDetailsService {
+
   private final MemberAuthRepository memberAuthRepository;
   private final MemberRepository memberRepository;
 
-  public CustomUserDetailService(MemberAuthRepository memberAuthRepository, MemberRepository memberRepository) {
+  public CustomUserDetailService(MemberAuthRepository memberAuthRepository,
+      MemberRepository memberRepository) {
     this.memberAuthRepository = memberAuthRepository;
     this.memberRepository = memberRepository;
   }
@@ -27,6 +29,7 @@ public class CustomUserDetailService implements UserDetailsService {
     Member member = memberRepository.findById(memberAuth.memberId())
         .orElseThrow(() -> new UsernameNotFoundException("회원 정보를 찾을 수 없습니다"));
 
-    return new CustomUserDetails(member.id(),memberAuth.email().getEmailText(), memberAuth.password());
+    return new CustomUserDetails(member.id(), memberAuth.email().getEmailText(),
+        memberAuth.password());
   }
 }

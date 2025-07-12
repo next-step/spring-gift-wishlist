@@ -3,10 +3,9 @@ package gift.product.service;
 import gift.global.common.dto.PageRequest;
 import gift.global.common.dto.PagedResult;
 import gift.product.domain.Product;
-import gift.product.dto.CreateProductReqDto;
-import gift.product.dto.GetProductResDto;
-import gift.product.dto.UpdateProductReqDto;
-import gift.product.exception.ProductErrorCode;
+import gift.product.dto.CreateProductRequestDto;
+import gift.product.dto.GetProductResponseDto;
+import gift.product.dto.UpdateProductRequestDto;
 import gift.product.exception.ProductNotFoundException;
 import gift.product.repository.ProductRepository;
 import gift.product.validation.ProductValidator;
@@ -26,22 +25,22 @@ public class ProductService {
     this.productValidator = productValidator;
   }
 
-  public PagedResult<GetProductResDto> getAllByPage(PageRequest pageRequest)
+  public PagedResult<GetProductResponseDto> getAllByPage(PageRequest pageRequest)
       throws IllegalArgumentException {
     List<Product> pagedProductList = productRepository.findAllByPage(pageRequest.offset(),
         pageRequest.pageSize(), pageRequest.sortInfo());
     return PagedResult.of(pagedProductList, pageRequest.offset(), pageRequest.pageSize())
-        .map(GetProductResDto::from);
+        .map(GetProductResponseDto::from);
   }
 
-  public GetProductResDto getProductById(Long id) throws ProductNotFoundException {
+  public GetProductResponseDto getProductById(Long id) throws ProductNotFoundException {
     Product product = productRepository.findById(id)
-        .orElseThrow(() -> new ProductNotFoundException(ProductErrorCode.PRODUCT_NOT_FOUND));
-    return GetProductResDto.from(product);
+        .orElseThrow(ProductNotFoundException::new);
+    return GetProductResponseDto.from(product);
   }
 
   @Transactional
-  public Long createProduct(CreateProductReqDto dto) {
+  public Long createProduct(CreateProductRequestDto dto) {
     productValidator.validateProductName(dto.name());
     Product newProduct = Product.of(
         dto.name(),
@@ -53,10 +52,10 @@ public class ProductService {
   }
 
   @Transactional
-  public void updateProduct(Long id, UpdateProductReqDto dto) throws ProductNotFoundException {
+  public void updateProduct(Long id, UpdateProductRequestDto dto) throws ProductNotFoundException {
     productValidator.validateProductName(dto.name());
     if (productRepository.findById(id).isEmpty()) {
-      throw new ProductNotFoundException(ProductErrorCode.PRODUCT_NOT_FOUND);
+      throw new ProductNotFoundException();
     }
     Product newProduct = Product.withId(
         id,
@@ -71,7 +70,7 @@ public class ProductService {
   @Transactional
   public void deleteProduct(Long id) throws ProductNotFoundException {
     if (productRepository.findById(id).isEmpty()) {
-      throw new ProductNotFoundException(ProductErrorCode.PRODUCT_NOT_FOUND);
+      throw new ProductNotFoundException();
     }
     productRepository.deleteById(id);
   }

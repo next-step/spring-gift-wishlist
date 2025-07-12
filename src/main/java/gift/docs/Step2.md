@@ -7,21 +7,25 @@
 ## ✅ 구현 목표
 
 ### 📌 1. 상품 등록, 수정 DTO 유효성 검증 수정
+
 - [x] CreateProductReqDto, UpdateProductReqDto의 필드에 요구사항에 맞는 Bean Validation 어노테이션 적용
 - [x] 상품명에 '카카오' 포함 여부를 검증하는 Custom Constraint 구현 및 적용
 
 ### 📌 2. Pagination DTO validation 리팩토링
+
 - [x] PageRequest, SortInfo의 수동 검증 로직을 제거하고, Bean Validation 기반 자동 검증으로 리팩토링
 
 ### 📌 3. 검증 실패 시 응답 개선
+
 - [x] 유효성 검사 실패 시 어떤 필드가 왜 실패했는지를 ErrorResponse에 포함하도록 구조 개선
 
 ### 📌 4. E2E 테스트 추가
+
 - [x] 유효성 검증 정상 동작 확인 및 엣지 케이스에 대한 엔드투엔드 테스트 케이스 작성 및 추가
 
 ### 📌 5. CI 테스트 파이프라인 구축
-- [x] CI 환경에서 테스트가 자동 실행되도록 파이프라인 구성
 
+- [x] CI 환경에서 테스트가 자동 실행되도록 파이프라인 구성
 
 ---
 
@@ -35,20 +39,24 @@
 ## ✅ 구현 사항
 
 ### 📌 1. JWT 기반 인증 및 토큰 자동 만료 체크 구현
+
 - [x] JWT 만료 여부를 검사하는 `JwtValidationFilter` 구현
 - [x] Access Token 만료 시 401 응답 반환 처리
 - [x] 토큰이 없는 요청도 JWT 예외 없이 허용되도록 필터 분기 처리
 - [x] `SecurityFilterChain`에 커스텀 JWT 인증 필터 등록
 
 ### 📌 2. 인증 컨트롤러 및 서비스 구현
+
 - [x] 로그인 및 회원 인증 관련 요청을 처리하는 `AuthController` 구현
 - [x] 토큰 발급 및 갱신 로직을 담당하는 `AuthService` 구현
 
 ### 📌 3. 인증 저장소 영속화 및 DB 연동
+
 - [x] `JdbcMemberAuthRepository`를 통해 회원 인증 정보를 DB에 저장
 - [x] `schema.sql`, `data.sql`을 통해 `member`, `member_auth` 테이블 구조 정의 및 초기 데이터 구성
 
 ### 📌 4. 보안 설정 및 테스트 환경 대응
+
 - [x] 테스트 환경에서는 인증 우회를 위한 별도 Security 설정 분리 (`@Profile("test")`)
 - [x] 테스트 시 인증 필터를 적용하지 않고도 전체 테스트 실행 가능
 - [x] H2 콘솔 접속 시 iframe 허용, CSRF 비활성화 등 개발 편의 설정 적용

@@ -9,7 +9,7 @@ import javax.crypto.SecretKey;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JwtProvider {
+public class JwtUtils {
 
   private final JwtProperties jwtProperties;
   private final SecretKey key;
@@ -17,11 +17,11 @@ public class JwtProvider {
   private final long REFRESH_TOKEN_VALIDITY;
   private final String ISSUER;
 
-  public JwtProvider(JwtProperties jwtProperties) {
+  public JwtUtils(JwtProperties jwtProperties) {
     this.jwtProperties = jwtProperties;
     this.key = Keys.hmacShaKeyFor(jwtProperties.secretKey().getBytes());
     this.ACCESS_TOKEN_VALIDITY = jwtProperties.accessTokenValidity();
-    this.REFRESH_TOKEN_VALIDITY= jwtProperties.refreshTokenValidity();
+    this.REFRESH_TOKEN_VALIDITY = jwtProperties.refreshTokenValidity();
     this.ISSUER = jwtProperties.issuer();
   }
 
@@ -70,11 +70,11 @@ public class JwtProvider {
 
   public String getEmail(String token) {
     return Jwts.parser()
-            .verifyWith(key)
-            .build()
-            .parseSignedClaims(token)
-            .getPayload()
-            .get("email",String.class);
+        .verifyWith(key)
+        .build()
+        .parseSignedClaims(token)
+        .getPayload()
+        .get("email", String.class);
   }
 
   public boolean validateToken(String token) {
@@ -87,6 +87,14 @@ public class JwtProvider {
     } catch (Exception e) {
       return false;
     }
+  }
+
+  public long getAccessTokenExpirationTime() {
+    return ACCESS_TOKEN_VALIDITY / 1000;
+  }
+
+  public long getRefreshTokenExpirationTime() {
+    return REFRESH_TOKEN_VALIDITY / 1000;
   }
 
 }

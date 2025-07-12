@@ -1,29 +1,23 @@
 package gift.product.validation;
 
-import gift.global.validation.NameBlacklist;
-import gift.global.validation.NameType;
 import gift.product.exception.InvalidProductNameException;
-import gift.product.exception.ProductErrorCode;
 import java.util.List;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ProductValidator {
 
+  private final InvalidProductWords invalidWords;
+
+  public ProductValidator() {
+    this.invalidWords = InvalidProductWords.getInvalidWords();
+  }
+
   public void validateProductName(String productName) {
-    List<String> blacklist = NameBlacklist.getBlacklist(NameType.PRODUCT);
-
-    boolean containsBlacklistedWord = blacklist.stream()
-        .anyMatch(productName::contains);
-
-    if (containsBlacklistedWord) {
-      List<String> foundWords = blacklist.stream()
-          .filter(productName::contains)
-          .toList();
-
+    if (invalidWords.contains(productName)) {
+      List<String> foundWords = invalidWords.findMatches(productName);
       throw new InvalidProductNameException(
-          "상품명에 다음 키워드를 포함할 수 없습니다: " + String.join(", ", foundWords),
-          ProductErrorCode.INVALID_PRODUCT_NAME
+          "상품명에 다음 키워드를 포함할 수 없습니다: " + String.join(", ", foundWords)
       );
     }
   }

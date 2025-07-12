@@ -29,7 +29,7 @@ public class JdbcMemberAuthRepository implements MemberAuthRepository {
 
   @Override
   public Long save(MemberAuth memberAuth) {
-    Objects.requireNonNull(memberAuth,"memberAuth는 null일 수 없습니다.");
+    Objects.requireNonNull(memberAuth, "memberAuth는 null일 수 없습니다.");
 
     String sql = "INSERT INTO member_auth (member_id, email, password, refresh_token) " +
         "VALUES (:memberId, :email, :password, :refreshToken)";
@@ -64,7 +64,7 @@ public class JdbcMemberAuthRepository implements MemberAuthRepository {
     Objects.requireNonNull(email, "Email은 null이 될 수 없습니다.");
     String sql = "SELECT * FROM member_auth WHERE email = :email";
     try {
-      Map<String, Object> params = Map.of("email",email);
+      Map<String, Object> params = Map.of("email", email);
       return Optional.of(jdbcTemplate.queryForObject(sql, params, memberAuthRowMapper()));
     } catch (EmptyResultDataAccessException e) {
       return Optional.empty();
@@ -83,9 +83,9 @@ public class JdbcMemberAuthRepository implements MemberAuthRepository {
 
     SqlParameterSource params = new MapSqlParameterSource()
         .addValue("memberId", memberId)
-        .addValue("email",updatedMemberAuth.email())
-        .addValue("password",updatedMemberAuth.password())
-        .addValue("refreshToken",updatedMemberAuth.refreshToken());
+        .addValue("email", updatedMemberAuth.email())
+        .addValue("password", updatedMemberAuth.password())
+        .addValue("refreshToken", updatedMemberAuth.refreshToken());
 
     int affected = jdbcTemplate.update(sql, params);
     if (affected == 0) {
@@ -104,7 +104,7 @@ public class JdbcMemberAuthRepository implements MemberAuthRepository {
 
     SqlParameterSource params = new MapSqlParameterSource()
         .addValue("memberId", memberId)
-        .addValue("refreshToken",newRefreshToken);
+        .addValue("refreshToken", newRefreshToken);
 
     int affected = jdbcTemplate.update(sql, params);
     if (affected == 0) {

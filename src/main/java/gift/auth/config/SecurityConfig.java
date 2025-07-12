@@ -22,8 +22,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@Profile({"default","dev"})
+@Profile({"default", "dev"})
 public class SecurityConfig {
+
   private final JwtValidationFilter jwtValidationFilter;
   private final AuthenticationEntryPoint authenticationEntryPoint;
   private final AccessDeniedHandler accessDeniedHandler;
@@ -43,12 +44,15 @@ public class SecurityConfig {
             .defaultsDisabled()
             .frameOptions(FrameOptionsConfig::sameOrigin)
         )
-        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .sessionManagement(
+            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/api/auth/register", "/api/auth/login", "/api/auth/refresh","/h2-console/**").permitAll()
-            .requestMatchers(HttpMethod.POST,"/api/products/**").authenticated()
-            .requestMatchers(HttpMethod.PUT,"/api/products/**").authenticated()
-            .requestMatchers(HttpMethod.DELETE,"/api/products/**").authenticated()
+            .requestMatchers("/api/auth/register", "/api/auth/login", "/api/auth/refresh",
+                "/h2-console/**").permitAll()
+            .requestMatchers(HttpMethod.POST, "/api/products/**").authenticated()
+            .requestMatchers(HttpMethod.PUT, "/api/products/**").authenticated()
+            .requestMatchers(HttpMethod.DELETE, "/api/products/**").authenticated()
+            .requestMatchers("/api/wishItems/**").authenticated()
             .anyRequest().permitAll()
         )
         .addFilterBefore(jwtValidationFilter, UsernamePasswordAuthenticationFilter.class)

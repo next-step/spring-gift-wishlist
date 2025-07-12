@@ -4,9 +4,9 @@ public class ProductNotFoundException extends RuntimeException {
 
   private final ProductErrorCode errorCode;
 
-  public ProductNotFoundException(ProductErrorCode errorCode) {
-    super(errorCode.getErrorMessage());
-    this.errorCode = errorCode;
+  public ProductNotFoundException() {
+    super(ProductErrorCode.PRODUCT_NOT_FOUND.getErrorMessage());
+    this.errorCode = ProductErrorCode.PRODUCT_NOT_FOUND;
   }
 
   public ProductErrorCode getErrorCode() {
