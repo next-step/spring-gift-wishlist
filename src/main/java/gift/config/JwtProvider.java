@@ -19,7 +19,7 @@ public class JwtProvider {
 
     public String generateToken(Member member) {
         Date now = new Date();
-        Date expiration = new Date(now.getTime() + 3600_000);
+        Date expiration = new Date(now.getTime() + 3_600_000);
 
         return Jwts.builder()
                 .subject(member.getId().toString())
