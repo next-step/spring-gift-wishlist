@@ -33,113 +33,61 @@ public class AdminProductController {
 
     private final ProductService productService;
 
-    private final TokenService tokenService;
-
     private final MemberService memberService;
 
     private final String BOARD_PAGE = "/admin/boards";
 
-    public AdminProductController(ProductService productService, TokenService tokenService,
+    public AdminProductController(ProductService productService,
             MemberService memberService) {
         this.productService = productService;
-        this.tokenService = tokenService;
         this.memberService = memberService;
     }
 
-    @GetMapping("/login")
-    public String showLoginPage() {
-        return "loginForm";
-    }
-
-    @PostMapping("/login")
-    public String login(
-            @Valid @ModelAttribute CreateMemberRequestDto requestDto,
-            HttpServletResponse response) {
-        String token = memberService.loginMember(requestDto).token();
-        Cookie cookie = new Cookie("token", token);
-        cookie.setPath("/");
-
-        response.addCookie(cookie);
-        return "redirect:"+BOARD_PAGE;
-    }
-
     @GetMapping
-    public String showAdminPage(
-            Model model,
-            @CookieValue(defaultValue = "") String token) {
-        Optional<Member> optionalMember = tokenService.isValidateToken(token);
-        if (optionalMember.isEmpty()) {
-            return "redirect:"+BOARD_PAGE+"/login";
-        }
+    public String showAdminPage(Model model) {
         List<ProductResponseDto> products = productService.findAllProducts();
         model.addAttribute("products", products);
         return "dashboard";
     }
 
     @GetMapping("/add")
-    public String showCreatePage(
-            Model model,
-            @CookieValue(defaultValue = "") String token) {
-        Optional<Member> optionalMember = tokenService.isValidateToken(token);
-        if (optionalMember.isEmpty()) {
-            return "redirect:"+BOARD_PAGE+"/login";
-        }
+    public String showCreatePage(Model model) {
         return "createForm";
     }
 
     @GetMapping("/update/{id}")
     public String showUpdatePage(
             @PathVariable Long id,
-            Model model,
-            @CookieValue(defaultValue = "") String token) {
-        Optional<Member> optionalMember = tokenService.isValidateToken(token);
-        if (optionalMember.isEmpty()) {
-            return "redirect:"+BOARD_PAGE+"/login";
-        }
+            Model model) {
         model.addAttribute("id", id);
         return "updateForm";
     }
 
     @PostMapping
     public String createProduct(
-            @Valid @ModelAttribute CreateProductRequestDto requestDto,
-            @CookieValue(defaultValue = "") String token) {
-        Optional<Member> optionalMember = tokenService.isValidateToken(token);
-        if (optionalMember.isEmpty()) {
-            return "redirect:"+BOARD_PAGE+"/login";
-        }
-        if (requestDto.name().contains("카카오") && !optionalMember.get().isAdmin()) {
+            @Valid @ModelAttribute CreateProductRequestDto requestDto) {
+        if (requestDto.name().contains("카카오")) {
             throw new CustomException(ErrorCode.NamingForbidden);
         }
         productService.createProduct(requestDto);
-        return "redirect:/admin/boards";
+        return "redirect:" + BOARD_PAGE;
     }
 
     @PutMapping("/{id}")
     public String updateProduct(@PathVariable Long id,
-            @Valid @ModelAttribute CreateProductRequestDto requestDto,
-            @CookieValue(defaultValue = "") String token) {
-        Optional<Member> optionalMember = tokenService.isValidateToken(token);
-        if (optionalMember.isEmpty()) {
-            return "redirect:"+BOARD_PAGE+"/login";
-        }
-        if (requestDto.name().contains("카카오") && !optionalMember.get().isAdmin()) {
+            @Valid @ModelAttribute CreateProductRequestDto requestDto) {
+        if (requestDto.name().contains("카카오")) {
             throw new CustomException(ErrorCode.NamingForbidden);
         }
         productService.updateProductById(id, requestDto);
-        return "redirect:"+BOARD_PAGE;
+        return "redirect:" + BOARD_PAGE;
     }
 
     @DeleteMapping("/{id}")
     public String deleteProductById(
-            @PathVariable Long id,
-            @CookieValue(defaultValue = "") String token) {
-        Optional<Member> optionalMember = tokenService.isValidateToken(token);
-        if (optionalMember.isEmpty()) {
-            return "redirect:"+BOARD_PAGE+"/login";
-        }
+            @PathVariable Long id) {
         productService.deleteProductById(id);
-        return "redirect:"+BOARD_PAGE;
+        return "redirect:" + BOARD_PAGE;
     }
 
 }
