@@ -3,8 +3,8 @@ package gift.controller;
 import gift.dto.WishListCreateRequestDto;
 import gift.dto.WishListResponseDto;
 import gift.dto.WishListUpdateRequestDto;
+import gift.security.LoginMemberId;
 import gift.service.WishListService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
@@ -28,54 +28,38 @@ public class WishListController {
     this.wishListService = wishListService;
   }
 
-  private Long getMemberIdFromRequest(HttpServletRequest request) {
-    Object memberIdAttr = request.getAttribute("memberId");
-    if (memberIdAttr == null) {
-      throw new IllegalStateException("Member ID not found in request attributes");
-    }
-    return (Long) memberIdAttr;
-  }
-
   @PostMapping
   public ResponseEntity<WishListResponseDto> addToWishList(
-      HttpServletRequest request,
+      @LoginMemberId Long memberId,
       @RequestBody @Valid WishListCreateRequestDto wishListCreateRequestDto) {
-
-    Long memberId = getMemberIdFromRequest(request);
     WishListResponseDto response = wishListService.addToWishList(memberId, wishListCreateRequestDto);
     return ResponseEntity.ok(response);
   }
 
   @GetMapping
-  public ResponseEntity<List<WishListResponseDto>> getWishList(HttpServletRequest request) {
-    Long memberId = getMemberIdFromRequest(request);
+  public ResponseEntity<List<WishListResponseDto>> getWishList(@LoginMemberId Long memberId) {
     List<WishListResponseDto> responseList = wishListService.getWishList(memberId);
     return ResponseEntity.ok(responseList);
   }
 
   @PatchMapping
   public ResponseEntity<WishListResponseDto> updateQuantity(
-      HttpServletRequest request,
+      @LoginMemberId Long memberId,
       @RequestBody @Valid WishListUpdateRequestDto wishListUpdateRequestDto) {
-
-    Long memberId = getMemberIdFromRequest(request);
     WishListResponseDto response = wishListService.updateQuantity(memberId, wishListUpdateRequestDto);
     return ResponseEntity.ok(response);
   }
 
   @DeleteMapping
   public ResponseEntity<Void> removeFromWishList(
-      HttpServletRequest request,
+      @LoginMemberId Long memberId,
       @RequestParam("productId") Long productId) {
-
-    Long memberId = getMemberIdFromRequest(request);
     wishListService.removeFromWishList(memberId, productId);
     return ResponseEntity.noContent().build();
   }
 
   @DeleteMapping("/all")
-  public ResponseEntity<Void> clearWishList(HttpServletRequest request) {
-    Long memberId = getMemberIdFromRequest(request);
+  public ResponseEntity<Void> clearWishList(@LoginMemberId Long memberId) {
     wishListService.clearWishList(memberId);
     return ResponseEntity.noContent().build();
   }
