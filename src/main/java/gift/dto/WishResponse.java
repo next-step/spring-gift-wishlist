@@ -7,13 +7,13 @@ import java.time.LocalDateTime;
 public record WishResponse(
         Long wishId,
         Long productId,
-        LocalDateTime createdDate
+        LocalDateTime createdAt
 ) {
     public static WishResponse from(Wish wish) {
         return new WishResponse(
                 wish.getId(),
                 wish.getProductId(),
-                wish.getCreatedDate()
+                wish.getCreatedAt()
         );
     }
 }

@@ -1,6 +1,5 @@
 package gift.config;
 
-import gift.auth.JwtTokenProvider;
 import gift.resolver.LoginMemberArgumentResolver;
 import gift.service.MemberService;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +13,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     private final MemberService memberService;
 
-    public WebConfig(JwtTokenProvider jwtTokenProvider, MemberService memberService) {
+    public WebConfig(MemberService memberService) {
         this.memberService = memberService;
     }
 

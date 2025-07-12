@@ -14,7 +14,7 @@
     id : 각 찜 항목의 고유 식별자 (wishId), 삭제 시 사용
     memberId : 해당 찜 항목을 만든 사용자 ID
     productId : 찜한 상품의 ID
-    createdDate : 위시리스트에 해당 상품을 추가한 시점, 정렬 기준에 활용
+    createdAt : 위시리스트에 해당 상품을 추가한 시점, 정렬 기준에 활용
 
 ---
 
