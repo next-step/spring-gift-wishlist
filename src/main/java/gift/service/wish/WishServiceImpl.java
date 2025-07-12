@@ -72,7 +72,12 @@ public class WishServiceImpl implements WishService {
   }
 
   @Override
-  public void deleteByMemberId(Long memberId) {
-    wishRepository.deleteByMemberId(memberId);
+  public void deleteAllWish(Long memberId) {
+    wishRepository.deleteAllWish(memberId);
+  }
+
+  @Override
+  public void deleteByProductId(Long memberId, Long productId) {
+    wishRepository.deleteByProductId(memberId, productId);
   }
 }

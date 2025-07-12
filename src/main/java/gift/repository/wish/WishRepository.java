@@ -14,5 +14,7 @@ public interface WishRepository {
 
   int updateQuantity(Long memberId, Wish wish);
 
-  int deleteByMemberId(Long memberId);
+  int deleteAllWish(Long memberId);
+
+  int deleteByProductId(Long memberId, Long productId);
 }

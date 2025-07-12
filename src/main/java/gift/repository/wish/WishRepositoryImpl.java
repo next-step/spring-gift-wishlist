@@ -80,9 +80,19 @@ public class WishRepositoryImpl implements WishRepository {
   }
 
   @Override
-  public int deleteByMemberId(Long memberId) {
+  public int deleteAllWish(Long memberId) {
     String sql = "delete from wishes where member_id=?";
     int deleteCount = jdbcTemplate.update(sql, memberId);
+    if (deleteCount < 1) {
+      throw new WishListNotFoundException("삭제할 위시리스트가 없습니다");
+    }
+    return deleteCount;
+  }
+
+  @Override
+  public int deleteByProductId(Long memberId, Long productId) {
+    String sql = "delete from wishes where member_id=? and product_id=?";
+    int deleteCount = jdbcTemplate.update(sql, memberId, productId);
     if (deleteCount < 1) {
       throw new WishListNotFoundException("삭제할 위시리스트가 없습니다");
     }

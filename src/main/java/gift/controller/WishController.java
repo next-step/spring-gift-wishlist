@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,7 +43,14 @@ public class WishController {
 
   @DeleteMapping
   public ResponseEntity<WishResponseDto> deleteWishByMemberId(@LoginMember Member member) {
-    service.deleteByMemberId(member.getId());
+    service.deleteAllWish(member.getId());
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+  }
+
+  @DeleteMapping("/{productId}")
+  public ResponseEntity<WishResponseDto> deleteWishByProductId(@LoginMember Member member,
+      @PathVariable("productId") Long productId) {
+    service.deleteByProductId(member.getId(), productId);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 

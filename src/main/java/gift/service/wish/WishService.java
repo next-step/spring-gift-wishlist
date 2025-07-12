@@ -12,5 +12,7 @@ public interface WishService {
 
   WishResponseDto updateQuantity(Long memberId, WishRequestDto requestDto);
 
-  void deleteByMemberId(Long memberId);
+  void deleteAllWish(Long memberId);
+
+  void deleteByProductId(Long memberId, Long productId);
 }
