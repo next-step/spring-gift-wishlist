@@ -5,7 +5,7 @@ import java.util.Optional;
 
 public interface WishRepository {
 
-    List<Wish> findAllWishes(Long memberId);
+    List<Wish> findWishList(Long memberId);
     Optional<Wish> findWishById(Long wishId);
     Wish saveWish(Long memberId, Long productId);
     int deleteWish(Long wishId);

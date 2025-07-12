@@ -26,7 +26,7 @@ public class WishRepositoryImpl implements WishRepository{
     }
 
     @Override
-    public List<Wish> findAllWishes(Long memberId) {
+    public List<Wish> findWishList(Long memberId) {
 
         String sql = "select * from wishes where member_id = ?";
 
