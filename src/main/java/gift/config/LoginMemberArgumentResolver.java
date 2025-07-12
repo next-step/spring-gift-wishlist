@@ -16,7 +16,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
 
   private final String secretKey = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";
-
+  private final String AuthorizationCategory = "Bearer";
   private final MemberService service;
 
   public LoginMemberArgumentResolver(MemberService service) {
@@ -34,11 +34,11 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
 
     String authHeader = webRequest.getHeader("Authorization");
 
-    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+    if (authHeader == null || !authHeader.startsWith(AuthorizationCategory + " ")) {
       throw new IllegalStateException("no authorization ");
     }
 
-    String token = authHeader.substring(7);
+    String token = authHeader.substring(AuthorizationCategory.length() + 1);
 
     Claims claims = Jwts.parser()
         .setSigningKey(secretKey.getBytes())
