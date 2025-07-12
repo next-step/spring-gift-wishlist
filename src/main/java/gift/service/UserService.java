@@ -37,7 +37,7 @@ public class UserService {
 
     public TokenResponse login(LoginRequest request) {
         User user = getUserByEmail(request.email());
-        if (user.isInvalidPassword(request.password())) {
+        if (!request.password().equals(user.getPassword())) {
             throw new InvalidUserException();
         }
         return TokenResponse.from(jwtTokenProvider.createToken(user));
@@ -49,7 +49,7 @@ public class UserService {
 
     public void changePassword(ChangePasswordRequest request) {
         User user = getUserByEmail(request.email());
-        if (user.isInvalidPassword(request.oldPassword())) {
+        if (!request.oldPassword().equals(user.getPassword())) {
             throw new InvalidUserException();
         }
         user.changePassword(request.newPassword());

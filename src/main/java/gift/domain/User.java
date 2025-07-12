@@ -21,10 +21,6 @@ public class User {
         this.role = role;
     }
 
-    public boolean isInvalidPassword(String password) {
-        return !this.password.equals(password);
-    }
-
     public void changePassword(String password) {
         this.password = password;
     }

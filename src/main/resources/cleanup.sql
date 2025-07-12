@@ -1,2 +1,3 @@
-truncate table product;
-truncate table users;
+delete from wishlist;
+delete from users;
+delete from product;

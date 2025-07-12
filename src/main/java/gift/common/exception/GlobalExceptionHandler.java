@@ -42,4 +42,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleInvalidUserException(InvalidUserException e) {
         return new ResponseEntity<>(ErrorResponse.of(e.getMessage()), HttpStatus.FORBIDDEN);
     }
+
+    @ExceptionHandler(WishlistNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleWishlistNotFoundException(WishlistNotFoundException e) {
+        return new ResponseEntity<>(ErrorResponse.of(e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(WishlistAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleWishlistAlreadyExistsException(WishlistAlreadyExistsException e) {
+        return new ResponseEntity<>(ErrorResponse.of(e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
 }
