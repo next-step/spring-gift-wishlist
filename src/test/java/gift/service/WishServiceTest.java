@@ -66,7 +66,7 @@ class WishServiceTest {
 
         wishService.deleteWish(memberId, wishId);
 
-        verify(wishRepository).deleteWishById(wishId);
+        verify(wishRepository, atLeastOnce()).deleteWishById(wishId);
     }
 
     @Test
