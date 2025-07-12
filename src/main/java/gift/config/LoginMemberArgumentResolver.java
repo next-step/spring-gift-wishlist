@@ -39,8 +39,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
         }
 
         Long memberId = Long.parseLong(memberIdAttr);
-        MemberResponseDto dto = memberService.find(memberId);
 
-        return new Member(dto.id(), dto.name(), dto.email(), dto.password());
+        return new Member(memberId, null, null, null, null);
     }
 }
