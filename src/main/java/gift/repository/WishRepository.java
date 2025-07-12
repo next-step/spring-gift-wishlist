@@ -4,6 +4,8 @@ package gift.repository;
 import gift.dto.response.WishResponseDto;
 import gift.entity.Wish;
 import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,7 +20,8 @@ public class WishRepository {
         this.jdbcClient = jdbcClient;
     }
 
-    public void save(Long memberId, Long productId, int quantity) {
+    public Long save(Long memberId, Long productId, int quantity) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
         String sql = """
             INSERT INTO Wish (member_id, product_id, quantity)
             VALUES (:memberId, :productId, :quantity)
@@ -28,7 +31,14 @@ public class WishRepository {
                 .param("memberId", memberId)
                 .param("productId", productId)
                 .param("quantity", quantity)
-                .update();
+                .update(keyHolder);
+
+        Number key = keyHolder.getKey();
+        if (key != null) {
+            return key.longValue();
+        } else {
+            throw new IllegalStateException("Wish 저장 후 ID를 가져올 수 없습니다.");
+        }
     }
 
     public List<WishResponseDto> findAllByMemberIdWithProduct(Long memberId) {

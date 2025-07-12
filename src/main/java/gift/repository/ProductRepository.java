@@ -3,6 +3,8 @@ package gift.repository;
 import gift.entity.Product;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
@@ -16,14 +18,20 @@ public class ProductRepository {
         this.jdbcClient = jdbcClient;
     }
     public Product save(Product product) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
         var sql ="INSERT INTO product(name,price,imageUrl) Values (:name, :price, :imageUrl)";
         jdbcClient.sql(sql)
                 .param("name", product.getName())
                 .param("price", product.getPrice())
                 .param("imageUrl", product.getImageUrl())
-                .update();
+                .update(keyHolder);
 
-        return product;
+        Number key = keyHolder.getKey();
+        if (key != null) {
+            return new Product(key.longValue(), product.getName(), product.getPrice(), product.getImageUrl());
+        } else {
+            throw new RuntimeException("Failed to retrieve generated ID for Product");
+        }
     }
 
     public List<Product> findAll() {

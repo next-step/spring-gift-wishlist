@@ -7,10 +7,8 @@ import gift.dto.response.WishResponseDto;
 import gift.entity.Member;
 import gift.service.WishService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.yaml.snakeyaml.events.Event;
 
 import java.util.List;
 
