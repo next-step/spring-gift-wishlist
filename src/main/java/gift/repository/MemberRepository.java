@@ -49,6 +49,12 @@ public class MemberRepository {
         }
     }
 
+    // DB 초기화
+    public void deleteAll() {
+        String sql = "DELETE FROM MEMBER";
+        jdbcTemplate.update(sql);
+    }
+
     private RowMapper<Member> memberRowMapper() {
         return ((rs, rowNum) -> {
             Long id = rs.getLong("id");
