@@ -25,13 +25,14 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
 
         String token = authHeader.substring(7);
+
         if (!jwtUtil.validateToken(token)) {
             throw new InvalidTokenException("유효하지 않은 토큰입니다. (검증 실패)");
         }
 
-        // 토큰이 유효하면, 사용자 정보를 request에 담아서 컨트롤러로 전달
-        String email = jwtUtil.getEmailFromToken(token);
-        request.setAttribute("userEmail", email);
-        return true; // 요청 계속 진행
+        Long memberId = jwtUtil.getUserIdFromToken(token);
+        request.setAttribute("memberId", memberId);
+
+        return true;
     }
 }

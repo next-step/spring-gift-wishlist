@@ -1,8 +1,8 @@
 package gift.resolver;
 
+import gift.entity.Member;
 import gift.exception.InvalidTokenException;
 import gift.repository.MemberRepository;
-import gift.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -14,36 +14,30 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @Component
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private final JwtUtil jwtUtil;
     private final MemberRepository memberRepository;
 
-    public LoginMemberArgumentResolver(JwtUtil jwtUtil, MemberRepository memberRepository) {
-        this.jwtUtil = jwtUtil;
+    public LoginMemberArgumentResolver(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(LoginMember.class);
+        boolean hasLoginMemberAnnotation = parameter.hasParameterAnnotation(LoginMember.class);
+        boolean isMemberType = Member.class.isAssignableFrom(parameter.getParameterType());
+        return hasLoginMemberAnnotation && isMemberType;
     }
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
-        String authHeader = request.getHeader("Authorization");
+        Long memberId = (Long) request.getAttribute("memberId");
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            throw new InvalidTokenException("유효하지 않은 토큰입니다. (헤더 없음)");
+        if (memberId == null) {
+            throw new InvalidTokenException("인증 정보가 없습니다. (Interceptor 동작 확인 필요)");
         }
 
-        String token = authHeader.substring(7);
-        if (!jwtUtil.validateToken(token)) {
-            throw new InvalidTokenException("유효하지 않은 토큰입니다. (검증 실패)");
-        }
-
-        String email = jwtUtil.getEmailFromToken(token);
-        return memberRepository.findByEmail(email)
-                .orElseThrow(() -> new InvalidTokenException("토큰에 해당하는 사용자를 찾을 수 없습니다."));
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new InvalidTokenException("인증된 사용자를 DB에서 찾을 수 없습니다."));
     }
 }

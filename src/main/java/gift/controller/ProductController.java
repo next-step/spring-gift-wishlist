@@ -3,8 +3,12 @@ package gift.controller;
 import gift.dto.ErrorResponse;
 import gift.dto.ProductRequest;
 import gift.dto.ProductResponse;
+import gift.entity.Member;
+import gift.resolver.LoginMember;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -18,17 +22,18 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/products")
 public class ProductController {
 
+    private static final Logger log = LoggerFactory.getLogger(ProductController.class);
     private final ProductService productService;
 
     public ProductController(ProductService productService) {
         this.productService = productService;
     }
-    // 상품 추가 API
+
     @PostMapping
-    public ResponseEntity<?> addProduct(@RequestAttribute("userEmail") String userEmail,
+    public ResponseEntity<?> addProduct(@LoginMember Member member,
                                         @Valid @RequestBody ProductRequest request,
                                         BindingResult bindingResult) {
-        System.out.println("상품 추가 요청 사용자: " + userEmail);
+        log.info("상품 추가 요청 - 사용자: {}", member.getEmail());
 
         if (bindingResult.hasErrors()) {
             String errorMsg = bindingResult.getFieldErrors().stream()
@@ -40,30 +45,26 @@ public class ProductController {
         return ResponseEntity.created(URI.create("/api/products/" + response.id())).body(response);
     }
 
-    // 전체 상품 조회 API
     @GetMapping
-    public ResponseEntity<List<ProductResponse>> findAllProducts(@RequestAttribute("userEmail") String userEmail) {
-        System.out.println("전체 상품 조회 사용자: " + userEmail);
+    public ResponseEntity<List<ProductResponse>> findAllProducts(@LoginMember Member member) {
+        log.info("전체 상품 조회 요청 - 사용자: {}", member.getEmail());
         List<ProductResponse> productResponses = productService.findAllProducts();
         return ResponseEntity.ok(productResponses);
     }
 
-    // 특정 상품 조회 API
     @GetMapping("/{id}")
-    public ResponseEntity<ProductResponse> findProduct(@RequestAttribute("userEmail") String userEmail,
-                                                       @PathVariable Long id) {
-        System.out.println("특정 상품 조회 사용자: " + userEmail);
+    public ResponseEntity<ProductResponse> findProduct(@LoginMember Member member, @PathVariable Long id) {
+        log.info("특정 상품 조회 요청 - 사용자: {}, 상품 ID: {}", member.getEmail(), id);
         ProductResponse productResponse = productService.findProductById(id);
         return ResponseEntity.ok(productResponse);
     }
 
-    // 상품 수정 API
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateProduct(@RequestAttribute("userEmail") String userEmail,
+    public ResponseEntity<?> updateProduct(@LoginMember Member member,
                                            @PathVariable Long id,
                                            @Valid @RequestBody ProductRequest request,
                                            BindingResult bindingResult) {
-        System.out.println("상품 수정 요청 사용자: " + userEmail);
+        log.info("상품 수정 요청 - 사용자: {}, 상품 ID: {}", member.getEmail(), id);
 
         if (bindingResult.hasErrors()) {
             String errorMsg = bindingResult.getFieldErrors().stream()
@@ -75,11 +76,9 @@ public class ProductController {
         return ResponseEntity.ok(updatedProduct);
     }
 
-    // 상품 삭제 API
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@RequestAttribute("userEmail") String userEmail,
-                                              @PathVariable Long id) {
-        System.out.println("상품 삭제 요청 사용자: " + userEmail);
+    public ResponseEntity<Void> deleteProduct(@LoginMember Member member, @PathVariable Long id) {
+        log.info("상품 삭제 요청 - 사용자: {}, 상품 ID: {}", member.getEmail(), id);
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
     }

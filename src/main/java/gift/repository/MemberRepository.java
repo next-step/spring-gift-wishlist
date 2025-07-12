@@ -25,7 +25,8 @@ public class MemberRepository {
     private final RowMapper<Member> memberRowMapper = (rs, rowNum) -> new Member(
             rs.getLong("id"),
             rs.getString("email"),
-            rs.getString("password")
+            rs.getString("password"),
+            rs.getString("role")
     );
 
     public Optional<Member> findByEmail(String email) {

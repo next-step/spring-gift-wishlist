@@ -35,10 +35,10 @@ public class MemberService {
                 });
 
         String encodedPassword = BCrypt.hashpw(request.password(), BCrypt.gensalt());
-        Member member = new Member(request.email(), encodedPassword);
-
+        Member member = new Member(request.email(), encodedPassword, "USER");
         memberRepository.save(member);
-        String token = jwtUtil.generateToken(member.getEmail());
+
+        String token = jwtUtil.generateToken(member);
         return new LoginResponse(token);
     }
 
@@ -50,7 +50,7 @@ public class MemberService {
             throw new LoginFailedException("이메일 또는 비밀번호가 유효하지 않습니다.");
         }
 
-        String token = jwtUtil.generateToken(member.getEmail());
+        String token = jwtUtil.generateToken(member);
         return new LoginResponse(token);
     }
 
@@ -67,7 +67,7 @@ public class MemberService {
 
         String password = request.password().isBlank() ? member.getPassword() : BCrypt.hashpw(request.password(), BCrypt.gensalt());
 
-        Member updatedMember = new Member(id, request.email(), password);
+        Member updatedMember = new Member(id, request.email(), password, member.getRole());
         memberRepository.update(updatedMember);
     }
 
