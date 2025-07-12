@@ -93,10 +93,6 @@ public class WishListServiceImpl implements WishListService{
             }
         }
 
-        if (result.isEmpty()) {
-            throw new ItemNotFoundException();
-        }
-
         return result;
     }
 
