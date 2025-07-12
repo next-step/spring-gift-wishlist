@@ -3,6 +3,7 @@ package gift.service;
 import gift.domain.Wish;
 import gift.exception.AlreadyWishedException;
 import gift.exception.UnauthorizedWishAccessException;
+import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,9 +15,11 @@ import java.util.List;
 public class WishService {
 
     private final WishRepository wishRepository;
+    private final ProductRepository productRepository;
 
-    public WishService(WishRepository wishRepository) {
+    public WishService(WishRepository wishRepository, ProductRepository productRepository) {
         this.wishRepository = wishRepository;
+        this.productRepository = productRepository;
     }
 
     /**
@@ -24,9 +27,15 @@ public class WishService {
      * 이미 찜한 경우 예외 발생
      */
     public Wish addWish(Long memberId, Long productId) {
+
+        if (!productRepository.existsById(productId)) {
+            throw new IllegalArgumentException("존재하지 않는 상품입니다.");
+        }
+
         if (wishRepository.existsInWishlist(memberId, productId)) {
             throw new AlreadyWishedException();
         }
+
         return wishRepository.addWish(memberId, productId);
     }
 
