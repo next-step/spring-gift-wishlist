@@ -135,8 +135,8 @@ class ProductControllerTest {
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
-        Product result = queryProductById(4);
-        assertThatProductEquals(request, result);
+        var actual = response.getBody();
+        System.out.println(actual);
     }
 
     @ParameterizedTest

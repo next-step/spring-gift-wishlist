@@ -36,10 +36,12 @@ public class ProductServiceImpl implements ProductService {
             productCreateRequestDto.price(), productCreateRequestDto.imageUrl(),
             mdConfirmed);
 
-        productRepository.saveProduct(product);
+        Long productId = productRepository.saveProduct(product);
 
-        return new ProductCreateResponseDto(product.getProductId(), product.getName(),
-            product.getPrice(), product.getImageUrl(), product.getMdConfirmed());
+        Product savedProduct = productRepository.findProductById(productId);
+
+        return new ProductCreateResponseDto(savedProduct.getProductId(), savedProduct.getName(),
+            savedProduct.getPrice(), savedProduct.getImageUrl(), savedProduct.getMdConfirmed());
     }
 
     @Override

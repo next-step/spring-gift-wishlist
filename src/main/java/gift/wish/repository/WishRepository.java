@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface WishRepository {
 
-    void addWish(Wish wish);
+    Long addWish(Wish wish);
 
     List<Wish> getWishes(Long memberId, Page page);
 

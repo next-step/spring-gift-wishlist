@@ -33,11 +33,13 @@ public class WishServiceImpl implements WishService {
         }
 
         Wish wish = new Wish(memberId, wishCreateRequestDto.productId());
-        wishRepository.addWish(wish);
+        Long wishId = wishRepository.addWish(wish);
 
-        // TODO: wishes 테이블에서 조회해서 반환하도록 수정 필요 -> keyHolder? 라는 게 있던데
-        return new WishCreateResponseDto(wish.getWishId(), wish.getMemberId(), wish.getProductId(),
-            wish.getCreateDate());
+        Wish saveWish = wishRepository.findByWishId(wishId);
+
+        return new WishCreateResponseDto(saveWish.getWishId(), saveWish.getMemberId(),
+            saveWish.getProductId(),
+            saveWish.getCreateDate());
     }
 
     // TODO: 상품 이름도 같이 반환할 수 있는 방법이 뭐가 있을까?

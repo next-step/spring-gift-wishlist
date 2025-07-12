@@ -136,6 +136,9 @@ class WishControllerTest {
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        var actual = response.getBody();
+        System.out.println(actual);
     }
 
     @ParameterizedTest

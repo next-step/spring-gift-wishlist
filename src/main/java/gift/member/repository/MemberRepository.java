@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface MemberRepository {
 
-    void saveMember(Member member);
+    Long saveMember(Member member);
 
     Member findMemberByEmail(String email);
 

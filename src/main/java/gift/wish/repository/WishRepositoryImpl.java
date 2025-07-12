@@ -3,9 +3,14 @@ package gift.wish.repository;
 import gift.exception.wish.WishNotFoundException;
 import gift.wish.entity.Page;
 import gift.wish.entity.Wish;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
+import java.util.Map;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -18,9 +23,22 @@ public class WishRepositoryImpl implements WishRepository {
     }
 
     @Override
-    public void addWish(Wish wish) {
+    public Long addWish(Wish wish) {
         String sql = "INSERT INTO wishes(memberId, productId) VALUES(?,?)";
-        jdbcTemplate.update(sql, wish.getMemberId(), wish.getProductId());
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql,
+                Statement.RETURN_GENERATED_KEYS);
+            ps.setLong(1, wish.getMemberId());
+            ps.setLong(2, wish.getProductId());
+            return ps;
+        }, keyHolder);
+
+        Map<String, Object> keys = keyHolder.getKeys();
+        Number wishId = (Number) keys.get("WISHID");
+
+        return (wishId != null) ? wishId.longValue() : null;
     }
 
     @Override

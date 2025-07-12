@@ -32,10 +32,9 @@ public class MemberServiceImpl implements MemberService {
 
         Member member = new Member(registerRequestDto.email(), registerRequestDto.password(),
             registerRequestDto.name(), registerRequestDto.role());
-        memberRepository.saveMember(member);
+        Long memberId = memberRepository.saveMember(member);
 
-        Member savedMember = memberRepository.findMemberByEmail(registerRequestDto.email());
-        System.out.println(savedMember);
+        Member savedMember = memberRepository.findMemberById(memberId);
 
         String token = new JwtTokenProvider().generateToken(savedMember.getMemberId(),
             savedMember.getName(),
