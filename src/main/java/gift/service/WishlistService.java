@@ -1,9 +1,11 @@
 package gift.service;
 
 import gift.dto.ProductResponseDto;
+import gift.entity.Product;
 import gift.entity.Wishlist;
 import gift.repository.WishlistRepository;
 import gift.service.ProductService;
+import java.util.Map;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,22 +26,34 @@ public class WishlistService {
     }
 
     public List<ProductResponseDto> getWishlist(Long memberId) {
+
         List<Wishlist> list = wishlistRepository.findByMemberId(memberId);
+        List<Long> productIds = list.stream()
+                .map(Wishlist::getProductId)
+                .toList();
+
+
+        List<Product> products = productService.findAllById(productIds);
+
+
+        Map<Long, Product> productMap = products.stream()
+                .collect(Collectors.toMap(Product::getId, p -> p));
+
         return list.stream()
-                .map(w -> productService.findProduct(w.getProductId()))
-                .collect(Collectors.toList());
+                .map(w -> {
+                    Product p = productMap.get(w.getProductId());
+                    return new ProductResponseDto(
+                            p.getId(),
+                            p.getName(),
+                            p.getPrice(),
+                            p.getImageUrl()
+                    );
+                })
+                .toList();
     }
 
     public void addToWishlist(Long memberId, Long productId) {
-        Optional<Wishlist> existing = wishlistRepository.findByMemberIdAndProductId(memberId, productId);
-        if (existing.isPresent()) {
-            Wishlist wishlist = existing.get();
-            wishlist.setQuantity(wishlist.getQuantity() + 1);
-            wishlistRepository.update(wishlist);
-        } else {
-            Wishlist wishlist = new Wishlist(memberId, productId);
-            wishlistRepository.save(wishlist);
-        }
+        wishlistRepository.upsertWishlist(memberId, productId);
     }
 
 
