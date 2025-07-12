@@ -1,12 +1,12 @@
 package gift.repository;
 
-import gift.entity.Wish;
 import gift.dto.WishResponseDto;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.List;
 
 @Repository
@@ -23,7 +23,7 @@ public class WishRepository {
     }
 
     public void save(Long memberId, Long productId) {
-        var params = new java.util.HashMap<String, Object>();
+        var params = new HashMap<String, Object>();
         params.put("member_id", memberId);
         params.put("product_id", productId);
         jdbcInsert.execute(params);
