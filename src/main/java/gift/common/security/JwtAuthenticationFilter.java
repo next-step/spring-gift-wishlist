@@ -3,10 +3,15 @@ package gift.common.security;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpHeaders;
 
 import java.io.IOException;
 
 public class JwtAuthenticationFilter implements Filter {
+
+    public static final String ATTR_EMAIL = "email";
+    public static final String ATTR_ROLE = "role";
+    public static final String ATTR_MEMBER_ID = "memberId";
 
     private final JwtUtil jwtUtil;
 
@@ -29,7 +34,7 @@ public class JwtAuthenticationFilter implements Filter {
             return;
         }
 
-        String header = httpRequest.getHeader("Authorization");
+        String header = httpRequest.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
@@ -39,9 +44,9 @@ public class JwtAuthenticationFilter implements Filter {
                 String role = jwtUtil.getRole(token);
                 Long memberId =  jwtUtil.getMemberId(token);
 
-                httpRequest.setAttribute("email", email);
-                httpRequest.setAttribute("role", role);
-                httpRequest.setAttribute("memberId", memberId);
+                httpRequest.setAttribute(ATTR_EMAIL, email);
+                httpRequest.setAttribute(ATTR_ROLE, role);
+                httpRequest.setAttribute(ATTR_MEMBER_ID, memberId);
 
                 chain.doFilter(request, response);
                 return;
