@@ -59,9 +59,12 @@ public class WishServiceImpl implements WishService {
     Product product = productById.orElseThrow(
         () -> new ProductNotFoundException("위시 리스트에 넣으려는 상품이 없습니다."));
 
-    Optional<Wish> OptionalWish = wishRepository.updateQuantity(memberId,
-        new Wish(memberId, requestDto.getProductId(),
-            requestDto.getQuantity()));
+    wishRepository.updateQuantity(memberId,
+        new Wish(memberId, requestDto.getProductId(), requestDto.getQuantity()));
+
+    Optional<Wish> OptionalWish = wishRepository.findByMemberIdAndProductId(memberId,
+        requestDto.getProductId());
+
     Wish wish = OptionalWish.orElseThrow(
         () -> new WishListNotFoundException("업데이트 하려는 위시 리스트가 없습니다."));
     return new WishResponseDto(wish.getId(), wish.getProductId(),

@@ -8,9 +8,11 @@ public interface WishRepository {
 
   List<Wish> findByMemberId(Long memberId);
 
+  Optional<Wish> findByMemberIdAndProductId(Long memberId, Long productId);
+
   Wish createWish(Wish wish);
 
-  Optional<Wish> updateQuantity(Long memberId, Wish wish);
+  int updateQuantity(Long memberId, Wish wish);
 
   int deleteByMemberId(Long memberId);
 }
