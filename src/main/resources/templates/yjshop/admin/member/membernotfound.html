@@ -1,19 +1,6 @@
 <html layout:decorate="~{yjshop/admin/layout}">
 <div layout:fragment="content">
 
-  <nav>
-    <div>
-      <ul>
-        <li><a th:href="@{/view/admin/members}">전체 회원 조회</a></li>
-        <li><a th:href="@{/view/admin/members/add}">회원 등록 하기</a></li>
-        <form th:action="@{/view/admin/members/search}" method="get">
-          <input type="email" name="email" placeholder="회원 이메일 조회">
-          <input type="submit" value="회원 검색하기">
-        </form>
-      </ul>
-    </div>
-  </nav>
-
   <p th:text="${errorMsg}"></p>
 </div>
 </html>

@@ -38,7 +38,7 @@ public class LoginViewController {
     @GetMapping("/registerform")
     public String registerForm(Model model){
         model.addAttribute("memberRequestDto", new MemberRequestDto(null, null));
-        return "/yjshop/register";
+        return "/yjshop/user/register";
     }
 
     //회원가입 기능 -> 토큰을 반환 (쿠키에 저장)
@@ -56,7 +56,7 @@ public class LoginViewController {
 
         if(bindingResult.hasErrors()){
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return "/yjshop/register";
+            return "/yjshop/user/register";
         }
 
         Member member = memberService.register(memberRequestDto);
@@ -71,7 +71,7 @@ public class LoginViewController {
     @GetMapping("/loginform")
     public String loginForm(Model model){
         model.addAttribute("memberRequestDto", new MemberRequestDto(null, null));
-        return "/yjshop/login";
+        return "/yjshop/user/login";
     }
 
     //로그인 기능 -> 토큰을 반환(쿠키에 저장)
@@ -89,7 +89,7 @@ public class LoginViewController {
         }
 
         if(bindingResult.hasErrors()){
-            return "/yjshop/login";
+            return "/yjshop/user/login";
         }
 
         //서버에 저장된 id-pw 쌍과 일치한다면 토큰을 발급

@@ -29,7 +29,7 @@ public class ProductViewController {
     public String getProducts(Model model) {
         List<Product> productList = productService.findAll();
         model.addAttribute("productList", productList);
-        return "/yjshop/home";
+        return "/yjshop/user/home";
     }
 
     //특정 상품을 조회(id)
@@ -43,7 +43,7 @@ public class ProductViewController {
             throw new MyException(ErrorCode.PRODUCT_NOT_FOUND);
         }
         model.addAttribute("product", product.get());
-        return "/yjshop/productinfo";
+        return "/yjshop/user/productinfo";
     }
 
     //특정 상품을 검색(상품명을 통한 검색)
@@ -59,7 +59,7 @@ public class ProductViewController {
 
         List<Product> product = productService.searchProduct(name);
         model.addAttribute("productList", product);
-        return "/yjshop/home";
+        return "/yjshop/user/home";
     }
 
     @ExceptionHandler(MyException.class)
