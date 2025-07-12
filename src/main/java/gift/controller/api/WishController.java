@@ -33,7 +33,7 @@ public class WishController {
         wishService.addWishItemForMember(member, wishRequestDto);
     }
 
-    @DeleteMapping("/{productId}")
+    @DeleteMapping("/product/{productId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteWishItem(@LoginMember Member member,
                                @PathVariable Long productId) {

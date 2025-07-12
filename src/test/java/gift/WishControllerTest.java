@@ -272,14 +272,14 @@ public class WishControllerTest {
         var sampleWishRequestDto = new WishRequestDto(saved.getId(), 2);
         wishService.addWishItemForMember(member, sampleWishRequestDto);
 
-        mockMvc.perform(delete("/api/wishes/{productId}", saved.getId())
+        mockMvc.perform(delete("/api/wishes/product/{productId}", saved.getId())
                         .header("Authorization", "Bearer dummy-token"))
                 .andExpect(status().isNoContent());
     }
 
     @Test @DisplayName("DELETE /api/wishes – 없는 상품 ⇒ Not Found")
     void delete_nonexistent_notFound() throws Exception {
-        mockMvc.perform(delete("/api/wishes/{productId}", 999L)
+        mockMvc.perform(delete("/api/wishes/product/{productId}", 999L)
                         .header("Authorization", "Bearer dummy-token"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error")
@@ -293,7 +293,7 @@ public class WishControllerTest {
         var sampleWishRequestDto = new WishRequestDto(saved.getId(), 2);
         wishService.addWishItemForMember(member, sampleWishRequestDto);
 
-        mockMvc.perform(delete("/api/wishes/{productId}", saved.getId()))
+        mockMvc.perform(delete("/api/wishes/product/{productId}", saved.getId()))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.error")
                         .value("Authorization 헤더가 필요합니다."));
@@ -306,7 +306,7 @@ public class WishControllerTest {
         var sampleWishRequestDto = new WishRequestDto(saved.getId(), 2);
         wishService.addWishItemForMember(member, sampleWishRequestDto);
 
-        mockMvc.perform(delete("/api/wishes/{productId}", saved.getId())
+        mockMvc.perform(delete("/api/wishes/product/{productId}", saved.getId())
                         .header("Authorization", "Basic abc123"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.error")
