@@ -10,6 +10,8 @@ public class User {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    public User() {}
+
     public User(String email, String password, String name) {
         this.email = email;
         this.password = password;
