@@ -4,6 +4,7 @@ import gift.common.security.JwtTokenProvider;
 import gift.member.dto.LoginRequestDto;
 import gift.member.dto.LoginResponseDto;
 import gift.member.dto.MemberCreateDto;
+import gift.member.dto.MemberCreateResponseDto;
 import gift.member.dto.MemberResponseDto;
 import gift.member.service.MemberService;
 import jakarta.validation.Valid;
@@ -27,12 +28,12 @@ public class MemberController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<LoginResponseDto> registerMember(
+    public ResponseEntity<MemberCreateResponseDto> registerMember(
         @RequestBody @Valid MemberCreateDto memberCreateDto
     ) {
         MemberResponseDto createdMember = memberService.create(memberCreateDto);
 
-        LoginResponseDto loginResponseDto = new LoginResponseDto(
+        MemberCreateResponseDto memberCreateResponseDto = new MemberCreateResponseDto(
             jwtTokenProvider.generateToken(
                 createdMember.id(),
                 createdMember.name(),
@@ -40,7 +41,7 @@ public class MemberController {
             )
         );
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(loginResponseDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(memberCreateResponseDto);
     }
 
     @PostMapping("/login")
