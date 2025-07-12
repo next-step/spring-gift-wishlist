@@ -54,8 +54,9 @@ public class WishlistController {
 
     @DeleteMapping("/{wishlistId}")
     public ResponseEntity<Void> removeProductFromWishlist(
+            @RequestAttribute("userEmail") String email,
             @PathVariable Long wishlistId) {
-        wishlistService.removeProductFromWishlist(wishlistId);
+        wishlistService.removeProductFromWishlist(email, wishlistId);
 
         return ResponseEntity.noContent().build();
     }

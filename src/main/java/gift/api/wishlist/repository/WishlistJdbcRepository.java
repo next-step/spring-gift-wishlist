@@ -61,6 +61,18 @@ public class WishlistJdbcRepository implements WishlistRepository {
     }
 
     @Override
+    public Optional<Wishlist> findById(Long id) {
+        String sql = "select * from wishlist where id = :id";
+
+        Optional<Wishlist> wishlist = jdbcClient.sql(sql)
+                .param("id", id)
+                .query(Wishlist.class)
+                .optional();
+
+        return wishlist;
+    }
+
+    @Override
     public Wishlist save(Wishlist wishlist) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 

@@ -1,12 +1,13 @@
 package gift.api.wishlist.service;
 
 import gift.api.member.domain.Member;
+import gift.api.member.repository.MemberRepository;
 import gift.api.product.domain.Product;
+import gift.api.product.repository.ProductRepository;
 import gift.api.wishlist.domain.Wishlist;
 import gift.api.wishlist.dto.WishlistResponseDto;
-import gift.api.member.repository.MemberRepository;
-import gift.api.product.repository.ProductRepository;
 import gift.api.wishlist.repository.WishlistRepository;
+import gift.exception.AuthorizationException;
 import gift.exception.ProductNotFoundException;
 import gift.exception.WishlistException;
 import java.time.LocalDateTime;
@@ -62,7 +63,17 @@ public class WishlistService {
         return WishlistResponseDto.of(wishlist, product);
     }
 
-    public void removeProductFromWishlist(Long wishlistID) {
+    public void removeProductFromWishlist(String email, Long wishlistID) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        Wishlist wishlist = wishlistRepository.findById(wishlistID)
+                .orElseThrow(() -> new WishlistException("위시리스트를 찾을 수 없습니다."));
+
+        if (!wishlist.getMemberId().equals(member.getId())) {
+            throw new AuthorizationException("해당 위시리스트에 대한 권한이 없습니다.");
+        }
+
         boolean deleted = wishlistRepository.deleteWishlist(wishlistID);
 
         if (!deleted) {

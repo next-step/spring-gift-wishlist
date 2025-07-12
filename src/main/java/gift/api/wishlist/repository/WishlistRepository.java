@@ -11,6 +11,8 @@ public interface WishlistRepository {
 
     Optional<Wishlist> findWishlistByMemberIdAndProductId(Long memberId, Long productId);
 
+    Optional<Wishlist> findById(Long id);
+
     Wishlist save(Wishlist wishlist);
 
     boolean deleteWishlist(Long id);
