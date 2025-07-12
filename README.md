@@ -1,72 +1,96 @@
-# 미션 2. 위시리스트 - 2단계 회원 로그인
+# 미션 2. 위시리스트 - 3단계 위시리스트
 
-## Member 도메인 클래스 
-    정적 팩토리 메소드 사용하여 객체 생성 전에 유효성 검사를 진행
-    -> validateEmail(), validatePassword()
+1. 회원가입, 로그인을 통해 생성된 토큰을 사용하여 사용자별 위시리스트를 구현
+    1. 위시리스트에 등록된 상품 목록을 조회할 수 있도록 (상품 목록 조회)
+    2. 위시리스트에 상품을 추가할 수 있도록 (상품 추가)
+    3. 위시리스트에 담긴 상품을 삭제할 수 있도록 (상품 삭제)
 
-    유효성 검사 로직은 Member 도메인 클래스 내에 존재
-    -> 도메인 레벨에서 검증하여 어떤 경로로 객체가 생성되든 로직 적용
+---
 
-    정적 팩토리 메소드를 of() 와 create() 로 분리 
-    -> of() 는 DB 조회한 데이터로 객체 생성
-    -> create() 는 새로운 회원가입을 위한 객체 생성
+## Wish 도메인 클래스와 wish 테이블
 
-## DTO
-    MemberRequest 와 AuthResponse 
-    Bean Validation 이용하여
-    도메인 검증 + DTO 검증 (이중 검증)
+    (편의상 위시 = 찜으로 표현)
 
-## 비밀번호 암호화 진행
-    PasswordConfig 생성 
-    BCryptPasswordEncoder 사용
+    id : 각 찜 항목의 고유 식별자 (wishId), 삭제 시 사용
+    memberId : 해당 찜 항목을 만든 사용자 ID
+    productId : 찜한 상품의 ID
+    createdAt : 위시리스트에 해당 상품을 추가한 시점, 정렬 기준에 활용
 
-## MemberRepository 
-    SimpleJdbcInsert 이용하여 ID 자동 생성
-    회원저장 save() 메소드
-    이메일로 회원 찾기 findByEmail() 메소드
-    ID로 회원 찾기 findById() 메소드 
+---
 
-## MemberService
-    회원가입 register() 메소드 
-    -> 비밀번호 암호화 진행
-    -> 이메일 중복 체크
-    -> Member 객체 생성 및 저장
-    -> 토큰 생성 및 반환
+## WishRepository 와 JdbcWishRepositoryImpl
 
-    로그인 login() 메소드
-    -> 이메일로 회원 찾기
-    -> 비밀번호 검증
-    -> 토큰 생성 및 반환
-
-    ID로 회원 찾기 findById() 메소드 
-
-
-## JWT 
-    JWT 토큰 활용을 위한 의존성 추가 및 설정 추가
+    WishRepository 인터페이스를 이용하여 추상화
+    JdbcWishRepositoryImpl 구현체를 활용
+    (기존에는 구현 클래스만 만들었는데 이번에는 인터페이스와 구현체로 분리해보았습니다.)
     
-    JwtTokenProvider 클래스 생성 
-    -> 토큰 생성 createToken() 메소드
-    -> 토큰에서 회원 ID 추출 getMemberId() 메소드
-    -> 토큰 유효성 검증 validateToken() 메소드 
+    addWish() : 위시리스트에 상품 추가
+    removeWishById() : 위시리스트에서 상품 삭제
+    getWishlistByMemberId() : 사용자별 위시리스트 조회
+    isWished() : 중복 찜 확인
+    findById() : wishId 로 Wish 조회
+
+---
+
+## WishService
+    사용자별 위시리스트 서비스 로직 구현
+    addWish() : 중복 체크 후 찜 항목 추가, 이미 찜한 경우 예외 발생
+    removeWish(): 자신의 위시리스트 항목한 삭제 가능, 멱등성 보장
+    getWishlist(): 사용자별 찜 목록 조회, 없으면 빈 리스트 반환
+
+
+---
+
+## WishRequest DTO 와 WishResponse DTO
+    WishRequest record 와 WishResponse recored
+    WishRequest DTO 는 productId 만 가지고 있음.
+    WishResponse DTO 는 사용자 ID 를 제외한 위시 상품 정보
+
+---
+
+## WishController
+    인증된 사용자의 위시리스트에 상품 추가, 삭제, 조회 기능 제공
+    @LoginMember를 활용하여 인증된 Member 객체 주입
+    [POST] /api/wishes
+    [DELETE] /api/wishes/{wishId} 
+    [GET] /api/wishes
+
+---
+
+## @LoginMember와 LoginMemberArgumentResolver, WebConfig
+    @LoginMember 애노테이션 정의
+    JwtAuthenticationFilter 에서 request.setAttribute("memberId", memberId) 저장
+    LoginMemberArgumentResolver 를 통해 MemberService에서 회원 조회 후 컨트롤러에 자동 주입
+    WebMvcConfigurer에 해당 리졸버 등록하여 전역 적용
     
 
-## MemberController 
-    회원가입 [POST] /api/members/register
-    로그인 [POST] /api/members/login
-    -> 로그인은 토큰을 생성하기도 하고 
-    -> GET 요청은 파라미터에 비밀번호 노출 위험이 있기 때문에
-    -> POST 요청 사용
+---
 
-## JwtAuthenticationFilter JWT 인증 필터 구현
-    클라이언트 요청 → 필터 → Controller → Service →
-    1. 요청으로부터 토큰 추출
-    2. 토큰 유효성 검증
-    3. 사용자 ID 추출
-    4. Request에 회원 ID 저장
-    5. 다음 필터(or 컨트롤러)로 진행
+## E2E 통합 테스트
+    시나리오
+    1. 회원가입 → 로그인 → 토큰 발급
+    이메일, 비밀번호로 회원가입
+    로그인하여 JWT 토큰 획득
 
-    테스트 코드 작성
-    JwtAuthenticationFilterTest
-    -> 유효한 토큰 처리 테스트
-    -> 예외 상황 테스트 (헤더 없음, Bearer 없음, 무효한 토큰)
-    -> 필터 제외 경로 테스트
+    2. 상품 등록
+    위시리스트에 담을 상품을 하나 생성
+    
+    3. 찜 추가
+    JWT 토큰을 헤더에 담아 POST /api/wishes 호출
+    정상적으로 위시리스트에 상품이 추가되는지 확인
+    
+    4. 찜 중복 방지
+    같은 상품을 다시 찜하면 예외 발생 여부 확인 (이미 찜한 상품입니다.)
+    
+    5. 찜 목록 조회
+    GET /api/wishes 호출 시 해당 사용자의 찜 리스트가 잘 나오는지 확인
+    
+    6. 찜 삭제
+    DELETE /api/wishes/{wishId} 호출 시 정상적으로 삭제되는지 확인
+    존재하지 않는 항목이나 타인의 항목 삭제 시 예외 발생 여부 확인
+
+
+
+
+
+
