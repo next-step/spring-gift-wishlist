@@ -1,6 +1,6 @@
 package gift.util;
 
-import gift.api.domain.MemberRole;
+import gift.api.member.domain.MemberRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -15,6 +15,7 @@ import java.util.Base64;
 import java.util.Date;
 import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -68,13 +69,26 @@ public class JwtUtil {
     // 1. 토큰을 쿠키에 저장하는 메서드
     public void addJwtToCookie(String token, HttpServletResponse res) {
         token = URLEncoder.encode(token, StandardCharsets.UTF_8).replaceAll("\\+", "%20");
-        Cookie cookie = new Cookie(AUTHORIZATION_HEADER, token);
-        cookie.setPath("/");
-        res.addCookie(cookie);
+
+        ResponseCookie cookie = ResponseCookie.from(AUTHORIZATION_HEADER, token)
+                .path("/")
+                .httpOnly(true)
+                .secure(false) // HTTPS 환경에서는 true로 설정
+                .sameSite("Lax") // CSRF 방어를 위한 SameSite=Lax 설정
+                .build();
+
+        res.addHeader("Set-Cookie", cookie.toString());
     }
 
     // 2. 쿠키에서 토큰을 가져오는 메서드
     public String getTokenFromRequest(HttpServletRequest req) {
+        // Authorization 헤더에서 Bearer 토큰을 가져옵니다.
+        String bearerToken = req.getHeader(AUTHORIZATION_HEADER);
+        if (bearerToken != null && bearerToken.startsWith(BEARER_PREFIX)) {
+            return bearerToken;
+        }
+
+        // 쿠키에서 토큰을 가져옵니다.
         Cookie[] cookies = req.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {

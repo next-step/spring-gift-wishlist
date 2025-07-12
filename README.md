@@ -198,6 +198,101 @@ HTTP/1.1 204 No Content
 
 </details>
 
+# 🎁 위시 리스트 API
+
+---
+
+<details>
+<summary>🔎 위시 리스트 보기</summary>
+
+### Request
+- Header: Authorization: Bearer {JWT}
+
+```json
+GET /api/wishes?page=0&size=5&sort=createdDate,desc HTTP/1.1
+Host: localhost:8080
+```
+
+### Response
+
+```json
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+[
+    {
+        "id": 1,
+        "product": {
+            "id": 10,
+            "name": "테스트 상품 1",
+            "price": 15000,
+            "imageUrl": "http://example.com/image.jpg"
+        }
+    },
+    {
+        "id": 2,
+        "product": {
+            "id": 12,
+            "name": "테스트 상품 2",
+            "price": 20000,
+            "imageUrl": "http://example.com/image2.jpg"
+        }
+    }
+]
+```
+    
+</details>
+<details>
+<summary>➕ 위시 리스트 추가</summary>
+
+### Request
+- Header: Authorization: Bearer {JWT}
+
+```json
+POST /api/wishes HTTP/1.1
+Content-Type: application/json
+host: localhost:8080
+
+{
+    "productId": 1
+}
+```
+
+### Response
+
+```json
+{
+    "id": 1,
+    "product": {
+        "id": 10,
+        "name": "테스트 상품 1",
+        "price": 15000,
+        "imageUrl": "[http://example.com/image.jpg](http://example.com/image.jpg)"
+    }
+}
+```
+    
+</details>
+<details>
+<summary>❌ 위시 리스트 삭제</summary>
+
+### Request
+- Header: Authorization: Bearer {JWT}
+
+```json
+DELETE /api/wishes/{wishlistId} HTTP/1.1
+host: localhost:8080
+
+```
+
+### Response
+
+```json
+HTTP/1.1 204 No Content
+```
+    
+</details>
+
 # 👤 유저 화면
 
 ---
@@ -226,6 +321,11 @@ HTTP/1.1 204 No Content
 ### 특정 상품 조회
 
 [GET] http://localhost:8080/members/products/{productId}  
+→ 선택한 상품의 상세 정보를 확인할 수 있는 화면입니다.
+
+### 위시 리스트 조회
+
+[GET] http://localhost:8080/members/wishes  
 → 선택한 상품의 상세 정보를 확인할 수 있는 화면입니다.
 </details>
 
@@ -303,12 +403,28 @@ HTTP/1.1 204 No Content
 <summary>📌 DB 초기화</summary>
 
 ```sql
-create table product
-(
-    id        bigint auto_increment primary key,
-    name      varchar(255) not null,
-    price     bigint       not null,
+create table product (
+    id bigint auto_increment primary key,
+    name varchar(255) not null,
+    price bigint not null,
     image_url varchar(1000)
+);
+
+create table member (
+    id bigint auto_increment primary key,
+    email varchar(255) not null unique,
+    password varchar(255) not null,
+    role varchar(50) not null
+);
+
+create table wishlist (
+    id bigint auto_increment primary key,
+    member_id bigint not null,
+    product_id bigint not null,
+    created_date timestamp(6) not null,
+    foreign key (member_id) references member(id) on delete cascade,
+    foreign key (product_id) references product(id) on delete cascade,
+    unique (member_id, product_id)
 );
 ```
 
@@ -376,14 +492,4 @@ create table product
 - 상품 이름 (특수 문자 실패)
 - 상품 이름 (MD 승인 글자)
 - 상품 가격 (0원 이상 실패)
-</details>
-
-# 🔐 JWT 인증
-
----
-
-<details>
-<summary>참고 자료</summary>
-
-- [JWT 로그인 흐름 이해하기](https://lincoding.tistory.com/55)
 </details>

@@ -1,6 +1,6 @@
 package gift.interceptor;
 
-import gift.api.domain.MemberRole;
+import gift.api.member.domain.MemberRole;
 import gift.exception.AuthenticationException;
 import gift.exception.AuthorizationException;
 import gift.util.JwtUtil;

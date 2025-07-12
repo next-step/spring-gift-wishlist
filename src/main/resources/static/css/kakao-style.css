@@ -3,22 +3,31 @@ body {
   background-color: #fffbea;
   color: #3c2a1e;
   margin: 0;
+  padding: 0;
+}
+
+.main-container {
+  width: 100%;
+  max-width: 1024px;
+  margin: 0 auto;
   padding: 40px;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
 }
 
 /* 관리자 페이지 전용 스타일 */
 body.admin-page {
-  background-color: #f0f8ff; /* 연한 하늘색 배경 */
-  color: #333; /* 어두운 회색 글자 */
+  background-color: #f0f8ff;
+  color: #333;
 }
 
 h1 {
   font-size: 24px;
   color: #3c2a1e;
   margin-bottom: 24px;
+  text-align: center; /* [수정] h1 제목을 가운데 정렬합니다. */
 }
 
 .top-bar {
@@ -27,7 +36,6 @@ h1 {
   gap: 10px;
   margin-bottom: 16px;
   width: 100%;
-  max-width: 800px;
 }
 
 .user-info {
@@ -51,10 +59,9 @@ a.button:hover, button:hover {
   background-color: #fadb00;
 }
 
-/* 관리자 페이지 이동 버튼 스타일 */
 a.admin-button {
-  background-color: #4a90e2; /* 파란색 배경 */
-  color: white; /* 흰색 글자 */
+  background-color: #4a90e2;
+  color: white;
   border-color: #357ab8;
 }
 
@@ -62,11 +69,8 @@ a.admin-button:hover {
   background-color: #357ab8;
 }
 
-
-/* ✅ 목록 테이블 스타일 */
 table {
   width: 100%;
-  max-width: 800px;
   border-collapse: collapse;
   background-color: white;
   border-radius: 10px;
@@ -86,11 +90,9 @@ th {
   font-weight: bold;
 }
 
-/* 관리자 페이지의 테이블 헤더 */
-.admin-page th {
-  background-color: #d6eaff; /* 연한 파란색 */
+.admin-page .main-container th {
+  background-color: #d6eaff;
 }
-
 
 img {
   max-width: 80px;
@@ -102,20 +104,19 @@ form {
   display: inline;
 }
 
-/* ✅ 상세 페이지 스타일 */
 .product-detail {
   background-color: #fff;
   padding: 32px;
   border-radius: 12px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 600px; /* 🔼 기존 400px → 600px */
   text-align: center;
   margin-bottom: 20px;
+  box-sizing: border-box; /* [추가] 너비 계산 방식을 변경하여 튀어나오지 않게 합니다. */
 }
 
 .product-detail img {
-  max-width: 300px; /* 🔼 이미지 확대 */
+  max-width: 300px;
   max-height: 300px;
   width: auto;
   height: auto;
@@ -133,7 +134,6 @@ form {
   width: 80px;
 }
 
-/* ✅ 페이지네이션 */
 .pagination {
   margin-top: 20px;
   text-align: center;
@@ -150,7 +150,6 @@ form {
   text-decoration: underline;
 }
 
-/* ✅ 버튼 영역 */
 .buttons {
   margin-top: 24px;
   display: flex;
@@ -164,8 +163,8 @@ form {
   border-radius: 12px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 500px;
   margin-bottom: 20px;
+  box-sizing: border-box; /* [추가] 너비 계산 방식을 변경하여 튀어나오지 않게 합니다. */
 }
 
 form .form-group {
@@ -181,7 +180,9 @@ form label {
 }
 
 form input[type="text"],
-form input[type="number"] {
+form input[type="password"],
+form input[type="number"],
+form input[type="email"] {
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
@@ -194,7 +195,6 @@ form input[type="number"] {
   margin-top: 4px;
 }
 
-/* ✅ 에러 메시지 전체 박스 */
 .error-message-box {
   background-color: #fff0f0;
   border: 1px solid #ffcccc;
@@ -206,9 +206,9 @@ form input[type="number"] {
   font-weight: 500;
   line-height: 1.6;
   word-break: keep-all;
+  box-sizing: border-box; /* [추가] 너비 계산 방식을 변경하여 튀어나오지 않게 합니다. */
 }
 
-/* ✅ 에러 코드 강조 */
 .error-message-box .status {
   display: block;
   font-weight: bold;
@@ -217,7 +217,6 @@ form input[type="number"] {
   margin-bottom: 6px;
 }
 
-/* ✅ 메시지는 약간 작고 부드럽게 */
 .error-message-box .message {
   font-size: 14px;
   color: #800000;

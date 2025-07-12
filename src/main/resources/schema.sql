@@ -11,3 +11,13 @@ create table member (
     password varchar(255) not null,
     role varchar(50) not null
 );
+
+create table wishlist (
+    id bigint auto_increment primary key,
+    member_id bigint not null,
+    product_id bigint not null,
+    created_date timestamp(6) not null,
+    foreign key (member_id) references member(id) on delete cascade,
+    foreign key (product_id) references product(id) on delete cascade,
+    unique (member_id, product_id)
+);

@@ -1,6 +1,7 @@
 package gift.front.controller;
 
-import gift.api.service.ProductService;
+import gift.api.product.service.ProductService;
+import gift.api.wishlist.service.WishlistService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,9 +20,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class MemberFrontController {
 
     private final ProductService productService;
+    private final WishlistService wishlistService;
 
-    public MemberFrontController(ProductService productService) {
+    public MemberFrontController(ProductService productService, WishlistService wishlistService) {
         this.productService = productService;
+        this.wishlistService = wishlistService;
     }
 
     @GetMapping("/login")
@@ -57,7 +60,7 @@ public class MemberFrontController {
         if (userEmail != null) {
             model.addAttribute("userEmail", userEmail);
         }
-        
+
         if (userRole != null) {
             model.addAttribute("userRole", userRole);
         }
@@ -74,5 +77,20 @@ public class MemberFrontController {
         model.addAttribute("product", productService.findProductById(id));
 
         return "member/product-detail";
+    }
+
+    @GetMapping("/wishlist")
+    public String wishlist(
+            @PageableDefault(size = 5, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable,
+            Model model,
+            HttpServletRequest request
+    ) {
+        String userEmail = (String) request.getAttribute("userEmail");
+        model.addAttribute("userEmail", userEmail);
+        model.addAttribute("userRole", request.getAttribute("userRole"));
+
+        model.addAttribute("wishlistPage", wishlistService.getWishlist(userEmail, pageable));
+
+        return "member/wishlist";
     }
 }
