@@ -30,7 +30,7 @@ public class WishListController {
     }
 
     @PostMapping
-    public ResponseEntity<String> addWishList(@LoginMember Member member, WishListRequestDto wishListRequestDto) {
+    public ResponseEntity<String> createWishList(@LoginMember Member member, WishListRequestDto wishListRequestDto) {
         wishListService.addWishList(member.getId(), wishListRequestDto);
         return ResponseEntity.ok("위시리스트에 상품이 담겼습니다.");
     }
