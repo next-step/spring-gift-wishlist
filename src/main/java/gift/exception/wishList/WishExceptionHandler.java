@@ -28,4 +28,13 @@ public class WishExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errors);
     }
+
+    @ExceptionHandler(WishNotFoundException.class)
+    public ResponseEntity<Map<String, String>>
+    handlerValidationError(WishNotFoundException e) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("message", e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errors);
+    }
 }
