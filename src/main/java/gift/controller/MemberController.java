@@ -2,6 +2,8 @@ package gift.controller;
 
 import gift.dto.AuthorizationRequest;
 import gift.dto.AuthorizationResponse;
+import gift.dto.MemberRegisterResponse;
+import gift.dto.MemberResponse;
 import gift.service.MemberService;
 import java.net.URI;
 import org.springframework.http.ResponseEntity;
