@@ -1,6 +1,7 @@
 package gift.controller;
 
 import gift.config.LoginMember;
+import gift.dto.request.QuantityUpdateRequestDto;
 import gift.dto.request.WishRequestDto;
 import gift.dto.response.WishResponseDto;
 import gift.entity.Member;
@@ -40,5 +41,13 @@ public class WishController {
     public ResponseEntity<Void> deleteWishes(@PathVariable Long id) {
         wishService.remove(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> updateQuantity(@PathVariable Long id,
+                                               @RequestBody QuantityUpdateRequestDto request) {
+
+        wishService.updateQuantity(id, request.getQuantity());
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

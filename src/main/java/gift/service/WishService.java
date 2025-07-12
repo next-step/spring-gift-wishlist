@@ -1,6 +1,7 @@
 package gift.service;
 
 import gift.dto.response.WishResponseDto;
+import gift.entity.Wish;
 import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
 import org.springframework.stereotype.Service;
@@ -33,5 +34,12 @@ public class WishService {
 
     public void remove(Long wishId) {
         wishRepository.remove(wishId);
+    }
+
+    public void updateQuantity(Long wishId, int quantity) {
+        Wish wish = wishRepository.findById(wishId).orElseThrow(() -> new NoSuchElementException("위시 항목이 존재하지 않습니다"));
+
+        wish.setQuantity(quantity);
+        wishRepository.update(wish);
     }
 }
