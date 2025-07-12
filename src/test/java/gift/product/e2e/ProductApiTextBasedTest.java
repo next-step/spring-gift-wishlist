@@ -2,9 +2,9 @@ package gift.product.e2e;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-import gift.product.dto.CreateProductReqDto;
-import gift.product.dto.GetProductResDto;
-import gift.product.dto.UpdateProductReqDto;
+import gift.product.dto.CreateProductRequestDto;
+import gift.product.dto.GetProductResponseDto;
+import gift.product.dto.UpdateProductRequestDto;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,7 +44,7 @@ class ProductApiTextBasedTest {
 
   @Test
   void 상품등록_빈_이름으로_요청시_400_응답반환() {
-    var request = new CreateProductReqDto(
+    var request = new CreateProductRequestDto(
         "   ",
         1000,
         "설명입니다",
@@ -59,7 +59,7 @@ class ProductApiTextBasedTest {
 
   @Test
   void 상품등록_카카오포함된_이름으로_요청시_400_응답반환() {
-    var request = new CreateProductReqDto(
+    var request = new CreateProductRequestDto(
         "카카오 초콜릿",
         1000,
         "설명입니다",
@@ -75,7 +75,7 @@ class ProductApiTextBasedTest {
 
   @Test
   void 상품등록_유효하지않은_가격으로_요청시_400_응답반환() {
-    var request = new CreateProductReqDto(
+    var request = new CreateProductRequestDto(
         "상품이름",
         -10,
         "설명입니다",
@@ -92,10 +92,10 @@ class ProductApiTextBasedTest {
   void 상품단건조회_정상ID요청시_200과_정상데이터_반환() {
     Long id = createTestProduct();
 
-    ResponseEntity<GetProductResDto> response = restClient.get()
+    ResponseEntity<GetProductResponseDto> response = restClient.get()
         .uri("/api/products/" + id)
         .retrieve()
-        .toEntity(GetProductResDto.class);
+        .toEntity(GetProductResponseDto.class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(response.getBody().name()).isEqualTo("정상상품");
@@ -159,7 +159,7 @@ class ProductApiTextBasedTest {
   void 상품수정_정상요청시_204_반환() {
     Long id = createTestProduct();
 
-    var updateRequest = new UpdateProductReqDto(
+    var updateRequest = new UpdateProductRequestDto(
         "수정된이름",
         2000,
         "수정된설명",
@@ -187,8 +187,8 @@ class ProductApiTextBasedTest {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
   }
 
-  private CreateProductReqDto createValidProductRequest() {
-    return new CreateProductReqDto(
+  private CreateProductRequestDto createValidProductRequest() {
+    return new CreateProductRequestDto(
         "정상상품",
         1000,
         "정상적인 설명입니다.",
@@ -196,7 +196,7 @@ class ProductApiTextBasedTest {
     );
   }
 
-  private ResponseEntity<Void> createProduct(CreateProductReqDto request) {
+  private ResponseEntity<Void> createProduct(CreateProductRequestDto request) {
     return restClient.post()
         .uri("/api/products")
         .body(request)
@@ -205,7 +205,7 @@ class ProductApiTextBasedTest {
             .body(null));
   }
 
-  private ResponseEntity<String> createProductWithErrorResponse(CreateProductReqDto request) {
+  private ResponseEntity<String> createProductWithErrorResponse(CreateProductRequestDto request) {
     return restClient.post()
         .uri("/api/products")
         .body(request)
