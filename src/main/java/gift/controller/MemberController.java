@@ -1,5 +1,6 @@
 package gift.controller;
 
+import gift.dto.LoginResponseDto;
 import gift.dto.MemberRequestDto;
 import gift.service.MemberService;
 import org.springframework.http.HttpStatus;
