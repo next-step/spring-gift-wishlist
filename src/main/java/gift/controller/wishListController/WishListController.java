@@ -2,6 +2,7 @@ package gift.controller.wishListController;
 
 import gift.config.LoginUser;
 import gift.dto.wishListDto.AddWishItemDto;
+import gift.dto.wishListDto.ResponseWishItem;
 import gift.dto.wishListDto.ResponseWishItemDto;
 import gift.service.wishListService.WishListService;
 import jakarta.validation.Valid;
@@ -31,11 +32,11 @@ public class WishListController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ResponseWishItemDto>> getWishItemList(@LoginUser String userEmail, @RequestParam(required = false) String name, @RequestParam(required = false) Integer price) {
-
+    public ResponseEntity<ResponseWishItem> getWishItemList(@LoginUser String userEmail, @RequestParam(required = false) String name, @RequestParam(required = false) Integer price) {
         List<ResponseWishItemDto> wishItemList = wishListService.getItemList(name, price, userEmail);
+        ResponseWishItem response = new ResponseWishItem(wishItemList);
 
-        return new ResponseEntity<>(wishItemList, HttpStatus.OK);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping
