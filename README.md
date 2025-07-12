@@ -64,7 +64,6 @@
 - JwtInterceptor, WebConfig 추가
 
 ### step3 위시 리스트
-
 - 위시리스트 테이블, 도메인, 레파지토리 구현
 - CurrentMember 어노테이션 ArgumentResolver 구현
 - 위시 리스트 상품 추가 기능 추가

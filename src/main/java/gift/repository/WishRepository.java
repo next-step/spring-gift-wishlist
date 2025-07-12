@@ -18,7 +18,7 @@ public class WishRepository {
         Long id = rs.getLong("id");
         Long memberId = rs.getLong("member_id");
         Long productId = rs.getLong("product_id");
-        Long quantity = rs.getLong("quantity");
+        Integer quantity = rs.getInt("quantity");
         return Wish.of(id, memberId, productId, quantity);
     };
     private final JdbcClient client;
@@ -28,7 +28,7 @@ public class WishRepository {
     }
 
     public Optional<Wish> save(Wish wish) {
-        String sql = "insert into wish (member_id, product_id, quantity values (:member_id, :product_id, :quantity);";
+        String sql = "insert into wish (member_id, product_id, quantity) values (:member_id, :product_id, :quantity);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         try {
             client.sql(sql)
@@ -37,6 +37,7 @@ public class WishRepository {
                     .param("quantity", wish.getQuantity())
                     .update(keyHolder, "id");
         } catch (DataAccessException e) {
+            e.printStackTrace();
             return Optional.empty();
         }
         Long id = keyHolder.getKey().longValue();
@@ -52,10 +53,19 @@ public class WishRepository {
     }
 
     public List<Wish> findAll() {
-        String sql = "select * from member;";
+        String sql = "select * from wish;";
         return client.sql(sql)
                 .query(ROW_MAPPER)
                 .list();
+    }
+
+    public Optional<Wish> findByMemberIdProductId(Long memberId, Long productId) {
+        String sql = "select * from wish where member_id = :member_id and product_id = :product_id";
+        return client.sql(sql)
+                .param("member_id", memberId)
+                .param("product_id", productId)
+                .query(ROW_MAPPER)
+                .optional();
     }
 
     public Optional<Wish> update(Long id, Wish wish) {

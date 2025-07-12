@@ -27,10 +27,8 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        // 로그인 검증이 필요한 api 추가
         registry.addInterceptor(jwtInterceptor)
-                .addPathPatterns("")
-                .excludePathPatterns("/**");
+                .addPathPatterns("/api/wishes/**");
 
         registry.addInterceptor(hostInterceptor)
                 .addPathPatterns("/**");
