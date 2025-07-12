@@ -31,10 +31,9 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
   }
 
-  @ExceptionHandler(value = {ProductNotFoundException.class, MemberNotFoundException.class,
-      WishListNotFoundException.class})
+  @ExceptionHandler(value = NotFoundException.class)
   public ResponseEntity<CustomErrorResponse> handleProductNotFoundException(
-      RuntimeException exception) {
+      NotFoundException exception) {
     CustomErrorResponse errorResponse = new CustomErrorResponse(HttpStatus.NOT_FOUND,
         exception.getMessage());
     return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);

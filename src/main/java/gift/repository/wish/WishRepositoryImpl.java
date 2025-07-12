@@ -55,7 +55,7 @@ public class WishRepositoryImpl implements WishRepository {
     wish.setId(generatedId);
     return wish;
   }
-  
+
   @Override
   public Optional<Wish> updateQuantity(Long memberId, Wish wish) {
     String sql = "update wishlist set quantity=? where member_id=? and product_id=?";
