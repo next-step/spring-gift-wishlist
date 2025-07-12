@@ -49,8 +49,6 @@ public class WishListRepositoryImpl implements WishListRepository {
     public List<WishItem> getAllWishItems(Long userId) {
         var findSql = "SELECT id, user_id, item_id, quantity FROM wish_items WHERE user_id = ?";
 
-        jdbcTemplate.queryForObject(findSql, new Object[]{userId}, Long.class);
-
         return jdbcTemplate.query(findSql, new Object[]{userId}, wishItemRowMapper);
     }
 
