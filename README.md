@@ -55,3 +55,23 @@
 | /api/users/{userID}    | GET | 회원 조회 | 특정 회원의 정보를 조회한다. |
 | /api/users/{userId} | PUT | 회원 수정 | 기존 회원의 정보를 수정한다. |
 | /api/users/{userId} | DELETE | 회원 삭제  | 특정 회원을 삭제한다.     |
+
+## Step 3. 위시리스트
+
+- [ ] 위시리스트 기능 구현
+- [ ] 위시리스트를 위한 스키마를 설계하고 테이블을 추가.
+- [ ] 위시리스트 Entity, Repository, Service, Controller를 구현.
+- [ ] 아래 명세에 맞는 위시리스트 API를 작성.
+
+### 구현할 기능 목록
+- 위시리스트 Table 생성 
+  - Column : ID (PK), 사용자 ID (FK), 상품 ID (FK), 상품 수량
+
+- 위시리스트 API
+
+| URL | 메서드 | 기능 | 설명                                    |
+| :--- | :--- | :--- |:--------------------------------------|
+| /api/wishlist | GET | 다건 위시리스트 조회 | 전체 위시리스트 목록을 조회                       |
+| /api/wishlist | POST | 위시리스트 생성 | 위시리스트에 상품 추가                          |
+| /api/wishlist/{id} | PUT | 위시리스트 수정 | 특정 위시리스트 항목의 상품 수량을 수정 (수량이 0이 되면 삭제) |
+| /api/wishlist/{id} | DELETE | 위시리스트 삭제 | 특정 상품을 위시리스트에서 삭제                     |
