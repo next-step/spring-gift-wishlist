@@ -72,4 +72,11 @@ public class GlobalExceptionHandler {
         SingleErrorResponse errorResponse = new SingleErrorResponse(e.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
     }
+
+    @ExceptionHandler(WishNotFoundException.class)
+    public ResponseEntity<SingleErrorResponse> handleWishNotFoundException(WishNotFoundException e) {
+        log.warn("해당 위시리스트가 존재하지 않습니다.");
+        SingleErrorResponse errorResponse = new SingleErrorResponse(e.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
 }
