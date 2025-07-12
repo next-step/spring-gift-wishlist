@@ -24,7 +24,7 @@ public class WishService {
      * 이미 찜한 경우 예외 발생
      */
     public Wish addWish(Long memberId, Long productId) {
-        if (wishRepository.isWished(memberId, productId)) {
+        if (wishRepository.existsInWishlist(memberId, productId)) {
             throw new AlreadyWishedException();
         }
         return wishRepository.addWish(memberId, productId);

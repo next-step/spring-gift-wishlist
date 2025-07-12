@@ -9,7 +9,7 @@ public interface WishRepository {
 
     Wish addWish(Long memberId, Long productId);
 
-    boolean isWished(Long memberId, Long productId);
+    boolean existsInWishlist(Long memberId, Long productId);
 
     List<Wish> getWishlistByMemberId(Long memberId);
 

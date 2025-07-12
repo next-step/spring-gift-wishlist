@@ -75,7 +75,7 @@ public class JdbcWishRepositoryImpl implements WishRepository {
 
     // 중복 찜 확인
     @Override
-    public boolean isWished(Long memberId, Long productId) {
+    public boolean existsInWishlist(Long memberId, Long productId) {
         String sql = "SELECT EXISTS (SELECT 1 FROM wish WHERE member_id = ? AND product_id = ?)";
         Boolean result = jdbcTemplate.queryForObject(sql, Boolean.class, memberId, productId);
         return Boolean.TRUE.equals(result);
