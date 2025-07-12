@@ -2,6 +2,8 @@ package gift.auth;
 
 import gift.entity.Member;
 import gift.service.MemberService;
+import gift.exception.unauthorized.WrongHeaderException;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
@@ -17,9 +19,11 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
     private static final String BEARER_PREFIX = "Bearer ";
 
     private final MemberService memberService;
+    private final JwtProvider jwtProvider;
 
-    public LoginMemberArgumentResolver(MemberService memberService) {
+    public LoginMemberArgumentResolver(MemberService memberService, JwtProvider jwtProvider) {
         this.memberService = memberService;
+        this.jwtProvider = jwtProvider;
     }
 
     @Override
@@ -34,13 +38,20 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
         String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (authorization == null || !authorization.startsWith(BEARER_PREFIX)) {
-            throw new RuntimeException("Authorization 헤더가 없거나 잘못되었습니다.");
+            throw new WrongHeaderException();
         }
 
         String token = authorization.substring(BEARER_PREFIX.length());
-        Member member = memberService.findByToken(token);
+
+        // JwtProvider를 통해 Claims 파싱
+        Claims claims = jwtProvider.parseToken(token);
+
+        // Claims에서 memberId 가져오기
+        Long memberId = Long.valueOf(claims.getSubject());
+
+        Member member = memberService.findById(memberId);
         if (member == null) {
-            throw new RuntimeException("유효하지 않은 토큰입니다.");
+            throw new RuntimeException("회원을 찾을 수 없습니다.");
         }
         return member;
     }
