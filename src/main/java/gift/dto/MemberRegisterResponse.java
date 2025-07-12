@@ -1,4 +1,4 @@
-package gift.controller;
+package gift.dto;
 
 import gift.domain.Member;
 
