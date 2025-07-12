@@ -30,7 +30,7 @@ public class WishRepositoryImpl implements WishRepository {
 
   @Override
   public List<Wish> findByMemberId(Long memberId) {
-    String sql = "select * from wishlist where member_id = ?";
+    String sql = "select * from wishes where member_id = ?";
     return jdbcTemplate.query(sql, wishRowMapper, memberId);
   }
 
@@ -38,7 +38,7 @@ public class WishRepositoryImpl implements WishRepository {
   public Wish createWish(Wish wish) {
     KeyHolder keyHolder = new GeneratedKeyHolder();
 
-    String sql = "insert into wishlist (member_id,product_id,quantity) values (?, ?, ?)";
+    String sql = "insert into wishes (member_id,product_id,quantity) values (?, ?, ?)";
     jdbcTemplate.update((connection) -> {
       PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
       ps.setLong(1, wish.getMemberId());
@@ -58,13 +58,13 @@ public class WishRepositoryImpl implements WishRepository {
 
   @Override
   public Optional<Wish> updateQuantity(Long memberId, Wish wish) {
-    String sql = "update wishlist set quantity=? where member_id=? and product_id=?";
+    String sql = "update wishes set quantity=? where member_id=? and product_id=?";
     int update = jdbcTemplate.update(sql, wish.getQuantity(), wish.getMemberId(),
         wish.getProductId());
     if (update == 0) {
       return Optional.empty();
     }
-    String selectSql = "select * from wishlist where member_id = ? and product_id = ?";
+    String selectSql = "select * from wishes where member_id = ? and product_id = ?";
     Wish updatedWish = jdbcTemplate.queryForObject(selectSql, wishRowMapper, wish.getMemberId(),
         wish.getProductId());
     return Optional.of(updatedWish);
@@ -72,7 +72,7 @@ public class WishRepositoryImpl implements WishRepository {
 
   @Override
   public int deleteByMemberId(Long memberId) {
-    String sql = "delete from wishlist where member_id=?";
+    String sql = "delete from wishes where member_id=?";
     int deletedProduct = jdbcTemplate.update(sql, memberId);
     if (deletedProduct < 1) {
       throw new ProductNotFoundException("삭제할 것이 없습니다");

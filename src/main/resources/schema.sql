@@ -11,7 +11,7 @@ CREATE TABLE members (
     password VARCHAR(50) NOT NULL
 );
 
-create table wishlist (
+create table wishes (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     member_id BIGINT NOT NULL,
     product_id BIGINT NOT NULL,
