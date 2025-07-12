@@ -33,9 +33,6 @@ public class WishControllerTest {
 
     @Autowired MemberService memberService;
     @Autowired ProductService productService;
-    @Autowired WishRepository wishRepository;
-    @Autowired ProductRepository productRepository;
-    @Autowired MemberRepository memberRepository;
 
     private String baseUrl;
     private RestTemplate restTemplate;
@@ -48,21 +45,6 @@ public class WishControllerTest {
     @BeforeEach
     void setUpBaseUrl() {
         this.baseUrl = "http://localhost:" + port + "/api/wishes";
-    }
-
-    private String createMemberAndGetToken(String email, String password) {
-        return memberService.register(email, password);
-    }
-
-    private Product createTestProduct(String name, int price) {
-        return productService.create(name, price, "http://image.com/image.jpg");
-    }
-
-    private HttpHeaders authHeader(String token) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(token);
-        return headers;
     }
 
     @Test
@@ -92,10 +74,8 @@ public class WishControllerTest {
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(
                 Map.of("productId", product.getId()), headers);
 
-        // 최초 찜 (성공)
         restTemplate.postForEntity(baseUrl, request, WishResponse.class);
 
-        // 중복 찜 시도 시 예외 발생 확인
         HttpClientErrorException exception = assertThrows(HttpClientErrorException.Conflict.class, () -> {
             restTemplate.postForEntity(baseUrl, request, String.class);
         });
@@ -103,7 +83,6 @@ public class WishControllerTest {
         assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
         assertThat(exception.getResponseBodyAsString()).contains("이미 찜한 상품입니다.");
     }
-
 
     @Test
     @DisplayName("찜한 상품을 위시리스트에서 조회할 수 있다")
@@ -143,7 +122,6 @@ public class WishControllerTest {
 
         assertThat(deleteRes.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
-        // 이미 삭제된 것을 다시 삭제해도 OK
         ResponseEntity<Void> secondDelete = restTemplate.exchange(
                 baseUrl + "/" + wishId, HttpMethod.DELETE, deleteRequest, Void.class);
 
@@ -157,14 +135,12 @@ public class WishControllerTest {
         String token2 = createMemberAndGetToken("other@example.com", "abcd@@1234");
         Product product = createTestProduct("타인상품", 1100);
 
-        // token1으로 찜 등록
         HttpHeaders headers1 = authHeader(token1);
         HttpEntity<Map<String, Object>> req1 = new HttpEntity<>(
                 Map.of("productId", product.getId()), headers1);
         ResponseEntity<WishResponse> response = restTemplate.postForEntity(baseUrl, req1, WishResponse.class);
         Long wishId = response.getBody().wishId();
 
-        // token2로 삭제 시도 → 403 예외 발생 기대
         HttpHeaders headers2 = authHeader(token2);
         HttpEntity<Void> deleteRequest = new HttpEntity<>(headers2);
 
@@ -176,4 +152,18 @@ public class WishControllerTest {
         assertThat(exception.getResponseBodyAsString()).contains("다른 사용자의 위시리스트 항목은 삭제할 수 없습니다.");
     }
 
+    private String createMemberAndGetToken(String email, String password) {
+        return memberService.register(email, password);
+    }
+
+    private Product createTestProduct(String name, int price) {
+        return productService.create(name, price, "http://image.com/image.jpg");
+    }
+
+    private HttpHeaders authHeader(String token) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(token);
+        return headers;
+    }
 }
