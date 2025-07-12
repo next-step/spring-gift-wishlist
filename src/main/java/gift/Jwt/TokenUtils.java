@@ -30,9 +30,11 @@ public class TokenUtils {
         return claims.get("email", String.class);
     }
 
+    private static final String CLAIM_ROLE = "role";
+
     public boolean hasRole(String token, UserRole expectedRole) {
         Claims claims = jwtUtil.getClaims(token);
-        String roleStr = claims.get("role", String.class);
+        String roleStr = claims.get(CLAIM_ROLE, String.class);
 
         try {
             UserRole role = UserRole.valueOf(roleStr);
