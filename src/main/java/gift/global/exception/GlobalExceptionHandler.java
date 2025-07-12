@@ -49,14 +49,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<SingleErrorResponse> handleLoginFailedException(LoginFailedException e) {
         log.warn("로그인 실패 : {}", e.getMessage());
         SingleErrorResponse errorResponse = new SingleErrorResponse(e.getMessage());
-        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(TokenExpiredException.class)
     public ResponseEntity<SingleErrorResponse> handleTokenExpiredException(TokenExpiredException e) {
         log.warn("토큰 만료됨 : {}", e.getMessage());
         SingleErrorResponse errorResponse = new SingleErrorResponse(e.getMessage());
-        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(BadRequestException.class)
