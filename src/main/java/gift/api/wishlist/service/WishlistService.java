@@ -63,18 +63,18 @@ public class WishlistService {
         return WishlistResponseDto.of(wishlist, product);
     }
 
-    public void removeProductFromWishlist(String email, Long wishlistID) {
+    public void removeProductFromWishlist(String email, Long wishlistId) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-        Wishlist wishlist = wishlistRepository.findById(wishlistID)
+        Wishlist wishlist = wishlistRepository.findById(wishlistId)
                 .orElseThrow(() -> new WishlistException("위시리스트를 찾을 수 없습니다."));
 
         if (!wishlist.getMemberId().equals(member.getId())) {
             throw new AuthorizationException("해당 위시리스트에 대한 권한이 없습니다.");
         }
 
-        boolean deleted = wishlistRepository.deleteWishlist(wishlistID);
+        boolean deleted = wishlistRepository.deleteWishlist(wishlistId, member.getId());
 
         if (!deleted) {
             throw new WishlistException("위시리스트에서 상품 삭제에 실패했습니다.");

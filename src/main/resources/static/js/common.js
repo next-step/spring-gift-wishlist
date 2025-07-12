@@ -137,9 +137,14 @@ async function handleWishlistAction(event) {
 async function fetchWishlist() {
   const wishlistBody = document.getElementById('wishlist-body');
 
+  const params = new URLSearchParams(window.location.search);
+  const page = params.get('page') || 0;
+  const size = params.get('size') || 5;
+  const sort = params.get('sort') || 'createdDate,desc';
+
   try {
-    // 'Authorization' 헤더 없이 요청합니다.
-    const response = await fetch(`/api/wishes`);
+    const response = await fetch(
+        `/api/wishes?page=${page}&size=${size}&sort=${sort}`);
 
     if (!response.ok) {
       // fetch 자체가 실패한 것이 아니므로, 서버가 보낸 에러 메시지를 파싱합니다.

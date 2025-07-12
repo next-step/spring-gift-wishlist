@@ -81,7 +81,7 @@ public class MemberFrontController {
 
     @GetMapping("/wishlist")
     public String wishlist(
-            @PageableDefault(size = 5, sort = "created_date", direction = Sort.Direction.DESC) Pageable pageable,
+            @PageableDefault(size = 5, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable,
             Model model,
             HttpServletRequest request
     ) {

@@ -2,6 +2,7 @@ package gift.api.wishlist.repository;
 
 import gift.api.wishlist.domain.Wishlist;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,12 @@ public class WishlistJdbcRepository implements WishlistRepository {
 
     private final JdbcClient jdbcClient;
 
+    private static final Map<String, String> ALLOWED_SORT_CRITERIA = Map.of(
+            "id", "id",
+            "createdDate", "created_date",
+            "productId", "product_id"
+    );
+
     public WishlistJdbcRepository(JdbcClient jdbcClient) {
         this.jdbcClient = jdbcClient;
     }
@@ -24,8 +31,14 @@ public class WishlistJdbcRepository implements WishlistRepository {
     @Override
     public Page<Wishlist> findWishlistByMemberId(Long memberId, Pageable pageable) {
         String sortOrder = pageable.getSort().stream()
-                .map(order -> order.getProperty() + " " + order.getDirection())
+                .filter(order -> ALLOWED_SORT_CRITERIA.containsKey(order.getProperty()))
+                .map(order -> ALLOWED_SORT_CRITERIA.get(order.getProperty())
+                        + " " + order.getDirection())
                 .collect(Collectors.joining(", "));
+
+        if (sortOrder.isEmpty()) {
+            sortOrder = "created_date DESC";
+        }
 
         String sql = "SELECT * FROM wishlist WHERE member_id = :memberId ORDER BY " + sortOrder
                 + " LIMIT :limit OFFSET :offset";
@@ -91,11 +104,12 @@ public class WishlistJdbcRepository implements WishlistRepository {
     }
 
     @Override
-    public boolean deleteWishlist(Long id) {
-        String sql = "delete from wishlist where id = :id";
+    public boolean deleteWishlist(Long id, Long memberId) {
+        String sql = "delete from wishlist where id = :id and member_id = :memberId";
 
         int deleted = jdbcClient.sql(sql)
                 .param("id", id)
+                .param("memberId", memberId)
                 .update();
 
         return deleted > 0;

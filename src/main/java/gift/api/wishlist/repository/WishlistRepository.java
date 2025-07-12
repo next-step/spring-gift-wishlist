@@ -15,5 +15,5 @@ public interface WishlistRepository {
 
     Wishlist save(Wishlist wishlist);
 
-    boolean deleteWishlist(Long id);
+    boolean deleteWishlist(Long id, Long memberId);
 }
