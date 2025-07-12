@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>위시리스트 테스트</title>
+</head>
+<body>
+<h1>위시리스트 테스트</h1>
+
+<label>JWT 토큰:
+    <input type="text" id="token" style="width: 400px;">
+</label>
+
+<h2>위시리스트 조회</h2>
+<button onclick="getWishes()">조회하기</button>
+<pre id="wishlist"></pre>
+
+<h2>전체 상품 목록</h2>
+<button onclick="getAllProducts()">상품 불러오기</button>
+<ul id="productList"></ul>
+
+<h2>상품 삭제</h2>
+<label>상품 ID:
+    <input type="number" id="deleteProductId">
+</label>
+<button onclick="deleteWish()">삭제</button>
+
+<h2>로그아웃</h2>
+<button onclick="logout()">로그아웃</button>
+
+<script>
+    const baseUrl = "http://localhost:8080";
+    const apiUrl = baseUrl + "/wishes";
+    const productUrl = baseUrl + "/api/products";
+
+    window.onload = () => {
+        document.getElementById("token").value = localStorage.getItem("token") || "";
+    };
+
+    function getToken() {
+        return document.getElementById("token").value;
+    }
+
+    function getWishes() {
+        fetch(apiUrl, {
+            headers: {
+                Authorization: "Bearer " + getToken()
+            }
+        })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("wishlist").textContent = JSON.stringify(data, null, 2);
+            })
+            .catch(err => alert("조회 실패: " + err));
+    }
+
+    function addWish(productId) {
+        fetch(apiUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + getToken()
+            },
+            body: JSON.stringify({ productId })
+        })
+            .then(() => alert("추가 성공"))
+            .catch(err => alert("추가 실패: " + err));
+    }
+
+    function deleteWish() {
+        const productId = document.getElementById("deleteProductId").value;
+        fetch(apiUrl, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + getToken()
+            },
+            body: JSON.stringify({ productId: Number(productId) })
+        })
+            .then(() => alert("삭제 성공"))
+            .catch(err => alert("삭제 실패: " + err));
+    }
+
+    function getAllProducts() {
+        fetch(productUrl)
+            .then(res => res.json())
+            .then(data => {
+                const list = document.getElementById("productList");
+                list.innerHTML = "";
+                data.forEach(product => {
+                    const li = document.createElement("li");
+                    li.textContent = `${product.id}. ${product.name} (${product.price}원) `;
+                    const btn = document.createElement("button");
+                    btn.textContent = "➕ 추가";
+                    btn.onclick = () => addWish(product.id);
+                    li.appendChild(btn);
+                    list.appendChild(li);
+                });
+            })
+            .catch(err => alert("상품 목록 불러오기 실패: " + err));
+    }
+
+    function logout() {
+        localStorage.removeItem("token");
+        alert("로그아웃되었습니다.");
+        window.location.href = "/auth";
+    }
+</script>
+</body>
+</html>

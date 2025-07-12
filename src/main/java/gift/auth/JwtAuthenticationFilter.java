@@ -33,7 +33,7 @@ public class JwtAuthenticationFilter implements Filter {
                 httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid or expired token");
                 return;
             }
-        } else if (requiresAuth(httpRequest)) { // 인증이 필요한 경로인데 Authorization이 없음
+        } else if (requiresAuth(httpRequest)) {
             httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authorization header required");
             return;
         }
@@ -43,7 +43,7 @@ public class JwtAuthenticationFilter implements Filter {
 
     private boolean requiresAuth(HttpServletRequest request) {
         String uri = request.getRequestURI();
-        if (uri.startsWith("/api/members/register") || uri.startsWith("/api/members/login")) {
+        if (uri.startsWith("/api/members/register") || uri.startsWith("/api/members/login") || uri.startsWith("/api/product")) {
             return false;
         }
         return uri.startsWith("/api");
