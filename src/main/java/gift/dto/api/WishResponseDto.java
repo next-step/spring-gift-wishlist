@@ -3,11 +3,11 @@ package gift.dto.api;
 import gift.entity.WishItem;
 
 public record WishResponseDto(
-        Long productId,
-        String name,
-        int price,
-        String imageUrl,
-        int quantity
+    Long productId,
+    String name,
+    int price,
+    String imageUrl,
+    int quantity
 ) {
 
     public Long getProductId() {
@@ -39,5 +39,4 @@ public record WishResponseDto(
             wi.getQuantity()
         );
     }
-
 }

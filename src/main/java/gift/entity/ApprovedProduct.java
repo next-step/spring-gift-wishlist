@@ -5,7 +5,8 @@ public class ApprovedProduct {
     private Long id;
     private String name;
 
-    public ApprovedProduct() {}
+    public ApprovedProduct() {
+    }
 
     public ApprovedProduct(String name) {
         this.name = name;
@@ -18,5 +19,4 @@ public class ApprovedProduct {
     public String getName() {
         return name;
     }
-
 }

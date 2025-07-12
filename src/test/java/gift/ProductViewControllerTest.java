@@ -42,7 +42,7 @@ public class ProductViewControllerTest {
     @DisplayName("[VIEW] 상품 목록 조회 - GET /products")
     void listProducts() throws Exception {
         productRepository.save(new Product("초콜릿", 1000, "https://image.com/choco.jpg"));
-        productRepository.save(new Product("캔디",    500,  "https://image.com/candy.jpg"));
+        productRepository.save(new Product("캔디", 500, "https://image.com/candy.jpg"));
 
         // 수행 & 검증
         mockMvc.perform(get("/products"))
@@ -106,5 +106,4 @@ public class ProductViewControllerTest {
             .andExpect(redirectedUrl("/products"))
             .andExpect(flash().attribute("errorMsg", "상품을 찾을 수 없습니다."));
     }
-
 }

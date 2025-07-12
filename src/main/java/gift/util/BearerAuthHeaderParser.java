@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 public class BearerAuthHeaderParser {
 
     public String extractBearerToken(String authorizationHeader) {
-
         if (authorizationHeader == null) {
             // 헤더 누락 → 401 Unauthorized
             throw new MissingAuthorizationHeaderException("Authorization 헤더가 필요합니다.");
@@ -19,7 +18,5 @@ public class BearerAuthHeaderParser {
         }
 
         return authorizationHeader.substring(7).trim();
-
     }
-
 }

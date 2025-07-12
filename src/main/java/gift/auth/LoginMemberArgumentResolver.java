@@ -39,18 +39,12 @@ public class LoginMemberArgumentResolver
                                   ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest,
                                   WebDataBinderFactory binderFactory) {
-
         String header = webRequest.getHeader("Authorization");
-
         String token = authHeaderParser.extractBearerToken(header);
-
         Claims claims = tokenService.parseClaims(token);
-
         Long memberId = Long.valueOf(claims.getSubject());
 
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 회원입니다."));
-
     }
-
 }

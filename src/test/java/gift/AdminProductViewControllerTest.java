@@ -54,7 +54,8 @@ public class AdminProductViewControllerTest {
             .andExpect(status().isOk())
             .andExpect(view().name("products/admin/form"))
             .andExpect(model().attributeExists("productRequest"))
-            .andExpect(model().attribute("productRequest", instanceOf(ProductViewRequestDto.class)));
+            .andExpect(
+                model().attribute("productRequest", instanceOf(ProductViewRequestDto.class)));
     }
 
     @Test
@@ -194,7 +195,7 @@ public class AdminProductViewControllerTest {
     @DisplayName("[VIEW] 상품 목록 조회 - GET /admin/products")
     void listProducts() throws Exception {
         productRepository.save(new Product("초콜릿", 1000, "https://image.com/choco.jpg"));
-        productRepository.save(new Product("캔디",    500,  "https://image.com/candy.jpg"));
+        productRepository.save(new Product("캔디", 500, "https://image.com/candy.jpg"));
 
         // 수행 & 검증
         mockMvc.perform(get("/admin/products"))
@@ -226,7 +227,6 @@ public class AdminProductViewControllerTest {
     @Test
     @DisplayName("[VIEW] 상품 상세 조회 - GET /admin/products/{id}")
     void showProductDetail_success() throws Exception {
-
         Product saved = productRepository.save(
             new Product("초콜릿", 1000, "https://image.com/choco.jpg")
         );
@@ -262,7 +262,6 @@ public class AdminProductViewControllerTest {
     @Test
     @DisplayName("[VIEW] 상품 수정 폼 진입 - GET /admin/products/{id}/edit")
     void showUpdateForm() throws Exception {
-
         productRepository.deleteAll();
         Product saved = productRepository.save(
             new Product("초콜릿", 1000, "https://image.com/choco.jpg")
@@ -287,7 +286,6 @@ public class AdminProductViewControllerTest {
     @Test
     @DisplayName("[Form] 상품 수정 성공 - 유효한 데이터")
     void updateProduct_success() throws Exception {
-
         Product saved = productRepository.save(
             new Product("초콜릿", 1000, "https://image.com/choco.jpg")
         );
@@ -305,7 +303,6 @@ public class AdminProductViewControllerTest {
     @Test
     @DisplayName("[Form] 상품 수정 성공 - '카카오' 포함된 승인된 상품명")
     void updateProduct_success_withApprovedName() throws Exception {
-
         // '카카오' 포함된 승인된 상품명 추가
         approvedProductRepository.save(new ApprovedProduct("카카오 프렌즈 볼펜"));
 
@@ -326,7 +323,6 @@ public class AdminProductViewControllerTest {
     @Test
     @DisplayName("[Form] 상품 수정 실패 - '카카오' 포함 & 승인되지 않은 상품명")
     void updateProduct_fail_unapprovedKakaoName() throws Exception {
-
         Product saved = productRepository.save(
             new Product("초콜릿", 1000, "https://image.com/choco.jpg")
         );
@@ -345,7 +341,6 @@ public class AdminProductViewControllerTest {
     @Test
     @DisplayName("[Form] 상품 수정 실패 - 상품명 없음")
     void updateProduct_fail_blankName() throws Exception {
-
         Product saved = productRepository.save(
             new Product("초콜릿", 1000, "https://image.com/choco.jpg")
         );
@@ -364,7 +359,6 @@ public class AdminProductViewControllerTest {
     @Test
     @DisplayName("[Form] 상품 수정 실패 - 상품명 15자 초과")
     void updateProduct_fail_nameTooLong() throws Exception {
-
         Product saved = productRepository.save(
             new Product("초콜릿", 1000, "https://image.com/choco.jpg")
         );
@@ -383,7 +377,6 @@ public class AdminProductViewControllerTest {
     @Test
     @DisplayName("[Form] 상품 수정 실패 - 상품명에 허용되지 않은 문자 사용")
     void updateProduct_fail_invalidNameCharacters() throws Exception {
-
         Product saved = productRepository.save(
             new Product("초콜릿", 1000, "https://image.com/choco.jpg")
         );
@@ -402,7 +395,6 @@ public class AdminProductViewControllerTest {
     @Test
     @DisplayName("[Form] 상품 수정 실패 - 가격 없음")
     void updateProduct_fail_priceMissing() throws Exception {
-
         Product saved = productRepository.save(
             new Product("초콜릿", 1000, "https://image.com/choco.jpg")
         );
@@ -421,7 +413,6 @@ public class AdminProductViewControllerTest {
     @Test
     @DisplayName("[Form] 상품 수정 실패 - 가격 음수")
     void updateProduct_fail_negativePrice() throws Exception {
-
         Product saved = productRepository.save(
             new Product("초콜릿", 1000, "https://image.com/choco.jpg")
         );
@@ -440,7 +431,6 @@ public class AdminProductViewControllerTest {
     @Test
     @DisplayName("[Form] 상품 수정 실패 - 이미지 URL 없음")
     void updateProduct_fail_imageUrlMissing() throws Exception {
-
         Product saved = productRepository.save(
             new Product("초콜릿", 1000, "https://image.com/choco.jpg")
         );
@@ -459,7 +449,6 @@ public class AdminProductViewControllerTest {
     @Test
     @DisplayName("[Form] 상품 수정 실패 - 유효하지 않은 이미지 URL")
     void updateProduct_fail_invalidImageUrl() throws Exception {
-
         Product saved = productRepository.save(
             new Product("초콜릿", 1000, "https://image.com/choco.jpg")
         );
@@ -478,7 +467,6 @@ public class AdminProductViewControllerTest {
     @Test
     @DisplayName("[Form] 상품 삭제 처리 - 성공")
     void deleteProduct_success() throws Exception {
-
         Product saved = productRepository.save(
             new Product("초콜릿", 1000, "https://image.com/choco.jpg")
         );
@@ -489,5 +477,4 @@ public class AdminProductViewControllerTest {
             .andExpect(status().isFound())
             .andExpect(redirectedUrl("/admin/products"));
     }
-
 }

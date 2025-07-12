@@ -18,16 +18,16 @@ public class WishService {
     private final ProductRepository productRepository;
 
     public WishService(WishRepository wishRepository,
-                       ProductRepository productRepository) {
+        ProductRepository productRepository) {
         this.wishRepository = wishRepository;
         this.productRepository = productRepository;
     }
 
-    public  List<WishResponseDto>getWishListForMember(Member member) {
+    public List<WishResponseDto> getWishListForMember(Member member) {
         List<WishItem> items = wishRepository.findAllByMemberId(member.getId());
         return items.stream()
-                .map(WishResponseDto::of)
-                .toList();
+            .map(WishResponseDto::of)
+            .toList();
     }
 
     public void addWishItemForMember(Member member, WishRequestDto wishRequestDto) {
@@ -36,9 +36,9 @@ public class WishService {
         }
 
         wishRepository.updateOrInsertWishItem(
-                member.getId(),
-                wishRequestDto.productId(),
-                wishRequestDto.quantity()
+            member.getId(),
+            wishRequestDto.productId(),
+            wishRequestDto.quantity()
         );
     }
 

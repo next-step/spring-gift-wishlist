@@ -41,5 +41,4 @@ public class ProductViewController {
             return "redirect:/products";
         }
     }
-
 }

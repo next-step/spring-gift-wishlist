@@ -17,10 +17,10 @@ public class ApprovedProductRepository {
     public boolean isApproved(String name) {
         String sql = "SELECT EXISTS (SELECT 1 FROM approved_products WHERE name = ?)";
         return jdbcClient
-                .sql(sql)
-                .param(name)
-                .query(Boolean.class)
-                .single();
+            .sql(sql)
+            .param(name)
+            .query(Boolean.class)
+            .single();
     }
 
     // 승인 상품 등록
@@ -28,5 +28,4 @@ public class ApprovedProductRepository {
         String sql = "INSERT INTO approved_products (name) VALUES (?)";
         jdbcClient.sql(sql).param(product.getName()).update();
     }
-
 }

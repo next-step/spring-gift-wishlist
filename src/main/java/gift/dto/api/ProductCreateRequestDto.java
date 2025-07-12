@@ -11,8 +11,8 @@ public class ProductCreateRequestDto {
     @NotBlank(message = "상품명은 필수입니다.")
     @Size(max = 15, message = "최대 15자까지 가능합니다.")
     @Pattern(
-            regexp = "^[a-zA-Z0-9가-힣()\\[\\]+\\-&/_ ]*$",
-            message = "유효한 특수문자 ( '( )', '[ ]', '+', '-', '&', '/', '_' ) 가 아닙니다."
+        regexp = "^[a-zA-Z0-9가-힣()\\[\\]+\\-&/_ ]*$",
+        message = "유효한 특수문자 ( '( )', '[ ]', '+', '-', '&', '/', '_' ) 가 아닙니다."
     )
     private String name;
 
@@ -44,5 +44,4 @@ public class ProductCreateRequestDto {
     public String getImageUrl() {
         return imageUrl;
     }
-
 }

@@ -39,5 +39,4 @@ public class WishController {
                                @PathVariable Long productId) {
         wishService.removeWishItemForMember(member, productId);
     }
-
 }

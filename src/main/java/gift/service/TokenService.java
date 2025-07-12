@@ -16,7 +16,7 @@ public class TokenService {
     private final long expirationMs;
 
     public TokenService(@Value("${jwt.secret}") String secret,
-                        @Value("${jwt.expiration-ms}") long expirationMs) {
+        @Value("${jwt.expiration-ms}") long expirationMs) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
         this.expirationMs = expirationMs;
     }
@@ -35,10 +35,9 @@ public class TokenService {
 
     public Claims parseClaims(String token) {
         return Jwts.parser()
-                .setSigningKey(key)   // 생성 때 사용한 key 그대로
-                .build()
-                .parseClaimsJws(token)
-                .getBody();          // exp 검증까지 자동
+            .setSigningKey(key)   // 생성 때 사용한 key 그대로
+            .build()
+            .parseClaimsJws(token)
+            .getBody();          // exp 검증까지 자동
     }
-
 }

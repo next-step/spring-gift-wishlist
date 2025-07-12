@@ -25,5 +25,4 @@ public class MemberRegisterRequestDto {
     public String getPassword() {
         return password;
     }
-
 }

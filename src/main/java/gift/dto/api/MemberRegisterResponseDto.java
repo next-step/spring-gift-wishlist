@@ -11,5 +11,4 @@ public class MemberRegisterResponseDto {
     public String getToken() {
         return token;
     }
-
 }

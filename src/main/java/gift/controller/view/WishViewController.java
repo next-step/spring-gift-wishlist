@@ -50,5 +50,4 @@ public class WishViewController {
         ra.addFlashAttribute("msg", "삭제 완료!");
         return "redirect:/wishes";
     }
-
 }

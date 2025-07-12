@@ -46,5 +46,4 @@ public class WishItem {
     public int getQuantity() {
         return quantity;
     }
-
 }

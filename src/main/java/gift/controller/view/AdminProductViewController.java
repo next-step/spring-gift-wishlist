@@ -42,15 +42,15 @@ public class AdminProductViewController {
 
     // 상품 등록 요청 처리
     @PostMapping("/new")
-    public String createProduct(@Valid @ModelAttribute("productRequest") ProductViewRequestDto request,
-                                BindingResult bindingResult,
-                                Model model) {
+    public String createProduct(
+        @Valid @ModelAttribute("productRequest") ProductViewRequestDto request,
+        BindingResult bindingResult,
+        Model model) {
         if (bindingResult.hasErrors()) {
             return "products/admin/form";     // 유효성 오류 있으면 다시 폼으로
         }
 
         try {
-
             Product product = new Product(
                 request.getName(),
                 request.getPrice(),
@@ -59,13 +59,11 @@ public class AdminProductViewController {
 
             productService.registerProduct(product);
             return "redirect:/admin/products";
-
         } catch (IllegalArgumentException e) {
             // 예외 메세지를 모델에 추가
             model.addAttribute("errorMessage", e.getMessage());
             return "products/admin/form";
         }
-
     }
 
     // 상품 개별 조회 요청 처리
@@ -111,7 +109,6 @@ public class AdminProductViewController {
         }
 
         try {
-
             // dto를 변환해서 넘김
             ProductUpdateRequestDto updateDto = new ProductUpdateRequestDto(
                 dto.getName(), dto.getPrice(), dto.getImageUrl()
@@ -119,7 +116,6 @@ public class AdminProductViewController {
 
             productService.updateProduct(id, updateDto);
             return "redirect:/admin/products";
-
         } catch (IllegalArgumentException e) {
             // 예외 메세지를 모델에 추가
             model.addAttribute("errorMessage", e.getMessage());
@@ -134,5 +130,4 @@ public class AdminProductViewController {
         productService.deleteProduct(id); // 서비스 재사용
         return "redirect:/admin/products"; // 삭제 후 목록 페이지로 이동
     }
-
 }

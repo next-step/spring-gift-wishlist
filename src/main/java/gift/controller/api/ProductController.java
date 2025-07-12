@@ -59,5 +59,4 @@ public class ProductController {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build(); // 204 No Content
     }
-
 }
