@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS Wishlist;
+
 DROP TABLE IF EXISTS Gift;
 
 CREATE TABLE Gift(
@@ -17,6 +19,14 @@ CREATE TABLE Users(
     email VARCHAR(255) UNIQUE,
     password VARCHAR(255),
     primary key(id)
+);
+
+CREATE TABLE Wishlist(
+  gift_id BIGINT NOT NULL,
+  user_id BIGINT UNIQUE NOT NULL,
+  primary key (gift_id, user_id),
+  foreign key (user_id) references Gift(id),
+  foreign key (gift_id) references Users(id)
 );
 
 commit;

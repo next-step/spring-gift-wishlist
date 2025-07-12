@@ -1,14 +1,15 @@
 package gift.controller;
 
+import gift.annotation.AuthUser;
 import gift.dto.request.GiftCreateRequest;
 import gift.dto.request.GiftModifyRequest;
 import gift.dto.response.GiftResponse;
+import gift.entity.User;
 import gift.exception.gift.InValidSpecialCharException;
 import gift.exception.gift.NeedAcceptException;
 import gift.exception.gift.NoGiftException;
 import gift.exception.gift.NoValueException;
 import gift.service.GiftService;
-import gift.service.TokenService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -23,21 +24,19 @@ import static gift.status.GiftErrorStatus.*;
 @RequestMapping("/api/gifts")
 public class GiftController {
     private final GiftService giftService;
-    private final TokenService tokenService;
 
-    public GiftController(GiftService giftService, TokenService tokenService) {
+    public GiftController(GiftService giftService) {
         this.giftService = giftService;
-        this.tokenService = tokenService;
     }
 
-    @PostMapping("")
+    @PostMapping()
     public ResponseEntity<GiftResponse> addGift(
             @Valid @RequestBody GiftCreateRequest giftCreateRequest,
-            @RequestHeader HttpHeaders headers
+            @AuthUser User user
     ) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(giftService.addGift(giftCreateRequest, headers.get("Authorization")));
+                .body(giftService.addGift(giftCreateRequest));
     }
 
     @GetMapping("/{id}")
@@ -45,7 +44,7 @@ public class GiftController {
         return ResponseEntity.ok().body(giftService.getGiftById(id));
     }
 
-    @GetMapping("")
+    @GetMapping()
     public ResponseEntity<List<GiftResponse>> getAllGifts(){
         return ResponseEntity.ok().body(giftService.getAllGifts());
     }
@@ -54,9 +53,8 @@ public class GiftController {
     public ResponseEntity<GiftResponse> updateGift(
             @PathVariable Long id,
             @Valid @RequestBody GiftModifyRequest giftModifyRequest,
-            @RequestHeader HttpHeaders headers
+            @AuthUser User user
     ) {
-        tokenService.isTokenExpired(headers.get("Authorization"));
         return ResponseEntity.ok().body(giftService.updateGift(id, giftModifyRequest));
     }
 
@@ -65,7 +63,6 @@ public class GiftController {
             @PathVariable Long id,
             @RequestHeader HttpHeaders headers
     ) {
-        tokenService.isTokenExpired(headers.get("Authorization"));
         giftService.deleteGift(id);
         return ResponseEntity.noContent().build();
     }

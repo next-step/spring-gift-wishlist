@@ -25,11 +25,8 @@ public class TokenService {
     @Value("${jwt-access-token-expire-time}")
     private Integer accessTokenTTL;
 
-    public boolean isTokenExpired(List<String> tokens) throws TokenExpiredException {
-        if(!JwtParser.isValidTokenType(tokens)){
-            throw new TokenTypeException(INVALID_TOKEN_TYPE.getErrorMessage());
-        }
-        return extractExpiration(JwtParser.getToken(tokens)).before(new Date());
+    public boolean isTokenExpired(String token) throws TokenExpiredException {
+        return extractExpiration(token).before(new Date());
     }
 
     public String generateToken(String email) {

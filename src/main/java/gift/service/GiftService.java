@@ -16,16 +16,12 @@ import static gift.status.GiftErrorStatus.*;
 @Service
 public class GiftService {
     private final GiftRepository giftRepository;
-    private final TokenService tokenService;
 
-    public GiftService(GiftRepository giftRepository,  TokenService tokenService) {
+    public GiftService(GiftRepository giftRepository) {
         this.giftRepository = giftRepository;
-        this.tokenService = tokenService;
     }
 
-    public GiftResponse addGift(GiftCreateRequest giftCreateRequest, List<String> token) {
-        tokenService.isTokenExpired(token);
-
+    public GiftResponse addGift(GiftCreateRequest giftCreateRequest) {
         Gift gift = giftCreateRequest.toEntity();
         if(!gift.isGiftNameValid()){
             throw new InValidSpecialCharException(WRONG_CHARACTER.getErrorMessage());
