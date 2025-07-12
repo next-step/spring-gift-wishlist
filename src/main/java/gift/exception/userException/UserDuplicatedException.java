@@ -1,5 +1,6 @@
-package gift.exception;
+package gift.exception.userException;
 
+import gift.exception.ApplicationException;
 import org.springframework.http.HttpStatus;
 
 public class UserDuplicatedException extends ApplicationException {

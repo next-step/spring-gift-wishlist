@@ -12,7 +12,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = {UserRegisterValidator.class})
-
 public @interface UserFieldValid {
     String message() default "잘못된 입력입니다.";
 

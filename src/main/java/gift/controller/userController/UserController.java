@@ -57,7 +57,7 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @DeleteMapping()
+    @DeleteMapping
     public ResponseEntity<?> deleteUser(@RequestHeader("Authorization") String authHeader, @RequestParam Long id, Model model) {
         String token = tokenUtils.extractToken(authHeader);
         tokenUtils.validateToken(token);

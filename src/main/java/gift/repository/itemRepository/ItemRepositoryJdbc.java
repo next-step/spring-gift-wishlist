@@ -1,7 +1,7 @@
 package gift.repository.itemRepository;
 
 import gift.entity.Item;
-import gift.exception.ItemNotFoundException;
+import gift.exception.itemException.ItemNotFoundException;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

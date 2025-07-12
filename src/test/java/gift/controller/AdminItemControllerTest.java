@@ -1,31 +1,30 @@
 package gift.controller;
 
+import gift.Jwt.JwtUtil;
+import gift.Jwt.TokenUtils;
 import gift.dto.itemDto.ItemCreateDto;
-import gift.repository.itemRepository.ItemRepository;
+import gift.entity.User;
+import gift.entity.UserRole;
 import gift.service.itemService.ItemService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.web.client.RestClient;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest
 @AutoConfigureWebTestClient
 class AdminItemControllerTest {
 
     @Autowired
-    private ItemRepository itemRepository;
-
-    @LocalServerPort
-    int port;
-
-    @Autowired
     private ItemService itemService;
 
-    private RestClient client = RestClient.builder().build();
+    @Autowired
+    private TokenUtils tokenUtils;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @Test
     void 카카오상품저장하기() {
@@ -41,6 +40,17 @@ class AdminItemControllerTest {
         itemService.saveItem(dto);
         assertThat(itemService.getAllItems())
                 .anyMatch(item -> item.name().equals("카카오"));
+    }
+
+    @Test
+    void 이메일추출_성공() {
+
+        User user = new User(1L, "tester@example.com", "securePassword", UserRole.USER);
+        String token = jwtUtil.generateToken(user);
+
+        String extractedEmail = tokenUtils.extractEmail(token);
+
+        assertThat(extractedEmail).isEqualTo("tester@example.com");
     }
 
 }
