@@ -7,6 +7,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class WishRepositoryImpl implements WishRepository {
@@ -43,5 +44,30 @@ public class WishRepositoryImpl implements WishRepository {
                         rs.getLong("product_id")
                     ))
                 .list();
+    }
+
+    @Override
+    public void delete(Long id) {
+        jdbcClient.sql("DELETE FROM wish WHERE id = :id")
+                .param("id", id)
+                .update();
+    }
+
+    @Override
+    public Optional<Wish> findByMemberIdAndProductId(Long memberId, Long productId) {
+        return jdbcClient.sql("""
+                    SELECT id, member_id, product_id
+                    FROM wish
+                    WHERE member_id = :memberId AND product_id = :productId
+                """)
+                .param("memberId", memberId)
+                .param("productId", productId)
+                .query((rs, rowNum) ->
+                        new Wish(
+                                rs.getLong("id"),
+                                rs.getLong("member_id"),
+                                rs.getLong("product_id")
+                        ))
+                .optional();
     }
 }

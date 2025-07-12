@@ -67,4 +67,11 @@ public class WebControllerAdvice {
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(Map.of("message",e.getMessage()));
     }
+
+    @ExceptionHandler(WishNotFoundException.class)
+    public ResponseEntity<Map<String,String>> handleDuplicateWish (WishNotFoundException e){
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(Map.of("message",e.getMessage()));
+    }
 }

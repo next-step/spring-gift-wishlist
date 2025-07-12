@@ -6,7 +6,7 @@ import gift.auth.LoginMemberArgumentResolver;
 import gift.controller.WishController;
 import gift.domain.Member;
 import gift.dto.request.WishRequest;
-import gift.dto.response.WishAddResponse;
+import gift.dto.response.WishMsgResponse;
 import gift.service.MemberService;
 import gift.service.WishService;
 import org.junit.jupiter.api.DisplayName;
@@ -53,7 +53,7 @@ public class WishControllerTest {
     @Test
     void 위시리스트_추가_성공() throws Exception {
         given(wishService.add(any(Member.class), any(WishRequest.class)))
-                .willReturn(new WishAddResponse("위시리스트에 추가되었습니다."));
+                .willReturn(new WishMsgResponse("위시리스트에 추가되었습니다."));
 
         given(loginMemberArgumentResolver.supportsParameter(any())).willReturn(true);
         given(loginMemberArgumentResolver.resolveArgument(any(), any(), any(), any()))

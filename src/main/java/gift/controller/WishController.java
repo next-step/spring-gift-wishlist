@@ -3,7 +3,7 @@ package gift.controller;
 import gift.auth.LoginMember;
 import gift.domain.Member;
 import gift.dto.request.WishRequest;
-import gift.dto.response.WishAddResponse;
+import gift.dto.response.WishMsgResponse;
 import gift.dto.response.WishResponse;
 import gift.service.WishService;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +24,9 @@ public class WishController {
     }
 
     @PostMapping
-    public ResponseEntity<WishAddResponse> add(@RequestBody WishRequest request,
+    public ResponseEntity<WishMsgResponse> add(@RequestBody WishRequest request,
                                                @LoginMember Member member){
-        WishAddResponse response = wishService.add(member,request);
+        WishMsgResponse response = wishService.add(member,request);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{productId}")
@@ -38,5 +38,12 @@ public class WishController {
     @GetMapping
     public List<WishResponse> getWishList(@LoginMember Member member) {
         return wishService.getWishList(member);
+    }
+
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<WishMsgResponse> delete(@PathVariable Long productId,
+                                                  @LoginMember Member member) {
+        WishMsgResponse response = wishService.deleteByProductId(member, productId);
+        return ResponseEntity.ok(response);
     }
 }
