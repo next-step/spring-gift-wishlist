@@ -1,6 +1,6 @@
 package gift.controller;
 
-import gift.annotation.LoginMember;
+import gift.annotation.CurrentMember;
 import gift.dto.WishRequestDto;
 import gift.dto.WishResponseDto;
 import gift.entity.Member;
@@ -24,14 +24,14 @@ public class WishController {
     }
 
     @GetMapping
-    public ResponseEntity<List<WishResponseDto>> findWishList(@LoginMember Member member) {
+    public ResponseEntity<List<WishResponseDto>> findWishList(@CurrentMember Member member) {
 
         return ResponseEntity.ok(wishService.findWishList(member.getId()));
     }
 
     @PostMapping
     public ResponseEntity<WishResponseDto> createWish(
-            @LoginMember Member member,
+            @CurrentMember Member member,
             @Valid @RequestBody WishRequestDto dto
             ) {
 
@@ -42,7 +42,7 @@ public class WishController {
     @DeleteMapping("/{wishId}")
     public ResponseEntity<Void> deleteWish(
             @PathVariable Long wishId,
-            @LoginMember Member member
+            @CurrentMember Member member
     ) {
         wishService.deleteWish(wishId, member);
         return ResponseEntity.noContent().build();
