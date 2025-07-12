@@ -38,20 +38,6 @@ public class WishJdbcRepository implements WishRepository {
     }
 
     @Override
-    public Optional<Integer> getCurrnetQuantity(String productName, Long userId) {
-        try {
-            Integer quantity = jdbcTemplate.queryForObject(
-                "select quantity from wish_list where product_name = ? and user_id = ?",
-                Integer.class,
-                productName, userId
-            );
-            return Optional.ofNullable(quantity);
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
-    }
-
-    @Override
     public long addProduct(String productName, String email) {
         Optional<Product> product = productJdbcRepository.findByName(productName);
         long userId = userJdbcRepository.findUserIdByEmail(email);
