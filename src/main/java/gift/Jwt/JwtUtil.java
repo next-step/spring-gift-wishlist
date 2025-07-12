@@ -1,6 +1,8 @@
 package gift.Jwt;
 
 import gift.entity.User;
+import gift.exception.userException.ExpiredTokenException;
+import gift.exception.userException.UnauthorizedException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -42,12 +44,10 @@ public class JwtUtil {
             Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
             return true;
         } catch (ExpiredJwtException e) {
-            System.out.println("토큰이 만료되었습니다.");
+            throw new ExpiredTokenException();
         } catch (SignatureException e) {
-            System.out.println("유효하지 않은 토큰 입니다.");
+            throw new UnauthorizedException();
         }
-
-        return false;
     }
 
 
