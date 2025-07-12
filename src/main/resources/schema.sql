@@ -13,7 +13,7 @@ CREATE TABLE USERS (
     role     VARCHAR(50) NOT NULL
     );
 
-CREATE TABLE wish_items (
+CREATE TABLE WISH_ITEMS (
     id         BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id    BIGINT NOT NULL,
     item_id    BIGINT NOT NULL,
