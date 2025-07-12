@@ -70,3 +70,11 @@
   - ProductRepository
   - UserRepository
 
+## STEP-03 위시리스트(완료되면 수정하겠습니다.)
+---
+### (현재 문제점)
+- 분명 wishlist에 저장을 해야 하는데 저장이 안됨. 
+- Postman에서 API Test를 하면 통과가 200 응답은 나오지만 정작 테이블을 조회하면 데이터가 없음
+- wishlistService에서 해당 이메일의 사용자가 productId를 이미 위시리스트에 두었는지 확인
+  - 존재하지 않으면 productRepository에서 Id로 해당 물품을 찾고 entity화 시켜서 반환
+  - email과 product 객체를 wishlistRepository.save에 넘겨줌
