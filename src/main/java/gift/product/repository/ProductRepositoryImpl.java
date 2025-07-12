@@ -1,10 +1,14 @@
 package gift.product.repository;
 
+import gift.exception.product.ProductNotFoundException;
 import gift.product.entity.Product;
-import gift.product.exception.ProductNotFoundException;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -17,12 +21,23 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public void saveProduct(Product product) {
+    public Long saveProduct(Product product) {
 
         String sql = "INSERT INTO products(name, price, imageUrl, mdConfirmed) VALUES(?,?,?,?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        jdbcTemplate.update(sql, product.getName(), product.getPrice(), product.getImageUrl(),
-            product.getMdConfirmed());
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql,
+                Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, product.getName());
+            ps.setDouble(2, product.getPrice());
+            ps.setString(3, product.getImageUrl());
+            ps.setBoolean(4, product.getMdConfirmed());
+            return ps;
+        }, keyHolder);
+
+        Number key = keyHolder.getKey();
+        return (key != null) ? key.longValue() : null;
     }
 
     @Override
@@ -51,7 +66,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public void updateProductById(Product product) {
+    public void updateProduct(Product product) {
 
         String sql = "UPDATE products SET name = ?, price = ?, imageUrl = ?, mdConfirmed = ? WHERE productId = ?";
 
@@ -62,7 +77,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 
 
     @Override
-    public void deleteProductById(Long productId) {
+    public void deleteProduct(Long productId) {
 
         String sql = "DELETE FROM products WHERE productId = ?";
 

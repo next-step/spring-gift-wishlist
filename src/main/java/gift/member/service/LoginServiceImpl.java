@@ -1,20 +1,20 @@
 package gift.member.service;
 
+import gift.exception.member.LoginFailedException;
 import gift.member.dto.LoginRequestDto;
 import gift.member.dto.TokenResponseDto;
 import gift.member.entity.Member;
-import gift.member.exception.LoginFailedException;
 import gift.member.repository.MemberRepository;
 import gift.member.security.JwtTokenProvider;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthServiceImpl implements AuthService {
+public class LoginServiceImpl implements LoginService {
 
     private final MemberRepository memberRepository;
 
-    public AuthServiceImpl(MemberRepository memberRepository) {
+    public LoginServiceImpl(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
 

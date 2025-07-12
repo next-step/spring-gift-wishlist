@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface MemberRepository {
 
-    void saveMember(Member member);
+    Long saveMember(Member member);
 
     Member findMemberByEmail(String email);
 
@@ -13,7 +13,9 @@ public interface MemberRepository {
 
     Member findMemberById(Long memberId);
 
-    void updateMemberById(Member member);
+    void updateMember(Member member);
 
-    void deleteMemberById(Long memberId);
+    void deleteMember(Long memberId);
+
+    Boolean existsByEmail(String email);
 }

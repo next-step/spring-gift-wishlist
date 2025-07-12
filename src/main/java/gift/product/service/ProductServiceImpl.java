@@ -1,11 +1,11 @@
 package gift.product.service;
 
+import gift.exception.product.UnapprovedProductException;
 import gift.product.dto.ProductCreateRequestDto;
-import gift.product.dto.ProductUpdateRequestDto;
 import gift.product.dto.ProductCreateResponseDto;
 import gift.product.dto.ProductGetResponseDto;
+import gift.product.dto.ProductUpdateRequestDto;
 import gift.product.entity.Product;
-import gift.product.exception.UnapprovedProductException;
 import gift.product.repository.ProductRepository;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,10 +36,12 @@ public class ProductServiceImpl implements ProductService {
             productCreateRequestDto.price(), productCreateRequestDto.imageUrl(),
             mdConfirmed);
 
-        productRepository.saveProduct(product);
+        Long productId = productRepository.saveProduct(product);
 
-        return new ProductCreateResponseDto(product.getProductId(), product.getName(),
-            product.getPrice(), product.getImageUrl(), product.getMdConfirmed());
+        Product savedProduct = productRepository.findProductById(productId);
+
+        return new ProductCreateResponseDto(savedProduct.getProductId(), savedProduct.getName(),
+            savedProduct.getPrice(), savedProduct.getImageUrl(), savedProduct.getMdConfirmed());
     }
 
     @Override
@@ -66,7 +68,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void updateProductById(Long productId, ProductUpdateRequestDto productUpdateRequestDto) {
+    public void updateProduct(Long productId, ProductUpdateRequestDto productUpdateRequestDto) {
         findProductById(productId);
 
         Boolean mdConfirmed =
@@ -82,13 +84,13 @@ public class ProductServiceImpl implements ProductService {
             productUpdateRequestDto.price(), productUpdateRequestDto.imageUrl(),
             mdConfirmed);
 
-        productRepository.updateProductById(product);
+        productRepository.updateProduct(product);
     }
 
     @Override
-    public void deleteProductById(Long productId) {
+    public void deleteProduct(Long productId) {
         findProductById(productId);
 
-        productRepository.deleteProductById(productId);
+        productRepository.deleteProduct(productId);
     }
 }

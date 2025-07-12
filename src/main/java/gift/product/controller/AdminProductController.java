@@ -1,8 +1,8 @@
 package gift.product.controller;
 
 import gift.product.dto.ProductCreateRequestDto;
-import gift.product.dto.ProductUpdateRequestDto;
 import gift.product.dto.ProductGetResponseDto;
+import gift.product.dto.ProductUpdateRequestDto;
 import gift.product.service.ProductService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -101,7 +101,7 @@ public class AdminProductController {
         }
 
         try {
-            productService.updateProductById(productId, productUpdateRequestDto);
+            productService.updateProduct(productId, productUpdateRequestDto);
             return "redirect:/admin/products";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
@@ -114,7 +114,7 @@ public class AdminProductController {
     public String deleteProductById(@PathVariable Long productId, Model model) {
 
         try {
-            productService.deleteProductById(productId);
+            productService.deleteProduct(productId);
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());
         }
