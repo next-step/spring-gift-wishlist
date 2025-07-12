@@ -25,4 +25,9 @@ public class MemberPageController {
     public String myInfoPage() {
         return "member/myinfo";
     }
+
+    @GetMapping("/wishes")
+    public String wishListPage() {
+        return "member/wishlist";
+    }
 }

@@ -1,10 +1,7 @@
 package gift.controller.api;
 
 import gift.dto.ErrorResponse;
-import gift.exception.EmailAlreadyExistsException;
-import gift.exception.InvalidTokenException;
-import gift.exception.LoginFailedException;
-import gift.exception.ProductNotFoundException;
+import gift.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -63,6 +60,17 @@ public class ApiExceptionHandler {
     @ExceptionHandler(InvalidTokenException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorResponse handleInvalidToken(InvalidTokenException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(WishAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleWishAlreadyExists(WishAlreadyExistsException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+    @ExceptionHandler(UnauthorizedWishAccessException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse handleUnauthorizedWishAccess(UnauthorizedWishAccessException e) {
         return new ErrorResponse(e.getMessage());
     }
 }
