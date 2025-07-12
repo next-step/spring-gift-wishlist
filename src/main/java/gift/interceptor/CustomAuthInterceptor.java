@@ -29,11 +29,8 @@ public class CustomAuthInterceptor implements HandlerInterceptor {
             return true;
         }
         String token = request.getHeader("Authorization");
-        Optional<Member> find = tokenService.isValidateToken(token);
-        if (find.isEmpty()) {
-            throw new CustomException(ErrorCode.NotLogin);
-        }
-        request.setAttribute("login", find.get());
+        Member find = tokenService.isValidateToken(token);
+        request.setAttribute("login", find);
         return true;
     }
 }

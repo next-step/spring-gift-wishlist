@@ -1,6 +1,8 @@
 package gift.service;
 
 import gift.entity.Member;
+import gift.exception.CustomException;
+import gift.exception.ErrorCode;
 import gift.repository.MemberRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -19,20 +21,19 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public Optional<Member> isValidateToken(String token) {
-        try {
-            Claims claims = Jwts.parser()
-                    .verifyWith(Keys.hmacShaKeyFor(key.getBytes()))
-                    .build()
-                    .parseSignedClaims(token)
-                    .getPayload();
-            Optional<Member> find = memberRepository.findMemberByEmail(
-                    claims.get("email", String.class));
-            return find;
+    public Member isValidateToken(String token) {
+        Claims claims = Jwts.parser()
+                .verifyWith(Keys.hmacShaKeyFor(key.getBytes()))
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+        Optional<Member> find = memberRepository.findMemberByEmail(
+                claims.get("email", String.class));
 
-        } catch (Exception e) {
-            return Optional.empty();
+        if(find.isEmpty()){
+            throw new CustomException(ErrorCode.NotLogin);
         }
+        return find.get();
     }
 
     @Override
