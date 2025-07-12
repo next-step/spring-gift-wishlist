@@ -1,6 +1,8 @@
 package gift.service;
 
+import gift.dto.AuthenticatedMemberDto;
 import gift.dto.ProductResponseDto;
+import gift.dto.WishRequestDto;
 import gift.dto.WishResponseDto;
 import gift.entity.Product;
 import gift.entity.Wish;
@@ -23,19 +25,22 @@ public class WishService {
     }
 
     @Transactional
-    public WishResponseDto addWish(Long memberId, Long productId) {
-        Product product = productService.findProductOrThrow(productId);
+    public WishResponseDto addWish(
+            AuthenticatedMemberDto authenticatedMemberDto,
+            WishRequestDto wishRequestDto) {
+        Product product = productService.findProductOrThrow(wishRequestDto.productId());
 
-        Wish wish = new Wish(memberId, productId);
+        Wish wish = new Wish(authenticatedMemberDto.id(), wishRequestDto.productId());
         Long id = wishRepository.saveWish(wish);
 
         return new WishResponseDto(id, ProductResponseDto.from(product));
     }
 
     @Transactional(readOnly = true)
-    public List<WishResponseDto> getWishlistByMemberId(long memberId) {
+    public List<WishResponseDto> getWishlistByMemberId(
+            AuthenticatedMemberDto authenticatedMemberDto) {
 
-        List<Wish> wishes = wishRepository.findAllWishesByMemberId(memberId);
+        List<Wish> wishes = wishRepository.findAllWishesByMemberId(authenticatedMemberDto.id());
         return wishes.stream()
                      .map(wish -> {
                          Product product = productService.findProductOrThrow(wish.getProductId());
@@ -45,11 +50,13 @@ public class WishService {
     }
 
     @Transactional
-    public void deleteWishById(Long memberId, Long wishId) {
+    public void deleteWishById(
+            AuthenticatedMemberDto authenticatedMemberDto,
+            Long wishId) {
         Wish wish = wishRepository.findWishById(wishId)
                                   .orElseThrow(() -> new WishNotFoundException(wishId));
 
-        if (!memberId.equals(wish.getMemberId())) {
+        if (!authenticatedMemberDto.id().equals(wish.getMemberId())) {
             throw new PermissionDeniedException("해당 상품을 삭제할 권한이 없습니다.");
         }
 

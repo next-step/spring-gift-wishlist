@@ -1,5 +1,7 @@
 package gift.config;
 
+import gift.dto.AuthenticatedMemberDto;
+import gift.entity.Member;
 import gift.exception.UnAuthenticationException;
 import gift.service.MemberService;
 import org.springframework.core.MethodParameter;
@@ -12,6 +14,8 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 @Component
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
+
+    private static final String BEARER = "Bearer ";
 
     private final JwtProvider jwtProvider;
     private final MemberService memberService;
@@ -32,13 +36,17 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
 
         String authorization = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if (authorization == null || !authorization.startsWith("Bearer ")) {
+        if (authorization == null || !authorization.startsWith(BEARER)) {
             throw new UnAuthenticationException("토큰 형식이 올바르지 않습니다.");
         }
 
-        String token = authorization.split("Bearer ")[1];
+        String token = authorization.substring(BEARER.length());
         Long memberId = jwtProvider.getMemberIdFromToken(token);
 
-        return memberService.getMemberById(memberId);
+        Member authenticatedMember = memberService.getMemberById(memberId)
+                                                  .orElseThrow(() -> new UnAuthenticationException(
+                                                          "인증되지 않은 사용자입니다"));
+
+        return new AuthenticatedMemberDto(authenticatedMember.getId());
     }
 }
