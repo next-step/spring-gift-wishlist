@@ -47,7 +47,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
 
         Long memberId = Long.valueOf(claims.getSubject());
 
-        Member member = memberService.findById(memberId);
+        Member member = memberService.findByToken(token);
         if (member == null) {
             throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
         }
