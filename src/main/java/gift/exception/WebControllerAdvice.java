@@ -46,7 +46,7 @@ public class WebControllerAdvice {
                 .status(HttpStatus.CONFLICT)
                 .body(Map.of("message",e.getMessage()));
     }
-
+  
     @ExceptionHandler(DuplicateWishException.class)
     public ResponseEntity<Map<String,String>> handleDuplicateWish (DuplicateWishException e){
         return ResponseEntity

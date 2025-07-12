@@ -46,5 +46,4 @@ public class MemberRepositoryImpl implements MemberRepository {
                 .query(Member.class)
                 .optional();
     }
-
 }
