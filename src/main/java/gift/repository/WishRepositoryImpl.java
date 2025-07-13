@@ -33,7 +33,7 @@ public class WishRepositoryImpl implements WishRepository {
 
     @Override
     public List<Wish> findAllWishesByMemberId(Long memberId) {
-        var sql = "SELECT * FROM wish WHERE member_id = :member_id";
+        var sql = "SELECT * FROM wish WHERE member_id = :member_id ORDER BY id";
 
         return client.sql(sql)
                      .param("member_id", memberId)
