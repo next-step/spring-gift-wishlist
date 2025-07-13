@@ -1,6 +1,5 @@
 package gift.service;
 
-import gift.dto.AuthenticatedMemberDto;
 import gift.dto.ProductResponseDto;
 import gift.dto.WishRequestDto;
 import gift.dto.WishResponseDto;
@@ -10,6 +9,7 @@ import gift.exception.PermissionDeniedException;
 import gift.exception.WishAlreadyExistsException;
 import gift.exception.WishNotFoundException;
 import gift.repository.WishRepository;
+import gift.util.CurrentMemberContext;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,27 +28,26 @@ public class WishService {
     }
 
     @Transactional
-    public WishResponseDto addWish(
-            AuthenticatedMemberDto authenticatedMemberDto,
-            WishRequestDto wishRequestDto) {
+    public WishResponseDto addWish(WishRequestDto wishRequestDto) {
+        Long memberId = CurrentMemberContext.getAuthenticatedMemberId();
+
         Product product = productService.findProductOrThrow(wishRequestDto.productId());
 
-        if (wishRepository.existsByMemberIdAndProductId(authenticatedMemberDto.id(),
-                product.getId())) {
+        if (wishRepository.existsByMemberIdAndProductId(memberId, product.getId())) {
             throw new WishAlreadyExistsException(product.getId());
         }
 
-        Wish wish = new Wish(authenticatedMemberDto.id(), product.getId());
+        Wish wish = new Wish(memberId, product.getId());
         Long id = wishRepository.saveWish(wish);
 
         return new WishResponseDto(id, ProductResponseDto.from(product));
     }
 
     @Transactional(readOnly = true)
-    public List<WishResponseDto> getWishlistByMemberId(
-            AuthenticatedMemberDto authenticatedMemberDto) {
+    public List<WishResponseDto> getWishlistByMemberId() {
+        Long memberId = CurrentMemberContext.getAuthenticatedMemberId();
 
-        List<Wish> wishes = wishRepository.findAllWishesByMemberId(authenticatedMemberDto.id());
+        List<Wish> wishes = wishRepository.findAllWishesByMemberId(memberId);
         List<Long> productIds = wishes.stream()
                                       .map(Wish::getProductId)
                                       .toList();
@@ -60,21 +59,19 @@ public class WishService {
         }
 
         return wishes.stream()
-                     .map(wish -> {
-                         return new WishResponseDto(wish.getId(),
-                                 productMap.get(wish.getProductId()));
-                     })
+                     .map(wish -> new WishResponseDto(wish.getId(),
+                             productMap.get(wish.getProductId())))
                      .toList();
     }
 
     @Transactional
-    public void deleteWishById(
-            AuthenticatedMemberDto authenticatedMemberDto,
-            Long wishId) {
+    public void deleteWishById(Long wishId) {
+        Long memberId = CurrentMemberContext.getAuthenticatedMemberId();
+
         Wish wish = wishRepository.findWishById(wishId)
                                   .orElseThrow(() -> new WishNotFoundException(wishId));
 
-        if (!authenticatedMemberDto.id().equals(wish.getMemberId())) {
+        if (!memberId.equals(wish.getMemberId())) {
             throw new PermissionDeniedException("해당 상품을 삭제할 권한이 없습니다.");
         }
 

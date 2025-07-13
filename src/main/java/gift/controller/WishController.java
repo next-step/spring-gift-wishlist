@@ -1,7 +1,5 @@
 package gift.controller;
 
-import gift.config.LoginMember;
-import gift.dto.AuthenticatedMemberDto;
 import gift.dto.WishRequestDto;
 import gift.dto.WishResponseDto;
 import gift.service.WishService;
@@ -28,29 +26,24 @@ public class WishController {
 
     // 상품 추가
     @PostMapping
-    public ResponseEntity<WishResponseDto> addWish(
-            @RequestBody WishRequestDto wishRequestDto,
-            @LoginMember AuthenticatedMemberDto authenticatedMemberDto) {
+    public ResponseEntity<WishResponseDto> addWish(@RequestBody WishRequestDto wishRequestDto) {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(wishService.addWish(authenticatedMemberDto, wishRequestDto));
+                .body(wishService.addWish(wishRequestDto));
     }
 
     // 상품 목록 조회
     @GetMapping
-    public ResponseEntity<List<WishResponseDto>> getWishlistByMemberId(
-            @LoginMember AuthenticatedMemberDto authenticatedMemberDto) {
+    public ResponseEntity<List<WishResponseDto>> getWishlistByMemberId() {
 
-        return ResponseEntity.ok(wishService.getWishlistByMemberId(authenticatedMemberDto));
+        return ResponseEntity.ok(wishService.getWishlistByMemberId());
     }
 
     // 상품 삭제
     @DeleteMapping("/{wishId}")
-    public ResponseEntity<Void> deleteWishById(
-            @PathVariable Long wishId,
-            @LoginMember AuthenticatedMemberDto authenticatedMemberDto) {
-        wishService.deleteWishById(authenticatedMemberDto, wishId);
+    public ResponseEntity<Void> deleteWishById(@PathVariable Long wishId) {
+        wishService.deleteWishById(wishId);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

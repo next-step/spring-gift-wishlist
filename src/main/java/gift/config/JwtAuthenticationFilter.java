@@ -1,6 +1,10 @@
 package gift.config;
 
+import gift.dto.AuthenticatedMemberDto;
+import gift.entity.Member;
 import gift.exception.UnAuthenticationException;
+import gift.service.MemberService;
+import gift.util.CurrentMemberContext;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,12 +20,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
     private final HandlerExceptionResolver handlerExceptionResolver;
+    private final MemberService memberService;
 
     public JwtAuthenticationFilter(
             JwtProvider jwtProvider,
-            HandlerExceptionResolver handlerExceptionResolver) {
+            HandlerExceptionResolver handlerExceptionResolver,
+            MemberService memberService) {
         this.jwtProvider = jwtProvider;
         this.handlerExceptionResolver = handlerExceptionResolver;
+        this.memberService = memberService;
     }
 
     @Override
@@ -37,12 +44,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String token = authorization.substring(BEARER.length());
             Long memberId = jwtProvider.getMemberIdFromToken(token);
 
-            request.setAttribute("memberId", memberId);
+            Member authenticatedMember = memberService.getMemberById(memberId)
+                                                      .orElseThrow(
+                                                              () -> new UnAuthenticationException(
+                                                                      "인증되지 않은 사용자입니다"));
+
+            CurrentMemberContext.setAuthenticatedMember(
+                    AuthenticatedMemberDto.from(authenticatedMember));
+
+            filterChain.doFilter(request, response);
         } catch (UnAuthenticationException e) {
             handlerExceptionResolver.resolveException(request, response, null, e);
-            return;
+        } finally {
+            CurrentMemberContext.clear();
         }
-
-        filterChain.doFilter(request, response);
     }
 }
