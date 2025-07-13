@@ -22,6 +22,7 @@ import gift.wish.dto.WishRequestDto;
 import gift.wish.dto.WishResponseDto;
 import gift.wish.service.WishService;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -56,14 +57,17 @@ public class WishRestControllerTest {
   @MockitoBean
   private UserService userService;
 
-  @Test
-  void 위시리스트에_상품을_추가할_수_있다() throws Exception {
-    // given
+  @BeforeEach
+  void getToken() throws Exception {
     User mockUser = new User(1L, "admin@admin.com", "encodedPassword", Role.USER);
     given(loginUserArgumentResolver.supportsParameter(any())).willReturn(true);
     given(loginUserArgumentResolver.resolveArgument(any(), any(), any(), any()))
         .willReturn(mockUser);
+  }
 
+  @Test
+  void 위시리스트에_상품을_추가할_수_있다() throws Exception {
+    //given
     var token = "token";
     var request = new WishRequestDto(1L);
     var content = objectMapper.writeValueAsString(request);
@@ -84,11 +88,6 @@ public class WishRestControllerTest {
   @Test
   void 위시리스트_상품_목록을_조회할_수_있다() throws Exception {
     // given
-    User mockUser = new User(1L, "admin@admin.com", "encodedPassword", Role.USER);
-    given(loginUserArgumentResolver.supportsParameter(any())).willReturn(true);
-    given(loginUserArgumentResolver.resolveArgument(any(), any(), any(), any()))
-        .willReturn(mockUser);
-
     var token = "token";
     List<ProductResponseDto> expectedProducts = List.of(
         new ProductResponseDto(1L, "상품1", 10000, "thisisurl", false)
@@ -112,11 +111,6 @@ public class WishRestControllerTest {
   @Test
   void 위시리스트에서_상품을_삭제할_수_있다() throws Exception {
     // given
-    User mockUser = new User(1L, "admin@admin.com", "encodedPassword", Role.USER);
-    given(loginUserArgumentResolver.supportsParameter(any())).willReturn(true);
-    given(loginUserArgumentResolver.resolveArgument(any(), any(), any(), any()))
-        .willReturn(mockUser);
-
     var token = "token";
     Long productId = 1L;
     doNothing().when(wishService).deleteWish(any(), any());
