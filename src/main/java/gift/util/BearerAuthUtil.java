@@ -2,23 +2,27 @@ package gift.util;
 
 import gift.exception.custom.InvalidBearerAuthException;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 @Component
 public class BearerAuthUtil {
 
+    private static final String PREFIX = "Bearer ";
     private final JwtUtil jwtUtil;
 
     public BearerAuthUtil(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
     }
-
-    public Jws<Claims> parse(String header) {
-        if (header == null || !header.startsWith("Bearer ")) {
-            throw new InvalidBearerAuthException("잘못된 Bearer Autorization 오류");
+    
+    public Claims extractAndValidate(String header) {
+        if (!StringUtils.hasText(header) || !header.startsWith(PREFIX)) {
+            throw new InvalidBearerAuthException("Authorization header is missing or invalid");
         }
-        String token = header.substring(7).trim();
-        return jwtUtil.parseToken(token);
+        String token = header.substring(PREFIX.length()).trim();
+        if (!jwtUtil.validate(token)) {
+            throw new InvalidBearerAuthException("Invalid or expired JWT token");
+        }
+        return jwtUtil.getClaims(token);
     }
 }

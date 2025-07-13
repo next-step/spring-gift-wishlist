@@ -1,4 +1,3 @@
-// src/test/java/gift/controller/user/ProductControllerTest.java
 package gift.controller.user;
 
 import static org.hamcrest.Matchers.is;
@@ -11,8 +10,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.dto.product.ProductRequest;
+import gift.entity.member.value.Role;
 import gift.entity.product.Product;
 import gift.fixture.ProductFixture;
+import gift.service.member.MemberService;
 import gift.service.product.ProductService;
 import gift.util.BearerAuthUtil;
 import gift.util.JwtUtil;
@@ -39,8 +40,8 @@ import org.springframework.test.web.servlet.MockMvc;
 @DisplayName("ProductController 단위 테스트")
 class ProductControllerTest {
 
-    private static final String USER = "USER";
-    private static final String ADMIN = "ADMIN";
+    private static final Role USER = Role.USER;
+    private static final Role ADMIN = Role.ADMIN;
 
     @Autowired
     private MockMvc mockMvc;
@@ -50,6 +51,9 @@ class ProductControllerTest {
 
     @MockitoBean
     private ProductService productService;
+
+    @MockitoBean
+    private MemberService memberService;
 
     @MockitoBean
     private JwtUtil jwtUtil;
@@ -202,7 +206,6 @@ class ProductControllerTest {
     @Test
     @DisplayName("DELETE /api/products/{id} - USER 권한, 숨김 상품 삭제 시 Not Found")
     void deleteProductForbiddenForUser() throws Exception {
-        // service should throw ProductNotFoundException to map to 404
         Mockito.doThrow(new gift.exception.custom.ProductNotFoundException(2L))
                 .when(productService).deleteProduct(2L, USER);
 

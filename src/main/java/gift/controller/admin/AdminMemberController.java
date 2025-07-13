@@ -1,12 +1,11 @@
 package gift.controller.admin;
 
-import static gift.util.RoleUtil.extractRole;
-
+import gift.annotation.CurrentRole;
 import gift.dto.member.MemberForm;
 import gift.entity.member.Member;
+import gift.entity.member.value.Role;
 import gift.exception.custom.MemberNotFoundException;
 import gift.service.member.MemberService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.stereotype.Controller;
@@ -32,32 +31,32 @@ public class AdminMemberController {
     }
 
     @GetMapping
-    public String list(HttpServletRequest req, Model model) {
-        String role = extractRole(req);
+    public String list(@CurrentRole Role role, Model model) {
         List<Member> members = memberService.getAllMembers(role);
         model.addAttribute("members", members);
         return "admin/member_list";
     }
 
     @GetMapping("/new")
-    public String createForm(Model model) {
-        model.addAttribute("memberForm", new MemberForm(null, "", "", "USER"));
+    public String createForm(@CurrentRole Role role, Model model) {
+        model.addAttribute(
+                "memberForm",
+                new MemberForm(null, "", "", Role.USER));
         return "admin/member_form";
     }
 
     @PostMapping("/new")
     public String create(
-            @Valid @ModelAttribute("memberForm") MemberForm form,
+            @Valid @ModelAttribute("memberForm") MemberForm memberForm,
             BindingResult br,
             RedirectAttributes ra,
-            HttpServletRequest req
+            @CurrentRole Role role
     ) {
         if (br.hasErrors()) {
             return "admin/member_form";
         }
-        String role = extractRole(req);
         Member created = memberService.createMember(
-                form.email(), form.password(), form.role(), role
+                memberForm.email(), memberForm.password(), memberForm.role(), role
         );
         ra.addFlashAttribute("info", "회원이 등록되었습니다: " + created.getEmail());
         return "redirect:/admin/members";
@@ -67,13 +66,12 @@ public class AdminMemberController {
     public String editForm(
             @PathVariable Long id,
             Model model,
-            HttpServletRequest req
+            @CurrentRole Role role
     ) {
-        String role = extractRole(req);
         Member m = memberService.getMemberById(id, role)
                 .orElseThrow(() -> new MemberNotFoundException(id.toString()));
         model.addAttribute("memberForm", new MemberForm(
-                m.getId().id(), m.getEmail().email(), m.getPassword().password(), m.getRole().name()
+                m.getId().id(), m.getEmail().email(), m.getPassword().password(), m.getRole()
         ));
         return "admin/member_form";
     }
@@ -81,31 +79,29 @@ public class AdminMemberController {
     @PutMapping("/{id}")
     public String update(
             @PathVariable Long id,
-            @Valid @ModelAttribute("memberForm") MemberForm form,
-            BindingResult br,
-            RedirectAttributes ra,
-            HttpServletRequest req
+            @Valid @ModelAttribute("memberForm") MemberForm memberForm,
+            BindingResult bindingResult,
+            RedirectAttributes redirectAttributes,
+            @CurrentRole Role role
     ) {
-        if (br.hasErrors()) {
+        if (bindingResult.hasErrors()) {
             return "admin/member_form";
         }
-        String role = extractRole(req);
         Member updated = memberService.updateMember(
-                id, form.email(), form.password(), form.role(), role
+                id, memberForm.email(), memberForm.password(), memberForm.role(), role
         );
-        ra.addFlashAttribute("info", "회원 정보가 수정되었습니다: " + updated.getEmail());
+        redirectAttributes.addFlashAttribute("info", "회원 정보가 수정되었습니다: " + updated.getEmail());
         return "redirect:/admin/members";
     }
 
     @DeleteMapping("/{id}")
     public String delete(
             @PathVariable Long id,
-            RedirectAttributes ra,
-            HttpServletRequest req
+            RedirectAttributes redirectAttributes,
+            @CurrentRole Role role
     ) {
-        String role = extractRole(req);
         memberService.deleteMember(id, role);
-        ra.addFlashAttribute("info", "회원이 삭제되었습니다. ID=" + id);
+        redirectAttributes.addFlashAttribute("info", "회원이 삭제되었습니다. ID=" + id);
         return "redirect:/admin/members";
     }
 }

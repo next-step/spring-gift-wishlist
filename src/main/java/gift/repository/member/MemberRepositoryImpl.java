@@ -21,12 +21,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class MemberRepositoryImpl implements MemberRepository {
 
-    private final DataSource ds;
-    private final SimpleJdbcInsert insert;
+    private final DataSource dataSource;
+    private final SimpleJdbcInsert simpleJdbcInsert;
 
     public MemberRepositoryImpl(DataSource ds) {
-        this.ds = ds;
-        this.insert = new SimpleJdbcInsert(ds)
+        this.dataSource = ds;
+        this.simpleJdbcInsert = new SimpleJdbcInsert(ds)
                 .withTableName("member")
                 .usingGeneratedKeyColumns("id");
     }
@@ -40,7 +40,7 @@ public class MemberRepositoryImpl implements MemberRepository {
         params.put("created_at", Timestamp.valueOf(member.getCreatedAt()));
 
         try {
-            Number newId = insert.executeAndReturnKey(params);
+            Number newId = simpleJdbcInsert.executeAndReturnKey(params);
             return member.withId(newId.longValue());
         } catch (DataIntegrityViolationException e) {
             throw new MemberAlreadyExistException("이미 가입된 이메일입니다.");
@@ -54,7 +54,7 @@ public class MemberRepositoryImpl implements MemberRepository {
                    SET email = ?, password_hash = ?, role = ?
                  WHERE id = ?
                 """;
-        try (Connection conn = ds.getConnection();
+        try (Connection conn = dataSource.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, member.getEmail().email());
@@ -75,13 +75,13 @@ public class MemberRepositoryImpl implements MemberRepository {
     @Override
     public Optional<Member> findByEmail(String email) {
         String sql = "SELECT id, email, password_hash, role, created_at FROM member WHERE email = ?";
-        try (Connection conn = ds.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
-            ps.setString(1, email);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return Optional.of(mapRow(rs));
+            preparedStatement.setString(1, email);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return Optional.of(mapRow(resultSet));
                 }
                 return Optional.empty();
             }
@@ -93,13 +93,13 @@ public class MemberRepositoryImpl implements MemberRepository {
     @Override
     public List<Member> findAll() {
         String sql = "SELECT id, email, password_hash, role, created_at FROM member";
-        try (Connection conn = ds.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql);
-                ResultSet rs = ps.executeQuery()) {
+        try (Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
+                ResultSet resultSet = preparedStatement.executeQuery()) {
 
             List<Member> list = new ArrayList<>();
-            while (rs.next()) {
-                list.add(mapRow(rs));
+            while (resultSet.next()) {
+                list.add(mapRow(resultSet));
             }
             return list;
         } catch (Exception e) {
@@ -110,13 +110,13 @@ public class MemberRepositoryImpl implements MemberRepository {
     @Override
     public Optional<Member> findById(Long id) {
         String sql = "SELECT id, email, password_hash, role, created_at FROM member WHERE id = ?";
-        try (Connection conn = ds.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
-            ps.setLong(1, id);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return Optional.of(mapRow(rs));
+            preparedStatement.setLong(1, id);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return Optional.of(mapRow(resultSet));
                 }
                 return Optional.empty();
             }
@@ -128,23 +128,23 @@ public class MemberRepositoryImpl implements MemberRepository {
     @Override
     public void deleteById(Long id) {
         String sql = "DELETE FROM member WHERE id = ?";
-        try (Connection conn = ds.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
-            ps.setLong(1, id);
-            ps.executeUpdate();
+            preparedStatement.setLong(1, id);
+            preparedStatement.executeUpdate();
         } catch (Exception e) {
             throw new MemberNotFoundException(id);
         }
     }
 
-    private Member mapRow(ResultSet rs) throws Exception {
+    private Member mapRow(ResultSet resultSet) throws Exception {
         return Member.of(
-                rs.getLong("id"),
-                rs.getString("email"),
-                rs.getString("password_hash"),
-                rs.getString("role"),
-                rs.getTimestamp("created_at").toLocalDateTime()
+                resultSet.getLong("id"),
+                resultSet.getString("email"),
+                resultSet.getString("password_hash"),
+                resultSet.getString("role"),
+                resultSet.getTimestamp("created_at").toLocalDateTime()
         );
     }
 }
