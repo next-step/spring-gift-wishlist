@@ -2,17 +2,18 @@ package gift.controller.api;
 
 import gift.dto.WishRequest;
 import gift.dto.WishResponse;
+import gift.dto.WishUpdateRequest;
 import gift.entity.Member;
 import gift.login.Authenticated;
 import gift.login.Login;
 import gift.service.WishService;
 import jakarta.validation.Valid;
-import java.util.List;
 import java.net.URI;
-import org.springframework.http.HttpStatus;
+import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,9 +44,22 @@ public class WishController {
         return ResponseEntity.created(location).body(newWish);
     }
 
+    @PatchMapping("/{wishId}")
+    public ResponseEntity<Void> updateWishQuantity(
+        @PathVariable("wishId") Long wishId,
+        @Valid @RequestBody WishUpdateRequest request,
+        @Login Member loginMember
+    ) {
+        wishService.updateWishQuantity(wishId, request.quantity(), loginMember);
+        return ResponseEntity.ok().build();
+    }
+
     @DeleteMapping("/{wishId}")
-    public ResponseEntity<Void> deleteWish(@PathVariable("wishId") Long wishId) {
-        wishService.deleteWish(wishId);
+    public ResponseEntity<Void> deleteWish(
+        @PathVariable("wishId") Long wishId,
+        @Login Member loginMember
+    ) {
+        wishService.deleteWish(wishId, loginMember);
         return ResponseEntity.noContent().build();
     }
 }

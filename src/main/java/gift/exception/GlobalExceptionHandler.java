@@ -3,6 +3,7 @@ package gift.exception;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -56,12 +57,26 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public Object handleDataIntegrityViolationException(HttpServletRequest request) {
-        String message = "이미 존재하는 이름 또는 이메일입니다. 다른 값을 사용해주세요.";
+    public Object handleDataIntegrityViolationException(
+        DataIntegrityViolationException ex, // 1. 예외 객체(ex)를 파라미터로 추가
+        HttpServletRequest request
+    ) {
+        String message;
+        String exceptionMessage = Objects.toString(ex.getMessage(), "");
+
+        if (exceptionMessage.contains("WISHES")) {
+            message = "이미 위시리스트에 추가된 상품입니다.";
+        } else {
+            message = "이미 존재하는 이름 또는 이메일입니다.";
+        }
+
         if (isApiRequest(request)) {
             return createErrorResponse(HttpStatus.CONFLICT, message);
         }
-        return createErrorModelAndView("error/409", message);
+
+        ModelAndView modelAndView = new ModelAndView("error/409");
+        modelAndView.addObject("errorMessage", message);
+        return modelAndView;
     }
 
     @ExceptionHandler(Exception.class)
