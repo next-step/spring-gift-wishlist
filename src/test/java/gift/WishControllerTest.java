@@ -54,7 +54,7 @@ public class WishControllerTest {
     @DisplayName("위시리스트 상품 추가에 성공한다")
     @Test
     void 위시리스트_추가_성공() throws Exception {
-        given(wishService.add(any(Member.class), any(WishRequest.class)))
+        given(wishService.add(any(Long.class), any(WishRequest.class)))
                 .willReturn(new WishMsgResponse("위시리스트에 추가되었습니다."));
 
         given(loginMemberArgumentResolver.supportsParameter(any())).willReturn(true);
@@ -94,7 +94,7 @@ public class WishControllerTest {
         given(loginMemberArgumentResolver.resolveArgument(any(), any(), any(), any()))
                 .willReturn(new Member(1L, "test@email.com", "1234"));
 
-        given(wishService.deleteByProductId(any(Member.class), any(Long.class)))
+        given(wishService.deleteByProductId(any(Long.class), any(Long.class)))
                 .willReturn(new WishMsgResponse("위시리스트에서 삭제되었습니다."));
 
         mockMvc.perform(delete("/api/wishes/1"))
@@ -109,7 +109,7 @@ public class WishControllerTest {
         given(loginMemberArgumentResolver.resolveArgument(any(), any(), any(), any()))
                 .willReturn(new Member(1L, "test@email.com", "1234"));
 
-        given(wishService.deleteByProductId(any(Member.class), any(Long.class)))
+        given(wishService.deleteByProductId(any(Long.class), any(Long.class)))
                 .willThrow(new WishNotFoundException(2L));
 
         mockMvc.perform(delete("/api/wishes/2"))

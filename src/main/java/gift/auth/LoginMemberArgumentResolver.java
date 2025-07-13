@@ -1,5 +1,7 @@
 package gift.auth;
 
+import gift.domain.Member;
+import gift.dto.LoginMemberDto;
 import gift.exception.UnauthorizedException;
 import gift.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,7 +42,8 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
         String token = authHeader.substring(7);
 
         Long memberId = jwtProvider.authenticate(token);
+        Member member = memberService.findById(memberId);
 
-        return memberService.findById(memberId);
+        return new LoginMemberDto(member.getId(), member.getEmail());
     }
 }

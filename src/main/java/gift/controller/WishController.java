@@ -2,6 +2,7 @@ package gift.controller;
 
 import gift.auth.LoginMember;
 import gift.domain.Member;
+import gift.dto.LoginMemberDto;
 import gift.dto.request.WishRequest;
 import gift.dto.response.WishMsgResponse;
 import gift.dto.response.WishResponse;
@@ -25,8 +26,8 @@ public class WishController {
 
     @PostMapping
     public ResponseEntity<WishMsgResponse> add(@RequestBody WishRequest request,
-                                               @LoginMember Member member){
-        WishMsgResponse response = wishService.add(member,request);
+                                               @LoginMember LoginMemberDto loginMember){
+        WishMsgResponse response = wishService.add(loginMember.id(),request);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{productId}")
@@ -36,14 +37,14 @@ public class WishController {
     }
 
     @GetMapping
-    public List<WishResponse> getWishList(@LoginMember Member member) {
-        return wishService.getWishList(member);
+    public List<WishResponse> getWishList(@LoginMember LoginMemberDto loginMember) {
+        return wishService.getWishList(loginMember.id());
     }
 
     @DeleteMapping("/{productId}")
     public ResponseEntity<WishMsgResponse> delete(@PathVariable Long productId,
-                                                  @LoginMember Member member) {
-        WishMsgResponse response = wishService.deleteByProductId(member, productId);
+                                                  @LoginMember LoginMemberDto loginMember) {
+        WishMsgResponse response = wishService.deleteByProductId(loginMember.id(), productId);
         return ResponseEntity.ok(response);
     }
 }
