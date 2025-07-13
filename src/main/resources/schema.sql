@@ -15,11 +15,11 @@ CREATE TABLE users
     password  VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE wish_list
+CREATE TABLE wishes
 (
-    wish_id      BIGINT,
-    user_id      BIGINT REFERENCES users (user_id),
-    product_name VARCHAR(100) REFERENCES product (name),
-    quantity     INTEGER default (0),
+    wish_id      BIGINT                                 NOT NULL,
+    user_id      BIGINT REFERENCES users (user_id)      NOT NULL,
+    product_name VARCHAR(100) REFERENCES product (name) NOT NULL,
+    quantity     INTEGER                                NOT NULL,
     UNIQUE (user_id, product_name)
 );

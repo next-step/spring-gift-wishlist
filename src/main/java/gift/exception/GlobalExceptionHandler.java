@@ -1,7 +1,6 @@
 package gift.exception;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +17,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<ExceptionResponseDto> handleProductNotFoundException(
         ProductNotFoundException e) {
-        List<String> errors = new ArrayList<>();
-        errors.add(e.getMessage());
-        ExceptionResponseDto exception = new ExceptionResponseDto(
-            errors,
+
+        ExceptionResponseDto exception = ExceptionResponseDto.singleIssue(e.getMessage(),
             LocalDateTime.now());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception);
@@ -32,20 +29,18 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ExceptionResponseDto> handleIllegalArgumentException(
         IllegalArgumentException e) {
 
-        ExceptionResponseDto response = new ExceptionResponseDto(
-            List.of(e.getMessage()),
-            LocalDateTime.now()
-        );
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        ExceptionResponseDto exception = ExceptionResponseDto.singleIssue(e.getMessage(),
+            LocalDateTime.now());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception);
     }
 
     @ResponseBody
     @ExceptionHandler(EmailDuplicationException.class)
     public ResponseEntity<ExceptionResponseDto> handleEmailDuplicationException(
         EmailDuplicationException e) {
-        List<String> errors = new ArrayList<>();
-        errors.add(e.getMessage());
-        ExceptionResponseDto exception = new ExceptionResponseDto(errors,
+
+        ExceptionResponseDto exception = ExceptionResponseDto.singleIssue(e.getMessage(),
             LocalDateTime.now());
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(exception);
@@ -55,10 +50,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ExceptionResponseDto> handleUserNotFoundException(
         UserNotFoundException e) {
-        List<String> errors = new ArrayList<>();
-        errors.add(e.getMessage());
-        ExceptionResponseDto exception = new ExceptionResponseDto(
-            errors,
+
+        ExceptionResponseDto exception = ExceptionResponseDto.singleIssue(e.getMessage(),
             LocalDateTime.now());
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exception);
@@ -68,12 +61,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UnauthorizedWishListException.class)
     public ResponseEntity<ExceptionResponseDto> handleUnauthorizedWishList(
         UnauthorizedWishListException e) {
-        List<String> errors = new ArrayList<>();
-        errors.add(e.getMessage());
-        ExceptionResponseDto exception = new ExceptionResponseDto(
-            errors,
-            LocalDateTime.now());
 
+        ExceptionResponseDto exception = ExceptionResponseDto.singleIssue(e.getMessage(),
+            LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exception);
     }
 
@@ -81,12 +71,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidPasswordException.class)
     public ResponseEntity<ExceptionResponseDto> handleInvalidPasswordException(
         InvalidPasswordException e) {
-        List<String> errors = new ArrayList<>();
-        errors.add(e.getMessage());
-        ExceptionResponseDto exception = new ExceptionResponseDto(
-            errors,
-            LocalDateTime.now());
 
+        ExceptionResponseDto exception = ExceptionResponseDto.singleIssue(e.getMessage(),
+            LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exception);
     }
 

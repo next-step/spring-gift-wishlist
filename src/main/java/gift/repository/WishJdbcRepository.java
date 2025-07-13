@@ -6,7 +6,6 @@ import gift.exception.ProductNotFoundException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -24,7 +23,7 @@ public class WishJdbcRepository implements WishRepository {
         ProductJdbcRepository productJdbcRepository) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(this.jdbcTemplate)
-            .withTableName("wish_list")
+            .withTableName("wishes")
             .usingColumns("wish_id", "user_id", "product_name", "quantity");
         this.userJdbcRepository = userJdbcRepository;
         this.productJdbcRepository = productJdbcRepository;
@@ -59,7 +58,7 @@ public class WishJdbcRepository implements WishRepository {
     public List<WishProduct> getWishList(String email) {
         long userId = userJdbcRepository.findUserIdByEmail(email);
 
-        return jdbcTemplate.query("select * from wish_list where user_id = ?",
+        return jdbcTemplate.query("select * from wishes where user_id = ?",
             wishRowMapper(),
             userId);
     }
@@ -67,14 +66,14 @@ public class WishJdbcRepository implements WishRepository {
     @Override
     public int deleteProduct(Long wishId, String productName) {
         System.out.println(productName);
-        return jdbcTemplate.update("delete from wish_list where wish_id = ? and product_name = ?",
+        return jdbcTemplate.update("delete from wishes where wish_id = ? and product_name = ?",
             wishId, productName);
     }
 
     @Override
     public int updateWish(Long wishId, String productName, int quantity) {
         return jdbcTemplate.update(
-            "update wish_list set quantity = ? where wish_id = ? and product_name = ?"
+            "update wishes set quantity = ? where wish_id = ? and product_name = ?"
             , quantity, wishId, productName);
     }
 }

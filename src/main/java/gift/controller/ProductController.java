@@ -3,7 +3,7 @@ package gift.controller;
 import gift.dto.request.ProductRequestDto;
 import gift.dto.request.ProductUpdateRequestDto;
 import gift.dto.response.ProductResponseDto;
-import gift.service.ProductService;
+import gift.service.ProductServiceImpl;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,24 +23,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/api")
 class ProductController {
 
-    private final ProductService productService;
+    private final ProductServiceImpl productServiceImpl;
 
-    public ProductController(ProductService productService) {
-        this.productService = productService;
+    public ProductController(ProductServiceImpl productServiceImpl) {
+        this.productServiceImpl = productServiceImpl;
     }
 
     @GetMapping("/products/{productId}")
     public ResponseEntity<ProductResponseDto> getProduct(@PathVariable long productId) {
         return new ResponseEntity<>(
-            productService.productToResponseDto(productService.getProduct(productId)),
+            productServiceImpl.productToResponseDto(productServiceImpl.getProduct(productId)),
             HttpStatus.OK);
     }
 
     @GetMapping("/products")
     public ResponseEntity<List<ProductResponseDto>> getAllProducts() {
         return new ResponseEntity<>(
-            productService.getAllProducts().stream()
-                .map(productService::productToResponseDto)
+            productServiceImpl.getAllProducts().stream()
+                .map(productServiceImpl::productToResponseDto)
                 .collect(Collectors.toList())
             , HttpStatus.OK);
     }
@@ -48,7 +48,7 @@ class ProductController {
     @PostMapping("/products")
     public ResponseEntity<ProductResponseDto> createProduct(
         @RequestBody @Valid ProductRequestDto productRequestDto) {
-        return new ResponseEntity<>(productService.createProduct(productRequestDto),
+        return new ResponseEntity<>(productServiceImpl.createProduct(productRequestDto),
             HttpStatus.CREATED);
     }
 
@@ -58,13 +58,13 @@ class ProductController {
         @RequestBody @Valid ProductUpdateRequestDto productUpdateRequestDto) {
 
         return new ResponseEntity<>(
-            productService.updateProduct(productId, productUpdateRequestDto), HttpStatus.OK);
+            productServiceImpl.updateProduct(productId, productUpdateRequestDto), HttpStatus.OK);
     }
 
     @DeleteMapping("/products/{productId}")
     public ResponseEntity<Void> deleteProduct(@PathVariable long productId) {
 
-        productService.deleteProduct(productId);
+        productServiceImpl.deleteProduct(productId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
