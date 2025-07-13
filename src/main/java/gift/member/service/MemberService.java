@@ -11,6 +11,7 @@ import gift.member.dto.LogInRequest;
 import gift.member.dto.MemberResponse;
 import gift.member.dto.RegisterRequest;
 import gift.member.repository.MemberRepository;
+import gift.wishlist.repository.WishlistRepository;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,17 +20,20 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
     private final PasswordEncoder passwordEncoder;
-    private final MemberRepository memberRepository;
     private final JwtUtil jwtUtil;
+    private final MemberRepository memberRepository;
+    private final WishlistRepository wishlistRepository;
 
     public MemberService(
         PasswordEncoder passwordEncoder,
+        JwtUtil jwtUtil,
         MemberRepository memberRepository,
-        JwtUtil jwtUtil
+        WishlistRepository wishlistRepository
     ) {
         this.passwordEncoder = passwordEncoder;
-        this.memberRepository = memberRepository;
         this.jwtUtil = jwtUtil;
+        this.memberRepository = memberRepository;
+        this.wishlistRepository = wishlistRepository;
     }
 
     @Transactional
@@ -95,7 +99,6 @@ public class MemberService {
 
     }
 
-    @Transactional(readOnly = true)
     public Long getIdFromToken(String token) {
         return jwtUtil.getIdFromToken(token);
     }
