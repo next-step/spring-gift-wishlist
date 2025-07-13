@@ -1,6 +1,7 @@
 package gift.security;
 
 import gift.entity.Member;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
@@ -33,5 +34,21 @@ public class JwtProvider {
                 .setSigningKey(KEY)
                 .build()
                 .parseClaimsJws(token);
+    }
+    public String getSubject(String token) {
+        return Jwts.parser()
+                .setSigningKey(KEY)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+    }
+
+    public Claims parseClaims(String token) {
+        return Jwts.parser()
+                .setSigningKey(KEY)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 }

@@ -1,28 +1,35 @@
 package gift.config;
 
-import gift.security.JwtInterceptor;
+import gift.security.AuthInterceptor;
+import gift.security.LoginMemberArgumentResolver;
+import gift.service.MemberService;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.*;
+
+import java.util.List;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    private final JwtInterceptor jwtInterceptor;
+    private final MemberService memberService;
 
-    public WebConfig(JwtInterceptor jwtInterceptor) {
-        this.jwtInterceptor = jwtInterceptor;
+    public WebConfig(MemberService memberService) {
+        this.memberService = memberService;
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(jwtInterceptor)
-                .addPathPatterns("/api/**") // 전체 API 보호
+        registry.addInterceptor(new AuthInterceptor(memberService))
+                .addPathPatterns("/api/**")
                 .excludePathPatterns(
-                        "/api/members/register", // 회원가입 허용
-                        "/api/members/login",    // 로그인 허용
-                        "/error",                // 오류 응답 허용
-                        "/swagger-ui/**",        // Swagger 접근 허용
-                        "/v3/api-docs/**"
+                        "/api/members/register",
+                        "/api/members/login"
                 );
+    }
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(new LoginMemberArgumentResolver());
     }
 }

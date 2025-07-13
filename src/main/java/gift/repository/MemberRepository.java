@@ -38,4 +38,15 @@ public class MemberRepository {
                 ))
                 .optional();
     }
-}
+        public Optional<Member> findById(Long id) {
+            return jdbcClient.sql(
+                            "SELECT id, email, password FROM members WHERE id = :id")
+                    .param("id", id)
+                    .query((rs, rowNum) -> new Member(
+                            rs.getLong("id"),
+                            rs.getString("email"),
+                            rs.getString("password")
+                    ))
+                    .optional();
+        }
+    }
