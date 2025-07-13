@@ -7,6 +7,7 @@ import gift.dto.WishUpdateDTO;
 import gift.entity.Member;
 import gift.entity.Product;
 import gift.entity.Wish;
+import gift.entity.WishWithProduct;
 import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
 import org.springframework.stereotype.Service;
@@ -42,7 +43,11 @@ public class WishService {
 
     public List<WishResponseDTO> getWishes(Member member, int page, int size, String sort) {
         long offset = (long) page * size;
-        return wishRepository.findByMemberIdWithPagination(member.getId(), size, offset, sort);
+        List<WishWithProduct> wishWithProducts = wishRepository.findByMemberIdWithPagination(member.getId(), size, offset, sort);
+
+        return wishWithProducts.stream()
+            .map(this::convertToWishResponseDTO)
+            .toList();
     }
 
     public void updateWishQuantity(Long productId, WishUpdateDTO wishUpdateDTO, Member member) {
@@ -62,5 +67,10 @@ public class WishService {
             .orElseThrow(() -> new IllegalArgumentException("해당 상품이 위시리스트에 없습니다."));
 
         wishRepository.deleteByMemberIdAndProductId(member.getId(), productId);
+    }
+
+    private WishResponseDTO convertToWishResponseDTO(WishWithProduct wishWithProduct) {
+        ProductResponseDTO productResponseDTO = new ProductResponseDTO(wishWithProduct.product());
+        return new WishResponseDTO(wishWithProduct.memberId(), productResponseDTO, wishWithProduct.quantity());
     }
 }

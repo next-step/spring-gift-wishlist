@@ -1,9 +1,8 @@
 package gift.repository;
 
-import gift.dto.ProductResponseDTO;
-import gift.dto.WishResponseDTO;
 import gift.entity.Product;
 import gift.entity.Wish;
+import gift.entity.WishWithProduct;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -27,10 +26,10 @@ public class WishRepository {
         rs.getInt("quantity")
     );
 
-    private final RowMapper<WishResponseDTO> wishResponseDTORowMapper = (rs, rowNum) -> {
+    private final RowMapper<WishWithProduct> wishWithProductRowMapper = (rs, rowNum) -> {
         Product product = new Product(rs.getString("p_name"), rs.getLong("p_price"), rs.getString("p_image_url"));
         product.setId(rs.getLong("p_id"));
-        return new WishResponseDTO(rs.getLong("member_id"), new ProductResponseDTO(product), rs.getInt("w_quantity"));
+        return new WishWithProduct(rs.getLong("member_id"), product, rs.getInt("w_quantity"));
     };
 
     public void save(Wish wish) {
@@ -38,14 +37,14 @@ public class WishRepository {
         jdbcTemplate.update(sql, wish.getMemberId(), wish.getProductId(), wish.getQuantity());
     }
 
-    public List<WishResponseDTO> findByMemberIdWithPagination(Long memberId, int limit, long offset, String sort) {
+    public List<WishWithProduct> findByMemberIdWithPagination(Long memberId, int limit, long offset, String sort) {
         String sql = "SELECT w.member_id, w.quantity as w_quantity, p.id as p_id, p.name as p_name, p.price as p_price, p.image_url as p_image_url " +
             "FROM wish w " +
             "JOIN product p ON w.product_id = p.id " +
             "WHERE w.member_id = ? " +
             createOrderByClause(sort) + // 정렬 절 생성
             "LIMIT ? OFFSET ?";
-        return jdbcTemplate.query(sql, wishResponseDTORowMapper, memberId, limit, offset);
+        return jdbcTemplate.query(sql, wishWithProductRowMapper, memberId, limit, offset);
     }
 
     public Optional<Wish> findByMemberIdAndProductId(Long memberId, Long productId) {
