@@ -77,27 +77,17 @@ public class WishListServiceImpl implements WishListService{
             Item item = itemService.findItemById(wishItem.itemId());
             if (item == null) {
                 if (name == null && price == null) {
-                    throw new ItemNotFoundException();
+                    throw new UserInputException();
                 }
                 continue;
             }
 
             if (name == null && price == null || isValid(item, name, price)) {
-                WishItem addWishItem = itemToWishItem(wishItem, item);
-                result.add(ResponseWishItemDto.from(addWishItem));
+                result.add(ResponseWishItemDto.from(wishItem));
             }
         }
 
         return result;
-    }
-
-    private WishItem itemToWishItem(WishItem base, Item item) {
-        return new WishItem(
-                base.id(),
-                item.getId(),
-                base.itemId(),
-                base.quantity()
-        );
     }
 
     @Override
