@@ -21,6 +21,6 @@ CREATE TABLE wishlist (
     product_id BIGINT NOT NULL,
     member_id BIGINT NOT NULL,
     quantity INT NOT NULL,
-    FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE CASCADE,
-    FOREIGN KEY (member_id) REFERENCES member(id) ON DELETE CASCADE
+    FOREIGN KEY (product_id) REFERENCES product(id),
+    FOREIGN KEY (member_id) REFERENCES member(id)
 )
