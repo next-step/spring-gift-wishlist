@@ -54,4 +54,8 @@ public class ProductService {
                 .map(p -> new ProductResponseDto(p.getId(), p.getName(), p.getPrice(), p.getImageUrl()))
                 .toList();
     }
+
+    public boolean exists(Long productId) {
+        return productRepository.existsById(productId);
+    }
 }

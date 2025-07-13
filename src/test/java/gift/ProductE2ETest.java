@@ -1,10 +1,7 @@
 package gift;
 
-import gift.dto.MemberLoginRequestDto;
-import gift.dto.MemberLoginResponseDto;
-import gift.dto.MemberRequestDto;
-import gift.dto.ProductRequestDto;
-import gift.dto.ProductResponseDto;
+import gift.dto.*;
+import gift.utils.E2ETestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,6 +21,7 @@ class ProductE2ETest {
 
     private RestClient restClient;
     private String token;
+    private ProductResponseDto product;
 
     @BeforeEach
     void setUp() {
@@ -31,12 +29,29 @@ class ProductE2ETest {
                 .baseUrl("http://localhost:" + port)
                 .build();
 
-        token = 회원가입_후_토큰_발급();
+        token = new E2ETestUtils(restClient).회원가입_후_토큰_발급();
+
+        ProductRequestDto request = new ProductRequestDto("테스트 상품", 5000, "test.jpg");
+
+        restClient.post()
+                .uri("/api/products")
+                .header("Authorization", "Bearer " + token)
+                .body(request)
+                .retrieve()
+                .toBodilessEntity();
+
+        ProductResponseDto[] products = restClient.get()
+                .uri("/api/products")
+                .header("Authorization", "Bearer " + token)
+                .retrieve()
+                .body(ProductResponseDto[].class);
+
+        product = products[products.length - 1];
     }
 
     @Test
     void 상품을_등록하고_조회() {
-        ProductRequestDto request = new ProductRequestDto(null, "녹차", 3500, "green_tea.jpg");
+        ProductRequestDto request = new ProductRequestDto("녹차", 3500, "green_tea.jpg");
 
         restClient.post()
                 .uri("/api/products")
@@ -60,17 +75,17 @@ class ProductE2ETest {
 
     @Test
     void 상품을_수정하고_조회() {
-        ProductRequestDto request = new ProductRequestDto(null, "아이스 카페라떼", 7000, "ice_cafe_latte.jpg");
+        ProductRequestDto request = new ProductRequestDto("아이스 카페라떼", 7000, "ice_cafe_latte.jpg");
 
         restClient.put()
-                .uri("/api/products/2")
+                .uri("/api/products/" + product.id())
                 .header("Authorization", "Bearer " + token)
                 .body(request)
                 .retrieve()
                 .toBodilessEntity();
 
         ProductResponseDto response = restClient.get()
-                .uri("/api/products/2")
+                .uri("/api/products/" + product.id())
                 .header("Authorization", "Bearer " + token)
                 .retrieve()
                 .body(ProductResponseDto.class);
@@ -83,14 +98,14 @@ class ProductE2ETest {
     @Test
     void 상품을_삭제한다() {
         restClient.delete()
-                .uri("/api/products/1")
+                .uri("/api/products/" + product.id())
                 .header("Authorization", "Bearer " + token)
                 .retrieve()
                 .toBodilessEntity();
 
         HttpClientErrorException exception = assertThrows(HttpClientErrorException.class, () -> {
             restClient.get()
-                    .uri("/api/products/1")
+                    .uri("/api/products/" + product.id())
                     .header("Authorization", "Bearer " + token)
                     .retrieve()
                     .toBodilessEntity();
@@ -101,7 +116,7 @@ class ProductE2ETest {
 
     @Test
     void 상품_등록_유효성_검사_실패() {
-        ProductRequestDto invalidRequest = new ProductRequestDto(null, "@카카오@", 10, "kakao.jpg");
+        ProductRequestDto invalidRequest = new ProductRequestDto("@카카오@", 10, "kakao.jpg");
 
         HttpClientErrorException exception = assertThrows(HttpClientErrorException.class, () -> {
             restClient.post()
@@ -126,7 +141,7 @@ class ProductE2ETest {
         String email = "hong" + System.currentTimeMillis() + "@email.com";
         String password = "password";
 
-        MemberRequestDto joinRequest = new MemberRequestDto(null, name, email, password);
+        MemberRequestDto joinRequest = new MemberRequestDto(name, email, password);
 
         restClient.post()
                 .uri("/api/members/register")
