@@ -6,6 +6,7 @@ import gift.entity.Item;
 import gift.entity.User;
 import gift.entity.WishItem;
 import gift.exception.itemException.ItemNotFoundException;
+import gift.exception.itemException.UserInputException;
 import gift.exception.userException.UserNotFoundException;
 import gift.repository.wishListRepository.WishListRepository;
 import gift.service.itemService.ItemService;
