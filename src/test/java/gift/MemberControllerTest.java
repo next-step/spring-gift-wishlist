@@ -1,6 +1,8 @@
 package gift;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gift.auth.JwtProvider;
+import gift.config.WebConfig;
 import gift.controller.MemberController;
 import gift.dto.request.MemberRequest;
 import gift.dto.response.MemberResponse;
@@ -10,6 +12,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -18,12 +23,14 @@ import org.springframework.web.server.ResponseStatusException;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(MemberController.class)
+@Import(MemberControllerTest.TestConfig.class)
 public class MemberControllerTest {
 
     @Autowired
@@ -32,17 +39,21 @@ public class MemberControllerTest {
     @MockitoBean
     private MemberService memberService;
 
+    @MockitoBean
+    private JwtProvider jwtProvider;
+
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @DisplayName("유효한 이메일과 비밀번호로 회원가입에 성공한다")
     @Test
     void 회원가입_성공() throws Exception{
+
         given(memberService.register(any(MemberRequest.class)))
                 .willReturn(new MemberResponse("mock.jwt.token"));
 
         mockMvc.perform(
                 post("/api/members/register")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                             {
                                 "email": "test@email.com",
@@ -60,7 +71,7 @@ public class MemberControllerTest {
                 .willThrow(new DuplicateMemberException());
 
         mockMvc.perform(post("/api/members/register")
-                .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                      {
                         "email": "dup@email.com",
@@ -113,5 +124,23 @@ public class MemberControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.message").value("회원이 존재하지 않습니다."));
+    }
+
+    @TestConfiguration
+    static class TestConfig {
+        @Bean
+        public JwtProvider jwtProvider() {
+            return mock(JwtProvider.class);
+        }
+
+        @Bean
+        public MemberService memberService() {
+            return mock(MemberService.class);
+        }
+
+        @Bean
+        public WebConfig webConfig(JwtProvider jwtProvider, MemberService memberService) {
+            return new WebConfig(jwtProvider, memberService);
+        }
     }
 }

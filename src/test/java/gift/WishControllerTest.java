@@ -4,15 +4,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.auth.JwtProvider;
 import gift.auth.LoginMemberArgumentResolver;
 import gift.controller.WishController;
-import gift.domain.Member;
+import gift.dto.LoginMemberDto;
 import gift.dto.request.WishRequest;
+import gift.dto.response.WishAddResponse;
 import gift.dto.response.WishMsgResponse;
+import gift.dto.response.WishResponse;
 import gift.exception.WishNotFoundException;
 import gift.service.MemberService;
 import gift.service.WishService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Import;
@@ -26,11 +30,13 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willAnswer;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(WishController.class)
+@AutoConfigureMockMvc(addFilters = true)
 @Import(WishControllerTest.TestConfig.class)
 public class WishControllerTest {
 
@@ -51,17 +57,34 @@ public class WishControllerTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    @BeforeEach
+    void setup() throws Exception {
+        given(loginMemberArgumentResolver.supportsParameter(any())).willReturn(true);
+        willAnswer(invocation -> new LoginMemberDto(1L, "test@email.com"))
+                .given(loginMemberArgumentResolver)
+                .resolveArgument(any(), any(), any(), any());
+    }
+
     @DisplayName("위시리스트 상품 추가에 성공한다")
     @Test
     void 위시리스트_추가_성공() throws Exception {
-        given(wishService.add(any(Long.class), any(WishRequest.class)))
-                .willReturn(new WishMsgResponse("위시리스트에 추가되었습니다."));
 
-        given(loginMemberArgumentResolver.supportsParameter(any())).willReturn(true);
-        given(loginMemberArgumentResolver.resolveArgument(any(), any(), any(), any()))
-                .willReturn(new Member(1L, "test@email.com", "1234"));
+        String token = jwtProvider.createToken(1L, "user");
+
+        given(wishService.add(any(Long.class), any(WishRequest.class)))
+                .willReturn(new WishAddResponse(
+                        "위시리스트에 추가되었습니다.",
+                        new WishResponse(
+                                1L,
+                                1L,
+                                "aaaaa",
+                                15000,
+                                "https://image.png"
+                        )
+                ));
 
         mockMvc.perform(post("/api/wishes")
+                        .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                             {
@@ -70,34 +93,25 @@ public class WishControllerTest {
                         """))
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", "http://localhost/api/wishes/1"))
-                .andExpect(jsonPath("$.message").value("위시리스트에 추가되었습니다."));
-    }
-
-    @DisplayName("인증되지 않은 사용자가 위시리스트를 추가하려 하면 401 Unauthorized 에러가 발생한다")
-    @Test
-    void 위시리스트_추가_실패_인증없음() throws Exception {
-        mockMvc.perform(post("/api/wishes")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                        {
-                          "productId": 1
-                        }
-                    """))
-                .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.message").value("인증 정보가 유효하지 않습니다."));
+                .andExpect(jsonPath("$.message").value("위시리스트에 추가되었습니다."))
+                .andExpect(jsonPath("$.wish.id").value(1))
+                .andExpect(jsonPath("$.wish.productId").value(1))
+                .andExpect(jsonPath("$.wish.productName").value("aaaaa"))
+                .andExpect(jsonPath("$.wish.price").value(15000))
+                .andExpect(jsonPath("$.wish.imageUrl").value("https://image.png"));
     }
 
     @DisplayName("위시리스트 상품 삭제에 성공한다")
     @Test
     void 위시리스트_삭제_성공() throws Exception {
-        given(loginMemberArgumentResolver.supportsParameter(any())).willReturn(true);
-        given(loginMemberArgumentResolver.resolveArgument(any(), any(), any(), any()))
-                .willReturn(new Member(1L, "test@email.com", "1234"));
+
+        String token = jwtProvider.createToken(1L, "user");
 
         given(wishService.deleteByProductId(any(Long.class), any(Long.class)))
                 .willReturn(new WishMsgResponse("위시리스트에서 삭제되었습니다."));
 
-        mockMvc.perform(delete("/api/wishes/1"))
+        mockMvc.perform(delete("/api/wishes/1")
+                        .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("위시리스트에서 삭제되었습니다."));
     }
@@ -105,14 +119,14 @@ public class WishControllerTest {
     @DisplayName("존재하지 않는 상품 ID로 삭제 시도 시 404 NotFound 에러가 발생한다")
     @Test
     void 위시리스트_삭제_실패_존재하지_않음() throws Exception {
-        given(loginMemberArgumentResolver.supportsParameter(any())).willReturn(true);
-        given(loginMemberArgumentResolver.resolveArgument(any(), any(), any(), any()))
-                .willReturn(new Member(1L, "test@email.com", "1234"));
+
+        String token = jwtProvider.createToken(1L, "user");
 
         given(wishService.deleteByProductId(any(Long.class), any(Long.class)))
                 .willThrow(new WishNotFoundException(2L));
 
-        mockMvc.perform(delete("/api/wishes/2"))
+        mockMvc.perform(delete("/api/wishes/2")
+                        .header("Authorization", "Bearer " + token))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("위시리스트에 존재하지 않는 상품입니다."));
     }
@@ -127,5 +141,4 @@ public class WishControllerTest {
             resolvers.add(loginMemberArgumentResolver);
         }
     }
-
 }

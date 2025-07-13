@@ -48,21 +48,21 @@ public class WebControllerAdvice {
     }
 
     @ExceptionHandler(MemberNotFoundException.class)
-    public ResponseEntity<Map<String,String>> handleDuplicateWish (MemberNotFoundException e){
+    public ResponseEntity<Map<String,String>> handleMemberNotFound (MemberNotFoundException e){
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(Map.of("message",e.getMessage()));
     }
 
     @ExceptionHandler(UnauthorizedException.class)
-    public ResponseEntity<Map<String,String>> handleDuplicateWish (UnauthorizedException e){
+    public ResponseEntity<Map<String,String>> handleUnauth(UnauthorizedException e){
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(Map.of("message",e.getMessage()));
     }
 
     @ExceptionHandler(WishNotFoundException.class)
-    public ResponseEntity<Map<String,String>> handleDuplicateWish (WishNotFoundException e){
+    public ResponseEntity<Map<String,String>> handleWishNotFound (WishNotFoundException e){
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(Map.of("message",e.getMessage()));

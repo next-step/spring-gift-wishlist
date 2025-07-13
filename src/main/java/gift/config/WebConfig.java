@@ -28,7 +28,7 @@ public class WebConfig implements WebMvcConfigurer {
     public FilterRegistrationBean<JwtAuthenticationFilter> jwtFilter(JwtProvider jwtProvider){
         FilterRegistrationBean<JwtAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new JwtAuthenticationFilter(jwtProvider));
-        registrationBean.addUrlPatterns("/api/products/*");
+        registrationBean.addUrlPatterns("/api/products", "/api/products/*");
         registrationBean.setOrder(1);
         return registrationBean;
     }
@@ -37,6 +37,4 @@ public class WebConfig implements WebMvcConfigurer {
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(new LoginMemberArgumentResolver(jwtProvider, memberService));
     }
-
-
 }
