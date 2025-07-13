@@ -8,6 +8,7 @@ import gift.wishlist.dto.WishResponseDto;
 import gift.wishlist.entity.Wishlist;
 import gift.wishlist.repository.WishlistRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class WishlistService {
         this.productRepository = productRepository;
     }
 
+    @Transactional
     public WishResponseDto addWish(Long memberId, WishRequestDto wishRequestDto) {
         Product product = productRepository.findById(wishRequestDto.productId())
                 .orElseThrow(() -> new ProductNotFoundException(wishRequestDto.productId()));
@@ -45,6 +47,7 @@ public class WishlistService {
         );
     }
 
+    @Transactional(readOnly = true)
     public List<WishResponseDto> getWishesByMemberId(Long memberId) {
         List<Wishlist> wishes = wishlistRepository.findAllByMemberId(memberId);
 
@@ -74,6 +77,7 @@ public class WishlistService {
                 .toList();
     }
 
+    @Transactional
     public void deleteWish(Long memberId, Long wishId) {
         wishlistRepository.deleteWishByMemberIdAndWishId(memberId, wishId);
     }
