@@ -29,11 +29,6 @@ public class MemberTest {
     @Autowired
     private JdbcClient jdbcClient;
 
-//    @AfterEach
-//    void cleanUp() {
-//        jdbcClient.sql("TRUNCATE TABLE member RESTART IDENTITY").update();
-//    }
-
     @Test
     void 회원가입_성공() {
         String url = "http://localhost:" + port + "/api/members/register";
