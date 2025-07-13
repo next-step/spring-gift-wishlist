@@ -16,6 +16,6 @@ CREATE TABLE member (
 CREATE TABLE wish (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     member_id BIGINT NOT NULL,
-    product_id INT NOT NULL,
+    product_id BIGINT NOT NULL,
     quantity INT NOT NULL DEFAULT 1 CHECK (quantity > 0)
 );
