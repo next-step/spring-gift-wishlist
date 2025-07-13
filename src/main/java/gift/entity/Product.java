@@ -20,7 +20,7 @@ public class Product {
   public Product(String name, Long price, String imageUrl) {
     this(null, name, price, imageUrl);
   }
-  
+
   public Long getId() {
     return id;
   }
@@ -41,5 +41,7 @@ public class Product {
     return imageUrl;
   }
 
-
+  public boolean isNameHasWord(String word) {
+    return this.name.contains(word);
+  }
 }

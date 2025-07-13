@@ -54,19 +54,4 @@ public class ProductRequestDto {
     return mdOk;
   }
 
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public void setPrice(Long price) {
-    this.price = price;
-  }
-
-  public void setImageUrl(String imageUrl) {
-    this.imageUrl = imageUrl;
-  }
-
-  public void setMdOk(Boolean mdOk) {
-    this.mdOk = mdOk;
-  }
 }
