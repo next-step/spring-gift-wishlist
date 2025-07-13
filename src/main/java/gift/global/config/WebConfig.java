@@ -1,5 +1,6 @@
 package gift.global.config;
 
+import gift.auth.resolver.LoginUserArgumentResolver;
 import gift.global.common.resolver.PageParamArgumentResolver;
 import java.util.List;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +13,7 @@ public class WebConfig implements WebMvcConfigurer {
   @Override
   public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
     resolvers.add(new PageParamArgumentResolver());
+    resolvers.add(new LoginUserArgumentResolver());
   }
 
 }

@@ -2,9 +2,8 @@ package gift.product.strategy;
 
 import gift.global.common.dto.SortInfo;
 import gift.global.common.strategy.SortStrategy;
-import gift.product.exception.InvalidProductSortFieldException;
 import gift.product.domain.Product;
-import gift.product.exception.ProductErrorCode;
+import gift.product.exception.InvalidProductSortFieldException;
 import java.util.Comparator;
 import java.util.Map;
 
@@ -20,7 +19,7 @@ public class ProductSortStrategyFactory {
       throws InvalidProductSortFieldException {
     SortStrategy<Product> strategy = strategyMap.get(sortField);
     if (strategy == null) {
-      throw new InvalidProductSortFieldException(ProductErrorCode.INVALID_SORT_FIELD_ERROR);
+      throw new InvalidProductSortFieldException();
     }
     return strategy;
   }

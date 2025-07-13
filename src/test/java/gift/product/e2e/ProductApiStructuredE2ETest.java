@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.global.exception.dto.ErrorResponse;
-import gift.product.dto.CreateProductReqDto;
+import gift.product.dto.CreateProductRequestDto;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -36,7 +36,7 @@ class ProductApiStructuredE2ETest {
 
   @Test
   void 상품등록_빈_이름으로_요청시_400_응답반환() throws Exception {
-    var request = new CreateProductReqDto("   ", 1000, "설명입니다", "https://example.com/image.jpg");
+    var request = new CreateProductRequestDto("   ", 1000, "설명입니다", "https://example.com/image.jpg");
 
     var response = createProductWithErrorResponse(request);
     ObjectMapper mapper = new ObjectMapper();
@@ -56,7 +56,7 @@ class ProductApiStructuredE2ETest {
 
   @Test
   void 상품등록_카카오포함된_이름으로_요청시_400_응답반환() throws Exception {
-    var request = new CreateProductReqDto("카카오 초콜릿", 1000, "설명입니다", "https://example.com/image.jpg");
+    var request = new CreateProductRequestDto("카카오 초콜릿", 1000, "설명입니다", "https://example.com/image.jpg");
 
     var response = createProductWithErrorResponse(request);
     ObjectMapper mapper = new ObjectMapper();
@@ -69,7 +69,7 @@ class ProductApiStructuredE2ETest {
 
   @Test
   void 상품등록_유효하지않은_가격으로_요청시_400_응답반환() throws Exception {
-    var request = new CreateProductReqDto("상품이름", -10, "설명입니다", "https://example.com/image.jpg");
+    var request = new CreateProductRequestDto("상품이름", -10, "설명입니다", "https://example.com/image.jpg");
 
     var response = createProductWithErrorResponse(request);
     ObjectMapper mapper = new ObjectMapper();
@@ -108,8 +108,8 @@ class ProductApiStructuredE2ETest {
 
 
 
-  private CreateProductReqDto createValidProductRequest() {
-    return new CreateProductReqDto(
+  private CreateProductRequestDto createValidProductRequest() {
+    return new CreateProductRequestDto(
         "정상상품",
         1000,
         "정상적인 설명입니다.",
@@ -117,7 +117,7 @@ class ProductApiStructuredE2ETest {
     );
   }
 
-  private ResponseEntity<Void> createProduct(CreateProductReqDto request) {
+  private ResponseEntity<Void> createProduct(CreateProductRequestDto request) {
     return restClient.post()
         .uri("/api/products")
         .body(request)
@@ -126,7 +126,7 @@ class ProductApiStructuredE2ETest {
             .body(null));
   }
 
-  private ResponseEntity<String> createProductWithErrorResponse(CreateProductReqDto request) {
+  private ResponseEntity<String> createProductWithErrorResponse(CreateProductRequestDto request) {
     return restClient.post()
         .uri("/api/products")
         .body(request)

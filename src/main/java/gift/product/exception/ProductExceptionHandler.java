@@ -16,26 +16,19 @@ public class ProductExceptionHandler {
   public ResponseEntity<ErrorResponse> handleProductNotFoundException(
       ProductNotFoundException exception) {
     logger.error("Product not found: {}", exception.getMessage());
-    return createErrorResponse(exception.getErrorCode(), exception);
+    return ErrorResponse.createErrorResponse(exception.getErrorCode(), exception);
   }
 
   @ExceptionHandler(InvalidProductNameException.class)
   public ResponseEntity<ErrorResponse> handleInvalidProductNameException(
       InvalidProductNameException exception) {
     logger.error("Invalid product name: {}", exception.getMessage());
-    return createErrorResponse(exception.getErrorCode(), exception);
+    return ErrorResponse.createErrorResponse(exception.getErrorCode(), exception);
   }
 
   @ExceptionHandler(InvalidProductSortFieldException.class)
   public ResponseEntity<ErrorResponse> handleSortFieldException(
       InvalidProductSortFieldException exception) {
-    return createErrorResponse(exception.getErrorCode(), exception);
-  }
-
-  private static ResponseEntity<ErrorResponse> createErrorResponse(ProductErrorCode errorCode,
-      Exception exception) {
-    return ResponseEntity
-        .status(errorCode.getStatus())
-        .body(ErrorResponse.from(errorCode, exception.getMessage()));
+    return ErrorResponse.createErrorResponse(exception.getErrorCode(), exception);
   }
 }

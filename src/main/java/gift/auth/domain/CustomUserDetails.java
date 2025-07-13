@@ -5,6 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public class CustomUserDetails implements UserDetails {
+
   private Long memberId;
   private String email;
   private String password;
@@ -48,5 +49,9 @@ public class CustomUserDetails implements UserDetails {
   @Override
   public String getUsername() {
     return email;
+  }
+
+  public Long getUserId() {
+    return memberId;
   }
 }

@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
-public record CreateProductReqDto(
+public record CreateProductRequestDto(
     @NotBlank(message = "상품명은 필수값입니다")
     @Size(max = 15)
     @Pattern(

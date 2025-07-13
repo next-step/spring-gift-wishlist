@@ -2,7 +2,7 @@ package gift.product.dto;
 
 import gift.product.domain.Product;
 
-public record GetProductResDto(
+public record GetProductResponseDto(
     Long id,
     String name,
     int price,
@@ -10,8 +10,8 @@ public record GetProductResDto(
     String imageUrl
 ) {
 
-  public static GetProductResDto from(Product product) {
-    return new GetProductResDto(product.id(), product.name(), product.price(),
+  public static GetProductResponseDto from(Product product) {
+    return new GetProductResponseDto(product.id(), product.name(), product.price(),
         product.description(), product.imageUrl());
   }
 }

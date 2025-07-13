@@ -3,9 +3,9 @@ package gift.product.controller;
 import gift.global.common.annotation.PageParam;
 import gift.global.common.dto.PageRequest;
 import gift.global.common.dto.PagedResult;
-import gift.product.dto.CreateProductReqDto;
-import gift.product.dto.GetProductResDto;
-import gift.product.dto.UpdateProductReqDto;
+import gift.product.dto.CreateProductRequestDto;
+import gift.product.dto.GetProductResponseDto;
+import gift.product.dto.UpdateProductRequestDto;
 import gift.product.service.ProductService;
 import jakarta.validation.Valid;
 import java.net.URI;
@@ -30,22 +30,22 @@ public class ProductController {
   }
 
   @GetMapping("/{productId}")
-  public ResponseEntity<GetProductResDto> getProductById(
+  public ResponseEntity<GetProductResponseDto> getProductById(
       @PathVariable(name = "productId") Long productId) {
-    GetProductResDto responseDto = productService.getProductById(productId);
+    GetProductResponseDto responseDto = productService.getProductById(productId);
     return ResponseEntity.ok(responseDto);
   }
 
   @GetMapping
-  public ResponseEntity<PagedResult<GetProductResDto>> getProductByPageRequest(
+  public ResponseEntity<PagedResult<GetProductResponseDto>> getProductByPageRequest(
       @Valid @PageParam PageRequest pageRequest
   ) {
-    PagedResult<GetProductResDto> pagedResult = productService.getAllByPage(pageRequest);
+    PagedResult<GetProductResponseDto> pagedResult = productService.getAllByPage(pageRequest);
     return ResponseEntity.ok(pagedResult);
   }
 
   @PostMapping
-  public ResponseEntity<Void> createProduct(@Valid @RequestBody CreateProductReqDto dto) {
+  public ResponseEntity<Void> createProduct(@Valid @RequestBody CreateProductRequestDto dto) {
     Long id = productService.createProduct(dto);
     URI uri = URI.create("/api/products/" + id);
     return ResponseEntity.created(uri).build();
@@ -53,7 +53,7 @@ public class ProductController {
 
   @PutMapping("/{id}")
   public ResponseEntity<Void> updateProduct(@PathVariable(name = "id") Long id,
-      @Valid @RequestBody UpdateProductReqDto dto) {
+      @Valid @RequestBody UpdateProductRequestDto dto) {
     productService.updateProduct(id, dto);
     return ResponseEntity.noContent().build();
   }

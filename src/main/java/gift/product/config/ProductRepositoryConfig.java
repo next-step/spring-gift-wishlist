@@ -18,7 +18,7 @@ public class ProductRepositoryConfig {
   }
 
   @Bean
-  @Profile({"default","test"})
+  @Profile({"default", "test"})
   public ProductRepository inMemoryProductRepository() {
     return new InMemoryProductRepository();
   }

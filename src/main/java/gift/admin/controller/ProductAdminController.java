@@ -2,8 +2,8 @@ package gift.admin.controller;
 
 import gift.global.common.annotation.PageParam;
 import gift.global.common.dto.PageRequest;
-import gift.product.dto.CreateProductReqDto;
-import gift.product.dto.UpdateProductReqDto;
+import gift.product.dto.CreateProductRequestDto;
+import gift.product.dto.UpdateProductRequestDto;
 import gift.product.exception.ProductNotFoundException;
 import gift.product.service.ProductService;
 import jakarta.validation.Valid;
@@ -41,12 +41,12 @@ public class ProductAdminController {
 
   @GetMapping("/add")
   public String showAddForm(Model model) {
-    model.addAttribute("product", new CreateProductReqDto(null, null, null, null));
+    model.addAttribute("product", new CreateProductRequestDto(null, null, null, null));
     return "product-add";
   }
 
   @PostMapping("/add")
-  public String addProduct(@Valid @ModelAttribute("product") CreateProductReqDto dto,
+  public String addProduct(@Valid @ModelAttribute("product") CreateProductRequestDto dto,
       BindingResult bindingResult,
       Model model,
       RedirectAttributes redirectAttributes) {
@@ -70,7 +70,7 @@ public class ProductAdminController {
     try {
       var product = productService.getProductById(id);
 
-      model.addAttribute("product", new UpdateProductReqDto(
+      model.addAttribute("product", new UpdateProductRequestDto(
           product.name(),
           product.price(),
           product.description(),
@@ -89,7 +89,7 @@ public class ProductAdminController {
 
   @PostMapping("/edit/{id}")
   public String updateProduct(@PathVariable(name = "id") Long id,
-      @Valid @ModelAttribute("product") UpdateProductReqDto dto,
+      @Valid @ModelAttribute("product") UpdateProductRequestDto dto,
       BindingResult bindingResult,
       Model model,
       RedirectAttributes redirectAttributes) {
