@@ -9,6 +9,14 @@ public class Product {
     private Long price;
     private String imageUrl;
 
+    public Product() { }
+
+    public Product(String name, Long price, String imageUrl) {
+        this.name = name;
+        this.price = price;
+        this.imageUrl = imageUrl;
+    }
+
     public Long getId() {
         return id;
     }
@@ -21,25 +29,14 @@ public class Product {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public Long getPrice() {
         return price;
-    }
-
-    public void setPrice(Long price) {
-        this.price = price;
     }
 
     public String getImageUrl() {
         return imageUrl;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
 
     public void updateFromProductRequestDTO(ProductRequestDTO dto) {
         this.name = dto.getName();

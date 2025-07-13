@@ -27,11 +27,8 @@ public class WishRepository {
     );
 
     private final RowMapper<WishResponseDTO> wishResponseDTORowMapper = (rs, rowNum) -> {
-        Product product = new Product();
+        Product product = new Product(rs.getString("p_name"), rs.getLong("p_price"), rs.getString("p_image_url"));
         product.setId(rs.getLong("p_id"));
-        product.setName(rs.getString("p_name"));
-        product.setPrice(rs.getLong("p_price"));
-        product.setImageUrl(rs.getString("p_image_url"));
         return new WishResponseDTO(rs.getLong("member_id"), product.getProductResponseDTO(), rs.getInt("w_quantity"));
     };
 
