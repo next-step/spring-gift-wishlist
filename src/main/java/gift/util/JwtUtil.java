@@ -31,12 +31,12 @@ public class JwtUtil {
         Date expirationTime = new Date(now.getTime() + validityInMilliseconds/2);
 
         return Jwts.builder()
-            .setSubject(member.getId().toString())
-            .setId(UUID.randomUUID().toString())
+            .subject(member.getId().toString())
+            .id(UUID.randomUUID().toString())
             .claim("email", member.getEmail())
             .claim("role", member.getRole().name())
-            .setIssuedAt(now)
-            .setExpiration(expirationTime)
+            .issuedAt(now)
+            .expiration(expirationTime)
             .signWith(key, Jwts.SIG.HS512)
             .compact();
     }
