@@ -24,11 +24,8 @@ public class ProductRepository {
     }
 
     private final RowMapper<Product> productRowMapper = (rs, rowNum) -> {
-        Product product = new Product();
+        Product product = new Product(rs.getString("name"), rs.getLong("price"), rs.getString("image_url"));
         product.setId(rs.getLong("id"));
-        product.setName(rs.getString("name"));
-        product.setPrice(rs.getLong("price"));
-        product.setImageUrl(rs.getString("image_url"));
         return product;
     };
 

@@ -1,0 +1,81 @@
+package gift.service;
+
+import gift.dto.ProductResponseDTO;
+import gift.dto.WishRequestDTO;
+import gift.dto.WishResponseDTO;
+import gift.dto.WishUpdateDTO;
+import gift.entity.Member;
+import gift.entity.Product;
+import gift.entity.Wish;
+import gift.entity.WishWithProduct;
+import gift.repository.ProductRepository;
+import gift.repository.WishRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service
+public class WishService {
+    private final WishRepository wishRepository;
+    private final ProductRepository productRepository;
+
+    public WishService(WishRepository wishRepository, ProductRepository productRepository) {
+        this.wishRepository = wishRepository;
+        this.productRepository = productRepository;
+    }
+
+    @Transactional
+    public WishResponseDTO addWish(WishRequestDTO wishRequestDTO, Member member) {
+        Long productId = wishRequestDTO.productId();
+        Product product = productRepository.findById(productId)
+            .orElseThrow(() -> new IllegalArgumentException("해당 상품을 찾을 수 없습니다."));
+
+        return wishRepository.findByMemberIdAndProductId(member.getId(), productId)
+            .map(existingWish -> {
+                int newQuantity = existingWish.getQuantity() + wishRequestDTO.quantity();
+                wishRepository.updateQuantity(member.getId(), productId, newQuantity);
+                return new WishResponseDTO(member.getId(), new ProductResponseDTO(product), newQuantity);
+            })
+            .orElseGet(() -> {
+                wishRepository.save(new Wish(member.getId(), productId, wishRequestDTO.quantity()));
+                return new WishResponseDTO(member.getId(), new ProductResponseDTO(product), wishRequestDTO.quantity());
+            });
+    }
+
+    @Transactional(readOnly = true)
+    public List<WishResponseDTO> getWishes(Member member, int page, int size, String sort) {
+        long offset = (long) page * size;
+        List<WishWithProduct> wishWithProducts = wishRepository.findByMemberIdWithPagination(member.getId(), size, offset, sort);
+
+        return wishWithProducts.stream()
+            .map(this::convertToWishResponseDTO)
+            .toList();
+    }
+
+    @Transactional
+    public void updateWishQuantity(Long productId, WishUpdateDTO wishUpdateDTO, Member member) {
+        wishRepository.findByMemberIdAndProductId(member.getId(), productId)
+            .orElseThrow(() -> new IllegalArgumentException("해당 상품이 위시리스트에 없습니다."));
+
+        int newQuantity = wishUpdateDTO.quantity();
+        if (newQuantity == 0) {
+            wishRepository.deleteByMemberIdAndProductId(member.getId(), productId);
+        } else {
+            wishRepository.updateQuantity(member.getId(), productId, newQuantity);
+        }
+    }
+
+    @Transactional
+    public void deleteWish(Long productId, Member member) {
+        wishRepository.findByMemberIdAndProductId(member.getId(), productId)
+            .orElseThrow(() -> new IllegalArgumentException("해당 상품이 위시리스트에 없습니다."));
+
+        wishRepository.deleteByMemberIdAndProductId(member.getId(), productId);
+    }
+
+    private WishResponseDTO convertToWishResponseDTO(WishWithProduct wishWithProduct) {
+        ProductResponseDTO productResponseDTO = new ProductResponseDTO(wishWithProduct.product());
+        return new WishResponseDTO(wishWithProduct.memberId(), productResponseDTO, wishWithProduct.quantity());
+    }
+}
