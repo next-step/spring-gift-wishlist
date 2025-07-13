@@ -6,10 +6,11 @@ import giftproject.wishlist.entity.Wish;
 public record WishResponseDto(
         Long id,
         Long memberId,
-        ProductResponseDto product
+        ProductResponseDto product,
+        int quantity
 ) {
 
     public WishResponseDto(Wish wish, ProductResponseDto productResponseDto) {
-        this(wish.getId(), wish.getMemberId(), productResponseDto);
+        this(wish.getId(), wish.getMemberId(), productResponseDto, wish.getQuantity());
     }
 }
