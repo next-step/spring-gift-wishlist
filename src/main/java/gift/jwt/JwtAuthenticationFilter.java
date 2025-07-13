@@ -39,7 +39,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     String email = jwtTokenProvider.getEmailFromToken(token);
 
                     Member member = memberRepository.findByEmail(email)
-                            .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 사용자"));
+                            .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 사용자입니다."));
 
                     LoginMember loginMember = new LoginMember(member.getId(), member.getEmail());
                     request.setAttribute("loginMember", loginMember);
