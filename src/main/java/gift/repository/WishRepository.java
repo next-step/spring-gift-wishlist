@@ -22,7 +22,8 @@ public class WishRepository {
     private static final RowMapper<Wish> ROW_MAPPER = (rs, rowNum) -> new Wish(
             rs.getLong("id"),
             rs.getLong("member_id"),
-            rs.getLong("product_id")
+            rs.getLong("product_id"),
+            rs.getInt("quantity")
     );
 
     public List<Wish> findByMemberId(Long memberId) {
@@ -33,14 +34,19 @@ public class WishRepository {
         KeyHolder kh = new GeneratedKeyHolder();
         jdbc.update(con -> {
             PreparedStatement ps = con.prepareStatement(
-                    "INSERT INTO wishes(member_id, product_id) VALUES (?, ?)",
+                    "INSERT INTO wishes(member_id, product_id, quantity) VALUES (?, ?, ?)",
                     Statement.RETURN_GENERATED_KEYS
             );
             ps.setLong(1, wish.getMemberId());
             ps.setLong(2, wish.getProductId());
+            ps.setInt(3, wish.getQuantity());
             return ps;
         }, kh);
         wish.setId(kh.getKey().longValue());
+    }
+
+    public void update(Wish wish) {
+        jdbc.update("UPDATE wishes SET quantity = ? WHERE id = ?", wish.getQuantity(), wish.getId());
     }
 
     public boolean deleteByMemberAndProduct(Long memberId, Long productId) {
