@@ -8,6 +8,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Repository
@@ -50,25 +51,34 @@ public class JDBCProductRepository implements ProductRepository{
 
     @Override
     public void update(Long id, String name, int price, String imageUrl) {
-        client.sql("update product set name = :name, price = :price, image_url = :imageUrl where id = :id")
+        int affected = client.sql("update product set name = :name, price = :price, image_url = :imageUrl where id = :id")
                 .param("name", name)
                 .param("price", price)
                 .param("imageUrl", imageUrl)
                 .param("id", id)
                 .update();
+        checkAffected(affected);
     }
 
     @Override
     public void deleteById(Long id) {
-        client.sql("delete from product where id = :id")
+        int affected = client.sql("delete from product where id = :id")
                 .param("id", id)
                 .update();
+
+        checkAffected(affected);
     }
 
-    private final RowMapper<Product> productRowMapper = (rs, rowNum) -> new Product(
+    private static final RowMapper<Product> productRowMapper = (rs, rowNum) -> new Product(
             rs.getLong("id"),
             rs.getString("name"),
             rs.getInt("price"),
             rs.getString("image_url")
     );
+
+    private void checkAffected(int affected) {
+        if(affected == 0) {
+            throw new NoSuchElementException("해당 상품 항목을 찾을 수 없습니다.");
+        }
+    }
 }

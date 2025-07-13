@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/products")
-public class ProductApiController {
+@RequestMapping("/api/admin/products")
+public class ProductApiAdminController {
 
     private final ProductService productService;
 
-    public ProductApiController(ProductService productService){
+    public ProductApiAdminController(ProductService productService){
         this.productService = productService;
     }
 

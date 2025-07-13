@@ -2,51 +2,40 @@ package gift.auth;
 
 import gift.member.domain.Member;
 import gift.member.repository.MemberRepository;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 @Component
 public class LoginInterceptor implements HandlerInterceptor {
     private final JwtUtil jwtUtil;
-    private final MemberRepository memberRepository;
 
-    public LoginInterceptor(JwtUtil jwtUtil, MemberRepository memberRepository) {
+    public LoginInterceptor(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
-        this.memberRepository = memberRepository;
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String authHeader = request.getHeader("Authorization");
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return makeResponse(response, "인증 헤더가 없거나 형식이 올바르지 않습니다.");
+        String token = AuthUtil.extractToken(request);
+
+        if (token == null) {
+            AuthUtil.handleAuthError(request, response, "인증 정보가 없습니다. 다시 로그인해주세요");
+            return false;
         }
 
-        String token = authHeader.substring(7);
         if (!jwtUtil.validateToken(token)) {
-            return makeResponse(response, "유효하지 않은 토큰입니다.");
+            AuthUtil.handleAuthError(request, response, "인증 정보가 유효하지 않거나 만료되었습니다. 다시 로그인해주세요.");
+            return false;
         }
-
-        String email = jwtUtil.getEmail(token);
-        Optional<Member> member = memberRepository.findByEmail(email);
-        if(member.isEmpty()) {
-            return makeResponse(response, "사용자를 찾을 수 없습니다.");
-        }
-
-        request.setAttribute("member", member.get());
+        request.setAttribute("isLoggedIn", Boolean.TRUE);
         return true;
-    }
-
-    private static boolean makeResponse(HttpServletResponse response, String msg) throws IOException {
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write(msg);
-        return false;
     }
 }

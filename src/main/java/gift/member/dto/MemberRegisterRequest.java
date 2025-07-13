@@ -13,5 +13,9 @@ public record MemberRegisterRequest(
         @Size(min = 4, message = "비밀번호는 최소 4자리 이상이어야 합니다.")
         String password
 ) {
-
+    private static final String DEFAULT_EMAIL = "";
+    private static final String DEFAULT_PASSWORD = "";
+    public static MemberRegisterRequest getEmpty() {
+            return new MemberRegisterRequest(DEFAULT_EMAIL, DEFAULT_PASSWORD);
+    }
 }

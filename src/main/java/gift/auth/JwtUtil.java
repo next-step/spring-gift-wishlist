@@ -1,6 +1,7 @@
 package gift.auth;
 
 import gift.member.domain.Member;
+import gift.member.domain.RoleType;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -18,9 +19,9 @@ public class JwtUtil {
     private final long timeoutMs;
 
     public JwtUtil(@Value("${jwt.secret}") String secretKey,
-                   @Value("${jwt.tokenTimeoutSec}") long timeOut_s) {
+                   @Value("${jwt.tokenTimeoutSec}") long timeOutSec) {
         this.secretKey = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
-        this.timeoutMs = timeOut_s * 1000;
+        this.timeoutMs = timeOutSec * 1000;
     }
 
     public String generateToken(Member member) {
@@ -38,6 +39,11 @@ public class JwtUtil {
 
     public String getEmail(String token) {
         return getClaims(token).getSubject();
+    }
+
+    public RoleType getRoleType(String token) {
+        String roleStr = getClaims(token).get("role", String.class);
+        return RoleType.valueOf(roleStr);
     }
 
     public boolean validateToken(String token) {
