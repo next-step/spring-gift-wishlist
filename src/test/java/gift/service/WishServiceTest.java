@@ -101,7 +101,6 @@ public class WishServiceTest {
 
     @Test
     void addToWishlistNormalCaseResponse() {
-        // Given
         WishRequest request = new WishRequest(1L, 1);
         when(productRepository.findById(request.productId())).thenReturn(Optional.of(product));
         when(wishItemRepository.save(any(WishItem.class))).thenAnswer(invocation -> {
@@ -145,23 +144,23 @@ public class WishServiceTest {
 
     @Test
     void removeFromWishlistNormalCase() {
-        Long productId = 1L;
-        doNothing().when(wishItemRepository).deleteByItemAndMember(productId, member);
+        Long wishId = 1L;
+        doNothing().when(wishItemRepository).deleteByIdAndMember(wishId, member);
 
-        wishService.removeFromWishlist(productId, member);
+        wishService.removeFromWishlist(wishId, member);
 
-        verify(wishItemRepository, times(1)).deleteByItemAndMember(productId, member);
+        verify(wishItemRepository, times(1)).deleteByIdAndMember(wishId, member);
     }
 
     @Test
     void removeFromWishlistNoProductException() {
-        Long productId = 1L;
+        Long wishId = 1L;
         doThrow(new WishItemNotFoundException("WishItem not found")).when(wishItemRepository)
-            .deleteByItemAndMember(productId, member);
+            .deleteByIdAndMember(wishId, member);
 
         assertThrows(WishItemNotFoundException.class,
-            () -> wishService.removeFromWishlist(productId, member));
-        verify(wishItemRepository, times(1)).deleteByItemAndMember(productId, member);
+            () -> wishService.removeFromWishlist(wishId, member));
+        verify(wishItemRepository, times(1)).deleteByIdAndMember(wishId, member);
     }
 
 }
