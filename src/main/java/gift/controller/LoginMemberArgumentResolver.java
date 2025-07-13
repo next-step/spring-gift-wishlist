@@ -1,17 +1,20 @@
 package gift.controller;
 
-import gift.entity.Member;
 import gift.jwt.Autheniticated;
 import gift.jwt.JwtTokenProvider;
+import gift.dto.LoginMember;
 import gift.service.MemberService;
 import gift.ExceptionHandler.UnAuthorizationException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+@Component
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final MemberService memberService;
@@ -26,40 +29,21 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return parameter.hasParameterAnnotation(Autheniticated.class)
-                && parameter.getParameterType().equals(Long.class);
+                && parameter.getParameterType().equals(LoginMember.class);
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
-            NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+    public Object resolveArgument(MethodParameter parameter,
+            ModelAndViewContainer mavContainer,
+            NativeWebRequest webRequest,
+            WebDataBinderFactory binderFactory) {
+        HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
+        Object loginMember = request.getAttribute("loginMember");
 
-        String token = checkAuthorization(webRequest);
-
-        if (!jwtTokenProvider.validateToken(token)) {
-            throw new UnAuthorizationException("유효하지 않은 토큰입니다.");
+        if (loginMember == null) {
+            throw new IllegalStateException("인증된 사용자가 없습니다.");
         }
 
-        String email = jwtTokenProvider.getEmailFromToken(token);
-
-        // 사용자 조회
-        Member member = memberService.findByEmail(email)
-                .orElseThrow(() -> new UnAuthorizationException("해당 사용자를 찾을 수 없습니다."));
-
-        // memberId만 반환
-        return member.getId();
-    }
-
-    private String checkAuthorization(NativeWebRequest webRequest) {
-        var authorization = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
-
-        if (authorization == null || authorization.isBlank()) {
-            throw new RuntimeException("Authorization 헤더가 없습니다.");
-        }
-
-        if (!authorization.startsWith("Bearer ")) {
-            throw new UnAuthorizationException("Authorization 헤더 형식이 올바르지 않습니다.");
-        }
-
-        return authorization.substring(7);
+        return loginMember;
     }
 }

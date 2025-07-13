@@ -32,20 +32,29 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7); // "Bearer " 제거
+            String token = authHeader.substring(7);
 
-            if (jwtTokenProvider.validateToken(token)) {
-                String email = jwtTokenProvider.getEmailFromToken(token);
+            try {
+                if (jwtTokenProvider.validateToken(token)) {
+                    String email = jwtTokenProvider.getEmailFromToken(token);
 
-                Member member = memberRepository.findByEmail(email)
-                        .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 사용자"));
+                    Member member = memberRepository.findByEmail(email)
+                            .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 사용자"));
 
-                LoginMember loginMember = new LoginMember(member.getId(), member.getEmail());
-
-                request.setAttribute("loginMember", loginMember);
+                    LoginMember loginMember = new LoginMember(member.getId(), member.getEmail());
+                    request.setAttribute("loginMember", loginMember);
+                } else {
+                    // 토큰 유효성 검사 실패
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "유효하지 않은 토큰입니다.");
+                    return;
+                }
+            } catch (Exception e) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "인증 실패: " + e.getMessage());
+                return;
             }
         }
 
         filterChain.doFilter(request, response);
     }
+
 }
