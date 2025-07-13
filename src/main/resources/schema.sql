@@ -12,3 +12,10 @@ CREATE TABLE members (
     password VARCHAR(50) NOT NULL
 );
 
+create table if not exists wishes (
+    id bigint auto_increment primary key,
+    member_id bigint not null,
+    product_id bigint not null,
+    quantity int not null default 1
+);
+
