@@ -31,7 +31,7 @@ public class AdminInterceptor implements HandlerInterceptor {
       return true;
     }
 
-    res.setStatus(HttpStatus.UNAUTHORIZED.value());
+    res.setStatus(HttpStatus.FORBIDDEN.value());
     return false;
   }
 
