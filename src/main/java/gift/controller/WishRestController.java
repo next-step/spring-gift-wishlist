@@ -2,7 +2,6 @@ package gift.controller;
 
 import gift.dto.CreateWishRequest;
 import gift.dto.CreateWishResponse;
-import gift.dto.ProductResponseDto;
 import gift.dto.WishResponse;
 import gift.entity.Member;
 import gift.service.WishService;

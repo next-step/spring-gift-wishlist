@@ -2,7 +2,6 @@ package gift.service;
 
 import gift.exception.DuplicatedEmailException;
 import gift.exception.LoginFailedException;
-import gift.exception.UnAuthenticatedException;
 import gift.util.JwtUtil;
 import gift.dto.AuthToken;
 import gift.entity.Member;

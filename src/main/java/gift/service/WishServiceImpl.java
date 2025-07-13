@@ -1,12 +1,9 @@
 package gift.service;
 
 import gift.dto.*;
-import gift.entity.Product;
-import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

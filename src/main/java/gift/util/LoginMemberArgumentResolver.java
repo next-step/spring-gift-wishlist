@@ -2,7 +2,6 @@ package gift.util;
 
 import gift.config.AuthConstants;
 import gift.controller.LoginMember;
-import gift.entity.Member;
 import gift.exception.InvalidTokenException;
 import gift.service.MemberService;
 import io.jsonwebtoken.Claims;
@@ -13,8 +12,6 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
-
-import java.util.Optional;
 
 @Component
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {

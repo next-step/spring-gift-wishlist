@@ -1,6 +1,5 @@
 package gift.repository;
 
-import gift.dto.CreateWishRequest;
 import gift.dto.CreateWishResponse;
 import gift.dto.WishWithProductDto;
 
