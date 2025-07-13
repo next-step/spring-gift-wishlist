@@ -1,6 +1,7 @@
-package gift.service;
+package gift.config;
 
 import gift.exception.ForbiddenAccessException;
+import gift.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

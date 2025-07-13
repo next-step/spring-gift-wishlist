@@ -1,6 +1,6 @@
 package gift.config;
 
-import gift.service.JwtAuthFilter;
+import gift.config.JwtAuthFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
