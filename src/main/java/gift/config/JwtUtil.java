@@ -22,26 +22,17 @@ public class JwtUtil {
             .compact();
     }
 
-    public boolean validateToken(String token) {
+    public Claims validateToken(String token) {
         try {
             Claims claims = Jwts.parser()
                 .verifyWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
-            return true;
+            return claims;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return false;
+            throw new SecurityException("Invalid token: " + e.getMessage());
         }
-    }
-
-    public Claims parseClaims(String token) {
-        return Jwts.parser()
-            .verifyWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
-            .build()
-            .parseSignedClaims(token)
-            .getPayload();
     }
 
 }

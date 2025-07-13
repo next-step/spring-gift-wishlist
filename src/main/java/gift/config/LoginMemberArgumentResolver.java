@@ -37,11 +37,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
         }
 
         String token = authorizationHeader.substring(7);
-        if (!jwtUtil.validateToken(token)) {
-            throw new SecurityException("Invalid token");
-        }
-
-        Claims claims = jwtUtil.parseClaims(token);
+        Claims claims = jwtUtil.validateToken(token);
         String email = claims.get("email", String.class);
         return memberService.getMemberToEntity(email);
     }
