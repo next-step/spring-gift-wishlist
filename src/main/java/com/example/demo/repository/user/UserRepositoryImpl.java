@@ -52,4 +52,16 @@ public class UserRepositoryImpl implements UserRepository {
                            .single();
     return count > 0;
   }
+
+  @Override
+  public boolean existUserById(Long userId) {
+    String sql = "SELECT COUNT(*) FROM users WHERE id = :userId;";
+    Long count = jdbcClient.sql(sql)
+        .param("userId", userId)
+        .query(Long.class)
+        .single();
+
+    return count > 0;
+  }
 }
+

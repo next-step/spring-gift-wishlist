@@ -5,8 +5,6 @@ import java.util.List;
 
 public interface WishRepository {
 
-  public boolean existProductById(Long productId);
-  public boolean existUserById(Long userId);
   public void saveWishProduct(Long userId, Long productId);
   public void deleteWishProduct(Long userId, Long productId);
   public List<WishResponseDto> getWishProductList(Long userId);

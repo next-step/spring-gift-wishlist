@@ -5,6 +5,8 @@ import com.example.demo.exception.DuplicateWishException;
 import com.example.demo.exception.ProductNotFoundException;
 import com.example.demo.exception.UserNotFoundException;
 import com.example.demo.exception.WishNotFoundException;
+import com.example.demo.repository.product.ProductRepository;
+import com.example.demo.repository.user.UserRepository;
 import com.example.demo.repository.wish.WishRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -13,18 +15,23 @@ import org.springframework.stereotype.Service;
 public class WishServiceImpl implements WishService{
 
   private final WishRepository wishRepository;
+  private final UserRepository userRepository;
+  private final ProductRepository productRepository;
 
-  public WishServiceImpl(WishRepository wishRepository) {
+  public WishServiceImpl(WishRepository wishRepository, UserRepository userRepository,
+      ProductRepository productRepository) {
     this.wishRepository = wishRepository;
+    this.userRepository = userRepository;
+    this.productRepository = productRepository;
   }
 
   @Override
   public void saveWishProduct(Long userId, Long productId) {
-    if (!wishRepository.existProductById(productId)) {
+    if (!productRepository.existByProductId(productId)) {
       throw new ProductNotFoundException("해당 상품은 존재하지 않습니다.");
     }
 
-    if (!wishRepository.existUserById(userId)) {
+    if (!userRepository.existUserById(userId)) {
       throw new UserNotFoundException("해당 유저가 존재하지 않습니다.");
     }
 

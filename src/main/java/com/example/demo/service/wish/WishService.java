@@ -5,8 +5,8 @@ import java.util.List;
 
 public interface WishService {
 
-  public void saveWishProduct(Long userId, Long productId);
-  public void deleteWishProduct(Long userId, Long productId);
-  public List<WishResponseDto> getWishProductList(Long userId);
+  void saveWishProduct(Long userId, Long productId);
+  void deleteWishProduct(Long userId, Long productId);
+  List<WishResponseDto> getWishProductList(Long userId);
 
 }

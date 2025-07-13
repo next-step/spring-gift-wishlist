@@ -69,4 +69,15 @@ public class ProductRepositoryImpl implements ProductRepository {
               .param("id", id)
               .update();
   }
+
+  @Override
+  public boolean existByProductId(Long productId) {
+    String sql = "SELECT COUNT(*) FROM product WHERE id = :productId";
+    Long count = jdbcClient.sql(sql)
+        .param("productId", productId)
+        .query(Long.class)
+        .single();
+
+    return count > 0;
+  }
 }
