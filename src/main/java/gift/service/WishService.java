@@ -7,6 +7,7 @@ import gift.dto.WishResponseDto;
 import gift.entity.Product;
 import gift.entity.Wish;
 import gift.exception.PermissionDeniedException;
+import gift.exception.WishAlreadyExistsException;
 import gift.exception.WishNotFoundException;
 import gift.repository.WishRepository;
 import java.util.LinkedHashMap;
@@ -32,7 +33,12 @@ public class WishService {
             WishRequestDto wishRequestDto) {
         Product product = productService.findProductOrThrow(wishRequestDto.productId());
 
-        Wish wish = new Wish(authenticatedMemberDto.id(), wishRequestDto.productId());
+        if (wishRepository.existsByMemberIdAndProductId(authenticatedMemberDto.id(),
+                product.getId())) {
+            throw new WishAlreadyExistsException(product.getId());
+        }
+
+        Wish wish = new Wish(authenticatedMemberDto.id(), product.getId());
         Long id = wishRepository.saveWish(wish);
 
         return new WishResponseDto(id, ProductResponseDto.from(product));

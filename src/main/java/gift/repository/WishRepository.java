@@ -13,4 +13,6 @@ public interface WishRepository {
     void deleteWishById(Long wishId);
 
     Optional<Wish> findWishById(Long wishId);
+
+    boolean existsByMemberIdAndProductId(Long memberId, Long productId);
 }

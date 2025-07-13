@@ -113,4 +113,17 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.of(pd).build();
     }
+
+    @ExceptionHandler(WishAlreadyExistsException.class)
+    public ResponseEntity<ProblemDetail> handleWishAlreadyExistsException(
+            WishAlreadyExistsException ex) {
+
+        ProblemDetail pd = ProblemDetail.forStatus(HttpStatus.CONFLICT);
+
+        pd.setType(URI.create("/errors/wish-already-exists"));
+        pd.setTitle("이미 위시리스트에 추가된 상품입니다.");
+        pd.setDetail(ex.getMessage());
+
+        return ResponseEntity.of(pd).build();
+    }
 }

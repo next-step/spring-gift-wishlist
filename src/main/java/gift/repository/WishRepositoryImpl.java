@@ -59,4 +59,17 @@ public class WishRepositoryImpl implements WishRepository {
                      .query(Wish.class)
                      .optional();
     }
+
+    @Override
+    public boolean existsByMemberIdAndProductId(Long memberId, Long productId) {
+        var sql = "SELECT COUNT(*) FROM wish WHERE member_id = :member_id AND product_id = :product_id";
+
+        Integer count = client.sql(sql)
+                              .param("member_id", memberId)
+                              .param("product_id", productId)
+                              .query(Integer.class)
+                              .single();
+
+        return count > 0;
+    }
 }
