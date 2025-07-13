@@ -40,7 +40,6 @@ public class ItemRepositoryImpl implements ItemRepository {
 		return keyHolder.getKey().longValue();
 	}
 
-
 	@Override
 	public Optional<Item> findById(Long id) {
 		final String sql = "select * from item where id = ?";
@@ -59,7 +58,6 @@ public class ItemRepositoryImpl implements ItemRepository {
 		}
 	}
 
-
 	@Override
 	public List<Item> findAll() {
 		final String sql = "select * from item";
@@ -74,14 +72,12 @@ public class ItemRepositoryImpl implements ItemRepository {
 
 	}
 
-
 	@Override
 	public void update(Long itemId, Item item) {
 		final String sql = "update item set name = ?, price = ?, image_url = ? where id = ?";
 
 		jdbcTemplate.update(sql, item.getName(), item.getPrice(), item.getImageUrl(), itemId);
 	}
-
 
 	@Override
 	public void deleteById(Long id) {

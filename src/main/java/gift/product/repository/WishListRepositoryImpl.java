@@ -30,7 +30,6 @@ public class WishListRepositoryImpl implements WishListRepository {
 		), userId);
 	}
 
-
 	@Override
 	public Long save(WishList wishList) {
 		final String sql = "INSERT INTO wish_list (user_id, item_id) VALUES (?, ?)";
@@ -43,7 +42,6 @@ public class WishListRepositoryImpl implements WishListRepository {
 		}, keyHolder);
 		return keyHolder.getKey().longValue();
 	}
-
 
 	@Override
 	public void delete(Long userId, Long itemId) {
