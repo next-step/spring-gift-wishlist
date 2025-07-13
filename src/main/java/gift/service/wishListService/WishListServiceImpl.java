@@ -84,7 +84,7 @@ public class WishListServiceImpl implements WishListService{
                 continue;
             }
 
-            if (name == null && price == null || isValid(item, name, price)) {
+            if (name == null && price == null || isValid(item.name(), name, price)) {
                 result.add(ResponseWishItemDto.from(wishItem));
             }
         }
