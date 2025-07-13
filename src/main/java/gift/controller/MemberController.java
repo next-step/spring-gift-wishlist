@@ -16,11 +16,9 @@ import java.util.List;
 @RequestMapping("/api/members")
 public class MemberController {
     private final MemberService memberService;
-    private final JwtAuth jwtAuth;
 
-    public MemberController(MemberService memberService, JwtAuth jwtAuth) {
+    public MemberController(MemberService memberService) {
         this.memberService = memberService;
-        this.jwtAuth = jwtAuth;
     }
 
     @PostMapping("/membership")
@@ -33,30 +31,5 @@ public class MemberController {
     public ResponseEntity<MemberResponseDto> login(@Valid @RequestBody MemberRequestDto requestDto) {
         MemberResponseDto responseDto = memberService.login(requestDto);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
-    }
-
-    @GetMapping("/wishlist")
-    public ResponseEntity<List<ProductResponseDto>> getWishlist(@AuthenticatedUser String token) {
-
-        List<ProductResponseDto> products = memberService.findAllProductsFromWishList(token);
-
-        return ResponseEntity.status(HttpStatus.OK).body(products);
-    }
-
-    @PostMapping("/wishlist")
-    public ResponseEntity<List<ProductResponseDto>> addProductToWishlist(@AuthenticatedUser String token,
-                                                                  @Valid @RequestBody WishListProductRequestDto productRequestDto) {
-
-        List<ProductResponseDto> products = memberService.addProductToWishListByEmail(token, productRequestDto);
-
-        return ResponseEntity.status(HttpStatus.OK).body(products);
-    }
-
-    @DeleteMapping("/wishlist/{productId}")
-    public ResponseEntity<Void> deleteProductFromWishlist(@AuthenticatedUser String token,
-                                                          @PathVariable("productId") Long productId) {
-
-        memberService.deleteProductFromWishList(token, productId);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

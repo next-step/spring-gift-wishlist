@@ -52,36 +52,4 @@ public class MemberService implements MemberServiceInterface {
         String token = jwtAuth.createJwtToken(member);
         return new MemberResponseDto(token);
     }
-
-    @Override
-    public List<ProductResponseDto> findAllProductsFromWishList(String token) {
-        String email = jwtAuth.getEmailFromToken(token);
-        List<Product> products = memberRepository.findAllProductsFromWishListByEmail(email);
-        List<ProductResponseDto> productResponseDtoList = new ArrayList<>();
-        for (Product product : products) {
-            productResponseDtoList.add(new ProductResponseDto(product.getId(),
-                                                            product.getName(),
-                                                            product.getPrice(),
-                                                            product.getImageUrl()));
-        }
-        return productResponseDtoList;
-    }
-
-    @Override
-    public List<ProductResponseDto> addProductToWishListByEmail(String token, WishListProductRequestDto requestDto) {
-        String email = jwtAuth.getEmailFromToken(token);
-        Long productId = requestDto.getproductId();
-        memberRepository.addProductToWishListByEmail(email, productId);
-
-        return findAllProductsFromWishList(token);
-    }
-
-    @Override
-    public void deleteProductFromWishList(String token, Long productId) {
-        String email = jwtAuth.getEmailFromToken(token);
-        boolean deleted = memberRepository.deleteProductFromWishListByEmail(email, productId);
-        if(!deleted) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-    }
 }

@@ -35,13 +35,11 @@ public class CustomArgumentResolver implements HandlerMethodArgumentResolver {
             throw new MemberExceptions.InvalidAuthorizationHeaderException();
         }
 
-        String token = authHeader.substring(7); // "Bearer " 이후 토큰만 추출
+        String token = authHeader.substring(7);
         if (!jwtAuth.validateToken(token)) {
             throw new MemberExceptions.InvalidTokenException();
         }
 
         return token;
     }
-
-
 }
