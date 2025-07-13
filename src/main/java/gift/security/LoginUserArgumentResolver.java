@@ -32,9 +32,14 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
       WebDataBinderFactory binderFactory) throws Exception {
 
     var authorization = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
+
+    if (authorization == null || authorization.isBlank() || !authorization.startsWith("Bearer ")) {
+      throw new UnAuthorizationException(ErrorCode.INVALID_JWT);
+    }
+
     String token = authorization.substring(7);
 
-    if (token == null || token.isBlank()) {
+    if (token.isBlank()) {
       throw new UnAuthorizationException(ErrorCode.INVALID_JWT);
     }
 
