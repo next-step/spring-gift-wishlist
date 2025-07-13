@@ -13,8 +13,7 @@ public class Wish {
     }
 
     public Wish(Long memberId, Long productId) {
-        this.memberId = memberId;
-        this.productId = productId;
+        this(null, memberId, productId);
     }
 
     public Long getId() {
