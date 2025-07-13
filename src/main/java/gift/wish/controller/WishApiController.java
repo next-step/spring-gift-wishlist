@@ -2,6 +2,7 @@ package gift.wish.controller;
 
 import gift.auth.Login;
 import gift.member.domain.Member;
+import gift.member.dto.MemberTokenRequest;
 import gift.wish.dto.WishListResponse;
 import gift.wish.dto.WishRequest;
 import gift.wish.dto.WishUpdateRequest;
@@ -22,29 +23,29 @@ public class WishApiController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> addWish(@Login Member member, @Valid @RequestBody WishRequest request) {
-        wishService.addWish(member,request.productId());
+    public ResponseEntity<Void> addWish(@Login MemberTokenRequest memberTokenRequest, @Valid @RequestBody WishRequest request) {
+        wishService.addWish(memberTokenRequest ,request.productId());
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping
-    public ResponseEntity<List<WishListResponse>> getWishes(@Login Member member) {
-        List<WishListResponse> wishes = wishService.getWishes(member);
+    public ResponseEntity<List<WishListResponse>> getWishes(@Login MemberTokenRequest memberTokenRequest) {
+        List<WishListResponse> wishes = wishService.getWishes(memberTokenRequest);
 
         return ResponseEntity.ok(wishes);
     }
 
     @PatchMapping("/{wishId}")
-    public ResponseEntity<Void> updateWish(@Login Member member, @PathVariable Long wishId, @RequestBody WishUpdateRequest request){
-        wishService.updateQuantity(member, wishId, request.quantity());
+    public ResponseEntity<Void> updateWish(@Login MemberTokenRequest memberTokenRequest, @PathVariable Long wishId, @RequestBody WishUpdateRequest request){
+        wishService.updateQuantity(memberTokenRequest, wishId, request.quantity());
 
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{wishId}")
-    public ResponseEntity<Void> deleteWish(@Login Member member, @PathVariable Long wishId){
-        wishService.deleteWish(member, wishId);
+    public ResponseEntity<Void> deleteWish(@Login MemberTokenRequest memberTokenRequest, @PathVariable Long wishId){
+        wishService.deleteWish(memberTokenRequest, wishId);
         return ResponseEntity.noContent().build();
     }
 }

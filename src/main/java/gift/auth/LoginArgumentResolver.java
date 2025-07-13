@@ -1,6 +1,7 @@
 package gift.auth;
 
 import gift.member.domain.Member;
+import gift.member.dto.MemberTokenRequest;
 import gift.member.repository.MemberRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;
@@ -26,7 +27,7 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return parameter.hasParameterAnnotation(Login.class)
-                && parameter.getParameterType().equals(Member.class);
+                && parameter.getParameterType().equals(MemberTokenRequest.class);
     }
 
     @Override
@@ -37,7 +38,9 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
         String token = AuthUtil.extractToken(request);
 
         String email = jwtUtil.getEmail(token);
-        return memberRepository.findByEmail(email)
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("토큰에 해당하는 사용자를 찾을 수 없습니다."));
+
+        return new MemberTokenRequest(member.getId(), member.getEmail(), member.getPassword(), member.getRole());
     }
 }

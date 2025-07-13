@@ -3,10 +3,7 @@ package gift.member.service;
 import gift.auth.JwtUtil;
 import gift.member.domain.Member;
 import gift.member.domain.RoleType;
-import gift.member.dto.MemberLoginRequest;
-import gift.member.dto.MemberTokenResponse;
-import gift.member.dto.MemberRegisterRequest;
-import gift.member.dto.MemberUpdateRequest;
+import gift.member.dto.*;
 import gift.member.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 
@@ -43,25 +40,25 @@ public class MemberService {
         Member member = memberRepository.findByEmail(request.email())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다."));
 
-        checkPassword(member, request.password(), "비밀번호가 일치하지 않습니다.");
+        checkPassword(member.getPassword(), request.password(), "비밀번호가 일치하지 않습니다.");
 
         return new MemberTokenResponse(jwtUtil.generateToken(member));
     }
 
-    public void updatePassword(Member member, MemberUpdateRequest request) {
-        checkPassword(member, request.password(), "현재 비밀번호가 일치하지 않습니다.");
+    public void updatePassword(MemberTokenRequest memberTokenRequest, MemberUpdateRequest request) {
+        checkPassword(memberTokenRequest.password(), request.password(), "현재 비밀번호가 일치하지 않습니다.");
 
-        memberRepository.updatePassword(member.getId(), request.newPassword());
+        memberRepository.updatePassword(memberTokenRequest.id(), request.newPassword());
     }
 
-    public void deleteMember(Member member, String password) {
-        checkPassword(member, password, "비밀번호가 일치하지 않습니다.");
+    public void deleteMember(MemberTokenRequest memberTokenRequest, String password) {
+        checkPassword(memberTokenRequest.password(), password, "비밀번호가 일치하지 않습니다.");
 
-        memberRepository.deleteById(member.getId());
+        memberRepository.deleteById(memberTokenRequest.id());
     }
 
-    private void checkPassword(Member member, String password, String msg) {
-        if(!member.getPassword().equals(password)) {
+    private void checkPassword(String originPassword, String password, String msg) {
+        if(!originPassword.equals(password)) {
             throw new IllegalArgumentException(msg);
         }
     }

@@ -2,10 +2,7 @@ package gift.member.controller;
 
 import gift.auth.Login;
 import gift.member.domain.Member;
-import gift.member.dto.MemberLoginRequest;
-import gift.member.dto.MemberRegisterRequest;
-import gift.member.dto.MemberTokenResponse;
-import gift.member.dto.MemberUpdateRequest;
+import gift.member.dto.*;
 import gift.member.service.MemberService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -71,33 +68,33 @@ public class MemberController {
     }
 
     @GetMapping("/mypage")
-    public String mypage(@Login Member member, Model model) {
-        model.addAttribute("member", member);
+    public String mypage(@Login MemberTokenRequest memberTokenRequest, Model model) {
+        model.addAttribute("member", memberTokenRequest);
 
         return "members/mypage";
     }
 
     @GetMapping("/edit")
-    public String editPassword(@Login Member member, Model model) {
-        model.addAttribute("member", MemberUpdateRequest.getEmpty());
+    public String editPassword(@Login MemberTokenRequest memberTokenRequest, Model model) {
+        model.addAttribute("member", MemberUpdateRequest.getEmpty(memberTokenRequest.id()));
 
         return "members/edit-password-form";
     }
 
     @PostMapping("/edit")
-    public String editPassword(@Login Member member, @Valid @ModelAttribute("member") MemberUpdateRequest request, BindingResult bindingResult) {
+    public String editPassword(@Login MemberTokenRequest memberTokenRequest, @Valid @ModelAttribute("member") MemberUpdateRequest request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "members/edit-password-form";
         }
 
-        memberService.updatePassword(member, request);
+        memberService.updatePassword(memberTokenRequest, request);
 
         return "redirect:/members/mypage";
     }
 
     @PostMapping("/delete")
-    public String deleteMember(@Login Member member, @RequestParam String password, HttpServletResponse response) {
-        memberService.deleteMember(member, password);
+    public String deleteMember(@Login MemberTokenRequest memberTokenRequest, @RequestParam String password, HttpServletResponse response) {
+        memberService.deleteMember(memberTokenRequest, password);
         expireTokenCookie(response);
 
         return "redirect:/";
