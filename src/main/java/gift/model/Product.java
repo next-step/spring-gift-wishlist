@@ -11,6 +11,10 @@ public class Product {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    public Product() {
+
+    }
+
     public Product(String name, int price, boolean usableKakao, String imageUrl) {
         this.name = name;
         this.price = price;
