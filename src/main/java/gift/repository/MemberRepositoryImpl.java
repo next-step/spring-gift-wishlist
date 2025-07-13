@@ -22,13 +22,13 @@ public class MemberRepositoryImpl implements MemberRepository {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcClient.sql("insert into members (email, pwd) values (:email, :pwd)")
-                .param("email", member.email())
-                .param("pwd", member.pwd())
+                .param("email", member.getEmail())
+                .param("pwd", member.getPwd())
                 .update(keyHolder);
 
         Long id = keyHolder.getKey().longValue();
 
-        return new Member(id, member.email(), member.pwd());
+        return new Member(id, member.getEmail(), member.getPwd());
     }
 
     @Override
@@ -39,4 +39,11 @@ public class MemberRepositoryImpl implements MemberRepository {
                 .optional();
     }
 
+    @Override
+    public Optional<Member> findById(Long id){
+        return jdbcClient.sql("select * from members where id = :id")
+                .param("id",id)
+                .query(Member.class)
+                .optional();
+    }
 }

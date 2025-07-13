@@ -10,3 +10,10 @@ create table members(
     email varchar(255) not null unique,
     pwd varchar(255) not null
 );
+
+create table wish(
+    id bigint auto_increment primary key,
+    member_id bigint not null,
+    product_id bigint not null,
+    unique(member_id, product_id)
+);

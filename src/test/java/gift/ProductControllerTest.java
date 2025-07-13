@@ -1,22 +1,30 @@
 package gift;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gift.auth.JwtProvider;
+import gift.config.WebConfig;
 import gift.controller.ProductController;
 import gift.dto.request.ProductRequest;
+import gift.service.MemberService;
 import gift.service.ProductService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ProductController.class)
+@Import(ProductControllerTest.TestConfig.class)
 public class ProductControllerTest {
 
     @Autowired
@@ -24,6 +32,9 @@ public class ProductControllerTest {
 
     @MockitoBean
     private ProductService productService;
+
+    @MockitoBean
+    private JwtProvider jwtProvider;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -69,8 +80,27 @@ public class ProductControllerTest {
     private void assertBadRequest(ProductRequest request, String expectedMessage) throws Exception {
         mockMvc.perform(post("/api/products")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer ")
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.name[0]").value(expectedMessage));
+    }
+
+    @TestConfiguration
+    static class TestConfig {
+        @Bean
+        public JwtProvider jwtProvider() {
+            return mock(JwtProvider.class);
+        }
+
+        @Bean
+        public MemberService memberService() {
+            return mock(MemberService.class);
+        }
+
+        @Bean
+        public WebConfig webConfig(JwtProvider jwtProvider, MemberService memberService) {
+            return new WebConfig(jwtProvider, memberService);
+        }
     }
 }

@@ -5,6 +5,7 @@ import gift.domain.Member;
 import gift.dto.request.MemberRequest;
 import gift.dto.response.MemberResponse;
 import gift.exception.DuplicateMemberException;
+import gift.exception.MemberNotFoundException;
 import gift.repository.MemberRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,7 @@ public class MemberServiceImpl implements MemberService{
         Member member = new Member(null,request.email(),request.pwd());
         Member newMember = memberRepository.register(member);
 
-        String token = jwtProvider.createToken(newMember.id(), newMember.email());
+        String token = jwtProvider.createToken(newMember.getId(), newMember.getEmail());
         return new MemberResponse(token);
     }
 
@@ -39,10 +40,16 @@ public class MemberServiceImpl implements MemberService{
         Member member = memberRepository.findByEmail(request.email())
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.FORBIDDEN, "회원이 존재하지 않습니다."));
 
-        if (!member.pwd().equals(request.pwd())){
+        if (!member.getPwd().equals(request.pwd())){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "비밀번호가 일치하지 않습니다.");
         }
-        String token = jwtProvider.createToken(member.id(), member.email());
+        String token = jwtProvider.createToken(member.getId(), member.getEmail());
         return new MemberResponse(token);
+    }
+
+    @Override
+    public Member findById(Long id){
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new MemberNotFoundException());
     }
 }
