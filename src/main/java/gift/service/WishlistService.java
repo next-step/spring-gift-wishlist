@@ -4,9 +4,8 @@ import gift.dto.ProductResponseDto;
 import gift.entity.Product;
 import gift.entity.Wishlist;
 import gift.repository.WishlistRepository;
-import gift.service.ProductService;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,16 +39,16 @@ public class WishlistService {
                 .collect(Collectors.toMap(Product::getId, p -> p));
 
         return list.stream()
-                .map(w -> {
-                    Product p = productMap.get(w.getProductId());
-                    return new ProductResponseDto(
-                            p.getId(),
-                            p.getName(),
-                            p.getPrice(),
-                            p.getImageUrl()
-                    );
-                })
+                .map(w -> productMap.get(w.getProductId()))
+                .filter(Objects::nonNull) // null 방어
+                .map(p -> new ProductResponseDto(
+                        p.getId(),
+                        p.getName(),
+                        p.getPrice(),
+                        p.getImageUrl()
+                ))
                 .toList();
+
     }
 
     public void addToWishlist(Long memberId, Long productId) {
