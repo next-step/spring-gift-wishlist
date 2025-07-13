@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import gift.entity.Role;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 // 2. using extracted token, checking if the user has the right permissions to access the requested resource
 public class AuthorizationFilter implements Filter {
@@ -16,59 +17,96 @@ public class AuthorizationFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         String role = (String) httpRequest.getAttribute("role");
-
         String uri = httpRequest.getRequestURI();
         String method = httpRequest.getMethod().toUpperCase();
 
-        boolean authorized = true;
-
-        if (uri.startsWith("/api/products")) { // GET : public, POST : seller or MD, PATCH/DELETE : MD only
-            switch (method) {
-                case "POST" ->
-                        authorized = (role != null && (role.equals(Role.ROLE_SELLER.name()) || role.equals(Role.ROLE_MD.name())));
-                case "PATCH", "DELETE" ->
-                        authorized = (role != null && role.equals(Role.ROLE_MD.name()));
-            }
-        } else if (uri.startsWith("/api/wishes")) {
-            switch (method) {
-                default ->
-                        authorized = (role != null);
-            }
-        } else if (uri.startsWith("/admin/products/new")) { // only MD can access this endpoint
-            switch (method) {
-                default ->
-                        authorized = (role != null && role.equals(Role.ROLE_MD.name()));
-            }
-        } else if (uri.startsWith("/admin/products")) { // GET : MD or CS, POST/PATCH/DELETE : MD only
-            switch (method) {
-                case "GET" ->
-                        authorized = (role != null && (role.equals(Role.ROLE_MD.name()) || role.equals(Role.ROLE_CS.name())));
-                case "POST", "PATCH", "DELETE" ->
-                        authorized = (role != null && role.equals(Role.ROLE_MD.name()));
-            }
-        } else if (uri.startsWith("/admin/members/new")) { // only ADMIN can access this endpoint
-            switch (method) {
-                default ->
-                        authorized = (role != null && role.equals(Role.ROLE_ADMIN.name()));
-            }
-        } else if (uri.startsWith("/admin/members")) { // GET : ADMIN or CS, POST/PATCH/DELETE : ADMIN only
-            switch (method) {
-                case "GET" ->
-                        authorized = (role != null && (role.equals(Role.ROLE_ADMIN.name()) || role.equals(Role.ROLE_CS.name())));
-                case "POST", "PATCH", "DELETE" ->
-                        authorized = (role != null && role.equals(Role.ROLE_ADMIN.name()));
-            }
-        }
-
-        if (!authorized) {
-            if (role == null || role.isEmpty()) {
-                httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
-            } else {
-                httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied");
-            }
+        if (!isAuthorized(uri, method, role)) {
+            sendError(httpResponse, role);
             return;
         }
 
         chain.doFilter(request, response);
+    }
+
+    private boolean isAuthorized(String uri, String method, String role) {
+        // /api/products : method에 따라 제한 role 존재
+        if (uri.startsWith("/api/products")) {
+            return checkApiProductsAuthorization(method, role);
+        }
+        // /api/wishes : 인증된 사용자만 접근 가능
+        if (uri.startsWith("/api/wishes")) {
+            return isAuthenticated(role);
+        }
+        // /admin/products/new : MD role만 접근 가능
+        if (uri.startsWith("/admin/products/new")) {
+            return hasRole(role, Role.ROLE_MD);
+        }
+        // /admin/products : method에 따라 제한 role 존재
+        if (uri.startsWith("/admin/products")) {
+            return checkAdminProductsAuthorization(method, role);
+        }
+        // /admin/members/new : ADMIN role만 접근 가능
+        if (uri.startsWith("/admin/members/new")) {
+            return hasRole(role, Role.ROLE_ADMIN);
+        }
+        // /admin/members : method에 따라 제한 role 존재
+        if (uri.startsWith("/admin/members")) {
+            return checkAdminMembersAuthorization(method, role);
+        }
+        return true; // Authorize by default for public endpoints (ex. /api/members : for register & login)
+    }
+
+    private boolean checkApiProductsAuthorization(String method, String role) {
+        switch (method) {
+            case "POST":
+                return hasAnyRole(role, Role.ROLE_SELLER, Role.ROLE_MD);
+            case "PATCH", "DELETE":
+                return hasRole(role, Role.ROLE_MD);
+            default:
+                return true;
+        }
+    }
+
+    private boolean checkAdminProductsAuthorization(String method, String role) {
+        switch (method) {
+            case "GET":
+                return hasAnyRole(role, Role.ROLE_MD, Role.ROLE_CS);
+            case "POST", "PATCH", "DELETE":
+                return hasRole(role, Role.ROLE_MD);
+            default:
+                return true;
+        }
+    }
+
+    private boolean checkAdminMembersAuthorization(String method, String role) {
+        switch (method) {
+            case "GET":
+                return hasAnyRole(role, Role.ROLE_ADMIN, Role.ROLE_CS);
+            case "POST", "PATCH", "DELETE":
+                return hasRole(role, Role.ROLE_ADMIN);
+            default:
+                return true;
+        }
+    }
+
+    private boolean isAuthenticated(String role) {
+        return role != null && !role.isEmpty();
+    }
+
+    private boolean hasRole(String userRole, Role requiredRole) {
+        return isAuthenticated(userRole) && userRole.equals(requiredRole.name());
+    }
+
+    private boolean hasAnyRole(String userRole, Role... requiredRoles) {
+        return isAuthenticated(userRole)
+            && Arrays.stream(requiredRoles).anyMatch(r -> userRole.equals(r.name()));
+    }
+
+    private void sendError(HttpServletResponse httpResponse, String role) throws IOException {
+        if (!isAuthenticated(role)) {
+            httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+        } else {
+            httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied");
+        }
     }
 }
