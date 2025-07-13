@@ -9,7 +9,9 @@ import gift.entity.Wish;
 import gift.exception.PermissionDeniedException;
 import gift.exception.WishNotFoundException;
 import gift.repository.WishRepository;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,10 +43,20 @@ public class WishService {
             AuthenticatedMemberDto authenticatedMemberDto) {
 
         List<Wish> wishes = wishRepository.findAllWishesByMemberId(authenticatedMemberDto.id());
+        List<Long> productIds = wishes.stream()
+                                      .map(Wish::getProductId)
+                                      .toList();
+        List<ProductResponseDto> products = productService.findProductsByIdsIn(productIds);
+
+        Map<Long, ProductResponseDto> productMap = new LinkedHashMap<>();
+        for (ProductResponseDto product : products) {
+            productMap.put(product.id(), product);
+        }
+
         return wishes.stream()
                      .map(wish -> {
-                         Product product = productService.findProductOrThrow(wish.getProductId());
-                         return new WishResponseDto(wish.getId(), ProductResponseDto.from(product));
+                         return new WishResponseDto(wish.getId(),
+                                 productMap.get(wish.getProductId()));
                      })
                      .toList();
     }

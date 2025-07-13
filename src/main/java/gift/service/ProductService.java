@@ -74,6 +74,15 @@ public class ProductService {
         productRepository.updateProductStatus(productId, newStatus);
     }
 
+    @Transactional(readOnly = true)
+    public List<ProductResponseDto> findProductsByIdsIn(List<Long> productIds) {
+
+        return productRepository.findProductsByIdsIn(productIds)
+                                .stream()
+                                .map(ProductResponseDto::from)
+                                .toList();
+    }
+
     Product findProductOrThrow(Long productId) {
         return productRepository.findProduct(productId)
                                 .orElseThrow(() -> new ProductNotFoundException(productId));
