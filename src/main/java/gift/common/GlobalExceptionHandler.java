@@ -1,5 +1,6 @@
 package gift.common;
 
+import gift.common.exceptions.FailedToDeleteException;
 import gift.common.exceptions.JwtValidationException;
 import gift.common.exceptions.LogInFailedException;
 import gift.common.exceptions.MemberAlreadyExistsException;
@@ -130,6 +131,20 @@ public class GlobalExceptionHandler {
                 ex.getMessage()
             ),
             HttpStatus.CONFLICT
+        );
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(value = FailedToDeleteException.class)
+    public ResponseEntity<ErrorResult> handleFailedToDeleteException(
+        FailedToDeleteException ex
+    ) {
+        return new ResponseEntity<> (
+            new ErrorResult(
+                HttpStatus.FORBIDDEN,
+                ex.getMessage()
+            ),
+            HttpStatus.FORBIDDEN
         );
     }
 }

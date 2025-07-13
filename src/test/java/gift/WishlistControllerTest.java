@@ -45,7 +45,10 @@ public class WishlistControllerTest {
     @BeforeEach
     void setUp() {
         baseURL = "http://localhost:" + port + "/api";
-        restClient = RestClient.builder().baseUrl(baseURL + "/wishes").build();
+        restClient = RestClient
+            .builder()
+            .baseUrl(baseURL + "/wishes")
+            .build();
         for (int i = 0; i < 5; i++) {
             productRepository.save(
                 new Product(
@@ -69,6 +72,12 @@ public class WishlistControllerTest {
             .toEntity(JwtResponse.class)
             .getBody()
             .accessToken();
+
+        restClient = RestClient
+            .builder()
+            .baseUrl(baseURL + "/wishes")
+            .defaultHeader("Authorization", "Bearer " + accessToken)
+            .build();
     }
 
     @AfterEach
@@ -83,7 +92,6 @@ public class WishlistControllerTest {
 
         // when
         var response = restClient.post()
-            .headers(headers -> headers.setBearerAuth(accessToken))
             .body(wishAddRequest)
             .retrieve()
             .toEntity(WishResponse.class);
@@ -107,7 +115,6 @@ public class WishlistControllerTest {
         wishAddRequestList.add(new WishAddRequest(1L, 7));
         for (WishAddRequest wishAddRequest : wishAddRequestList) {
             restClient.post()
-                .headers(headers -> headers.setBearerAuth(accessToken))
                 .body(wishAddRequest)
                 .retrieve()
                 .toEntity(WishResponse.class);
@@ -115,7 +122,6 @@ public class WishlistControllerTest {
 
         // when
         var response = restClient.get()
-            .headers(headers -> headers.setBearerAuth(accessToken))
             .retrieve()
             .toEntity(new ParameterizedTypeReference<List<WishResponse>>() {
             });
@@ -144,13 +150,11 @@ public class WishlistControllerTest {
         wishAddRequestList.add(new WishAddRequest(1L, 7));
         for (WishAddRequest wishAddRequest : wishAddRequestList) {
             restClient.post()
-                .headers(headers -> headers.setBearerAuth(accessToken))
                 .body(wishAddRequest)
                 .retrieve()
                 .toEntity(WishResponse.class);
         }
         var beforeResponse = restClient.get()
-            .headers(headers -> headers.setBearerAuth(accessToken))
             .retrieve()
             .toEntity(new ParameterizedTypeReference<List<WishResponse>>() {
             });
@@ -159,7 +163,6 @@ public class WishlistControllerTest {
         // when
         var response = restClient.delete()
             .uri("/{wishId}", 1L)
-            .headers(headers -> headers.setBearerAuth(accessToken))
             .retrieve()
             .toEntity(String.class);
 
@@ -167,7 +170,6 @@ public class WishlistControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).contains("위시리스트 삭제가 완료되었습니다.");
         var afterResponse = restClient.get()
-            .headers(headers -> headers.setBearerAuth(accessToken))
             .retrieve()
             .toEntity(new ParameterizedTypeReference<List<WishResponse>>() {
             });
@@ -181,7 +183,6 @@ public class WishlistControllerTest {
         WishAddRequest firstRequest = new WishAddRequest(3L, 5);
         WishAddRequest secondRequest = new WishAddRequest(3L, 3);
         restClient.post()
-            .headers(headers -> headers.setBearerAuth(accessToken))
             .body(firstRequest)
             .retrieve()
             .toEntity(WishResponse.class);
@@ -190,7 +191,6 @@ public class WishlistControllerTest {
         assertThatExceptionOfType(HttpClientErrorException.Conflict.class)
             .isThrownBy(() ->
                 restClient.post()
-                    .headers(headers -> headers.setBearerAuth(accessToken))
                     .body(secondRequest)
                     .retrieve()
                     .toEntity(ErrorResult.class)

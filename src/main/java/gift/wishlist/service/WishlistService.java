@@ -1,5 +1,6 @@
 package gift.wishlist.service;
 
+import gift.common.exceptions.FailedToDeleteException;
 import gift.common.exceptions.WishAlreadyExistsException;
 import gift.wishlist.domain.Wishlist;
 import gift.wishlist.dto.WishAddRequest;
@@ -52,6 +53,12 @@ public class WishlistService {
 
     @Transactional
     public void delete(Long wishId, Long memberId) {
+        Long id = wishlistRepository.findMemberIdByWishId(wishId);
+
+        if (!id.equals(memberId)) {
+            throw new FailedToDeleteException("삭제 권한이 없습니다.");
+        }
+
         wishlistRepository.delete(wishId, memberId);
     }
 

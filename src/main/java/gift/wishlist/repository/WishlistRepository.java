@@ -65,12 +65,33 @@ public class WishlistRepository {
             .list();
     }
 
+    public Long findMemberIdByWishId(Long wishId) {
+        String sql = """
+            SELECT member_id
+            FROM wishlist
+            WHERE id = ?
+            """;
+
+        return jdbcClient.sql(sql)
+            .param(wishId)
+            .query(Long.class)
+            .single();
+    }
+
     public void delete(Long wishId, Long memberId) {
         String sql = "DELETE FROM wishlist WHERE id = ? AND member_id = ?";
 
         jdbcClient.sql(sql)
             .param(wishId)
             .param(memberId)
+            .update();
+    }
+
+    public void deleteByProductId(Long productId) {
+        String sql = "DELETE FROM wishlist WHERE product_id = ?";
+
+        jdbcClient.sql(sql)
+            .param(productId)
             .update();
     }
 
