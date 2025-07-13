@@ -53,4 +53,10 @@ public class MemberServiceImpl implements MemberService {
 
         return new LoginResponseDto(token.getAccessToken());
     }
+
+    @Override
+    public Member findById(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new AuthenticationException("존재하지 않는 회원입니다."));
+    }
 }

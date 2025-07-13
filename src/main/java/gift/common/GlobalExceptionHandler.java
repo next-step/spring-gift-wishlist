@@ -4,6 +4,9 @@ import gift.member.exception.AuthenticationException;
 import gift.member.exception.DuplicatedException;
 import gift.product.exception.ProductNotFoundException;
 import gift.product.exception.ProductValidationException;
+import gift.wishlist.exception.DuplicatedWishException;
+import gift.wishlist.exception.WishNotAuthorityException;
+import gift.wishlist.exception.WishNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
@@ -72,6 +75,33 @@ public class GlobalExceptionHandler {
                 e.getMessage()
         );
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+    }
+
+    @ExceptionHandler(WishNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleWishNotFound(WishNotFoundException e) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                "위시리스트를 찾을 수 없음",
+                e.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
+    @ExceptionHandler(DuplicatedWishException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicatedWish(DuplicatedWishException e) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                "중복 위시리스트",
+                e.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+    }
+
+    @ExceptionHandler(WishNotAuthorityException.class)
+    public ResponseEntity<ErrorResponse> handleWishNotAuthority(WishNotAuthorityException e) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                "권한없는 접근",
+                e.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
     }
 
     public record ErrorResponse(String errorCode, String message) {}

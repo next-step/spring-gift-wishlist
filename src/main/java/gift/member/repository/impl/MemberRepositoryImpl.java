@@ -74,4 +74,11 @@ public class MemberRepositoryImpl implements MemberRepository {
         List<Member> members = jdbcTemplate.query(sql, memberRowMapper, email);
         return members.isEmpty() ? Optional.empty() : Optional.of(members.get(0));
     }
+
+    @Override
+    public Optional<Member> findById(Long id) {
+        String sql = "SELECT id, email, password, role FROM members WHERE id = ?";
+        List<Member> members = jdbcTemplate.query(sql, memberRowMapper, id);
+        return members.isEmpty() ? Optional.empty() : Optional.of(members.get(0));
+    }
 }
