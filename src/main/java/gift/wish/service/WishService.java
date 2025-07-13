@@ -27,10 +27,7 @@ public class WishService {
   }
 
   public List<ProductResponseDto> getWishes(Long memberId) {
-    List<Long> productIds = wishDao.findProductIdsByMemberId(memberId);
-    return productIds.stream()
-        .map(productService::findProductById)
-        .collect(Collectors.toList());
+   return  wishDao.findWishesByMemberId(memberId);
   }
 
   public void deleteWish(Long memberId, Long productId) {

@@ -40,12 +40,29 @@ public class WishDao {
         .single();
   }
 
-  public List<Long> findProductIdsByMemberId(Long memberId) {
-    String sql = "SELECT productId FROM wishes WHERE memberId = ?";
+  public List<ProductResponseDto> findWishesByMemberId(Long memberId) {
+    String sql = "SELECT \n"
+        + "    w.wishId,\n"
+        + "    w.memberId,\n"
+        + "    w.productId,\n"
+        + "    p.name AS productName,\n"
+        + "    p.price AS productPrice,\n"
+        + "    p.imageUrl AS productImageUrl,\n"
+        + "    p.kakaoApproval AS productKakaoApproval\n"
+        + "FROM wishes AS w\n"
+        + "JOIN products AS p \n"
+        + "    ON p.id = w.productId\n"
+        + "WHERE w.memberId = ?";
 
     return jdbcClient.sql(sql)
         .param(memberId)
-        .query(Long.class)
+        .query((rs, rowNum) -> new ProductResponseDto(
+            rs.getLong("productId"),
+            rs.getString("name"),
+            rs.getInt("price"),
+            rs.getString("imageUrl"),
+            rs.getBoolean("kakaoApproval")
+        ))
         .list();
   }
 
