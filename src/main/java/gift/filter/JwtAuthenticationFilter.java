@@ -1,5 +1,7 @@
 package gift.filter;
 
+import gift.util.JwtUtil;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -11,7 +13,11 @@ import java.io.IOException;
 
 public class JwtAuthenticationFilter implements Filter {
 
-    private static final String secretKey = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";
+    private final JwtUtil jwtUtil;
+
+    public JwtAuthenticationFilter(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
@@ -22,32 +28,32 @@ public class JwtAuthenticationFilter implements Filter {
 
         String uri = request.getRequestURI();
 
-        // admin 경로만 토큰 검사
-        if (uri.startsWith("/admin/members")) {
+        // wishlist 경로 토큰 검사. 로그인이 되어야 이용 가능한 기능
+        if (uri.startsWith("/api/wishes")) {
+
             String token = request.getHeader("Authorization");
-            if (token == null || !isValidToken(token)) {
+
+            if (token == null) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("Unauthorized Token");
+                response.getWriter().write("Token is missing");
                 return;
             }
 
+            Claims claims = jwtUtil.parseToken(token);
+            if (claims == null) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Invalid Token");
+                return;
+            }
+
+            request.setAttribute("loginMemberEmail", claims.get("email", String.class));
+
             chain.doFilter(req, res);
         } else {
-            // admin 경로가 아니면 그냥 통과
+            // wishlist 경로가 아니면 그냥 통과
             chain.doFilter(req, res);
         }
     }
 
-    private boolean isValidToken(String token) {
-        try {
-            Jwts.parser()
-                .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes()))
-                .build()
-                .parseClaimsJws(token); // 파싱되면 유효한 토큰
-            return true;
-        } catch (JwtException | IllegalArgumentException e) {
-            return false;
-        }
-    }
 
 }
