@@ -43,14 +43,14 @@ public class WishController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/{productId}")
+    @DeleteMapping("/{wishId}")
     public ResponseEntity<Void> removeFromWishlist(
         @PathVariable
-        Long productId,
+        Long wishId,
         @LoginMember
         Member member
     ) {
-        wishService.removeFromWishlist(productId, member);
+        wishService.removeFromWishlist(wishId, member);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
