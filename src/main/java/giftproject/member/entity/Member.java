@@ -39,4 +39,9 @@ public class Member {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public void update(String email, String encode) {
+        this.email = email;
+        this.password = encode;
+    }
 }
