@@ -32,9 +32,6 @@ class UserLoginTest {
   private UserService userService;
   @Test
   void 로그인_후_me_요청시_회원정보가_반환된다() {
-    // example@example.com 유저는 DB에 미리 insert되어 있다고 가정
-
-    // 1. 로그인 요청
     UserRequestDto dto = new UserRequestDto("example@example.com", "abcd1234!", "admin");
     String loginUrl = "http://localhost:" + port + "/login";
     ResponseEntity<Jwt> loginResponse = client.post()
@@ -47,21 +44,17 @@ class UserLoginTest {
     String accessToken = loginResponse.getBody().getAccessToken();
     System.out.println("AccessToken: " + accessToken);
 
-    // 2. /users/me 요청
     String meUrl = "http://localhost:" + port + "/users/me";
     ResponseEntity<UserDataInfo> meResponse = client.get()
                                                     .uri(meUrl)
                                                     .header("Authorization", "Bearer " + accessToken)
                                                     .retrieve()
                                                     .toEntity(UserDataInfo.class);
-
-    // 3. 응답 검증
-    assertThat(meResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-    assertThat(meResponse.getBody().email()).isEqualTo("example@example.com");
+    assertAll(
+        () ->  assertThat(meResponse.getStatusCode()).isEqualTo(HttpStatus.OK),
+        () -> assertThat(meResponse.getBody().email()).isEqualTo("example@example.com")
+    );
   }
-
-
-
 
   @Test
   void 가입되지_않은_회원이_로그인하면_401이_반환된다() {
