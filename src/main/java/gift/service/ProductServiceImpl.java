@@ -8,9 +8,7 @@ import gift.exception.ErrorCode;
 import gift.repository.ProductRepository;
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -75,6 +73,6 @@ public class ProductServiceImpl implements ProductService {
 
     private Product findProductByIdOrElseThrow(Long id) {
         return productRepository.findProductById(id)
-                .orElseThrow(() -> new CustomException(ErrorCode.Notfound));
+                .orElseThrow(() -> new CustomException(ErrorCode.ProductNotfound));
     }
 }
