@@ -22,8 +22,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponse register(ProductRequest request) {
         Product product = new Product(null, request.name(), request.price(), request.imageUrl());
-        productRepository.register(product);
-        return new ProductResponse(product);
+
+        Product savedProduct = productRepository.register(product);
+
+        return new ProductResponse(savedProduct);
     }
 
     @Override
@@ -51,7 +53,7 @@ public class ProductServiceImpl implements ProductService {
         }
 
         int price = product.getPrice();
-        if (request.price()>0){
+        if (request.price() != null && request.price() > 0){
             price = request.price();
         }
 
