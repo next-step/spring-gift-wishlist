@@ -35,9 +35,12 @@
         <td th:text="${item.quantity}"></td>
         <td>
           <form th:action="@{|/wishlist/${item.productId}/quantity|}" method="post" class="d-flex">
+            <input type="hidden" name="_method" value="put" />
+
             <input type="number" name="quantity" th:value="${item.quantity}" min="1" class="form-control form-control-sm me-2" style="width: 80px;" />
             <button type="submit" class="btn btn-sm btn-outline-success">변경</button>
           </form>
+
         </td>
         <td>
           <a th:href="@{|/api/wishlist/${item.productId}|}"

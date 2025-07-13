@@ -8,12 +8,7 @@ import gift.util.LoginMember;
 import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -45,17 +40,18 @@ public class WishlistController {
   }
 
   // ✅ 찜 상품 수량 조절
-  @PostMapping("/{productId}/quantity")
+  @PutMapping("/{productId}/quantity")
   public String updateQuantity(@PathVariable Long productId,
-      @RequestParam("quantity") int quantity,
-      @LoginMember Member member,
-      RedirectAttributes redirectAttributes) {
+                               @RequestParam("quantity") int quantity,
+                               @LoginMember Member member,
+                               RedirectAttributes redirectAttributes) {
 
     wishlistService.updateQuantity(member.getId(), productId, quantity);
     redirectAttributes.addFlashAttribute("message", "수량이 변경되었습니다.");
 
     return "redirect:/api/wishlist";
   }
+
 
   // ✅ 찜 상품 삭제
   @PostMapping("/{productId}/delete")

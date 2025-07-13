@@ -111,7 +111,7 @@ class WishlistControllerTest {
   void testUpdateQuantitySuccess() {
     int newQuantity = 72;
 
-    ResponseEntity<String> response = restClient.post()
+    ResponseEntity<String> response = restClient.put()
         .uri("/api/wishlist/1/quantity")
         .header(HttpHeaders.AUTHORIZATION, "Bearer " + authToken)
         .body("quantity=" + newQuantity)
@@ -129,7 +129,7 @@ class WishlistControllerTest {
     int invalidQuantity = 0;
 
     try {
-      restClient.post()
+      restClient.put()
           .uri("/api/wishlist/1/quantity")
           .header(HttpHeaders.AUTHORIZATION, "Bearer " + authToken)
           .body("quantity=" + invalidQuantity)
