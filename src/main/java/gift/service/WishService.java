@@ -10,6 +10,9 @@ import gift.exception.ItemNotFoundException;
 import gift.repository.ItemRepository;
 import gift.repository.WishRepository;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,12 +31,26 @@ public class WishService {
     @Transactional(readOnly = true)
     public List<WishResponse> getWishes(Member member) {
         List<Wish> wishes = wishRepository.findByMemberId(member.getId());
+        if (wishes.isEmpty()) {
+            return List.of();
+        }
+
+        List<Long> productIds = wishes.stream()
+            .map(Wish::getProductId)
+            .toList();
+
+        Map<Long, Item> productsMap = itemRepository.findAllByIdIn(productIds).stream()
+            .collect(Collectors.toMap(Item::getId, Function.identity()));
+
         return wishes.stream()
             .map(wish -> {
-                Item item = itemRepository.findById(wish.getProductId())
-                    .orElseThrow(() -> new ItemNotFoundException("위시리스트에 담긴 상품을 찾을 수 없습니다."));
+                Item item = productsMap.get(wish.getProductId());
+                if (item == null) {
+                    return null;
+                }
                 return WishResponse.from(wish, item);
             })
+            .filter(Objects::nonNull)
             .collect(Collectors.toList());
     }
 
