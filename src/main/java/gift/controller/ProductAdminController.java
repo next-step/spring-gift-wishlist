@@ -13,11 +13,11 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/admin/products")
-public class AdminController {
+public class ProductAdminController {
 
     private final ProductService productService;
 
-    public AdminController(ProductService productService) {
+    public ProductAdminController(ProductService productService) {
         this.productService = productService;
     }
 
@@ -39,7 +39,6 @@ public class AdminController {
     public String addProduct(@Valid @ModelAttribute("productRequest") ProductRequest productRequest,
                              BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
-            // 유효성 검사 실패 시, 오류 정보와 함께 목록 페이지를 다시 보여줍니다.
             List<ProductResponse> products = productService.findAllProducts();
             model.addAttribute("products", products);
             return "admin/product-list";

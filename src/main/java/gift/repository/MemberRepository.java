@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -24,7 +25,8 @@ public class MemberRepository {
     private final RowMapper<Member> memberRowMapper = (rs, rowNum) -> new Member(
             rs.getLong("id"),
             rs.getString("email"),
-            rs.getString("password")
+            rs.getString("password"),
+            rs.getString("role")
     );
 
     public Optional<Member> findByEmail(String email) {
@@ -49,4 +51,29 @@ public class MemberRepository {
         member.setId(keyHolder.getKey().longValue());
         return member;
     }
+
+    public void update(Member member) {
+        String sql = "UPDATE member SET email = ?, password = ? WHERE id = ?";
+        jdbcTemplate.update(sql, member.getEmail(), member.getPassword(), member.getId());
+    }
+
+    public void deleteById(Long id) {
+        String sql = "DELETE FROM member WHERE id = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
+    public List<Member> findAll() {
+        String sql = "SELECT id, email, password FROM member";
+        return jdbcTemplate.query(sql, memberRowMapper);
+    }
+
+    public Optional<Member> findById(Long id) {
+        String sql = "SELECT id, email, password FROM member WHERE id = ?";
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, memberRowMapper, id));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
 }
