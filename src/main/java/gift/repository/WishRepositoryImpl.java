@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Repository
 public class WishRepositoryImpl implements WishRepository {
-    private JdbcClient jdbcClient;
+    private final JdbcClient jdbcClient;
     private final SimpleJdbcInsert simpleJdbcInsert;
 
     public WishRepositoryImpl(DataSource dataSource) {

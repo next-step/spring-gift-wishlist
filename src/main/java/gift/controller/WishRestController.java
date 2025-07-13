@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/wishes")
 public class WishRestController {
-    private WishService wishService;
+    private final WishService wishService;
 
     WishRestController(WishService wishService) {
         this.wishService = wishService;
