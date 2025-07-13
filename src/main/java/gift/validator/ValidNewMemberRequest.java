@@ -7,10 +7,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Constraint(validatedBy = CreateMemberRequestValidator.class)
+@Constraint(validatedBy = NewMemberRequestValidator.class)
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ValidCreateMemberRequest {
+public @interface ValidNewMemberRequest {
     String message() default "Invalid member request";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};

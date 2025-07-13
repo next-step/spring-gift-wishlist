@@ -1,12 +1,16 @@
 package gift.dto;
 
+import gift.entity.Member;
 import gift.entity.Role;
-import gift.validator.ValidNewMemberRequest;
+import gift.validator.ValidUpdateMemberRequest;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 
-@ValidNewMemberRequest
-public record CreateMemberRequest (
+@ValidUpdateMemberRequest
+public record UpdateMemberRequest (
+        @NotNull(message = "회원 id는 제시되어야합니다.")
+        Long identifyNumber,
+
         @NotNull(message = "이메일은 제시되어야합니다.")
         @Email(message = "올바른 이메일 양식이 아닙니다.")
         String email,
@@ -16,8 +20,13 @@ public record CreateMemberRequest (
 
         @NotNull(message = "권한은 제시되어야합니다.")
         Role authority
-) implements NewMemberRequest {
-    public static CreateMemberRequest empty() {
-        return new CreateMemberRequest("", "", Role.ROLE_USER);
-    }
+) {
+        public static UpdateMemberRequest from(Member member) {
+                return new UpdateMemberRequest(
+                        member.getIdentifyNumber(),
+                        member.getEmail(),
+                        null,
+                        member.getAuthority()
+                );
+        }
 }

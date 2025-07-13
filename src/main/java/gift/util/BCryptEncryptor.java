@@ -1,9 +1,7 @@
 package gift.util;
 
 import org.mindrot.jbcrypt.BCrypt;
-import org.springframework.stereotype.Component;
 
-@Component
 public class BCryptEncryptor {
 
     public static String encrypt(String origin) {

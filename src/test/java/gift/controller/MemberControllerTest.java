@@ -1,7 +1,7 @@
-package gift;
+package gift.controller;
 
-import gift.dto.CreateMemberRequest;
-import gift.dto.CreateMemberResponse;
+import gift.dto.RegisterMemberRequest;
+import gift.dto.RegisterMemberResponse;
 import gift.dto.LoginMemberRequest;
 import gift.dto.LoginMemberResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,13 +43,13 @@ class MemberControllerTest {
         @Test
         @DisplayName("POST /api/members/register - 유효한 정보 입력 시 201 CREATED")
         void 유효한_정보_입력_시_201_CREATED() {
-            CreateMemberRequest request = new CreateMemberRequest("test@example.com", "password123456789");
+            RegisterMemberRequest request = new RegisterMemberRequest("test@example.com", "password123456789");
 
-            ResponseEntity<CreateMemberResponse> response = restClient.post()
+            ResponseEntity<RegisterMemberResponse> response = restClient.post()
                     .uri(url)
                     .body(request)
                     .retrieve()
-                    .toEntity(CreateMemberResponse.class);
+                    .toEntity(RegisterMemberResponse.class);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
             assertThat(response.getBody()).hasFieldOrProperty("token");
@@ -58,7 +58,7 @@ class MemberControllerTest {
         @Test
         @DisplayName("POST /api/members/register - 이메일 중복 시 400 BAD_REQUEST")
         void 이메일_중복_시_400_BAD_REQUEST() {
-            CreateMemberRequest request = new CreateMemberRequest("existing@example.com", "password123456789");
+            RegisterMemberRequest request = new RegisterMemberRequest("existing@example.com", "password123456789");
 
             // 먼저 회원가입을 수행
             restClient.post()
@@ -80,7 +80,7 @@ class MemberControllerTest {
         @Test
         @DisplayName("POST /api/members/register - 비밀번호 길이 부족 시 400 BAD_REQUEST")
         void 비밀번호_길이_부족_시_400_BAD_REQUEST() {
-            CreateMemberRequest request = new CreateMemberRequest("test@example.com", "password");
+            RegisterMemberRequest request = new RegisterMemberRequest("test@example.com", "password");
             assertThatExceptionOfType(HttpClientErrorException.class)
                     .isThrownBy(() -> restClient.post()
                             .uri(url)
@@ -93,7 +93,7 @@ class MemberControllerTest {
         @Test
         @DisplayName("POST /api/members/register - 잘못된 이메일 형식 시 400 BAD_REQUEST")
         void 잘못된_이메일_형식_시_400_BAD_REQUEST() {
-            CreateMemberRequest request = new CreateMemberRequest("invalid-email", "password123456789");
+            RegisterMemberRequest request = new RegisterMemberRequest("invalid-email", "password123456789");
             assertThatExceptionOfType(HttpClientErrorException.class)
                     .isThrownBy(() -> restClient.post()
                             .uri(url)
@@ -115,7 +115,7 @@ class MemberControllerTest {
         @BeforeEach
         void setUp() {
             // 테스트를 위해 유효한 회원을 먼저 생성
-            CreateMemberRequest createRequest = new CreateMemberRequest(userEmail, userPassword);
+            RegisterMemberRequest createRequest = new RegisterMemberRequest(userEmail, userPassword);
             restClient.post()
                     .uri(registerUrl)
                     .body(createRequest)

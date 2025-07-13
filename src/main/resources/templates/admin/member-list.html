@@ -2,7 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>상품목록</title>
+    <title>회원목록</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -23,48 +23,34 @@
     </style>
 </head>
 <body>
-    <h2>상품목록</h2>
-    <a th:if="${validated}"
-       th:href="@{/admin/products(validated=false)}"
-       style="background-color:black; color:white; border:1px solid black;">
-        Go to Non-Validated Product List
-    </a>
-    <a th:if="${!validated}"
-       th:href="@{/admin/products(validated=true)}"
-       style="background-color:black; color:white; border:1px solid black;">
-        Go to Validated Product List
-    </a>
-    <a href="/admin/products/new"
+    <h2>회원목록</h2>
+    <a href="/admin/members/new"
        style="background-color:green; color:white; border:1px solid green;">
-        Create New Product
+        Register New Member
     </a>
     <table>
         <thead>
             <tr>
                 <th>id</th>
-                <th>image</th>
-                <th>name</th>
-                <th>price</th>
+                <th>email</th>
+                <th>role</th>
                 <th>View/Edit</th>
                 <th>Delete</th>
             </tr>
         </thead>
         <tbody>
-            <tr th:each="product: ${products}">
-                <td th:text="${product.id}" />
+            <tr th:each="member: ${members}">
+                <td th:text="${member.identifyNumber}" />
+                <td th:text="${member.email}" />
+                <td th:text="${member.authority}" />
                 <td>
-                    <img th:src="${product.imageUrl}" width="50" />
-                </td>
-                <td th:text="${product.name}" />
-                <td th:text="${product.price}" />
-                <td>
-                    <form th:action="@{/admin/products/{id}(id=${product.id})}"
+                    <form th:action="@{/admin/members/{id}(id=${member.identifyNumber})}"
                           method="get" style="display:inline">
                         <button type="submit">View/Edit</button>
                     </form>
                 </td>
                 <td>
-                    <form th:action="@{/admin/products/{id}(id=${product.id})}"
+                    <form th:action="@{/admin/members/{id}(id=${member.identifyNumber})}"
                           method="post" style="display:inline"
                           onsubmit="return confirm('Are you sure to delete?');">
                         <input type="hidden" name="_method" value="delete" />

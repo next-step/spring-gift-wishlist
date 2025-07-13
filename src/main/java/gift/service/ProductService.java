@@ -33,6 +33,12 @@ public class ProductService {
         return optionalProduct.get();
     }
 
+    public Product getProductWhetherDeletedById(Long id) {
+        Optional<Product> optionalProduct = productRepository.getProductWhetherDeletedById(id);
+        throwNotFoundIfTrue(optionalProduct.isEmpty());
+        return optionalProduct.get();
+    }
+
     public List<Product> getProductList(Boolean visibility) {
         return productRepository.getProductList(visibility);
     }
@@ -62,13 +68,18 @@ public class ProductService {
         throwNotFoundIfTrue(!productRepository.setProductValidatedById(id, validated));
     }
 
+    public void softDeleteProductById(Long id) {
+        throwNotFoundIfTrue(!productRepository.softDeleteProductById(id));
+    }
+
+    @Deprecated
     public void deleteProductById(Long id) {
         throwNotFoundIfTrue(!productRepository.deleteProductById(id));
     }
 
     private void throwNotFoundIfTrue(boolean condition) {
         if (condition) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
         }
     }
 }

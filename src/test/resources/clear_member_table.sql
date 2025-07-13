@@ -1,2 +1,1 @@
-TRUNCATE TABLE member RESTART IDENTITY;
-
+delete from member;
