@@ -13,30 +13,21 @@ import java.nio.charset.StandardCharsets;
 
 @Component
 public class AdminInterceptor implements HandlerInterceptor {
+
+    private JwtUtil jwtUtil;
+
+    public AdminInterceptor(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        boolean isApiRequest = request.getRequestURI().startsWith("/api");
+        String token = AuthUtil.extractToken(request);
 
-        Member member = (Member) request.getAttribute("member");
-
-        if(member == null || member.getRole() != RoleType.ADMIN) {
-            return handleAuthError(response, isApiRequest, "관리자 권한이 필요합니다.");
+        if(jwtUtil.getRoleType(token) != RoleType.ADMIN) {
+            AuthUtil.handleAuthError(request, response, "관리자 권한이 필요합니다.");
+            return false;
         }
 
         return true;
-    }
-
-    private boolean handleAuthError(HttpServletResponse response, boolean isApiRequest, String msg) throws IOException {
-        if (isApiRequest) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json;charset=UTF-8");
-            String jsonMsg = String.format("{\"error\": \"%s\"}", msg);
-            response.getWriter().write(jsonMsg);
-        }
-        else {
-            String encodedMsg = URLEncoder.encode(msg, StandardCharsets.UTF_8);
-            response.sendRedirect("/members/login?error=true&message=" + encodedMsg);
-        }
-        return false;
     }
 }

@@ -110,8 +110,7 @@
 
 - [x] wish service, repository, controller 피드백 내용 수정
 - [x] AccessDeniedException 제거 후 적절한 커스텀 예외 도입
-- [ ] Interceptor 간 의존성 제거하기
-
+- [x] Interceptor 간 의존성 제거하기
 
 # spring-gift-product (이전 구현)
 

@@ -1,6 +1,7 @@
 package gift.auth;
 
 import gift.member.domain.Member;
+import gift.member.domain.RoleType;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -38,6 +39,11 @@ public class JwtUtil {
 
     public String getEmail(String token) {
         return getClaims(token).getSubject();
+    }
+
+    public RoleType getRoleType(String token) {
+        String roleStr = getClaims(token).get("role", String.class);
+        return RoleType.valueOf(roleStr);
     }
 
     public boolean validateToken(String token) {

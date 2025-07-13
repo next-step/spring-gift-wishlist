@@ -19,7 +19,6 @@ import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
 @Transactional
 @AutoConfigureMockMvc
 @DisplayName("ProductApiController 테스트")
