@@ -5,6 +5,7 @@ import gift.product.dto.request.ProductSaveRequest;
 import gift.product.dto.request.ProductUpdateRequest;
 import gift.product.dto.response.ProductResponse;
 import gift.product.repository.ProductRepository;
+import gift.wishlist.repository.WishlistRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,9 +14,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final WishlistRepository wishlistRepository;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(
+        ProductRepository productRepository,
+        WishlistRepository wishlistRepository
+    ) {
         this.productRepository = productRepository;
+        this.wishlistRepository = wishlistRepository;
     }
 
     @Transactional
@@ -63,6 +69,7 @@ public class ProductService {
 
     @Transactional
     public void delete(Long id) {
+        wishlistRepository.deleteByProductId(id);
         productRepository.delete(id);
     }
 

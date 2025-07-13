@@ -5,6 +5,7 @@ import gift.product.dto.request.ProductUpdateRequest;
 import gift.product.dto.response.ProductResponse;
 import gift.product.service.ProductService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +32,8 @@ public class ProductApiController {
         @RequestBody
         ProductSaveRequest productSaveRequest
     ) {
-        return ResponseEntity.ok(productService.save(productSaveRequest));
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(productService.save(productSaveRequest));
     }
 
     @GetMapping("/{id}")
