@@ -1,8 +1,11 @@
 package gift.common.exception;
 
+import gift.common.security.exception.InvalidTokenException;
+import gift.common.security.exception.MissingTokenException;
 import gift.item.exception.ItemNotFoundException;
 import gift.member.exception.DuplicateEmailException;
 import gift.member.exception.InvalidLoginException;
+import gift.wishlist.exception.WishlistNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.net.URI;
 import org.springframework.http.HttpStatus;
@@ -14,9 +17,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(ItemNotFoundException.class)
+    @ExceptionHandler({
+        ItemNotFoundException.class,
+        WishlistNotFoundException.class
+    })
     public ResponseEntity<ErrorResponseDto> handleItemNotFoundException(
-        ItemNotFoundException e,
+        RuntimeException e,
         HttpServletRequest request
     ) {
         ErrorResponseDto errorResponse = new ErrorResponseDto(
@@ -28,7 +34,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponseDto> handleDuplicateEmailException(
+    public ResponseEntity<ErrorResponseDto> handleMethodArgumentNotValidException(
         MethodArgumentNotValidException e,
         HttpServletRequest request
     ) {
@@ -55,9 +61,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
 
-    @ExceptionHandler(InvalidLoginException.class)
-    public ResponseEntity<ErrorResponseDto> handleInvalidLoginException(
-        InvalidLoginException e,
+
+    @ExceptionHandler({
+        InvalidTokenException.class,
+        MissingTokenException.class,
+        InvalidLoginException.class
+    })
+    public ResponseEntity<ErrorResponseDto> handleUnauthorizedExceptions(
+        RuntimeException e,
         HttpServletRequest request
     ) {
         ErrorResponseDto errorResponse = new ErrorResponseDto(
@@ -67,6 +78,19 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponseDto> handleGenericException(
+        Exception e,
+        HttpServletRequest request
+    ) {
+        ErrorResponseDto errorResponse = new ErrorResponseDto(
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            "서버 내부 오류가 발생했습니다.",
+            URI.create(request.getRequestURI())
+        );
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
 
 }
