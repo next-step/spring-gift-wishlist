@@ -10,7 +10,7 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.method.support.*;
 import org.springframework.web.context.request.NativeWebRequest;
 
-import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpHeaders;
 
 @Component
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
@@ -30,18 +30,17 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
-        String header = request.getHeader("Authorization");
+        String header = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
         if (header == null || !header.startsWith("Bearer ")) {
-            throw new RuntimeException("Authorization header missing");
+            throw new AuthorizationException("Authorization header is missing or invalid");
         }
         String token = header.substring(7);
         if (!JwtUtil.validateToken(token)) {
-            throw new RuntimeException("Invalid token");
+            throw new AuthorizationException("Invalid token");
         }
         Claims claims = JwtUtil.getClaims(token);
         Long memberId = Long.parseLong(claims.getSubject());
-        return memberService.findById(memberId).orElseThrow(() -> new RuntimeException("No member"));
+        return memberService.findById(memberId).orElseThrow(() -> new AuthorizationException("Member not found"));
     }
 }
 
