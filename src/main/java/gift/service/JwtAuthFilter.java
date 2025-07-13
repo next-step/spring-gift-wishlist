@@ -1,5 +1,6 @@
 package gift.service;
 
+import gift.exception.ForbiddenAccessException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,8 +35,20 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 에러 발생
                 response.setCharacterEncoding("UTF-8");
                 response.setContentType("text/plain; charset=UTF-8");
-                response.getWriter().write("Unauthorized: 인증이 필요합니다.");
+                response.getWriter().write("인증이 필요합니다.");
                 return;
+            }
+            
+            // admin 경로에 대한 권한 확인
+            if (request.getRequestURI().startsWith("/admin")) {
+                String role = jwtService.extractRole(token);
+                if (!"ADMIN".equals(role)) {
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN); // 403 에러 발생
+                    response.setCharacterEncoding("UTF-8");
+                    response.setContentType("text/plain; charset=UTF-8");
+                    response.getWriter().write("관리자 권한이 필요합니다.");
+                    return;
+                }
             }
         }
 

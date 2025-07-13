@@ -35,8 +35,8 @@ public class MemberService {
         Member member = new Member(null, requestDto.getEmail(), requestDto.getPassword(), MemberRole.USER);
         Member savedMember = memberRepository.save(member);
 
-        // JWT 토큰 생성
-        String token = jwtService.generateToken(savedMember.getId());
+        // JWT 토큰 생성 (역할 정보 포함)
+        String token = jwtService.generateToken(savedMember.getId(), savedMember.getRole().name());
         
         return new TokenResponseDto(token);
     }
@@ -52,8 +52,8 @@ public class MemberService {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        // JWT 토큰 생성
-        String token = jwtService.generateToken(member.getId());
+        // JWT 토큰 생성 (역할 정보 포함)
+        String token = jwtService.generateToken(member.getId(), member.getRole().name());
         
         return new TokenResponseDto(token);
     }
