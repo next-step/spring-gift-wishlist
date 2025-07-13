@@ -27,7 +27,7 @@ public class WishController {
 
     @PostMapping
     public ResponseEntity<Void> addWish(@RequestBody WishRequest request, @LoginMember Member member) {
-        wishService.addWish(member.getId(), request.getProductId());
+        wishService.addWish(member.getId(), request);
         return ResponseEntity.ok().build();
     }
 
@@ -37,5 +37,11 @@ public class WishController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @PatchMapping("/{wishId}")
+    public ResponseEntity<Void> updateWishQuantity(@PathVariable Long wishId, @RequestBody WishRequest request, @LoginMember Member member) {
+        wishService.updateWishQuantity(member.getId(), wishId, request.getQuantity());
+        return ResponseEntity.ok().build();
     }
 }
