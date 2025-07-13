@@ -40,4 +40,9 @@ public class MemberService {
         }
         return new TokenResponseDTO(jwtUtil.createToken(member.getEmail()));
     }
+
+    public Member findByEmail(String email) {
+        return memberRepository.findByEmail(email)
+            .orElseThrow(() -> new InvalidCredentialsException("사용자를 찾을 수 없습니다.", ErrorType.EMAIL_NOT_FOUND));
+    }
 }

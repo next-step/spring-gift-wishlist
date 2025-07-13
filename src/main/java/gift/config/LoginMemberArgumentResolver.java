@@ -3,7 +3,7 @@ package gift.config;
 import gift.auth.JwtUtil;
 import gift.auth.LoginMember;
 import gift.entity.Member;
-import gift.repository.MemberRepository;
+import gift.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -16,11 +16,11 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final JwtUtil jwtUtil;
-    private final MemberRepository memberRepository;
+    public final MemberService memberService;
 
-    public LoginMemberArgumentResolver(JwtUtil jwtUtil, MemberRepository memberRepository) {
+    public LoginMemberArgumentResolver(JwtUtil jwtUtil, MemberService memberService) {
         this.jwtUtil = jwtUtil;
-        this.memberRepository = memberRepository;
+        this.memberService = memberService;
     }
 
     @Override
@@ -41,7 +41,6 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
 
         String email = emailAttribute.toString();
 
-        return memberRepository.findByEmail(email)
-            .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+        return memberService.findByEmail(email);
     }
 }
