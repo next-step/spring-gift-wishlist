@@ -32,7 +32,6 @@ public class WishRepositoryImpl implements WishRepository {
         );
 
         Long id = simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
-        System.out.println("repo");
         return new CreateWishResponse(id, memberId, productId, quantity);
     }
 
@@ -55,5 +54,15 @@ public class WishRepositoryImpl implements WishRepository {
             .param(memberId)
             .query(CreateWishRequest.class)
             .list();
+    }
+
+    @Override
+    public void deleteWish(Long memberId, Long wishId) {
+        String sql = "DELETE FROM wish WHERE member_id = ? AND id = ?";
+
+        jdbcClient.sql(sql)
+            .param(memberId)
+            .param(wishId)
+            .update();
     }
 }

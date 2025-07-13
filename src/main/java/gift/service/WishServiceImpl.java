@@ -29,7 +29,6 @@ public class WishServiceImpl implements WishService {
         if (wish.isPresent()) {
             throw new IllegalArgumentException("이미 위시 리스트에 존재하는 상품입니다.");
         }
-        System.out.println("위시리스트 추가해야함");
         return wishRepository.saveWish(memberId, request.productId(), request.quantity());
     }
 
@@ -43,5 +42,10 @@ public class WishServiceImpl implements WishService {
             wishResponses.add(wishResponse);
         }
         return wishResponses;
+    }
+
+    @Override
+    public void deleteWish(Long memberId, Long wishId) {
+        wishRepository.deleteWish(memberId, wishId);
     }
 }

@@ -33,4 +33,13 @@ public class WishRestController {
     ) {
         return new ResponseEntity<>(wishService.create(member.getId(), request), HttpStatus.CREATED);
     }
+
+    @DeleteMapping("/{wishId}")
+    public ResponseEntity<WishResponse> deleteOneWish(
+        @PathVariable("wishId") Long wishId,
+        @LoginMember Member member
+    ) {
+        wishService.deleteWish(member.getId(), wishId);
+        return ResponseEntity.noContent().build();
+    }
 }

@@ -12,4 +12,6 @@ public interface WishRepository {
     Optional<CreateWishResponse> findProductById(Long memberId, Long productId);
 
     List<CreateWishRequest> findAllWishesByMemberId(Long memberId);
+
+    void deleteWish(Long memberId, Long wishId);
 }
