@@ -26,11 +26,12 @@ public class WishRepository {
     private final RowMapper<Wish> wishRowMapper = (rs, rowNum) -> new Wish(
         rs.getLong("id"),
         rs.getLong("member_id"),
-        rs.getLong("product_id")
+        rs.getLong("product_id"),
+        rs.getInt("quantity") // quantity 매핑 추가
     );
 
     public List<Wish> findByMemberId(Long memberId) {
-        String sql = "SELECT id, member_id, product_id FROM wishes WHERE member_id = :memberId";
+        String sql = "SELECT id, member_id, product_id, quantity FROM wishes WHERE member_id = :memberId";
         return jdbcClient.sql(sql)
             .param("memberId", memberId)
             .query(wishRowMapper)
@@ -43,7 +44,7 @@ public class WishRepository {
         params.put("product_id", wish.getProductId());
 
         Long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
-        return new Wish(id, wish.getMemberId(), wish.getProductId());
+        return new Wish(id, wish.getMemberId(), wish.getProductId(), wish.getQuantity());
     }
 
     public void deleteById(Long id) {

@@ -5,11 +5,13 @@ public class Wish {
     private Long id;
     private Long memberId;
     private Long productId;
+    private int quantity;
 
-    public Wish(Long id, Long memberId, Long productId) {
+    public Wish(Long id, Long memberId, Long productId, int quantity){
         this.id = id;
         this.memberId = memberId;
         this.productId = productId;
+        this.quantity = quantity;
     }
 
     public Long getId() {
@@ -22,5 +24,13 @@ public class Wish {
 
     public Long getProductId() {
         return productId;
+    }
+
+    public void addQuantity(int quantity) {
+        this.quantity += quantity;
+    }
+
+    public int getQuantity() {
+        return quantity;
     }
 }
