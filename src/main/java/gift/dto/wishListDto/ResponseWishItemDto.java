@@ -2,12 +2,13 @@ package gift.dto.wishListDto;
 
 import gift.entity.WishItem;
 
-public record ResponseWishItemDto(String name, String imageUrl, Integer price, Integer quantity) {
+public record ResponseWishItemDto(Long id,Long userId, Long itemId, Integer quantity) {
     public static ResponseWishItemDto from(WishItem wishItem) {
-        return new ResponseWishItemDto(wishItem.name(), wishItem.imageUrl(), wishItem.price(), wishItem.quantity());
+        return new ResponseWishItemDto(wishItem.id(), wishItem.userId(), wishItem.itemId(), wishItem.quantity());
     }
 
-    public static ResponseWishItemDto delete(String name, String imageUrl, Integer price) {
-        return new ResponseWishItemDto(name, imageUrl, price, 0);
+    public static ResponseWishItemDto delete(WishItem wishItem) {
+        return new ResponseWishItemDto(wishItem.id(), wishItem.userId(), wishItem.itemId(), 0);
     }
+
 }

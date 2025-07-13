@@ -41,13 +41,8 @@ public class WishListServiceImpl implements WishListService{
         }
 
         Integer quantity = dto.quantity();
-        WishItem addedWishItem = wishListRepository.addWishItem(item.getId(), item.getName(), item.getImageUrl(), item.getPrice(), quantity, user.id());
+        WishItem addedWishItem = wishListRepository.addWishItem(user.id(), item.getId(), quantity);
 
-        /**
-         *         Q. 여기서 사실 난 userid itemid quantity 정도만 파라미터로 설정하고
-         *            그냥 itemService 비즈니스 로직으로 price, imageurl 채우려고 했는데 이 방식은 너무 불편한가?
-         *            좀 파라미터가 과한거 같기도 하고,, 그냥 wish_list table에 imageurl price를 추가하는게 나아보이나?
-         */
 
         return ResponseWishItemDto.from(addedWishItem);
     }
@@ -99,10 +94,8 @@ public class WishListServiceImpl implements WishListService{
     private WishItem itemToWishItem(WishItem base, Item item) {
         return new WishItem(
                 base.id(),
+                item.getId(),
                 base.itemId(),
-                item.getName(),
-                item.getImageUrl(),
-                item.getPrice(),
                 base.quantity()
         );
     }
@@ -121,9 +114,9 @@ public class WishListServiceImpl implements WishListService{
             throw new ItemNotFoundException();
         }
 
-        wishListRepository.deleteWishItem(user.id(), item.getId());
+        WishItem deletedWishItem = wishListRepository.deleteWishItem(user.id(), item.getId());
 
-        return ResponseWishItemDto.delete(item.getName(),item.getImageUrl(),item.getPrice());
+        return ResponseWishItemDto.delete(deletedWishItem);
     }
 
     @Override

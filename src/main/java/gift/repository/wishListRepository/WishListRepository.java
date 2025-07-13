@@ -6,11 +6,11 @@ import java.util.List;
 
 public interface WishListRepository {
 
-    WishItem addWishItem(Long itemId, String itemName, String imageUrl, Integer price, Integer quantity, Long userId);
+    WishItem addWishItem(Long userId, Long itemId, Integer quantity);
 
     List<WishItem> getAllWishItems(Long userId);
 
     WishItem updateWishItem(Integer quantity, Long itemId, Long userId);
 
-    void deleteWishItem(Long userId, Long itemId);
+    WishItem deleteWishItem(Long userId, Long itemId);
 }
