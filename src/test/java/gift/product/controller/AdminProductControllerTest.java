@@ -204,7 +204,7 @@ class AdminProductControllerTest {
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("/admin/products"));
 
-        verify(productService).updateProductById(eq(1L), any(ProductUpdateRequestDto.class));
+        verify(productService).updateProduct(eq(1L), any(ProductUpdateRequestDto.class));
     }
 
     @Test
@@ -223,7 +223,7 @@ class AdminProductControllerTest {
     @Test
     void 단건상품수정_실패() throws Exception {
         doThrow(new RuntimeException("DB 오류"))
-            .when(productService).updateProductById(eq(1L), any());
+            .when(productService).updateProduct(eq(1L), any());
 
         mockMvc.perform(post("/admin/products/update/1")
                 .param("name", "수정상품")
@@ -239,7 +239,7 @@ class AdminProductControllerTest {
     @Test
     void 단건상품수정_UNAUTHORIZED_인증없음() throws Exception {
         doThrow(new RuntimeException("DB 오류"))
-            .when(productService).updateProductById(eq(1L), any());
+            .when(productService).updateProduct(eq(1L), any());
 
         mockMvc.perform(post("/admin/products/update/1")
                 .param("name", "수정상품")
@@ -252,7 +252,7 @@ class AdminProductControllerTest {
     @Test
     void 단건상품수정_FORBIDDEN_권한없음() throws Exception {
         doThrow(new RuntimeException("DB 오류"))
-            .when(productService).updateProductById(eq(1L), any());
+            .when(productService).updateProduct(eq(1L), any());
 
         mockMvc.perform(post("/admin/products/update/1")
                 .param("name", "수정상품")
@@ -272,12 +272,12 @@ class AdminProductControllerTest {
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("/admin/products"));
 
-        verify(productService, times(1)).deleteProductById(1L);
+        verify(productService, times(1)).deleteProduct(1L);
     }
 
     @Test
     void 단건상품삭제_실패() throws Exception {
-        doThrow(new RuntimeException()).when(productService).deleteProductById(1L);
+        doThrow(new RuntimeException()).when(productService).deleteProduct(1L);
 
         mockMvc.perform(post("/admin/products/delete/1")
                 .header("Authorization", adminToken))
@@ -287,7 +287,7 @@ class AdminProductControllerTest {
 
     @Test
     void 단건상품삭제_UNAUTHORIZED_인증없음() throws Exception {
-        doThrow(new RuntimeException()).when(productService).deleteProductById(1L);
+        doThrow(new RuntimeException()).when(productService).deleteProduct(1L);
 
         mockMvc.perform(post("/admin/products/delete/1"))
             .andExpect(status().isUnauthorized());
@@ -295,7 +295,7 @@ class AdminProductControllerTest {
 
     @Test
     void 단건상품삭제_FORBIDDEN_권한없음() throws Exception {
-        doThrow(new RuntimeException()).when(productService).deleteProductById(1L);
+        doThrow(new RuntimeException()).when(productService).deleteProduct(1L);
 
         mockMvc.perform(post("/admin/products/delete/1")
                 .header("Authorization", userToken))

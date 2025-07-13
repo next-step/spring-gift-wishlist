@@ -19,7 +19,7 @@ public interface MemberService {
 
     AdminMemberGetResponseDto findMemberById(Long memberId);
 
-    void updateMemberById(Long memberId, AdminMemberUpdateRequestDto adminMemberUpdateRequestDto);
+    void updateMember(Long memberId, AdminMemberUpdateRequestDto adminMemberUpdateRequestDto);
 
-    void deleteMemberById(Long memberId);
+    void deleteMember(Long memberId);
 }

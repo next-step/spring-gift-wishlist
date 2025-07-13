@@ -72,7 +72,7 @@
 - [x] 회원은 이메일과 비밀번호를 입력하여 가입한다.
 - [x] 토큰을 받으려면 이메일과 비밀번호를 보내야 하며, 가입한 이메일과 비밀번호가 일치하면 토큰이 발급된다.
 - [x] 토큰을 생성하는 방법에는 여러 가지가 있다. 방법 중 하나를 선택한다.
-- [ ] (**선택**) 회원을 조회, 추가, 수정, 삭제할 수 있는 관리자 화면을 구현한다.
+- [x] (**선택**) 회원을 조회, 추가, 수정, 삭제할 수 있는 관리자 화면을 구현한다.
 
 #### 🛠 구현할 기능 목록
 
@@ -83,7 +83,7 @@
 | /api/members/register | POST | 회원 가입 | 새 회원을 등록하고 토큰을 받는다. |
 | /api/members/login    | POST | 로그인   | 회원을 인증하고 토큰을 받는다.   |
 
-- [ ] 회원 가입
+- [x] 회원 가입
     - [x] **Request**
         ```http
         POST /api/members/register HTTP/1.1
@@ -140,4 +140,115 @@
         - email, password 중 하나라도 값이 존재하지 않을 때: `400 Bad Request`
         - email, password 중 하나라도 틀릴 때: `403 Forbidden`
 
-- [ ] (선택) 회원을 조회, 추가, 수정, 삭제할 수 있는 관리자 화면을 구현
+- [x] (선택) 회원을 조회, 추가, 수정, 삭제할 수 있는 관리자 화면을 구현
+
+### 🚀 3단계 - 위시 리스트
+
+이전 단계에서 로그인 후 받은 토큰을 사용하여 사용자별 위시 리스트 기능을 구현한다.
+
+- [x] 위시 리스트에 등록된 상품 목록을 조회할 수 있다.
+- [x] 위시 리스트에 상품을 추가할 수 있다.
+- [x] 위시 리스트에 담긴 상품을 삭제할 수 있다.
+
+#### 🛠 구현할 기능 목록
+
+- 위시 리스트 API
+
+| URL	                                              | 메서드	    | 기능	                      | 설명                                |
+|---------------------------------------------------|---------|--------------------------|-----------------------------------|
+| /api/wishes                                       | POST	   | 위시 리스트 상품 추가	            | 회원의 위시 리스트에 상품을 추가한다.             |
+| /api/wishes/{wishId}	                             | DELETE	 | 위시 리스트 상품 삭제	            | 회원의 위시 리스트에서 상품을 삭제한다.            |
+| /api/wishes?page=0&size=10&sort=createdDate,desc	 | GET	    | 위시 리스트 상품 조회 (페이지네이션 적용) | 	회원의 위시 리스트에 있는 상품을 페이지 단위로 조회한다. |
+
+- [x] 위시 리스트 상품 추가
+    - [x] **Request**
+        ```http
+        POST /api/wishes HTTP/1.1
+        Authorization: Bearer {JWT_TOKEN}
+        Content-Type: application/json
+        host: localhost: 8080
+        ```
+        ```json
+        {
+            "productId": 101
+        }
+        ```
+
+    - [x] **Response**: 예상
+        ```http
+        HTTP/1.1 201
+        Content-Type: application/json
+        ```
+        ```json
+        {
+            "wishId": 1,
+            "memberId": 5,
+            "productId": 101,
+            "createdDate": "2025-07-09T15:00:00"
+        }
+        ```
+
+    - [x] **예외**:
+        - token이 존재하지 않을 때: `401 Unauthorized`
+        - productId가 존재하지 않을 때: `400 Bad Request`
+
+- [x] 위시 리스트 상품 조회
+    - [x] **Request**
+        ```http
+        GET /api/wishes?page=0&size=10&createdDate,desc HTTP/1.1
+        Authorization: Bearer {JWT_TOKEN}
+        Content-Type: application/json
+        host: localhost:8080
+        ```
+
+    - [x] **Response**: 예상
+        ```http
+        HTTP/1.1 200
+        Content-Type: application/json
+        ```
+        ```json
+        {
+            "content": [
+                {
+                    "wishId": 1,
+                    "productId": 101,
+                    "productName": "Example Product A",
+                    "createdDate": "2025-07-09T15:00:00"
+                },
+                {
+                    "wishId": 2,
+                    "productId": 102,
+                    "productName": "Example Product B",
+                    "createdDate": "2025-07-08T14:30:00"
+                }
+            ],
+            "pageable": {
+                "pageNumber": 0,
+                "pageSize": 10
+            },
+            "totalElements": 2,
+            "totalPages": 1
+        }
+        ```
+
+    - [x] **예외**:
+        - token이 존재하지 않을 때: `401 Unauthorized`
+        - URL이 유효하지 않을 때: `400 Bad Request`
+
+- [x] 위시 리스트 상품 삭제
+    - [x] **Request**
+        ```http
+        DELETE /api/wishes/{wishId} HTTP/1.1
+        Authorization: Bearer {JWT_TOKEN}
+        Content-Type: application/json
+        host: localhost:8080
+        ```
+
+    - [x] **Response**
+        ```http
+        HTTP/1.1 204
+        ```
+
+    - [x] **예외**:
+        - token이 존재하지 않을 때: `401 Unauthorized`
+        - wishId가 존재하지 않을 때: `404 Not Found`

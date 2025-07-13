@@ -101,7 +101,7 @@ public class AdminMemberController {
         }
 
         try {
-            memberService.updateMemberById(memberId, adminMemberUpdateRequestDto);
+            memberService.updateMember(memberId, adminMemberUpdateRequestDto);
             return "redirect:/admin/members";
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());
@@ -114,7 +114,7 @@ public class AdminMemberController {
     public String deleteMemberById(@PathVariable Long memberId, Model model) {
 
         try {
-            memberService.deleteMemberById(memberId);
+            memberService.deleteMember(memberId);
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());
         }

@@ -1,10 +1,14 @@
 package gift.member.repository;
 
+import gift.exception.member.MemberNotFoundException;
 import gift.member.entity.Member;
-import gift.member.exception.MemberNotFoundException;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -17,12 +21,24 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
-    public void saveMember(Member member) {
+    public Long saveMember(Member member) {
 
         String sql = "INSERT INTO members(email, password, name, role) VALUES(?,?,?,?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        jdbcTemplate.update(sql, member.getEmail(), member.getPassword(), member.getName(),
-            member.getRole());
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql,
+                Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, member.getEmail());
+            ps.setString(2, member.getPassword());
+            ps.setString(3, member.getName());
+            ps.setString(4, member.getRole());
+            return ps;
+        }, keyHolder);
+
+        Number key = keyHolder.getKey();
+
+        return (key != null) ? key.longValue() : null;
     }
 
     @Override
@@ -67,7 +83,7 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
-    public void updateMemberById(Member member) {
+    public void updateMember(Member member) {
 
         String sql = "UPDATE members SET email = ?, password = ?, name = ?, role = ? WHERE memberId = ?";
 
@@ -76,10 +92,16 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
-    public void deleteMemberById(Long memberId) {
+    public void deleteMember(Long memberId) {
 
         String sql = "DELETE FROM members WHERE memberId = ?";
 
         jdbcTemplate.update(sql, memberId);
+    }
+
+    @Override
+    public Boolean existsByEmail(String email) {
+        String sql = "SELECT EXISTS(SELECT 1 FROM members WHERE email = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, email);
     }
 }

@@ -1,12 +1,13 @@
 package gift.member.service;
 
+import gift.exception.member.EmailAlreadyExistsException;
+import gift.exception.member.MemberNotFoundException;
 import gift.member.dto.AdminMemberCreateRequestDto;
 import gift.member.dto.AdminMemberGetResponseDto;
 import gift.member.dto.AdminMemberUpdateRequestDto;
 import gift.member.dto.RegisterRequestDto;
 import gift.member.dto.TokenResponseDto;
 import gift.member.entity.Member;
-import gift.member.exception.MemberNotFoundException;
 import gift.member.repository.MemberRepository;
 import gift.member.security.JwtTokenProvider;
 import java.util.List;
@@ -25,12 +26,15 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public TokenResponseDto registerMember(RegisterRequestDto registerRequestDto) {
+        if (memberRepository.existsByEmail(registerRequestDto.email())) {
+            throw new EmailAlreadyExistsException("이미 사용 중인 이메일입니다.");
+        }
+
         Member member = new Member(registerRequestDto.email(), registerRequestDto.password(),
             registerRequestDto.name(), registerRequestDto.role());
-        memberRepository.saveMember(member);
+        Long memberId = memberRepository.saveMember(member);
 
-        Member savedMember = memberRepository.findMemberByEmail(registerRequestDto.email());
-        System.out.println(savedMember);
+        Member savedMember = memberRepository.findMemberById(memberId);
 
         String token = new JwtTokenProvider().generateToken(savedMember.getMemberId(),
             savedMember.getName(),
@@ -45,7 +49,8 @@ public class MemberServiceImpl implements MemberService {
         try {
             memberRepository.findMemberByEmail(registerRequestDto.email());
         } catch (EmptyResultDataAccessException e) {
-            throw new MemberNotFoundException("이메일이 존재하지 않습니다.");
+            throw new MemberNotFoundException(
+                "이메일이 존재하지 않습니다. email =" + registerRequestDto.email());
         }
     }
 
@@ -83,7 +88,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void updateMemberById(Long memberId,
+    public void updateMember(Long memberId,
         AdminMemberUpdateRequestDto adminMemberUpdateRequestDto) {
         findMemberById(memberId);
 
@@ -91,13 +96,13 @@ public class MemberServiceImpl implements MemberService {
             adminMemberUpdateRequestDto.email(), adminMemberUpdateRequestDto.password(),
             adminMemberUpdateRequestDto.name(), adminMemberUpdateRequestDto.role());
 
-        memberRepository.updateMemberById(member);
+        memberRepository.updateMember(member);
     }
 
     @Override
-    public void deleteMemberById(Long memberId) {
+    public void deleteMember(Long memberId) {
         findMemberById(memberId);
 
-        memberRepository.deleteMemberById(memberId);
+        memberRepository.deleteMember(memberId);
     }
 }
