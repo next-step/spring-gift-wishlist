@@ -15,7 +15,7 @@ public class WishRepository {
     }
 
     public void insert(Long memberId, Long productId) {
-        String sql = "INSERT INTO wish (member_id, product_id, quantity) VALUES (?, ?, 1)";
+        String sql = "INSERT INTO wish (member_id, product_id) VALUES (?, ?)";
         jdbcTemplate.update(sql, memberId, productId);
     }
 
