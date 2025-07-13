@@ -14,7 +14,12 @@ public class WishlistRepository {
     }
 
     public List<Product> findByUserEmail(String userEmail) {
-        return jdbc.sql("SELECT * FROM wishlist WHERE user_email = :email")
+        return jdbc.sql("""
+                        SELECT p.*
+                        FROM products p
+                        JOIN wishlist w ON p.id = w.product_id
+                        WHERE w.user_email = :email
+                        """)
                 .param("email", userEmail)
                 .query(Product.class)
                 .list();
@@ -27,6 +32,7 @@ public class WishlistRepository {
                 .query(Long.class)
                 .single() > 0;
     }
+
     public void save(String email, Product product) {
         jdbc.sql("INSERT INTO wishlist (user_email, product_id) VALUES (:email, :productId)")
                 .param("email", email)

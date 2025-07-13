@@ -3,7 +3,9 @@ package gift.service;
 import gift.model.Product;
 import gift.repository.ProductRepository;
 import gift.repository.WishlistRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -22,15 +24,24 @@ public class WishlistService {
         return wishlistRepository.findByUserEmail(email);
     }
 
-    public void addProduct(String email, Long productId) {
+    public Product addProduct(String email, Long productId) {
         boolean exist = wishlistRepository.existsByUserEmailAndProductId(email, productId);
-        if(!exist) {
-            Product product = productRepository
-                    .findById(productId)
-                    .orElseThrow(()->new NoSuchElementException("상품을 찾을 수 없습니다: "))
-                    .toEntity();
-            wishlistRepository.save(email, product);
+        if (!exist) {
+            try {
+                Product product = productRepository
+                        .findById(productId)
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "상품이 존재하지 않습니다"))
+                        .toEntity();
+                wishlistRepository.save(email, product);
+                return product;
+            } catch (NoSuchElementException e) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "상품이 존재하지 않습니다");
+            }
         }
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "상품이 존재하지 않습니다"))
+                .toEntity();
+
     }
 
     public void deleteProduct(String email, Long productId) {
