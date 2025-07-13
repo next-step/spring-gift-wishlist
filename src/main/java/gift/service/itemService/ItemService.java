@@ -29,5 +29,5 @@ public interface ItemService {
 
     ItemResponseDto findItemByName(@NotNull String name);
 
-    Item findItemById(Long itemId);
+    ItemResponseDto findItemById(Long itemId);
 }

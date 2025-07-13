@@ -76,7 +76,7 @@ public class WishListServiceImpl implements WishListService{
         List<ResponseWishItemDto> result = new ArrayList<>();
 
         for (WishItem wishItem : wishItems) {
-            Item item = itemService.findItemById(wishItem.itemId());
+            ItemResponseDto item = itemService.findItemById(wishItem.itemId());
             if (item == null) {
                 if (name == null && price == null) {
                     throw new UserInputException();
