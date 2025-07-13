@@ -5,23 +5,19 @@ import gift.entity.Member;
 import gift.exception.UnAuthenticationException;
 import gift.service.MemberService;
 import org.springframework.core.MethodParameter;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 @Component
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private static final String BEARER = "Bearer ";
-
-    private final JwtProvider jwtProvider;
     private final MemberService memberService;
 
-    public LoginMemberArgumentResolver(JwtProvider jwtProvider, MemberService memberService) {
-        this.jwtProvider = jwtProvider;
+    public LoginMemberArgumentResolver(MemberService memberService) {
         this.memberService = memberService;
     }
 
@@ -34,14 +30,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
             NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
 
-        String authorization = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
-
-        if (authorization == null || !authorization.startsWith(BEARER)) {
-            throw new UnAuthenticationException("토큰 형식이 올바르지 않습니다.");
-        }
-
-        String token = authorization.substring(BEARER.length());
-        Long memberId = jwtProvider.getMemberIdFromToken(token);
+        Long memberId = (Long) webRequest.getAttribute("memberId", RequestAttributes.SCOPE_REQUEST);
 
         Member authenticatedMember = memberService.getMemberById(memberId)
                                                   .orElseThrow(() -> new UnAuthenticationException(

@@ -50,6 +50,8 @@
         - [x] wishId 유효성 검증
         - [x] memberId 일치 검증
 - [ ] 인증/인가
+    - [x] Filter(인증)
+        - [x] 요청 URL에 따른 토큰 유효성 검증
+        - [x] 토큰에서 MemberId 추출
     - [x] ArgumentResolver
-        - [x] 토큰 유효성 검증
         - [x] 인증된 Member 객체 주입
