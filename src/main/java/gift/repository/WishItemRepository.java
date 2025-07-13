@@ -11,7 +11,7 @@ public interface WishItemRepository {
 
     Optional<WishItem> findByIdAndMember(Long productId, Member member);
 
-    void deleteByItemAndMember(Long productId, Member member);
+    void deleteByIdAndMember(Long wishId, Member member);
 
     List<WishItem> findByMember(Member member);
 

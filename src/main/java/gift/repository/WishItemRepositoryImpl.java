@@ -89,14 +89,14 @@ public class WishItemRepositoryImpl implements WishItemRepository {
     }
 
     @Override
-    public void deleteByItemAndMember(Long productId, Member member) {
-        if (productId == null || member == null) {
+    public void deleteByIdAndMember(Long wishId, Member member) {
+        if (wishId == null || member == null) {
             throw new IllegalArgumentException("Required fields are missing");
         }
 
-        String sql = "DELETE FROM wishItems WHERE productId = ? AND memberId = ?";
+        String sql = "DELETE FROM wishItems WHERE Id = ? AND memberId = ?";
         int rowsCount = jdbcClient.sql(sql)
-            .param(1, productId)
+            .param(1, wishId)
             .param(2, member.getId())
             .update();
         if (rowsCount == 0) {

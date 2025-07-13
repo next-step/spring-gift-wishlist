@@ -5,10 +5,10 @@ import gift.dto.WishResponse;
 import gift.entity.Member;
 import gift.entity.Product;
 import gift.entity.WishItem;
-import gift.exception.InvalidFieldException;
 import gift.exception.ProductNotFoundException;
 import gift.repository.ProductRepository;
 import gift.repository.WishItemRepository;
+import gift.validation.ValidationUtil;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
@@ -38,19 +38,7 @@ public class WishService {
     }
 
     public WishResponse addToWishlist(WishRequest request, Member member) {
-        if (request == null) {
-            throw new IllegalArgumentException("Request cannot be null");
-        }
-        if (member == null) {
-            throw new IllegalArgumentException("Member cannot be null");
-        }
-
-        if (request.productId() == null) {
-            throw new InvalidFieldException("Invalid productId");
-        }
-        if (request.quantity() == null || request.quantity() <= 0) {
-            throw new InvalidFieldException("Invalid quantity");
-        }
+        ValidationUtil.validateWishRequestAndMember(request, member);
 
         Product product = productRepository.findById(request.productId())
             .orElseThrow(() -> new ProductNotFoundException(
@@ -72,15 +60,10 @@ public class WishService {
         );
     }
 
-    public void removeFromWishlist(Long productId, Member member) {
-        if (productId == null) {
-            throw new IllegalArgumentException("ProductId cannot be null");
-        }
-        if (member == null) {
-            throw new IllegalArgumentException("Member cannot be null");
-        }
+    public void removeFromWishlist(Long wishId, Member member) {
+        ValidationUtil.validatePIDAndMember(wishId, member);
 
-        wishItemRepository.deleteByItemAndMember(productId, member);
+        wishItemRepository.deleteByIdAndMember(wishId, member);
     }
 
 }
