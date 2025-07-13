@@ -1,5 +1,7 @@
 package gift.dto;
 
+import gift.product.dto.ProductRequestDto;
+import gift.product.dto.ProductResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

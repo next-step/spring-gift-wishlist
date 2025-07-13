@@ -1,10 +1,10 @@
 package gift.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gift.dto.MemberLoginRequestDto;
-import gift.dto.MemberRegisterRequestDto;
-import gift.entity.Member;
-import gift.repository.MemberRepository;
+import gift.member.dto.MemberLoginRequestDto;
+import gift.member.dto.MemberRegisterRequestDto;
+import gift.member.entity.Member;
+import gift.member.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
