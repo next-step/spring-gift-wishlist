@@ -34,7 +34,7 @@ public class WishRestController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{productId}")
     public ResponseEntity<Void> deleteWish(@Authenticated LoginMember member,
             @PathVariable Long productId) {
         wishService.removeWish(member.getId(), productId);
