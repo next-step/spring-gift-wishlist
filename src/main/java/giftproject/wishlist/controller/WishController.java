@@ -37,7 +37,7 @@ public class WishController {
     }
 
     @GetMapping
-    public ResponseEntity<List<WishResponseDto>> save(@LoginMember Member member) {
+    public ResponseEntity<List<WishResponseDto>> find(@LoginMember Member member) {
         List<WishResponseDto> wishList = wishService.find(member.getId());
         return new ResponseEntity<>(wishList, HttpStatus.OK);
     }

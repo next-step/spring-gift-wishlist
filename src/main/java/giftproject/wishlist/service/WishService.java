@@ -7,6 +7,7 @@ import giftproject.wishlist.dto.WishResponseDto;
 import giftproject.wishlist.entity.Wish;
 import giftproject.wishlist.repository.WishRepository;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,14 +26,20 @@ public class WishService {
 
     public WishResponseDto save(Long memberId, WishRequestDto requestDto) {
         ProductResponseDto product = productService.findById(requestDto.productId());
+        Optional<Wish> existingWishOptional = wishRepository.findByMemberIdAndProductId(memberId,
+                requestDto.productId());
+        Wish savedWish;
 
-        if (wishRepository.findByMemberIdAndProductId(memberId, requestDto.productId())
-                .isPresent()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 위시 리스트에 추가된 상품입니다.");
+        if (existingWishOptional.isPresent()) {
+            Wish existingWish = existingWishOptional.get();
+            int newQuantity = existingWish.getQuantity() + 1;
+            existingWish.updateQuantity(newQuantity);
+            savedWish = wishRepository.save(existingWish);
+        } else {
+            int initialQuantity = 1;
+            Wish newWish = new Wish(memberId, requestDto.productId(), initialQuantity);
+            savedWish = wishRepository.save(newWish);
         }
-
-        Wish newWish = new Wish(memberId, requestDto.productId());
-        Wish savedWish = wishRepository.save(newWish);
 
         return new WishResponseDto(savedWish, product);
     }
@@ -49,7 +56,7 @@ public class WishService {
     }
 
     public void remove(Long memberId, Long productId) {
-        Wish wishToDelete = wishRepository.findByMemberIdAndProductId(memberId, productId)
+        wishRepository.findByMemberIdAndProductId(memberId, productId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "위시 리스트에서 해당 상품을 찾을 수 없습니다."));
 

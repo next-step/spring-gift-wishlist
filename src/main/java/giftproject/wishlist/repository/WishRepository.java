@@ -25,13 +25,14 @@ public class WishRepository {
     }
 
     public Wish save(Wish wish) {
-        String sql = "INSERT INTO wishes (member_id, product_id) VALUES (?, ?)";
+        String sql = "INSERT INTO wishes (member_id, product_id, quantity) VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(sql, new String[]{"id"});
             ps.setLong(1, wish.getMemberId());
             ps.setLong(2, wish.getProductId());
+            ps.setInt(3, wish.getQuantity());
             return ps;
         }, keyHolder);
 
@@ -41,12 +42,12 @@ public class WishRepository {
     }
 
     public List<Wish> findByMemberId(Long memberId) {
-        String sql = "SELECT id, member_id, product_id FROM wishes WHERE member_id = ?";
+        String sql = "SELECT id, member_id, product_id, quantity FROM wishes WHERE member_id = ?";
         return jdbcTemplate.query(sql, wishRowMapper, memberId);
     }
 
     public Optional<Wish> findByMemberIdAndProductId(Long memberId, Long productId) {
-        String sql = "SELECT id, member_id, product_id FROM wishes WHERE member_id = ? AND product_id = ?";
+        String sql = "SELECT id, member_id, product_id, quantity FROM wishes WHERE member_id = ? AND product_id = ?";
         try {
             Wish wish = jdbcTemplate.queryForObject(sql, wishRowMapper, memberId, productId);
             return Optional.of(wish);
@@ -73,7 +74,8 @@ public class WishRepository {
             return new Wish(
                     rs.getLong("id"),
                     rs.getLong("member_id"),
-                    rs.getLong("product_id")
+                    rs.getLong("product_id"),
+                    rs.getInt("quantity")
             );
         }
     }
