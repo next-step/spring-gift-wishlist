@@ -65,9 +65,9 @@ public class WishListServiceImpl implements WishListService{
 
         return result;
     }
-    private boolean isValid(String itemName, String name, Integer price) {
-        boolean nameMatches = (name == null || itemName.equals(name));
-        boolean priceMatches = (price == null || itemName.equals(price));
+    private boolean isValid(ItemResponseDto item, String name, Integer price) {
+        boolean nameMatches = (name == null || item.name().equals(name));
+        boolean priceMatches = (price == null || item.price().equals(price));
 
         return nameMatches && priceMatches;
     }
@@ -84,7 +84,7 @@ public class WishListServiceImpl implements WishListService{
                 continue;
             }
 
-            if (name == null && price == null || isValid(item.name(), name, price)) {
+            if (name == null && price == null || isValid(item, name, price)) {
                 result.add(ResponseWishItemDto.from(wishItem));
             }
         }
