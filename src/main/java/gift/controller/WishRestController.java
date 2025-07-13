@@ -4,6 +4,7 @@ import gift.dto.CreateWishRequest;
 import gift.dto.CreateWishResponse;
 import gift.dto.LoginMember;
 import gift.entity.Product;
+import gift.jwt.Authenticated;
 import gift.service.WishService;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -27,21 +28,21 @@ public class WishRestController {
     }
 
     @PostMapping
-    public ResponseEntity<CreateWishResponse> addWish(LoginMember member,
+    public ResponseEntity<CreateWishResponse> addWish(@Authenticated LoginMember member,
             @RequestBody CreateWishRequest request) {
         wishService.addWish(member.getId(), request.getProductId());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteWish(LoginMember member,
+    public ResponseEntity<Void> deleteWish(@Authenticated LoginMember member,
             @PathVariable Long productId) {
         wishService.removeWish(member.getId(), productId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping
-    public ResponseEntity<List<Product>> getMyWishes(LoginMember loginMember) {
+    public ResponseEntity<List<Product>> getMyWishes(@Authenticated LoginMember loginMember) {
         List<Product> wishes = wishService.getAllWish(loginMember.getId());
         return ResponseEntity.ok(wishes);
     }
