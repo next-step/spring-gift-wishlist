@@ -5,6 +5,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import gift.entity.Product;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -28,7 +29,8 @@ public class ProductControllerImplTest {
     private RestClient client = RestClient.builder().build();
 
     @Test
-    void findByIdTest() {  // 아이디로 조회가 되는지를 테스트
+    @DisplayName("아이디로 조회가 되는지를 테스트")
+    void findByIdTest() {
         var url = "http://localhost:" + port + "/api/products/1";
 
         var response = client.get().uri(url).retrieve().toEntity(Product.class);
@@ -37,11 +39,11 @@ public class ProductControllerImplTest {
 
         var actual = response.getBody();
         assertThat(actual.getName()).isEqualTo("hehe");
-
     }
 
     @Test
-    void notFoundHandlerTest() {  // 존재하지 않는 아이디로 조회 시 404가 반환된다
+    @DisplayName("// 존재하지 않는 아이디로 조회 시 404 반환")
+    void notFoundHandlerTest() {
         var url = "http://localhost:" + port + "/api/products/3";
 
         Assertions.assertThatExceptionOfType(HttpClientErrorException.NotFound.class)
