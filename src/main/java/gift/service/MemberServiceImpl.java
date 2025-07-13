@@ -9,14 +9,12 @@ import gift.entity.RoleType;
 import gift.exception.member.MemberAlreadyExistsException;
 import gift.exception.member.InvalidCredentialsException;
 import gift.repository.MemberRepository;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
+import gift.util.JwtTokenProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,9 +22,11 @@ import java.util.Optional;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public MemberServiceImpl(MemberRepository memberRepository) {
+    public MemberServiceImpl(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class MemberServiceImpl implements MemberService {
         }
 
         Member member = memberRepository.saveMember(email, password, role);
-        String token = getAccessToken(member);
+        String token = jwtTokenProvider.getAccessToken(member);
 
         return new TokenResponseDto(token);
     }
@@ -62,7 +62,7 @@ public class MemberServiceImpl implements MemberService {
             throw new InvalidCredentialsException("아이디 또는 비밀번호가 잘못 되었습니다. 아이디와 비밀번호를 정확히 입력해 주세요.");
         }
 
-        String token = getAccessToken(member);
+        String token = jwtTokenProvider.getAccessToken(member);
 
         return new TokenResponseDto(token);
     }
@@ -159,22 +159,5 @@ public class MemberServiceImpl implements MemberService {
                     "해당 ID의 멤버은 존재하지 않습니다."
             );
         }
-    }
-
-    private String getAccessToken(Member member) {
-
-        String secretKey = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";
-
-        Date now = new Date(System.currentTimeMillis());
-        Date expiry = new Date(System.currentTimeMillis() + 1000 * 60 * 30);
-
-        return Jwts.builder()
-            .subject(member.getId().toString())
-            .claim("email", member.getEmail())
-            .claim("role", member.getRole().name())
-            .issuedAt(now)
-            .expiration(expiry)
-            .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
-            .compact();
     }
 }
