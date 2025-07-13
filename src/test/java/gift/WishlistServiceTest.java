@@ -108,7 +108,6 @@ public class WishlistServiceTest {
                 .deleteWishByMemberIdAndWishId(1L, 5L);
 
         assertDoesNotThrow(() -> wishlistService.deleteWish(1L, 5L));
-        wishlistService.deleteWish(1L, 5L);
     }
 
     @Test
