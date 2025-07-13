@@ -1,6 +1,5 @@
 package gift.auth;
 
-
 import java.lang.annotation.*;
 
 @Target(ElementType.PARAMETER)
