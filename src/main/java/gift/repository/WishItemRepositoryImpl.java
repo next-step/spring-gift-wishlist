@@ -17,17 +17,28 @@ import org.springframework.stereotype.Repository;
 public class WishItemRepositoryImpl implements WishItemRepository {
 
     private final JdbcClient jdbcClient;
+    private final ProductRepository productRepository;
+    private final MemberRepository memberRepository;
 
-    public WishItemRepositoryImpl(JdbcClient jdbcClient) {
+    public WishItemRepositoryImpl(JdbcClient jdbcClient, ProductRepository productRepository,
+        MemberRepository memberRepository) {
         this.jdbcClient = jdbcClient;
+        this.productRepository = productRepository;
+        this.memberRepository = memberRepository;
     }
 
-    private static final RowMapper<WishItem> WISHITEM_ROW_MAPPER = (rs, rowNum) -> new WishItem(
-        rs.getLong("id"),
-        rs.getObject("product", Product.class),
-        rs.getInt("quantity"),
-        rs.getObject("member", Member.class)
-    );
+    private RowMapper<WishItem> getWishItemRowMapper(Member member) {
+        return (rs, rowNum) -> {
+            Long id = rs.getLong("id");
+            Long productId = rs.getLong("productId");
+            Integer quantity = rs.getObject("quantity", Integer.class);
+            Long memberId = rs.getLong("memberID");
+            Product product = this.productRepository.findById(productId)
+                .orElseThrow(
+                    () -> new WishItemNotFoundException("Product not found for id: " + productId));
+            return new WishItem(id, product, quantity, member);
+        };
+    }
 
     @Override
     public WishItem save(WishItem wishItem) {
@@ -69,11 +80,11 @@ public class WishItemRepositoryImpl implements WishItemRepository {
             throw new IllegalArgumentException("Required fields are missing");
         }
 
-        String sql = "SELECT wi.id, p.id AS productId, p.name, wi.quantity, wi.memberId FROM wishItems wi JOIN products p ON wi.productId = p.id WHERE wi.productId = ? AND wi.memberId = ?";
+        String sql = "SELECT wi.id, p.id AS productId, wi.quantity, wi.memberId FROM wishItems wi JOIN products p ON wi.productId = p.id WHERE wi.productId = ? AND wi.memberId = ?";
         return jdbcClient.sql(sql)
             .param(1, productId)
             .param(2, member.getId())
-            .query(WishItem.class)
+            .query(getWishItemRowMapper(member))
             .optional();
     }
 
@@ -99,10 +110,10 @@ public class WishItemRepositoryImpl implements WishItemRepository {
             throw new IllegalArgumentException("Member cannot be null");
         }
 
-        String sql = "SELECT wi.id, p.id AS productId, p.name, wi.quantity, wi.memberId FROM wishItems wi JOIN products p ON wi.productId = p.id WHERE wi.memberId = ?";
+        String sql = "SELECT wi.id, p.id AS productId, wi.quantity, wi.memberId FROM wishItems wi JOIN products p ON wi.productId = p.id WHERE wi.memberId = ?";
         return jdbcClient.sql(sql)
             .param(1, member.getId())
-            .query(WishItem.class)
+            .query(getWishItemRowMapper(member))
             .list();
     }
 }
