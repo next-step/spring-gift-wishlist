@@ -45,6 +45,15 @@ public class ProductRepository {
         return list.stream().findFirst();
     }
 
+    public List<Product> findAllByIds(List<Long> ids) {
+        String inSql = String.join(",", java.util.Collections.nCopies(ids.size(), "?"));
+        return jdbc.query(
+                String.format("SELECT * FROM products WHERE id IN (%s)", inSql),
+                ids.toArray(),
+                ROW_MAPPER
+        );
+    }
+
     public long save(Product p) {
         KeyHolder kh = new GeneratedKeyHolder();
         jdbc.update(con -> {
