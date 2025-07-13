@@ -10,6 +10,7 @@ import gift.exception.InvalidCredentialsException;
 import gift.exception.InvalidCredentialsException.ErrorType;
 import gift.repository.MemberRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MemberService {
@@ -21,6 +22,7 @@ public class MemberService {
         this.jwtUtil = jwtUtil;
     }
 
+    @Transactional
     public TokenResponseDTO register(RegisterRequestDTO req) {
         if (memberRepository.existsByEmail(req.email())) {
             throw new DuplicateEmailException("사용중인 이메일입니다.");
@@ -31,6 +33,7 @@ public class MemberService {
 
         return new TokenResponseDTO(jwtUtil.createToken(member.getEmail()));
     }
+    @Transactional(readOnly = true)
     public TokenResponseDTO login(LoginRequestDTO req) {
         Member member = memberRepository.findByEmail(req.email())
             .orElseThrow(() -> new InvalidCredentialsException("가입되지 않은 이메일입니다.", ErrorType.EMAIL_NOT_FOUND));
@@ -41,6 +44,7 @@ public class MemberService {
         return new TokenResponseDTO(jwtUtil.createToken(member.getEmail()));
     }
 
+    @Transactional(readOnly = true)
     public Member findByEmail(String email) {
         return memberRepository.findByEmail(email)
             .orElseThrow(() -> new InvalidCredentialsException("사용자를 찾을 수 없습니다.", ErrorType.EMAIL_NOT_FOUND));

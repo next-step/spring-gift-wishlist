@@ -11,6 +11,7 @@ import gift.entity.WishWithProduct;
 import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class WishService {
         this.productRepository = productRepository;
     }
 
+    @Transactional
     public WishResponseDTO addWish(WishRequestDTO wishRequestDTO, Member member) {
         Long productId = wishRequestDTO.productId();
         Product product = productRepository.findById(productId)
@@ -41,6 +43,7 @@ public class WishService {
             });
     }
 
+    @Transactional(readOnly = true)
     public List<WishResponseDTO> getWishes(Member member, int page, int size, String sort) {
         long offset = (long) page * size;
         List<WishWithProduct> wishWithProducts = wishRepository.findByMemberIdWithPagination(member.getId(), size, offset, sort);
@@ -50,6 +53,7 @@ public class WishService {
             .toList();
     }
 
+    @Transactional
     public void updateWishQuantity(Long productId, WishUpdateDTO wishUpdateDTO, Member member) {
         wishRepository.findByMemberIdAndProductId(member.getId(), productId)
             .orElseThrow(() -> new IllegalArgumentException("해당 상품이 위시리스트에 없습니다."));
@@ -62,6 +66,7 @@ public class WishService {
         }
     }
 
+    @Transactional
     public void deleteWish(Long productId, Member member) {
         wishRepository.findByMemberIdAndProductId(member.getId(), productId)
             .orElseThrow(() -> new IllegalArgumentException("해당 상품이 위시리스트에 없습니다."));
