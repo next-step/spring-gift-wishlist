@@ -46,6 +46,8 @@
       }
       localStorage.setItem('accessToken', data.token);
       alert('로그인 성공!');
+      window.location.href = '/wishes';
+
     } catch (error) {
       errorMessage.textContent = error.message;
     }

@@ -1,4 +1,4 @@
-package gift.controller.admin;
+package gift.controller.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.dto.LoginRequestDto;
