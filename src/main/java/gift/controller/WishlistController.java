@@ -2,7 +2,7 @@ package gift.controller;
 
 import gift.annotation.AuthUser;
 import gift.dto.response.GiftResponse;
-import gift.entity.User;
+import gift.dto.response.UserResponse;
 import gift.service.WishlistService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,19 +20,19 @@ public class WishlistController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<GiftResponse>> getWishLists(@AuthUser User user) {
-        return ResponseEntity.ok().body(wishlistService.getWishlists(user.getId()));
+    public ResponseEntity<List<GiftResponse>> getWishLists(@AuthUser UserResponse user) {
+        return ResponseEntity.ok().body(wishlistService.getWishlists(user.id()));
     }
 
     @PostMapping("/{giftId}")
-    public ResponseEntity<String> addWishList(@AuthUser User user, @PathVariable Long giftId) {
-        wishlistService.addWishList(giftId, user.getId());
+    public ResponseEntity<String> addWishList(@AuthUser UserResponse user, @PathVariable Long giftId) {
+        wishlistService.addWishList(giftId, user.id());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/{giftId}")
-    public ResponseEntity<String> deleteWishList(@AuthUser User user, @PathVariable Long giftId) {
-        wishlistService.deleteWishlist(giftId, user.getId());
+    public ResponseEntity<String> deleteWishList(@AuthUser UserResponse user, @PathVariable Long giftId) {
+        wishlistService.deleteWishlist(giftId, user.id());
         return ResponseEntity.noContent().build();
     }
 }

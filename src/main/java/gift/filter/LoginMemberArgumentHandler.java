@@ -6,6 +6,7 @@ import gift.service.TokenService;
 import gift.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -43,15 +44,14 @@ public class LoginMemberArgumentHandler implements HandlerMethodArgumentResolver
     ) throws Exception {
         HttpServletRequest req = webRequest.getNativeRequest(HttpServletRequest.class);
         if(req != null){
-            final String authorization = req.getHeader("Authorization");
+            final String authorization = req.getHeader(HttpHeaders.AUTHORIZATION);
             if (authorization == null) {
                 return null;
             }
-            final String token = authorization.substring(7);
-            if(token.isEmpty()){
+            if(!authorization.startsWith("Bearer ")) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(INVALID_TOKEN_TYPE);
             }
-
+            final String token = authorization.substring(7);
             if(tokenService.isTokenExpired(token)){
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(TOKEN_EXPIRED);
             }

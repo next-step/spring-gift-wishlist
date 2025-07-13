@@ -4,14 +4,13 @@ import gift.annotation.AuthUser;
 import gift.dto.request.GiftCreateRequest;
 import gift.dto.request.GiftModifyRequest;
 import gift.dto.response.GiftResponse;
-import gift.entity.User;
+import gift.dto.response.UserResponse;
 import gift.exception.gift.InValidSpecialCharException;
 import gift.exception.gift.NeedAcceptException;
 import gift.exception.gift.NoGiftException;
 import gift.exception.gift.NoValueException;
 import gift.service.GiftService;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +31,7 @@ public class GiftController {
     @PostMapping()
     public ResponseEntity<GiftResponse> addGift(
             @Valid @RequestBody GiftCreateRequest giftCreateRequest,
-            @AuthUser User user
+            @AuthUser UserResponse user
     ) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -53,7 +52,7 @@ public class GiftController {
     public ResponseEntity<GiftResponse> updateGift(
             @PathVariable Long id,
             @Valid @RequestBody GiftModifyRequest giftModifyRequest,
-            @AuthUser User user
+            @AuthUser UserResponse user
     ) {
         return ResponseEntity.ok().body(giftService.updateGift(id, giftModifyRequest));
     }
@@ -61,7 +60,7 @@ public class GiftController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteGift(
             @PathVariable Long id,
-            @RequestHeader HttpHeaders headers
+            @AuthUser UserResponse user
     ) {
         giftService.deleteGift(id);
         return ResponseEntity.noContent().build();
