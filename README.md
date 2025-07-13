@@ -70,4 +70,4 @@
 - [x] 로그인+토큰발급 부분 BeforeEach로 빼기
 - [x] 찜 수량 조절기능은 Put mapping 으로 변경
 - [x] 찜 삭제 기능은 Delete mapping 으로 변경
-- [ ] Runtime Exception 대신 구체적인 Exception 정의
+- [x] Runtime Exception 대신 구체적인 Exception 정의

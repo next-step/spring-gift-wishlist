@@ -15,10 +15,6 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.RedirectView;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -103,7 +99,7 @@ public class GlobalExceptionHandler {
     return "wishlist/list";
   }
 
-  @ExceptionHandler(RuntimeException.class)
+  @ExceptionHandler(NotFoundDeletewishlistException.class)
   public String handleRuntimeException(RuntimeException ex,
       HttpServletResponse response,
       Model model ,

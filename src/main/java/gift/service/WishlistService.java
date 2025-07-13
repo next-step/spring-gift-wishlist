@@ -2,8 +2,8 @@ package gift.service;
 
 import gift.exception.DuplicateWishItemException;
 import gift.exception.InvalidQuantityException;
+import gift.exception.NotFoundDeletewishlistException;
 import gift.model.WishItem;
-import gift.repository.ProductRepository;
 import gift.repository.WishlistRepository;
 import java.util.List;
 import java.util.Optional;
@@ -50,7 +50,7 @@ public class WishlistService {
   public void deleteWishListItem(Long memberId, Long productId) {
     int rowsAffected = wishlistRepository.delete(memberId, productId);
     if (rowsAffected == 0) {
-      throw new RuntimeException("삭제할 찜 항목이 존재하지 않습니다.");
+      throw new NotFoundDeletewishlistException("삭제할 찜 항목이 존재하지 않습니다.");
     }
   }
 

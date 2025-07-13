@@ -149,10 +149,9 @@ class WishlistControllerTest {
   @DisplayName("[5] 찜 상품 삭제 성공 시 리다이렉트")
   void testDeleteWishlistItem_Success() {
     // 상품 1번은 이미 찜되어 있다고 가정
-    ResponseEntity<String> response = restClient.post()
+    ResponseEntity<String> response = restClient.delete()
         .uri("/api/wishlist/1/delete")
         .header(HttpHeaders.AUTHORIZATION, "Bearer " + authToken)
-        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
         .retrieve()
         .toEntity(String.class);
 
@@ -164,10 +163,9 @@ class WishlistControllerTest {
   @DisplayName("[6] 존재하지 않는 찜 상품 삭제 시 404 Not Found")
   void testDeleteWishlistItem_NotFound() {
     try {
-      restClient.post()
+      restClient.delete()
           .uri("/api/wishlist/999/delete") // 존재하지 않는 상품 ID
           .header(HttpHeaders.AUTHORIZATION, "Bearer " + authToken)
-          .contentType(MediaType.APPLICATION_FORM_URLENCODED)
           .retrieve()
           .toBodilessEntity();
 
