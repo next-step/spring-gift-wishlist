@@ -313,6 +313,16 @@ class WishControllerTest {
         .toEntity(Void.class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+
+    ResponseEntity<List<WishResponseDTO>> wishListRes = wishClient.get()
+        .uri("?page=0&size=10")
+        .retrieve()
+        .toEntity(new ParameterizedTypeReference<List<WishResponseDTO>>() {});
+
+    assertNotNull(wishListRes);
+    assertThat(wishListRes.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(wishListRes.getBody()).isNotNull();
+    assertThat(wishListRes.getBody().size()).isEqualTo(0);
   }
 
   @Test
