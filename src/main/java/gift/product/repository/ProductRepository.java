@@ -20,4 +20,6 @@ public interface ProductRepository {
     void update(Product product);
 
     void deleteAll();
+
+    List<Product> findByMemberId(UUID memberId);
 }

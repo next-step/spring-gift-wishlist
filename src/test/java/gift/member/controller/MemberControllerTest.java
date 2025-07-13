@@ -5,6 +5,8 @@ import gift.domain.Role;
 import gift.jwt.JWTUtil;
 import gift.member.dto.*;
 import gift.member.repository.MemberRepository;
+import gift.member.service.MemberService;
+import gift.member.service.MemberServiceV1;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,6 +17,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
@@ -32,6 +35,9 @@ class MemberControllerTest {
     private int port;
 
     @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
     private MemberRepository memberRepository;
 
     @Autowired
@@ -40,6 +46,9 @@ class MemberControllerTest {
     private RestClient restClient;
 
     private RestClient loginRestClient;
+  
+    @Autowired
+    private MemberServiceV1 memberServiceV1;
 
     @BeforeEach
     void setUp() {
@@ -177,7 +186,7 @@ class MemberControllerTest {
         Member member = createMember(Role.REGULAR);
         Member savedMember = memberRepository.save(member);
         MemberUpdateRequest updateRequest =
-                new MemberUpdateRequest(savedMember.getPassword(), "Qwer12345!!", "Qwer12345!!");
+                new MemberUpdateRequest("Qwer1234!!", "Qwer12345!!", "Qwer12345!!");
 
         ResponseEntity<Void> response = restClient.patch()
                 .body(updateRequest)
@@ -329,7 +338,7 @@ class MemberControllerTest {
         ResponseEntity<Void> response = restClient.put()
                 .uri("/{id}", member.getId().toString())
                 .cookie("Authorization", jwt)
-                .body(new MemberUpdateReqForAdmin(member.getPassword(), "Qwer12345!!", "Qwer12345!!", member.getRole().toString()))
+                .body(new MemberUpdateReqForAdmin("Qwer1234!!", "Qwer12345!!", "Qwer12345!!", member.getRole().toString()))
                 .retrieve()
                 .toEntity(Void.class);
 
@@ -361,7 +370,8 @@ class MemberControllerTest {
     }
 
     private Member createMember(Role role) {
-        return new Member("ljw2109@naver.com", "Qwer1234!!", role);
+        String password = passwordEncoder.encode("Qwer1234!!");
+        return new Member("ljw2109@naver.com", password, role);
     }
 
     private MemberCreateRequest memberCreateRequest() {
