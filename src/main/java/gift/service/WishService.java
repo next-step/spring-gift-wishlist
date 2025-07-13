@@ -2,7 +2,6 @@ package gift.service;
 
 import gift.entity.Product;
 import gift.entity.WishItem;
-import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
@@ -47,16 +46,6 @@ public class WishService {
     public void removeWishItemByWishId(Long memberId, Long wishId) {
         if (!wishRepository.removeWishItemByMemberWishId(memberId, wishId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "WishItem not found");
-//            // 해당 엔티티 존재 숨기기 위해, 권한이 없을 시 일괄 404 Not Found 처리
-//            Optional<Long> optionalOwnerId = wishRepository.getWishItemOwnerByWishId(wishId);
-//            if (optionalOwnerId.isEmpty() || !optionalOwnerId.get().equals(memberId)) {
-//                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "WishItem not found");
-//            }
-//            if (optionalOwnerId.isEmpty()) {
-//                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "WishItem not found");
-//            } else if (!optionalOwnerId.get().equals(memberId)) {
-//                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have permission to delete this WishItem");
-//            }
         }
     }
 }

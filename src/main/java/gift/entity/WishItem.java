@@ -1,6 +1,5 @@
 package gift.entity;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
 
 public record WishItem (

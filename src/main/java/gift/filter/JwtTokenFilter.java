@@ -2,14 +2,11 @@ package gift.filter;
 
 import gift.token.JwtTokenProvider;
 import jakarta.servlet.*;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.util.WebUtils;
 
 import java.io.IOException;
 import java.util.Optional;
-
-import static java.util.Arrays.stream;
 
 // 1. extracting JWT Token from the request and validating it
 public class JwtTokenFilter implements Filter {

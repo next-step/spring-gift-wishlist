@@ -40,24 +40,10 @@ public class WishRepository {
         return Optional.ofNullable(keyHolder.getKeyAs(Long.class));
     }
 
-//    public Optional<Long> getWishItemOwnerByWishId(Long wishId) {
-//        return jdbcClient.sql("select member_id from wish where id = :wishId")
-//                .param("wishId", wishId)
-//                .query(Long.class)
-//                .optional();
-//    }
-
     public boolean removeWishItemByMemberWishId(Long memberId, Long wishId) {
         return jdbcClient.sql("delete from wish where id = :wishId and member_id = :memberId")
                 .param("wishId", wishId)
                 .param("memberId", memberId)
                 .update() == 1;
     }
-
-//    public boolean removeWishItemByMemberProductId(Long memberId, Long productId) {
-//        return jdbcClient.sql("delete from wish where member_id = :memberId and product_id = :productId")
-//                .param("memberId", memberId)
-//                .param("productId", productId)
-//                .update() == 1;
-//    }
 }
