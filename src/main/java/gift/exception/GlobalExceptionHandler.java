@@ -48,8 +48,23 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
 
+    // 5. 다른 사람의 위시리스트 항목을 삭제하려 하면 터지는 UnauthorizedWishAccessException 예외
+    @ExceptionHandler(UnauthorizedWishAccessException.class)
+    public ResponseEntity<Map<String, String>> handleUnauthorizedWishAccessException(UnauthorizedWishAccessException e) {
+        Map<String, String> error = new HashMap<>();
+        error.put("message", e.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+    }
 
-    // 5. 위 네 예외를 제외하고 다른 예외가 터지면 여기서 잡는다.
+    // 6. 이미 위시리스트에 존재하는 항목을 추가하려하면 발생하는 AlreadyWishedException 예외
+    @ExceptionHandler(AlreadyWishedException.class)
+    public ResponseEntity<Map<String, String>> handleAlreadyWishedException(AlreadyWishedException e) {
+        Map<String, String> error = new HashMap<>();
+        error.put("message", e.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    // 위 예외들을 제외하고 다른 예외가 터지면 여기서 잡는다.
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleGeneralException(Exception e) {
         Map<String, String> error = new HashMap<>();
