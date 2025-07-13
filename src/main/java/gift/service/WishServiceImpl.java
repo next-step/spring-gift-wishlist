@@ -1,9 +1,6 @@
 package gift.service;
 
-import gift.dto.CreateWishRequest;
-import gift.dto.CreateWishResponse;
-import gift.dto.ProductResponseDto;
-import gift.dto.WishResponse;
+import gift.dto.*;
 import gift.entity.Product;
 import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
@@ -34,14 +31,18 @@ public class WishServiceImpl implements WishService {
 
     @Override
     public List<WishResponse> findAllWishes(Long memberId) {
-        List<CreateWishRequest> wishes = wishRepository.findAllWishesByMemberId(memberId);
-        List<WishResponse> wishResponses = new ArrayList<>();
-        for (CreateWishRequest wish : wishes) {
-            ProductResponseDto product = productService.findProductById(wish.productId());
-            WishResponse wishResponse = new WishResponse(product, wish.quantity());
-            wishResponses.add(wishResponse);
-        }
-        return wishResponses;
+        return wishRepository.findAllWishesWithProductByMemberId(memberId)
+            .stream()
+            .map(wish -> new WishResponse(
+                wish.wishId(),
+                new ProductResponseDto(
+                    wish.productId(),
+                    wish.productName(),
+                    wish.productPrice(),
+                    wish.productImageUrl()
+                ), wish.quantity())
+            )
+            .toList();
     }
 
     @Override
