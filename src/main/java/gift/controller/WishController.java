@@ -1,9 +1,9 @@
 package gift.controller;
 
 import gift.auth.LoginMember;
-import gift.domain.Member;
 import gift.dto.LoginMemberDto;
 import gift.dto.request.WishRequest;
+import gift.dto.response.WishAddResponse;
 import gift.dto.response.WishMsgResponse;
 import gift.dto.response.WishResponse;
 import gift.service.WishService;
@@ -25,9 +25,9 @@ public class WishController {
     }
 
     @PostMapping
-    public ResponseEntity<WishMsgResponse> add(@RequestBody WishRequest request,
+    public ResponseEntity<WishAddResponse> add(@RequestBody WishRequest request,
                                                @LoginMember LoginMemberDto loginMember){
-        WishMsgResponse response = wishService.add(loginMember.id(),request);
+        WishAddResponse response = wishService.add(loginMember.id(),request);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{productId}")

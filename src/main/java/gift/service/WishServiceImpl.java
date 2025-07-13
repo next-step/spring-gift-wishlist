@@ -1,7 +1,9 @@
 package gift.service;
 
+import gift.domain.Product;
 import gift.domain.Wish;
 import gift.dto.request.WishRequest;
+import gift.dto.response.WishAddResponse;
 import gift.dto.response.WishMsgResponse;
 import gift.dto.response.WishResponse;
 import gift.exception.ProductNotFoundException;
@@ -25,13 +27,21 @@ public class WishServiceImpl implements WishService {
     }
 
     @Override
-    public WishMsgResponse add(Long memberId, WishRequest request){
-
-        productRepository.findById(request.productId())
+    public WishAddResponse add(Long memberId, WishRequest request) {
+        Product product = productRepository.findById(request.productId())
                 .orElseThrow(() -> new ProductNotFoundException(request.productId()));
 
-        wishRepository.add(new Wish(memberId, request.productId()));
-        return new WishMsgResponse("위시리스트에 추가되었습니다.");
+        Wish savedWish = wishRepository.add(new Wish(memberId, request.productId()));
+
+        WishResponse wishResponse = new WishResponse(
+                savedWish.getId(),
+                product.getId(),
+                product.getName(),
+                product.getPrice(),
+                product.getImageUrl()
+        );
+
+        return new WishAddResponse("위시리스트에 추가되었습니다.", wishResponse);
     }
 
     @Override
