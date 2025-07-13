@@ -1,11 +1,13 @@
 package gift.repository;
 
+import gift.dto.CreateWishRequest;
 import gift.dto.CreateWishResponse;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -43,5 +45,15 @@ public class WishRepositoryImpl implements WishRepository {
             .param(productId)
             .query(CreateWishResponse.class)
             .optional();
+    }
+
+    @Override
+    public List<CreateWishRequest> findAllWishesByMemberId(Long memberId) {
+        String sql = "SELECT product_id, quantity FROM wish WHERE member_id = ?";
+
+        return jdbcClient.sql(sql)
+            .param(memberId)
+            .query(CreateWishRequest.class)
+            .list();
     }
 }

@@ -2,16 +2,15 @@ package gift.controller;
 
 import gift.dto.CreateWishRequest;
 import gift.dto.CreateWishResponse;
+import gift.dto.ProductResponseDto;
+import gift.dto.WishResponse;
 import gift.entity.Member;
-import gift.entity.Wish;
 import gift.service.WishService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/wishes")
@@ -20,6 +19,11 @@ public class WishRestController {
 
     WishRestController(WishService wishService) {
         this.wishService = wishService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<WishResponse>> showAllWishes(@LoginMember Member member) {
+        return new ResponseEntity<>(wishService.findAllWishes(member.getId()), HttpStatus.OK);
     }
 
     @PostMapping
