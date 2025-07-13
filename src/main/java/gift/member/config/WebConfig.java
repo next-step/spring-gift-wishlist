@@ -23,13 +23,14 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(authenticationInterceptor)
+                .addPathPatterns("/api/admin/**", "/api/wishlist/**");
+
         registry.addInterceptor(adminInterceptor)
                 .addPathPatterns("/api/admin/**");
-
-        registry.addInterceptor(authenticationInterceptor)
-                .addPathPatterns("/api/wishlist/**");
     }
 
+    @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
         argumentResolvers.add(loginMemberArgumentResolver);
     }
