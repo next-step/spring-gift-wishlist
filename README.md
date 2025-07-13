@@ -47,3 +47,27 @@
 - [x] 로그인 실패시 Http Status UnAuthorized로
 - [x] 로그인 테스트 케이스 추가
 - [x] 회원가입 성공시 Http Status 201 반환하도록
+
+### Step3 [ 07/10 ]
+- [x] MemberService에서 Http Header에 token 붙여 반환
+- [ ] 위시리스트 기능 구현
+  - [x] 위시리스트 페이지 구현
+  - [x] 상품 목록 조회
+  - [x] 상품 추가
+  - [x] 상품 수량 조절
+  - [ ] 상품 삭제
+
+### Step3 Refactoring [ 07/11 ]
+- [x] repository에서는 데이터 접근만 하도록 변경(검증은 service layer로)
+  - [x] wishlist service에서 항목을 찾을 수 없는 경우, Http status 코드 수정
+- [x] wishlist 상품 삭제기능 추가
+- [x] wishlist 테스트코드 추가
+<hr>
+
+### [ 07/13 ]
+- [x] 중복 에러 체크 로직 삭제
+- [x] 찜한상품의 오류 코드를 적절한 Http Status로 변경
+- [x] 로그인+토큰발급 부분 BeforeEach로 빼기
+- [x] 찜 수량 조절기능은 Put mapping 으로 변경
+- [x] 찜 삭제 기능은 Delete mapping 으로 변경
+- [x] Runtime Exception 대신 구체적인 Exception 정의
