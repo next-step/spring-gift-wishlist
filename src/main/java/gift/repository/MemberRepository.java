@@ -54,4 +54,13 @@ public class MemberRepository {
                     rs.getString("role")
             );
 
+
+    public Optional<Member> findById(Long id) {
+        String sql = "SELECT * FROM member WHERE id = :id";
+
+        return jdbcClient.sql(sql)
+                .param("id", id)
+                .query(MEMBER_ROW_MAPPER)
+                .optional();
+    }
 }
