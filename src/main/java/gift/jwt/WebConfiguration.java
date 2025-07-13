@@ -26,6 +26,6 @@ public class WebConfiguration implements WebMvcConfigurer {
 
     @Bean
     public LoginMemberArgumentResolver loginMemberArgumentResolver() {
-        return new LoginMemberArgumentResolver(memberService, jwtTokenProvider);
+        return new LoginMemberArgumentResolver();
     }
 }

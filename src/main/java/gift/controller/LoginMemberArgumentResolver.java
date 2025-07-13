@@ -1,13 +1,9 @@
 package gift.controller;
 
-import gift.jwt.Autheniticated;
-import gift.jwt.JwtTokenProvider;
+import gift.jwt.Authenticated;
 import gift.dto.LoginMember;
-import gift.service.MemberService;
-import gift.ExceptionHandler.UnAuthorizationException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -17,18 +13,9 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @Component
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private final MemberService memberService;
-    private final JwtTokenProvider jwtTokenProvider;
-
-    public LoginMemberArgumentResolver(MemberService memberService,
-            JwtTokenProvider jwtTokenProvider) {
-        this.memberService = memberService;
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
-
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(Autheniticated.class)
+        return parameter.hasParameterAnnotation(Authenticated.class)
                 && parameter.getParameterType().equals(LoginMember.class);
     }
 
