@@ -1,5 +1,6 @@
 package gift.repository;
 
+import gift.dto.ProductResponseDTO;
 import gift.dto.WishResponseDTO;
 import gift.entity.Product;
 import gift.entity.Wish;
@@ -29,7 +30,7 @@ public class WishRepository {
     private final RowMapper<WishResponseDTO> wishResponseDTORowMapper = (rs, rowNum) -> {
         Product product = new Product(rs.getString("p_name"), rs.getLong("p_price"), rs.getString("p_image_url"));
         product.setId(rs.getLong("p_id"));
-        return new WishResponseDTO(rs.getLong("member_id"), product.getProductResponseDTO(), rs.getInt("w_quantity"));
+        return new WishResponseDTO(rs.getLong("member_id"), new ProductResponseDTO(product), rs.getInt("w_quantity"));
     };
 
     public void save(Wish wish) {

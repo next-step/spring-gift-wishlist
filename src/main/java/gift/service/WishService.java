@@ -1,5 +1,6 @@
 package gift.service;
 
+import gift.dto.ProductResponseDTO;
 import gift.dto.WishRequestDTO;
 import gift.dto.WishResponseDTO;
 import gift.dto.WishUpdateDTO;
@@ -31,11 +32,11 @@ public class WishService {
             .map(existingWish -> {
                 int newQuantity = existingWish.getQuantity() + wishRequestDTO.quantity();
                 wishRepository.updateQuantity(member.getId(), productId, newQuantity);
-                return new WishResponseDTO(member.getId(), product.getProductResponseDTO(), newQuantity);
+                return new WishResponseDTO(member.getId(), new ProductResponseDTO(product), newQuantity);
             })
             .orElseGet(() -> {
                 wishRepository.save(new Wish(member.getId(), productId, wishRequestDTO.quantity()));
-                return new WishResponseDTO(member.getId(), product.getProductResponseDTO(), wishRequestDTO.quantity());
+                return new WishResponseDTO(member.getId(), new ProductResponseDTO(product), wishRequestDTO.quantity());
             });
     }
 
