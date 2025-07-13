@@ -15,3 +15,6 @@ spring:
     init:
       mode: embedded
       schema-locations: classpath:db/schema.sql
+
+jwt:
+  secret-key: Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=
