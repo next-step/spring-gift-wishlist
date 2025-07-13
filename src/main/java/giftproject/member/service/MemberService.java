@@ -4,8 +4,8 @@ import giftproject.member.dto.MemberRequestDto;
 import giftproject.member.entity.Member;
 import giftproject.member.repository.MemberRepository;
 import giftproject.member.util.JwtTokenProvider;
+import giftproject.member.util.PasswordEncoder;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
