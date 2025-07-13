@@ -22,7 +22,7 @@ public class WishListController {
     }
 
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<ProductResponseDto>> getWishlist(@AuthenticatedUser String token) {
 
         List<ProductResponseDto> products = wishListService.findAllProductsFromWishList(token);
@@ -30,7 +30,7 @@ public class WishListController {
         return ResponseEntity.status(HttpStatus.OK).body(products);
     }
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<List<ProductResponseDto>> addProductToWishlist(@AuthenticatedUser String token,
                                                                          @Valid @RequestBody WishListProductRequestDto productRequestDto) {
 
