@@ -51,18 +51,6 @@ public class GlobalExceptionHandler {
     return ResponseEntity.badRequest().body(problem);
   }
 
-  @ExceptionHandler(NoSuchElementException.class)
-  public ResponseEntity<ProblemDetail> handleNoSuchElementException(NoSuchElementException ex,
-      HttpServletRequest request) {
-    ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
-    problem.setType(URI.create("localhost:8080/api/products/product-not-found"));
-    problem.setTitle("Product not found");
-    problem.setDetail(ex.getMessage());
-    problem.setInstance(URI.create(request.getRequestURI()));
-
-    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problem);
-  }
-
   @ExceptionHandler(EmailAlreadyRegisteredException.class)
   public ResponseEntity<ProblemDetail> handleEmailAlreadyRegistered(EmailAlreadyRegisteredException ex,
       HttpServletRequest request) {
@@ -97,5 +85,29 @@ public class GlobalExceptionHandler {
     problem.setInstance(URI.create(request.getRequestURI()));
 
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(problem);
+  }
+
+  @ExceptionHandler(ProductNotFoundException.class)
+  public ResponseEntity<ProblemDetail> handleProductNotFound(ProductNotFoundException ex,
+      HttpServletRequest request) {
+    ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
+    problem.setType(URI.create("localhost:8080/api/products/product-not-found"));
+    problem.setTitle("Product Not Found");
+    problem.setDetail(ex.getMessage());
+    problem.setInstance(URI.create(request.getRequestURI()));
+
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problem);
+  }
+
+  @ExceptionHandler(WishListItemNotFoundException.class)
+  public ResponseEntity<ProblemDetail> handleWishListItemNotFound(WishListItemNotFoundException ex,
+      HttpServletRequest request) {
+    ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
+    problem.setType(URI.create("localhost:8080/api/wishlist/item-not-found"));
+    problem.setTitle("WishList Item Not Found");
+    problem.setDetail(ex.getMessage());
+    problem.setInstance(URI.create(request.getRequestURI()));
+
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problem);
   }
 }

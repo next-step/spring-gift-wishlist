@@ -4,10 +4,10 @@ import gift.domain.Product;
 import gift.dto.ProductAdminRequestDto;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
+import gift.exception.ProductNotFoundException;
 import gift.repository.ProductRepository;
 import gift.validation.ProductNameValidator;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 
@@ -42,7 +42,7 @@ public class ProductServiceImpl implements ProductService {
     Optional<Product> optionalProduct = productRepository.searchProductById(id);
 
     Product product = optionalProduct.orElseThrow(() ->
-        new NoSuchElementException("해당 ID = " + id + " 의 상품이 존재하지 않습니다.")
+        new ProductNotFoundException(id)
     );
 
     return new ProductResponseDto(product);
