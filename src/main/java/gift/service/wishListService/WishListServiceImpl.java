@@ -1,5 +1,6 @@
 package gift.service.wishListService;
 
+import gift.dto.itemDto.ItemResponseDto;
 import gift.dto.wishListDto.AddWishItemDto;
 import gift.dto.wishListDto.ResponseWishItemDto;
 import gift.entity.Item;
@@ -36,13 +37,13 @@ public class WishListServiceImpl implements WishListService{
             throw new UserNotFoundException();
         }
 
-        Item item = itemService.findItemByName(dto.name());
+        ItemResponseDto item = itemService.findItemByName(dto.name());
         if (item == null) {
             throw new ItemNotFoundException(dto.name());
         }
 
         Integer quantity = dto.quantity();
-        WishItem addedWishItem = wishListRepository.addWishItem(user.id(), item.getId(), quantity);
+        WishItem addedWishItem = wishListRepository.addWishItem(user.id(), item.id(), quantity);
 
 
         return ResponseWishItemDto.from(addedWishItem);
@@ -99,13 +100,13 @@ public class WishListServiceImpl implements WishListService{
             throw new UserNotFoundException();
         }
 
-        Item item = itemService.findItemByName(name);
+        ItemResponseDto item = itemService.findItemByName(name);
 
         if (item == null) {
             throw new ItemNotFoundException();
         }
 
-        WishItem deletedWishItem = wishListRepository.deleteWishItem(user.id(), item.getId());
+        WishItem deletedWishItem = wishListRepository.deleteWishItem(user.id(), item.id());
 
         return ResponseWishItemDto.delete(deletedWishItem);
     }
@@ -118,13 +119,13 @@ public class WishListServiceImpl implements WishListService{
             throw new UserNotFoundException();
         }
 
-        Item item = itemService.findItemByName(name);
+        ItemResponseDto item = itemService.findItemByName(name);
 
         if (item == null) {
             throw new ItemNotFoundException();
         }
 
-        WishItem updateItem = wishListRepository.updateWishItem(quantity, item.getId(), user.id());
+        WishItem updateItem = wishListRepository.updateWishItem(quantity, item.id(), user.id());
 
         if (updateItem == null) {
             throw new ItemNotFoundException();

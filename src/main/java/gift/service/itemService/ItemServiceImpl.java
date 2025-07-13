@@ -104,14 +104,14 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item findItemByName(String name) {
+    public ItemResponseDto findItemByName(String name) {
         Item item = itemRepository.findItemByName(name);
 
         if (item == null) {
             throw new ItemNotFoundException();
         }
 
-        return item;
+        return ItemResponseDto.from(item);
     }
 
     @Override
