@@ -54,14 +54,13 @@ public class WishlistController {
 
 
   // ✅ 찜 상품 삭제
-  @PostMapping("/{productId}/delete")
+  @DeleteMapping("/{productId}/delete")
   public String deleteWishlistItem(@PathVariable Long productId,
-      @LoginMember Member member,
-      RedirectAttributes redirectAttributes) {
+                                   @LoginMember Member member,
+                                   RedirectAttributes redirectAttributes) {
     wishlistService.deleteWishListItem(member.getId(), productId);
     redirectAttributes.addFlashAttribute("message", "상품이 찜 목록에서 삭제되었습니다");
     return "redirect:/api/wishlist";
   }
-
 }
 

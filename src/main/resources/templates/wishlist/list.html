@@ -47,9 +47,11 @@
              class="btn btn-sm btn-outline-primary">상세보기</a>
         </td>
         <td>
-        <form th:action="@{|/api/wishlist/${item.productId}/delete|}" method="post">
-          <button type="submit" class="btn btn-sm btn-outline-danger">삭제</button>
-        </form>
+          <form th:action="@{|/api/wishlist/${item.productId}/delete|}" method="post">
+            <input type="hidden" name="_method" value="delete" />
+            <button type="submit" class="btn btn-sm btn-outline-danger">삭제</button>
+          </form>
+
         </td>
       </tr>
       <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
