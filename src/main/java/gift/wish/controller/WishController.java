@@ -9,8 +9,6 @@ import gift.wish.service.WishService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @Controller
@@ -23,7 +21,7 @@ public class WishController {
     }
 
     @GetMapping
-    public String getwishList(@Login Member member, Model model) {
+    public String getWishes(@Login Member member, Model model) {
         List<WishListResponse> wishes = wishService.getWishes(member);
 
         model.addAttribute("wishes", wishes);
@@ -36,15 +34,15 @@ public class WishController {
         return "redirect:/wishes";
     }
 
-    @PostMapping("/update")
-    public String updateWish(@Login Member member, @ModelAttribute WishUpdateRequest request) throws AccessDeniedException {
-        wishService.updateQuantity(member,request.wishId(), request.quantity());
+    @PostMapping("/update/{wishId}")
+    public String updateWish(@Login Member member, @PathVariable Long wishId, @ModelAttribute WishUpdateRequest request){
+        wishService.updateQuantity(member, wishId, request.quantity());
 
         return "redirect:/wishes";
     }
 
     @PostMapping("/delete/{wishId}")
-    public String deleteWish(@Login Member member, @PathVariable("wishId") Long wishId) throws AccessDeniedException {
+    public String deleteWish(@Login Member member, @PathVariable("wishId") Long wishId) {
         wishService.deleteWish(member, wishId);
         return "redirect:/wishes";
     }

@@ -10,8 +10,6 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @RestController
@@ -37,15 +35,15 @@ public class WishApiController {
         return ResponseEntity.ok(wishes);
     }
 
-    @PutMapping
-    public ResponseEntity<Void> updateWish(@Login Member member, @RequestBody WishUpdateRequest request) throws AccessDeniedException {
-        wishService.updateQuantity(member, request.wishId(), request.quantity());
+    @PatchMapping("/{wishId}")
+    public ResponseEntity<Void> updateWish(@Login Member member, @PathVariable Long wishId, @RequestBody WishUpdateRequest request){
+        wishService.updateQuantity(member, wishId, request.quantity());
 
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{wishId}")
-    public ResponseEntity<Void> deleteWish(@Login Member member, @PathVariable Long wishId) throws AccessDeniedException {
+    public ResponseEntity<Void> deleteWish(@Login Member member, @PathVariable Long wishId){
         wishService.deleteWish(member, wishId);
         return ResponseEntity.noContent().build();
     }

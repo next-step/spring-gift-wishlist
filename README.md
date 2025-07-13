@@ -2,45 +2,31 @@
 
 ## API 명세
 
-### 회원 관리 API
-
-| 기능 | HTTP Method | 엔드포인트 (Endpoint) | 요청 (Request) | 응답 (Response)                |
-| :--- | :--- | :--- | :--- |:-----------------------------|
-| 일반 회원가입 | `POST` | `/api/members/register` | Body: `MemberRegisterRequest` | **201 Created** Body: JWT 토큰 |
-| 관리자 회원가입 | `POST` | `/api/members/register/admin` | Body: `MemberRegisterRequest` | **201 Created** Body: JWT 토큰 |
-| 로그인 | `POST` | `/api/members/login` | Body: `MemberLoginRequest` | **200 OK** Body: JWT 토큰      |
-
-### 상품 관리 View
-
-| 기능 | HTTP Method | 엔드포인트 (Endpoint) | 설명          |
-| :--- | :--- | :--- |:------------|
-| 상품 목록 페이지 | `GET` | `/products` | 전체 상품 목록 조회 |
-
-### 회원 관리 View
-
-| 기능 | HTTP Method | 엔드포인트 (Endpoint) | 설명       |
-| :--- | :--- | :--- |:---------|
-| 로그인 페이지 | `GET` | `/members/login` | 로그인 페이지  |
-| 로그인 처리 | `POST` | `/members/login` | 로그인      |
-| 회원가입 페이지 | `GET` | `/members/register` | 회원가입 페이지 |
-| 회원가입 처리 | `POST` | `/members/register` | 회원가입     |
-| 로그아웃 처리 | `POST` | `/members/logout` | 로그아웃     |
-
 ### 홈 View
 
 | 기능 | HTTP Method | 엔드포인트 (Endpoint) | 설명     |
 | :--- | :--- | :--- |:-------|
 | 메인 페이지 | `GET` | `/` | 메인 페이지 |
 
-### 상품관리 RESTful API
+### 회원 관리 View
 
-| 기능 | HTTP Method | 엔드포인트 (Endpoint)                  | 요청 (Request) | 응답 (Response) |
-| :--- | :--- |:----------------------------------| :--- | :--- |
-| 상품 등록 | `POST` | `/api/admin/products`             | Body: `ProductRequestDto` (상품 정보) | **201 Created** Body 없음 |
-| 전체 상품 조회 | `GET` | `/api/admin/products`             | 없음 | **200 OK** Body: `List<ProductResponseDto>` (상품 목록) |
-| 특정 상품 조회 | `GET` | `/api/admin/products/{productId}` | Path: `productId` | **200 OK** Body: `ProductResponseDto` (상품 상세 정보) |
-| 상품 정보 수정 | `PUT` | `/api/admin/products/{productId}` | Path: `productId` Body: `ProductRequestDto` (수정할 상품 정보) | **204 No Content** Body 없음 |
-| 상품 삭제 | `DELETE` | `/api/admin/products/{productId}` | Path: `productId` (상품 ID) | **204 No Content** Body 없음 |
+| 기능          | HTTP Method | 엔드포인트 (Endpoint)    | 설명          |
+|:------------|:------------|:--------------------|:------------|
+| 로그인 페이지     | `GET`       | `/members/login`    | 로그인 페이지     |
+| 로그인 처리      | `POST`      | `/members/login`    | 로그인         |
+| 회원가입 페이지    | `GET`       | `/members/register` | 회원가입 페이지    |
+| 회원가입 처리     | `POST`      | `/members/register` | 회원가입        |
+| 로그아웃 처리     | `POST`      | `/members/logout`   | 로그아웃        |
+| 마이페이지       | `GET`       | `/members/mypage`   | 마이페이지 조회    |
+| 비밀번호 변경 페이지 | `GET`       | `/members/edit`     | 비밀번호 변경 페이지 |
+| 비밀번호 변경     | `POST`      | `/members/edit`     | 비밀번호 변경 처리  |
+| 회원 탈퇴       | `POST`      | `/members/delete`   | 회원 탈퇴 처리    |
+
+### 상품 관리 View
+
+| 기능 | HTTP Method | 엔드포인트 (Endpoint) | 설명          |
+| :--- | :--- | :--- |:------------|
+| 상품 목록 페이지 | `GET` | `/products` | 전체 상품 목록 조회 |
 
 ### 상품관리 관리자 View
 | 기능 | HTTP Method | 엔드포인트 (Endpoint) | 설명 |
@@ -51,7 +37,24 @@
 | 상품 수정 | `POST` | `/admin/product/edit/{productId}` | 상품 정보 수정 |
 | 상품 삭제 | `DELETE` | `/admin/product/{productId}` | 상품 삭제 |
 
+### 회원 관리 API
 
+| 기능 | HTTP Method | 엔드포인트 (Endpoint) | 요청 (Request) | 응답 (Response)                |
+| :--- | :--- | :--- | :--- |:-----------------------------|
+| 일반 회원가입 | `POST` | `/api/members/register` | Body: `MemberRegisterRequest` | **201 Created** Body: JWT 토큰 |
+| 관리자 회원가입 | `POST` | `/api/members/register/admin` | Body: `MemberRegisterRequest` | **201 Created** Body: JWT 토큰 |
+| 로그인 | `POST` | `/api/members/login` | Body: `MemberLoginRequest` | **200 OK** Body: JWT 토큰      |
+
+
+### 상품관리 RESTful API
+
+| 기능 | HTTP Method | 엔드포인트 (Endpoint)                  | 요청 (Request) | 응답 (Response) |
+| :--- | :--- |:----------------------------------| :--- | :--- |
+| 상품 등록 | `POST` | `/api/admin/products`             | Body: `ProductRequestDto` (상품 정보) | **201 Created** Body 없음 |
+| 전체 상품 조회 | `GET` | `/api/admin/products`             | 없음 | **200 OK** Body: `List<ProductResponseDto>` (상품 목록) |
+| 특정 상품 조회 | `GET` | `/api/admin/products/{productId}` | Path: `productId` | **200 OK** Body: `ProductResponseDto` (상품 상세 정보) |
+| 상품 정보 수정 | `PUT` | `/api/admin/products/{productId}` | Path: `productId` Body: `ProductRequestDto` (수정할 상품 정보) | **204 No Content** Body 없음 |
+| 상품 삭제 | `DELETE` | `/api/admin/products/{productId}` | Path: `productId` (상품 ID) | **204 No Content** Body 없음 |
 
 ## 위시 리스트 - 요청과 응답 심화
 
@@ -102,6 +105,13 @@
 - [x] 회원 수정, 삭제에 필요한 service, repository 추가 구현
 - [x] 회원 수정, 삭제 페이지 구현
 - [ ] 암호화 적용하기
+
+### 3단계 - 코드 리뷰 반영
+
+- [x] wish service, repository, controller 피드백 내용 수정
+- [x] AccessDeniedException 제거 후 적절한 커스텀 예외 도입
+- [ ] Interceptor 간 의존성 제거하기
+
 
 # spring-gift-product (이전 구현)
 

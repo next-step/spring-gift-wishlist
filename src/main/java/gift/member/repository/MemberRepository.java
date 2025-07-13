@@ -8,6 +8,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Repository
@@ -38,21 +39,21 @@ public class MemberRepository {
                 .optional();
     }
 
-    public boolean updatePassword(Long id, String newPassword) {
+    public void updatePassword(Long id, String newPassword) {
         int affected = client.sql("update member set password = :password where id = :id")
                 .param("password", newPassword)
                 .param("id", id)
                 .update();
 
-        return affected > 0;
+        checkAffected(affected);
     }
 
-    public boolean deleteById(Long id) {
+    public void deleteById(Long id) {
         int affected = client.sql("delete from member where id = :id")
                 .param("id", id)
                 .update();
 
-        return affected > 0;
+        checkAffected(affected);
     }
 
     private final RowMapper<Member> memberRowMapper = (rs, rowNum) -> new Member(
@@ -61,4 +62,10 @@ public class MemberRepository {
             rs.getString("password"),
             RoleType.valueOf(rs.getString("role"))
     );
+
+    private void checkAffected(int affected) {
+        if(affected == 0) {
+            throw new NoSuchElementException("해당 사용자를 찾을 수 없습니다.");
+        }
+    }
 }

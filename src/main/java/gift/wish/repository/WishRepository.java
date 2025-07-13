@@ -9,6 +9,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Repository
@@ -37,7 +38,7 @@ public class WishRepository {
                 .optional();
     }
 
-    public List<WishListResponse> findByMemberId(Long memberId) {
+    public List<WishListResponse> findWishes(Long memberId) {
         return client.sql("select " +
                         "w.id as wish_id, " +
                         "w.product_id as product_id, " +
@@ -53,20 +54,19 @@ public class WishRepository {
                 .list();
     }
 
-    public boolean updateByIdAndQuantity(Long id, Integer quantity) {
+    public void updateByIdAndQuantity(Long id, Integer quantity) {
         int affected = client.sql("update wish set quantity = :quantity where id = :id")
                 .param("quantity", quantity)
                 .param("id", id)
                 .update();
-
-        return affected > 0;
+        checkAffected(affected);
     }
 
-    public boolean deleteById(Long id) {
+    public void deleteById(Long id) {
         int affected = client.sql("delete from wish where id = :id")
                 .param("id", id)
                 .update();
-        return affected > 0;
+        checkAffected(affected);
     }
 
     public boolean isExist(Long memberId, Long productId){
@@ -94,4 +94,10 @@ public class WishRepository {
             rs.getString("product_image_url"),
             rs.getInt("quantity")
     );
+
+    private void checkAffected(int affected) {
+        if(affected == 0) {
+            throw new NoSuchElementException("해당 위시 항목을 찾을 수 없습니다.");
+        }
+    }
 }
