@@ -8,6 +8,8 @@ import gift.login.Login;
 import gift.service.WishService;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.net.URI;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,9 +37,10 @@ public class WishController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> addWish(@Valid @RequestBody WishRequest request, @Login Member member) {
-        wishService.addWish(request, member);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<WishResponse> addWish(@Valid @RequestBody WishRequest request, @Login Member member) {
+        WishResponse newWish = wishService.addWish(request, member);
+        URI location = URI.create("/api/wishes/" + newWish.wishId());
+        return ResponseEntity.created(location).body(newWish);
     }
 
     @DeleteMapping("/{wishId}")

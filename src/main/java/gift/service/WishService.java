@@ -55,9 +55,12 @@ public class WishService {
     }
 
     @Transactional
-    public void addWish(WishRequest request, Member member) {
+    public WishResponse addWish(WishRequest request, Member member) {
         Wish wish = new Wish(null, member.getId(), request.productId());
-        wishRepository.save(wish);
+        Wish savedWish = wishRepository.save(wish);
+        Item item = itemRepository.findById(savedWish.getProductId())
+            .orElseThrow(() -> new ItemNotFoundException("상품 정보를 찾을 수 없습니다."));
+        return WishResponse.from(savedWish, item);
     }
 
     @Transactional
