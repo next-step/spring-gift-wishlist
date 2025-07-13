@@ -75,4 +75,55 @@ public class GlobalExceptionHandler {
         return ResponseEntity.of(pd).build();
     }
 
+    @ExceptionHandler(WishNotFoundException.class)
+    public ResponseEntity<ProblemDetail> handleWishNotFoundException(
+            WishNotFoundException ex) {
+
+        ProblemDetail pd = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
+
+        pd.setType(URI.create("/errors/wish-not-found"));
+        pd.setTitle("상품을 찾을 수 없습니다.");
+        pd.setDetail(ex.getMessage());
+
+        return ResponseEntity.of(pd).build();
+    }
+
+    @ExceptionHandler(PermissionDeniedException.class)
+    public ResponseEntity<ProblemDetail> handlePermissionDeniedException(
+            PermissionDeniedException ex) {
+
+        ProblemDetail pd = ProblemDetail.forStatus(HttpStatus.FORBIDDEN);
+
+        pd.setType(URI.create("/errors/access-denied"));
+        pd.setTitle("권한이 없습니다.");
+        pd.setDetail(ex.getMessage());
+
+        return ResponseEntity.of(pd).build();
+    }
+
+    @ExceptionHandler(UnAuthenticationException.class)
+    public ResponseEntity<ProblemDetail> handleUnAuthenticationException(
+            UnAuthenticationException ex) {
+
+        ProblemDetail pd = ProblemDetail.forStatus(HttpStatus.UNAUTHORIZED);
+
+        pd.setType(URI.create("/errors/unauthorized"));
+        pd.setTitle("인증에 실패하였습니다.");
+        pd.setDetail(ex.getMessage());
+
+        return ResponseEntity.of(pd).build();
+    }
+
+    @ExceptionHandler(WishAlreadyExistsException.class)
+    public ResponseEntity<ProblemDetail> handleWishAlreadyExistsException(
+            WishAlreadyExistsException ex) {
+
+        ProblemDetail pd = ProblemDetail.forStatus(HttpStatus.CONFLICT);
+
+        pd.setType(URI.create("/errors/wish-already-exists"));
+        pd.setTitle("이미 위시리스트에 추가된 상품입니다.");
+        pd.setDetail(ex.getMessage());
+
+        return ResponseEntity.of(pd).build();
+    }
 }

@@ -85,4 +85,14 @@ public class ProductRepositoryImpl implements ProductRepository {
               .param("id", productId)
               .update();
     }
+
+    @Override
+    public List<Product> findProductsByIdsIn(List<Long> productIds) {
+        var sql = "SELECT * FROM product WHERE id in (:ids)";
+
+        return client.sql(sql)
+                     .param("ids", productIds)
+                     .query(Product.class)
+                     .list();
+    }
 }

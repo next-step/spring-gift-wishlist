@@ -18,4 +18,6 @@ public interface ProductRepository {
     List<Product> findAllProducts();
 
     void updateProductStatus(Long productId, ProductStatus newStatus);
+
+    List<Product> findProductsByIdsIn(List<Long> productIds);
 }

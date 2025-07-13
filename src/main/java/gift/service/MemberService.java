@@ -8,6 +8,7 @@ import gift.entity.MemberRole;
 import gift.exception.EmailAlreadyExistsException;
 import gift.exception.LoginFailedException;
 import gift.repository.MemberRepository;
+import java.util.Optional;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,5 +51,11 @@ public class MemberService {
         }
 
         return new TokenResponseDto(jwtProvider.generateToken(member.getId(), member.getRole()));
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Member> getMemberById(Long id) {
+
+        return memberRepository.findMemberById(id);
     }
 }
