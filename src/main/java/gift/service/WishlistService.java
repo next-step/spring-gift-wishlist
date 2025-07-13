@@ -1,5 +1,6 @@
 package gift.service;
 
+import gift.exception.DuplicateWishItemException;
 import gift.exception.InvalidQuantityException;
 import gift.model.WishItem;
 import gift.repository.ProductRepository;
@@ -32,7 +33,7 @@ public class WishlistService {
   public void addToWishlist(Long memberId, Long productId) {
     Optional<WishItem> existing = wishlistRepository.findByMemberIdAndProductId(memberId, productId);
     if (existing.isPresent()) {
-      throw new IllegalArgumentException("이미 찜한 상품입니다.");
+      throw new DuplicateWishItemException("이미 찜한 상품입니다.");
     }
 
     wishlistRepository.insert(memberId, productId);

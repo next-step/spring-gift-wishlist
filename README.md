@@ -66,7 +66,7 @@
 
 ### [ 07/13 ]
 - [x] 중복 에러 체크 로직 삭제
-- [ ] 찜한상품의 오류 코드를 적절한 Http Status로 변경
+- [x] 찜한상품의 오류 코드를 적절한 Http Status로 변경
 - [ ] 로그인+토큰발급 부분 BeforeEach로 빼기
 - [ ] 찜 수량 조절기능은 Put mapping 으로 변경
 - [ ] 찜 삭제 기능은 Delete mapping 으로 변경

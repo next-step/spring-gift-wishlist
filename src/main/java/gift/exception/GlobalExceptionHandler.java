@@ -115,6 +115,20 @@ public class GlobalExceptionHandler {
     return "wishlist/list";
   }
 
+  @ExceptionHandler(DuplicateWishItemException.class)
+  public String handleDuplicateWishItem(DuplicateWishItemException ex,
+                                        Model model,
+                                        HttpServletResponse response,
+                                        @LoginMember Member member) {
+    response.setStatus(HttpServletResponse.SC_CONFLICT); // 409 Conflict
+
+    List<WishItem> wishList = wishlistService.getWishList(member.getId());
+    model.addAttribute("wishList", wishList);
+    model.addAttribute("error", ex.getMessage());
+    return "wishlist/list";
+  }
+
+
 }
 
 

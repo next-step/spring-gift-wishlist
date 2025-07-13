@@ -75,7 +75,7 @@ class WishlistControllerTest {
 
   @Test
   @Order(2)
-  @DisplayName("[2] 중복 찜시 에러 반환")
+  @DisplayName("[2] 중복 찜시 409 Conflict 반환")
   void testWishlistDuplicateAdd() {
     String token = getAuthToken("test999@gmail.com", "Qwer1234!");
 
@@ -90,7 +90,7 @@ class WishlistControllerTest {
       fail("중복 찜 요청에 대해 예외가 발생해야 합니다.");
     } catch (RestClientResponseException e) {
       // 400 ~ 499 범위의 상태 코드가 올 것으로 예상
-      assertThat(e.getRawStatusCode()).isEqualTo(404);
+      assertThat(e.getRawStatusCode()).isEqualTo(409);
       assertThat(e.getResponseBodyAsString()).contains("이미 찜한 상품입니다"); // 예외 메시지 검증
     }
   }
