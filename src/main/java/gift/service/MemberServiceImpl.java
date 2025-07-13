@@ -12,6 +12,8 @@ import gift.repository.MemberRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
@@ -44,5 +46,10 @@ public class MemberServiceImpl implements MemberService {
         }
         String accessToken = jwtUtil.generateAccessToken(member);
         return new AuthToken(accessToken);
+    }
+
+    @Override
+    public Optional<Member> findByEmail(String email) {
+        return memberRepository.findByEmail(email);
     }
 }
