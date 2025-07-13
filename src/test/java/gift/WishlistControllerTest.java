@@ -90,7 +90,6 @@ class WishlistControllerTest {
       fail("중복 찜 요청에 대해 예외가 발생해야 합니다.");
     } catch (RestClientResponseException e) {
       // 400 ~ 499 범위의 상태 코드가 올 것으로 예상
-      assertThat(e.getStatusCode().is4xxClientError()).isTrue();
       assertThat(e.getRawStatusCode()).isEqualTo(404);
       assertThat(e.getResponseBodyAsString()).contains("이미 찜한 상품입니다"); // 예외 메시지 검증
     }
