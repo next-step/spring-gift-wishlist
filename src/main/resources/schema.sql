@@ -22,8 +22,8 @@ CREATE TABLE wishes
     wishId    BIGINT AUTO_INCREMENT,
     memberId  BIGINT NOT NULL,
     productId BIGINT NOT NULL,
-    FOREIGN KEY (memberId) REFERENCES members (memberId) ON DELETE CASCADE,
+    FOREIGN KEY (memberId) REFERENCES users (memberId) ON DELETE CASCADE,
     FOREIGN KEY (productId) REFERENCES products (id) ON DELETE CASCADE,
-    PRIMARY KEY (wishId)
+    PRIMARY KEY (wishId),
         UNIQUE (memberId, productId)
 );
