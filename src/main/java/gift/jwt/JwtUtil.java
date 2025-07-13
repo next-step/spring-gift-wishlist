@@ -8,11 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JwtUtil {
-    public static final String AUTHORIZATION_HEADER = "Authorization";
-    public static final String AUTHORIZATION_KEY = "auth";
-    public static final String AUTHORIZATION_PREFIX = "Bearer ";
-
-    String secretKey = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";
+    private final String secretKey = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";
 
     public boolean validateToken(String token) {
         try{
