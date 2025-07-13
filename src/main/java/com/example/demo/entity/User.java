@@ -23,7 +23,6 @@ public class User {
     this.role = role;
   }
 
-
   public static User createWithRawPassword(Long id, String email, String rawPassword, String role) {
     return new User(id, email, PasswordHasher.hash(rawPassword), role);
   }
@@ -31,7 +30,6 @@ public class User {
   public void changePassword(String rawPassword) {
     this.password = PasswordHasher.hash(rawPassword);
   }
-
 
   public boolean isPasswordMatch(String rawInput) {
     return this.password.equals(PasswordHasher.hash(rawInput));
@@ -60,12 +58,4 @@ public class User {
   public void setEmail(String email) {
     this.email = email;
   }
-
-  public void setRole(String role) {
-    this.role = role;
-  }
-  public void setPassword(String password) {
-    this.password = password;
-  }
-
 }
