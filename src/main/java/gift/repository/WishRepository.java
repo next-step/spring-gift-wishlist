@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class WishRepository {
@@ -45,9 +46,17 @@ public class WishRepository {
                 .list();
     }
 
-    public void delete(Long memberId, Long productId) {
-        jdbcClient.sql("DELETE FROM wish WHERE member_id = ? AND product_id = ?")
-                .params(memberId, productId)
+    public Optional<Long> findMemberIdByWishId(Long wishId) {
+        String sql = "SELECT member_id FROM wish WHERE id = ?";
+        return jdbcClient.sql(sql)
+                .param(wishId)
+                .query(Long.class)
+                .optional();
+    }
+
+    public void deleteById(Long wishId) {
+        jdbcClient.sql("DELETE FROM wish WHERE id = ?")
+                .param(wishId)
                 .update();
     }
 }

@@ -2,9 +2,9 @@ package gift.controller;
 
 import gift.dto.WishRequestDto;
 import gift.dto.WishResponseDto;
-import gift.entity.Member;
 import gift.service.WishService;
 import gift.auth.LoginMember;
+import gift.auth.LoginMemberInfoDto;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,17 +20,17 @@ public class WishController {
     }
 
     @PostMapping
-    public void addWish(@RequestBody WishRequestDto requestDto, @LoginMember Member member) {
-        wishService.addWish(member.getId(), requestDto.productId());
+    public void addWish(@RequestBody WishRequestDto requestDto, @LoginMember LoginMemberInfoDto member) {
+        wishService.addWish(member.id(), requestDto.productId());
     }
 
     @GetMapping
-    public List<WishResponseDto> getWishes(@LoginMember Member member) {
-        return wishService.getWishes(member.getId());
+    public List<WishResponseDto> getWishes(@LoginMember LoginMemberInfoDto member) {
+        return wishService.getWishes(member.id());
     }
 
     @DeleteMapping("/{wishId}")
-    public void removeWish(@PathVariable Long wishId, @LoginMember Member member) {
-        wishService.removeWish(member.getId(), wishId);
+    public void removeWish(@PathVariable Long wishId, @LoginMember LoginMemberInfoDto member) {
+        wishService.removeWish(member.id(), wishId);
     }
 }
