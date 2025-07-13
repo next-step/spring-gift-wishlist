@@ -65,9 +65,9 @@ public class WishListServiceImpl implements WishListService{
 
         return result;
     }
-    private boolean isValid(Item item, String name, Integer price) {
-        boolean nameMatches = (name == null || item.getName().equals(name));
-        boolean priceMatches = (price == null || item.getPrice().equals(price));
+    private boolean isValid(String itemName, String name, Integer price) {
+        boolean nameMatches = (name == null || itemName.equals(name));
+        boolean priceMatches = (price == null || itemName.equals(price));
 
         return nameMatches && priceMatches;
     }
