@@ -50,6 +50,8 @@ public class WebMemberController {
         Cookie cookie = new Cookie("jwt-token", token);
         cookie.setPath("/");
         cookie.setMaxAge(3600);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
         response.addCookie(cookie);
 
         return "redirect:/admin/items";
