@@ -69,7 +69,8 @@ public class WishlistService {
 
     @Transactional
     public WishlistResponseDTO updateQuantity(Integer wishlistId, Integer quantity) {
-        WishList wishlist = wishlistRepository.findById(wishlistId);
+        WishList wishlist = wishlistRepository.findById(wishlistId)
+                        .orElseThrow(() -> new IllegalArgumentException("해당 위시리스트를 찾을 수 없습니다."));
         wishlistRepository.updateQuantity(wishlistId, quantity);
 
         Product product = productRepository.findById(wishlist.getProductId());
@@ -86,7 +87,8 @@ public class WishlistService {
 
     @Transactional
     public void deleteWishlist(Integer wishlistId) {
-        WishList wishlist = wishlistRepository.findById(wishlistId);
+        wishlistRepository.findById(wishlistId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 위시리스트를 찾을 수 없습니다."));
         wishlistRepository.deleteById(wishlistId);
     }
 }

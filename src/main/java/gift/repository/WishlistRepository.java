@@ -2,7 +2,6 @@ package gift.repository;
 
 import gift.entity.WishList;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -38,15 +37,16 @@ public class WishlistRepository {
                 wishlist.getQuantity());
     }
 
-    public WishList findById(Integer id) {
+    public Optional<WishList> findById(Integer id) {
         String sql = "SELECT * FROM wishlist WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, (rs, rn) ->
+        List<WishList> result = jdbcTemplate.query(sql, (rs, rn) ->
                 new WishList(
                         rs.getInt("id"),
                         rs.getInt("member_id"),
                         rs.getInt("product_id"),
                         rs.getInt("quantity")
                 ), id);
+        return result.isEmpty() ? Optional.empty() : Optional.of(result.getFirst());
     }
 
     public List<WishList> findByMemberId(Integer memberId) {
