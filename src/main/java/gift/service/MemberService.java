@@ -122,4 +122,10 @@ public class MemberService {
             .toList();
     }
 
+    public Member getMemberToEntity(String email) {
+        return memberRepository.findByEmail(email)
+            .orElseThrow(
+                () -> new MemberNotFoundException("Member(email: " + email + " ) not found"));
+    }
+
 }
