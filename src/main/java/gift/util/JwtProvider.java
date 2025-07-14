@@ -31,14 +31,12 @@ public class JwtProvider implements TokenProvider {
     }
 
     public Long getMemberId(String token) {
-        return Long.parseLong(
-            Jwts.parser()
+        return Jwts.parser()
                 .verifyWith(secretKey) // 검증
                 .build()
                 .parseSignedClaims(token)
                 .getPayload()
-                .get("memberId", String.class)
-        );
+                .get("memberId", Long.class);
     }
 
     public String getRole(String token) {

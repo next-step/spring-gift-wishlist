@@ -3,8 +3,6 @@ package gift.repository;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.jdbc.core.DataClassRowMapper;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
@@ -15,11 +13,9 @@ import gift.domain.Product;
 public class ProductRepository {
 
     private final JdbcClient jdbcClient;
-    private final RowMapper<Product> rowMapper;
 
     public ProductRepository(JdbcClient jdbcClient) {
         this.jdbcClient = jdbcClient;
-        this.rowMapper = new DataClassRowMapper<>(Product.class);
     }
 
     public List<Product> findAll() {
@@ -29,7 +25,7 @@ public class ProductRepository {
         """;
 
         return jdbcClient.sql(sql)
-            .query(rowMapper)
+            .query(Product.class)
             .list();
     }
 
@@ -42,7 +38,7 @@ public class ProductRepository {
 
         return jdbcClient.sql(sql)
             .param("id", id)
-            .query(rowMapper)
+            .query(Product.class)
             .optional();
     }
 

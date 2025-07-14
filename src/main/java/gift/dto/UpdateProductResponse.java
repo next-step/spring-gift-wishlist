@@ -2,7 +2,7 @@ package gift.dto;
 
 import gift.domain.Product;
 
-public record UpdateProductResponse(Long id, String name, Integer price, String imageUrl) {
+public record UpdateProductResponse(Long id, String name, Long price, String imageUrl) {
 
     public static UpdateProductResponse from(Product product) {
         return new UpdateProductResponse(

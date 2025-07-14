@@ -7,7 +7,7 @@ public class Member {
     private final String password;
     private final String role;
 
-    private Member(Long id, String email, String password, String role) {
+    public Member(Long id, String email, String password, String role) {
         this.id = id;
         this.email = email;
         this.password = password;

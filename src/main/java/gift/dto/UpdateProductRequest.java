@@ -15,7 +15,7 @@ public record UpdateProductRequest(
 
     @NotNull(message = "상품 가격이 입력되지 않았습니다.")
     @Min(value = 0, message = "상품 가격은 음수가 될 수 없습니다.")
-    Integer price,
+    Long price,
 
     @NotBlank(message = "상품 이미지가 입력되지 않았습니다.")
     String imageUrl

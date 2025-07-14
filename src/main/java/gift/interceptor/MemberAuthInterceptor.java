@@ -35,7 +35,7 @@ public class MemberAuthInterceptor implements HandlerInterceptor {
             throw new AuthorizationRequiredException("인증이 필요한 요청입니다.");
         }
 
-        String role = tokenProvider.getRole(token);
+        String role = tokenProvider.getRole(token.substring(7));
         if (!MEMBERS.contains(role)) {
             throw new AuthorizationRequiredException("인증이 필요한 요청입니다.");
         }
