@@ -27,6 +27,19 @@ public class WishListService {
 		return wishListRepository.save(wishList);
 	}
 
+	public void increaseAmount(Long userId, Long itemId) {
+		wishListRepository.increaseAmount(userId, itemId);
+	}
+
+	public void decreaseAmount(Long userId, Long itemId) {
+		WishList wishList = wishListRepository.findByUserIdAndItemId(userId, itemId)
+			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 위시상품입니다."));
+
+		if(wishList.getAmount() == 1) {
+			throw new IllegalArgumentException("최소 상품 수량은 1개입니다.");
+		}
+		wishListRepository.decreaseAmount(userId, itemId);
+	}
 
 	public List<WishList> getWishList(Long userId) {
 		return wishListRepository.findAll(userId);

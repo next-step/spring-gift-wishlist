@@ -35,4 +35,16 @@ public class WishListController {
 	public void deleteWishList(@RequestAttribute Long userId, @PathVariable Long itemId) {
 		wishListService.deleteWishList(userId, itemId);
 	}
+
+	@PatchMapping("/{itemId}/increase")
+	@Authenticated
+	public void increaseWishList(@RequestAttribute Long userId, @PathVariable Long itemId) {
+		wishListService.increaseAmount(userId, itemId);
+	}
+
+	@PatchMapping("/{itemId}/decrease")
+	@Authenticated
+	public void decreaseWishList(@RequestAttribute Long userId, @PathVariable Long itemId) {
+		wishListService.decreaseAmount(userId, itemId);
+	}
 }

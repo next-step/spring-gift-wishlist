@@ -2,7 +2,6 @@ package gift;
 
 import gift.product.dto.*;
 import gift.product.commons.utils.JwtUtil;
-import gift.product.entity.WishList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +13,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -110,6 +110,28 @@ public class E2ETest {
 
 		assertThat(createdWishListId).isEqualTo(2L);
 
+		// 위시리스트 수량 삭제 추가 테스트
+		assertThatThrownBy(() ->
+			restClient.patch()
+				.uri(("/wishlists/" + createdWishListId) +"/decrease")
+				.header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+				.retrieve()
+				.toBodilessEntity()
+		).isInstanceOf(HttpClientErrorException.BadRequest.class);
+
+		restClient.patch()
+				.uri(("/wishlists/" + createdWishListId) +"/increase")
+				.header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+				.retrieve()
+				.toBodilessEntity();
+		List myWishList = restClient.get()
+			.uri("/wishlists")
+			.header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+			.retrieve()
+			.body(List.class);
+		Map<String, Object> insertedItem = (Map<String, Object>) myWishList.get(1);
+		assertThat(insertedItem.get("amount")).isEqualTo(2);
+
 		// 위시리스트 삭제 후 목록조회
 		restClient.delete()
 			.uri("/wishlists/" + createdWishListId)
@@ -117,12 +139,12 @@ public class E2ETest {
 			.retrieve()
 			.toBodilessEntity();
 
-		List myWishList = restClient.get()
+		List afterDeleteWishList = restClient.get()
 			.uri("/wishlists")
 			.header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
 			.retrieve()
 			.body(List.class);
-		assertThat(myWishList.size()).isEqualTo(1);
+		assertThat(afterDeleteWishList.size()).isEqualTo(1);
 	}
 
 	@Test
