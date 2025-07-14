@@ -32,6 +32,7 @@ public class WishController {
     @PostMapping
     public ResponseEntity<ApiResponse<WishResponseDto>> addWish(@RequestBody WishRequestDto dto,
                                                                 @LoginMember Member member) {
+
         dto.setMemberId(member.getId());
         return ResponseEntity.ok(new ApiResponse<>(200,"추가에 성공했습니다", wishService.addWish(dto)));
     }
