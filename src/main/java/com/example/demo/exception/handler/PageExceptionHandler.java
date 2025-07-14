@@ -1,6 +1,6 @@
 package com.example.demo.exception.handler;
 
-import com.example.demo.controller.UserPageController;
+import com.example.demo.controller.user.UserPageController;
 import com.example.demo.exception.InvalidLoginException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -41,4 +41,5 @@ public class PageExceptionHandler {
     redirectAttributes.addFlashAttribute("loginError", ex.getMessage());
     return "redirect:/login-page";
   }
+
 }

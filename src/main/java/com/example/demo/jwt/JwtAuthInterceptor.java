@@ -1,9 +1,9 @@
 package com.example.demo.jwt;
 
-import com.example.demo.service.UserService;
+import com.example.demo.entity.User;
+import com.example.demo.service.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -21,19 +21,13 @@ public class JwtAuthInterceptor implements HandlerInterceptor {
 
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-    String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+    try {
+      User user = AuthUtil.extractUserFromRequest(request, jwtProvider, userService);
 
-    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-      response.setStatus(HttpStatus.UNAUTHORIZED.value());
-      return false;
-    }
-    try{
-      String token = authHeader.replace("Bearer ", "").trim();
-      String email = jwtProvider.getClaims(token).get("email", String.class);
-
-      request.setAttribute("userEmail", email);
+      request.setAttribute("loginUser", user);
+      request.setAttribute("userRole", user.getRole());
       return true;
-    } catch (Exception e){
+    } catch (Exception e) {
       response.setStatus(HttpStatus.UNAUTHORIZED.value());
       return false;
     }

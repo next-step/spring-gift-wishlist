@@ -3,11 +3,10 @@ package com.example.demo.user;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import com.example.demo.dto.UserDataInfo;
-import com.example.demo.dto.UserRequestDto;
+import com.example.demo.dto.user.UserDataInfo;
+import com.example.demo.dto.user.UserRequestDto;
 import com.example.demo.jwt.Jwt;
-import com.example.demo.security.PasswordHasher;
-import com.example.demo.service.UserService;
+import com.example.demo.service.user.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -43,6 +42,7 @@ class UserLoginTest {
                                               .toEntity(Jwt.class);
 
     String accessToken = loginResponse.getBody().getAccessToken();
+    System.out.println("AccessToken: " + accessToken);
 
     String meUrl = "http://localhost:" + port + "/users/me";
     ResponseEntity<UserDataInfo> meResponse = client.get()
@@ -50,11 +50,11 @@ class UserLoginTest {
                                                     .header("Authorization", "Bearer " + accessToken)
                                                     .retrieve()
                                                     .toEntity(UserDataInfo.class);
-
-    assertThat(meResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-    assertThat(meResponse.getBody().email()).isEqualTo("example@example.com");
+    assertAll(
+        () ->  assertThat(meResponse.getStatusCode()).isEqualTo(HttpStatus.OK),
+        () -> assertThat(meResponse.getBody().email()).isEqualTo("example@example.com")
+    );
   }
-
 
   @Test
   void 가입되지_않은_회원이_로그인하면_401이_반환된다() {

@@ -17,3 +17,11 @@ CREATE TABLE refresh_token(
     refresh_token TEXT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+CREATE TABLE wish(
+    user_id BIGINT,
+    product_id BIGINT,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, product_id)
+);
