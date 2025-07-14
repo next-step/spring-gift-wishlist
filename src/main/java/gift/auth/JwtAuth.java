@@ -1,6 +1,7 @@
 package gift.auth;
 
 import gift.entity.Member;
+import gift.exception.MemberExceptions;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,15 +45,14 @@ public class JwtAuth {
                     .getPayload();
             return true;
         } catch (ExpiredJwtException e) {
-            System.out.println("Expired JWT Token: " + e);
+            throw new MemberExceptions.InvalidTokenException("토큰이 만료되었습니다.");
         } catch (UnsupportedJwtException e) {
-            System.out.println("Unsupported JWT Token: " + e);
+            throw new MemberExceptions.InvalidTokenException("지원하지 않는 JWT 토큰입니다.");
         } catch (IllegalArgumentException e) {
-            System.out.println("JWT claims string is empty. " + e);
+            throw new MemberExceptions.InvalidTokenException("JWT 토큰이 잘못되었습니다.");
         } catch (Exception e) {
-            System.out.println("JWT Signature is invalid. " + e);
+            throw new MemberExceptions.InvalidTokenException("유효하지 않은 JWT 토큰입니다.");
         }
-        return false;
     }
 
     private SecretKey getSecretKeyFromJWTKey(String jwtKey) {

@@ -1,5 +1,6 @@
 package gift.controller;
 
+import gift.annotation.AuthenticatedUser;
 import gift.auth.JwtAuth;
 import gift.dto.MemberRequestDto;
 import gift.dto.MemberResponseDto;
@@ -76,15 +77,7 @@ public class MemberViewController {
     }
 
     @GetMapping("/wishlist")
-    public ResponseEntity<?> getWishlist(@RequestHeader("Authorization") String authHeader) {
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            throw new MemberExceptions.InvalidAuthorizationHeaderException();
-        }
-
-        String token = authHeader.substring(7);
-        if (!jwtAuth.validateToken(token)) {
-            throw new MemberExceptions.InvalidTokenException();
-        }
+    public ResponseEntity<?> getWishlist(@AuthenticatedUser String token) {
 
         List<String> wishlist = new ArrayList<>();
         return ResponseEntity.status(HttpStatus.OK).body(wishlist);

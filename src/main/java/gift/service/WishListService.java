@@ -4,6 +4,7 @@ import gift.auth.JwtAuth;
 import gift.dto.ProductResponseDto;
 import gift.dto.WishListProductRequestDto;
 import gift.entity.Product;
+import gift.repository.ProductRepositoryInterface;
 import gift.repository.WishListRepositoryInterface;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -16,10 +17,12 @@ import java.util.List;
 @Service
 public class WishListService implements WishListServiceInterface {
     private final WishListRepositoryInterface wishListRepository;
+    private final ProductRepositoryInterface productRepository;
     private final JwtAuth jwtAuth;
 
-    public WishListService(@Qualifier("WishListRepository") WishListRepositoryInterface wishListRepository, JwtAuth jwtAuth) {
+    public WishListService(@Qualifier("WishListRepository") WishListRepositoryInterface wishListRepository, @Qualifier("jdbcProductRepository") ProductRepositoryInterface productRepository,JwtAuth jwtAuth) {
         this.wishListRepository = wishListRepository;
+        this.productRepository = productRepository;
         this.jwtAuth = jwtAuth;
     }
 

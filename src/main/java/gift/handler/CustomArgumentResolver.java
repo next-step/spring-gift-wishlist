@@ -36,9 +36,7 @@ public class CustomArgumentResolver implements HandlerMethodArgumentResolver {
         }
 
         String token = authHeader.substring(7);
-        if (!jwtAuth.validateToken(token)) {
-            throw new MemberExceptions.InvalidTokenException();
-        }
+        jwtAuth.validateToken(token);
 
         return token;
     }
