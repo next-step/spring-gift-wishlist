@@ -4,4 +4,5 @@ INSERT INTO product (name, price, image_url) VALUES
  ('무지 키링', 8000, 'https://example.com/images/muzi_keyring.jpg'),
  ('콘 노트북 파우치', 18000, 'https://example.com/images/con_pouch.jpg'),
  ('네오 스티커팩', 5000, 'https://example.com/images/neo_stickers.jpg');
-
+INSERT INTO member (email,password,role) VALUES
+('email','1234','admin')
