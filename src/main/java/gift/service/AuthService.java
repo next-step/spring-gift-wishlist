@@ -5,7 +5,7 @@ import gift.dto.AuthResponse;
 
 public interface AuthService {
 
-    AuthResponse register(AuthRequest request);
+    void register(AuthRequest request);
 
     AuthResponse login(AuthRequest request);
 }

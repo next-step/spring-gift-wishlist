@@ -23,13 +23,13 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<CustomResponseBody<AuthResponse>> register(
+    public ResponseEntity<CustomResponseBody<Void>> register(
         @Valid @RequestBody AuthRequest request) {
-        AuthResponse response = authService.register(request);
+        authService.register(request);
 
         return ResponseEntity
             .status(CustomResponseCode.CREATED.getHttpStatus())
-            .body(CustomResponseBody.of(CustomResponseCode.CREATED, response));
+            .body(CustomResponseBody.of(CustomResponseCode.CREATED));
     }
 
     @PostMapping("/login")

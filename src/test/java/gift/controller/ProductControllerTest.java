@@ -3,6 +3,7 @@ package gift.controller;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import gift.auth.jwt.JwtUtil;
 import gift.common.code.CustomResponseCode;
 import gift.common.dto.CustomResponseBody;
 import gift.dto.ProductRequest;
@@ -11,6 +12,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -18,20 +20,30 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.web.client.RestClient;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class ProductControllerTest {
 
     @LocalServerPort
     private int port;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
     private RestClient client;
 
     @BeforeEach
     void setup() {
+        String token = jwtUtil.generateToken("test@domain.com", 1L);
         String url = "http://localhost:" + port + "/api/products";
-        client = RestClient.builder().baseUrl(url).build();
+
+        this.client = RestClient.builder()
+            .baseUrl(url)
+            .defaultHeader("Authorization", "Bearer " + token)
+            .build();
     }
 
     @Test
@@ -164,7 +176,7 @@ public class ProductControllerTest {
             .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {
             })
             .toEntity(String.class);
-        
+
         assertValidationError(response, "상품명은 필수입니다.");
     }
 

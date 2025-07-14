@@ -169,3 +169,62 @@
   }
 }
 ```
+
+# 위시 리스트 API 명세
+
+### 위시 리스트 생성
+
+`POST /api/wishes`
+
+**Request**
+
+```json
+{
+  "productId": 1,
+  "quantity": 1
+}
+```
+
+**Response**
+
+```json
+{
+  "status": 201,
+  "message": "생성 성공",
+  "data": {
+    "wishId": 1,
+    "productId": 1,
+    "quantity": 1,
+    "productName": "아이스 카페 아메리카노 T",
+    "price": 4500,
+    "imageUrl": "https://st.kakaocdn.net/product/gift/product/20231010111814_9a667f9eccc943648797925498bdd8a3.jpg"
+  }
+}
+```
+
+### 위시 리스트 조회
+
+`GET /api/wishes`
+
+**Response**
+
+```json
+{
+  "status": 200,
+  "message": "조회 성공",
+  "data": [
+    {
+      "wishId": 1,
+      "productId": 1,
+      "quantity": 1,
+      "productName": "아이스 카페 아메리카노 T",
+      "price": 4500,
+      "imageUrl": "https://st.kakaocdn.net/product/gift/product/20231010111814_9a667f9eccc943648797925498bdd8a3.jpg"
+    }
+  ]
+}
+```
+
+### 위시 리스트 삭제
+
+`DELETE /api/wishes/1`
