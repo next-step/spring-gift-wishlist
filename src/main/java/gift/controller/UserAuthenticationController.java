@@ -4,7 +4,7 @@ package gift.controller;
 import gift.dto.request.LoginRequestDto;
 import gift.dto.request.RegisterRequestDto;
 import gift.dto.response.TokenResponseDto;
-import gift.service.UserService;
+import gift.service.UserServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,18 +15,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/api/members")
-public class UserController {
+public class UserAuthenticationController {
 
-    private final UserService userService;
+    private final UserServiceImpl userServiceImpl;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public UserAuthenticationController(UserServiceImpl userServiceImpl) {
+        this.userServiceImpl = userServiceImpl;
     }
 
     @PostMapping("/register")
     public ResponseEntity<TokenResponseDto> createUser(
         @RequestBody @Valid RegisterRequestDto registerRequestDto) {
-        TokenResponseDto token = userService.registerAndReturnToken(registerRequestDto);
+        TokenResponseDto token = userServiceImpl.registerAndReturnToken(registerRequestDto);
         return new ResponseEntity<>(token, HttpStatus.CREATED);
     }
 
@@ -34,8 +34,7 @@ public class UserController {
     public ResponseEntity<TokenResponseDto> login(
         @RequestBody @Valid LoginRequestDto loginRequestDto
     ) {
-        TokenResponseDto token = userService.login(loginRequestDto);
+        TokenResponseDto token = userServiceImpl.login(loginRequestDto);
         return new ResponseEntity<>(token, HttpStatus.OK);
     }
-
 }

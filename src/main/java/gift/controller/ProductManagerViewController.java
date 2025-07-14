@@ -3,7 +3,7 @@ package gift.controller;
 import gift.dto.request.ProductRequestDto;
 import gift.dto.request.ProductUpdateRequestDto;
 import gift.entity.Product;
-import gift.service.ProductService;
+import gift.service.ProductServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping(value = "/managerHome")
 public class ProductManagerViewController {
 
-    private final ProductService productService;
+    private final ProductServiceImpl productServiceImpl;
 
-    public ProductManagerViewController(ProductService productService) {
-        this.productService = productService;
+    public ProductManagerViewController(ProductServiceImpl productServiceImpl) {
+        this.productServiceImpl = productServiceImpl;
     }
 
 
@@ -33,7 +33,7 @@ public class ProductManagerViewController {
 
     @GetMapping("/{productId}")
     public String getProductById(@PathVariable long productId, Model model) {
-        Product product = productService.getProduct(productId);
+        Product product = productServiceImpl.getProduct(productId);
         model.addAttribute("product", product);
         return "product"; // product.html로 이동
     }
@@ -42,7 +42,7 @@ public class ProductManagerViewController {
     @PostMapping()
     public String createProduct(
         @ModelAttribute @Valid ProductRequestDto productRequestDto) {
-        productService.createProduct(productRequestDto);
+        productServiceImpl.createProduct(productRequestDto);
         return "redirect:/managerHome";
     }
 
@@ -51,14 +51,14 @@ public class ProductManagerViewController {
     public String updateProduct(
         @PathVariable long productId,
         @ModelAttribute @Valid ProductUpdateRequestDto productUpdateRequestDto) {
-        productService.updateProduct(productId, productUpdateRequestDto);
+        productServiceImpl.updateProduct(productId, productUpdateRequestDto);
         return "redirect:/managerHome";
     }
 
 
     @PostMapping("/delete")
     public String deleteProduct(@RequestParam long productId) {
-        productService.deleteProduct(productId);
+        productServiceImpl.deleteProduct(productId);
         return "redirect:/managerHome";
     }
 }

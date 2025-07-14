@@ -11,7 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.controller.ProductManagerViewController;
 import gift.exception.KakaoApproveException;
-import gift.service.ProductService;
+import gift.service.ProductServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,14 +31,14 @@ public class ProductManagerViewControllerTest {
     private ObjectMapper objectMapper;
 
     @MockitoBean
-    private ProductService productService;
+    private ProductServiceImpl productServiceImpl;
 
     @Test
     @DisplayName("카카오 문구 상품명 비활성화")
     void 카카오_문구_상품명_비활성화() throws Exception {
 
         doThrow(new KakaoApproveException("카카오는 아직 등록할 수 없습니다."))
-            .when(productService).createProduct(any());
+            .when(productServiceImpl).createProduct(any());
 
         mockMvc.perform(post("/managerHome")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)

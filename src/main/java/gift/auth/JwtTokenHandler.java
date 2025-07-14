@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 public class JwtTokenHandler {
 
     private final String secretKey;
+    private static final String tokenType = "Bearer ";
 
     public JwtTokenHandler(@Value("${app.jwt.secret-key}") String secretKey) {
         this.secretKey = secretKey;

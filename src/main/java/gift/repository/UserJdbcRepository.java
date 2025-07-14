@@ -2,6 +2,7 @@ package gift.repository;
 
 
 import gift.entity.User;
+import gift.exception.UserNotFoundException;
 import java.util.Map;
 import java.util.Optional;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -52,5 +53,19 @@ public class UserJdbcRepository implements UserRepository {
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public Long findUserIdByEmail(String email) {
+        try {
+            return jdbcTemplate.queryForObject(
+                "select user_id from users where email = ?",
+                Long.class,
+                email
+            );
+        } catch (EmptyResultDataAccessException e) {
+            throw new UserNotFoundException("사용자를 찾을 수 없습니다");
+        }
+
     }
 }
