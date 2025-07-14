@@ -4,7 +4,10 @@ import gift.dto.MemberRequestDto;
 import gift.dto.ProductRequestDto;
 import gift.dto.ProductResponseDto;
 import gift.dto.TokenResponseDto;
+import gift.repository.MemberRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
@@ -22,6 +25,16 @@ public class MemberControllerTest {
     private int port;
 
     private RestClient client = RestClient.builder().build();
+
+    @Autowired
+    private MemberRepository memberRepository;
+
+
+    @BeforeEach
+    void setUp() {
+        memberRepository.deleteAllMembers();
+        memberRepository.saveMember("tjdrj530@naver.com","tjdrj530","USER");
+    }
 
 
     @Test
@@ -59,9 +72,6 @@ public class MemberControllerTest {
                 );
     }
 
-    @Sql(statements =
-            "insert into members (email, password, role) VALUES ('tjdrj530@naver.com', 'tjdrj530', 'USER')"
-    )
     @Test
     void 정상로그인시_200이_반환된다(){
         String url = "http://localhost:" + port + "/api/members/login";
@@ -78,9 +88,7 @@ public class MemberControllerTest {
         assert(response.getStatusCode() == HttpStatus.OK);
     }
 
-    @Sql(statements =
-            "insert into members (email, password, role) VALUES ('tjdrj530@naver.com', 'tjdrj530', 'USER')"
-    )
+
     @Test
     void 잘못된로그인시_400이_반환된다(){
         String url = "http://localhost:" + port + "/api/members/login";

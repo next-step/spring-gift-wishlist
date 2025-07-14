@@ -31,12 +31,6 @@ public class JwtUtil {
                 .getSubject();
     }
 
-    public String extractUsername(String token){
-        return jwtParser
-                .parseClaimsJws(token)
-                .getBody()
-                .get("name", String.class);
-    }
 
     public String generateToken(MemberRequestDto memberRequestDto) {
         long currentTimeMillis = System.currentTimeMillis();
@@ -52,10 +46,10 @@ public class JwtUtil {
     public Boolean validateToken(String token) {
         try {
             jwtParser.parseClaimsJws(token); // 서명 검증
+            return !isTokenExpired(token);
         } catch (JwtException e) {
             return false;
         }
-        return true;
     }
 
 
