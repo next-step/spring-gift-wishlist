@@ -74,4 +74,12 @@ public class MemberRepository {
                 memberRequestDto.getPassword()));
 
     }
+
+    public Optional<Member> findMemberById(Long memberId) {
+        String sql = "select * from member where id = ?";
+        return Optional.ofNullable(
+                jdbcTemplate.queryForObject(sql,memberRowMapper,memberId)
+        );
+    }
+
 }

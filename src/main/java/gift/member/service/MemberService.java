@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class MemberService {
 
-    private MemberRepository memberRepository;
-    private JwtProvider jwtProvider;
+    private final MemberRepository memberRepository;
+    private final JwtProvider jwtProvider;
 
     public MemberService(MemberRepository memberRepository,
                          JwtProvider jwtProvider) {
@@ -47,5 +47,9 @@ public class MemberService {
 
         return new MemberResponseDto(jwtProvider.generateToken(member));
 
+    }
+
+    public Member findMemberById(Long id){
+        return memberRepository.findMemberById(id).orElseThrow();
     }
 }

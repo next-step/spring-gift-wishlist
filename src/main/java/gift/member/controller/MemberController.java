@@ -16,7 +16,7 @@ import gift.exception.GlobalExceptionHandler.ApiResponse;
 @RequestMapping("/api/members")
 public class MemberController {
 
-    private MemberService memberService;
+    private final MemberService memberService;
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;

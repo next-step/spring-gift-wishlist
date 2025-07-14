@@ -20,18 +20,20 @@ public class Interceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String token = request.getHeader("Authorization");
-        System.out.println(token);
         if (token != null) {
             try {
-                jwtProvider.validateToken(token);
+                Long memberId = jwtProvider.validateToken(token);
+                request.setAttribute("memberId", memberId);
             } catch (Exception e) {
                 response.sendError(HttpServletResponse.SC_FORBIDDEN, "유효하지 않은 토큰입니다.");
+                return false;
             }
         } else {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authorization 헤더가 없습니다.");
+            return false;
         }
 
-        return HandlerInterceptor.super.preHandle(request, response, handler);
+        return true;
     }
 
     //controller 실행 직후 && view 처리 직전
