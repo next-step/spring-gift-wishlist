@@ -48,8 +48,8 @@ public class JdbcWishListRepository implements WishListRepository {
             throw new IllegalStateException("ID 생성에 실패했습니다.");
         }
 
-        return new WishList(key.longValue(), wishList.memberId(), wishList.productId(),
-                wishList.quantity());
+        wishList.assignId(key.longValue());
+        return wishList;
     }
 
     @Override

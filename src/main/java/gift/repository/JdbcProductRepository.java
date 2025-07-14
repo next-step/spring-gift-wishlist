@@ -49,7 +49,8 @@ public class JdbcProductRepository implements ProductRepository {
             throw new IllegalStateException("ID 생성에 실패했습니다.");
         }
         Long generatedId = key.longValue();
-        return new Product(generatedId, product.name(), product.price(), product.imageUrl());
+        product.assignId(generatedId);
+        return product;
     }
 
     @Override

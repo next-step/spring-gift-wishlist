@@ -58,10 +58,8 @@ public class WishListService {
     }
 
     private WishList updateExistingWishList(WishList existingWishList, int additionalQuantity) {
-        int updatedQuantity = existingWishList.quantity() + additionalQuantity;
-        WishList updated = WishList.withId(existingWishList.id(), existingWishList.memberId(),
-                existingWishList.productId(), updatedQuantity);
-        wishListRepository.update(updated.id(), updated);
-        return updated;
+        existingWishList.addQuantity(additionalQuantity);
+        wishListRepository.update(existingWishList.id(), existingWishList);
+        return existingWishList;
     }
 }

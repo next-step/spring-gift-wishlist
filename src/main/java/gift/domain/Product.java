@@ -1,11 +1,20 @@
 package gift.domain;
 
-public record Product(Long id, String name, Integer price, String imageUrl) {
+public class Product {
 
-    public Product {
+    private Long id;
+    private String name;
+    private Integer price;
+    private String imageUrl;
+
+    public Product(Long id, String name, Integer price, String imageUrl) {
         validateName(name);
         validateImageUrl(imageUrl);
         validatePrice(price);
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.imageUrl = imageUrl;
     }
 
     public static Product of(String name, Integer price, String imageUrl) {
@@ -17,15 +26,53 @@ public record Product(Long id, String name, Integer price, String imageUrl) {
         return new Product(id, name, price, imageUrl);
     }
 
-    public Product update(String name, Integer price, String imageUrl) {
+    public Long id() {
+        return id;
+    }
+
+    public String name() {
+        return name;
+    }
+
+    public Integer price() {
+        return price;
+    }
+
+    public String imageUrl() {
+        return imageUrl;
+    }
+
+    public void assignId(Long id) {
+        this.id = id;
+    }
+
+    public void changeName(String name) {
+        validateName(name);
+        this.name = name;
+    }
+
+    public void changePrice(Integer price) {
+        validatePrice(price);
+        this.price = price;
+    }
+
+    public void changeImageUrl(String imageUrl) {
+        validateImageUrl(imageUrl);
+        this.imageUrl = imageUrl;
+    }
+
+    public void update(String name, Integer price, String imageUrl) {
         requireAtLeastOneFieldChanged(name, price, imageUrl);
 
-        return new Product(
-                this.id,
-                isNotBlank(name) ? name : this.name,
-                isValidPrice(price) ? price : this.price,
-                isNotBlank(imageUrl) ? imageUrl : this.imageUrl
-        );
+        if (isNotBlank(name)) {
+            this.changeName(name);
+        }
+        if (isValidPrice(price)) {
+            this.changePrice(price);
+        }
+        if (isNotBlank(imageUrl)) {
+            this.changeImageUrl(imageUrl);
+        }
     }
 
     private static boolean isNotBlank(String value) {

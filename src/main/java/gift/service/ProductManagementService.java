@@ -54,15 +54,15 @@ public class ProductManagementService {
 
     @Transactional
     public void update(Long id, ProductRequest request) {
-        if (productRepository.findById(id).isEmpty()) {
-            throw new BusinessException(ErrorCode.PRODUCT_NOT_FOUND);
-        }
-        Product updatedProduct = Product.of(
+        Product existingProduct = productRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
+        
+        existingProduct.update(
                 request.name(),
                 request.validatedPrice(),
                 request.imageUrl()
         );
-        productRepository.update(id, updatedProduct);
+        productRepository.update(id, existingProduct);
     }
 
     @Transactional

@@ -51,7 +51,8 @@ public class JdbcMemberRepository implements MemberRepository {
         }
 
         Long generatedId = key.longValue();
-        return new Member(generatedId, member.email(), member.password());
+        member.assignId(generatedId);
+        return member;
     }
 
     @Override
