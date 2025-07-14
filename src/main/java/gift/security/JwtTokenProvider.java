@@ -27,18 +27,6 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parser()
-                    .verifyWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
-                    .build()
-                    .parseSignedClaims(token);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
     public String getEmailFromToken(String token) {
         try {
             Claims claims = Jwts.parser()
