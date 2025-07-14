@@ -85,9 +85,9 @@
   - [X] 연관관계: ManyToOne Member, ManyToOne Product
   - [X] DB 제약: 한 사용자가 같은 상품을 여러 번 등록하지 못하도록 (memberId + productId) 유니크 설정
 ## 3. 위시리스트 추가 (POST /wishlist)
-  - [ ] 로그인된 사용자의 memberId와 요청받은 productId, quantity로 Wish 생성
-  - [ ] 이미 등록된 상품일 경우 → 수량만 증가시키거나 예외 처리
-  - [ ] 성공 시 201 Created 또는 200 OK 응답
+  - [x] 로그인된 사용자의 memberId와 요청받은 productId, quantity로 Wish 생성
+  - [x] 이미 등록된 상품일 경우 → 수량만 증가시키거나 예외 처리
+  - [x] 성공 시 201 Created 또는 200 OK 응답
 ## 4. 위시리스트 조회 (GET /wishlist)
   - [ ] 로그인된 사용자의 위시리스트 전체 조회 (인증된 사용자만 접근 가능)
   - [ ] Wish 엔티티를 Product 정보와 함께 조인하여 응답 (해당 사용자의 Wish 리스트 조회)
