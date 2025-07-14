@@ -18,24 +18,20 @@ public class JwtUtil {
         this.secretKey = Keys.hmacShaKeyFor(secretKeyString.getBytes());
     }
 
-    public String generateToken(String email) {
+    public String generateToken(String email, Long userId) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + EXPIRATION_TIME);
 
         return Jwts.builder()
             .subject(email)
+            .claim("userId", userId)
             .issuedAt(now)
             .expiration(expiryDate)
             .signWith(secretKey)
             .compact();
     }
 
-    public String extractEmail(String token) {
-        Claims claims = getClaims(token);
-        return claims.getSubject();
-    }
-
-    private Claims getClaims(String token) {
+    public Claims getClaims(String token) {
         return Jwts.parser()
             .verifyWith(secretKey)
             .build()
