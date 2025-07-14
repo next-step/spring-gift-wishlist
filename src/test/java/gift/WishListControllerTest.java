@@ -17,7 +17,7 @@ import org.springframework.web.client.RestClient;
 
 import java.util.List;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
 @ContextConfiguration(classes = Application.class)
@@ -29,6 +29,7 @@ public class WishListControllerTest {
 
     private RestClient client = RestClient.builder().build();
 
+    // abcd@pusan.ac.kr 계정 토큰
     private String testJWTToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhYmNkQHB1c2FuLmFjLmtyIiwiZW1haWwiOiJhYmNkQHB1c2FuLmFjLmtyIn0.WGDriDkB5paOlUxALdjM4cZqo8ZE2YZ0yN8nwu5VjRk";
 
     @Test
@@ -47,6 +48,8 @@ public class WishListControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(products).isNotNull();
         assertThat(products).isInstanceOf(List.class);
+
+        assertThat(products).hasSize(1);
 
         assertThat(products.get(0).getId()).isEqualTo(1);
         assertThat(products.get(0).getName()).isEqualTo("초코송이");
