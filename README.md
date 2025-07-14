@@ -97,9 +97,8 @@
   - [x] 요청된 수량으로 Wish.quantity 필드 업데이트
   - [x] 수정된 Wish 목록 반환
 ## 6. 위시리스트 삭제 (DELETE /wishlist/{id})
-  - [ ] 해당 ID의 Wish가 현재 로그인한 사용자 것인지 검증
-  - [ ] Wish 삭제 후 성공 응답 (204 No Content)
-  - [ ] 삭제된 Wish 목록 반환
+  - [x] 해당 ID의 Wish가 현재 로그인한 사용자 것인지 검증
+  - [x] Wish 삭제 후 성공 응답 (204 No Content)
 ## 7. 예외 처리
   - [ ] 인증되지 않은 사용자 → 401 Unauthorized 
   - [ ] 다른 사용자의 Wish 접근 시 → 403 Forbidden 

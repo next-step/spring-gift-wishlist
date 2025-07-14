@@ -48,4 +48,11 @@ public class WishController {
         return ResponseEntity.ok(response);
     }
 
+    // 위시리스트 삭제
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteWish(@LoginMember Member member, @PathVariable Long id) {
+        wishService.deleteWish(member, id);
+        return ResponseEntity.noContent().build();
+    }
+
 } 
