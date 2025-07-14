@@ -9,7 +9,7 @@ public class Member {
     public Member() {}
 
     // 정적 팩토리 메서드
-    public static Member createMember(String email, String password) {
+    public static Member of(String email, String password) {
         return new Member(null, email, password);
     }
 

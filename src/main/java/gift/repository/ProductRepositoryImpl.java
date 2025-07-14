@@ -16,6 +16,12 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
+    private static final RowMapper<Product> PRODUCT_ROW_MAPPER = (rs, rowNum) -> new Product(
+            rs.getLong("id"),
+            rs.getString("name"),
+            rs.getString("imageUrl")
+    );
+
     public ProductRepositoryImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -71,10 +77,4 @@ public class ProductRepositoryImpl implements ProductRepository {
 
         jdbcTemplate.update(sql, id);
     }
-
-    private static final RowMapper<Product> PRODUCT_ROW_MAPPER = (rs, rowNum) -> new Product(
-            rs.getLong("id"),
-            rs.getString("name"),
-            rs.getString("imageUrl")
-    );
 }

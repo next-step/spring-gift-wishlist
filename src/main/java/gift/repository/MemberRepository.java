@@ -16,6 +16,11 @@ public class MemberRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
+    private static final RowMapper<Member> MEMBER_ROW_MAPPER = (rs, rowNum) -> Member.of(
+            rs.getString("email"),
+            rs.getString("password")
+    );
+
     public MemberRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -37,7 +42,7 @@ public class MemberRepository {
         Number key = keyHolder.getKey();
 
         if (key != null) {
-            return member.withId(key.longValue(), member.getEmail(), member.getPassword());
+            return Member.withId(key.longValue(), member.getEmail(), member.getPassword());
         }
 
         return member;
@@ -50,9 +55,4 @@ public class MemberRepository {
                 .stream()
                 .findFirst();
     }
-
-    private static final RowMapper<Member> MEMBER_ROW_MAPPER = (rs, rowNum) -> Member.createMember(
-            rs.getString("email"),
-            rs.getString("password")
-    );
 }
