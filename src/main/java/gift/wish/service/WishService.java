@@ -15,18 +15,15 @@ public class WishService {
         this.wishRepository = wishRepository;
     }
 
-    //위시리스트 조회
     public List<WishResponseDto> getWishlist(WishRequestDto dto) {
         return wishRepository.getWishList(dto).stream()
                 .map(WishResponseDto::fromEntity).toList();
     }
 
-    //위시리스트 추가
     public WishResponseDto addWish(WishRequestDto dto) {
         return wishRepository.addWish(dto);
     }
 
-    //위시리스트 삭제
     public void deleteWish(WishRequestDto dto) {
         wishRepository.deleteWish(dto);
     }

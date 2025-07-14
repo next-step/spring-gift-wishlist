@@ -19,19 +19,16 @@ public class WishController {
         this.wishService = wishService;
     }
 
-    //위시리스트 조회
     @GetMapping
     public ResponseEntity<ApiResponse<List<WishResponseDto>>> getWishlist(@RequestBody WishRequestDto dto) {
         return ResponseEntity.ok(new ApiResponse<>(200,"조회에 성공했습니다", wishService.getWishlist(dto)));
     }
 
-    //위시리스트 추가
     @PostMapping
     public ResponseEntity<ApiResponse<WishResponseDto>> addWish(@RequestBody WishRequestDto dto) {
         return ResponseEntity.ok(new ApiResponse<>(200,"추가에 성공했습니다", wishService.addWish(dto)));
     }
 
-    //위시리스트 삭제
     @DeleteMapping
     public ResponseEntity<ApiResponse<Void>> deleteWish(@RequestBody WishRequestDto dto) {
         wishService.deleteWish(dto);

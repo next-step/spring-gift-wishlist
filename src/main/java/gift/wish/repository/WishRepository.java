@@ -34,13 +34,11 @@ public class WishRepository {
         return wish;
     };
 
-    //위시리스트 조회
     public List<Wish> getWishList(WishRequestDto dto) {
         String sql = "select * from wish where member_id=?";
         return jdbcTemplate.query(sql, wishRowMapper, dto.getMemberId());
     }
 
-    //위시리스트 추가
     public WishResponseDto addWish(WishRequestDto dto) {
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -69,7 +67,6 @@ public class WishRepository {
         return null;
     }
 
-    //위시리스트 삭제
     public void deleteWish(WishRequestDto dto) {
         String sql = "delete from wish where member_id=? and product_id=?";
 
