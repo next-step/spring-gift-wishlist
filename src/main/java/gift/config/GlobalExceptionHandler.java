@@ -16,6 +16,37 @@ public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ErrorResponseDto> handleBusinessException(BusinessException e) {
+        switch (e.getLogLevel()) {
+            case 1 -> {
+                log.trace(e.getLogMessage());
+            }
+            case 2 -> {
+                log.info(e.getLogMessage());
+            }
+            case 3 -> {
+                log.warn(e.getLogMessage());
+            }
+            case 4 -> {
+                log.error(e.getLogMessage());
+            }
+            case 5 -> {
+                log.error("", e);
+            }
+        }
+        HttpStatus status = e.getHttpStatus();
+        ErrorResponseDto response = ErrorResponseDto.from(e);
+        return ResponseEntity.status(status).body(response);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponseDto> handleUnexpectedException(Exception e) {
+        log.error("", e);
+        ErrorResponseDto response = new ErrorResponseDto("Sorry, internal server error.", 500);
+        return ResponseEntity.internalServerError().body(response);
+    }
+
     @ExceptionHandler(AuthorityException.class)
     public ResponseEntity<ErrorResponseDto> handleAuthorityException(AuthorityException e) {
         log.warn("AuthorityException: {}", e.getMessage());

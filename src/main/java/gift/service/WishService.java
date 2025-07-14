@@ -2,12 +2,14 @@ package gift.service;
 
 import gift.common.dto.request.AddWishRequestDto;
 import gift.common.dto.response.WishResponseDto;
-import gift.common.exception.AuthorityException;
-import gift.common.exception.CreationFailException;
-import gift.common.exception.EntityNotFoundException;
+import gift.common.exception.BusinessException;
+import gift.common.exception.code.DatabaseErrorCode;
+import gift.common.exception.code.ResourceErrorCode;
+import gift.common.exception.code.SecurityErrorCode;
 import gift.domain.member.Member;
 import gift.domain.wish.Wish;
 import gift.repository.WishRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -42,9 +44,17 @@ public class WishService {
 
     public void delete(Member member, Long wishId) {
         Wish wish = wishRepository.findById(wishId)
-                .orElseThrow(() -> new EntityNotFoundException("Wish does not exist: id = " + wishId));
+                .orElseThrow(() -> BusinessException.of(
+                        ResourceErrorCode.WISH_NOT_FOUND,
+                        "Wish does not exist: id = " + wishId,
+                        HttpStatus.NOT_FOUND
+                ));
         if (!wish.getMemberId().equals(member.getId())) {
-            throw new AuthorityException("You don`t have permission to wish:" + wishId);
+            throw BusinessException.of(
+                    SecurityErrorCode.AUTH_FORBIDDEN,
+                    "해당 상품에 접근할 권한이 없습니다.",
+                    HttpStatus.FORBIDDEN
+            );
         }
         wishRepository.delete(wishId);
     }
@@ -52,12 +62,19 @@ public class WishService {
     private Wish create(Long memberId, Long productId, Integer quantity) {
         Wish instance = Wish.of(null, memberId, productId, quantity);
         return wishRepository.save(instance)
-                .orElseThrow(() -> new CreationFailException("Fail to create Wish: DB failure"));
+                .orElseThrow(() -> BusinessException.internal(
+                        DatabaseErrorCode.WISH_CREATION_FAIL,
+                        String.format("Fail to create Wish(member=%d, product=%d, quantity=%d)", memberId, productId, quantity)
+                ));
     }
 
     private Wish increaseQuantity(Wish wish, Integer addQuantity) {
         wish.addQuantity(addQuantity);
         return wishRepository.update(wish.getId(), wish)
-                .orElseThrow(() -> new EntityNotFoundException("Wish does not exist: id = " + wish.getId()));
+                .orElseThrow(() -> BusinessException.of(
+                        ResourceErrorCode.WISH_NOT_FOUND,
+                        "Wish does not exist: id = " + wish.getId(),
+                        HttpStatus.NOT_FOUND)
+                );
     }
 }

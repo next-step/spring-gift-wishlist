@@ -3,11 +3,13 @@ package gift.service;
 import gift.common.dto.request.ProductRequestDto;
 import gift.common.dto.response.MessageResponseDto;
 import gift.common.dto.response.ProductResponseDto;
-import gift.common.exception.CreationFailException;
-import gift.common.exception.EntityNotFoundException;
+import gift.common.exception.BusinessException;
+import gift.common.exception.code.BusinessErrorCode;
+import gift.common.exception.code.ResourceErrorCode;
 import gift.domain.product.Product;
 import gift.domain.product.ProductQueryOption;
 import gift.repository.ProductRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -27,19 +29,23 @@ public class ProductService {
         if (instance.involveKakao()) {
             instance.waitApproval();
             Product created = productRepository.save(instance)
-                    .orElseThrow(() -> new CreationFailException("Fail to create Product"));
+                    .orElseThrow(() -> createProductFail(body.name()));
             return new MessageResponseDto<>(false, "카카오 관련 상품 승인 대기중", 202, ProductResponseDto.from(created));
         }
         instance.onBoard();
         Product created = productRepository.save(instance)
-                .orElseThrow(() -> new CreationFailException("Fail to create Product"));
+                .orElseThrow(() -> createProductFail(body.name()));
         return new MessageResponseDto<>(true, "상품 생성 완료", 201, ProductResponseDto.from(created));
     }
 
     public ProductResponseDto get(Long id, ProductQueryOption option) {
         Product result = find(id);
         if (!result.isShowable(option)) {
-            throw new EntityNotFoundException("Product cannot show: " + id);
+            throw BusinessException.of(
+                    BusinessErrorCode.PRODUCT_NOT_SELLING,
+                    "판매하지 않는 상품에 접근하셨습니다.",
+                    HttpStatus.BAD_REQUEST
+            );
         }
         return ProductResponseDto.from(result);
     }
@@ -72,6 +78,18 @@ public class ProductService {
 
     private Product find(Long id) {
         return productRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Product id {" + id + "} not found"));
+                .orElseThrow(() -> new BusinessException.Builder(ResourceErrorCode.PRODUCT_NOT_FOUND, "Product id: " + id)
+                        .clientMessage("존재하지 않는 상품에 접근")
+                        .httpStatus(HttpStatus.NOT_FOUND)
+                        .logLevel(2)
+                        .build()
+                );
+    }
+
+    private BusinessException createProductFail(String name) {
+        return BusinessException.internal(
+                ResourceErrorCode.PRODUCT_NOT_FOUND,
+                String.format("Fail to create Product(%s)", name)
+        );
     }
 }
