@@ -16,6 +16,11 @@ public class MemberRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
+    private static final RowMapper<Member> MEMBER_ROW_MAPPER = (rs, rowNum) -> Member.of(
+            rs.getString("email"),
+            rs.getString("password")
+    );
+
     public MemberRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -50,9 +55,4 @@ public class MemberRepository {
                 .stream()
                 .findFirst();
     }
-
-    private static final RowMapper<Member> MEMBER_ROW_MAPPER = (rs, rowNum) -> Member.of(
-            rs.getString("email"),
-            rs.getString("password")
-    );
 }
