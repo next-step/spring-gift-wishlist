@@ -16,6 +16,8 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
     private final UserService userService;
     private final JwtProvider jwtProvider;
 
+    private final String HEADER_PREFIX = "Bearer ";
+
     public LoginUserArgumentResolver(UserService userService, JwtProvider jwtProvider) {
         this.userService = userService;
         this.jwtProvider = jwtProvider;
@@ -29,10 +31,10 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         String authHeader = webRequest.getHeader("Authorization");
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (authHeader == null || !authHeader.startsWith(HEADER_PREFIX)) {
             throw new NoAuthorizationHeaderException("Invalid or missing Authorization header");
         }
-        String token = authHeader.substring("Bearer ".length());
+        String token = authHeader.substring(HEADER_PREFIX.length());
 
         String email = jwtProvider.getEmail(token);
 
