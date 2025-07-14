@@ -3,6 +3,7 @@ package gift.repository;
 import gift.entity.Product;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -81,5 +82,18 @@ public class JdbcProductRepository implements ProductRepository {
         String sql = "DELETE FROM products WHERE id = ?";
         int affectedRows = jdbcTemplate.update(sql, id);
         return affectedRows > NO_ROWS_AFFECTED;
+    }
+
+    @Override
+    public List<Product> findAllByIdIn(List<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        String inClause = String.join(",", Collections.nCopies(ids.size(), "?"));
+        String sql =
+                "SELECT id, name, price, image_url FROM products WHERE id IN (" + inClause + ")";
+
+        return jdbcTemplate.query(sql, productRowMapper, ids.toArray());
     }
 }

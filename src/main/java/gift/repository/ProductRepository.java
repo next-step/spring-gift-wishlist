@@ -15,4 +15,6 @@ public interface ProductRepository {
     Product update(Long id, String name, int price, String imageUrl);
 
     boolean delete(Long id);
+
+    List<Product> findAllByIdIn(List<Long> ids);
 }

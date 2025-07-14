@@ -28,7 +28,7 @@ public class MemberService {
 
     public TokenResponse register(MemberRequest request) {
         String encodedPassword = passwordEncoder.encode(request.password());
-        Member member = new Member(request.email(), encodedPassword);
+        Member member = Member.from(request.email(), encodedPassword);
         Member savedMember = memberRepository.save(member);
 
         String token = jwtTokenProvider.createToken(savedMember.getId().toString());
@@ -68,9 +68,9 @@ public class MemberService {
                 .ifPresent(member -> {
                     throw new EmailAlreadyExistsException("이미 사용 중인 이메일입니다.");
                 });
-        
+
         String encodedPassword = passwordEncoder.encode(request.password());
-        Member member = new Member(request.email(), encodedPassword);
+        Member member = Member.from(request.email(), encodedPassword);
         memberRepository.save(member);
     }
 }
