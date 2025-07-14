@@ -7,7 +7,6 @@ import gift.dto.AuthRequest;
 import gift.dto.AuthResponse;
 import gift.entity.User;
 import gift.repository.UserRepository;
-import io.jsonwebtoken.JwtException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -45,21 +44,8 @@ public class AuthServiceImpl implements AuthService {
             throw new CustomException(CustomResponseCode.LOGIN_FAILED);
         }
 
-        String token = jwtUtil.generateToken(user.getEmail());
+        String token = jwtUtil.generateToken(user.getEmail(), user.getId());
 
         return AuthResponse.from(token);
-    }
-
-    @Override
-    public User findByToken(String token) {
-        String email;
-        try {
-            email = jwtUtil.extractEmail(token);
-        } catch (JwtException e) {
-            throw new CustomException(CustomResponseCode.INVALID_TOKEN);
-        }
-
-        return userRepository.findByEmail(email)
-            .orElseThrow(() -> new CustomException(CustomResponseCode.UNAUTHORIZED));
     }
 }
