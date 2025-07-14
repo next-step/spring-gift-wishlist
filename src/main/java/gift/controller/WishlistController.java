@@ -2,6 +2,7 @@ package gift.controller;
 
 import gift.domain.Member;
 import gift.domain.Wish;
+import gift.resolver.LoginMember;
 import gift.service.WishService;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,12 +24,12 @@ public class WishlistController {
     }
 
     @GetMapping
-    public List<Wish> list(Member member) {
+    public List<Wish> list(@LoginMember Member member) {
         return wishService.getWishes(member);
     }
 
     @DeleteMapping
-    public void delete(@RequestBody Wish request, Member member) {
+    public void delete(@RequestBody Wish request, @LoginMember Member member) {
         wishService.deleteWish(member, request.getProductId());
     }
 }
