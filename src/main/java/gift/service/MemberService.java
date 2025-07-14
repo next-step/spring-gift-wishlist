@@ -9,13 +9,14 @@ import gift.exception.BusinessException;
 import gift.exception.ErrorCode;
 import gift.repository.MemberRepository;
 import gift.util.PasswordEncoder;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
+
     private final MemberRepository memberRepository;
     private final JwtProvider jwtProvider;
+
     public MemberService(MemberRepository memberRepository, JwtProvider jwtProvider) {
         this.memberRepository = memberRepository;
         this.jwtProvider = jwtProvider;
@@ -27,20 +28,16 @@ public class MemberService {
                 request.email(),
                 hashedPassword
         );
-        try {
-            Member savedMember = memberRepository.save(member);
-            String token = jwtProvider.generateToken(savedMember.email());
-            return MemberRegisterResponse.of(token, savedMember);
-        }catch (DuplicateKeyException ex){
-            throw new BusinessException(ErrorCode.USER_EMAIL_ALREADY_EXIST);
-        }
+        Member savedMember = memberRepository.save(member);
+        String token = jwtProvider.generateToken(savedMember.email());
+        return MemberRegisterResponse.of(token, savedMember);
     }
 
     public AuthorizationResponse login(AuthorizationRequest request) {
         String email = request.email();
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(()-> new BusinessException(ErrorCode.USER_EMAIL_NOT_FOUND));
-        if(!PasswordEncoder.checkPassword(request.password(), member.password())){
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_EMAIL_NOT_FOUND));
+        if (!PasswordEncoder.checkPassword(request.password(), member.password())) {
             throw new BusinessException(ErrorCode.USER_PASSWORD_MISMATCH);
         }
 
@@ -48,9 +45,15 @@ public class MemberService {
         return AuthorizationResponse.of(token);
     }
 
+    public MemberResponse getByEmail(String email) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_EMAIL_NOT_FOUND));
+        return MemberResponse.from(member);
+    }
+
     public MemberResponse getById(Long id) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(()-> new BusinessException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
         return MemberResponse.from(member);
     }
 }

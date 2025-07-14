@@ -1,12 +1,15 @@
 package gift.repository;
 
 import gift.domain.Member;
+import gift.exception.BusinessException;
+import gift.exception.ErrorCode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -28,15 +31,19 @@ public class JdbcMemberRepository implements MemberRepository {
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(
-                    "INSERT INTO member (email, password) VALUES (?, ?)",
-                    Statement.RETURN_GENERATED_KEYS
-            );
-            ps.setString(1, member.email());
-            ps.setString(2, member.password());
-            return ps;
-        }, keyHolder);
+        try {
+            jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(
+                        "INSERT INTO member (email, password) VALUES (?, ?)",
+                        Statement.RETURN_GENERATED_KEYS
+                );
+                ps.setString(1, member.email());
+                ps.setString(2, member.password());
+                return ps;
+            }, keyHolder);
+        } catch (DuplicateKeyException ex) {
+            throw new BusinessException(ErrorCode.USER_EMAIL_ALREADY_EXIST);
+        }
 
         Number key = keyHolder.getKey();
         if (key == null) {
@@ -44,7 +51,8 @@ public class JdbcMemberRepository implements MemberRepository {
         }
 
         Long generatedId = key.longValue();
-        return new Member(generatedId, member.email(), member.password());
+        member.assignId(generatedId);
+        return member;
     }
 
     @Override

@@ -8,7 +8,20 @@ CREATE TABLE product
 
 CREATE TABLE member
 (
-    id        BIGINT AUTO_INCREMENT PRIMARY KEY,
-    email     VARCHAR(255) NOT NULL unique ,
-    password  VARCHAR(255) NOT NULL
+    id       BIGINT AUTO_INCREMENT PRIMARY KEY,
+    email    VARCHAR(255) NOT NULL unique,
+    password VARCHAR(255) NOT NULL
 );
+create table wishlist
+(
+    id         bigint auto_increment primary key,
+    member_id  bigint,
+    product_id bigint,
+    quantity   int,
+    foreign key (member_id) references member (id)
+        on delete cascade
+        on update cascade,
+    foreign key (product_id) references product (id)
+        on delete cascade
+        on update cascade
+)
