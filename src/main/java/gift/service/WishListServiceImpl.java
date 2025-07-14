@@ -2,8 +2,10 @@ package gift.service;
 
 import gift.dto.WishListRequestDto;
 import gift.dto.WishListResponseDto;
+import gift.entity.Product;
 import gift.entity.WishList;
 import gift.exception.WishListAccessDeniedException;
+import gift.repository.ProductRepository;
 import gift.repository.WishListRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,16 +18,31 @@ import java.util.stream.Collectors;
 public class WishListServiceImpl implements WishListService {
 
     private final WishListRepository wishListRepository;
+    private final ProductRepository productRepository;
 
-    public WishListServiceImpl(WishListRepository wishListRepository) {
+    public WishListServiceImpl(WishListRepository wishListRepository, ProductRepository productRepository) {
         this.wishListRepository = wishListRepository;
+        this.productRepository = productRepository;
     }
 
     @Override
     public List<WishListResponseDto> getWishListByMemberId(Long memberId) {
         List<WishList> wishLists = wishListRepository.getWishListByMemberId(memberId);
+
         List<WishListResponseDto> wishListResponseDtoList = wishLists.stream()
-                .map(wishList -> new WishListResponseDto(wishList.getId(),wishList.getProductId(),wishList.getQuantity()))
+                .map(wishList -> {
+                    // productId로 product 조회
+                    Product product = productRepository.findProduct(wishList.getProductId());
+
+                    return new WishListResponseDto(
+                            wishList.getId(),
+                            wishList.getProductId(),
+                            wishList.getQuantity(),
+                            product.getName(),
+                            product.getPrice(),
+                            product.getImageUrl()
+                    );
+                })
                 .toList();
         return wishListResponseDtoList;
     }
