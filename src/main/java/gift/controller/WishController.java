@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/wishlist")
 public class WishController {
@@ -23,9 +25,17 @@ public class WishController {
     // 위시리스트 추가
     @PostMapping
     public ResponseEntity<WishResponseDto> addWish(
-            @LoginMember Member member,
+            @LoginMember Member member, // JWT 토큰으로 인증된 사용자 정보 주입
             @Valid @RequestBody WishRequestDto requestDto) {
         WishResponseDto response = wishService.addWish(member, requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    // 위시리스트 조회
+    @GetMapping
+    public ResponseEntity<List<WishResponseDto>> getWishes(@LoginMember Member member) {
+        List<WishResponseDto> wishes = wishService.getWishesByMember(member);
+        return ResponseEntity.ok(wishes);
+    }
+
 } 

@@ -10,6 +10,9 @@ import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class WishService {
 
@@ -32,10 +35,23 @@ public class WishService {
             throw new IllegalArgumentException("이미 위시리스트에 추가된 상품입니다.");
         }
 
-        // 위시리스트 추가
+        // 위시리스트에 상품 추가
         Wish wish = new Wish(member.getId(), requestDto.getProductId(), requestDto.getQuantity());
         Wish savedWish = wishRepository.save(wish);
 
         return new WishResponseDto(savedWish, new ProductResponseDto(product));
+    }
+
+    // 위시리스트 조회
+    public List<WishResponseDto> getWishesByMember(Member member) {
+        List<Wish> wishes = wishRepository.findByMemberId(member.getId());
+        
+        return wishes.stream()
+                .map(wish -> {
+                    Product product = productRepository.findById(wish.getProductId())
+                            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
+                    return new WishResponseDto(wish, new ProductResponseDto(product));
+                })
+                .collect(Collectors.toList());
     }
 } 
