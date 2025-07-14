@@ -4,6 +4,9 @@ import gift.auth.JwtAuth;
 import gift.dto.ProductResponseDto;
 import gift.dto.WishListProductRequestDto;
 import gift.entity.Product;
+import gift.exception.MemberExceptions;
+import gift.exception.ProductExceptions;
+import gift.repository.MemberRepositoryInterface;
 import gift.repository.ProductRepositoryInterface;
 import gift.repository.WishListRepositoryInterface;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,13 +20,15 @@ import java.util.List;
 @Service
 public class WishListService implements WishListServiceInterface {
     private final WishListRepositoryInterface wishListRepository;
+    private final MemberRepositoryInterface memberRepository;
     private final ProductRepositoryInterface productRepository;
-    private final JwtAuth jwtAuth;
 
-    public WishListService(@Qualifier("WishListRepository") WishListRepositoryInterface wishListRepository, @Qualifier("jdbcProductRepository") ProductRepositoryInterface productRepository,JwtAuth jwtAuth) {
+    public WishListService(@Qualifier("WishListRepository") WishListRepositoryInterface wishListRepository,
+                           @Qualifier("MemberRepository") MemberRepositoryInterface memberRepository,
+                           @Qualifier("jdbcProductRepository") ProductRepositoryInterface productRepository) {
         this.wishListRepository = wishListRepository;
+        this.memberRepository = memberRepository;
         this.productRepository = productRepository;
-        this.jwtAuth = jwtAuth;
     }
 
     @Override
@@ -41,7 +46,14 @@ public class WishListService implements WishListServiceInterface {
 
     @Override
     public List<ProductResponseDto> addProductToWishListByEmail(String email, WishListProductRequestDto requestDto) {
+
+        if (memberRepository.findByEmail(email).isEmpty()) {
+            throw new MemberExceptions.MemberNotFoundException(email);
+        }
         Long productId = requestDto.getproductId();
+        Product product = productRepository.findProductById(productId)
+                .orElseThrow(() -> new ProductExceptions.ProductNotFoundException(productId));
+
         wishListRepository.addProductToWishListByEmail(email, productId);
 
         return findAllProductsFromWishList(email);
