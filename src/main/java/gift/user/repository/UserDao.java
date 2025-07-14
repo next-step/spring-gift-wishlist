@@ -1,11 +1,8 @@
 package gift.user.repository;
 
 import gift.user.domain.User;
-import gift.user.dto.UserPatchRequestDto;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -42,7 +39,7 @@ public class UserDao {
                 .query(User.class)
                 .optional();
     }
-    public Optional<User> findByEmail(String email) throws EmptyResultDataAccessException {
+    public Optional<User> findByEmail(String email) {
         return jdbcClient.sql("SELECT * FROM USERS WHERE email = :email")
                 .param("email", email)
                 .query(User.class)

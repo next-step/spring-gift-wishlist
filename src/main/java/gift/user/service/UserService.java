@@ -1,11 +1,11 @@
 package gift.user.service;
 
 import gift.auth.PasswordUtil;
+import gift.common.exception.NoSuchIdException;
 import gift.user.domain.User;
 import gift.user.dto.UserPatchRequestDto;
 import gift.user.dto.UserSaveRequestDto;
 import gift.user.repository.UserDao;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,7 +50,7 @@ public class UserService {
     public User updateUser(UUID id, UserPatchRequestDto userPatchRequestDto) {
 
         if (userDao.findById(id).isEmpty()) {
-            throw new EmptyResultDataAccessException(1);
+            throw new NoSuchIdException("존재하지 않는 ID 입니다.");
         }
         if (userPatchRequestDto.getEmail() != null) {
             userDao.updateEmail(id, userPatchRequestDto.getEmail());
@@ -66,7 +66,7 @@ public class UserService {
     @Transactional
     public void deleteUser(UUID id) {
         if(userDao.findById(id).isEmpty()) {
-            throw new EmptyResultDataAccessException(1);
+            throw new NoSuchIdException("존재하지 않는 ID입니다.");
         }
         userDao.delete(id);
     }

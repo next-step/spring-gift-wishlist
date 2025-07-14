@@ -40,4 +40,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
     }
 
+    @ExceptionHandler(NoSuchEmailException.class)
+    public ResponseEntity<String> handleNoSuchEmailException(NoSuchEmailException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(NoSuchIdException.class)
+    public ResponseEntity<String> handleNoSuchIdException(NoSuchIdException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
 }

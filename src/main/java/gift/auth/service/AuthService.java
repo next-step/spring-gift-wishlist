@@ -5,11 +5,11 @@ import gift.auth.PasswordUtil;
 import gift.auth.dto.UserSignupResponseDto;
 import gift.common.exception.EmailAlreadyExistsException;
 import gift.common.exception.InvalidPasswordException;
+import gift.common.exception.NoSuchEmailException;
 import gift.user.domain.User;
 import gift.auth.dto.UserLoginRequestDto;
 import gift.auth.dto.UserSingupRequestDto;
 import gift.user.repository.UserDao;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.Base64;
@@ -43,7 +43,7 @@ public class AuthService {
     public String login(UserLoginRequestDto userLoginRequestDto) {
         Optional<User> optionalUser = userDao.findByEmail(userLoginRequestDto.getEmail());
         if(optionalUser.isEmpty()) {
-            throw new EmptyResultDataAccessException(1);
+            throw new NoSuchEmailException("등록되지 않은 이메일입니다.");
         }
         User user = optionalUser.get();
         if(!user.isEqualToPassword(userLoginRequestDto.getPassword())) {

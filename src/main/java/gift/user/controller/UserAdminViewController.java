@@ -1,12 +1,12 @@
 package gift.user.controller;
 
+import gift.common.exception.NoSuchIdException;
 import gift.user.domain.User;
 import gift.user.dto.UserPatchRequestDto;
 import gift.user.dto.UserSaveRequestDto;
 import gift.user.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -55,7 +55,7 @@ public class UserAdminViewController {
 
     @GetMapping("/{id}/update")
     public String updateForm(@PathVariable UUID id, Model model) {
-        User user = userService.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
+        User user = userService.findById(id).orElseThrow(() -> new NoSuchIdException("존재하지 않는 ID입니다."));
         UserPatchRequestDto userPatchRequestDto = new UserPatchRequestDto(user);
         model.addAttribute("userPatchRequestDto", userPatchRequestDto);
         return "userUpdateForm";
