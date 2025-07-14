@@ -57,3 +57,11 @@ step 3. 위시 리스트
 1. 위시 리스트에 등록된 상품 목록 조회
 2. 위시 리스트에 상품 추가
 3. 위시 리스트에 상품 삭제
+
+step 3. 피드백
+1. addWishList함수명 createWishList로 변경
+2. delete method의 statusCode를 204로 변경
+3. service레이어드의 existMember함수 이해하기 편하게 변경
+4. jwt인증할때 customException 으로 예외처리하게 변경 
+5. 권한없는 위시리스트에 접근할때 customException 으로 예외처리하게 변경 
+6. 위시리스트조회시 상품의 정보도 반환
