@@ -13,8 +13,7 @@ public class Member {
     }
 
     public Member(String email, String password) {
-        this.email = email;
-        this.password = password;
+        this(null, email, password);
     }
 
     public Long getId() {
@@ -39,5 +38,10 @@ public class Member {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void update(String email, String encode) {
+        this.email = email;
+        this.password = encode;
     }
 }

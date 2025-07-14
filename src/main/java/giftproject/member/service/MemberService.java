@@ -1,11 +1,14 @@
 package giftproject.member.service;
 
 import giftproject.member.dto.MemberRequestDto;
+import giftproject.member.dto.MemberResponseDto;
 import giftproject.member.entity.Member;
 import giftproject.member.repository.MemberRepository;
 import giftproject.member.util.JwtTokenProvider;
+import giftproject.member.util.PasswordEncoder;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -43,5 +46,46 @@ public class MemberService {
         }
 
         return jwtTokenProvider.generateToken(member.getId(), member.getEmail());
+    }
+
+    public List<MemberResponseDto> findAll() {
+        return memberRepository.findAll().stream()
+                .map(MemberResponseDto::from)
+                .collect(Collectors.toList());
+    }
+
+    public MemberResponseDto save(MemberRequestDto requestDto) {
+        String encodedPassword = passwordEncoder.encode(requestDto.password());
+        Member member = new Member(requestDto.email(), encodedPassword);
+        Member saveMember = memberRepository.save(member);
+
+        return MemberResponseDto.from(saveMember);
+    }
+
+    public MemberResponseDto update(Long id, String email, String password) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        member.update(email, passwordEncoder.encode(password));
+        memberRepository.update(member);
+
+        return MemberResponseDto.from(member);
+    }
+
+    public MemberResponseDto findById(Long id) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return MemberResponseDto.from(member);
+    }
+
+    public Member findEntityById(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
+    public void delete(Long id) {
+        memberRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        memberRepository.delete(id);
     }
 }
