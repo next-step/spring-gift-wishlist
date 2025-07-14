@@ -37,7 +37,7 @@ public class WishlistController {
             @PathVariable Integer id,
             @Valid @RequestBody WishlistUpdateRequestDTO request,
             @LoginMember AuthenticatedMemberDTO member) {
-        WishlistResponseDTO response = wishlistService.updateQuantity(id, request.quantity());
+        WishlistResponseDTO response = wishlistService.updateQuantity(id, request.quantity(), member.id());
         return ResponseEntity.ok(response);
     }
 
@@ -45,7 +45,7 @@ public class WishlistController {
     public ResponseEntity<Void> deleteWishlist(
             @PathVariable Integer id,
             @LoginMember AuthenticatedMemberDTO member) {
-        wishlistService.deleteWishlist(id);
+        wishlistService.deleteWishlist(id, member.id());
         return ResponseEntity.noContent().build();
     }
 }

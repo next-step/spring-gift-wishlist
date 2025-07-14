@@ -33,7 +33,7 @@ public class WishlistService {
         if (existing.isPresent()) {
             WishList wishlist = existing.get();
             Integer newQuantity = wishlist.getQuantity() + wishlistRequestDTO.quantity();
-            return updateQuantity(wishlist.getId(), newQuantity);
+            return updateQuantity(wishlist.getId(), newQuantity, memberId);
         }
 
         WishList wishlist = new WishList(null, memberId, wishlistRequestDTO.productId(), wishlistRequestDTO.quantity());
@@ -68,9 +68,13 @@ public class WishlistService {
     }
 
     @Transactional
-    public WishlistResponseDTO updateQuantity(Integer wishlistId, Integer quantity) {
+    public WishlistResponseDTO updateQuantity(Integer wishlistId, Integer quantity, Integer memberId) {
         WishList wishlist = wishlistRepository.findById(wishlistId)
                         .orElseThrow(() -> new IllegalArgumentException("해당 위시리스트를 찾을 수 없습니다."));
+        if (!wishlist.getMemberId().equals(memberId)) {
+            throw new IllegalArgumentException("해당 위시리스트에 접근할 권한이 없습니다.");
+        }
+
         wishlistRepository.updateQuantity(wishlistId, quantity);
 
         Product product = productRepository.findById(wishlist.getProductId());
@@ -86,9 +90,13 @@ public class WishlistService {
     }
 
     @Transactional
-    public void deleteWishlist(Integer wishlistId) {
-        wishlistRepository.findById(wishlistId)
+    public void deleteWishlist(Integer wishlistId, Integer memberId) {
+        WishList wishlist = wishlistRepository.findById(wishlistId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 위시리스트를 찾을 수 없습니다."));
+
+        if (!wishlist.getMemberId().equals(memberId)) {
+            throw new IllegalArgumentException("해당 위시리스트에 접근할 권한이 없습니다.");
+        }
         wishlistRepository.deleteById(wishlistId);
     }
 }
