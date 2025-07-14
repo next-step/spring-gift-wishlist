@@ -69,7 +69,7 @@ class WishControllerTest {
                 .constructParametricType(CustomResponseBody.class, WishResponse.class));
 
         assertWishResponse(res, CustomResponseCode.CREATED);
-        
+
         WishResponse data = res.data();
         assertAll("응답 데이터 필드 검증",
             () -> assertThat(data).isNotNull(),
@@ -206,7 +206,8 @@ class WishControllerTest {
         );
     }
 
-    private void assertErrorResponse(CustomResponseBody<?> response, CustomResponseCode expectedCode) {
+    private void assertErrorResponse(CustomResponseBody<?> response,
+        CustomResponseCode expectedCode) {
         assertAll("응답 객체 검증",
             () -> assertThat(response).isNotNull(),
             () -> assertThat(response.status()).isEqualTo(expectedCode.getCode()),
