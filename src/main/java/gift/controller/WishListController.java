@@ -23,27 +23,27 @@ public class WishListController {
 
 
     @GetMapping
-    public ResponseEntity<List<ProductResponseDto>> getWishlist(@AuthenticatedUser String token) {
+    public ResponseEntity<List<ProductResponseDto>> getWishlist(@AuthenticatedUser String email) {
 
-        List<ProductResponseDto> products = wishListService.findAllProductsFromWishList(token);
+        List<ProductResponseDto> products = wishListService.findAllProductsFromWishList(email);
 
         return ResponseEntity.status(HttpStatus.OK).body(products);
     }
 
     @PostMapping
-    public ResponseEntity<List<ProductResponseDto>> addProductToWishlist(@AuthenticatedUser String token,
+    public ResponseEntity<List<ProductResponseDto>> addProductToWishlist(@AuthenticatedUser String email,
                                                                          @Valid @RequestBody WishListProductRequestDto productRequestDto) {
 
-        List<ProductResponseDto> products = wishListService.addProductToWishListByEmail(token, productRequestDto);
+        List<ProductResponseDto> products = wishListService.addProductToWishListByEmail(email, productRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(products);
     }
 
     @DeleteMapping("/{productId}")
-    public ResponseEntity<Void> deleteProductFromWishlist(@AuthenticatedUser String token,
+    public ResponseEntity<Void> deleteProductFromWishlist(@AuthenticatedUser String email,
                                                           @PathVariable("productId") Long productId) {
 
-        wishListService.deleteProductFromWishList(token, productId);
+        wishListService.deleteProductFromWishList(email, productId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

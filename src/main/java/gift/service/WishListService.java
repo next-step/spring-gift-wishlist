@@ -27,8 +27,7 @@ public class WishListService implements WishListServiceInterface {
     }
 
     @Override
-    public List<ProductResponseDto> findAllProductsFromWishList(String token) {
-        String email = jwtAuth.getEmailFromToken(token);
+    public List<ProductResponseDto> findAllProductsFromWishList(String email) {
         List<Product> products = wishListRepository.findAllProductsFromWishListByEmail(email);
         List<ProductResponseDto> productResponseDtoList = new ArrayList<>();
         for (Product product : products) {
@@ -41,17 +40,15 @@ public class WishListService implements WishListServiceInterface {
     }
 
     @Override
-    public List<ProductResponseDto> addProductToWishListByEmail(String token, WishListProductRequestDto requestDto) {
-        String email = jwtAuth.getEmailFromToken(token);
+    public List<ProductResponseDto> addProductToWishListByEmail(String email, WishListProductRequestDto requestDto) {
         Long productId = requestDto.getproductId();
         wishListRepository.addProductToWishListByEmail(email, productId);
 
-        return findAllProductsFromWishList(token);
+        return findAllProductsFromWishList(email);
     }
 
     @Override
-    public void deleteProductFromWishList(String token, Long productId) {
-        String email = jwtAuth.getEmailFromToken(token);
+    public void deleteProductFromWishList(String email, Long productId) {
         boolean deleted = wishListRepository.deleteProductFromWishListByEmail(email, productId);
         if(!deleted) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
