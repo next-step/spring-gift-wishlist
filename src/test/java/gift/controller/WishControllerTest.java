@@ -9,7 +9,9 @@ import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gift.auth.resolver.CurrentUserArgumentResolver;
+import gift.auth.jwt.JwtFilter;
+import gift.auth.jwt.JwtProvider;
+import gift.auth.jwt.JwtUtil;
 import gift.common.code.CustomResponseCode;
 import gift.common.dto.CustomResponseBody;
 import gift.common.exception.CustomException;
@@ -23,13 +25,17 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 @WebMvcTest(WishController.class)
+@Import({JwtFilter.class, JwtProvider.class, WishControllerTest.JwtTestConfig.class})
 class WishControllerTest {
 
     @Autowired
@@ -38,13 +44,22 @@ class WishControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
     @MockBean
     private WishService wishService;
 
-    @MockBean
-    private CurrentUserArgumentResolver currentUserArgumentResolver;
-
     private final User mockUser = new User(1L, "test@domain.com", "pw");
+
+    @TestConfiguration
+    static class JwtTestConfig {
+
+        @Bean
+        public JwtUtil jwtUtil() {
+            return new JwtUtil("testtesttesttesttesttesttesttest");
+        }
+    }
 
     @Test
     @DisplayName("위시 등록 성공")
@@ -52,14 +67,14 @@ class WishControllerTest {
         WishRequest request = new WishRequest(10L, 2);
         WishResponse response = new WishResponse(1L, 10L, 2, "상품명", 1000, "https://img");
 
-        given(currentUserArgumentResolver.supportsParameter(any())).willReturn(true);
-        given(currentUserArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(
-            mockUser);
         given(wishService.addWish(eq(mockUser.getId()), any(WishRequest.class))).willReturn(
             response);
 
+        String token = createToken(mockUser.getId(), mockUser.getEmail());
+
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/wishes")
                 .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + token)
                 .content(objectMapper.writeValueAsString(request)))
             .andReturn();
 
@@ -86,20 +101,19 @@ class WishControllerTest {
     void testAddWishDuplicateFail() throws Exception {
         WishRequest request = new WishRequest(10L, 1);
 
-        given(currentUserArgumentResolver.supportsParameter(any())).willReturn(true);
-        given(currentUserArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(
-            mockUser);
         given(wishService.addWish(eq(mockUser.getId()), any(WishRequest.class)))
             .willThrow(new CustomException(CustomResponseCode.ALREADY_EXISTS));
 
+        String token = createToken(mockUser.getId(), mockUser.getEmail());
+
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/wishes")
                 .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + token)
                 .content(objectMapper.writeValueAsString(request)))
             .andReturn();
 
         String content = result.getResponse().getContentAsString();
         CustomResponseBody<?> response = objectMapper.readValue(content, CustomResponseBody.class);
-
         assertErrorResponse(response, CustomResponseCode.ALREADY_EXISTS);
     }
 
@@ -108,12 +122,11 @@ class WishControllerTest {
     void testAddWishValidationFail() throws Exception {
         WishRequest invalidRequest = new WishRequest(null, -1);
 
-        given(currentUserArgumentResolver.supportsParameter(any())).willReturn(true);
-        given(currentUserArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(
-            mockUser);
+        String token = createToken(mockUser.getId(), mockUser.getEmail());
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/wishes")
                 .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + token)
                 .content(objectMapper.writeValueAsString(invalidRequest)))
             .andExpect(status().isBadRequest());
     }
@@ -124,12 +137,12 @@ class WishControllerTest {
         WishResponse response = new WishResponse(1L, 10L, 2, "상품명", 1000, "https://img");
         List<WishResponse> wishList = Collections.singletonList(response);
 
-        given(currentUserArgumentResolver.supportsParameter(any())).willReturn(true);
-        given(currentUserArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(
-            mockUser);
         given(wishService.getWishes(eq(mockUser.getId()))).willReturn(wishList);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/wishes"))
+        String token = createToken(mockUser.getId(), mockUser.getEmail());
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/wishes")
+                .header("Authorization", "Bearer " + token))
             .andReturn();
 
         String content = result.getResponse().getContentAsString();
@@ -151,11 +164,6 @@ class WishControllerTest {
     @Test
     @DisplayName("위시 목록 조회 실패 - 인증 없음")
     void testGetWishesUnauthorizedFail() throws Exception {
-        given(currentUserArgumentResolver.supportsParameter(any())).willReturn(true);
-        doThrow(new CustomException(CustomResponseCode.UNAUTHORIZED))
-            .when(currentUserArgumentResolver)
-            .resolveArgument(any(), any(), any(), any());
-
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/wishes"))
             .andReturn();
 
@@ -167,12 +175,11 @@ class WishControllerTest {
     @Test
     @DisplayName("위시 삭제 성공")
     void testDeleteWishSuccess() throws Exception {
-        given(currentUserArgumentResolver.supportsParameter(any())).willReturn(true);
-        given(currentUserArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(
-            mockUser);
+        String token = createToken(mockUser.getId(), mockUser.getEmail());
 
         MvcResult result = mockMvc.perform(
-                MockMvcRequestBuilders.delete("/api/wishes/{productId}", 10L))
+                MockMvcRequestBuilders.delete("/api/wishes/{productId}", 10L)
+                    .header("Authorization", "Bearer " + token))
             .andReturn();
 
         String content = result.getResponse().getContentAsString();
@@ -183,14 +190,14 @@ class WishControllerTest {
     @Test
     @DisplayName("위시 삭제 실패 - 존재하지 않는 wish")
     void testDeleteWishNotFoundFail() throws Exception {
-        given(currentUserArgumentResolver.supportsParameter(any())).willReturn(true);
-        given(currentUserArgumentResolver.resolveArgument(any(), any(), any(), any())).willReturn(
-            mockUser);
         doThrow(new CustomException(CustomResponseCode.NOT_FOUND))
             .when(wishService).deleteWish(eq(mockUser.getId()), eq(999L));
 
+        String token = createToken(mockUser.getId(), mockUser.getEmail());
+
         MvcResult result = mockMvc.perform(
-                MockMvcRequestBuilders.delete("/api/wishes/{productId}", 999L))
+                MockMvcRequestBuilders.delete("/api/wishes/{productId}", 999L)
+                    .header("Authorization", "Bearer " + token))
             .andReturn();
 
         String content = result.getResponse().getContentAsString();
@@ -214,4 +221,8 @@ class WishControllerTest {
             () -> assertThat(response.message()).isEqualTo(expectedCode.getMessage())
         );
     }
-} 
+
+    private String createToken(Long userId, String email) {
+        return jwtUtil.generateToken(email, userId);
+    }
+}
