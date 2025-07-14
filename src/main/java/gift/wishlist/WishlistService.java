@@ -22,7 +22,7 @@ public class WishlistService {
 
     @Transactional
     public Wishlist saveWishlist(UUID id, WishlistSaveRequestDto wishlistSaveRequestDto) {
-        Wishlist wishlist = new Wishlist(null, id, wishlistSaveRequestDto.getProductId());
+        Wishlist wishlist = new Wishlist(id, wishlistSaveRequestDto.getProductId());
         return wishlistDao.save(wishlist);
     }
 

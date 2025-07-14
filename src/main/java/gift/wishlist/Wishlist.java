@@ -17,6 +17,12 @@ public class Wishlist {
         this.productId = productId;
     }
 
+    public Wishlist(UUID userId, UUID productId) {
+        this.id = null;
+        this.userId = userId;
+        this.productId = productId;
+    }
+
     public Long getId() {
         return id;
     }
