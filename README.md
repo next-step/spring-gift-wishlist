@@ -77,10 +77,10 @@
 ---
 # 단계별 구현 
 ## 1. 사용자 인증 기반 구조 설정
-  - [ ] JwtAuthFilter를 통해 요청 시 Authorization 헤더에서 토큰 추출
-  - [ ] SecurityContextHolder에 인증된 사용자 정보를 저장
-  - [ ] @LoginMember 커스텀 어노테이션을 통해 Controller 메서드에서 로그인 사용자 주입
-  - [ ] 로그인한 사용자만 위시리스트 접근 가능하도록 보안 설정
+  - [x] JwtAuthFilter를 통해 요청 시 Authorization 헤더에서 토큰 추출
+  - [x] SecurityContextHolder에 인증된 사용자 정보를 저장
+  - [x] @LoginMember 커스텀 어노테이션을 통해 Controller 메서드에서 로그인 사용자 주입
+  - [x] 로그인한 사용자만 위시리스트 접근 가능하도록 보안 설정
 ## 2. 도메인 설계 (Wish)
   - [ ] 필드: id, memberId, productId, quantity, createdAt, updatedAt
   - [ ] 연관관계: ManyToOne Member, ManyToOne Product

@@ -25,7 +25,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain)
-        throws ServletException, IOException {
+            throws ServletException, IOException {
 
         String authHeader = request.getHeader("Authorization");
         String token = jwtService.extractTokenFromBearer(authHeader);
@@ -39,7 +39,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 response.getWriter().write("인증이 필요합니다.");
                 return;
             }
-            
+
             // admin 경로에 대한 권한 확인
             if (request.getRequestURI().startsWith("/admin")) {
                 String role = jwtService.extractRole(token);
@@ -57,6 +57,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     }
 
     private boolean requiresAuth(String uri) {
-        return uri.startsWith("/api/products") || uri.startsWith("/admin");
+        return uri.startsWith("/api/products") || uri.startsWith("/admin") || uri.startsWith("/wishlist");
     }
 }
