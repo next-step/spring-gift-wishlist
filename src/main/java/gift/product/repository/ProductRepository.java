@@ -47,6 +47,15 @@ public class ProductRepository {
                 .list();
     }
 
+    public List<Product> findAllByIdIn(List<Long> ids){
+        String sql = "SELECT * FROM product WHERE id IN (:ids)";
+
+        return jdbcClient.sql(sql)
+                .param("ids", ids)
+                .query(getProductRowMapper())
+                .list();
+    }
+
     public void deleteById(Long id){
         int affectedRows = jdbcClient.sql("DELETE FROM product WHERE id = :id")
                 .param("id", id)

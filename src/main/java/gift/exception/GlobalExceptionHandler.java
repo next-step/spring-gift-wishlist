@@ -46,5 +46,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }
 
+    @ExceptionHandler(WishNotFoundByMemberIdAndProductId.class)
+    public ResponseEntity<?> handleWishNotFoundByMemberIdAndProductId(WishNotFoundByMemberIdAndProductId e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(WishNotFoundByMemberIdAndWishId.class)
+    public ResponseEntity<?> handleWishNotFoundByMemberIdAndWishId(WishNotFoundByMemberIdAndWishId e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
 
 }

@@ -16,21 +16,7 @@ public class AdminInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String authHeader = request.getHeader("Authorization");
-
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().println("Authorization 헤더가 없습니다.");
-            return false;
-        }
-
-        String token = authHeader.substring(7);
-
-        if(!tokenProvider.isValidToken(token)) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().println("유효하지 않은 토큰입니다.");
-            return false;
-        }
+        String token = request.getHeader("Authorization").substring(7);
 
         String role = tokenProvider.getRoleFromToken(token);
 
@@ -39,6 +25,7 @@ public class AdminInterceptor implements HandlerInterceptor {
             response.getWriter().println("관리자 권한이 없습니다.");
             return false;
         }
+
         return true;
     }
 }
