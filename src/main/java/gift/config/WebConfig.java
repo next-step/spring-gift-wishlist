@@ -1,6 +1,5 @@
 package gift.config;
 
-import gift.auth.CurrentUserArgumentResolver;
 import java.util.List;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -9,14 +8,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    private final CurrentUserArgumentResolver currentUserArgumentResolver;
+    private final List<HandlerMethodArgumentResolver> resolvers;
 
-    public WebConfig(CurrentUserArgumentResolver currentUserArgumentResolver) {
-        this.currentUserArgumentResolver = currentUserArgumentResolver;
+    public WebConfig(List<HandlerMethodArgumentResolver> resolvers) {
+        this.resolvers = resolvers;
     }
 
     @Override
-    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(currentUserArgumentResolver);
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+        argumentResolvers.addAll(resolvers);
     }
 } 
