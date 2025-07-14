@@ -10,3 +10,10 @@ CREATE TABLE product (
     price INT NOT NULL,
     image_url VARCHAR(1000)
 );
+
+CREATE TABLE wish (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    member_id VARCHAR(255) NOT NULL,
+    product_id BIGINT NOT NULL
+);
+
