@@ -1,8 +1,8 @@
 package gift.config;
 
-import gift.config.argument_resolver.CurrentMemberArgumentResolver;
 import gift.config.interceptor.HostInterceptor;
 import gift.config.interceptor.JwtInterceptor;
+import gift.config.resolver.CurrentMemberArgumentResolver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

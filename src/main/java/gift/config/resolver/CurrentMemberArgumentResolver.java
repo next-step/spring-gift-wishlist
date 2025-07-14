@@ -1,4 +1,4 @@
-package gift.config.argument_resolver;
+package gift.config.resolver;
 
 import gift.common.annotation.CurrentMember;
 import gift.service.MemberService;

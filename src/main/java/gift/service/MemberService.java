@@ -1,7 +1,7 @@
 package gift.service;
 
 import gift.common.dto.request.MemberRequestDto;
-import gift.common.dto.response.TokenDto;
+import gift.common.dto.response.TokenResponseDto;
 import gift.common.exception.CreationFailException;
 import gift.common.exception.EntityNotFoundException;
 import gift.common.exception.RegisterFailException;
@@ -27,12 +27,12 @@ public class MemberService {
         this.jwtUtil = jwt;
     }
 
-    public TokenDto handleRegisterRequest(MemberRequestDto request) {
+    public TokenResponseDto handleRegisterRequest(MemberRequestDto request) {
         register(request.email(), request.password());
         return login(request.email(), request.password());
     }
 
-    public TokenDto handleLoginRequest(MemberRequestDto request) {
+    public TokenResponseDto handleLoginRequest(MemberRequestDto request) {
         return login(request.email(), request.password());
     }
 
@@ -51,13 +51,13 @@ public class MemberService {
                 .orElseThrow(() -> new CreationFailException("Failed creating Member: " + email));
     }
 
-    private TokenDto login(String email, String plainPassword) {
+    private TokenResponseDto login(String email, String plainPassword) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new SecurityException("존재하지 않는 email: " + email));
         if (!encoder.matches(plainPassword, member.getPassword())) {
             throw new SecurityException("비밀번호가 일치하지 않습니다.");
         }
         String token = jwtUtil.createToken(member.getEmail(), member.getRoleName());
-        return new TokenDto(token);
+        return new TokenResponseDto(token);
     }
 }

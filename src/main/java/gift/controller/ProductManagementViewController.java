@@ -20,7 +20,7 @@ public class ProductManagementViewController {
 
     @GetMapping("/home")
     public String home(Model model) {
-        model.addAttribute("products", productService.getAllProduct(ProductQueryOption.SELLING));
+        model.addAttribute("products", productService.getList(ProductQueryOption.SELLING));
         return "management/home";
     }
 
@@ -31,7 +31,7 @@ public class ProductManagementViewController {
 
     @GetMapping("/{id}")
     public String product(@PathVariable Long id, Model model) {
-        model.addAttribute("product", productService.getProduct(id, ProductQueryOption.SELLING));
+        model.addAttribute("product", productService.get(id, ProductQueryOption.SELLING));
         return "management/product";
     }
 }
