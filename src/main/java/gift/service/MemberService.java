@@ -26,6 +26,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
+    private final String PREFIX = "Bearer ";
 
     public MemberService(
         MemberRepository memberRepository,
@@ -51,7 +52,7 @@ public class MemberService {
         Member member = memberRepository.findById(generatedId)
             .orElseThrow(() -> new RegisterException("사용자 생성에 실패했습니다."));
 
-        return new LoginResponse(tokenProvider.createToken(member));
+        return new LoginResponse(PREFIX + tokenProvider.createToken(member));
     }
 
     @Transactional(readOnly = true)
@@ -63,7 +64,7 @@ public class MemberService {
             throw new LoginException("비밀번호가 일치하지 않습니다.");
         }
 
-        return new LoginResponse(tokenProvider.createToken(member));
+        return new LoginResponse(PREFIX + tokenProvider.createToken(member));
     }
 
     // TODO: 추후 브라우저 로컬스토리지나 쿠키에 토큰을 저장한다면, 토큰을 invalidate하는 signout 메서드 구현하기!

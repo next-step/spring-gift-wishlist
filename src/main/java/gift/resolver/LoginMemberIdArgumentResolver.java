@@ -43,7 +43,7 @@ public class LoginMemberIdArgumentResolver implements HandlerMethodArgumentResol
             throw new AuthorizationRequiredException("인증이 필요한 요청입니다.");
         }
 
-        Long memberId = tokenProvider.getMemberId(token);
+        Long memberId = tokenProvider.getMemberId(token.substring(7));
         if (memberId == null || !memberRepository.existsById(memberId)) {
             throw new AuthorizationRequiredException("인증이 필요한 요청입니다.");
         }
