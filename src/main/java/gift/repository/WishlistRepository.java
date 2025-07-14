@@ -2,8 +2,6 @@ package gift.repository;
 
 import java.util.List;
 
-import org.springframework.jdbc.core.DataClassRowMapper;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
@@ -13,11 +11,9 @@ import gift.domain.WishItem;
 public class WishlistRepository {
 
     private final JdbcClient jdbcClient;
-    private final RowMapper<WishItem> rowMapper;
 
     public WishlistRepository(JdbcClient jdbcClient) {
         this.jdbcClient = jdbcClient;
-        this.rowMapper = new DataClassRowMapper<>(WishItem.class);
     }
 
     public List<WishItem> findAllProductByWishlistId(Long wishlistId) {
@@ -30,7 +26,7 @@ public class WishlistRepository {
 
         return jdbcClient.sql(sql)
             .param("wishlistId", wishlistId)
-            .query(rowMapper)
+            .query(WishItem.class)
             .list();
     }
 

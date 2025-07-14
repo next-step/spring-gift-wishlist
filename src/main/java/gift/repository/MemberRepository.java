@@ -3,8 +3,6 @@ package gift.repository;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.jdbc.core.DataClassRowMapper;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
@@ -15,18 +13,16 @@ import gift.domain.Member;
 public class MemberRepository {
 
     private final JdbcClient jdbcClient;
-    private final RowMapper<Member> rowMapper;
 
     public MemberRepository(JdbcClient jdbcClient) {
         this.jdbcClient = jdbcClient;
-        this.rowMapper = new DataClassRowMapper<>(Member.class);
     }
 
     public List<Member> findAll() {
          String sql = "SELECT * FROM member";
 
         return jdbcClient.sql(sql)
-            .query(rowMapper)
+            .query(Member.class)
             .list();
     }
 
@@ -35,7 +31,7 @@ public class MemberRepository {
 
         return jdbcClient.sql(sql)
             .param("id", id)
-            .query(rowMapper)
+            .query(Member.class)
             .optional();
     }
 
@@ -44,7 +40,7 @@ public class MemberRepository {
 
         return jdbcClient.sql(sql)
             .param("email", email)
-            .query(rowMapper)
+            .query(Member.class)
             .optional();
     }
 
