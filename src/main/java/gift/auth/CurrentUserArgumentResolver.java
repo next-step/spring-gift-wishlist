@@ -3,7 +3,7 @@ package gift.auth;
 import gift.common.annotation.CurrentUser;
 import gift.common.code.CustomResponseCode;
 import gift.common.exception.CustomException;
-import gift.service.AuthService;
+import gift.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -15,12 +15,6 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @Component
 public class CurrentUserArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private final AuthService authService;
-
-    public CurrentUserArgumentResolver(AuthService authService) {
-        this.authService = authService;
-    }
-
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return parameter.hasParameterAnnotation(CurrentUser.class);
@@ -31,13 +25,12 @@ public class CurrentUserArgumentResolver implements HandlerMethodArgumentResolve
         NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
 
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
-        String authHeader = request.getHeader("Authorization");
+        User user = (User) request.getAttribute("user");
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (user == null) {
             throw new CustomException(CustomResponseCode.UNAUTHORIZED);
         }
 
-        String token = authHeader.substring(7);
-        return authService.findByToken(token);
+        return user;
     }
 }
