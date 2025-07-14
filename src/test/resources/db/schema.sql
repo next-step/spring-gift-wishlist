@@ -1,0 +1,25 @@
+DROP TABLE IF EXISTS members;
+CREATE TABLE members (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role VARCHAR(50) NOT NULL
+);
+
+DROP TABLE IF EXISTS products;
+CREATE TABLE products (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    price INTEGER NOT NULL,
+    image_url VARCHAR(255)
+);
+
+DROP TABLE IF EXISTS wishItems;
+CREATE TABLE wishItems (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    productId BIGINT NOT NULL,
+    quantity INTEGER NOT NULL,
+    memberId BIGINT NOT NULL,
+    FOREIGN KEY (productId) REFERENCES products(id),
+    FOREIGN KEY (memberId) REFERENCES members(id)
+);
