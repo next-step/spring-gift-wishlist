@@ -12,11 +12,11 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import gift.auth.JwtAuth;
 
 @Component
-public class CustomArgumentResolver implements HandlerMethodArgumentResolver {
+public class TokenArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final JwtAuth jwtAuth;
 
-    public CustomArgumentResolver(JwtAuth jwtAuth) {
+    public TokenArgumentResolver(JwtAuth jwtAuth) {
         this.jwtAuth = jwtAuth;
     }
 
@@ -38,6 +38,6 @@ public class CustomArgumentResolver implements HandlerMethodArgumentResolver {
         String token = authHeader.substring(7);
         jwtAuth.validateToken(token);
 
-        return token;
+        return jwtAuth.getEmailFromToken(token);
     }
 }
