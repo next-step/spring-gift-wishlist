@@ -16,15 +16,24 @@ CREATE TABLE member
     PRIMARY KEY (id)
 );
 
-CREATE TABLE wishlist
-(
-    id        BIGINT AUTO_INCREMENT,
-    memberId  BIGINT NOT NULL,
-    productId BIGINT NOT NULL,
+-- CREATE TABLE wishlist
+-- (
+--     id        BIGINT AUTO_INCREMENT,
+--     memberId  BIGINT NOT NULL,
+--     PRIMARY KEY (id)
+-- );
+
+CREATE TABLE wishlist_item(
+    id         BIGINT AUTO_INCREMENT,
+    wishlistId BIGINT NOT NULL,
+    productId  BIGINT NOT NULL,
+    quantity   BIGINT NOT NULL,
     PRIMARY KEY (id),
-    UNIQUE (memberId, productId)
+    UNIQUE (wishlistId, productId)
 );
 
 -- PRIMARY KEY == UNIQUE + NOT NULL
 -- UNIQUE는 NULL을 허용한다! NOT NULL을 함께 써야함!!
 -- UNIQUE는 괄호로 여러 칼럼을 묶어서 지정해줄 수 있다
+
+-- `테이블에서 제일 긴 칼럼` 뒤에 공백을 하나 넣고 옵션들을 정렬하기. 모든 테이블을 같이 정렬하려면 스키마 변경마다 고려할 내용이 너무 많아진다!

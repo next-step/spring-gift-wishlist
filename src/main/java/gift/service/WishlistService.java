@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import gift.domain.Product;
 import gift.dto.AddWishlistRequest;
-import gift.dto.ProductResponse;
+import gift.dto.WishResponse;
 import gift.exception.ProductNotFoundException;
 import gift.exception.WishlistAddException;
 import gift.exception.WishlistDeleteException;
@@ -29,15 +29,15 @@ public class WishlistService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProductResponse> getProductsFromWishlist(Long memberId) {
-        return wishlistRepository.findAllProductByMemberId(memberId)
+    public List<WishResponse> getProductsFromWishlist(Long memberId) {
+        return wishlistRepository.findAllProductByWishlistId(memberId)
             .stream()
-            .map(ProductResponse::from)
+            .map(WishResponse::from)
             .toList();
     }
 
     @Transactional
-    public ProductResponse addProductToWishlist(Long memberId, AddWishlistRequest request) {
+    public WishResponse addProductToWishlist(Long memberId, AddWishlistRequest request) {
         Product product = productRepository.findById(request.productId())
             .orElseThrow(() -> new ProductNotFoundException("해당 상품이 존재하지 않습니다."));
 
@@ -46,7 +46,14 @@ public class WishlistService {
             throw new WishlistAddException("위시리스트 상품 추가를 실패했습니다.");
         }
 
-        return ProductResponse.from(product);
+        // return ProductResponse.from(product);
+        return new WishResponse(
+            product.getId(),
+            product.getPrice(),
+            product.getName(),
+            product.getImageUrl(),
+            1L
+        );
     }
 
     @Transactional

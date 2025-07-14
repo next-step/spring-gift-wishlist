@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import gift.dto.AddWishlistRequest;
-import gift.dto.ProductResponse;
+import gift.dto.WishResponse;
 import gift.resolver.LoginMemberId;
 import gift.service.WishlistService;
 
@@ -28,19 +28,19 @@ public class WishlistController {
     }
 
     @GetMapping("/wishes")
-    public ResponseEntity<List<ProductResponse>> getProductsFromWishlist(
+    public ResponseEntity<List<WishResponse>> getProductsFromWishlist(
         @LoginMemberId Long memberId
     ) {
-        List<ProductResponse> products = wishlistService.getProductsFromWishlist(memberId);
+        List<WishResponse> products = wishlistService.getProductsFromWishlist(memberId);
         return ResponseEntity.status(HttpStatus.OK).body(products);
     }
 
     @PostMapping("/wishes")
-    public ResponseEntity<ProductResponse> addProductToWishlist(
+    public ResponseEntity<WishResponse> addProductToWishlist(
         @LoginMemberId Long memberId,
         @RequestBody AddWishlistRequest request
     ) {
-        ProductResponse response = wishlistService.addProductToWishlist(memberId, request);
+        WishResponse response = wishlistService.addProductToWishlist(memberId, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
