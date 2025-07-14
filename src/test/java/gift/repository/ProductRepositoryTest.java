@@ -27,8 +27,8 @@ class ProductRepositoryTest {
         jdbcClient.sql("DELETE FROM product").update();
         jdbcClient.sql("ALTER TABLE product ALTER COLUMN id RESTART WITH 1").update();
 
-        Product product1 = Product.of(null, "상품1", 10000, "image1.jpg");
-        Product product2 = Product.of(null, "상품2", 20000, "image2.jpg");
+        Product product1 = Product.of(null, "상품1", 10000L, "image1.jpg");
+        Product product2 = Product.of(null, "상품2", 20000L, "image2.jpg");
 
         productRepository.save(product1);
         productRepository.save(product2);
@@ -55,7 +55,7 @@ class ProductRepositoryTest {
         // then
         assertThat(product).isPresent();
         assertThat(product.get().getName()).isEqualTo("상품1");
-        assertThat(product.get().getPrice()).isEqualTo(10000);
+        assertThat(product.get().getPrice()).isEqualTo(10000L);
     }
 
     @Test
@@ -77,7 +77,7 @@ class ProductRepositoryTest {
     @Test
     void saveTest() {
         // given
-        Product product = Product.of(null, "새 상품", 30000, "new-image.jpg");
+        Product product = Product.of(null, "새 상품", 30000L, "new-image.jpg");
 
         // when
         Long savedId = productRepository.save(product);
@@ -88,13 +88,13 @@ class ProductRepositoryTest {
         var savedProduct = productRepository.findById(savedId);
         assertThat(savedProduct).isPresent();
         assertThat(savedProduct.get().getName()).isEqualTo("새 상품");
-        assertThat(savedProduct.get().getPrice()).isEqualTo(30000);
+        assertThat(savedProduct.get().getPrice()).isEqualTo(30000L);
     }
 
     @Test
     void updateTest() {
         // given
-        Product product = Product.of(1L, "수정된 상품", 15000, "updated-image.jpg");
+        Product product = Product.of(1L, "수정된 상품", 15000L, "updated-image.jpg");
 
         // when
         int updatedCount = productRepository.update(product);
@@ -105,7 +105,7 @@ class ProductRepositoryTest {
         var updatedProduct = productRepository.findById(1L);
         assertThat(updatedProduct).isPresent();
         assertThat(updatedProduct.get().getName()).isEqualTo("수정된 상품");
-        assertThat(updatedProduct.get().getPrice()).isEqualTo(15000);
+        assertThat(updatedProduct.get().getPrice()).isEqualTo(15000L);
         assertThat(updatedProduct.get().getImageUrl()).isEqualTo("updated-image.jpg");
     }
 

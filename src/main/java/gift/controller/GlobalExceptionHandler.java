@@ -91,5 +91,5 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(WishlistDeleteException.class)
     public ProblemDetail handleWishlistDeleteException(WishlistDeleteException e) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }
+    }
 }

@@ -49,7 +49,7 @@ public class MemberServiceTest {
         LoginResponse response = memberService.signup(request);
 
         // then
-        assertThat(response.token()).isEqualTo(token);
+        assertThat(response.token()).isEqualTo("Bearer " + token);
     }
 
     @Test
@@ -79,7 +79,7 @@ public class MemberServiceTest {
         LoginResponse response = memberService.signin(request);
 
         // then
-        assertThat(response.token()).isEqualTo(token);
+        assertThat(response.token()).isEqualTo("Bearer " + token);
     }
 
     @Test

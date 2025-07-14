@@ -21,6 +21,7 @@ import gift.dto.LoginRequest;
 import gift.dto.LoginResponse;
 import gift.dto.RegisterRequest;
 import gift.interceptor.MemberAuthInterceptor;
+import gift.repository.MemberRepository;
 import gift.service.MemberService;
 import gift.util.TokenProvider;
 
@@ -38,6 +39,9 @@ class MemberControllerTest {
 
     @MockitoBean
     private TokenProvider tokenProvider;
+
+    @MockitoBean
+    private MemberRepository memberRepository;
 
     @MockitoBean
     private MemberAuthInterceptor memberAuthInterceptor;

@@ -26,8 +26,8 @@ class ProductServiceTest {
     void getAllProductsTest() {
         // given
         given(productRepository.findAll()).willReturn(List.of(
-            Product.of(1L, "상품1", 1000, "image1"),
-            Product.of(2L, "상품2", 2000, "image2")
+            Product.of(1L, "상품1", 1000L, "image1"),
+            Product.of(2L, "상품2", 2000L, "image2")
         ));
 
         // when
@@ -37,11 +37,11 @@ class ProductServiceTest {
         assertThat(response).hasSize(2);
         assertThat(response.get(0).id()).isEqualTo(1L);
         assertThat(response.get(0).name()).isEqualTo("상품1");
-        assertThat(response.get(0).price()).isEqualTo(1000);
+        assertThat(response.get(0).price()).isEqualTo(1000L);
         assertThat(response.get(0).imageUrl()).isEqualTo("image1");
         assertThat(response.get(1).id()).isEqualTo(2L);
         assertThat(response.get(1).name()).isEqualTo("상품2");
-        assertThat(response.get(1).price()).isEqualTo(2000);
+        assertThat(response.get(1).price()).isEqualTo(2000L);
         assertThat(response.get(1).imageUrl()).isEqualTo("image2");
     }
 
@@ -50,7 +50,7 @@ class ProductServiceTest {
         // given
         Long productId = 1L;
         given(productRepository.findById(productId)).willReturn(Optional.of(
-            Product.of(productId, "상품1", 1000, "image")
+            Product.of(productId, "상품1", 1000L, "image")
         ));
 
         // when
@@ -59,7 +59,7 @@ class ProductServiceTest {
         // then
         assertThat(response.id()).isEqualTo(productId);
         assertThat(response.name()).isEqualTo("상품1");
-        assertThat(response.price()).isEqualTo(1000);
+        assertThat(response.price()).isEqualTo(1000L);
         assertThat(response.imageUrl()).isEqualTo("image");
     }
 
@@ -77,8 +77,8 @@ class ProductServiceTest {
     @Test
     void createProductTest() {
         // given
-        CreateProductRequest request = new CreateProductRequest("상품1", 1000, "image");
-        Product saved = Product.of(1L, "상품1", 1000, "image");
+        CreateProductRequest request = new CreateProductRequest("상품1", 1000L, "image");
+        Product saved = Product.of(1L, "상품1", 1000L, "image");
         given(productRepository.save(any())).willReturn(1L);
         given(productRepository.findById(1L)).willReturn(Optional.of(saved));
 
@@ -88,14 +88,14 @@ class ProductServiceTest {
         // then
         assertThat(response.id()).isEqualTo(1L);
         assertThat(response.name()).isEqualTo("상품1");
-        assertThat(response.price()).isEqualTo(1000);
+        assertThat(response.price()).isEqualTo(1000L);
         assertThat(response.imageUrl()).isEqualTo("image");
     }
 
     @Test
     void createProductFailTest() {
         // given
-        CreateProductRequest request = new CreateProductRequest("카카오닙스", 1000, "image");
+        CreateProductRequest request = new CreateProductRequest("카카오닙스", 1000L, "image");
 
         // when, then
         assertThatThrownBy(() -> productService.createProduct(request))

@@ -26,6 +26,7 @@ import gift.dto.ProductResponse;
 import gift.dto.UpdateProductRequest;
 import gift.dto.UpdateProductResponse;
 import gift.interceptor.MemberAuthInterceptor;
+import gift.repository.MemberRepository;
 import gift.service.ProductService;
 import gift.util.TokenProvider;
 
@@ -45,19 +46,23 @@ class ProductControllerTest {
     private TokenProvider tokenProvider;
 
     @MockitoBean
+    private MemberRepository memberRepository;
+
+    @MockitoBean
     private MemberAuthInterceptor memberAuthInterceptor;
 
     @BeforeEach
     void setUp() throws Exception {
         given(memberAuthInterceptor.preHandle(any(), any(), any())).willReturn(true);
+        given(memberRepository.existsById(1L)).willReturn(true);
     }
 
     @Test
     void getAllProductsTest() throws Exception {
         // given
         List<ProductResponse> products = List.of(
-            new ProductResponse(1L, "상품1", 1000, "image1"),
-            new ProductResponse(2L, "상품2", 2000, "image2")
+            new ProductResponse(1L, "상품1", 1000L, "image1"),
+            new ProductResponse(2L, "상품2", 2000L, "image2")
         );
         given(productService.getAllProducts()).willReturn(products);
 
@@ -75,11 +80,11 @@ class ProductControllerTest {
         assertThat(result).hasSize(2);
         assertThat(result.get(0).id()).isEqualTo(1L);
         assertThat(result.get(0).name()).isEqualTo("상품1");
-        assertThat(result.get(0).price()).isEqualTo(1000);
+        assertThat(result.get(0).price()).isEqualTo(1000L);
         assertThat(result.get(0).imageUrl()).isEqualTo("image1");
         assertThat(result.get(1).id()).isEqualTo(2L);
         assertThat(result.get(1).name()).isEqualTo("상품2");
-        assertThat(result.get(1).price()).isEqualTo(2000);
+        assertThat(result.get(1).price()).isEqualTo(2000L);
         assertThat(result.get(1).imageUrl()).isEqualTo("image2");
     }
 
@@ -87,7 +92,7 @@ class ProductControllerTest {
     void getProductByIdTest() throws Exception {
         // given
         Long productId = 1L;
-        ProductResponse product = new ProductResponse(productId, "상품1", 1000, "image1");
+        ProductResponse product = new ProductResponse(productId, "상품1", 1000L, "image1");
         given(productService.getProductById(productId)).willReturn(product);
 
         // when
@@ -103,15 +108,15 @@ class ProductControllerTest {
         );
         assertThat(result.id()).isEqualTo(1L);
         assertThat(result.name()).isEqualTo("상품1");
-        assertThat(result.price()).isEqualTo(1000);
+        assertThat(result.price()).isEqualTo(1000L);
         assertThat(result.imageUrl()).isEqualTo("image1");
     }
 
     @Test
     void createProductTest() throws Exception {
         // given
-        CreateProductRequest request = new CreateProductRequest("상품1", 1000, "image1");
-        CreateProductResponse response = new CreateProductResponse(1L, "상품1", 1000, "image1");
+        CreateProductRequest request = new CreateProductRequest("상품1", 1000L, "image1");
+        CreateProductResponse response = new CreateProductResponse(1L, "상품1", 1000L, "image1");
 
         given(productService.createProduct(any())).willReturn(response);
         String content = objectMapper.writeValueAsString(request);
@@ -131,7 +136,7 @@ class ProductControllerTest {
         );
         assertThat(result.id()).isEqualTo(1L);
         assertThat(result.name()).isEqualTo("상품1");
-        assertThat(result.price()).isEqualTo(1000);
+        assertThat(result.price()).isEqualTo(1000L);
         assertThat(result.imageUrl()).isEqualTo("image1");
     }
 
@@ -139,9 +144,9 @@ class ProductControllerTest {
     void updateProductTest() throws Exception {
         // given
         Long productId = 1L;
-        UpdateProductRequest request = new UpdateProductRequest("상품1", 1500, "newimage");
+        UpdateProductRequest request = new UpdateProductRequest("상품1", 1500L, "newimage");
         UpdateProductResponse response = new UpdateProductResponse(
-            productId, "상품1", 1500, "newimage"
+            productId, "상품1", 1500L, "newimage"
         );
 
         given(productService.updateProduct(any(), any())).willReturn(response);
@@ -163,7 +168,7 @@ class ProductControllerTest {
         );
         assertThat(result.id()).isEqualTo(productId);
         assertThat(result.name()).isEqualTo("상품1");
-        assertThat(result.price()).isEqualTo(1500);
+        assertThat(result.price()).isEqualTo(1500L);
         assertThat(result.imageUrl()).isEqualTo("newimage");
     }
 
