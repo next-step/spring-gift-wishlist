@@ -26,7 +26,6 @@ public class GlobalExceptionHandler {
 			.body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), debuggingMessage));
 	}
 
-
 	@ExceptionHandler(IllegalArgumentException.class)
 	public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException e) {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -44,7 +43,6 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HttpStatus.CONFLICT)
 			.body(new ErrorResponse(HttpStatus.CONFLICT.value(), e.getMessage()));
 	}
-
 
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ErrorResponse> handlerServerErrors(Exception e) {

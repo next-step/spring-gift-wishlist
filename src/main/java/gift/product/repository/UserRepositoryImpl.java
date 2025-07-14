@@ -59,7 +59,6 @@ public class UserRepositoryImpl implements UserRepository {
 		}
 	}
 
-
 	@Override
 	public Optional<User> findByEmail(String email) {
 		final String sql = "SELECT * FROM users WHERE email = ?";
@@ -78,7 +77,6 @@ public class UserRepositoryImpl implements UserRepository {
 			return Optional.empty();
 		}
 	}
-
 
 	@Override
 	public Optional<User> findByNickname(String nickName) {

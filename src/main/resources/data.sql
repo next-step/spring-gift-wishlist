@@ -20,3 +20,5 @@ INSERT INTO item (name, price, image_url, user_id) VALUES
 ('item13',13000, 'url13', 2),
 ('item14',14000, 'url14', 2),
 ('item15',15000, 'url15', 2);
+
+INSERT INTO wish_list (user_id, item_id) VALUES (1, 1)
