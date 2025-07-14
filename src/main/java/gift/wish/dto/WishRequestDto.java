@@ -41,4 +41,8 @@ public class WishRequestDto {
     public Integer getQuantity() {
         return quantity;
     }
+
+    public void setMemberId(Long memberId) {
+        this.memberId = memberId;
+    }
 }
