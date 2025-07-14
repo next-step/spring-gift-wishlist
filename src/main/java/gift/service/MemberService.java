@@ -75,9 +75,9 @@ public class MemberService {
         );
     }
 
-    public MemberResponseDTO getMemberByEmail(String email) {
+    public AuthenticatedMemberDTO getMemberByEmail(String email) {
         Member member = findByEmail(email);
-        return new MemberResponseDTO(
+        return new AuthenticatedMemberDTO(
                 member.getId(),
                 member.getEmail(),
                 member.getRole()

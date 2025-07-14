@@ -1,10 +1,7 @@
 package gift.controller;
 
 import gift.annotation.LoginMember;
-import gift.dto.MemberResponseDTO;
-import gift.dto.WishlistRequestDTO;
-import gift.dto.WishlistResponseDTO;
-import gift.dto.WishlistUpdateRequestDTO;
+import gift.dto.*;
 import gift.service.WishlistService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -24,13 +21,13 @@ public class WishlistController {
     @PostMapping
     public ResponseEntity<WishlistResponseDTO> addWishlist(
             @Valid @RequestBody WishlistRequestDTO request,
-            @LoginMember MemberResponseDTO member) {
+            @LoginMember AuthenticatedMemberDTO member) {
         WishlistResponseDTO response = wishlistService.addWishlist(member.id(), request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping
-    public ResponseEntity<List<WishlistResponseDTO>> getWishlist(@LoginMember MemberResponseDTO member) {
+    public ResponseEntity<List<WishlistResponseDTO>> getWishlist(@LoginMember AuthenticatedMemberDTO member) {
         List<WishlistResponseDTO> wishlists = wishlistService.getAllWishlistByMemberId(member.id());
         return ResponseEntity.ok(wishlists);
     }
@@ -39,7 +36,7 @@ public class WishlistController {
     public ResponseEntity<WishlistResponseDTO> updateWishlist(
             @PathVariable Integer id,
             @Valid @RequestBody WishlistUpdateRequestDTO request,
-            @LoginMember MemberResponseDTO member) {
+            @LoginMember AuthenticatedMemberDTO member) {
         WishlistResponseDTO response = wishlistService.updateQuantity(id, request.quantity());
         return ResponseEntity.ok(response);
     }
@@ -47,7 +44,7 @@ public class WishlistController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteWishlist(
             @PathVariable Integer id,
-            @LoginMember MemberResponseDTO member) {
+            @LoginMember AuthenticatedMemberDTO member) {
         wishlistService.deleteWishlist(id);
         return ResponseEntity.noContent().build();
     }
