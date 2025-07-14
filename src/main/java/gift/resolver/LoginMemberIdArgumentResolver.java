@@ -8,6 +8,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import gift.exception.AuthorizationRequiredException;
+import gift.repository.MemberRepository;
 import gift.util.TokenProvider;
 import io.micrometer.common.util.StringUtils;
 
@@ -15,9 +16,14 @@ import io.micrometer.common.util.StringUtils;
 public class LoginMemberIdArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final TokenProvider tokenProvider;
+    private final MemberRepository memberRepository;
 
-    public LoginMemberIdArgumentResolver(TokenProvider tokenProvider) {
+    public LoginMemberIdArgumentResolver(
+        TokenProvider tokenProvider,
+        MemberRepository memberRepository
+    ) {
         this.tokenProvider = tokenProvider;
+        this.memberRepository = memberRepository;
     }
 
     @Override
@@ -38,9 +44,10 @@ public class LoginMemberIdArgumentResolver implements HandlerMethodArgumentResol
         }
 
         Long memberId = tokenProvider.getMemberId(token);
-        if (memberId == null) {
-            throw new AuthorizationRequiredException("유효하지 않은 토큰입니다.");
+        if (memberId == null || !memberRepository.existsById(memberId)) {
+            throw new AuthorizationRequiredException("인증이 필요한 요청입니다.");
         }
+
         return memberId;
     }
 }
