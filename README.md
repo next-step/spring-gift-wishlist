@@ -100,3 +100,7 @@ delete : 상품 삭제
 1. 위시 리스트에 등록된 상품 목록을 조회할 수 있다.
 2. 위시 리스트에 상품을 추가할 수 있다.
 3. 위시 리스트에 담긴 상품을 삭제할 수 있다.
+
+### 파일구조
+- resolver 추가 : 사용자 인증 용도 (config, loginmember, loginmemberresolver)
+- member (controller, repository, service 추가)
