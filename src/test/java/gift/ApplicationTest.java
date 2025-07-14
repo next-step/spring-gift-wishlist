@@ -2,7 +2,7 @@ package gift;
 
 import gift.common.dto.request.ProductRequestDto;
 import gift.common.dto.response.MessageResponseDto;
-import gift.common.dto.response.ProductDto;
+import gift.common.dto.response.ProductResponseDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -22,15 +22,15 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 public class ApplicationTest {
 
     private final RestClient client = RestClient.builder().build();
-    private final List<ProductDto> predefined = new ArrayList<>();
+    private final List<ProductResponseDto> predefined = new ArrayList<>();
     @LocalServerPort
     private int port;
 
     public ApplicationTest() {
-        predefined.add(new ProductDto(1L, "아메리카노", 3000L, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3bgpr9EPuJ47gcYCWg7jrEXJ3M15nEXZ9WdKpUsF11wMJFwIPXpOtIkDwoTUUi8_S_WbVTmcus1R7oEx0ongOCiJtjK8iLm-JxAp4swI_-Q", "판매중"));
-        predefined.add(new ProductDto(2L, "카페라떼", 4000L, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjYwdtYk0ww-YSRxAG1stQYFuTT6K2D5lQcQ&s", "판매중"));
-        predefined.add(new ProductDto(3L, "모카", 5000L, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkd11qAyK1kPY8z6tpvKO4KM97cTpCphVeOQ&s", "판매중"));
-        predefined.add(new ProductDto(4L, "아포가토", 4500L, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvgoCg5CPPBL8MZGAWT3ilkSeBnr1SkR-x2A&s", "판매중"));
+        predefined.add(new ProductResponseDto(1L, "아메리카노", 3000L, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3bgpr9EPuJ47gcYCWg7jrEXJ3M15nEXZ9WdKpUsF11wMJFwIPXpOtIkDwoTUUi8_S_WbVTmcus1R7oEx0ongOCiJtjK8iLm-JxAp4swI_-Q", "판매중"));
+        predefined.add(new ProductResponseDto(2L, "카페라떼", 4000L, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjYwdtYk0ww-YSRxAG1stQYFuTT6K2D5lQcQ&s", "판매중"));
+        predefined.add(new ProductResponseDto(3L, "모카", 5000L, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkd11qAyK1kPY8z6tpvKO4KM97cTpCphVeOQ&s", "판매중"));
+        predefined.add(new ProductResponseDto(4L, "아포가토", 4500L, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvgoCg5CPPBL8MZGAWT3ilkSeBnr1SkR-x2A&s", "판매중"));
     }
 
     @Test
@@ -41,7 +41,7 @@ public class ApplicationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(new ProductRequestDto("coffee", 3500L, "test-url"))
                 .retrieve()
-                .toEntity(new ParameterizedTypeReference<MessageResponseDto<ProductDto>>() {
+                .toEntity(new ParameterizedTypeReference<MessageResponseDto<ProductResponseDto>>() {
                 });
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
@@ -60,7 +60,7 @@ public class ApplicationTest {
         var response = client.get()
                 .uri(url)
                 .retrieve()
-                .toEntity(ProductDto.class);
+                .toEntity(ProductResponseDto.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         var expected = predefined.get(0);
         assertBody(response.getBody(), expected.id(), expected.name(), expected.price(), expected.imageUrl());
@@ -74,7 +74,7 @@ public class ApplicationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(new ProductRequestDto("coffee", 3500L, "test-url"))
                 .retrieve()
-                .toEntity(new ParameterizedTypeReference<MessageResponseDto<ProductDto>>() {
+                .toEntity(new ParameterizedTypeReference<MessageResponseDto<ProductResponseDto>>() {
                 });
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -153,7 +153,7 @@ public class ApplicationTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.ACCEPTED);
     }
 
-    private void assertBody(ProductDto actual, Long id, String name, Long price, String imageUrl) {
+    private void assertBody(ProductResponseDto actual, Long id, String name, Long price, String imageUrl) {
         assertThat(actual.id()).isEqualTo(id);
         assertThat(actual.name()).isEqualTo(name);
         assertThat(actual.price()).isEqualTo(price);

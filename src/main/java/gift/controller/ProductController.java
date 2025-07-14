@@ -2,7 +2,7 @@ package gift.controller;
 
 import gift.common.dto.request.ProductRequestDto;
 import gift.common.dto.response.MessageResponseDto;
-import gift.common.dto.response.ProductDto;
+import gift.common.dto.response.ProductResponseDto;
 import gift.domain.product.ProductQueryOption;
 import gift.service.ProductService;
 import jakarta.validation.Valid;
@@ -23,8 +23,8 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<MessageResponseDto<ProductDto>> createProduct(@Valid @RequestBody ProductRequestDto body) {
-        MessageResponseDto<ProductDto> response = productService.createProduct(body);
+    public ResponseEntity<MessageResponseDto<ProductResponseDto>> createProduct(@Valid @RequestBody ProductRequestDto body) {
+        MessageResponseDto<ProductResponseDto> response = productService.create(body);
         if (response.success()) {
             URI location = URI.create("/api/products/" + response.data().id());
             return ResponseEntity.created(location).body(response);
@@ -33,22 +33,22 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDto> getProduct(@PathVariable Long id,
-                                                 @RequestParam(defaultValue = "SELLING") ProductQueryOption option) {
-        ProductDto response = productService.getProduct(id, option);
+    public ResponseEntity<ProductResponseDto> getProduct(@PathVariable Long id,
+                                                         @RequestParam(defaultValue = "SELLING") ProductQueryOption option) {
+        ProductResponseDto response = productService.get(id, option);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductDto>> getAllProduct(@RequestParam(defaultValue = "SELLING") ProductQueryOption option) {
-        List<ProductDto> response = productService.getAllProduct(option);
+    public ResponseEntity<List<ProductResponseDto>> getAllProduct(@RequestParam(defaultValue = "SELLING") ProductQueryOption option) {
+        List<ProductResponseDto> response = productService.getList(option);
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MessageResponseDto<ProductDto>> updateProduct(@PathVariable Long id,
-                                                                        @RequestBody ProductRequestDto body) {
-        MessageResponseDto<ProductDto> response = productService.updateProduct(id, body);
+    public ResponseEntity<MessageResponseDto<ProductResponseDto>> updateProduct(@PathVariable Long id,
+                                                                                @RequestBody ProductRequestDto body) {
+        MessageResponseDto<ProductResponseDto> response = productService.update(id, body);
         if (response.success()) {
             return ResponseEntity.ok(response);
         }
@@ -57,7 +57,7 @@ public class ProductController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
-        productService.deleteProduct(id);
+        productService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

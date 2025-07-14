@@ -22,6 +22,10 @@ public class Member {
         return of(null, email, password, MemberRole.USER);
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public String getEmail() {
         return email;
     }

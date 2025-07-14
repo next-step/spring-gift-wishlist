@@ -1,4 +1,4 @@
-package gift.interceptor;
+package gift.config.interceptor;
 
 import gift.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
