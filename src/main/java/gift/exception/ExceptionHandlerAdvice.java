@@ -36,4 +36,12 @@ public class ExceptionHandlerAdvice {
     return ResponseEntity.status(ex.getErrorCode().getStatus()).body(errorResponse);
   }
 
+  @ExceptionHandler(UnAuthorizationException.class)
+  public ResponseEntity<ErrorResponse> handleUnAuthorizationException(UnAuthorizationException ex) {
+
+    ErrorResponse errorResponse = ErrorResponse.of(ex.getErrorCode());
+
+    return ResponseEntity.status(ex.getErrorCode().getStatus()).body(errorResponse);
+  }
+
 }

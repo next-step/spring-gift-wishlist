@@ -52,3 +52,18 @@
 - ``jwt web token`` 사용
 - 도메인에서 회원 인증 로직 구현(isEuqalPassword())
 - 응용 서비스에서 토큰 생성 구현
+
+## Step 3 : 위시 리스트
+### 요구사항 분석
+- 위시 리스트 API 구성
+  - 위시 리스트에 상품 추가
+  - 위시 리스트에 등록된 상품 조회
+  - 위시 리스트에 담긴 상품 삭제
+### 구현 방향
+| 기능                | Method | URL                     | Request Information                                               | Response Body            | 상태코드   |
+|-------------------|--------|-------------------------|-------------------------------------------------------------------|--------------------------|--------|
+| 위시 리스트에 상품 추가     | POST   | /api/wishes             | Header: Authorization: Bearer <JWT> <br/> Body: { "productId": n } | 없음                       | 201 |
+| 위시 리스트에 등록된 상품 조회 | GET    | /api/wishes             | Header: Authorization: Bearer <JWT>                               | List<ProductResponseDto> | 200    |
+| 위시 리스트에 담긴 상품 삭제  | DELETE | /api/wishes/{productId} | - Header: Authorization: Bearer <JWT> <br/> PathVariable: productId   | 없음                       | 204    |
+- `@LoginUser` 어노테이션 & `HandlerMethodArgumentResolver` 구현
+  - 컨트롤러 메서드 파라미터에 로그인 유저 정보를 직접 주입

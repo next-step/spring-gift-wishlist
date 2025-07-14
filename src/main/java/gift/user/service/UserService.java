@@ -1,5 +1,7 @@
 package gift.user.service;
 
+import gift.exception.ErrorCode;
+import gift.exception.UnAuthorizationException;
 import gift.security.PasswordEncoder;
 import gift.user.JwtTokenProvider;
 import gift.user.dto.LoginRequestDto;
@@ -102,6 +104,21 @@ public class UserService {
   public void deleteUser(Long userId) {
     findByIdOrFail(userId);
     userDao.deleteById(userId);
+  }
+
+  public User findUserByToken(String token) {
+    try {
+      String email = jwtTokenProvider.getEmail(token);
+      User user = userDao.findByEmail(email);
+
+      if (user == null) {
+        throw new UserNotFoundException();
+      }
+
+      return user;
+    } catch (Exception e) {
+      throw new UnAuthorizationException(ErrorCode.INVALID_JWT);
+    }
   }
 
 

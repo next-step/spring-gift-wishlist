@@ -71,4 +71,19 @@ public String getRole(String token) throws Exception {
   } catch (Exception e) {
     throw new Exception("토큰에서 role을 가져올 수 없습니다", e);
   }
-}}
+}
+
+  public String getEmail(String token) throws Exception {
+    try {
+      Claims claims = jwtParser.parseSignedClaims(token).getPayload();
+      return claims.get("email", String.class);
+    } catch (JwtException e) {
+      throw new Exception("유효하지 않은 토큰입니다", e);
+    } catch (IllegalArgumentException e) {
+      throw new Exception("토큰이 null이거나 빈 문자열입니다", e);
+    } catch (Exception e) {
+      throw new Exception("토큰에서 role을 가져올 수 없습니다", e);
+    }
+  }
+
+}
