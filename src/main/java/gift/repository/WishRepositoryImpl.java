@@ -48,7 +48,11 @@ public class WishRepositoryImpl implements WishRepository {
 
     @Override
     public List<WishWithProductDto> findAllWishesWithProductByMemberId(Long memberId) {
-        String sql = "SELECT w.id, w.quantity, p.product_id, p.name, p.price, p.image_url FROM wish w JOIN product p ON w.product_id = p.id WHERE member_id = ?";
+        String sql = """
+                        SELECT w.id wishId, w.quantity quantity, p.id product_id, p.name productName, p.price productPrice, p.image_url productImageUrl
+                        FROM wish w JOIN product p ON w.product_id = p.id
+                        WHERE w.member_id = ?
+                    """;
         return jdbcClient.sql(sql)
             .param(memberId)
             .query(WishWithProductDto.class)
