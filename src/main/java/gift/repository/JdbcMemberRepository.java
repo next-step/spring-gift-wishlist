@@ -6,8 +6,8 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -16,6 +16,12 @@ import org.springframework.stereotype.Repository;
 public class JdbcMemberRepository implements MemberRepository {
 
     private final JdbcTemplate jdbcTemplate;
+
+    private final RowMapper<Member> memberRowMapper = (rs, rowNum) -> Member.of(
+            rs.getLong("id"),
+            rs.getString("email"),
+            rs.getString("password")
+    );
 
     public JdbcMemberRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -35,15 +41,14 @@ public class JdbcMemberRepository implements MemberRepository {
         }, keyHolder);
 
         Long generatedId = keyHolder.getKey().longValue();
-        return member.assignId(generatedId);
+        return Member.of(generatedId, member.getEmail(), member.getPassword());
     }
 
     @Override
     public Optional<Member> findByEmail(String email) {
         String sql = "SELECT id, email, password FROM members WHERE email = ?";
         try {
-            Member member = jdbcTemplate.queryForObject(sql,
-                    new BeanPropertyRowMapper<>(Member.class), email);
+            Member member = jdbcTemplate.queryForObject(sql, memberRowMapper, email);
             return Optional.ofNullable(member);
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
@@ -54,8 +59,7 @@ public class JdbcMemberRepository implements MemberRepository {
     public Optional<Member> findById(Long id) {
         String sql = "SELECT id, email, password FROM members WHERE id = ?";
         try {
-            Member member = jdbcTemplate.queryForObject(sql,
-                    new BeanPropertyRowMapper<>(Member.class), id);
+            Member member = jdbcTemplate.queryForObject(sql, memberRowMapper, id);
             return Optional.ofNullable(member);
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
@@ -65,7 +69,7 @@ public class JdbcMemberRepository implements MemberRepository {
     @Override
     public List<Member> findAll() {
         String sql = "SELECT id, email, password FROM members";
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Member.class));
+        return jdbcTemplate.query(sql, memberRowMapper);
     }
 
     @Override
