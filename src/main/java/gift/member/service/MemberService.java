@@ -48,4 +48,8 @@ public class MemberService {
         return new MemberResponseDto(jwtProvider.generateToken(member));
 
     }
+
+    public Member findMemberById(Long id){
+        return memberRepository.findMemberById(id).orElseThrow();
+    }
 }
