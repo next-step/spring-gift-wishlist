@@ -100,9 +100,8 @@
   - [x] 해당 ID의 Wish가 현재 로그인한 사용자 것인지 검증
   - [x] Wish 삭제 후 성공 응답 (204 No Content)
 ## 7. 예외 처리
-  - [ ] 인증되지 않은 사용자 → 401 Unauthorized 
-  - [ ] 다른 사용자의 Wish 접근 시 → 403 Forbidden 
-  - [ ] 존재하지 않는 상품, 잘못된 수량 요청 등 → 400 Bad Request
+  - [x] 다른 사용자의 Wish 접근 시 → 403 Forbidden 
+  - [x] 존재하지 않는 상품, 잘못된 수량 요청 등 → 400 Bad Request
 
 ## API 명세
 
@@ -180,7 +179,7 @@ public class WishResponse {
 
 ### 중복 상품 추가
 - **상황**: 이미 위시리스트에 있는 상품 추가
-- **응답**: `409 Conflict`
+- **응답**: `400 Bad Request`
 - **메시지**: "이미 위시리스트에 추가된 상품입니다."
 
 ## 위시리스트 조회 응답 예시

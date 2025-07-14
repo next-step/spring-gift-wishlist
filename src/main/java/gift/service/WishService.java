@@ -6,6 +6,7 @@ import gift.dto.WishResponseDto;
 import gift.entity.Member;
 import gift.entity.Product;
 import gift.entity.Wish;
+import gift.exception.ForbiddenAccessException;
 import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
 import org.springframework.stereotype.Service;
@@ -63,7 +64,7 @@ public class WishService {
 
         // 해당 ID의 상품이 현재 로그인한 사용자 건지 검증 
         if (!wish.getMemberId().equals(member.getId())) {
-            throw new IllegalArgumentException("다른 사용자의 위시리스트는 수정할 수 없습니다."); 
+            throw new ForbiddenAccessException("권한이 없습니다."); 
         }
 
         // 요청된 수량으로 Wish.quantity 필드 업데이트
@@ -79,13 +80,11 @@ public class WishService {
 
     // 위시리스트 삭제
     public void deleteWish(Member member, Long wishId) {
-        // 위시리스트 항목 조회
         Wish wish = wishRepository.findById(wishId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
 
-        // 해당 ID의 Wish가 현재 로그인한 사용자 것인지 검증
         if (!wish.getMemberId().equals(member.getId())) {
-            throw new IllegalArgumentException("다른 사용자의 위시리스트는 삭제할 수 없습니다.");
+            throw new ForbiddenAccessException("권한이 없습니다.");
         }
 
         wishRepository.deleteById(wishId);
