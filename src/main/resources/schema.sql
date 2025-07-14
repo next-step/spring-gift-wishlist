@@ -11,3 +11,13 @@ CREATE TABLE IF NOT EXISTS member (
     password VARCHAR(255) NOT NULL,
     role VARCHAR(50) NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS wish (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    member_id BIGINT NOT NULL,
+    product_id BIGINT NOT NULL,
+    quantity INT NOT NULL DEFAULT 1,
+    UNIQUE KEY uk_member_product (member_id, product_id),
+    FOREIGN KEY (member_id) REFERENCES member(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE CASCADE
+);

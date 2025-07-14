@@ -78,13 +78,12 @@
 # 단계별 구현 
 ## 1. 사용자 인증 기반 구조 설정
   - [x] JwtAuthFilter를 통해 요청 시 Authorization 헤더에서 토큰 추출
-  - [x] SecurityContextHolder에 인증된 사용자 정보를 저장
   - [x] @LoginMember 커스텀 어노테이션을 통해 Controller 메서드에서 로그인 사용자 주입
   - [x] 로그인한 사용자만 위시리스트 접근 가능하도록 보안 설정
 ## 2. 도메인 설계 (Wish)
-  - [ ] 필드: id, memberId, productId, quantity, createdAt, updatedAt
-  - [ ] 연관관계: ManyToOne Member, ManyToOne Product
-  - [ ] DB 제약: 한 사용자가 같은 상품을 여러 번 등록하지 못하도록 (memberId + productId) 유니크 설정
+  - [X] 필드: id, memberId, productId, quantity
+  - [X] 연관관계: ManyToOne Member, ManyToOne Product
+  - [X] DB 제약: 한 사용자가 같은 상품을 여러 번 등록하지 못하도록 (memberId + productId) 유니크 설정
 ## 3. 위시리스트 추가 (POST /wishlist)
   - [ ] 로그인된 사용자의 memberId와 요청받은 productId, quantity로 Wish 생성
   - [ ] 이미 등록된 상품일 경우 → 수량만 증가시키거나 예외 처리
@@ -143,8 +142,6 @@ public class Wish {
     private Long memberId;  // 사용자별 구분을 위한 필드
     private Long productId;
     private Integer quantity;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 }
 ```
 
@@ -162,7 +159,6 @@ public class WishResponse {
     private Long id;
     private ProductResponse product;
     private Integer quantity;
-    private LocalDateTime createdAt;
 }
 ```
 
@@ -200,8 +196,7 @@ public class WishResponse {
         "price": 10000,
         "imageUrl": "image1.jpg"
       },
-      "quantity": 2,
-      "createdAt": "2024-01-01T10:00:00"
+      "quantity": 2
     }
   ]
 }
