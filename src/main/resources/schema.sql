@@ -18,3 +18,12 @@ CREATE TABLE member
     email VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(50) NOT NULL
 );
+
+CREATE TABLE wishlist
+(
+    email VARCHAR(50) NOT NULL,
+    productId BIGINT NOT NULL,
+    PRIMARY KEY (email, productId),
+    FOREIGN KEY (email) REFERENCES member(email) ON DELETE CASCADE,
+    FOREIGN KEY (productId) REFERENCES product(id) ON DELETE CASCADE
+);

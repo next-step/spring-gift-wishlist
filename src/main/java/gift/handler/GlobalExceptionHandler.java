@@ -1,6 +1,7 @@
-package gift.controller;
+package gift.handler;
 
 import gift.exception.MemberExceptions;
+import gift.exception.ProductExceptions;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -30,6 +31,20 @@ public class GlobalExceptionHandler {
                 .body(errorMessages);
     }
 
+    @ExceptionHandler(ProductExceptions.ProductNotFoundException.class)
+    public ResponseEntity<?> handleProductNotFoundException(ProductExceptions.ProductNotFoundException e) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(e.getMessage());
+    }
+
+    @ExceptionHandler(MemberExceptions.MemberNotFoundException.class)
+    public ResponseEntity<?> handleMemberNotFoundException(MemberExceptions.MemberNotFoundException e) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(e.getMessage());
+    }
+
     @ExceptionHandler(MemberExceptions.EmailAlreadyExistsException.class)
     public ResponseEntity<?> handleEmailAlreadyExistsException(MemberExceptions.EmailAlreadyExistsException e) {
         return ResponseEntity
@@ -41,13 +56,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleInvalidPasswordException(MemberExceptions.InvalidPasswordException e) {
         return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
-                .body(e.getMessage());
-    }
-
-    @ExceptionHandler(MemberExceptions.MemberNotFoundException.class)
-    public ResponseEntity<?> handleMemberNotFoundException(MemberExceptions.MemberNotFoundException e) {
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
                 .body(e.getMessage());
     }
 

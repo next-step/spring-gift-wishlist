@@ -1,11 +1,14 @@
 package gift.repository;
 
 import gift.entity.Member;
+import gift.entity.Product;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Repository("MemberRepository")
@@ -43,6 +46,8 @@ public class MemberRepository implements MemberRepositoryInterface {
             return Optional.empty();
         }
     }
+
+
 
     private Member mapRowToMember(ResultSet rs, int rowNum) throws SQLException {
         Member member = new Member(
