@@ -1,31 +1,33 @@
 package gift.auth;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
+import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.Filter;
+import org.springframework.http.HttpHeaders;
+
 import java.io.IOException;
 
 public class JwtAuthenticationFilter implements Filter {
 
     private final JwtProvider jwtProvider;
 
+    private final String HEADER_PREFIX = "Bearer ";
+
     public JwtAuthenticationFilter(JwtProvider jwtProvider) {
         this.jwtProvider = jwtProvider;
     }
 
     @Override
-    public void doFilter(jakarta.servlet.ServletRequest request,
-                         jakarta.servlet.ServletResponse response,
+    public void doFilter(ServletRequest request,
+                         ServletResponse response,
                          FilterChain chain) throws IOException, ServletException {
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-        String authHeader = httpRequest.getHeader("Authorization");
+        String authHeader = httpRequest.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7);
+        if (authHeader != null && authHeader.startsWith(HEADER_PREFIX)) {
+            String token = authHeader.replaceFirst(HEADER_PREFIX, "");
             try {
                 if (jwtProvider.validateToken(token)) {
                     String email = jwtProvider.getEmail(token);
