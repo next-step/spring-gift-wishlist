@@ -93,9 +93,9 @@
   - [x] Wish 엔티티를 Product 정보와 함께 조인하여 응답 (해당 사용자의 Wish 리스트 조회)
   - [x] 상품 정보 (이름, 이미지, 가격 등) 포함 응답 -> 성공 시 200 OK 응답
 ## 5. 위시리스트 수량 변경 (PUT /wishlist/{id})
-  - [ ] 해당 ID의 Wish가 현재 로그인한 사용자 것인지 검증 
-  - [ ] 요청된 수량으로 Wish.quantity 필드 업데이트
-  - [ ] 수정된 Wish 목록 반환
+  - [x] 해당 ID의 Wish가 현재 로그인한 사용자 것인지 검증 
+  - [x] 요청된 수량으로 Wish.quantity 필드 업데이트
+  - [x] 수정된 Wish 목록 반환
 ## 6. 위시리스트 삭제 (DELETE /wishlist/{id})
   - [ ] 해당 ID의 Wish가 현재 로그인한 사용자 것인지 검증
   - [ ] Wish 삭제 후 성공 응답 (204 No Content)

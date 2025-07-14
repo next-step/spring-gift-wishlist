@@ -54,4 +54,26 @@ public class WishService {
                 })
                 .collect(Collectors.toList());
     }
+
+    // 위시리스트 수량 변경
+    public WishResponseDto updateWishQuantity(Member member, Long wishId, Integer quantity) {
+        // 위시리스트 항목 조회
+        Wish wish = wishRepository.findById(wishId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
+
+        // 해당 ID의 Wish가 현재 로그인한 사용자 것인지 검증
+        if (!wish.getMemberId().equals(member.getId())) {
+            throw new IllegalArgumentException("다른 사용자의 위시리스트는 수정할 수 없습니다.");
+        }
+
+        // 요청된 수량으로 Wish.quantity 필드 업데이트
+        wishRepository.updateQuantity(wishId, quantity);
+        wish.setQuantity(quantity);
+
+        // 상품 정보 조회
+        Product product = productRepository.findById(wish.getProductId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
+
+        return new WishResponseDto(wish, new ProductResponseDto(product));
+    }
 } 

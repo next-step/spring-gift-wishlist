@@ -38,4 +38,14 @@ public class WishController {
         return ResponseEntity.ok(wishes);
     }
 
+    // 위시리스트 수량 변경
+    @PutMapping("/{id}")
+    public ResponseEntity<WishResponseDto> updateWishQuantity(
+            @LoginMember Member member,
+            @PathVariable Long id,
+            @RequestBody WishRequestDto requestDto) {
+        WishResponseDto response = wishService.updateWishQuantity(member, id, requestDto.getQuantity());
+        return ResponseEntity.ok(response);
+    }
+
 } 
