@@ -21,7 +21,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> singup(@Valid @RequestBody UserSingupRequestDto userSignupRequestDto) throws Exception{
+    public ResponseEntity<?> singup(@Valid @RequestBody UserSingupRequestDto userSignupRequestDto) {
         UserSignupResponseDto userSignupResponseDto = authService.signUp(userSignupRequestDto);
 
         return ResponseEntity
@@ -30,7 +30,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody UserLoginRequestDto userLoginRequestDto) throws Exception {
+    public ResponseEntity<?> login(@Valid @RequestBody UserLoginRequestDto userLoginRequestDto) {
         String token = authService.login(userLoginRequestDto);
         return ResponseEntity
                 .ok()

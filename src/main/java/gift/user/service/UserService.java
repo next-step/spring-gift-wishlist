@@ -20,8 +20,9 @@ public class UserService {
     public UserService(UserDao userDao) {
         this.userDao = userDao;
     }
+
     @Transactional
-    public User save(UserSaveRequestDto userSaveRequestDto) throws Exception {
+    public User save(UserSaveRequestDto userSaveRequestDto) {
 
         UUID uuid = UUID.randomUUID();
         byte[] salt = PasswordUtil.generateSalt();
@@ -46,14 +47,15 @@ public class UserService {
     }
 
     @Transactional
-    public User updateUser(UUID id, UserPatchRequestDto userPatchRequestDto) throws Exception {
-        if(userDao.findById(id).isEmpty()) {
+    public User updateUser(UUID id, UserPatchRequestDto userPatchRequestDto) {
+
+        if (userDao.findById(id).isEmpty()) {
             throw new EmptyResultDataAccessException(1);
         }
-        if(userPatchRequestDto.getEmail() != null) {
+        if (userPatchRequestDto.getEmail() != null) {
             userDao.updateEmail(id, userPatchRequestDto.getEmail());
         }
-        if(userPatchRequestDto.getPassword() != null) {
+        if (userPatchRequestDto.getPassword() != null) {
             byte[] salt = Base64.getDecoder().decode(userDao.findById(id).get().getSalt());
             String hashedPassword = PasswordUtil.encryptPassword(userPatchRequestDto.getPassword(), salt);
             userDao.updatePassword(id, hashedPassword);

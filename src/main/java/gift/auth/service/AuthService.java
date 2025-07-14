@@ -26,7 +26,7 @@ public class AuthService {
         this.jwtProvider = jwtProvider;
     }
 
-    public UserSignupResponseDto signUp(UserSingupRequestDto userSignupRequestDto) throws Exception {
+    public UserSignupResponseDto signUp(UserSingupRequestDto userSignupRequestDto) {
         if(userDao.findByEmail(userSignupRequestDto.getEmail()).isPresent()) {
             throw new EmailAlreadyExistsException("이미 사용 중인 이메일입니다.");
         }
@@ -40,7 +40,7 @@ public class AuthService {
         return new UserSignupResponseDto(userDao.save(user), jwtProvider.createToken(user));
     }
 
-    public String login(UserLoginRequestDto userLoginRequestDto) throws Exception {
+    public String login(UserLoginRequestDto userLoginRequestDto) {
         Optional<User> optionalUser = userDao.findByEmail(userLoginRequestDto.getEmail());
         if(optionalUser.isEmpty()) {
             throw new EmptyResultDataAccessException(1);

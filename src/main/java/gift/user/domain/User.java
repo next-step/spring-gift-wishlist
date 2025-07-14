@@ -18,7 +18,7 @@ public class User {
         this.salt = salt;
     }
 
-    public boolean isEqualToPassword(String password) throws Exception{
+    public boolean isEqualToPassword(String password) {
         byte[] salt = Base64.getDecoder().decode(this.salt);
         String hashedPassword = PasswordUtil.encryptPassword(password, salt);
         return this.password.equals(hashedPassword);

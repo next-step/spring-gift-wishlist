@@ -45,7 +45,7 @@ public class UserAdminViewController {
     }
 
     @PostMapping("/add")
-    public String add(@Valid @ModelAttribute UserSaveRequestDto userSaveRequestDto, BindingResult bindingResult) throws Exception {
+    public String add(@Valid @ModelAttribute UserSaveRequestDto userSaveRequestDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "userAddForm";
         }
@@ -62,7 +62,7 @@ public class UserAdminViewController {
     }
 
     @PatchMapping("/{id}/update")
-    public String update(@PathVariable UUID id, @Valid @ModelAttribute UserPatchRequestDto userPatchRequestDto, BindingResult bindingResult) throws Exception {
+    public String update(@PathVariable UUID id, @Valid @ModelAttribute UserPatchRequestDto userPatchRequestDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "userUpdateForm";
         }
