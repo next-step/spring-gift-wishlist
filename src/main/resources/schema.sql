@@ -22,7 +22,6 @@ create table wish_list
     member_id bigint,
     product_id bigint,
     quantity int,
-    primary key (id),
-    foreign key (member_id) references members(id),
-    foreign key (product_id) references products(id)
+    primary key (id)
+
 )
