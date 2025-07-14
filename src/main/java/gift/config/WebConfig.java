@@ -1,5 +1,6 @@
 package gift.config;
 
+
 import gift.config.JwtAuthFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +24,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(loginMemberArgumentResolver);
+
     }
 
     @Bean
@@ -30,6 +32,7 @@ public class WebConfig implements WebMvcConfigurer {
         FilterRegistrationBean<JwtAuthFilter> registration = new FilterRegistrationBean<>();
         registration.setFilter(jwtAuthFilter);
         registration.addUrlPatterns("/api/products/*", "/admin/*", "/wishlist/*");
+
         return registration;
     }
 }

@@ -2,16 +2,18 @@ package gift.controller;
 
 import gift.dto.MemberRequestDto;
 import gift.dto.MemberResponseDto;
+
 import gift.exception.ForbiddenAccessException;
 import gift.service.JwtService;
+
 import gift.service.MemberService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
 import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.List;
 
 @Controller
@@ -19,6 +21,7 @@ import java.util.List;
 public class AdminMemberController {
 
     private final MemberService memberService;
+
     private final JwtService jwtService;
 
     public AdminMemberController(MemberService memberService, JwtService jwtService) {
@@ -39,29 +42,36 @@ public class AdminMemberController {
         } else {
             throw new ForbiddenAccessException("인증이 필요합니다.");
         }
+
     }
 
     // 전체 회원 조회
     @GetMapping
+
     public ResponseEntity<List<MemberResponseDto>> getAllMembers(HttpServletRequest request) {
         checkAdminPermission(request);
+
         List<MemberResponseDto> response = memberService.getAllMembers();
         return ResponseEntity.ok(response);
     }
 
     // 회원 조회 (ID로)
     @GetMapping("/{id}")
+
     public ResponseEntity<MemberResponseDto> getMember(@PathVariable Long id, HttpServletRequest request) {
         checkAdminPermission(request);
+
         MemberResponseDto response = memberService.getMember(id);
         return ResponseEntity.ok(response);
     }
 
     // 회원 추가 (관리자가 직접 추가)
     @PostMapping
+
     public ResponseEntity<MemberResponseDto> createMember(@RequestBody MemberRequestDto requestDto, 
                                                        HttpServletRequest request) {
         checkAdminPermission(request);
+
         memberService.register(requestDto);
         MemberResponseDto response = memberService.getMemberByEmail(requestDto.getEmail());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -70,17 +80,21 @@ public class AdminMemberController {
     // 회원 수정
     @PutMapping("/{id}")
     public ResponseEntity<MemberResponseDto> updateMember(@PathVariable Long id, 
+
                                                        @RequestBody MemberRequestDto requestDto,
                                                        HttpServletRequest request) {
         checkAdminPermission(request);
+
         MemberResponseDto response = memberService.updateMember(id, requestDto);
         return ResponseEntity.ok(response);
     }
 
     // 회원 삭제
     @DeleteMapping("/{id}")
+
     public String deleteMember(@PathVariable Long id, HttpServletRequest request) {
         checkAdminPermission(request);
+
         memberService.deleteMember(id);
         return "redirect:/admin/members/list";
     }

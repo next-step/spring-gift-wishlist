@@ -11,7 +11,9 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 
 import java.util.Map;
+
 import java.util.UUID;
+
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,6 +30,7 @@ class E2eAuthTest {
     void 회원가입_로그인_인증_전체_플로우_테스트() {
         String baseUrl = "http://localhost:" + port;
 
+
         // 1. 회원가입 (매번 다른 이메일 사용)
         String uniqueEmail = "testuser" + UUID.randomUUID().toString().substring(0, 8) + "@example.com";
         Map<String, String> registerRequest = Map.of(
@@ -39,6 +42,7 @@ class E2eAuthTest {
         );
         assertThat(registerResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         String token = registerResponse.getBody().split("\"token\":\"")[1].split("\"")[0];
+
         assertThat(token).isNotBlank();
 
         // 2. 토큰 없이 인증이 필요한 API 호출 → 401
@@ -47,13 +51,16 @@ class E2eAuthTest {
         );
         assertThat(noAuthResponse.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
 
+
         // 3. 일반 사용자 토큰으로 관리자 API 호출 → 403 (권한 부족)
+
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
         HttpEntity<Void> entity = new HttpEntity<>(headers);
         ResponseEntity<String> authResponse = restTemplate.exchange(
             baseUrl + "/admin/members", HttpMethod.GET, entity, String.class
         );
+
         assertThat(authResponse.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }
 
@@ -81,5 +88,6 @@ class E2eAuthTest {
             baseUrl + "/admin/members", HttpMethod.GET, entity, String.class
         );
         assertThat(adminResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+
     }
 } 

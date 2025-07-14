@@ -120,7 +120,9 @@ class ApiIntegrationTest {
     }
 
     @Test
+
     void 로그인_실패시_400반환() {
+
         // 먼저 회원가입 (매번 다른 이메일 사용)
         String uniqueEmail = "fail" + UUID.randomUUID().toString().substring(0, 8) + "@test.com";
         Map<String, String> registerRequest = Map.of("email", uniqueEmail, "password", "123456");
@@ -138,7 +140,9 @@ class ApiIntegrationTest {
         System.out.println("상태 코드: " + response.getStatusCode());
         System.out.println("응답 본문: " + response.getBody());
         
+
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+
         assertThat(response.getBody()).contains("비밀번호");
     }
 
@@ -167,6 +171,7 @@ class ApiIntegrationTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }
+
 
     @Test
     void 관리자_권한으로_관리자_API_접근_성공() {
@@ -223,4 +228,5 @@ class ApiIntegrationTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
+
 } 

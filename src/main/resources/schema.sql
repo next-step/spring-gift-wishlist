@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS member (
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     role VARCHAR(50) NOT NULL
+
 );
 
 CREATE TABLE IF NOT EXISTS wish (
@@ -20,4 +21,5 @@ CREATE TABLE IF NOT EXISTS wish (
     CONSTRAINT uk_member_product UNIQUE (member_id, product_id), -- 사용자가 같은 상품을 여러 번 등록하지 못하도록 제약조건 추가
     FOREIGN KEY (member_id) REFERENCES member(id) ON DELETE CASCADE, -- 사용자 삭제 시 위시리스트 삭제
     FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE CASCADE -- 상품 삭제 시 위시리스트 삭제
+
 );

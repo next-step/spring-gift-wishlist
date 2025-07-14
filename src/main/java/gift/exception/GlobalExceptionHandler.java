@@ -28,6 +28,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errors);
     }
 
+
     // 잘못된 요청 (잘못된 파라미터, 형식) - 400 Bad Request
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException ex) {
@@ -39,6 +40,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleForbidden(ForbiddenAccessException ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
     }
+
 
     // 회원 조회 시 존재하지 않는 회원 (404 Not Found)
     @ExceptionHandler(NoSuchElementException.class)
