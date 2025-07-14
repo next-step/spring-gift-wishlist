@@ -76,6 +76,8 @@ public class WishListControllerTest {
         assertThat(products).isNotNull();
         assertThat(products).isInstanceOf(List.class);
 
+        assertThat(products).hasSize(2);
+
         assertThat(products.get(1).getId()).isEqualTo(2);
         assertThat(products.get(1).getName()).isEqualTo("포스틱");
         assertThat(products.get(1).getPrice()).isEqualTo(1500);
