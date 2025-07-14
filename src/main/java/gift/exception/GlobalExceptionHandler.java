@@ -28,11 +28,19 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errors);
     }
 
-    // 회원 가입/로그인 관련 예외 처리 (403 Forbidden)
+
+    // 잘못된 요청 (잘못된 파라미터, 형식) - 400 Bad Request
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
+    public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
+
+    // 권한 부족 (403 Forbidden) 
+    @ExceptionHandler(ForbiddenAccessException.class)
+    public ResponseEntity<String> handleForbidden(ForbiddenAccessException ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
     }
+
 
     // 회원 조회 시 존재하지 않는 회원 (404 Not Found)
     @ExceptionHandler(NoSuchElementException.class)

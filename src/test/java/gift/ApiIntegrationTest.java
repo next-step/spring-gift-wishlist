@@ -120,7 +120,9 @@ class ApiIntegrationTest {
     }
 
     @Test
-    void 로그인_실패시_403반환() {
+
+    void 로그인_실패시_400반환() {
+
         // 먼저 회원가입 (매번 다른 이메일 사용)
         String uniqueEmail = "fail" + UUID.randomUUID().toString().substring(0, 8) + "@test.com";
         Map<String, String> registerRequest = Map.of("email", uniqueEmail, "password", "123456");
@@ -138,7 +140,9 @@ class ApiIntegrationTest {
         System.out.println("상태 코드: " + response.getStatusCode());
         System.out.println("응답 본문: " + response.getBody());
         
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+
         assertThat(response.getBody()).contains("비밀번호");
     }
 
@@ -167,4 +171,62 @@ class ApiIntegrationTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }
+
+
+    @Test
+    void 관리자_권한으로_관리자_API_접근_성공() {
+        // 1. 관리자 계정으로 로그인
+        Map<String, String> loginRequest = Map.of("email", "admin@admin", "password", "admin123");
+        ResponseEntity<String> loginResponse = restTemplate.postForEntity(
+            baseUrl + "/api/members/login", 
+            loginRequest, 
+            String.class
+        );
+        
+        assertThat(loginResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        String adminToken = loginResponse.getBody().split("\"token\":\"")[1].split("\"")[0];
+
+        // 2. 관리자 토큰으로 관리자 API 호출
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(adminToken);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<String> response = restTemplate.exchange(
+            baseUrl + "/admin/members",
+            HttpMethod.GET,
+            entity,
+            String.class
+        );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    void 관리자_권한으로_일반_API_접근_성공() {
+        // 1. 관리자 계정으로 로그인
+        Map<String, String> loginRequest = Map.of("email", "admin@admin", "password", "admin123");
+        ResponseEntity<String> loginResponse = restTemplate.postForEntity(
+            baseUrl + "/api/members/login", 
+            loginRequest, 
+            String.class
+        );
+        
+        assertThat(loginResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        String adminToken = loginResponse.getBody().split("\"token\":\"")[1].split("\"")[0];
+
+        // 2. 관리자 토큰으로 일반 API 호출
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(adminToken);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<String> response = restTemplate.exchange(
+            baseUrl + "/api/products",
+            HttpMethod.GET,
+            entity,
+            String.class
+        );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
 } 

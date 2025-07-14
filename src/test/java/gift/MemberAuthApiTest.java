@@ -39,7 +39,9 @@ class MemberAuthApiTest {
     }
 
     @Test
-    void 로그인_실패시_403반환() {
+
+    void 로그인_실패시_400반환() {
+
         // 회원가입
         Map<String, String> req = Map.of("email", "test@fail.com", "password", "123456");
         restTemplate.postForEntity(baseUrl + "/api/members/register", req, String.class);
@@ -48,7 +50,9 @@ class MemberAuthApiTest {
         Map<String, String> loginReq = Map.of("email", "test@fail.com", "password", "wrongpass");
         ResponseEntity<String> response = restTemplate.postForEntity(baseUrl + "/api/members/login", loginReq, String.class);
         
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+
         assertThat(response.getBody()).contains("비밀번호");
     }
 } 
