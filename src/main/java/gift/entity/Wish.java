@@ -6,7 +6,11 @@ public class Wish {
     private Long productId;
     private Long memberId;
 
-    public Wish(Long id, Long productId, Long memberId) {
+    public static Wish of(Long id, Long productId, Long memberId) {
+        return new Wish(id, productId, memberId);
+    }
+
+    private Wish(Long id, Long productId, Long memberId) {
         this.id = id;
         this.productId = productId;
         this.memberId = memberId;

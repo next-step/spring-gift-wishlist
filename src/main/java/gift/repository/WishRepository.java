@@ -32,7 +32,7 @@ public class WishRepository {
 
     public List<Wish> findAllByMemberId(Long memberId) {
         String sql = "SELECT * FROM wish WHERE member_id = ?";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> new Wish(
+        return jdbcTemplate.query(sql, (rs, rowNum) -> Wish.of(
                 rs.getLong("id"),
                 rs.getLong("product_id"),
                 rs.getLong("member_id")
