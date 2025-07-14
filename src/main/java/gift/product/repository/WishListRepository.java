@@ -12,5 +12,7 @@ public interface WishListRepository {
 	Long save(WishList wishList);
 	void delete(Long userId, Long itemId);
 	Optional<WishList> findByUserIdAndItemId(Long userId, Long itemId);
+	void increaseAmount(Long userId, Long itemId);
+	void decreaseAmount(Long userId, Long itemId);
 
 }

@@ -64,4 +64,18 @@ public class WishListRepositoryImpl implements WishListRepository {
 		else return Optional.of(result.get(0));
 	}
 
+
+	@Override
+	public void decreaseAmount(Long userId, Long itemId) {
+		final String sql = "UPDATE wish_list SET amount = amount - 1 WHERE user_id = ? AND item_id = ?";
+		jdbcTemplate.update(sql, userId, itemId);
+	}
+
+
+	@Override
+	public void increaseAmount(Long userId, Long itemId) {
+		final String sql = "UPDATE wish_list SET amount = amount + 1 WHERE user_id = ? AND item_id = ?";
+		jdbcTemplate.update(sql, userId, itemId);
+	}
+
 }
