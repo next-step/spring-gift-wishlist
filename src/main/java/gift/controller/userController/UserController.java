@@ -1,14 +1,12 @@
 package gift.controller.userController;
 
 
-import gift.Jwt.JwtUtil;
 import gift.Jwt.TokenUtils;
 import gift.dto.userDto.UserLoginDto;
 import gift.dto.userDto.UserRegisterDto;
 import gift.dto.userDto.UserResponseDto;
 import gift.dto.userDto.UserUpdateDto;
 import gift.service.userService.UserService;
-import io.jsonwebtoken.Claims;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -57,7 +55,7 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @DeleteMapping()
+    @DeleteMapping
     public ResponseEntity<?> deleteUser(@RequestHeader("Authorization") String authHeader, @RequestParam Long id, Model model) {
         String token = tokenUtils.extractToken(authHeader);
         tokenUtils.validateToken(token);

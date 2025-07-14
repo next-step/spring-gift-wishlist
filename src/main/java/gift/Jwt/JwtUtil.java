@@ -1,9 +1,14 @@
 package gift.Jwt;
 
 import gift.entity.User;
+import gift.exception.userException.ExpiredTokenException;
+import gift.exception.userException.UnauthorizedException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -32,14 +37,19 @@ public class JwtUtil {
                 .compact();
     }
 
+
+
     public boolean validate(String token) {
         try {
             Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
             return true;
-        } catch (Exception e) {
-            return false;
+        } catch (ExpiredJwtException e) {
+            throw new ExpiredTokenException();
+        } catch (SignatureException e) {
+            throw new UnauthorizedException();
         }
     }
+
 
     public Claims getClaims(String token) {
         return Jwts.parser()

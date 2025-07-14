@@ -4,6 +4,7 @@ import gift.dto.userDto.UserLoginDto;
 import gift.dto.userDto.UserRegisterDto;
 import gift.dto.userDto.UserResponseDto;
 import gift.dto.userDto.UserUpdateDto;
+import gift.entity.User;
 import jakarta.validation.Valid;
 
 import java.util.List;
@@ -20,4 +21,6 @@ public interface UserService {
     void deleteUserById(Long id,boolean isAdmin);
 
     String loginUser(@Valid UserLoginDto dto);
+
+    User findUserByEmail(String userEmail);
 }
