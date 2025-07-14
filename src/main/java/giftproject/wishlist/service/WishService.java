@@ -31,11 +31,14 @@ public class WishService {
         Wish savedWish;
 
         if (existingWishOptional.isPresent()) {
-            Wish existingWish = existingWishOptional.get();
-            int newQuantity = existingWish.getQuantity() + 1;
-            existingWish.updateQuantity(newQuantity);
-            savedWish = wishRepository.save(existingWish);
+            wishRepository.saveDuplicate(memberId, requestDto.productId());
+            savedWish = wishRepository.findByMemberIdAndProductId(memberId, requestDto.productId())
+                    .orElseThrow(() -> new IllegalArgumentException());
         } else {
+            int distinctProductCount = wishRepository.countProductsByMemberID(memberId);
+            if (distinctProductCount >= 30) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "상품을 최대 30종까지 담을 수 있어요.");
+            }
             int initialQuantity = 1;
             Wish newWish = new Wish(memberId, requestDto.productId(), initialQuantity);
             savedWish = wishRepository.save(newWish);

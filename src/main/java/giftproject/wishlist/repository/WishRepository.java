@@ -41,6 +41,20 @@ public class WishRepository {
         return wish;
     }
 
+    public int saveDuplicate(Long memberId, Long productId) {
+        String selectSql = "SELECT quantity FROM wishes WHERE member_id = ? AND product_id = ?";
+        Integer currentQuantity = jdbcTemplate.queryForObject(selectSql, Integer.class, memberId,
+                productId);
+
+        String updateSql = "UPDATE wishes SET quantity = ? WHERE member_id = ? AND product_id = ?";
+        return jdbcTemplate.update(updateSql, currentQuantity + 1, memberId, productId);
+    }
+
+    public int countProductsByMemberID(Long memberId) {
+        String sql = "SELECT COUNT(DISTINCT product_id) FROM wishes WHERE member_id = ? ";
+        return jdbcTemplate.queryForObject(sql, Integer.class, memberId);
+    }
+
     public List<Wish> findByMemberId(Long memberId) {
         String sql = "SELECT id, member_id, product_id, quantity FROM wishes WHERE member_id = ?";
         return jdbcTemplate.query(sql, wishRowMapper, memberId);
@@ -54,11 +68,6 @@ public class WishRepository {
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
-    }
-
-    public void deleteById(Long id) {
-        String sql = "DELETE FROM wishes WHERE id = ?";
-        jdbcTemplate.update(sql, id);
     }
 
     public void deleteByMemberIdAndProductId(Long memberId,
