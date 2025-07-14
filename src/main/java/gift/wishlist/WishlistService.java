@@ -20,8 +20,8 @@ public class WishlistService {
         return wishlistDao.getWishlistByUserId(userId);
     }
 
-    public Wishlist saveWishlist(WishlistSaveRequestDto wishlistSaveRequestDto) {
-        Wishlist wishlist = new Wishlist(null, wishlistSaveRequestDto.getUserId(), wishlistSaveRequestDto.getProductId());
+    public Wishlist saveWishlist(UUID id, WishlistSaveRequestDto wishlistSaveRequestDto) {
+        Wishlist wishlist = new Wishlist(null, id, wishlistSaveRequestDto.getProductId());
         return wishlistDao.save(wishlist);
     }
 
