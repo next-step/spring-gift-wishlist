@@ -1,4 +1,4 @@
-package gift.common.jwt;
+package gift.auth.jwt;
 
 import gift.common.code.CustomResponseCode;
 import gift.common.exception.CustomException;

@@ -1,4 +1,4 @@
-package gift.auth;
+package gift.auth.resolver;
 
 import gift.common.annotation.CurrentUser;
 import gift.common.code.CustomResponseCode;

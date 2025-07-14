@@ -9,7 +9,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gift.auth.CurrentUserArgumentResolver;
+import gift.auth.resolver.CurrentUserArgumentResolver;
 import gift.common.code.CustomResponseCode;
 import gift.common.dto.CustomResponseBody;
 import gift.common.exception.CustomException;

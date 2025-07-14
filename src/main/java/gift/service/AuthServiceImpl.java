@@ -1,8 +1,8 @@
 package gift.service;
 
+import gift.auth.jwt.JwtUtil;
 import gift.common.code.CustomResponseCode;
 import gift.common.exception.CustomException;
-import gift.common.jwt.JwtUtil;
 import gift.dto.AuthRequest;
 import gift.dto.AuthResponse;
 import gift.entity.User;
