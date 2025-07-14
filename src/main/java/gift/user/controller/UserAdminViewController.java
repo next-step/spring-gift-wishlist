@@ -1,5 +1,6 @@
 package gift.user.controller;
 
+import gift.common.exception.NoSuchIdException;
 import gift.user.domain.User;
 import gift.user.dto.UserPatchRequestDto;
 import gift.user.dto.UserSaveRequestDto;
@@ -52,15 +53,9 @@ public class UserAdminViewController {
         return "redirect:/api/admin/user/list";
     }
 
-    @ResponseBody
-    @GetMapping("/{id}")
-    public User findById(@PathVariable UUID id) {
-        return userService.findById(id);
-    }
-
     @GetMapping("/{id}/update")
     public String updateForm(@PathVariable UUID id, Model model) {
-        User user = userService.findById(id);
+        User user = userService.findById(id).orElseThrow(() -> new NoSuchIdException("존재하지 않는 ID입니다."));
         UserPatchRequestDto userPatchRequestDto = new UserPatchRequestDto(user);
         model.addAttribute("userPatchRequestDto", userPatchRequestDto);
         return "userUpdateForm";
