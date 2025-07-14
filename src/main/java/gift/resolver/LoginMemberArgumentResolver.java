@@ -4,6 +4,7 @@ import gift.Entity.Member;
 import gift.Jwt.JwtUtil;
 import gift.annotation.LoginMember;
 import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -36,22 +37,22 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
                                   ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest,
                                   WebDataBinderFactory binderFactory) throws Exception {
-        // 현재 HTTP 요청을 가져옴
         HttpServletRequest httpServletRequest = webRequest.getNativeRequest(HttpServletRequest.class);
-        // 요청 헤더 중에서"Authorization" 헤더를 꺼내서 가져옴
-        String authHeader = httpServletRequest.getHeader("Authorization");
+        if (httpServletRequest == null) return null;
 
-        // Authorization 헤더가 존재하고 "Bearer"로 시작하는 지 확임
-        // Bearer는 토큰을 인증 수단으로 보낸다는 뜻이다. 따라서 실제 인증 정보는 뒤의 토큰이다.
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            // 있다면 "Bearer" 문자열을 제거하여 토큰만 남김
-            String token = authHeader.substring(7);
+        String token = null;
+        Cookie[] cookies = httpServletRequest.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("Authorization".equals(cookie.getName())) {
+                    token = cookie.getValue();
+                    break;
+                }
+            }
+        }
+
+        if (token != null) {
             try {
-                // JWT는 3부분으로 구성됨
-                // Header : 토큰의 타입, 서명 알고리즘 등
-                // payload : 사용자 정보
-                // signature : 서버가 서명한 결과값
-                // 이중에 payload가 claim에 해당함
                 Claims claims = jwtUtil.parseToken(token);
 
                 Member member = new Member();
@@ -63,7 +64,6 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
 
                 return member;
             } catch (Exception e) {
-                // 토큰이 유효하지 않다면 사용자의 정보가 없는 것이니 null을 반환
                 return null;
             }
         }

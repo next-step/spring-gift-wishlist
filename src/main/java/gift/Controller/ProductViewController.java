@@ -35,6 +35,10 @@ public class ProductViewController {
     //따라서 로그인된 Member의 정보를 가져오기
     @GetMapping("/user/products")
     public String list(Model model, @LoginMember Member member) {
+        if (member == null) {
+            return "redirect:/login";
+        }
+
         List<Product> products = productDao.showProducts();
         model.addAttribute("products", products);
 

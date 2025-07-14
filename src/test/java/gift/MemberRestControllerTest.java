@@ -3,6 +3,7 @@ package gift;
 import gift.Entity.Member;
 import gift.dto.MemberDao;
 import gift.dto.MemberRequest;
+import gift.dto.TokenResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +65,44 @@ public class MemberRestControllerTest {
                 .toEntity(String.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    public void testRegisterduplicateId() {
+        var url = "http://localhost:" + port + "/api/register";
+        var duplicate = new Member("helloworld", "new@kakao.com", "password", "중복유저", "주소", "USER");
+
+        var response = client.post()
+                .uri(url)
+                .body(duplicate)
+                .retrieve()
+                .toEntity(String.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getBody()).contains("이미 사용 중인 아이디입니다.");
+    }
+
+    @Test
+    public void logincheck() {
+        var loginUrl = "http://localhost:" + port + "/api/login";
+        var loginReq = new MemberRequest("helloworld", "123456789", null);
+
+        var loginRes = client.post()
+                .uri(loginUrl)
+                .body(loginReq)
+                .retrieve()
+                .toEntity(TokenResponse.class);
+
+        String token = loginRes.getBody().getToken();
+
+        var productsPageUrl = "http://localhost:" + port + "/user/products";
+        var html = client.get()
+                .uri(productsPageUrl)
+                .header("Authorization", "Bearer " + token)
+                .retrieve()
+                .body(String.class);
+
+        assertThat(html).contains("helloworld님, 안녕하세요!");
     }
 
 
