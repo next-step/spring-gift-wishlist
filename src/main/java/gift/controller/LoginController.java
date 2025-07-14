@@ -37,4 +37,9 @@ public class LoginController {
         response.addCookie(cookie);
         return "redirect:/management/products";
     }
+
+    @GetMapping("/register")
+    public String showRegisterPage() {
+        return "register";
+    }
 }
