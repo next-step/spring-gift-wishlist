@@ -3,6 +3,7 @@ package gift.service;
 import gift.dto.WishListRequestDto;
 import gift.dto.WishListResponseDto;
 import gift.entity.WishList;
+import gift.exception.WishListAccessDeniedException;
 import gift.repository.WishListRepository;
 import org.springframework.stereotype.Service;
 
@@ -36,15 +37,15 @@ public class WishListServiceImpl implements WishListService {
     }
 
     @Override
-    public void deleteWishList(Long memberId, Long wishListId) throws AccessDeniedException {
+    public void deleteWishList(Long memberId, Long wishListId) {
         validateWishListByMemberIdAndWishListId(memberId, wishListId);
         wishListRepository.deleteWishList(wishListId);
     }
 
     @Override
-    public void validateWishListByMemberIdAndWishListId(Long memberId, Long wishListId) throws AccessDeniedException {
+    public void validateWishListByMemberIdAndWishListId(Long memberId, Long wishListId){
         if(!wishListRepository.isWishListExistByMemberIdAndWishListId(memberId, wishListId)) {
-            throw new AccessDeniedException("해당 리소스에 접근할 권한이 없습니다.");
+            throw new WishListAccessDeniedException();
         }
     }
 }

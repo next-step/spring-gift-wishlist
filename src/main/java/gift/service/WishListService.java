@@ -12,7 +12,7 @@ public interface WishListService {
 
     void addWishList(Long memberId, WishListRequestDto wishListRequestDto);
 
-    void deleteWishList(Long memberId, Long wishListId) throws AccessDeniedException;
+    void deleteWishList(Long memberId, Long wishListId);
 
-    void validateWishListByMemberIdAndWishListId(Long memberId, Long wishListId) throws AccessDeniedException;
+    void validateWishListByMemberIdAndWishListId(Long memberId, Long wishListId);
 }
