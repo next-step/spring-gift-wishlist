@@ -34,4 +34,19 @@ public class MemberRepository {
                 .params(member.getEmail(), member.getPassword(), member.getRole())
                 .update();
     }
+
+    public Optional<Member> findById(Long id) {
+        return jdbcClient.sql("SELECT id, email, password, role FROM member WHERE id = ?")
+                .param(id)
+                .query((rs, rowNum) ->
+                        new Member(
+                                rs.getLong("id"),
+                                rs.getString("email"),
+                                rs.getString("password"),
+                                rs.getString("role")
+                        )
+                )
+                .optional();
+    }
+
 }

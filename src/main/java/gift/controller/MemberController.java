@@ -1,5 +1,6 @@
 package gift.controller;
 
+import gift.dto.LoginResponseDto;
 import gift.dto.MemberRequestDto;
 import gift.service.MemberService;
 import org.springframework.http.HttpStatus;
@@ -26,10 +27,9 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody MemberRequestDto dto) {
+    public ResponseEntity<LoginResponseDto> login(@RequestBody MemberRequestDto dto) {
         String token = memberService.login(dto);
-        Map<String, String> response = new HashMap<>();
-        response.put("token", token);
+        LoginResponseDto response = new LoginResponseDto(token);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

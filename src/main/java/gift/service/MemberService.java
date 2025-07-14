@@ -1,12 +1,13 @@
 package gift.service;
 
 import gift.auth.JwtProvider;
-import gift.dto.MemberRequestDto;
 import gift.entity.Member;
+import gift.dto.MemberRequestDto;
 import gift.exception.forbidden.EmailDuplicateException;
 import gift.exception.forbidden.EmailNotFoundException;
 import gift.exception.forbidden.WrongPasswordException;
 import gift.repository.MemberRepository;
+import io.jsonwebtoken.Claims;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
@@ -22,23 +23,31 @@ public class MemberService {
     }
 
     public void register(MemberRequestDto dto) {
-        if (memberRepository.findByEmail(dto.getEmail()).isPresent()) {
+        if (memberRepository.findByEmail(dto.email()).isPresent()) {
             throw new EmailDuplicateException();
         }
 
-        String hashedPassword = BCrypt.hashpw(dto.getPassword(), BCrypt.gensalt());
-        Member member = new Member(null, dto.getEmail(), hashedPassword, "USER");
+        String hashedPassword = BCrypt.hashpw(dto.password(), BCrypt.gensalt());
+        Member member = new Member(null, dto.email(), hashedPassword, "USER");
         memberRepository.save(member);
     }
 
     public String login(MemberRequestDto dto) {
-        Member member = memberRepository.findByEmail(dto.getEmail())
+        Member member = memberRepository.findByEmail(dto.email())
                 .orElseThrow(EmailNotFoundException::new);
 
-        if (!BCrypt.checkpw(dto.getPassword(), member.getPassword())) {
+        if (!BCrypt.checkpw(dto.password(), member.getPassword())) {
             throw new WrongPasswordException();
         }
 
         return jwtProvider.createToken(member);
+    }
+
+    public Member findByToken(String token) {
+        Claims claims = jwtProvider.parseToken(token);
+        Long memberId = Long.parseLong(claims.getSubject());
+
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("회원을 찾을 수 없습니다."));
     }
 }
