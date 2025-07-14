@@ -23,7 +23,7 @@ public class WishListService {
 		if(wishListRepository.findByUserIdAndItemId(userId, request.itemId()).isPresent())
 			throw new DataIntegrityViolationException("이미 위시리스트에 담은 상품입니다");
 
-		WishList wishList = new WishList(userId, request.itemId());
+		WishList wishList = new WishList(userId, request.itemId(), 1);
 		return wishListRepository.save(wishList);
 	}
 

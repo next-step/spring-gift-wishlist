@@ -26,5 +26,6 @@ CREATE TABLE wish_list (
   id BIGINT PRIMARY KEY AUTO_INCREMENT,
   user_id BIGINT NOT NULL,
   item_id BIGINT NOT NULL,
+  amount INT NOT NULL DEFAULT 1,
   UNIQUE (user_id, item_id)
 );

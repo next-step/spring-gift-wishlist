@@ -27,7 +27,8 @@ public class WishListRepositoryImpl implements WishListRepository {
 		return jdbcTemplate.query(sql, (rs, rowNum) -> new WishList(
 			rs.getLong("id"),
 			rs.getLong("user_id"),
-			rs.getLong("item_id")
+			rs.getLong("item_id"),
+			rs.getInt("amount")
 		), userId);
 	}
 
@@ -55,7 +56,8 @@ public class WishListRepositoryImpl implements WishListRepository {
 		List<WishList> result = jdbcTemplate.query(sql, (rs, rowNum) -> new WishList(
 			rs.getLong("id"),
 			rs.getLong("user_id"),
-			rs.getLong("item_id")
+			rs.getLong("item_id"),
+			rs.getInt("amount")
 		), userId, itemId);
 
 		if(result.isEmpty()) return Optional.empty();
