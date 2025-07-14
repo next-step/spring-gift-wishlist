@@ -33,6 +33,9 @@ public class WishListService implements WishListServiceInterface {
 
     @Override
     public List<ProductResponseDto> findAllProductsFromWishList(String email) {
+        if (memberRepository.findByEmail(email).isEmpty()) {
+            throw new MemberExceptions.MemberNotFoundException(email);
+        }
         List<Product> products = wishListRepository.findAllProductsFromWishListByEmail(email);
         List<ProductResponseDto> productResponseDtoList = new ArrayList<>();
         for (Product product : products) {
@@ -61,6 +64,9 @@ public class WishListService implements WishListServiceInterface {
 
     @Override
     public void deleteProductFromWishList(String email, Long productId) {
+        if (memberRepository.findByEmail(email).isEmpty()) {
+            throw new MemberExceptions.MemberNotFoundException(email);
+        }
         boolean deleted = wishListRepository.deleteProductFromWishListByEmail(email, productId);
         if(!deleted) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
