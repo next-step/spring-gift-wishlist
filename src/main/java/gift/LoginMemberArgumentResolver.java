@@ -1,6 +1,9 @@
 package gift;
 
 import gift.entity.Member;
+import gift.exception.InvalidJwtTokenException;
+import gift.exception.MissingJwtTokenException;
+import gift.exception.UserNotFoundException;
 import gift.service.MemberService;
 import gift.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,13 +42,13 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
         String bearerToken = request.getHeader("Authorization");
 
         if (bearerToken == null || !bearerToken.startsWith("Bearer ")) {
-            throw new IllegalArgumentException("JWT 토큰이 없습니다.");
+            throw new MissingJwtTokenException("JWT 토큰이 없습니다.");
         }
 
         String token = bearerToken.substring(7);
 
         if (!jwtUtil.validateToken(token)) {
-            throw new IllegalArgumentException("유효하지 않은 JWT 토큰입니다.");
+            throw new InvalidJwtTokenException("유효하지 않은 JWT 토큰입니다.");
         }
 
 
@@ -55,7 +58,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
         Member member = memberService.findByEmail(email);
 
         if (member == null) {
-            throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
+            throw new UserNotFoundException("사용자를 찾을 수 없습니다.");
         }
 
         return member;
