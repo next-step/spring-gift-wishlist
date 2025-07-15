@@ -31,11 +31,8 @@ public class MemberRepository {
     };
 
     public Optional<Member> findByEmail(String email) {
-        System.out.println("memRepoPoint1");
         String sql = "SELECT id, email, password, role FROM members WHERE email = ?";
-        System.out.println("memRepoPoint2");
         List<Member> result = jdbcTemplate.query(sql, memberRowMapper, email);
-        System.out.println("memRepoPoint3");
         return result.stream().findFirst();
     }
 
@@ -64,9 +61,9 @@ public class MemberRepository {
     }
 
     public List<Member> findAll() {
-        System.out.println("memRepoFinaAllPoint1");
+
         String sql = "SELECT id, email, password, role FROM members";
-        System.out.println("memRepoFinaAllPoint2");
+
         return jdbcTemplate.query(sql, memberRowMapper);
     }
 
