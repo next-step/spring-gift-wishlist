@@ -2,7 +2,6 @@ package gift.service;
 
 import gift.exception.DuplicatedEmailException;
 import gift.exception.LoginFailedException;
-import gift.exception.UnAuthenticatedException;
 import gift.util.JwtUtil;
 import gift.dto.AuthToken;
 import gift.entity.Member;
@@ -11,6 +10,8 @@ import gift.entity.Role;
 import gift.repository.MemberRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class MemberServiceImpl implements MemberService {
@@ -44,5 +45,10 @@ public class MemberServiceImpl implements MemberService {
         }
         String accessToken = jwtUtil.generateAccessToken(member);
         return new AuthToken(accessToken);
+    }
+
+    @Override
+    public Optional<Member> findByEmail(String email) {
+        return memberRepository.findByEmail(email);
     }
 }

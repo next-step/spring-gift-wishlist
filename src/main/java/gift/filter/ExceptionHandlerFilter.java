@@ -26,10 +26,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String path = request.getRequestURI();
-        boolean isExcludable = EXCLUDE_PATHS.stream().anyMatch(path::startsWith);
-
-        if (isExcludable) {
+        if (EXCLUDE_PATHS.stream().anyMatch(request.getRequestURI()::startsWith)) {
             filterChain.doFilter(request, response);
             return;
         }

@@ -1,9 +1,9 @@
 package gift.filter;
 
 import gift.exception.UnAuthenticatedException;
+import gift.exception.UnAuthorizedException;
 import gift.util.JwtUtil;
 import gift.entity.Role;
-import gift.exception.UnAuthorizedException;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
