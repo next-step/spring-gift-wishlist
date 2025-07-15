@@ -1,9 +1,8 @@
-package gift.controller;
+package gift.product.controller;
 
-import gift.dto.*;
-import gift.entity.*;
-
-import gift.repository.ProductRepository;
+import gift.product.dto.ProductRequest;
+import gift.product.entity.Product;
+import gift.product.repository.ProductRepository;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +36,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<?> add(@RequestBody @Valid ProductRequestDto request) {
+    public ResponseEntity<?> add(@RequestBody @Valid ProductRequest request) {
         Product product = new Product(
                 null,
                 request.getName(),
@@ -51,7 +50,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody ProductRequestDto request) {
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody ProductRequest request) {
         Product existing = repository.findById(id).orElse(null);
         if (existing == null) {
             return ResponseEntity.notFound().build();
