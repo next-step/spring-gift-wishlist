@@ -76,7 +76,6 @@ public class MemberService {
     }
 
     public List<MemberResponse> findAllMembers() {
-        System.out.println("findAllMembersPoint1");
         return memberRepository.findAll().stream()
                 .map(MemberResponse::from)
                 .collect(Collectors.toList());
