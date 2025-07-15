@@ -22,6 +22,17 @@ public class JwtUtil {
         }
     }
 
+    public String extractEmailFromHeader(String authorization){
+        if(authorization == null || !authorization.startsWith("Bearer ")) {
+            throw new IllegalArgumentException("Invalid authorization");
+        }
+        String token = authorization.substring(7);
+        if(validateToken(token)) {
+            return getEmailFromToken(token);
+        }
+        throw new IllegalArgumentException("Invalid authorization");
+    }
+
     public String getEmailFromToken(String token) {
         Claims claims = Jwts.parser()
                 .verifyWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
