@@ -1,5 +1,8 @@
 package gift.dto.product;
 
+
+import gift.model.Product;
+
 import jakarta.validation.constraints.*;
 
 
@@ -26,6 +29,11 @@ public class ProductRequestDto {
         }
 
         return true;
+    }
+
+
+    public Product toEntity() {
+        return new Product(this.id, this.name, this.price, this.imageUrl);
     }
 
     public ProductRequestDto() {}

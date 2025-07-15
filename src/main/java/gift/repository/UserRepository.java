@@ -48,6 +48,14 @@ public class UserRepository {
                         .query(Long.class)
                         .optional();
     }
+
+    public Optional<User> findByEmail(String email) {
+        return jdbc.sql("SELECT * FROM users WHERE email = :email")
+                .param("email", email)
+                .query(User.class)
+                .optional();
+    }
+
     public boolean checkPassword(String userEmail, String requestPassword) {
         String userPwd = jdbc.sql("SELECT password FROM users WHERE email = :email")
                 .param("email", userEmail)

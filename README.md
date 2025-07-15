@@ -70,3 +70,30 @@
   - ProductRepository
   - UserRepository
 
+
+## STEP-03 위시리스트
+- controller / dto / jwt / model / repository / service 기능 별로 폴더 분리
+---
+- controller
+  - ProductController
+  - UserController
+  - WishlistController
+- dto
+  - product
+    - ProductRequestDto
+  - user
+    - UserRequestDto
+- jwt
+  - JwtUtil
+- model
+  - Product
+  - User
+- repository
+  - ProductRepository
+  - UserRepository
+  - WishlistRepository
+- service
+  - ProductService
+  - UserService
+  - WishlistService
+
