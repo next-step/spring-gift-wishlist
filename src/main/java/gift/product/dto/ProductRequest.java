@@ -1,9 +1,9 @@
-package gift.dto;
+package gift.product.dto;
 
 import java.math.BigDecimal;
 import jakarta.validation.constraints.*;
 
-public class ProductRequestDto {
+public class ProductRequest {
 
     @NotBlank(message = "상품 이름은 비어 있을 수 없습니다")
     @Size(max = 15, message = "상품 이름은 최대 15자까지 입력할 수 있습니다")
@@ -27,7 +27,7 @@ public class ProductRequestDto {
         return true;
     }
 
-    public ProductRequestDto(String name, BigDecimal price, String imgUrl) {
+    public ProductRequest(String name, BigDecimal price, String imgUrl) {
         this.name = name;
         this.price = price;
         this.imgUrl = imgUrl;
