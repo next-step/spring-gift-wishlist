@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>상품 관리</title>
+    <title>회원 관리</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
         .card-header {
-            background-color: #2c3e50;
+            background-color: #34495e;
             color: white;
         }
         .card-header h4 {
@@ -17,31 +17,32 @@
 <div class="container mt-5">
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h4><b>상품</b>관리</h4>
-            <a th:href="@{/admin/products/new}" class="btn btn-success">새 상품 추가</a>
+            <h4>회원 목록</h4>
+            <a th:href="@{/admin/members/add}" class="btn btn-success">회원 추가</a>
         </div>
         <div class="card-body">
             <table class="table table-hover text-center align-middle">
                 <thead class="table-light">
                 <tr>
-                    <th>상품명</th>
-                    <th>가격</th>
-                    <th>이미지</th>
+                    <th>회원 ID</th>
+                    <th>이메일</th>
                     <th>작업</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="product : ${products}">
-                    <td th:text="${product.name}"></td>
-                    <td th:text="${product.price} + '원'"></td>
-                    <td><img th:src="${product.imgUrl}" alt="상품 이미지" width="80"/></td>
+                <tr th:each="member : ${members}">
+                    <td th:text="${member.id}">1</td>
+                    <td th:text="${member.email}">admin@email.com</td>
                     <td>
-                        <a th:href="@{'/admin/products/edit/' + ${product.id}}" class="btn btn-warning btn-sm">수정</a>
-                        <form th:action="@{'/admin/products/' + ${product.id}}" th:method="delete" style="display:inline;">
+                        <a th:href="@{'/admin/members/edit/' + ${member.id}}" class="btn btn-warning btn-sm">수정</a>
+                        <form th:action="@{'/admin/members/delete/' + ${member.id}}" method="post" style="display:inline;">
                             <button type="submit" class="btn btn-danger btn-sm"
                                     onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
                         </form>
                     </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(members)}">
+                    <td colspan="3">등록된 회원이 없습니다.</td>
                 </tr>
                 </tbody>
             </table>

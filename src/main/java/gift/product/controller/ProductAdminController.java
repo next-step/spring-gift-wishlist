@@ -1,8 +1,8 @@
-package gift.controller;
+package gift.product.controller;
 
-import gift.dto.ProductRequestDto;
-import gift.entity.Product;
-import gift.repository.ProductRepository;
+import gift.product.dto.ProductRequest;
+import gift.product.entity.Product;
+import gift.product.repository.ProductRepository;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,11 +11,11 @@ import org.springframework.validation.BindingResult;
 
 @Controller
 @RequestMapping("/admin/products")
-public class AdminProductController {
+public class ProductAdminController {
 
     private final ProductRepository repository;
 
-    public AdminProductController(ProductRepository repository) {
+    public ProductAdminController(ProductRepository repository) {
 
         this.repository = repository;
     }
@@ -23,20 +23,20 @@ public class AdminProductController {
     @GetMapping
     public String list(Model model) {
         model.addAttribute("products", repository.findAll());
-        return "main";
+        return "productList";
     }
 
     @GetMapping("/new")
     public String showCreateForm(Model model) {
-        model.addAttribute("productRequestDto", new ProductRequestDto("", null, ""));
-        return "create";
+        model.addAttribute("productRequestDto", new ProductRequest("", null, ""));
+        return "productAddEdit";
     }
 
     @PostMapping("/new")
-    public String create(@Valid @ModelAttribute("productRequestDto") ProductRequestDto dto,
+    public String create(@Valid @ModelAttribute("productRequestDto") ProductRequest dto,
                          BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return "create";
+            return "productAddEdit";
         }
 
         Product product = new Product(null, dto.getName(), dto.getPrice(), dto.getImgUrl());
@@ -51,20 +51,20 @@ public class AdminProductController {
             return "redirect:/admin/products";
         }
 
-        ProductRequestDto dto = new ProductRequestDto(product.getName(), product.getPrice(), product.getImgUrl());
+        ProductRequest dto = new ProductRequest(product.getName(), product.getPrice(), product.getImgUrl());
         model.addAttribute("productRequestDto", dto);
         model.addAttribute("productId", id);
-        return "create";
+        return "productAddEdit";
     }
 
     @PostMapping("/edit/{id}")
     public String update(@PathVariable Long id,
-            @Valid @ModelAttribute("productRequestDto") ProductRequestDto dto,
+            @Valid @ModelAttribute("productRequestDto") ProductRequest dto,
             BindingResult bindingResult,
             Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("productId", id);
-            return "create";
+            return "productAddEdit";
         }
 
         Product updated = new Product(id, dto.getName(), dto.getPrice(), dto.getImgUrl());
