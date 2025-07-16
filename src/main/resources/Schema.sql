@@ -2,7 +2,7 @@ create table products(
     id bigint auto_increment primary key,
     name varchar(255) not null,
     price decimal(10,2) not null,
-    imgUrl varchar(512) not null
+    img_url varchar(512) not null
 );
 
 create table members(

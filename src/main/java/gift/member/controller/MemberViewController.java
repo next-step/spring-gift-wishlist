@@ -11,11 +11,11 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/admin/members")
-public class MemberAdminController {
+public class MemberViewController {
 
     private final MemberService memberService;
 
-    public MemberAdminController(MemberService memberService) {
+    public MemberViewController(MemberService memberService) {
         this.memberService = memberService;
     }
 
