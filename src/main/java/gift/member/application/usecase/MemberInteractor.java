@@ -20,17 +20,14 @@ public class MemberInteractor implements MemberUseCase {
     private final MemberPersistencePort memberPersistencePort;
     private final JwtTokenPort jwtTokenPort;
     private final PasswordEncoder passwordEncoder;
-    private final MemberMapper memberMapper;
 
     public MemberInteractor(
             MemberPersistencePort memberPersistencePort,
             JwtTokenPort jwtTokenPort,
-            PasswordEncoder passwordEncoder,
-            MemberMapper memberMapper) {
+            PasswordEncoder passwordEncoder) {
         this.memberPersistencePort = memberPersistencePort;
         this.jwtTokenPort = jwtTokenPort;
         this.passwordEncoder = passwordEncoder;
-        this.memberMapper = memberMapper;
     }
 
     @Override
@@ -63,7 +60,7 @@ public class MemberInteractor implements MemberUseCase {
     public List<MemberResponse> getAllMembers() {
         List<Member> members = memberPersistencePort.findAll();
         return members.stream()
-                .map(memberMapper::toResponse)
+                .map(MemberMapper::toResponse)
                 .toList();
     }
 
@@ -77,7 +74,7 @@ public class MemberInteractor implements MemberUseCase {
         Member member = Member.create(request.email(), encodedPassword);
         Member savedMember = memberPersistencePort.save(member);
 
-        return memberMapper.toResponse(savedMember);
+        return MemberMapper.toResponse(savedMember);
     }
 
     @Override
@@ -97,7 +94,7 @@ public class MemberInteractor implements MemberUseCase {
         );
 
         Member savedMember = memberPersistencePort.save(updatedMember);
-        return memberMapper.toResponse(savedMember);
+        return MemberMapper.toResponse(savedMember);
     }
 
     @Override
@@ -108,8 +105,20 @@ public class MemberInteractor implements MemberUseCase {
         memberPersistencePort.deleteById(id);
     }
 
+    @Override
+    public MemberResponse getMemberById(Long memberId) {
+        Member member = memberPersistencePort.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다. id: " + memberId));
+        return MemberMapper.toResponse(member);
+    }
+
+    @Override
+    public Member getMemberByEmail(String email) {
+        return memberPersistencePort.findByEmail(email).orElse(null);
+    }
+
     private AuthResponse createAuthResponse(Long memberId, String email, gift.member.domain.model.Role role) {
         String accessToken = jwtTokenPort.createAccessToken(memberId, email, role);
         return new AuthResponse(accessToken);
     }
-} 
+}
