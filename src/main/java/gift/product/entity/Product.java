@@ -1,4 +1,7 @@
-package gift.entity;
+package gift.product.entity;
+
+import gift.product.dto.ProductRequest;
+import gift.product.dto.ProductResponse;
 
 import java.math.BigDecimal;
 
@@ -30,4 +33,13 @@ public class Product {
 
     public String getImgUrl() { return imgUrl; }
     public void setImgUrl(String imgUrl) { this.imgUrl = imgUrl; }
+
+    public void updateWith(ProductRequest request) {
+        this.name = request.getName();
+        this.price = request.getPrice();
+        this.imgUrl = request.getImgUrl();
+    }
+    public ProductResponse toResponse() {
+        return new ProductResponse(id, name, price, imgUrl);
+    }
 }
