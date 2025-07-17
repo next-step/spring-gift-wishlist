@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>위시리스트</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        .card-header {
+            background-color: #2c3e50;
+            color: white;
+        }
+        .card-header h4 {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header">
+            <h4><위시리스트</h4>
+        </div>
+        <div class="card-body">
+            <form id="add-wish-form" class="row mb-4">
+                <div class="col">
+                    <input type="number" id="productId" class="form-control" placeholder="상품 ID 입력" required />
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary">상품 추가</button>
+                </div>
+            </form>
+
+            <table class="table table-hover text-center align-middle">
+                <thead class="table-light">
+                <tr>
+                    <th>상품명</th>
+                    <th>가격</th>
+                    <th>이미지</th>
+                    <th>삭제</th>
+                </tr>
+                </thead>
+                <tbody id="wish-tbody">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    const token = localStorage.getItem("accessToken");
+
+    function renderWishes(wish) {
+        const tbody = document.getElementById("wish-tbody");
+        tbody.innerHTML = "";
+
+        if (wish.length === 0) {
+            const row = document.createElement("tr");
+            const cell = document.createElement("td");
+            cell.setAttribute("colspan", "4");
+            cell.textContent = "목록에 상품이 없습니다.";
+            row.appendChild(cell);
+            tbody.appendChild(row);
+            return;
+        }
+
+        wish.forEach(product => {
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${product.name}</td>
+                <td>${product.price}원</td>
+                <td><img src="${product.imgUrl}" alt="상품 이미지" width="80"/></td>
+                <td>
+                    <button class="btn btn-danger btn-sm" onclick="deleteWish(${product.id})">삭제</button>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    async function loadWishes() {
+        const res = await fetch("/api/wishes", {
+            headers: { "Authorization": "Bearer " + token }
+        });
+
+        if (res.ok) {
+            const data = await res.json();
+            renderWishes(data);
+        } else {
+            alert("위시리스트 불러오기 실패: " + await res.text());
+        }
+    }
+
+    async function deleteWish(productId) {
+        const res = await fetch(`/api/wishes/${productId}`, {
+            method: "DELETE",
+            headers: { "Authorization": "Bearer " + token }
+        });
+
+        if (res.ok) {
+            alert("상품이 삭제되었습니다.");
+            await loadWishes();
+        } else {
+            alert("삭제 실패: " + await res.text());
+        }
+    }
+
+    document.getElementById("add-wish-form").addEventListener("submit", async function(e) {
+        e.preventDefault();
+        const productId = document.getElementById("productId").value;
+
+        const res = await fetch("/api/wishes", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token
+            },
+            body: JSON.stringify({ productId: Number(productId) })
+        });
+
+        if (res.ok) {
+            alert("상품 추가 완료");
+            await loadWishes();
+            document.getElementById("productId").value = "";
+        } else {
+            alert("상품 추가 실패: " + await res.text());
+        }
+    });
+
+    window.addEventListener("DOMContentLoaded", loadWishes);
+</script>
+</body>
+</html>

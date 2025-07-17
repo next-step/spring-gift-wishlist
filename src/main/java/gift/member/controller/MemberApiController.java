@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/members")
-public class MemberController {
+public class MemberApiController {
 
     private final MemberService memberService;
 
-    public MemberController(MemberService memberService) {
+    public MemberApiController(MemberService memberService) {
         this.memberService = memberService;
     }
 

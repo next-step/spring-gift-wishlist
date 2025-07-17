@@ -1,7 +1,7 @@
-package gift.member.resolver;
+package gift.global.resolver;
 
-import gift.member.entity.Member;
 import gift.global.exception.InvalidTokenException;
+import gift.member.entity.Member;
 import gift.member.repository.MemberRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;
@@ -22,22 +22,24 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        boolean hasLoginMemberAnnotation = parameter.hasParameterAnnotation(LoginMember.class);
-        boolean isMemberType = Member.class.isAssignableFrom(parameter.getParameterType());
-        return hasLoginMemberAnnotation && isMemberType;
+        return parameter.hasParameterAnnotation(LoginMember.class)
+                && Member.class.isAssignableFrom(parameter.getParameterType());
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
-                                  NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
-        Long memberId = (Long) request.getAttribute("memberId");
+    public Object resolveArgument(MethodParameter parameter,
+                                  ModelAndViewContainer mavContainer,
+                                  NativeWebRequest webRequest,
+                                  WebDataBinderFactory binderFactory) {
 
-        if (memberId == null) {
-            throw new InvalidTokenException("인증 정보가 없습니다. (Interceptor 동작 확인 필요)");
+        HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
+        Object memberIdAttr = request.getAttribute("memberId");
+
+        if (!(memberIdAttr instanceof Long memberId)) {
+            throw new InvalidTokenException("요청에 인증된 사용자 ID가 없습니다.");
         }
 
         return memberRepository.findById(memberId)
-                .orElseThrow(() -> new InvalidTokenException("인증된 사용자를 DB에서 찾을 수 없습니다."));
+                .orElseThrow(() -> new InvalidTokenException("해당 ID에 대한 사용자를 찾을 수 없습니다. (ID: " + memberId + ")"));
     }
 }

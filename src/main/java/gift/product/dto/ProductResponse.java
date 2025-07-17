@@ -8,7 +8,7 @@ public record ProductResponse(
         Long id,
         String name,
         BigDecimal price,
-        String imageUrl
+        String imgUrl
 ) {
     public static ProductResponse from(Product product) {
         return product.toResponse();

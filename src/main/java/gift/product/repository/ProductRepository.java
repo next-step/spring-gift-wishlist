@@ -24,7 +24,7 @@ public class ProductRepository {
         p.setId(rs.getLong("id"));
         p.setName(rs.getString("name"));
         p.setPrice(rs.getBigDecimal("price"));
-        p.setImgUrl(rs.getString("imgUrl"));
+        p.setImgUrl(rs.getString("img_url"));
         return p;
     };
 
@@ -32,7 +32,7 @@ public class ProductRepository {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(
-                    "INSERT INTO products (name, price, imgUrl) VALUES (?, ?, ?)",
+                    "INSERT INTO products (name, price, img_url) VALUES (?, ?, ?)",
                     Statement.RETURN_GENERATED_KEYS
             );
             ps.setString(1, product.getName());
@@ -48,7 +48,7 @@ public class ProductRepository {
 
     public Product update(Product product) {
         jdbcTemplate.update(
-                "UPDATE products SET name = ?, price = ?, imgUrl = ? WHERE id = ?",
+                "UPDATE products SET name = ?, price = ?, img_url = ? WHERE id = ?",
                 product.getName(),
                 product.getPrice(),
                 product.getImgUrl(),

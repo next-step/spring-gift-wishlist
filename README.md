@@ -10,3 +10,8 @@
 - [x] 도메인별로 패키지 리팩토링
 - [x] AuthInterceptor로 토큰검증, 검증범위 : /api/**, 제외범위 : /api/members/register, /api/members/login, /admin/products
 - [x] 회원을 조회, 추가, 수정, 삭제할 수 있는 관리자 화면을 구현
+## step3 위시리스트
+- [x] 위시리스트 화면 렌더링용 컨트롤러, 목록 조작용 컨트롤러 생성 
+- [x] 멤버별 상품 조회, 추가, 삭제 기능
+- [x] WebConfig 검증범위에 /admin/products 추가
+- [x] **AdminController를 **ViewController로 리팩토링, **Controller를 **ApiController로 리팩토링

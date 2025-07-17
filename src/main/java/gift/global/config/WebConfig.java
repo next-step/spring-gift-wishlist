@@ -1,7 +1,7 @@
 package gift.global.config;
 
 import gift.global.interceptor.AuthInterceptor;
-import gift.member.resolver.LoginMemberArgumentResolver;
+import gift.global.resolver.LoginMemberArgumentResolver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -23,8 +23,8 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authInterceptor)
-                .addPathPatterns("/api/**")
-                .excludePathPatterns("/api/members/register", "/api/members/login", "/admin/products");
+                .addPathPatterns("/api/**", "/admin/wishes")
+                .excludePathPatterns("/api/members/register", "/api/members/login","/admin/products");
     }
 
     @Override
