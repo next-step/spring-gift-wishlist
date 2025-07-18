@@ -14,9 +14,14 @@ import java.util.Date;
 public class JwtUtil {
 
     private final SecretKey secretKey;
+    private final long expirationTime;
 
-    public JwtUtil(@Value("${jwt.secret.key}") String secret) {
+    public JwtUtil(
+            @Value("${jwt.secret.key}") String secret,
+            @Value("${jwt.expiration}") long expirationTime
+    ) {
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
+        this.expirationTime = expirationTime;
     }
 
     public String generateToken(Member member) {
@@ -25,14 +30,19 @@ public class JwtUtil {
                 .subject(member.getId().toString())
                 .claim("role", member.getRole())
                 .issuedAt(new Date(now))
-                .expiration(new Date(now + 1000 * 60 * 60))
+                .expiration(new Date(now + expirationTime))
                 .signWith(secretKey)
                 .compact();
     }
 
     public Long getUserIdFromToken(String token) {
-        String userIdStr = getClaims(token).getSubject();
-        return Long.parseLong(userIdStr);
+        Claims claims = Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+
+        return Long.parseLong(claims.getSubject());
     }
 
     public boolean validateToken(String token) {
